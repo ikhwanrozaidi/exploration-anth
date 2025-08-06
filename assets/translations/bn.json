@@ -1,0 +1,29 @@
+{
+  "main_screen": {
+    "titleDesc": "RCLink এ স্বাগতম"
+  },
+  "flavor_screen": {
+    "flavorConfiguration": "ফ্লেভার কনফিগারেশন",
+    "environment": "পরিবেশ",
+    "appTitle": "অ্যাপ শিরোনাম",
+    "apiBaseURL": "এপিআই বেস ইউআরএল",
+    "debugBanner": "ডিবাগ ব্যানার",
+    "environmentStatus": "পরিবেশগত অবস্থা",
+    "runningIn": "চলছে",
+    "mode": "মোড",
+    "developmentDesc": "ডিবাগ বৈশিষ্ট্য সহ উন্নয়ন পরিবেশ",
+    "stagingDesc": "প্রি-প্রোডাকশন টেস্টিং পরিবেশ",
+    "productionDesc": "লাইভ প্রোডাকশন পরিবেশ",
+    "buildInformation": "বিল্ড তথ্য",
+    "isDevelopment": "ডেভেলপমেন্ট কিনা",
+    "isStaging": "স্টেজিং কিনা",
+    "isProduction": "প্রোডাকশন কিনা",
+    "flavorName": "ফ্লেভারের নাম",
+    "language": "ভাষা"
+  },
+  "shared": {
+    "enabled": "সক্রিয়",
+    "disabled": "নিষ্ক্রিয়",
+    "submitButton": "জমা দিন"
+  }
+}

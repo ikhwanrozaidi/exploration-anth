@@ -1,0 +1,46 @@
+{
+  "main_screen": {
+    "titleDesc": "Welcome to RCLink"
+  },
+  "flavor_screen": {
+    "flavorConfiguration": "Flavor Configuration",
+    "environment": "Environment",
+    "appTitle": "App Title",
+    "apiBaseURL": "API Base URL",
+    "debugBanner": "Debug Banner",
+    "environmentStatus": "Environment Status",
+    "runningIn": "Running in",
+    "mode": "mode",
+    "developmentDesc": "Development environment with debug features",
+    "stagingDesc": "Pre-production testing environment",
+    "productionDesc": "Live production environment",
+    "buildInformation": "Build Information",
+    "isDevelopment": "Is Development",
+    "isStaging": "Is Staging",
+    "isProduction": "Is Production",
+    "flavorName": "Flavor Name",
+    "language": "Language"
+  },
+  "auth": {
+    "otpSent": "OTP sent successfully",
+    "signIn": "Sign In",
+    "enterPhoneNumber": "Enter your phone number to log in",
+    "phoneNumber": "Phone Number",
+    "phoneRequired": "Phone number is required",
+    "phoneInvalid": "Please enter a valid phone number",
+    "smsInfo": "You will receive a 4 digit code via SMS/ WhatsApp",
+
+    "logout": "Logout",
+    "logoutConfirmation": "Are you sure you want to logout?",
+    "welcomeMessage": "Welcome to RC Link",
+    "sendOtp": "Send OTP",
+    "termsMessage": "By continuing, you agree to our Terms of Service and Privacy Policy"
+  },
+  "shared": {
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "submitButton": "Submit",
+    "cancel": "Cancel",
+    "next": "Next"
+  }
+}

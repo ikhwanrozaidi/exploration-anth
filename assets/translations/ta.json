@@ -1,0 +1,29 @@
+{
+  "main_screen": {
+    "titleDesc": "RCLink க்கு வரவேற்கிறோம்"
+  },
+  "flavor_screen": {
+    "flavorConfiguration": "சுவை கட்டமைப்பு",
+    "environment": "சூழல்",
+    "appTitle": "பயன்பாட்டு தலைப்பு",
+    "apiBaseURL": "ஏபிஐ அடிப்படை யூஆர்எல்",
+    "debugBanner": "பிழைத்திருத்த பேனர்",
+    "environmentStatus": "சூழல் நிலை",
+    "runningIn": "இயங்குகிறது",
+    "mode": "முறை",
+    "developmentDesc": "பிழைத்திருத்த அம்சங்களுடன் வளர்ச்சி சூழல்",
+    "stagingDesc": "உற்பத்திக்கு முந்தைய சோதனை சூழல்",
+    "productionDesc": "நேரடி உற்பத்தி சூழல்",
+    "buildInformation": "கட்டுமான தகவல்",
+    "isDevelopment": "வளர்ச்சியா",
+    "isStaging": "அரங்கேற்றமா",
+    "isProduction": "உற்பத்தியா",
+    "flavorName": "சுவை பெயர்",
+    "language": "மொழி"
+  },
+  "shared": {
+    "enabled": "இயக்கப்பட்டது",
+    "disabled": "முடக்கப்பட்டது",
+    "submitButton": "சமர்பிக்கவும்"
+  }
+}

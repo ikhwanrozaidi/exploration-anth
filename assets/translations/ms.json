@@ -1,0 +1,29 @@
+{
+  "main_screen": {
+    "titleDesc": "Selamat datang ke RCLink"
+  },
+  "flavor_screen": {
+    "flavorConfiguration": "Konfigurasi Flavor",
+    "environment": "Pembangunan",
+    "appTitle": "Tajuk Aplikasi",
+    "apiBaseURL": "URL Asas API",
+    "debugBanner": "Banner Debug",
+    "environmentStatus": "Status Pembangunan",
+    "runningIn": "Berfungsi dalam",
+    "mode": "mod",
+    "developmentDesc": "Pembangunan dengan ciri debug",
+    "stagingDesc": "Pembangunan ujian pra-pengeluaran",
+    "productionDesc": "Pembangunan pengeluaran langsung",
+    "buildInformation": "Maklumat Binaan",
+    "isDevelopment": "Pembangunan",
+    "isStaging": "Percubaan",
+    "isProduction": "Produksi",
+    "flavorName": "Nama Flavor",
+    "language": "Bahasa"
+  },
+  "shared": {
+    "enabled": "Diaktifkan",
+    "disabled": "Dilumpuhkan",
+    "submitButton": "Hantar"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "main_screen": {
+    "titleDesc": "RCLink میں خوش آمدید"
+  },
+  "flavor_screen": {
+    "flavorConfiguration": "فلیور کنفیگریشن",
+    "environment": "ماحول",
+    "appTitle": "ایپ کا عنوان",
+    "apiBaseURL": "اے پی آئی بیس یو آر ایل",
+    "debugBanner": "ڈیبگ بینر",
+    "environmentStatus": "ماحولیاتی حالت",
+    "runningIn": "چل رہا ہے",
+    "mode": "موڈ",
+    "developmentDesc": "ڈیبگ فیچرز کے ساتھ ڈیولپمنٹ ماحول",
+    "stagingDesc": "پری پروڈکشن ٹیسٹنگ ماحول",
+    "productionDesc": "لائیو پروڈکشن ماحول",
+    "buildInformation": "بلڈ کی معلومات",
+    "isDevelopment": "کیا ڈیولپمنٹ ہے",
+    "isStaging": "کیا سٹیجنگ ہے",
+    "isProduction": "کیا پروڈکشن ہے",
+    "flavorName": "فلیور کا نام",
+    "language": "زبان"
+  },
+  "shared": {
+    "enabled": "فعال",
+    "disabled": "غیر فعال",
+    "submitButton": "جمع کریں"
+  }
+}
