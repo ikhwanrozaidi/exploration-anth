@@ -1,27 +1,33 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rclink_app/core/errors/failures.dart';
-import 'package:rclink_app/features/auth/domain/entities/auth_result.dart';
-import 'package:rclink_app/features/auth/domain/usecases/send_otp_usecase.dart';
+import 'package:rclink_app/features/auth/domain/entities/tokens.dart';
+import 'package:rclink_app/features/auth/domain/usecases/request_otp_usecase.dart';
+import '../../../admin/domain/usecases/get_current_admin_usecase.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 @lazySingleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final SendOtpUseCase _sendOtpUseCase;
+  final RequestOtpUseCase _requestOtpUseCase;
+  final GetCurrentAdminUseCase _getCurrentAdminUseCase;
 
-  AuthBloc(this._sendOtpUseCase) : super(const AuthInitial()) {
-    on<SendOtpRequested>(_onSendOtpRequested);
+  AuthBloc(
+    this._requestOtpUseCase,
+    this._getCurrentAdminUseCase,
+  ) : super(const AuthInitial()) {
+    on<RequestOtpRequested>(_onRequestOtpRequested);
     on<CheckAuthStatus>(_onCheckAuthStatus);
+    on<LoadCurrentAdmin>(_onLoadCurrentAdmin);
   }
 
-  Future<void> _onSendOtpRequested(
-    SendOtpRequested event,
+  Future<void> _onRequestOtpRequested(
+    RequestOtpRequested event,
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthLoading());
 
-    final result = await _sendOtpUseCase(SendOtpParams(event.phone));
+    final result = await _requestOtpUseCase(RequestOtpParams(event.phone));
 
     result.fold(
       (failure) => emit(AuthFailure(_mapFailureToMessage(failure))),
@@ -51,14 +57,46 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     //   },
     // );
     //
-    emit(
-      const AuthState.authenticated(
-        AuthResult(accessToken: '123', refreshToken: '456'),
+    // emit(
+    //   AuthState.authenticated(
+    //     Tokens(
+    //       accessToken: '123',
+    //       refreshToken: '456',
+    //       accessTokenExpiresAt: DateTime.now().add(const Duration(hours: 1)),
+    //       refreshTokenExpiresAt: DateTime.now().add(const Duration(days: 30)),
+    //     ),
+    //   ),
+    // );
+    //
+    //
+    emit(const AuthState.unauthenticated());
+  }
+
+  Future<void> _onLoadCurrentAdmin(
+    LoadCurrentAdmin event,
+    Emitter<AuthState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is! Authenticated) {
+      return;
+    }
+
+    final result = await _getCurrentAdminUseCase(
+      GetCurrentAdminParams(
+        forceRefresh: event.forceRefresh,
+        cacheTimeout: event.cacheTimeout,
       ),
     );
-    //
-    //
-    // emit(const AuthState.unauthenticated());
+    
+    result.fold(
+      (failure) => emit(AuthFailure(_mapFailureToMessage(failure))),
+      (admin) => emit(
+        AuthState.authenticated(
+          currentState.tokens,
+          currentAdmin: admin,
+        ),
+      ),
+    );
   }
 
   String _mapFailureToMessage(Failure failure) {

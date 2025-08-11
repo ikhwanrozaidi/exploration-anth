@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'tokens.dart';
+part of 'tokens_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Tokens _$TokensFromJson(Map<String, dynamic> json) => Tokens(
+_TokensModel _$TokensModelFromJson(Map<String, dynamic> json) => _TokensModel(
   accessToken: json['accessToken'] as String,
   refreshToken: json['refreshToken'] as String,
   accessTokenExpiresAt: DateTime.parse(json['accessTokenExpiresAt'] as String),
@@ -15,9 +15,10 @@ Tokens _$TokensFromJson(Map<String, dynamic> json) => Tokens(
   ),
 );
 
-Map<String, dynamic> _$TokensToJson(Tokens instance) => <String, dynamic>{
-  'accessToken': instance.accessToken,
-  'refreshToken': instance.refreshToken,
-  'accessTokenExpiresAt': instance.accessTokenExpiresAt.toIso8601String(),
-  'refreshTokenExpiresAt': instance.refreshTokenExpiresAt.toIso8601String(),
-};
+Map<String, dynamic> _$TokensModelToJson(_TokensModel instance) =>
+    <String, dynamic>{
+      'accessToken': instance.accessToken,
+      'refreshToken': instance.refreshToken,
+      'accessTokenExpiresAt': instance.accessTokenExpiresAt.toIso8601String(),
+      'refreshTokenExpiresAt': instance.refreshTokenExpiresAt.toIso8601String(),
+    };

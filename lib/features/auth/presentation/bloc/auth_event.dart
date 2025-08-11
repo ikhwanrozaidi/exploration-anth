@@ -9,11 +9,24 @@ abstract class AuthEvent extends Equatable {
 
 class CheckAuthStatus extends AuthEvent {}
 
-class SendOtpRequested extends AuthEvent {
+class RequestOtpRequested extends AuthEvent {
   final String phone;
 
-  const SendOtpRequested(this.phone);
+  const RequestOtpRequested(this.phone);
 
   @override
   List<Object> get props => [phone];
+}
+
+class LoadCurrentAdmin extends AuthEvent {
+  final bool forceRefresh;
+  final Duration? cacheTimeout;
+
+  const LoadCurrentAdmin({
+    this.forceRefresh = false,
+    this.cacheTimeout,
+  });
+
+  @override
+  List<Object?> get props => [forceRefresh, cacheTimeout];
 }

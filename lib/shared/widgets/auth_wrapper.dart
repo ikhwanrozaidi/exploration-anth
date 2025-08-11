@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rclink_app/features/auth/presentation/bloc/auth_event.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/bloc/auth_state.dart';
-import '../../features/locale/presentation/pages/localization_debug_page.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../pages/root_page.dart';
 
@@ -25,7 +24,7 @@ class AuthWrapper extends StatelessWidget {
           },
           otpSent: (_) =>
               const LoginPage(), // Stay on login for OTP verification
-          authenticated: (_) => const RootPage(), // Main app with navigation
+          authenticated: (_, _) => const RootPage(), // Main app with navigation
           unauthenticated: () => const LoginPage(),
           failure: (_) => const LoginPage(), // Show login on auth failure
         );

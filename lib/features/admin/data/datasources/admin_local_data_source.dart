@@ -9,6 +9,7 @@ abstract class AdminLocalDataSource {
   Future<Admin?> getAdminByUid(String uid);
   Future<Admin?> getAdminByPhone(String phone);
   Future<Admin> updateAdmin(Admin admin);
+  Future<Admin> saveAdmin(Admin admin, {bool markForSync = true});
   Future<void> deleteAdmin(String uid);
   Future<List<Admin>> getUnsyncedAdmins();
   Future<void> markAdminAsSynced(String uid);
@@ -66,12 +67,22 @@ class AdminLocalDataSourceImpl implements AdminLocalDataSource {
 
   @override
   Future<Admin> updateAdmin(Admin admin) async {
-    final companion = admin.toCompanion(isSynced: false, syncAction: 'update');
+    // Always marks for sync - use this for user-initiated updates
+    return saveAdmin(admin, markForSync: true);
+  }
+
+  @override
+  Future<Admin> saveAdmin(Admin admin, {bool markForSync = true}) async {
+    final companion = markForSync
+        ? admin.toCompanion(isSynced: false, syncAction: 'update')
+        : admin.toCompanion(isSynced: true);
 
     await _database.update(_database.admins).replace(companion);
 
-    // Add to sync queue for later synchronization
-    await addToSyncQueue(entityUid: admin.uid, action: 'update');
+    // Only add to sync queue if marking for sync
+    if (markForSync) {
+      await addToSyncQueue(entityUid: admin.uid, action: 'update');
+    }
 
     return admin;
   }

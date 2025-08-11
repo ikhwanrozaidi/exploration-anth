@@ -5,8 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import '../config/flavor_config.dart';
 import '../network/error_interceptor.dart';
 import '../constants/app_constants.dart';
-import '../../features/auth/domain/repositories/auth_repository.dart';
-import '../../features/auth/domain/usecases/send_otp_usecase.dart';
+import '../network/auth_interceptor.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import 'injection.config.dart';
@@ -34,7 +33,7 @@ Future<void> configureDependencies() async {
       _isInitialized = false; // Reset the flag as well
     }
 
-    await getIt.init();
+    getIt.init();
     _configureDioInterceptors();
     _isInitialized = true;
 
@@ -46,7 +45,7 @@ Future<void> configureDependencies() async {
     if (!_isInitialized) {
       try {
         await getIt.reset();
-        await getIt.init();
+        getIt.init();
         _configureDioInterceptors();
         _isInitialized = true;
         print('✅ Dependency injection configured on retry');
@@ -85,8 +84,8 @@ void _configureDioInterceptors() {
     // Add error handling interceptor
     dio.interceptors.add(getIt<ErrorInterceptor>());
 
-    // TODO: Add AuthInterceptor when token management is implemented
-    // dio.interceptors.add(getIt<AuthInterceptor>());
+    // Add auth interceptor
+    dio.interceptors.add(getIt<AuthInterceptor>());
 
     print('✅ Dio interceptors configured successfully');
   } catch (e) {
@@ -121,9 +120,4 @@ abstract class RegisterModule {
 
   @lazySingleton
   Connectivity get connectivity => Connectivity();
-
-  // Use cases
-  @lazySingleton
-  SendOtpUseCase sendOtpUseCase(AuthRepository repository) =>
-      SendOtpUseCase(repository);
 }

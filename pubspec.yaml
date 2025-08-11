@@ -71,6 +71,8 @@ dependencies:
   device_info_plus: ^11.5.0
   android_id: ^0.4.0
   email_validator: ^3.0.0
+  flutter_secure_storage: ^9.2.4
+  synchronized: ^3.4.0
 
   # Database
   drift: ^2.20.3

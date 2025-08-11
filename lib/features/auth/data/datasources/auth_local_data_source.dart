@@ -1,40 +1,55 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:drift/drift.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
-import '../../domain/entities/auth_result.dart';
+import '../../domain/entities/tokens.dart';
 import '../../domain/entities/admin.dart';
 
 abstract class AuthLocalDataSource {
-  Future<Either<Failure, void>> storeAuthResult(AuthResult authResult);
+  Future<Either<Failure, void>> storeTokens(Tokens tokens);
   Future<Either<Failure, String?>> getAccessToken();
   Future<Either<Failure, String?>> getRefreshToken();
+  Future<Either<Failure, DateTime?>> getAccessTokenExpiresAt();
+  Future<Either<Failure, DateTime?>> getRefreshTokenExpiresAt();
+  Future<Either<Failure, Tokens?>> getTokens();
   Future<Either<Failure, void>> clearCache();
 }
 
 @LazySingleton(as: AuthLocalDataSource)
 class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   final DatabaseService _databaseService;
+  final FlutterSecureStorage _secureStorage;
 
-  AuthLocalDataSourceImpl(this._databaseService);
+  AuthLocalDataSourceImpl(this._databaseService)
+    : _secureStorage = const FlutterSecureStorage(
+        aOptions: AndroidOptions(encryptedSharedPreferences: true),
+        iOptions: IOSOptions(
+          accessibility: KeychainAccessibility.first_unlock_this_device,
+        ),
+      );
 
   AppDatabase get _database => _databaseService.database;
 
   @override
-  Future<Either<Failure, void>> storeAuthResult(AuthResult authResult) async {
+  Future<Either<Failure, void>> storeTokens(Tokens tokens) async {
     try {
-      await _database.transaction(() async {
-        // Store tokens (you might want to encrypt these)
-        // For now, storing in a simple key-value format in the database
-        // In production, consider using flutter_secure_storage
-        await _storeToken('access_token', authResult.accessToken);
-        await _storeToken('refresh_token', authResult.refreshToken);
-      });
+      // Store sensitive tokens in secure storage
+      await _storeToken('access_token', tokens.accessToken);
+      await _storeToken('refresh_token', tokens.refreshToken);
+      await _storeToken(
+        'access_token_expires_at',
+        tokens.accessTokenExpiresAt.toIso8601String(),
+      );
+      await _storeToken(
+        'refresh_token_expires_at',
+        tokens.refreshTokenExpiresAt.toIso8601String(),
+      );
 
       return const Right(null);
     } catch (e) {
-      return Left(CacheFailure('Failed to cache auth result: ${e.toString()}'));
+      return Left(CacheFailure('Failed to cache tokens: ${e.toString()}'));
     }
   }
 
@@ -59,16 +74,76 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
+  Future<Either<Failure, DateTime?>> getAccessTokenExpiresAt() async {
+    try {
+      final token = await _getToken('access_token_expires_at');
+      if (token == null) return const Right(null);
+      return Right(DateTime.parse(token));
+    } catch (e) {
+      return Left(
+        CacheFailure('Failed to get access token expiration: ${e.toString()}'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, DateTime?>> getRefreshTokenExpiresAt() async {
+    try {
+      final token = await _getToken('refresh_token_expires_at');
+      if (token == null) return const Right(null);
+      return Right(DateTime.parse(token));
+    } catch (e) {
+      return Left(
+        CacheFailure('Failed to get refresh token expiration: ${e.toString()}'),
+      );
+    }
+  }
+
+  @override
+  Future<Either<Failure, Tokens?>> getTokens() async {
+    try {
+      final accessToken = await _getToken('access_token');
+      final refreshToken = await _getToken('refresh_token');
+      final accessTokenExpiresAtStr = await _getToken(
+        'access_token_expires_at',
+      );
+      final refreshTokenExpiresAtStr = await _getToken(
+        'refresh_token_expires_at',
+      );
+
+      if (accessToken == null ||
+          refreshToken == null ||
+          accessTokenExpiresAtStr == null ||
+          refreshTokenExpiresAtStr == null) {
+        return const Right(null);
+      }
+
+      final tokens = Tokens(
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        accessTokenExpiresAt: DateTime.parse(accessTokenExpiresAtStr),
+        refreshTokenExpiresAt: DateTime.parse(refreshTokenExpiresAtStr),
+      );
+
+      return Right(tokens);
+    } catch (e) {
+      return Left(CacheFailure('Failed to get tokens: ${e.toString()}'));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> clearCache() async {
     try {
       await _database.transaction(() async {
         // Clear all admins
         await _database.delete(_database.admins).go();
-
-        // Clear tokens
-        await _deleteToken('access_token');
-        await _deleteToken('refresh_token');
       });
+
+      // Clear tokens from secure storage
+      await _deleteToken('access_token');
+      await _deleteToken('refresh_token');
+      await _deleteToken('access_token_expires_at');
+      await _deleteToken('refresh_token_expires_at');
 
       return const Right(null);
     } catch (e) {
@@ -76,22 +151,16 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     }
   }
 
-  // Helper methods for token storage
-  // Note: In production, consider using flutter_secure_storage for sensitive data
+  // Helper methods for secure token storage
   Future<void> _storeToken(String key, String value) async {
-    // Simple key-value storage using a table or shared preferences
-    // For this example, I'll use a simple approach
-    // You should implement proper secure storage
+    await _secureStorage.write(key: key, value: value);
   }
 
   Future<String?> _getToken(String key) async {
-    // Retrieve token from secure storage
-    // For this example, return null as placeholder
-    return null;
+    return await _secureStorage.read(key: key);
   }
 
   Future<void> _deleteToken(String key) async {
-    // Delete token from secure storage
-    // Placeholder implementation
+    await _secureStorage.delete(key: key);
   }
 }

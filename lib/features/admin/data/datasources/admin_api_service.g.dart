@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auth_api_service.dart';
+part of 'admin_api_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,8 +8,8 @@ part of 'auth_api_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter
 
-class _AuthApiService implements AuthApiService {
-  _AuthApiService(this._dio, {this.baseUrl, this.errorLogger});
+class _AdminApiService implements AdminApiService {
+  _AdminApiService(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
@@ -18,95 +18,60 @@ class _AuthApiService implements AuthApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ApiResponse<RequestOtpResponseModel>> requestOtp({
-    required RequestOtpModel data,
-  }) async {
+  Future<ApiResponse<AdminModel>> getCurrentAdmin() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = data;
-    final _options = _setStreamType<ApiResponse<RequestOtpResponseModel>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/auth/request-otp',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<RequestOtpResponseModel> _value;
-    try {
-      _value = ApiResponse<RequestOtpResponseModel>.fromJson(
-        _result.data!,
-        (json) =>
-            RequestOtpResponseModel.fromJson(json as Map<String, dynamic>),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<ApiResponse<TokensModel>> verifyOtp({
-    required VerifyOtpRequestModel data,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = data;
-    final _options = _setStreamType<ApiResponse<TokensModel>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/auth/verify-otp',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<TokensModel> _value;
-    try {
-      _value = ApiResponse<TokensModel>.fromJson(
-        _result.data!,
-        (json) => TokensModel.fromJson(json as Map<String, dynamic>),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<ApiResponse<TokensModel>> refreshToken({
-    required String refreshToken,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': refreshToken};
-    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ApiResponse<TokensModel>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
+    final _options = _setStreamType<ApiResponse<AdminModel>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/auth/refresh-token',
+            '/admins/me',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<TokensModel> _value;
+    late ApiResponse<AdminModel> _value;
     try {
-      _value = ApiResponse<TokensModel>.fromJson(
+      _value = ApiResponse<AdminModel>.fromJson(
         _result.data!,
-        (json) => TokensModel.fromJson(json as Map<String, dynamic>),
+        (json) => AdminModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ApiResponse<AdminModel>> updateAdmin({
+    required Map<String, dynamic> data,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(data);
+    final _options = _setStreamType<ApiResponse<AdminModel>>(
+      Options(method: 'PUT', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/admins/me',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<AdminModel> _value;
+    try {
+      _value = ApiResponse<AdminModel>.fromJson(
+        _result.data!,
+        (json) => AdminModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
