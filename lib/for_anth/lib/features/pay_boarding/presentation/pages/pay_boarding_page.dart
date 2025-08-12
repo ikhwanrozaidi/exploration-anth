@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gatepay_app/features/pay_boarding/features/qr_pay/presentation/pages/qrpay_page.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/di/injection.dart';
+import '../../../../core/dio/injection.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../features/escrow_pay/presentation/pages/escrow_pay_page.dart';
 import '../bloc/pay_boarding_bloc.dart';

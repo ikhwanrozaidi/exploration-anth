@@ -63,6 +63,7 @@ import '../../features/transactionboard/features/ongoing/presentation/bloc/ongoi
 import '../../features/transactionboard/presentation/bloc/transaction_bloc.dart'
     as _i448;
 import '../database/app_database.dart' as _i982;
+import '../network/auth_interceptor.dart' as _i908;
 import '../network/connectivity_service.dart' as _i491;
 import '../network/error_interceptor.dart' as _i1004;
 import '../network/network_info.dart' as _i932;
@@ -96,9 +97,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i932.NetworkInfo>(
       () => _i932.NetworkInfoImpl(gh<_i895.Connectivity>()),
     );
-    gh.lazySingleton<_i301.LoginLocalDataSource>(
-      () => _i301.LoginLocalDataSourceImpl(gh<_i982.DatabaseService>()),
-    );
     gh.lazySingleton<_i691.AdminLocalDataSource>(
       () => _i691.AdminLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
@@ -111,6 +109,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i743.LoginApiService>(
       () => _i743.LoginApiService(gh<_i361.Dio>()),
     );
+    gh.factory<_i908.AuthInterceptor>(
+      () => _i908.AuthInterceptor(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i852.AuthLocalDataSource>(
       () => _i852.AuthLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
@@ -118,6 +119,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i593.SignUpBloc(
         gh<_i57.CheckEmailExistsUseCase>(),
         gh<_i57.SignUpUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i301.LoginLocalDataSource>(
+      () => _i301.LoginLocalDataSourceImpl(
+        gh<_i982.DatabaseService>(),
+        gh<_i908.AuthInterceptor>(),
       ),
     );
     gh.lazySingleton<_i517.AdminRemoteDataSource>(

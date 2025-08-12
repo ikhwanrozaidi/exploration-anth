@@ -1,131 +1,232 @@
-// import 'package:dio/dio.dart';
-// import 'package:injectable/injectable.dart';
-// import '../../features/auth/data/datasources/login_local_data_source.dart';
-// import '../../features/auth/data/datasources/login_remote_data_source.dart';
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:injectable/injectable.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-// @lazySingleton
-// class AuthInterceptor extends Interceptor {
-//   final LoginLocalDataSource _localDataSource;
-//   final LoginRemoteDataSource _remoteDataSource;
+@injectable
+class AuthInterceptor extends Interceptor {
+  static const String _accessTokenKey = 'access_token';
+  static const String _refreshTokenKey = 'refresh_token';
+  
+  final Dio _dio;
+  
+  AuthInterceptor(this._dio);
 
-//   AuthInterceptor(this._localDataSource, this._remoteDataSource);
+  @override
+  void onRequest(
+    RequestOptions options,
+    RequestInterceptorHandler handler,
+  ) async {
+    // Skip auth for certain endpoints
+    if (_shouldSkipAuth(options.path)) {
+      return handler.next(options);
+    }
 
-//   bool _isRefreshing = false;
-//   final List<RequestOptions> _pendingRequests = [];
+    try {
+      final accessToken = await _getAccessToken();
+      if (accessToken != null) {
+        options.headers['Authorization'] = 'Bearer $accessToken';
+      }
+    } catch (e) {
+      // Continue without token if there's an error getting it
+      print('Error getting access token: $e');
+    }
 
-//   @override
-//   void onRequest(
-//     RequestOptions options,
-//     RequestInterceptorHandler handler,
-//   ) async {
-//     if (_shouldSkipAuth(options.path)) {
-//       return handler.next(options);
-//     }
+    handler.next(options);
+  }
 
-//     // Get access token from local storage
-//     final accessTokenResult = await _localDataSource.getAccessToken();
-//     final refreshTokenResult = await _localDataSource.getRefreshToken();
-    
-//     accessTokenResult.fold(
-//       (failure) => null,
-//       (accessToken) {
-//         if (accessToken != null && accessToken.isNotEmpty) {
-//           options.headers['Authorization'] = 'Bearer $accessToken';
-//         }
-//       },
-//     );
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    handler.next(response);
+  }
 
-//     if (_isRefreshToken(options.path)) {
-//       refreshTokenResult.fold(
-//         (failure) => null,
-//         (refreshToken) {
-//           if (refreshToken != null && refreshToken.isNotEmpty) {
-//             options.headers['Authorization'] = 'Bearer $refreshToken';
-//           }
-//         },
-//       );
-//     }
+  @override
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    // Handle 401 Unauthorized errors
+    if (err.response?.statusCode == 401) {
+      try {
+        final newAccessToken = await _refreshToken();
+        if (newAccessToken != null) {
+          // Retry the original request with new token
+          final requestOptions = err.requestOptions;
+          requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+          
+          try {
+            final response = await _dio.fetch(requestOptions);
+            return handler.resolve(response);
+          } catch (e) {
+            // If retry fails, continue with original error
+            return handler.next(err);
+          }
+        } else {
+          // No refresh token or refresh failed, clear tokens and continue with error
+          await _clearTokens();
+          return handler.next(err);
+        }
+      } catch (e) {
+        // Refresh token process failed, clear tokens and continue with error
+        await _clearTokens();
+        return handler.next(err);
+      }
+    }
 
-//     return handler.next(options);
-//   }
+    handler.next(err);
+  }
 
-//   @override
-//   void onError(DioException err, ErrorInterceptorHandler handler) async {
-//     if (err.response?.statusCode == 401 && !_isRefreshing) {
-//       _isRefreshing = true;
+  /// Get stored access token
+  Future<String?> _getAccessToken() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(_accessTokenKey);
+    } catch (e) {
+      print('Error getting access token: $e');
+      return null;
+    }
+  }
 
-//       try {
-//         // Get refresh token from local storage
-//         final refreshTokenResult = await _localDataSource.getRefreshToken();
+  /// Get stored refresh token
+  Future<String?> _getRefreshToken() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(_refreshTokenKey);
+    } catch (e) {
+      print('Error getting refresh token: $e');
+      return null;
+    }
+  }
+
+  /// Store new access token
+  Future<void> _storeAccessToken(String token) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_accessTokenKey, token);
+    } catch (e) {
+      print('Error storing access token: $e');
+    }
+  }
+
+  /// Store new refresh token
+  Future<void> _storeRefreshToken(String token) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_refreshTokenKey, token);
+    } catch (e) {
+      print('Error storing refresh token: $e');
+    }
+  }
+
+  /// Clear all stored tokens
+  Future<void> _clearTokens() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_accessTokenKey);
+      await prefs.remove(_refreshTokenKey);
+    } catch (e) {
+      print('Error clearing tokens: $e');
+    }
+  }
+
+  /// Refresh access token using refresh token
+  Future<String?> _refreshToken() async {
+    try {
+      final refreshToken = await _getRefreshToken();
+      if (refreshToken == null) {
+        return null;
+      }
+
+      // Create a new Dio instance without interceptors to avoid infinite loop
+      final refreshDio = Dio();
+      refreshDio.options.baseUrl = _dio.options.baseUrl;
+      
+      final response = await refreshDio.post(
+        '/auth/refresh-token',
+        data: {
+          'refreshToken': refreshToken,
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        final data = response.data;
         
-//         final refreshToken = refreshTokenResult.fold(
-//           (failure) => null,
-//           (token) => token,
-//         );
+        // Handle different possible response structures
+        String? newAccessToken;
+        String? newRefreshToken;
 
-//         if (refreshToken == null || refreshToken.isEmpty) {
-//           await _clearAuthData();
-//           return handler.next(err);
-//         }
+        if (data is Map<String, dynamic>) {
+          // Check if response is wrapped in ApiResponse structure
+          if (data.containsKey('data') && data['data'] is Map<String, dynamic>) {
+            final responseData = data['data'] as Map<String, dynamic>;
+            newAccessToken = responseData['accessToken'] ?? responseData['access_token'];
+            newRefreshToken = responseData['refreshToken'] ?? responseData['refresh_token'];
+          } else {
+            // Direct response structure
+            newAccessToken = data['accessToken'] ?? data['access_token'];
+            newRefreshToken = data['refreshToken'] ?? data['refresh_token'];
+          }
+        }
 
-//         // Try to refresh token using remote data source
-//         final refreshResult = await _remoteDataSource.refreshToken();
+        if (newAccessToken != null) {
+          await _storeAccessToken(newAccessToken);
+          
+          // Store new refresh token if provided
+          if (newRefreshToken != null) {
+            await _storeRefreshToken(newRefreshToken);
+          }
+          
+          return newAccessToken;
+        }
+      }
 
-//         refreshResult.fold(
-//           (failure) async {
-//             await _clearAuthData();
-//             return handler.next(err);
-//           },
-//           (authData) async {
-//             final (authResult, admin) = authData;
-            
-//             // Save new tokens
-//             await _localDataSource.storeAuthResult(authResult, admin);
+      return null;
+    } catch (e) {
+      print('Error refreshing token: $e');
+      return null;
+    }
+  }
 
-//             // Retry all pending requests
-//             for (final requestOptions in _pendingRequests) {
-//               requestOptions.headers['Authorization'] =
-//                   'Bearer ${authResult.accessToken}';
-//               await Dio().fetch(requestOptions);
-//             }
+  /// Check if the request should skip authentication
+  bool _shouldSkipAuth(String path) {
+    final publicEndpoints = [
+      '/auth/login',
+      '/auth/signup',
+      '/auth/send-otp',
+      '/auth/verify-otp',
+      '/auth/forgot-password',
+      '/auth/verify-otp-forgot',
+      '/auth/change-password',
+      '/auth/refresh-token',
+      '/auth/check-email',
+    ];
 
-//             // Retry the original request
-//             err.requestOptions.headers['Authorization'] =
-//                 'Bearer ${authResult.accessToken}';
-//             final response = await Dio().fetch(err.requestOptions);
-//             return handler.resolve(response);
-//           },
-//         );
-//       } catch (e) {
-//         await _clearAuthData();
-//       } finally {
-//         _isRefreshing = false;
-//         _pendingRequests.clear();
-//       }
-//     } else if (err.response?.statusCode == 401 && _isRefreshing) {
-//       _pendingRequests.add(err.requestOptions);
-//     }
+    return publicEndpoints.any((endpoint) => path.contains(endpoint));
+  }
+}
 
-//     return handler.next(err);
-//   }
+// Extension to provide convenient token management methods
+extension AuthInterceptorExtension on AuthInterceptor {
+  /// Manually store tokens (useful after login)
+  Future<void> storeTokens({
+    required String accessToken,
+    required String refreshToken,
+  }) async {
+    await _storeAccessToken(accessToken);
+    await _storeRefreshToken(refreshToken);
+  }
 
-//   Future<void> _clearAuthData() async {
-//     await _localDataSource.clearAuthData();
-//   }
+  /// Manually clear tokens (useful for logout)
+  Future<void> clearAllTokens() async {
+    await _clearTokens();
+  }
 
-//   bool _shouldSkipAuth(String path) {
-//     final skipPaths = [
-//       '/auth/login',
-//       '/auth/register',
-//       '/auth/send-otp',
-//       '/auth/verify-otp',
-//       '/auth/forgot-password',
-//       '/auth/reset-password',
-//     ];
-//     return skipPaths.any((skipPath) => path.contains(skipPath));
-//   }
-
-//   bool _isRefreshToken(String path) {
-//     return path.contains('/auth/refresh-token');
-//   }
-// }
+  /// Check if user has valid tokens
+  Future<bool> hasValidTokens() async {
+    final accessToken = await _getAccessToken();
+    final refreshToken = await _getRefreshToken();
+    return accessToken != null && refreshToken != null;
+  }
+}

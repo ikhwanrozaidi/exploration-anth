@@ -1,8 +1,10 @@
+// lib/features/login/data/datasources/login_local_datasource.dart
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/network/auth_interceptor.dart';
 import '../../../auth/domain/entities/auth_result.dart';
 import '../../../admin/domain/entities/admin.dart';
 
@@ -19,8 +21,12 @@ abstract class LoginLocalDataSource {
 @LazySingleton(as: LoginLocalDataSource)
 class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   final DatabaseService _databaseService;
+  final AuthInterceptor _authInterceptor;
 
-  LoginLocalDataSourceImpl(this._databaseService);
+  LoginLocalDataSourceImpl(
+    this._databaseService,
+    this._authInterceptor,
+  );
 
   AppDatabase get _database => _databaseService.database;
 
@@ -32,6 +38,12 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
       // Store tokens securely
       await prefs.setString('access_token', authResult.accessToken);
       await prefs.setString('refresh_token', authResult.refreshToken);
+      
+      // Also store tokens in auth interceptor for immediate use
+      await _authInterceptor.storeTokens(
+        accessToken: authResult.accessToken,
+        refreshToken: authResult.refreshToken,
+      );
       
       // Store admin in database
       await _database.into(_database.admins).insertOnConflictUpdate(
@@ -85,13 +97,16 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
     try {
       final prefs = await SharedPreferences.getInstance();
       
-      // Clear tokens
+      // Clear tokens from SharedPreferences
       await prefs.remove('access_token');
       await prefs.remove('refresh_token');
       await prefs.remove('saved_email');
       await prefs.remove('saved_password');
       
-      // Clear admin data
+      // Clear tokens from auth interceptor
+      await _authInterceptor.clearAllTokens();
+      
+      // Clear admin data from database
       await _database.delete(_database.admins).go();
 
       return const Right(null);

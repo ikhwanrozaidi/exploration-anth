@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../../../../core/di/injection.dart';
+import '../../../../../../core/dio/injection.dart';
 import '../../../../../../shared/utils/build_loading_indicator.dart';
 import '../../../../../../shared/utils/theme.dart';
 import '../bloc/qrpay_bloc.dart';
