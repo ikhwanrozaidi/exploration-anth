@@ -34,6 +34,8 @@ import '../../features/auth/domain/usecases/send_otp_usecase.dart' as _i663;
 import '../../features/auth/domain/usecases/signup_usecase.dart' as _i57;
 import '../../features/auth/presentation/bloc/auth_bloc.dart' as _i797;
 import '../../features/auth/presentation/bloc/signup_bloc.dart' as _i593;
+import '../../features/dashboard/data/datasources/dashboard_api_service.dart'
+    as _i828;
 import '../../features/dashboard/data/datasources/dashboard_local_datasource.dart'
     as _i806;
 import '../../features/dashboard/data/datasources/dashboard_remote_datasource.dart'
@@ -101,34 +103,31 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i982.DatabaseService>(() => _i982.DatabaseService());
     gh.singleton<_i491.ConnectivityService>(() => _i491.ConnectivityService());
     gh.lazySingleton<_i1004.ErrorInterceptor>(() => _i1004.ErrorInterceptor());
+    gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
+    gh.lazySingleton<_i895.Connectivity>(() => registerModule.connectivity);
+    gh.lazySingleton<_i142.SecureStorageService>(
+      () => _i142.SecureStorageService(),
+    );
     gh.lazySingleton<_i458.LocaleBloc>(() => _i458.LocaleBloc());
     gh.lazySingleton<_i269.OngoingBloc>(() => _i269.OngoingBloc());
     gh.lazySingleton<_i448.TransactionboardBloc>(
       () => _i448.TransactionboardBloc(),
     );
     gh.lazySingleton<_i792.OnboardingBloc>(() => _i792.OnboardingBloc());
-    gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
-    gh.lazySingleton<_i895.Connectivity>(() => registerModule.connectivity);
-    gh.lazySingleton<_i142.SecureStorageService>(
-      () => _i142.SecureStorageService(),
-    );
-    gh.lazySingleton<_i932.NetworkInfo>(
-      () => _i932.NetworkInfoImpl(gh<_i895.Connectivity>()),
-    );
-    gh.lazySingleton<_i691.AdminLocalDataSource>(
-      () => _i691.AdminLocalDataSourceImpl(gh<_i982.DatabaseService>()),
-    );
-    gh.lazySingleton<_i806.DashboardLocalDataSource>(
-      () => _i806.DashboardLocalDataSourceImpl(gh<_i982.DatabaseService>()),
-    );
-    gh.lazySingleton<_i491.NetworkInfo>(
-      () => _i491.EnhancedNetworkInfo(gh<_i491.ConnectivityService>()),
-    );
     gh.lazySingleton<_i852.AuthLocalDataSource>(
       () => _i852.AuthLocalDataSourceImpl(
         gh<_i982.DatabaseService>(),
         gh<_i142.SecureStorageService>(),
       ),
+    );
+    gh.lazySingleton<_i691.AdminLocalDataSource>(
+      () => _i691.AdminLocalDataSourceImpl(gh<_i982.DatabaseService>()),
+    );
+    gh.lazySingleton<_i932.NetworkInfo>(
+      () => _i932.NetworkInfoImpl(gh<_i895.Connectivity>()),
+    );
+    gh.lazySingleton<_i806.DashboardLocalDataSource>(
+      () => _i806.DashboardLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
     gh.factory<_i156.AuthApiService>(
       () => _i156.AuthApiService(gh<_i361.Dio>()),
@@ -136,11 +135,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i743.LoginApiService>(
       () => _i743.LoginApiService(gh<_i361.Dio>()),
     );
+    gh.lazySingleton<_i517.AdminRemoteDataSource>(
+      () => _i517.AdminRemoteDataSourceImpl(gh<_i156.AuthApiService>()),
+    );
+    gh.lazySingleton<_i107.AuthRemoteDataSource>(
+      () => _i107.AuthRemoteDataSourceImpl(gh<_i156.AuthApiService>()),
+    );
     gh.factory<_i908.AuthInterceptor>(
       () => _i908.AuthInterceptor(
         gh<_i361.Dio>(),
         gh<_i142.SecureStorageService>(),
       ),
+    );
+    gh.lazySingleton<_i491.NetworkInfo>(
+      () => _i491.EnhancedNetworkInfo(gh<_i491.ConnectivityService>()),
     );
     gh.lazySingleton<_i593.SignUpBloc>(
       () => _i593.SignUpBloc(
@@ -148,17 +156,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i57.SignUpUseCase>(),
       ),
     );
+    gh.lazySingleton<_i583.AdminRepository>(
+      () => _i335.AdminRepositoryImpl(
+        gh<_i691.AdminLocalDataSource>(),
+        gh<_i517.AdminRemoteDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i817.DashboardRemoteDataSource>(
       () => _i817.DashboardRemoteDataSourceImpl(
-        gh<_i361.Dio>(),
+        gh<_i828.DashboardApiService>(),
         gh<_i932.NetworkInfo>(),
       ),
     );
-    gh.lazySingleton<_i517.AdminRemoteDataSource>(
-      () => _i517.AdminRemoteDataSourceImpl(gh<_i156.AuthApiService>()),
-    );
-    gh.lazySingleton<_i107.AuthRemoteDataSource>(
-      () => _i107.AuthRemoteDataSourceImpl(gh<_i156.AuthApiService>()),
+    gh.lazySingleton<_i1033.LoginRemoteDataSource>(
+      () => _i1033.LoginRemoteDataSourceImpl(gh<_i743.LoginApiService>()),
     );
     gh.lazySingleton<_i301.LoginLocalDataSource>(
       () => _i301.LoginLocalDataSourceImpl(
@@ -167,22 +178,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i142.SecureStorageService>(),
       ),
     );
-    gh.lazySingleton<_i1033.LoginRemoteDataSource>(
-      () => _i1033.LoginRemoteDataSourceImpl(gh<_i743.LoginApiService>()),
-    );
     gh.lazySingleton<_i902.LoginRepository>(
       () => _i1066.LoginRepositoryImpl(
         gh<_i1033.LoginRemoteDataSource>(),
         gh<_i301.LoginLocalDataSource>(),
         gh<_i932.NetworkInfo>(),
         gh<_i142.SecureStorageService>(),
-      ),
-    );
-    gh.lazySingleton<_i787.AuthRepository>(
-      () => _i153.AuthRepositoryImpl(
-        gh<_i107.AuthRemoteDataSource>(),
-        gh<_i852.AuthLocalDataSource>(),
-        gh<_i932.NetworkInfo>(),
       ),
     );
     gh.lazySingleton<_i420.LoginUseCase>(
@@ -225,13 +226,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i443.GetStoredCredentialsUseCase>(
       () => _i443.GetStoredCredentialsUseCase(gh<_i902.LoginRepository>()),
     );
-    gh.lazySingleton<_i663.SendOtpUseCase>(
-      () => registerModule.sendOtpUseCase(gh<_i787.AuthRepository>()),
-    );
-    gh.lazySingleton<_i583.AdminRepository>(
-      () => _i335.AdminRepositoryImpl(
-        gh<_i691.AdminLocalDataSource>(),
-        gh<_i517.AdminRemoteDataSource>(),
+    gh.lazySingleton<_i787.AuthRepository>(
+      () => _i153.AuthRepositoryImpl(
+        gh<_i107.AuthRemoteDataSource>(),
+        gh<_i852.AuthLocalDataSource>(),
+        gh<_i932.NetworkInfo>(),
       ),
     );
     gh.lazySingleton<_i665.DashboardRepository>(
@@ -240,6 +239,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i806.DashboardLocalDataSource>(),
         gh<_i932.NetworkInfo>(),
       ),
+    );
+    gh.lazySingleton<_i663.SendOtpUseCase>(
+      () => registerModule.sendOtpUseCase(gh<_i787.AuthRepository>()),
     );
     gh.lazySingleton<_i664.LoginBloc>(
       () => _i664.LoginBloc(
