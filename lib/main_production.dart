@@ -1,12 +1,12 @@
 import 'core/config/flavor_config.dart';
-import 'core/di/injection.dart';
+import 'core/dio/injection.dart';
 import 'main.dart' as runner;
 
 Future<void> main() async {
   FlavorConfig(
     flavor: Flavor.production,
-    appTitle: 'RCLink',
-    apiBaseUrl: 'https://api.rclink.com',
+    appTitle: 'Gatepay',
+    apiBaseUrl: 'https://bluh.sgate.dev',
     debugShowCheckedModeBanner: false,
   );
 

@@ -1,262 +1,239 @@
-import 'dart:async';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:synchronized/synchronized.dart';
-import '../../features/auth/data/datasources/auth_local_data_source.dart';
-import '../../features/auth/domain/repositories/auth_repository.dart';
-import '../../features/auth/domain/usecases/refresh_token_usecase.dart';
-import '../di/injection.dart';
-import '../errors/failures.dart';
 
-@lazySingleton
+import '../service/secure_storage_service.dart';
+
+@injectable
 class AuthInterceptor extends Interceptor {
-  final AuthLocalDataSource _localDataSource;
-  final Lock _lock = Lock();
+  final Dio _dio;
+  final SecureStorageService _secureStorage;
   
-  // Token refresh state
-  bool _isRefreshing = false;
-  Completer<void>? _refreshCompleter;
-  
-  // Skip auth paths
-  static const _skipAuthPaths = [
-    '/auth/request-otp',
-    '/auth/verify-otp',
-    '/auth/refresh-token',
-    '/public',
-  ];
-
-  AuthInterceptor(this._localDataSource);
+  AuthInterceptor(this._dio, this._secureStorage);
 
   @override
   void onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // Skip auth for public endpoints
+    // Skip auth for certain endpoints
     if (_shouldSkipAuth(options.path)) {
       return handler.next(options);
     }
 
     try {
-      // Check if token refresh is in progress
-      if (_isRefreshing && !_isRefreshRequest(options.path)) {
-        // Wait for refresh to complete
-        await _refreshCompleter?.future;
+      final accessToken = await _getAccessToken();
+      if (accessToken != null) {
+        options.headers['Authorization'] = 'Bearer $accessToken';
       }
-
-      // Get tokens
-      final tokensResult = await _localDataSource.getTokens();
-      
-      tokensResult.fold(
-        (failure) => handler.next(options), // Continue without auth
-        (tokens) async {
-          if (tokens == null) {
-            return handler.next(options);
-          }
-
-          // Check if access token is expired
-          if (_isTokenExpired(tokens.accessTokenExpiresAt)) {
-            // Refresh token if not already refreshing
-            if (!_isRefreshing) {
-              await _refreshToken();
-              
-              // Get updated tokens
-              final updatedTokensResult = await _localDataSource.getTokens();
-              updatedTokensResult.fold(
-                (failure) => handler.next(options),
-                (updatedTokens) {
-                  if (updatedTokens != null) {
-                    options.headers['Authorization'] = 'Bearer ${updatedTokens.accessToken}';
-                  }
-                  handler.next(options);
-                },
-              );
-              return;
-            }
-          }
-
-          // Add authorization header
-          options.headers['Authorization'] = 'Bearer ${tokens.accessToken}';
-          handler.next(options);
-        },
-      );
     } catch (e) {
-      handler.next(options);
+      // Continue without token if there's an error getting it
+      print('Error getting access token: $e');
     }
+
+    handler.next(options);
+  }
+
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    handler.next(response);
   }
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) async {
-    // Handle 401 Unauthorized
-    if (err.response?.statusCode == 401 && !_shouldSkipAuth(err.requestOptions.path)) {
-      return await _lock.synchronized(() async {
-        // Check if we already handled this
-        if (_isRefreshing) {
-          // Wait for refresh to complete and retry
-          await _refreshCompleter?.future;
-          return _retryRequest(err, handler);
-        }
-
-        // Try to refresh token
-        final refreshSuccess = await _refreshToken();
-        
-        if (refreshSuccess) {
-          // Retry the original request
-          return _retryRequest(err, handler);
+    // Handle 401 Unauthorized errors
+    if (err.response?.statusCode == 401) {
+      try {
+        final newAccessToken = await _refreshToken();
+        if (newAccessToken != null) {
+          // Retry the original request with new token
+          final requestOptions = err.requestOptions;
+          requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+          
+          try {
+            final response = await _dio.fetch(requestOptions);
+            return handler.resolve(response);
+          } catch (e) {
+            // If retry fails, continue with original error
+            return handler.next(err);
+          }
         } else {
-          // Clear auth data and pass the error
-          await _clearAuthData();
-          handler.next(err);
+          // No refresh token or refresh failed, clear tokens and continue with error
+          await _clearTokens();
+          return handler.next(err);
         }
-      });
+      } catch (e) {
+        // Refresh token process failed, clear tokens and continue with error
+        await _clearTokens();
+        return handler.next(err);
+      }
     }
 
     handler.next(err);
   }
 
-  Future<bool> _refreshToken() async {
-    if (_isRefreshing) {
-      await _refreshCompleter?.future;
-      return _refreshCompleter?.isCompleted ?? false;
-    }
-
-    _isRefreshing = true;
-    _refreshCompleter = Completer<void>();
-
+  /// Get stored access token
+  Future<String?> _getAccessToken() async {
     try {
-      // Get current refresh token
-      final refreshTokenResult = await _localDataSource.getRefreshToken();
-      
-      return await refreshTokenResult.fold(
-        (failure) async {
-          _refreshCompleter?.completeError(failure);
-          return false;
-        },
-        (refreshToken) async {
-          if (refreshToken == null) {
-            _refreshCompleter?.completeError('No refresh token');
-            return false;
-          }
-
-          // Check if refresh token is expired
-          final expiresAtResult = await _localDataSource.getRefreshTokenExpiresAt();
-          final isExpired = await expiresAtResult.fold(
-            (failure) => true,
-            (expiresAt) => expiresAt == null || _isTokenExpired(expiresAt),
-          );
-
-          if (isExpired) {
-            _refreshCompleter?.completeError('Refresh token expired');
-            return false;
-          }
-
-          // Call refresh token use case
-          try {
-            final refreshUseCase = getIt<RefreshTokenUseCase>();
-            final result = await refreshUseCase(RefreshTokenParams(refreshToken));
-            
-            return result.fold(
-              (failure) {
-                _refreshCompleter?.completeError(failure);
-                return false;
-              },
-              (tokens) async {
-                // Store new tokens
-                await _localDataSource.storeTokens(tokens);
-                _refreshCompleter?.complete();
-                return true;
-              },
-            );
-          } catch (e) {
-            // If refresh use case doesn't exist, try direct API call
-            // This is a fallback - you should implement the use case
-            _refreshCompleter?.completeError(e);
-            return false;
-          }
-        },
-      );
-    } finally {
-      _isRefreshing = false;
-    }
-  }
-
-  Future<void> _retryRequest(
-    DioException err,
-    ErrorInterceptorHandler handler,
-  ) async {
-    try {
-      // Get updated tokens
-      final tokensResult = await _localDataSource.getTokens();
-      
-      await tokensResult.fold(
-        (failure) async => handler.next(err),
-        (tokens) async {
-          if (tokens == null) {
-            return handler.next(err);
-          }
-
-          // Update authorization header
-          err.requestOptions.headers['Authorization'] = 'Bearer ${tokens.accessToken}';
-          
-          // Create new dio instance to avoid interceptor loop
-          final dio = Dio();
-          
-          // Copy request options
-          final options = Options(
-            method: err.requestOptions.method,
-            headers: err.requestOptions.headers,
-            responseType: err.requestOptions.responseType,
-            contentType: err.requestOptions.contentType,
-            validateStatus: err.requestOptions.validateStatus,
-            receiveTimeout: err.requestOptions.receiveTimeout,
-            sendTimeout: err.requestOptions.sendTimeout,
-          );
-          
-          // Retry the request
-          final response = await dio.request(
-            err.requestOptions.uri.toString(),
-            data: err.requestOptions.data,
-            queryParameters: err.requestOptions.queryParameters,
-            options: options,
-          );
-          
-          handler.resolve(Response(
-            requestOptions: err.requestOptions,
-            data: response.data,
-            statusCode: response.statusCode,
-            statusMessage: response.statusMessage,
-            headers: response.headers,
-          ));
-        },
-      );
+      return await _secureStorage.getAccessToken();
     } catch (e) {
-      handler.next(err);
+      print('Error getting access token: $e');
+      return null;
     }
   }
 
-  Future<void> _clearAuthData() async {
-    await _localDataSource.clearCache();
+  /// Get stored refresh token
+  Future<String?> _getRefreshToken() async {
+    try {
+      return await _secureStorage.getRefreshToken();
+    } catch (e) {
+      print('Error getting refresh token: $e');
+      return null;
+    }
   }
 
+  /// Store new access token
+  Future<void> _storeAccessToken(String token) async {
+    try {
+      final refreshToken = await _secureStorage.getRefreshToken();
+      if (refreshToken != null) {
+        await _secureStorage.storeTokens(
+          accessToken: token,
+          refreshToken: refreshToken,
+        );
+      }
+    } catch (e) {
+      print('Error storing access token: $e');
+    }
+  }
+
+  /// Store new refresh token
+  Future<void> _storeRefreshToken(String token) async {
+    try {
+      final accessToken = await _secureStorage.getAccessToken();
+      if (accessToken != null) {
+        await _secureStorage.storeTokens(
+          accessToken: accessToken,
+          refreshToken: token,
+        );
+      }
+    } catch (e) {
+      print('Error storing refresh token: $e');
+    }
+  }
+
+  /// Clear all stored tokens
+  Future<void> _clearTokens() async {
+    try {
+      await _secureStorage.clearTokens();
+    } catch (e) {
+      print('Error clearing tokens: $e');
+    }
+  }
+
+  /// Refresh access token using refresh token
+  Future<String?> _refreshToken() async {
+    try {
+      final refreshToken = await _getRefreshToken();
+      if (refreshToken == null) {
+        return null;
+      }
+
+      // Create a new Dio instance without interceptors to avoid infinite loop
+      final refreshDio = Dio();
+      refreshDio.options.baseUrl = _dio.options.baseUrl;
+      
+      final response = await refreshDio.post(
+        '/auth/refresh-token',
+        data: {
+          'refreshToken': refreshToken,
+        },
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        ),
+      );
+
+      if (response.statusCode == 200 && response.data != null) {
+        final data = response.data;
+        
+        // Handle different possible response structures
+        String? newAccessToken;
+        String? newRefreshToken;
+
+        if (data is Map<String, dynamic>) {
+          // Check if response is wrapped in ApiResponse structure
+          if (data.containsKey('data') && data['data'] is Map<String, dynamic>) {
+            final responseData = data['data'] as Map<String, dynamic>;
+            newAccessToken = responseData['accessToken'] ?? responseData['access_token'];
+            newRefreshToken = responseData['refreshToken'] ?? responseData['refresh_token'];
+          } else {
+            // Direct response structure
+            newAccessToken = data['accessToken'] ?? data['access_token'];
+            newRefreshToken = data['refreshToken'] ?? data['refresh_token'];
+          }
+        }
+
+        if (newAccessToken != null) {
+          await _storeAccessToken(newAccessToken);
+          
+          // Store new refresh token if provided
+          if (newRefreshToken != null) {
+            await _storeRefreshToken(newRefreshToken);
+          }
+          
+          return newAccessToken;
+        }
+      }
+
+      return null;
+    } catch (e) {
+      print('Error refreshing token: $e');
+      return null;
+    }
+  }
+
+  /// Check if the request should skip authentication
   bool _shouldSkipAuth(String path) {
-    return _skipAuthPaths.any((skipPath) => path.contains(skipPath));
-  }
+    final publicEndpoints = [
+      '/auth/login',
+      '/auth/signup',
+      '/auth/send-otp',
+      '/auth/verify-otp',
+      '/auth/forgot-password',
+      '/auth/verify-otp-forgot',
+      '/auth/change-password',
+      '/auth/refresh-token',
+      '/auth/check-email',
+    ];
 
-  bool _isRefreshRequest(String path) {
-    return path.contains('/auth/refresh-token');
-  }
-
-  bool _isTokenExpired(DateTime expiresAt) {
-    // Add 5 minute buffer to refresh before actual expiry
-    return DateTime.now().isAfter(
-      expiresAt.subtract(const Duration(minutes: 5)),
-    );
+    return publicEndpoints.any((endpoint) => path.contains(endpoint));
   }
 }
 
-// Extension to add auth interceptor to Dio
-extension DioAuthExtension on Dio {
-  void addAuthInterceptor(AuthInterceptor interceptor) {
-    interceptors.add(interceptor);
+// Extension to provide convenient token management methods
+extension AuthInterceptorExtension on AuthInterceptor {
+  /// Manually store tokens (useful after login)
+  Future<void> storeTokens({
+    required String accessToken,
+    required String refreshToken,
+  }) async {
+    await _secureStorage.storeTokens(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    );
+  }
+
+  /// Manually clear tokens (useful for logout)
+  Future<void> clearAllTokens() async {
+    await _clearTokens();
+  }
+
+  /// Check if user has valid tokens
+  Future<bool> hasValidTokens() async {
+    final accessToken = await _getAccessToken();
+    final refreshToken = await _getRefreshToken();
+    return accessToken != null && refreshToken != null;
   }
 }

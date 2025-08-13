@@ -18,30 +18,29 @@ class _AuthApiService implements AuthApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ApiResponse<RequestOtpResponseModel>> requestOtp({
-    required RequestOtpModel data,
+  Future<ApiResponse<OtpResponse>> sendOtp({
+    required SendOtpRequestModel data,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = data;
-    final _options = _setStreamType<ApiResponse<RequestOtpResponseModel>>(
+    final _options = _setStreamType<ApiResponse<OtpResponse>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/auth/request-otp',
+            '/auth/send-otp',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<RequestOtpResponseModel> _value;
+    late ApiResponse<OtpResponse> _value;
     try {
-      _value = ApiResponse<RequestOtpResponseModel>.fromJson(
+      _value = ApiResponse<OtpResponse>.fromJson(
         _result.data!,
-        (json) =>
-            RequestOtpResponseModel.fromJson(json as Map<String, dynamic>),
+        (json) => OtpResponse.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
@@ -51,62 +50,59 @@ class _AuthApiService implements AuthApiService {
   }
 
   @override
-  Future<ApiResponse<TokensModel>> verifyOtp({
-    required VerifyOtpRequestModel data,
-  }) async {
+  Future<ApiResponse<bool>> checkEmailExists({required String email}) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'email': email};
     final _headers = <String, dynamic>{};
-    final _data = data;
-    final _options = _setStreamType<ApiResponse<TokensModel>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/auth/verify-otp',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<TokensModel> _value;
-    try {
-      _value = ApiResponse<TokensModel>.fromJson(
-        _result.data!,
-        (json) => TokensModel.fromJson(json as Map<String, dynamic>),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<ApiResponse<TokensModel>> refreshToken({
-    required String refreshToken,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': refreshToken};
-    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ApiResponse<TokensModel>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
+    final _options = _setStreamType<ApiResponse<bool>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/auth/refresh-token',
+            '/auth/check-email',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<TokensModel> _value;
+    late ApiResponse<bool> _value;
     try {
-      _value = ApiResponse<TokensModel>.fromJson(
+      _value = ApiResponse<bool>.fromJson(
         _result.data!,
-        (json) => TokensModel.fromJson(json as Map<String, dynamic>),
+        (json) => json as bool,
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ApiResponse<AuthResult>> signUp({
+    required SignUpRequestModel data,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = data;
+    final _options = _setStreamType<ApiResponse<AuthResult>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/auth/signup',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<AuthResult> _value;
+    try {
+      _value = ApiResponse<AuthResult>.fromJson(
+        _result.data!,
+        (json) => AuthResult.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

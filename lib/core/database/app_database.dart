@@ -1,11 +1,6 @@
-import 'dart:io';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:injectable/injectable.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as p;
-import '../config/flavor_config.dart';
-import 'app_database.steps.dart';
 
 part 'app_database.g.dart';
 
@@ -85,70 +80,13 @@ class SyncQueue extends Table {
 
 @DriftDatabase(tables: [Admins, SyncQueue])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
+  AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3; // Increment to drop avatarUrl column
-
-  @override
-  MigrationStrategy get migration {
-    return MigrationStrategy(
-      onCreate: (Migrator m) async {
-        // Called when installing the app for the first time
-        await m.createAll();
-      },
-      onUpgrade: stepByStep(
-        from1To2: (m, schema) async {
-          // Migration from version 1 to 2: Add avatarUrl column
-          await m.addColumn(schema.admins, schema.admins.avatarUrl);
-        },
-        from2To3: (m, schema) async {
-          // Migration from version 2 to 3: Drop avatarUrl column
-          // SQLite doesn't support DROP COLUMN, so we need to recreate the table
-          
-          // Disable foreign keys temporarily
-          await customStatement('PRAGMA foreign_keys = OFF');
-          
-          // Rename existing table
-          await customStatement('ALTER TABLE admins RENAME TO admins_old');
-          
-          // Create new table with new schema (without avatarUrl)
-          await m.createTable(schema.admins);
-          
-          // Copy data from old table to new table (excluding avatarUrl)
-          await customStatement('''
-            INSERT INTO admins (id, uid, phone, first_name, last_name, email, 
-                               updated_at, created_at, is_synced, deleted_at, 
-                               sync_action, sync_retry_count, sync_error, last_sync_attempt)
-            SELECT id, uid, phone, first_name, last_name, email, 
-                   updated_at, created_at, is_synced, deleted_at, 
-                   sync_action, sync_retry_count, sync_error, last_sync_attempt
-            FROM admins_old
-          ''');
-          
-          // Drop old table
-          await customStatement('DROP TABLE admins_old');
-          
-          // Re-enable foreign keys
-          await customStatement('PRAGMA foreign_keys = ON');
-        },
-      ),
-      beforeOpen: (details) async {
-        // Enable foreign keys
-        await customStatement('PRAGMA foreign_keys = ON');
-      },
-    );
-  }
+  int get schemaVersion => 1;
 
   static QueryExecutor _openConnection() {
-    return LazyDatabase(() async {
-      final dbFolder = await getApplicationDocumentsDirectory();
-      final flavorName = FlavorConfig.flavorName;
-      final dbName = 'rclink_$flavorName.db';
-      final file = File(p.join(dbFolder.path, dbName));
-
-      return NativeDatabase.createInBackground(file);
-    });
+    return NativeDatabase.memory();
   }
 }
 

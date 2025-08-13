@@ -1,9 +1,12 @@
+// lib/shared/widgets/auth_wrapper.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rclink_app/features/auth/presentation/bloc/auth_event.dart';
-import '../../features/auth/presentation/bloc/auth_bloc.dart';
-import '../../features/auth/presentation/bloc/auth_state.dart';
-import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/login/presentation/bloc/login_bloc.dart';
+import '../../features/login/presentation/bloc/login_event.dart';
+import '../../features/login/presentation/bloc/login_state.dart';
+import '../../features/login/presentation/pages/login_page.dart';
+import '../../features/onboarding/presentation/pages/onboarding_pages.dart';
 import '../pages/root_page.dart';
 
 /// AuthWrapper decides what to show based on authentication state
@@ -12,21 +15,28 @@ class AuthWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocBuilder<LoginBloc, LoginState>(
       builder: (context, state) {
         return state.when(
           initial: () {
-            context.read<AuthBloc>().add(CheckAuthStatus());
+            // Check auth status on initial load
+            context.read<LoginBloc>().add(const LoginCheckAuthStatus());
             return const _SplashScreen();
           },
-          loading: () {
-            return const _LoadingScreen();
+          credentialsLoaded: (email, password) {
+            // Handle credentials loaded - usually just show login page
+            return const LoginPage(); // or whatever you want to show
           },
-          otpSent: (_) =>
-              const LoginPage(), // Stay on login for OTP verification
-          authenticated: (_, _) => const RootPage(), // Main app with navigation
-          unauthenticated: () => const LoginPage(),
-          failure: (_) => const LoginPage(), // Show login on auth failure
+          loading: () => const _LoadingScreen(),
+          otpRequired: (email, message) => const LoginPage(),
+          authenticated: (authResult, admin) => const RootPage(),
+          success: (admin) => const RootPage(),
+          unauthenticated: () => const DashboardPage(),
+          loggedOut: () => const OnboardingPage(),
+          failure: (message) => const OnboardingPage(),
+          forgotPasswordOtpRequired: (email, message) => const LoginPage(),
+          changePasswordRequired: (email, message) => const LoginPage(),
+          passwordChanged: (message) => const LoginPage(),
         );
       },
     );

@@ -1,6 +1,10 @@
 import 'package:dartz/dartz.dart';
 import '../errors/failures.dart';
 
+///
+/// Belum Pakai, by Imanikhwan
+///
+///
 /// Base repository class that implements offline-first pattern
 /// T: Entity type
 /// M: Model type (from API)

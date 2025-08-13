@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../../core/config/flavor_config.dart';
+import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/inbox/presentation/pages/inbox_page.dart';
 import '../../features/locale/presentation/bloc/locale_bloc.dart';
 import '../../features/locale/presentation/bloc/locale_event.dart';
 import '../../features/locale/presentation/bloc/locale_state.dart';
 import '../../features/locale/presentation/widgets/app_localization.dart';
+import '../../features/pay_boarding/presentation/pages/pay_boarding_page.dart';
+import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/transactionboard/presentation/pages/transactionboard_page.dart';
 import 'home_page.dart';
 
 /// RootPage manages the main app navigation and pages for authenticated users
+/// Now using AppDrawer design structure
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
 
@@ -16,101 +23,180 @@ class RootPage extends StatefulWidget {
 }
 
 class _RootPageState extends State<RootPage> {
-  int _selectedIndex = 0;
+  final scaffoldKey = GlobalKey<ScaffoldState>();
+  int selectedBottomMenuIndex = 0;
+  bool showBottomBar = true;
 
-  // Define your main app pages here
-  static const List<Widget> _pages = <Widget>[
-    HomePage(), // Dashboard/Home content
-    _ProfilePage(), // Profile page
-    _SettingsPage(), // Settings page
+  // Define your main app pages here (same as AppDrawer structure)
+  List<Widget> pages = <Widget>[
+    const DashboardPage(), // Dashboard/Home content
+    const TransactionboardPage(), // Transaction page (similar to TransactionboardPage)
+    const PayBoardingPage(), // Payment page (similar to PayBoardingPage)
+    const InboxPage(), // Inbox page
+    const ProfilePage(), // Profile page
   ];
 
-  // Define navigation items
-  static const List<_NavigationItem> _navigationItems = [
-    _NavigationItem(
-      icon: Icons.home_outlined,
-      selectedIcon: Icons.home,
-      label: 'Home',
-    ),
-    _NavigationItem(
-      icon: Icons.person_outline,
-      selectedIcon: Icons.person,
-      label: 'Profile',
-    ),
-    _NavigationItem(
-      icon: Icons.settings_outlined,
-      selectedIcon: Icons.settings,
-      label: 'Settings',
-    ),
-  ];
+  // Define colors (you can move these to a theme file later)
+  static const Color tPrimaryColor = Color(0xFF1976D2); // Blue
+  static const Color tPrimaryColorShade1 = Color(0xFF42A5F5);
+  static const Color tPrimaryColorShade3 = Color(0xFF0D47A1);
+
+  void onTap(int value) {
+    if (!mounted) return;
+
+    if (value == 2) {
+      // Special handling for Pay button - navigate to payment page
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const PayBoardingPage(),
+      ));
+    } else {
+      setState(() {
+        selectedBottomMenuIndex = value;
+      });
+    }
+  }
+
+  Color getIconColor(int index) {
+    return selectedBottomMenuIndex == index
+        ? tPrimaryColor
+        : tPrimaryColorShade1.withOpacity(0.3);
+  }
 
   @override
   Widget build(BuildContext context) {
     final flavorConfig = FlavorConfig.instance;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(flavorConfig.appTitle),
-        centerTitle: true,
-        actions: [
-          // Language selector
-          BlocBuilder<LocaleBloc, LocaleState>(
-            builder: (context, state) {
-              return PopupMenuButton<Locale>(
-                icon: const Icon(Icons.language),
-                onSelected: (Locale locale) {
-                  context.read<LocaleBloc>().add(ChangeLocale(locale));
-                },
-                itemBuilder: (BuildContext context) {
-                  return LocaleState.supportedLocales.map((Locale locale) {
-                    return PopupMenuItem<Locale>(
-                      value: locale,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            LocaleState.languageFlags[locale.languageCode] ??
-                                '🇺🇸',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            LocaleState.languageNames[locale.languageCode] ??
-                                'English',
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList();
-                },
-              );
-            },
-          ),
+      drawerEnableOpenDragGesture: false,
+      key: scaffoldKey,
+      // appBar: AppBar(
+      //   title: Text(flavorConfig.appTitle),
+      //   centerTitle: true,
+      //   backgroundColor: Colors.white,
+      //   foregroundColor: Colors.black,
+      //   elevation: 0,
+      //   actions: [
+      //     // Language selector
+      //     BlocBuilder<LocaleBloc, LocaleState>(
+      //       builder: (context, state) {
+      //         return PopupMenuButton<Locale>(
+      //           icon: const Icon(Icons.language),
+      //           onSelected: (Locale locale) {
+      //             context.read<LocaleBloc>().add(ChangeLocale(locale));
+      //           },
+      //           itemBuilder: (BuildContext context) {
+      //             return LocaleState.supportedLocales.map((Locale locale) {
+      //               return PopupMenuItem<Locale>(
+      //                 value: locale,
+      //                 child: Row(
+      //                   mainAxisSize: MainAxisSize.min,
+      //                   children: [
+      //                     Text(
+      //                       LocaleState.languageFlags[locale.languageCode] ??
+      //                           '🇺🇸',
+      //                       style: const TextStyle(fontSize: 16),
+      //                     ),
+      //                     const SizedBox(width: 8),
+      //                     Text(
+      //                       LocaleState.languageNames[locale.languageCode] ??
+      //                           'English',
+      //                       style: const TextStyle(fontSize: 14),
+      //                     ),
+      //                   ],
+      //                 ),
+      //               );
+      //             }).toList();
+      //           },
+      //         );
+      //       },
+      //     ),
 
-          // Logout button
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () => _showLogoutDialog(context),
-          ),
-        ],
-      ),
-      body: IndexedStack(index: _selectedIndex, children: _pages),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        destinations: _navigationItems.map((item) {
-          return NavigationDestination(
-            icon: Icon(item.icon),
-            selectedIcon: Icon(item.selectedIcon),
-            label: item.label,
-          );
-        }).toList(),
-      ),
+      //     // Logout button
+      //     IconButton(
+      //       icon: const Icon(Icons.logout),
+      //       onPressed: () => _showLogoutDialog(context),
+      //     ),
+      //   ],
+      // ),
+      body: pages[selectedBottomMenuIndex],
+      bottomNavigationBar: showBottomBar
+          ? BottomAppBar(
+              color: Colors.white,
+              elevation: 3,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  // Home/Dashboard
+                  IconButton(
+                    icon: Icon(
+                      selectedBottomMenuIndex == 0
+                          ? Icons.grid_view_rounded
+                          : Icons.grid_view,
+                      color: getIconColor(0),
+                    ),
+                    onPressed: () => onTap(0),
+                  ),
+                  // Transactions
+                  IconButton(
+                    icon: Icon(
+                      selectedBottomMenuIndex == 1
+                          ? Icons.donut_small
+                          : Icons.donut_small_outlined,
+                      color: getIconColor(1),
+                    ),
+                    onPressed: () => onTap(1),
+                  ),
+                  // Pay Button (Special styling)
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: tPrimaryColorShade3,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 20,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: () => onTap(2),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.payment, color: Colors.white),
+                        const SizedBox(width: 5),
+                        Text(
+                          'Pay',
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Inbox
+                  IconButton(
+                    icon: Icon(
+                      selectedBottomMenuIndex == 3
+                          ? Icons.inbox
+                          : Icons.inbox_outlined,
+                      color: getIconColor(3),
+                    ),
+                    onPressed: () => onTap(3),
+                  ),
+                  // Profile
+                  IconButton(
+                    icon: Icon(
+                      selectedBottomMenuIndex == 4
+                          ? Icons.person
+                          : Icons.person_outlined,
+                      color: getIconColor(4),
+                    ),
+                    onPressed: () => onTap(4),
+                  ),
+                ],
+              ),
+            )
+          : null,
     );
   }
 
@@ -131,67 +217,18 @@ class _RootPageState extends State<RootPage> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                // TODO: Add logout event when implemented
-                // context.read<AuthBloc>().add(const LogoutRequested());
+                // TODO: Implement actual logout
+                // Navigate back to login or onboarding
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/login',
+                  (route) => false,
+                );
               },
               child: Text(localization.auth('logout')),
             ),
           ],
         );
       },
-    );
-  }
-}
-
-// Helper class for navigation items
-class _NavigationItem {
-  final IconData icon;
-  final IconData selectedIcon;
-  final String label;
-
-  const _NavigationItem({
-    required this.icon,
-    required this.selectedIcon,
-    required this.label,
-  });
-}
-
-// Sample pages - replace with your actual pages
-
-class _ProfilePage extends StatelessWidget {
-  const _ProfilePage();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.person, size: 64, color: Colors.grey),
-          SizedBox(height: 16),
-          Text('Profile Page'),
-          Text('Coming Soon...'),
-        ],
-      ),
-    );
-  }
-}
-
-class _SettingsPage extends StatelessWidget {
-  const _SettingsPage();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.settings, size: 64, color: Colors.grey),
-          SizedBox(height: 16),
-          Text('Settings Page'),
-          Text('Coming Soon...'),
-        ],
-      ),
     );
   }
 }

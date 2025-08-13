@@ -1470,7 +1470,6 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
 
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
-  _$AppDatabase.connect(DatabaseConnection c) : super.connect(c);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $AdminsTable admins = $AdminsTable(this);
   late final $SyncQueueTable syncQueue = $SyncQueueTable(this);

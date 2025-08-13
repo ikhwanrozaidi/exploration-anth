@@ -6,8 +6,10 @@ part of 'otp_response.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-OtpResponse _$OtpResponseFromJson(Map<String, dynamic> json) =>
-    OtpResponse(message: json['message'] as String);
+OtpResponse _$OtpResponseFromJson(Map<String, dynamic> json) => OtpResponse(
+  message: json['message'] as String,
+  success: json['success'] as bool,
+);
 
 Map<String, dynamic> _$OtpResponseToJson(OtpResponse instance) =>
-    <String, dynamic>{'message': instance.message};
+    <String, dynamic>{'message': instance.message, 'success': instance.success};

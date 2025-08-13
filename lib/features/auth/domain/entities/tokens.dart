@@ -5,50 +5,21 @@ part 'tokens.g.dart';
 
 @JsonSerializable()
 class Tokens extends Equatable {
-  @JsonKey(name: 'accessToken')
   final String accessToken;
-  
-  @JsonKey(name: 'refreshToken')
   final String refreshToken;
-  
-  @JsonKey(name: 'accessTokenExpiresAt')
-  final DateTime accessTokenExpiresAt;
-  
-  @JsonKey(name: 'refreshTokenExpiresAt')
-  final DateTime refreshTokenExpiresAt;
 
-  const Tokens({
-    required this.accessToken,
-    required this.refreshToken,
-    required this.accessTokenExpiresAt,
-    required this.refreshTokenExpiresAt,
-  });
+  const Tokens({required this.accessToken, required this.refreshToken});
 
   @override
-  List<Object?> get props => [
-        accessToken,
-        refreshToken,
-        accessTokenExpiresAt,
-        refreshTokenExpiresAt,
-      ];
+  List<Object?> get props => [accessToken, refreshToken];
 
-  Tokens copyWith({
-    String? accessToken,
-    String? refreshToken,
-    DateTime? accessTokenExpiresAt,
-    DateTime? refreshTokenExpiresAt,
-  }) {
+  Tokens copyWith({String? accessToken, String? refreshToken}) {
     return Tokens(
       accessToken: accessToken ?? this.accessToken,
       refreshToken: refreshToken ?? this.refreshToken,
-      accessTokenExpiresAt:
-          accessTokenExpiresAt ?? this.accessTokenExpiresAt,
-      refreshTokenExpiresAt:
-          refreshTokenExpiresAt ?? this.refreshTokenExpiresAt,
     );
   }
 
-  factory Tokens.fromJson(Map<String, dynamic> json) =>
-      _$TokensFromJson(json);
+  factory Tokens.fromJson(Map<String, dynamic> json) => _$TokensFromJson(json);
   Map<String, dynamic> toJson() => _$TokensToJson(this);
 }

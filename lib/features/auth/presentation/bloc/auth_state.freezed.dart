@@ -134,13 +134,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( OtpResponse data)?  otpSent,TResult Function( Tokens tokens,  Admin? currentAdmin)?  authenticated,TResult Function()?  unauthenticated,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( OtpResponse data)?  otpSent,TResult Function( AuthResult authResult)?  authenticated,TResult Function()?  unauthenticated,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
 return loading();case AuthOtpSent() when otpSent != null:
 return otpSent(_that.data);case Authenticated() when authenticated != null:
-return authenticated(_that.tokens,_that.currentAdmin);case Unauthenticated() when unauthenticated != null:
+return authenticated(_that.authResult);case Unauthenticated() when unauthenticated != null:
 return unauthenticated();case AuthFailure() when failure != null:
 return failure(_that.message);case _:
   return orElse();
@@ -160,13 +160,13 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( OtpResponse data)  otpSent,required TResult Function( Tokens tokens,  Admin? currentAdmin)  authenticated,required TResult Function()  unauthenticated,required TResult Function( String message)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( OtpResponse data)  otpSent,required TResult Function( AuthResult authResult)  authenticated,required TResult Function()  unauthenticated,required TResult Function( String message)  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial();case AuthLoading():
 return loading();case AuthOtpSent():
 return otpSent(_that.data);case Authenticated():
-return authenticated(_that.tokens,_that.currentAdmin);case Unauthenticated():
+return authenticated(_that.authResult);case Unauthenticated():
 return unauthenticated();case AuthFailure():
 return failure(_that.message);case _:
   throw StateError('Unexpected subclass');
@@ -185,13 +185,13 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( OtpResponse data)?  otpSent,TResult? Function( Tokens tokens,  Admin? currentAdmin)?  authenticated,TResult? Function()?  unauthenticated,TResult? Function( String message)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( OtpResponse data)?  otpSent,TResult? Function( AuthResult authResult)?  authenticated,TResult? Function()?  unauthenticated,TResult? Function( String message)?  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
 return loading();case AuthOtpSent() when otpSent != null:
 return otpSent(_that.data);case Authenticated() when authenticated != null:
-return authenticated(_that.tokens,_that.currentAdmin);case Unauthenticated() when unauthenticated != null:
+return authenticated(_that.authResult);case Unauthenticated() when unauthenticated != null:
 return unauthenticated();case AuthFailure() when failure != null:
 return failure(_that.message);case _:
   return null;
@@ -335,11 +335,10 @@ as OtpResponse,
 
 
 class Authenticated implements AuthState {
-  const Authenticated(this.tokens, {this.currentAdmin});
+  const Authenticated(this.authResult);
   
 
- final  Tokens tokens;
- final  Admin? currentAdmin;
+ final  AuthResult authResult;
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
@@ -351,16 +350,16 @@ $AuthenticatedCopyWith<Authenticated> get copyWith => _$AuthenticatedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Authenticated&&(identical(other.tokens, tokens) || other.tokens == tokens)&&(identical(other.currentAdmin, currentAdmin) || other.currentAdmin == currentAdmin));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Authenticated&&(identical(other.authResult, authResult) || other.authResult == authResult));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,tokens,currentAdmin);
+int get hashCode => Object.hash(runtimeType,authResult);
 
 @override
 String toString() {
-  return 'AuthState.authenticated(tokens: $tokens, currentAdmin: $currentAdmin)';
+  return 'AuthState.authenticated(authResult: $authResult)';
 }
 
 
@@ -371,7 +370,7 @@ abstract mixin class $AuthenticatedCopyWith<$Res> implements $AuthStateCopyWith<
   factory $AuthenticatedCopyWith(Authenticated value, $Res Function(Authenticated) _then) = _$AuthenticatedCopyWithImpl;
 @useResult
 $Res call({
- Tokens tokens, Admin? currentAdmin
+ AuthResult authResult
 });
 
 
@@ -388,11 +387,10 @@ class _$AuthenticatedCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? tokens = null,Object? currentAdmin = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? authResult = null,}) {
   return _then(Authenticated(
-null == tokens ? _self.tokens : tokens // ignore: cast_nullable_to_non_nullable
-as Tokens,currentAdmin: freezed == currentAdmin ? _self.currentAdmin : currentAdmin // ignore: cast_nullable_to_non_nullable
-as Admin?,
+null == authResult ? _self.authResult : authResult // ignore: cast_nullable_to_non_nullable
+as AuthResult,
   ));
 }
 

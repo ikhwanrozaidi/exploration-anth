@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 part 'locale_state.freezed.dart';
 
 @freezed
-abstract class LocaleState with _$LocaleState {
+class LocaleState with _$LocaleState {
   const LocaleState._();
 
   const factory LocaleState({required Locale locale}) = _LocaleState;
@@ -70,7 +70,7 @@ abstract class LocaleState with _$LocaleState {
     'bn': 'Bengali',
   };
 
-  // @override
-  // // TODO: implement locale
-  // Locale get locale => throw UnimplementedError();
+  @override
+  // TODO: implement locale
+  Locale get locale => throw UnimplementedError();
 }

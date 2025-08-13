@@ -1,6 +1,10 @@
 import 'package:dartz/dartz.dart';
 import '../errors/failures.dart';
 
+///
+/// Belum Pakai, by Imanikhwan
+///
+///
 /// Base repository class for operations that require sync
 /// Handles optimistic updates with background sync
 abstract class BaseSyncRepository<T, M> {
