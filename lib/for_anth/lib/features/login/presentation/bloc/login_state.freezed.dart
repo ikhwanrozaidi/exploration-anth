@@ -55,7 +55,7 @@ extension LoginStatePatterns on LoginState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoginInitial value)?  initial,TResult Function( LoginLoading value)?  loading,TResult Function( LoginOtpRequired value)?  otpRequired,TResult Function( LoginAuthenticated value)?  authenticated,TResult Function( LoginSuccess value)?  success,TResult Function( LoginUnauthenticated value)?  unauthenticated,TResult Function( LoginLoggedOut value)?  loggedOut,TResult Function( LoginFailure value)?  failure,TResult Function( LoginForgotPasswordOtpRequired value)?  forgotPasswordOtpRequired,TResult Function( LoginChangePasswordRequired value)?  changePasswordRequired,TResult Function( LoginPasswordChanged value)?  passwordChanged,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoginInitial value)?  initial,TResult Function( LoginLoading value)?  loading,TResult Function( LoginOtpRequired value)?  otpRequired,TResult Function( LoginAuthenticated value)?  authenticated,TResult Function( LoginSuccess value)?  success,TResult Function( LoginUnauthenticated value)?  unauthenticated,TResult Function( LoginLoggedOut value)?  loggedOut,TResult Function( LoginFailure value)?  failure,TResult Function( LoginForgotPasswordOtpRequired value)?  forgotPasswordOtpRequired,TResult Function( LoginChangePasswordRequired value)?  changePasswordRequired,TResult Function( LoginPasswordChanged value)?  passwordChanged,TResult Function( LoginCredentialsLoaded value)?  credentialsLoaded,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoginInitial() when initial != null:
@@ -69,7 +69,8 @@ return loggedOut(_that);case LoginFailure() when failure != null:
 return failure(_that);case LoginForgotPasswordOtpRequired() when forgotPasswordOtpRequired != null:
 return forgotPasswordOtpRequired(_that);case LoginChangePasswordRequired() when changePasswordRequired != null:
 return changePasswordRequired(_that);case LoginPasswordChanged() when passwordChanged != null:
-return passwordChanged(_that);case _:
+return passwordChanged(_that);case LoginCredentialsLoaded() when credentialsLoaded != null:
+return credentialsLoaded(_that);case _:
   return orElse();
 
 }
@@ -87,7 +88,7 @@ return passwordChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoginInitial value)  initial,required TResult Function( LoginLoading value)  loading,required TResult Function( LoginOtpRequired value)  otpRequired,required TResult Function( LoginAuthenticated value)  authenticated,required TResult Function( LoginSuccess value)  success,required TResult Function( LoginUnauthenticated value)  unauthenticated,required TResult Function( LoginLoggedOut value)  loggedOut,required TResult Function( LoginFailure value)  failure,required TResult Function( LoginForgotPasswordOtpRequired value)  forgotPasswordOtpRequired,required TResult Function( LoginChangePasswordRequired value)  changePasswordRequired,required TResult Function( LoginPasswordChanged value)  passwordChanged,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoginInitial value)  initial,required TResult Function( LoginLoading value)  loading,required TResult Function( LoginOtpRequired value)  otpRequired,required TResult Function( LoginAuthenticated value)  authenticated,required TResult Function( LoginSuccess value)  success,required TResult Function( LoginUnauthenticated value)  unauthenticated,required TResult Function( LoginLoggedOut value)  loggedOut,required TResult Function( LoginFailure value)  failure,required TResult Function( LoginForgotPasswordOtpRequired value)  forgotPasswordOtpRequired,required TResult Function( LoginChangePasswordRequired value)  changePasswordRequired,required TResult Function( LoginPasswordChanged value)  passwordChanged,required TResult Function( LoginCredentialsLoaded value)  credentialsLoaded,}){
 final _that = this;
 switch (_that) {
 case LoginInitial():
@@ -101,7 +102,8 @@ return loggedOut(_that);case LoginFailure():
 return failure(_that);case LoginForgotPasswordOtpRequired():
 return forgotPasswordOtpRequired(_that);case LoginChangePasswordRequired():
 return changePasswordRequired(_that);case LoginPasswordChanged():
-return passwordChanged(_that);case _:
+return passwordChanged(_that);case LoginCredentialsLoaded():
+return credentialsLoaded(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -118,7 +120,7 @@ return passwordChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoginInitial value)?  initial,TResult? Function( LoginLoading value)?  loading,TResult? Function( LoginOtpRequired value)?  otpRequired,TResult? Function( LoginAuthenticated value)?  authenticated,TResult? Function( LoginSuccess value)?  success,TResult? Function( LoginUnauthenticated value)?  unauthenticated,TResult? Function( LoginLoggedOut value)?  loggedOut,TResult? Function( LoginFailure value)?  failure,TResult? Function( LoginForgotPasswordOtpRequired value)?  forgotPasswordOtpRequired,TResult? Function( LoginChangePasswordRequired value)?  changePasswordRequired,TResult? Function( LoginPasswordChanged value)?  passwordChanged,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoginInitial value)?  initial,TResult? Function( LoginLoading value)?  loading,TResult? Function( LoginOtpRequired value)?  otpRequired,TResult? Function( LoginAuthenticated value)?  authenticated,TResult? Function( LoginSuccess value)?  success,TResult? Function( LoginUnauthenticated value)?  unauthenticated,TResult? Function( LoginLoggedOut value)?  loggedOut,TResult? Function( LoginFailure value)?  failure,TResult? Function( LoginForgotPasswordOtpRequired value)?  forgotPasswordOtpRequired,TResult? Function( LoginChangePasswordRequired value)?  changePasswordRequired,TResult? Function( LoginPasswordChanged value)?  passwordChanged,TResult? Function( LoginCredentialsLoaded value)?  credentialsLoaded,}){
 final _that = this;
 switch (_that) {
 case LoginInitial() when initial != null:
@@ -132,7 +134,8 @@ return loggedOut(_that);case LoginFailure() when failure != null:
 return failure(_that);case LoginForgotPasswordOtpRequired() when forgotPasswordOtpRequired != null:
 return forgotPasswordOtpRequired(_that);case LoginChangePasswordRequired() when changePasswordRequired != null:
 return changePasswordRequired(_that);case LoginPasswordChanged() when passwordChanged != null:
-return passwordChanged(_that);case _:
+return passwordChanged(_that);case LoginCredentialsLoaded() when credentialsLoaded != null:
+return credentialsLoaded(_that);case _:
   return null;
 
 }
@@ -149,7 +152,7 @@ return passwordChanged(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String email,  String message)?  otpRequired,TResult Function( AuthResult authResult,  Admin admin)?  authenticated,TResult Function( Admin admin)?  success,TResult Function()?  unauthenticated,TResult Function()?  loggedOut,TResult Function( String message)?  failure,TResult Function( String email,  String message)?  forgotPasswordOtpRequired,TResult Function( String email,  String message)?  changePasswordRequired,TResult Function( String message)?  passwordChanged,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String email,  String message)?  otpRequired,TResult Function( AuthResult authResult,  Admin admin)?  authenticated,TResult Function( Admin admin)?  success,TResult Function()?  unauthenticated,TResult Function()?  loggedOut,TResult Function( String message)?  failure,TResult Function( String email,  String message)?  forgotPasswordOtpRequired,TResult Function( String email,  String message)?  changePasswordRequired,TResult Function( String message)?  passwordChanged,TResult Function( String email,  String password)?  credentialsLoaded,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoginInitial() when initial != null:
 return initial();case LoginLoading() when loading != null:
@@ -162,7 +165,8 @@ return loggedOut();case LoginFailure() when failure != null:
 return failure(_that.message);case LoginForgotPasswordOtpRequired() when forgotPasswordOtpRequired != null:
 return forgotPasswordOtpRequired(_that.email,_that.message);case LoginChangePasswordRequired() when changePasswordRequired != null:
 return changePasswordRequired(_that.email,_that.message);case LoginPasswordChanged() when passwordChanged != null:
-return passwordChanged(_that.message);case _:
+return passwordChanged(_that.message);case LoginCredentialsLoaded() when credentialsLoaded != null:
+return credentialsLoaded(_that.email,_that.password);case _:
   return orElse();
 
 }
@@ -180,7 +184,7 @@ return passwordChanged(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String email,  String message)  otpRequired,required TResult Function( AuthResult authResult,  Admin admin)  authenticated,required TResult Function( Admin admin)  success,required TResult Function()  unauthenticated,required TResult Function()  loggedOut,required TResult Function( String message)  failure,required TResult Function( String email,  String message)  forgotPasswordOtpRequired,required TResult Function( String email,  String message)  changePasswordRequired,required TResult Function( String message)  passwordChanged,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String email,  String message)  otpRequired,required TResult Function( AuthResult authResult,  Admin admin)  authenticated,required TResult Function( Admin admin)  success,required TResult Function()  unauthenticated,required TResult Function()  loggedOut,required TResult Function( String message)  failure,required TResult Function( String email,  String message)  forgotPasswordOtpRequired,required TResult Function( String email,  String message)  changePasswordRequired,required TResult Function( String message)  passwordChanged,required TResult Function( String email,  String password)  credentialsLoaded,}) {final _that = this;
 switch (_that) {
 case LoginInitial():
 return initial();case LoginLoading():
@@ -193,7 +197,8 @@ return loggedOut();case LoginFailure():
 return failure(_that.message);case LoginForgotPasswordOtpRequired():
 return forgotPasswordOtpRequired(_that.email,_that.message);case LoginChangePasswordRequired():
 return changePasswordRequired(_that.email,_that.message);case LoginPasswordChanged():
-return passwordChanged(_that.message);case _:
+return passwordChanged(_that.message);case LoginCredentialsLoaded():
+return credentialsLoaded(_that.email,_that.password);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -210,7 +215,7 @@ return passwordChanged(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String email,  String message)?  otpRequired,TResult? Function( AuthResult authResult,  Admin admin)?  authenticated,TResult? Function( Admin admin)?  success,TResult? Function()?  unauthenticated,TResult? Function()?  loggedOut,TResult? Function( String message)?  failure,TResult? Function( String email,  String message)?  forgotPasswordOtpRequired,TResult? Function( String email,  String message)?  changePasswordRequired,TResult? Function( String message)?  passwordChanged,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String email,  String message)?  otpRequired,TResult? Function( AuthResult authResult,  Admin admin)?  authenticated,TResult? Function( Admin admin)?  success,TResult? Function()?  unauthenticated,TResult? Function()?  loggedOut,TResult? Function( String message)?  failure,TResult? Function( String email,  String message)?  forgotPasswordOtpRequired,TResult? Function( String email,  String message)?  changePasswordRequired,TResult? Function( String message)?  passwordChanged,TResult? Function( String email,  String password)?  credentialsLoaded,}) {final _that = this;
 switch (_that) {
 case LoginInitial() when initial != null:
 return initial();case LoginLoading() when loading != null:
@@ -223,7 +228,8 @@ return loggedOut();case LoginFailure() when failure != null:
 return failure(_that.message);case LoginForgotPasswordOtpRequired() when forgotPasswordOtpRequired != null:
 return forgotPasswordOtpRequired(_that.email,_that.message);case LoginChangePasswordRequired() when changePasswordRequired != null:
 return changePasswordRequired(_that.email,_that.message);case LoginPasswordChanged() when passwordChanged != null:
-return passwordChanged(_that.message);case _:
+return passwordChanged(_that.message);case LoginCredentialsLoaded() when credentialsLoaded != null:
+return credentialsLoaded(_that.email,_that.password);case _:
   return null;
 
 }
@@ -822,6 +828,74 @@ class _$LoginPasswordChangedCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(LoginPasswordChanged(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class LoginCredentialsLoaded implements LoginState {
+  const LoginCredentialsLoaded(this.email, this.password);
+  
+
+ final  String email;
+ final  String password;
+
+/// Create a copy of LoginState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LoginCredentialsLoadedCopyWith<LoginCredentialsLoaded> get copyWith => _$LoginCredentialsLoadedCopyWithImpl<LoginCredentialsLoaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginCredentialsLoaded&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,email,password);
+
+@override
+String toString() {
+  return 'LoginState.credentialsLoaded(email: $email, password: $password)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LoginCredentialsLoadedCopyWith<$Res> implements $LoginStateCopyWith<$Res> {
+  factory $LoginCredentialsLoadedCopyWith(LoginCredentialsLoaded value, $Res Function(LoginCredentialsLoaded) _then) = _$LoginCredentialsLoadedCopyWithImpl;
+@useResult
+$Res call({
+ String email, String password
+});
+
+
+
+
+}
+/// @nodoc
+class _$LoginCredentialsLoadedCopyWithImpl<$Res>
+    implements $LoginCredentialsLoadedCopyWith<$Res> {
+  _$LoginCredentialsLoadedCopyWithImpl(this._self, this._then);
+
+  final LoginCredentialsLoaded _self;
+  final $Res Function(LoginCredentialsLoaded) _then;
+
+/// Create a copy of LoginState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? email = null,Object? password = null,}) {
+  return _then(LoginCredentialsLoaded(
+null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String,null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

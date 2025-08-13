@@ -1,4 +1,3 @@
-// lib/features/auth/presentation/bloc/login_state.dart
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../admin/domain/entities/admin.dart';
 import '../../../auth/domain/entities/auth_result.dart';
@@ -20,4 +19,7 @@ class LoginState with _$LoginState {
   const factory LoginState.forgotPasswordOtpRequired(String email, String message) = LoginForgotPasswordOtpRequired;
   const factory LoginState.changePasswordRequired(String email, String message) = LoginChangePasswordRequired;
   const factory LoginState.passwordChanged(String message) = LoginPasswordChanged;
+  
+  // Remember me state
+  const factory LoginState.credentialsLoaded(String email, String password) = LoginCredentialsLoaded;
 }

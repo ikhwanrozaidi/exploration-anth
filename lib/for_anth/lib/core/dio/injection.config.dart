@@ -47,6 +47,7 @@ import '../../features/login/data/repositories/login_repository_impl.dart'
     as _i1066;
 import '../../features/login/domain/repositories/login_repository.dart'
     as _i902;
+import '../../features/login/domain/usecases/credential_usecase.dart' as _i443;
 import '../../features/login/domain/usecases/login_usecase.dart' as _i420;
 import '../../features/login/presentation/bloc/login_bloc.dart' as _i664;
 import '../../features/onboarding/presentation/bloc/onboarding_bloc.dart'
@@ -186,6 +187,22 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i420.ChangePasswordUseCase>(
       () => registerModule.changePasswordUseCase(gh<_i902.LoginRepository>()),
     );
+    gh.lazySingleton<_i420.StoreLoginCredentialsUseCase>(
+      () => registerModule.storeLoginCredentialsUseCase(
+        gh<_i902.LoginRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i420.GetStoredCredentialsUseCase>(
+      () => registerModule.getStoredCredentialsUseCase(
+        gh<_i902.LoginRepository>(),
+      ),
+    );
+    gh.factory<_i443.StoreLoginCredentialsUseCase>(
+      () => _i443.StoreLoginCredentialsUseCase(gh<_i902.LoginRepository>()),
+    );
+    gh.factory<_i443.GetStoredCredentialsUseCase>(
+      () => _i443.GetStoredCredentialsUseCase(gh<_i902.LoginRepository>()),
+    );
     gh.lazySingleton<_i663.SendOtpUseCase>(
       () => registerModule.sendOtpUseCase(gh<_i787.AuthRepository>()),
     );
@@ -205,6 +222,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i420.ForgotPasswordUseCase>(),
         gh<_i420.VerifyOtpForgotUseCase>(),
         gh<_i420.ChangePasswordUseCase>(),
+        gh<_i420.StoreLoginCredentialsUseCase>(),
+        gh<_i420.GetStoredCredentialsUseCase>(),
       ),
     );
     gh.lazySingleton<_i797.AuthBloc>(

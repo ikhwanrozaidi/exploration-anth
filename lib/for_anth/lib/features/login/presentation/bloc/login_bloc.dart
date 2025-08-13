@@ -15,6 +15,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final ForgotPasswordUseCase _forgotPasswordUseCase;
   final VerifyOtpForgotUseCase _verifyOtpForgotUseCase;
   final ChangePasswordUseCase _changePasswordUseCase;
+  // Comment out these for now since they're not in DI yet
+  final StoreLoginCredentialsUseCase _storeCredentialsUseCase;
+  final GetStoredCredentialsUseCase _getStoredCredentialsUseCase;
 
   String? _currentEmail; // Store email for OTP verification
 
@@ -27,6 +30,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     this._forgotPasswordUseCase,
     this._verifyOtpForgotUseCase,
     this._changePasswordUseCase,
+    // Comment out these for now
+    this._storeCredentialsUseCase,
+    this._getStoredCredentialsUseCase,
   ) : super(const LoginInitial()) {
     on<LoginSubmitted>(_onLoginSubmitted);
     on<LoginOtpSubmitted>(_onOtpSubmitted);
@@ -35,6 +41,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<LoginForgotPasswordRequested>(_onForgotPasswordRequested);
     on<LoginForgotOtpSubmitted>(_onForgotOtpSubmitted);
     on<LoginChangePasswordRequested>(_onChangePasswordRequested);
+    on<LoginLoadSavedCredentials>(_onLoadSavedCredentials);
+    on<LoginStoreCredentials>(_onStoreCredentials);
   }
 
   Future<void> _onLoginSubmitted(
@@ -49,11 +57,62 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
       (message) {
         _currentEmail = event.email; // Store email for OTP verification
+        
+        // Store credentials if rememberMe is true
+        if (event.rememberMe) {
+          add(LoginStoreCredentials(event.email, event.password));
+        }
+        
         emit(LoginOtpRequired(event.email, message));
       },
     );
   }
 
+  Future<void> _onLoadSavedCredentials(
+    LoginLoadSavedCredentials event,
+    Emitter<LoginState> emit,
+  ) async {
+    // Temporarily use repository directly until use cases are set up
+    try {
+      // For now, we'll skip this functionality until DI is set up
+      // You can uncomment this once you add the use cases to DI
+      
+      final result = await _getStoredCredentialsUseCase();
+      
+      result.fold(
+        (failure) => {}, // Ignore errors, just don't load credentials
+        (credentials) {
+          if (credentials != null) {
+            emit(LoginCredentialsLoaded(
+              credentials['email']!,
+              credentials['password']!,
+            ));
+          }
+        },
+      );
+      
+    } catch (e) {
+      // Ignore errors for now
+    }
+  }
+
+  Future<void> _onStoreCredentials(
+    LoginStoreCredentials event,
+    Emitter<LoginState> emit,
+  ) async {
+    // Temporarily disabled until use cases are set up
+    try {
+      // For now, we'll skip this functionality until DI is set up
+      
+      await _storeCredentialsUseCase(
+        StoreCredentialsParams(event.email, event.password),
+      );
+      
+    } catch (e) {
+      // Ignore errors for now
+    }
+  }
+  
   Future<void> _onOtpSubmitted(
     LoginOtpSubmitted event,
     Emitter<LoginState> emit,
@@ -83,8 +142,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       (failure) => emit(const LoginUnauthenticated()),
       (admin) {
         if (admin != null) {
-          // User is already authenticated
-          // You might want to validate the token here
           emit(LoginSuccess(admin));
         } else {
           emit(const LoginUnauthenticated());

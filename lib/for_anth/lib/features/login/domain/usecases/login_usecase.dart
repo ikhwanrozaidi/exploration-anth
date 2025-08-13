@@ -7,6 +7,8 @@ import '../../../auth/domain/entities/auth_result.dart';
 import '../repositories/login_repository.dart';
 import '../../../admin/domain/entities/admin.dart';
 
+export 'credential_usecase.dart';
+
 class LoginUseCase implements UseCase<String, LoginParams> {
   final LoginRepository repository;
 
@@ -138,6 +140,43 @@ class ChangePasswordUseCase implements UseCase<String, ChangePasswordParams> {
 
     return await repository.changePassword(params.email, params.newPassword);
   }
+}
+
+class StoreLoginCredentialsUseCase implements UseCase<void, StoreCredentialsParams> {
+  final LoginRepository repository;
+
+  StoreLoginCredentialsUseCase(this.repository);
+
+  @override
+  Future<Either<Failure, void>> call(StoreCredentialsParams params) async {
+    if (params.email.isEmpty || params.password.isEmpty) {
+      return const Left(ValidationFailure('Email and password cannot be empty'));
+    }
+
+    return await repository.storeLoginCredentials(params.email, params.password);
+  }
+}
+
+class GetStoredCredentialsUseCase implements UseCaseNoParams<Map<String, String>?> {
+  final LoginRepository repository;
+
+  GetStoredCredentialsUseCase(this.repository);
+
+  @override
+  Future<Either<Failure, Map<String, String>?>> call() async {
+    return await repository.getStoredCredentials();
+  }
+}
+
+// Add this new parameter class
+class StoreCredentialsParams extends Equatable {
+  final String email;
+  final String password;
+
+  const StoreCredentialsParams(this.email, this.password);
+
+  @override
+  List<Object> get props => [email, password];
 }
 
 // Parameters

@@ -18,4 +18,7 @@ abstract class LoginRepository {
   Future<Either<Failure, String>> verifyOtpForgot(String email, String otpForgot);
   Future<Either<Failure, String>> changePassword(String email, String newPassword);
 
+  Future<Either<Failure, void>> storeLoginCredentials(String email, String password);
+  Future<Either<Failure, Map<String, String>?>> getStoredCredentials();
+
 }

@@ -22,6 +22,10 @@ class AuthWrapper extends StatelessWidget {
             context.read<LoginBloc>().add(const LoginCheckAuthStatus());
             return const _SplashScreen();
           },
+          credentialsLoaded: (email, password) {
+            // Handle credentials loaded - usually just show login page
+            return const LoginPage(); // or whatever you want to show
+          },
           loading: () => const _LoadingScreen(),
           otpRequired: (email, message) => const LoginPage(),
           authenticated: (authResult, admin) => const RootPage(),

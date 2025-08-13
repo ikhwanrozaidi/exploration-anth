@@ -10,11 +10,12 @@ abstract class LoginEvent extends Equatable {
 class LoginSubmitted extends LoginEvent {
   final String email;
   final String password;
+  final bool rememberMe;
 
-  const LoginSubmitted(this.email, this.password);
+  const LoginSubmitted(this.email, this.password, {this.rememberMe = false});
 
   @override
-  List<Object> get props => [email, password];
+  List<Object> get props => [email, password, rememberMe];
 }
 
 class LoginOtpSubmitted extends LoginEvent {
@@ -62,4 +63,18 @@ class LoginChangePasswordRequested extends LoginEvent {
 
   @override
   List<Object> get props => [email, newPassword];
+}
+
+class LoginLoadSavedCredentials extends LoginEvent {
+  const LoginLoadSavedCredentials();
+}
+
+class LoginStoreCredentials extends LoginEvent {
+  final String email;
+  final String password;
+
+  const LoginStoreCredentials(this.email, this.password);
+
+  @override
+  List<Object> get props => [email, password];
 }

@@ -21,10 +21,17 @@ class _LoginPageState extends State<LoginPage> {
   final _forgotEmailController = TextEditingController();
   final _forgotOtpController = TextEditingController();
   final _newPasswordController = TextEditingController();
-  
+
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
   bool _rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    context.read<LoginBloc>().add(const LoginLoadSavedCredentials());
+  }
 
   @override
   void dispose() {
@@ -35,6 +42,18 @@ class _LoginPageState extends State<LoginPage> {
     _forgotOtpController.dispose();
     _newPasswordController.dispose();
     super.dispose();
+  }
+
+  void _onLoginPressed() {
+    if (_formKey.currentState?.validate() ?? false) {
+      context.read<LoginBloc>().add(
+        LoginSubmitted(
+          _emailController.text,
+          _passwordController.text,
+          rememberMe: _rememberMe,
+        ),
+      );
+    }
   }
 
   @override
@@ -51,10 +70,20 @@ class _LoginPageState extends State<LoginPage> {
           state.when(
             initial: () {},
             loading: () {},
+            credentialsLoaded: (email, password) {
+              _emailController.text = email;
+              // Don't auto-fill password for security, but show remember me as checked
+              setState(() {
+                _rememberMe = true;
+              });
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('Welcome back, $email!')));
+            },
             otpRequired: (email, message) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(message)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(message)));
             },
             authenticated: (authResult, admin) {
               context.go(AppRoutePath.main);
@@ -70,26 +99,23 @@ class _LoginPageState extends State<LoginPage> {
             },
             failure: (message) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(message),
-                  backgroundColor: Colors.red,
-                ),
+                SnackBar(content: Text(message), backgroundColor: Colors.red),
               );
             },
             forgotPasswordOtpRequired: (email, message) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(message)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(message)));
             },
             changePasswordRequired: (email, message) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(message)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(message)));
             },
             passwordChanged: (message) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(message)),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(message)));
               // Reset to login form
               setState(() {
                 _forgotEmailController.clear();
@@ -106,14 +132,18 @@ class _LoginPageState extends State<LoginPage> {
               child: state.when(
                 initial: () => _buildLoginForm(),
                 loading: () => _buildLoadingWidget(),
+                credentialsLoaded: (email, password) =>
+                    _buildLoginForm(),
                 otpRequired: (email, message) => _buildOtpForm(email),
                 authenticated: (authResult, admin) => _buildSuccessWidget(),
                 success: (admin) => _buildSuccessWidget(),
                 unauthenticated: () => _buildLoginForm(),
                 loggedOut: () => _buildLoginForm(),
                 failure: (message) => _buildLoginForm(),
-                forgotPasswordOtpRequired: (email, message) => _buildForgotOtpForm(email),
-                changePasswordRequired: (email, message) => _buildChangePasswordForm(email),
+                forgotPasswordOtpRequired: (email, message) =>
+                    _buildForgotOtpForm(email),
+                changePasswordRequired: (email, message) =>
+                    _buildChangePasswordForm(email),
                 passwordChanged: (message) => _buildLoginForm(),
               ),
             );
@@ -131,10 +161,7 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           const Text(
             'Welcome Back',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -150,7 +177,9 @@ class _LoginPageState extends State<LoginPage> {
               if (value == null || value.isEmpty) {
                 return 'Please enter your email';
               }
-              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+              if (!RegExp(
+                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+              ).hasMatch(value)) {
                 return 'Please enter a valid email';
               }
               return null;
@@ -164,7 +193,9 @@ class _LoginPageState extends State<LoginPage> {
               border: const OutlineInputBorder(),
               prefixIcon: const Icon(Icons.lock),
               suffixIcon: IconButton(
-                icon: Icon(_obscurePassword ? Icons.visibility : Icons.visibility_off),
+                icon: Icon(
+                  _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                ),
                 onPressed: () {
                   setState(() {
                     _obscurePassword = !_obscurePassword;
@@ -205,10 +236,7 @@ class _LoginPageState extends State<LoginPage> {
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),
             ),
-            child: const Text(
-              'Login',
-              style: TextStyle(fontSize: 16),
-            ),
+            child: const Text('Login', style: TextStyle(fontSize: 16)),
           ),
           const SizedBox(height: 16),
           TextButton(
@@ -226,10 +254,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         const Text(
           'Enter OTP',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
@@ -264,10 +289,7 @@ class _LoginPageState extends State<LoginPage> {
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
           ),
-          child: const Text(
-            'Verify OTP',
-            style: TextStyle(fontSize: 16),
-          ),
+          child: const Text('Verify OTP', style: TextStyle(fontSize: 16)),
         ),
         const SizedBox(height: 16),
         TextButton(
@@ -289,10 +311,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         const Text(
           'Forgot Password OTP',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 16),
@@ -318,10 +337,7 @@ class _LoginPageState extends State<LoginPage> {
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
           ),
-          child: const Text(
-            'Verify OTP',
-            style: TextStyle(fontSize: 16),
-          ),
+          child: const Text('Verify OTP', style: TextStyle(fontSize: 16)),
         ),
       ],
     );
@@ -333,10 +349,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         const Text(
           'Change Password',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 32),
@@ -355,10 +368,7 @@ class _LoginPageState extends State<LoginPage> {
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.symmetric(vertical: 16),
           ),
-          child: const Text(
-            'Change Password',
-            style: TextStyle(fontSize: 16),
-          ),
+          child: const Text('Change Password', style: TextStyle(fontSize: 16)),
         ),
       ],
     );
@@ -379,29 +389,14 @@ class _LoginPageState extends State<LoginPage> {
     return const Column(
       children: [
         SizedBox(height: 100),
-        Icon(
-          Icons.check_circle,
-          color: Colors.green,
-          size: 64,
-        ),
+        Icon(Icons.check_circle, color: Colors.green, size: 64),
         SizedBox(height: 16),
         Text(
           'Login Successful!',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ],
     );
-  }
-
-  void _onLoginPressed() {
-    if (_formKey.currentState?.validate() ?? false) {
-      context.read<LoginBloc>().add(
-        LoginSubmitted(_emailController.text, _passwordController.text),
-      );
-    }
   }
 
   void _onOtpPressed(String email) {

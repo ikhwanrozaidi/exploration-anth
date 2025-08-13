@@ -24,6 +24,9 @@ import '../../features/pay_boarding/presentation/bloc/pay_boarding_bloc.dart';
 import '../../features/pay_boarding/features/escrow_pay/presentation/bloc/escrow_pay_bloc.dart';
 import '../../features/pay_boarding/features/qr_pay/presentation/bloc/qrpay_bloc.dart';
 
+// import '../../features/login/domain/usecases/credential_usecase.dart';
+
+
 import 'injection.config.dart';
 
 final getIt = GetIt.instance;
@@ -174,6 +177,14 @@ abstract class RegisterModule {
   @lazySingleton
   ChangePasswordUseCase changePasswordUseCase(LoginRepository repository) =>
       ChangePasswordUseCase(repository);
+
+  @lazySingleton
+  StoreLoginCredentialsUseCase storeLoginCredentialsUseCase(LoginRepository repository) =>
+      StoreLoginCredentialsUseCase(repository);
+
+  @lazySingleton
+  GetStoredCredentialsUseCase getStoredCredentialsUseCase(LoginRepository repository) =>
+      GetStoredCredentialsUseCase(repository);
 
   // Signup use cases (if needed)
   // @lazySingleton
