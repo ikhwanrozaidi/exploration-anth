@@ -1,5 +1,6 @@
 // lib/features/auth/data/repositories/login_repository_impl.dart
 import 'package:dartz/dartz.dart';
+import 'package:gatepay_app/core/service/secure_storage_service.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/network_info.dart';
@@ -14,11 +15,13 @@ class LoginRepositoryImpl implements LoginRepository {
   final LoginRemoteDataSource _remoteDataSource;
   final LoginLocalDataSource _localDataSource;
   final NetworkInfo _networkInfo;
+  final SecureStorageService _secureStorage;
 
   LoginRepositoryImpl(
     this._remoteDataSource,
     this._localDataSource,
     this._networkInfo,
+    this._secureStorage,
   );
 
   @override
@@ -137,12 +140,22 @@ class LoginRepositoryImpl implements LoginRepository {
   }
 
   @override
-  Future<Either<Failure, void>> storeLoginCredentials(String email, String password) async {
-    return await _localDataSource.storeLoginCredentials(email, password);
+Future<Either<Failure, void>> storeLoginCredentials(String email, String password) async {
+  try {
+    await _secureStorage.storeCredentials(email: email, password: password);
+    return const Right(null);
+  } catch (e) {
+    return Left(CacheFailure('Failed to store credentials: ${e.toString()}'));
   }
+}
 
-  @override
-  Future<Either<Failure, Map<String, String>?>> getStoredCredentials() async {
-    return await _localDataSource.getStoredCredentials();
+@override
+Future<Either<Failure, Map<String, String>?>> getStoredCredentials() async {
+  try {
+    final credentials = await _secureStorage.getStoredCredentials();
+    return Right(credentials);
+  } catch (e) {
+    return Left(CacheFailure('Failed to get stored credentials: ${e.toString()}'));
   }
+}
 }

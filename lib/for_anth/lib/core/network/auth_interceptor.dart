@@ -1,16 +1,15 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import '../service/secure_storage_service.dart';
 
 @injectable
 class AuthInterceptor extends Interceptor {
-  static const String _accessTokenKey = 'access_token';
-  static const String _refreshTokenKey = 'refresh_token';
-  
   final Dio _dio;
+  final SecureStorageService _secureStorage;
   
-  AuthInterceptor(this._dio);
+  AuthInterceptor(this._dio, this._secureStorage);
 
   @override
   void onRequest(
@@ -76,8 +75,7 @@ class AuthInterceptor extends Interceptor {
   /// Get stored access token
   Future<String?> _getAccessToken() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getString(_accessTokenKey);
+      return await _secureStorage.getAccessToken();
     } catch (e) {
       print('Error getting access token: $e');
       return null;
@@ -87,8 +85,7 @@ class AuthInterceptor extends Interceptor {
   /// Get stored refresh token
   Future<String?> _getRefreshToken() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      return prefs.getString(_refreshTokenKey);
+      return await _secureStorage.getRefreshToken();
     } catch (e) {
       print('Error getting refresh token: $e');
       return null;
@@ -98,8 +95,13 @@ class AuthInterceptor extends Interceptor {
   /// Store new access token
   Future<void> _storeAccessToken(String token) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_accessTokenKey, token);
+      final refreshToken = await _secureStorage.getRefreshToken();
+      if (refreshToken != null) {
+        await _secureStorage.storeTokens(
+          accessToken: token,
+          refreshToken: refreshToken,
+        );
+      }
     } catch (e) {
       print('Error storing access token: $e');
     }
@@ -108,8 +110,13 @@ class AuthInterceptor extends Interceptor {
   /// Store new refresh token
   Future<void> _storeRefreshToken(String token) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(_refreshTokenKey, token);
+      final accessToken = await _secureStorage.getAccessToken();
+      if (accessToken != null) {
+        await _secureStorage.storeTokens(
+          accessToken: accessToken,
+          refreshToken: token,
+        );
+      }
     } catch (e) {
       print('Error storing refresh token: $e');
     }
@@ -118,9 +125,7 @@ class AuthInterceptor extends Interceptor {
   /// Clear all stored tokens
   Future<void> _clearTokens() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_accessTokenKey);
-      await prefs.remove(_refreshTokenKey);
+      await _secureStorage.clearTokens();
     } catch (e) {
       print('Error clearing tokens: $e');
     }
@@ -214,8 +219,10 @@ extension AuthInterceptorExtension on AuthInterceptor {
     required String accessToken,
     required String refreshToken,
   }) async {
-    await _storeAccessToken(accessToken);
-    await _storeRefreshToken(refreshToken);
+    await _secureStorage.storeTokens(
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    );
   }
 
   /// Manually clear tokens (useful for logout)

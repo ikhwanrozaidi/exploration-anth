@@ -1,20 +1,26 @@
-// lib/features/login/data/datasources/login_local_datasource.dart
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/auth_interceptor.dart';
+import '../../../../core/service/secure_storage_service.dart';
 import '../../../auth/domain/entities/auth_result.dart';
 import '../../../admin/domain/entities/admin.dart';
 
 abstract class LoginLocalDataSource {
-  Future<Either<Failure, void>> storeAuthResult(AuthResult authResult, Admin admin);
+  Future<Either<Failure, void>> storeAuthResult(
+    AuthResult authResult,
+    Admin admin,
+  );
   Future<Either<Failure, String?>> getAccessToken();
   Future<Either<Failure, String?>> getRefreshToken();
   Future<Either<Failure, Admin?>> getStoredAdmin();
   Future<Either<Failure, void>> clearAuthData();
-  Future<Either<Failure, void>> storeLoginCredentials(String email, String password);
+
+  Future<Either<Failure, void>> storeLoginCredentials(
+    String email,
+    String password,
+  );
   Future<Either<Failure, Map<String, String>?>> getStoredCredentials();
 }
 
@@ -22,33 +28,38 @@ abstract class LoginLocalDataSource {
 class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   final DatabaseService _databaseService;
   final AuthInterceptor _authInterceptor;
+  final SecureStorageService _secureStorage;
 
   LoginLocalDataSourceImpl(
     this._databaseService,
     this._authInterceptor,
+    this._secureStorage,
   );
 
   AppDatabase get _database => _databaseService.database;
 
   @override
-  Future<Either<Failure, void>> storeAuthResult(AuthResult authResult, Admin admin) async {
+  Future<Either<Failure, void>> storeAuthResult(
+    AuthResult authResult,
+    Admin admin,
+  ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      
       // Store tokens securely
-      await prefs.setString('access_token', authResult.accessToken);
-      await prefs.setString('refresh_token', authResult.refreshToken);
-      
+      await _secureStorage.storeTokens(
+        accessToken: authResult.accessToken,
+        refreshToken: authResult.refreshToken,
+      );
+
       // Also store tokens in auth interceptor for immediate use
       await _authInterceptor.storeTokens(
         accessToken: authResult.accessToken,
         refreshToken: authResult.refreshToken,
       );
-      
+
       // Store admin in database
-      await _database.into(_database.admins).insertOnConflictUpdate(
-        admin.toCompanion(isSynced: true),
-      );
+      await _database
+          .into(_database.admins)
+          .insertOnConflictUpdate(admin.toCompanion(isSynced: true));
 
       return const Right(null);
     } catch (e) {
@@ -59,8 +70,7 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   @override
   Future<Either<Failure, String?>> getAccessToken() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('access_token');
+      final token = await _secureStorage.getAccessToken();
       return Right(token);
     } catch (e) {
       return Left(CacheFailure('Failed to get access token: ${e.toString()}'));
@@ -70,8 +80,7 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   @override
   Future<Either<Failure, String?>> getRefreshToken() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('refresh_token');
+      final token = await _secureStorage.getRefreshToken();
       return Right(token);
     } catch (e) {
       return Left(CacheFailure('Failed to get refresh token: ${e.toString()}'));
@@ -95,17 +104,15 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   @override
   Future<Either<Failure, void>> clearAuthData() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      
-      // Clear tokens from SharedPreferences
-      await prefs.remove('access_token');
-      await prefs.remove('refresh_token');
-      await prefs.remove('saved_email');
-      await prefs.remove('saved_password');
-      
+      // Clear tokens from secure storage
+      await _secureStorage.clearTokens();
+
+      // Clear credentials from secure storage
+      await _secureStorage.clearCredentials();
+
       // Clear tokens from auth interceptor
       await _authInterceptor.clearAllTokens();
-      
+
       // Clear admin data from database
       await _database.delete(_database.admins).go();
 
@@ -116,11 +123,12 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   }
 
   @override
-  Future<Either<Failure, void>> storeLoginCredentials(String email, String password) async {
+  Future<Either<Failure, void>> storeLoginCredentials(
+    String email,
+    String password,
+  ) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('saved_email', email);
-      await prefs.setString('saved_password', password);
+      await _secureStorage.storeCredentials(email: email, password: password);
       return const Right(null);
     } catch (e) {
       return Left(CacheFailure('Failed to store credentials: ${e.toString()}'));
@@ -130,16 +138,12 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   @override
   Future<Either<Failure, Map<String, String>?>> getStoredCredentials() async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final email = prefs.getString('saved_email');
-      final password = prefs.getString('saved_password');
-      
-      if (email != null && password != null) {
-        return Right({'email': email, 'password': password});
-      }
-      return const Right(null);
+      final credentials = await _secureStorage.getStoredCredentials();
+      return Right(credentials);
     } catch (e) {
-      return Left(CacheFailure('Failed to get stored credentials: ${e.toString()}'));
+      return Left(
+        CacheFailure('Failed to get stored credentials: ${e.toString()}'),
+      );
     }
   }
 }
