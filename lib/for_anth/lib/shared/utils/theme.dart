@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-//Theme for::: switchTheme, textfont, appbar, floating action, dialog, elevated button, datepicker
-
 const tPrimaryColor = Color.fromARGB(255, 34, 134, 196);
 const tPrimaryBackground = Color.fromARGB(255, 224, 247, 255);
 

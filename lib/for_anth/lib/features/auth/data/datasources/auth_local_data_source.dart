@@ -1,8 +1,10 @@
 import 'package:dartz/dartz.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:drift/drift.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/service/secure_storage_service.dart';
 import '../../domain/entities/auth_result.dart';
 import '../../domain/entities/admin.dart';
 
@@ -76,22 +78,19 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     }
   }
 
-  // Helper methods for token storage
-  // Note: In production, consider using flutter_secure_storage for sensitive data
+// Helper methods for token storage using secure storage
   Future<void> _storeToken(String key, String value) async {
-    // Simple key-value storage using a table or shared preferences
-    // For this example, I'll use a simple approach
-    // You should implement proper secure storage
+    final secureStorage = GetIt.instance<SecureStorageService>();
+    await secureStorage.write(key, value);
   }
 
   Future<String?> _getToken(String key) async {
-    // Retrieve token from secure storage
-    // For this example, return null as placeholder
-    return null;
+    final secureStorage = GetIt.instance<SecureStorageService>();
+    return await secureStorage.read(key);
   }
 
   Future<void> _deleteToken(String key) async {
-    // Delete token from secure storage
-    // Placeholder implementation
+    final secureStorage = GetIt.instance<SecureStorageService>();
+    await secureStorage.delete(key);
   }
 }
