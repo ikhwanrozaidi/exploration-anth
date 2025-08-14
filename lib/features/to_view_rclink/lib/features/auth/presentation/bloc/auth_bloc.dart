@@ -26,6 +26,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<VerifyOtpRequested>(_onVerifyOtpRequested);
     on<CheckAuthStatus>(_onCheckAuthStatus);
     on<LoadCurrentAdmin>(_onLoadCurrentAdmin);
+    on<LogoutRequested>(_onLogoutRequested);
   }
 
   Future<void> _onRequestOtpRequested(
@@ -143,6 +144,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (admin) => emit(
         AuthState.authenticated(currentState.tokens, currentAdmin: admin),
       ),
+    );
+  }
+
+  Future<void> _onLogoutRequested(
+    LogoutRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthLoading());
+
+    final result = await _authLocalDataSource.clearCache();
+
+    result.fold(
+      (failure) {
+        print('❌ AuthBloc: Logout failed: ${failure.message}');
+        emit(AuthFailure('Failed to logout'));
+      },
+      (_) {
+        print('✅ AuthBloc: Logout successful');
+        emit(const Unauthenticated());
+      },
     );
   }
 

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../shared/utils/theme.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_event.dart';
 import 'widgets/listingitem_widget.dart';
 import 'widgets/reportitem_widget.dart';
 
@@ -74,9 +77,8 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                         backgroundColor: Colors.white.withOpacity(0.6),
                       ),
-                      onPressed: () {
-                        print('Search Report pressed');
-                      },
+                      onPressed: () =>
+                          context.read<AuthBloc>().add(const LogoutRequested()),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           vertical: 12,

@@ -25,6 +25,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   final _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  bool _isCompletingLoginFlow = false;
+
   Company? _selectedCompany;
   final TextEditingController _searchController = TextEditingController();
 
@@ -209,6 +211,10 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   void _backToSignInFromCompany() {
     print('🔄 _backToSignInFromCompany called');
 
+    setState(() {
+      _isCompletingLoginFlow = false;
+    });
+
     _pageController.forward().then((_) {
       if (mounted) {
         setState(() {
@@ -282,20 +288,16 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     print('📱 _verifyOtp called with OTP: $otp');
 
     if (otp.length == 6) {
-      print('✅ OTP validation passed, showing company screen');
+      print('✅ OTP validation passed, dispatching VerifyOtpRequested');
 
       setState(() {
         _isOtpLoading = true;
       });
 
-      Future.delayed(const Duration(seconds: 1), () {
-        if (mounted) {
-          setState(() {
-            _isOtpLoading = false;
-          });
-          _showCompanyScreen();
-        }
-      });
+      // Call AuthBloc to verify OTP
+      context.read<AuthBloc>().add(
+        VerifyOtpRequested(phone: _completePhoneNumber, otp: otp),
+      );
     } else {
       print('❌ OTP validation failed - length: ${otp.length}');
       CustomSnackBar.show(
@@ -564,7 +566,11 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     return Scaffold(
       body: BlocListener<AuthBloc, AuthState>(
         listenWhen: (previous, current) {
-          return current is! Authenticated;
+          // Don't auto-navigate if we're still in the login flow
+          if (_isCompletingLoginFlow && current is Authenticated) {
+            return false;
+          }
+          return true;
         },
         listener: (context, state) {
           print('🔥 LoginPage listener: ${state.runtimeType}');
@@ -572,34 +578,53 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           state.whenOrNull(
             failure: (message) {
               print('❌ LoginPage: Handling failure state: $message');
-
               _setLoading(false);
               setState(() {
                 _isOtpLoading = false;
+                _isCompletingLoginFlow = false;
               });
-
               CustomSnackBar.show(context, message, type: SnackBarType.error);
               _backToSignInFromOtp();
             },
             otpSent: (data) {
               print('✅ LoginPage: Handling otpSent state: ${data.message}');
-
               _setLoading(false);
               CustomSnackBar.show(
                 context,
                 data.message,
                 type: SnackBarType.success,
               );
-
-              // Show OTP screen after successful API call
               _showOtpScreen();
+            },
+            authenticated: (tokens, admin) {
+              print('🎉 LoginPage: User authenticated!');
+              setState(() {
+                _isOtpLoading = false;
+              });
+
+              if (!_isCompletingLoginFlow) {
+                // First time authentication (after OTP) - show company screen
+                print('📱 First authentication - showing company screen');
+                setState(() {
+                  _isCompletingLoginFlow = true;
+                });
+                _showCompanyScreen();
+              } else {
+                // Login flow completed - let AuthWrapper handle navigation
+                print(
+                  '✅ Login flow completed - AuthWrapper will handle navigation',
+                );
+                setState(() {
+                  _isCompletingLoginFlow = false;
+                });
+              }
             },
             unauthenticated: () {
               print('🔄 LoginPage: Handling unauthenticated state');
-
               _setLoading(false);
               setState(() {
                 _isOtpLoading = false;
+                _isCompletingLoginFlow = false;
               });
               _backToSignInFromOtp();
             },
@@ -1340,21 +1365,19 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                // Navigate to RootPage - emit an authenticated state?
                 CustomSnackBar.show(
                   context,
-                  'Signing in to ${_selectedCompany?.name ?? 'RCLink'}...',
+                  'Welcome to ${_selectedCompany?.name ?? 'RCLink'}!',
                   type: SnackBarType.success,
                 );
 
-                // simulate successful sign in
-                Future.delayed(const Duration(seconds: 1), () {
-                  if (mounted) {
-                    Navigator.of(context).pushReplacementNamed('/main');
-                    // emit authenticated state?
-                    // context.read<AuthBloc>().add(SignInToCompany(_selectedCompany!));
-                  }
+                // Complete the login flow
+                setState(() {
+                  _isCompletingLoginFlow = false;
                 });
+
+                // Let AuthWrapper detect the authenticated state and navigate
+                // No additional action needed - the user is already authenticated
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,

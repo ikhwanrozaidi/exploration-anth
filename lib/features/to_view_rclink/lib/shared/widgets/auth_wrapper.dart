@@ -8,8 +8,16 @@ import '../../features/auth/presentation/pages/login_page.dart';
 import '../pages/root_page.dart';
 
 /// AuthWrapper decides what to show based on authentication state
-class AuthWrapper extends StatelessWidget {
+class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  // Keep a single LoginPage instance to preserve its internal state
+  final LoginPage _loginPage = const LoginPage();
 
   @override
   Widget build(BuildContext context) {
@@ -18,17 +26,19 @@ class AuthWrapper extends StatelessWidget {
         return state.when(
           initial: () {
             context.read<AuthBloc>().add(CheckAuthStatus());
-
             return const _SplashScreen();
           },
           loading: () {
-            return const _LoadingScreen();
+            // During auth operations, stay on the same LoginPage instance
+            return _loginPage;
           },
-          otpSent: (_) =>
-              const LoginPage(), // Stay on login for OTP verification
+          otpSent: (_) {
+            // Stay on the same LoginPage instance - it will handle the OTP screen internally
+            return _loginPage;
+          },
           authenticated: (_, _) => const RootPage(), // Main app with navigation
-          unauthenticated: () => const LoginPage(),
-          failure: (_) => const LoginPage(), // Show login on auth failure
+          unauthenticated: () => _loginPage, // Use the same LoginPage instance
+          failure: (_) => _loginPage, // Use the same LoginPage instance
         );
       },
     );
