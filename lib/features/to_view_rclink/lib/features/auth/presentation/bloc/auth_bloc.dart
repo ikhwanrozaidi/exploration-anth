@@ -5,6 +5,7 @@ import 'package:rclink_app/features/auth/domain/entities/tokens.dart';
 import 'package:rclink_app/features/auth/domain/usecases/request_otp_usecase.dart';
 import '../../../admin/domain/usecases/get_current_admin_usecase.dart';
 import '../../domain/usecases/verify_otp_usecase.dart';
+import '../../data/datasources/auth_local_data_source.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -13,11 +14,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final RequestOtpUseCase _requestOtpUseCase;
   final VerifyOtpUseCase _verifyOtpUseCase;
   final GetCurrentAdminUseCase _getCurrentAdminUseCase;
+  final AuthLocalDataSource _authLocalDataSource;
 
   AuthBloc(
     this._requestOtpUseCase,
     this._verifyOtpUseCase,
     this._getCurrentAdminUseCase,
+    this._authLocalDataSource,
   ) : super(const AuthInitial()) {
     on<RequestOtpRequested>(_onRequestOtpRequested);
     on<VerifyOtpRequested>(_onVerifyOtpRequested);
@@ -29,7 +32,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     RequestOtpRequested event,
     Emitter<AuthState> emit,
   ) async {
-    // emit(const AuthLoading());
+    emit(const AuthLoading());
 
     final result = await _requestOtpUseCase(RequestOtpParams(event.phone));
     print('auth_bloc:: $result');
@@ -48,22 +51,37 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       '🚀 AuthBloc: VerifyOtpRequested - phone: ${event.phone}, otp: ${event.otp}',
     );
 
+    emit(const AuthLoading());
+
     final result = await _verifyOtpUseCase(
       VerifyOtpParams(phone: event.phone, otp: event.otp),
     );
 
     print('auth_bloc verify:: $result');
 
-    result.fold(
-      (failure) {
+    await result.fold(
+      (failure) async {
         print(
           '❌ AuthBloc: Verify OTP failed: ${_mapFailureToMessage(failure)}',
         );
         emit(AuthFailure(_mapFailureToMessage(failure)));
       },
-      (tokens) {
-        print('✅ AuthBloc: Verify OTP success, emitting authenticated state');
-        // emit(AuthState.authenticated(tokens));
+      (tokens) async {
+        print(
+          '✅ AuthBloc: Verify OTP success, storing tokens and emitting authenticated state',
+        );
+        final storeResult = await _authLocalDataSource.storeTokens(tokens);
+
+        storeResult.fold(
+          (failure) {
+            print('❌ AuthBloc: Failed to store tokens: ${failure.message}');
+            emit(AuthFailure('Failed to save authentication data'));
+          },
+          (_) {
+            print('✅ AuthBloc: Tokens stored successfully');
+            emit(AuthState.authenticated(tokens));
+          },
+        );
       },
     );
   }
@@ -72,37 +90,36 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     CheckAuthStatus event,
     Emitter<AuthState> emit,
   ) async {
-    emit(const AuthState.loading());
+    emit(const AuthLoading());
 
-    // TODO: Implement auth status check
-    // final result = await _getStoredAdminUseCase();
+    final tokensResult = await _authLocalDataSource.getTokens();
 
-    // result.fold(
-    //   (failure) => emit(const AuthState.unauthenticated()),
-    //   (admin) {
-    //     if (admin != null) {
-    //       emit(AuthState.authenticated(admin: admin));
-    //       // Load locations after successful auth check
-    //       add(LoadLocations(adminExternalID: admin.externalID));
-    //     } else {
-    //       emit(const AuthState.unauthenticated());
-    //     }
-    //   },
-    // );
-    //
-    // emit(
-    //   AuthState.authenticated(
-    //     Tokens(
-    //       accessToken: '123',
-    //       refreshToken: '456',
-    //       accessTokenExpiresAt: DateTime.now().add(const Duration(hours: 1)),
-    //       refreshTokenExpiresAt: DateTime.now().add(const Duration(days: 30)),
-    //     ),
-    //   ),
-    // );
-    //
-    //
-    emit(const AuthState.unauthenticated());
+    tokensResult.fold(
+      (failure) {
+        print('❌ AuthBloc: Failed to get stored tokens: ${failure.message}');
+        emit(const Unauthenticated());
+      },
+      (tokens) async {
+        if (tokens == null) {
+          print('📝 AuthBloc: No stored tokens found');
+          emit(const Unauthenticated());
+        } else {
+          final now = DateTime.now();
+
+          if (tokens.accessTokenExpiresAt.isAfter(now)) {
+            print('✅ AuthBloc: Valid tokens found, user is authenticated');
+            emit(AuthState.authenticated(tokens));
+          } else if (tokens.refreshTokenExpiresAt.isAfter(now)) {
+            print('🔄 AuthBloc: Access token expired but refresh token valid');
+            emit(AuthState.authenticated(tokens));
+          } else {
+            print('❌ AuthBloc: All tokens expired');
+            await _authLocalDataSource.clearCache();
+            emit(const Unauthenticated());
+          }
+        }
+      },
+    );
   }
 
   Future<void> _onLoadCurrentAdmin(

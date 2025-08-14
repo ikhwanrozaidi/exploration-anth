@@ -123,6 +123,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i29.RequestOtpUseCase>(),
         gh<_i503.VerifyOtpUseCase>(),
         gh<_i257.GetCurrentAdminUseCase>(),
+        gh<_i852.AuthLocalDataSource>(),
       ),
     );
     return this;
