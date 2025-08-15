@@ -55,13 +55,14 @@ extension AuthStatePatterns on AuthState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthInitial value)?  initial,TResult Function( AuthLoading value)?  loading,TResult Function( AuthOtpSent value)?  otpSent,TResult Function( Authenticated value)?  authenticated,TResult Function( Unauthenticated value)?  unauthenticated,TResult Function( AuthFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthInitial value)?  initial,TResult Function( AuthLoading value)?  loading,TResult Function( AuthOtpSent value)?  otpSent,TResult Function( AuthenticatedNeedsCompany value)?  authenticatedNeedsCompany,TResult Function( Authenticated value)?  authenticated,TResult Function( Unauthenticated value)?  unauthenticated,TResult Function( AuthFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial(_that);case AuthLoading() when loading != null:
 return loading(_that);case AuthOtpSent() when otpSent != null:
-return otpSent(_that);case Authenticated() when authenticated != null:
+return otpSent(_that);case AuthenticatedNeedsCompany() when authenticatedNeedsCompany != null:
+return authenticatedNeedsCompany(_that);case Authenticated() when authenticated != null:
 return authenticated(_that);case Unauthenticated() when unauthenticated != null:
 return unauthenticated(_that);case AuthFailure() when failure != null:
 return failure(_that);case _:
@@ -82,13 +83,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthInitial value)  initial,required TResult Function( AuthLoading value)  loading,required TResult Function( AuthOtpSent value)  otpSent,required TResult Function( Authenticated value)  authenticated,required TResult Function( Unauthenticated value)  unauthenticated,required TResult Function( AuthFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthInitial value)  initial,required TResult Function( AuthLoading value)  loading,required TResult Function( AuthOtpSent value)  otpSent,required TResult Function( AuthenticatedNeedsCompany value)  authenticatedNeedsCompany,required TResult Function( Authenticated value)  authenticated,required TResult Function( Unauthenticated value)  unauthenticated,required TResult Function( AuthFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial(_that);case AuthLoading():
 return loading(_that);case AuthOtpSent():
-return otpSent(_that);case Authenticated():
+return otpSent(_that);case AuthenticatedNeedsCompany():
+return authenticatedNeedsCompany(_that);case Authenticated():
 return authenticated(_that);case Unauthenticated():
 return unauthenticated(_that);case AuthFailure():
 return failure(_that);case _:
@@ -108,13 +110,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthInitial value)?  initial,TResult? Function( AuthLoading value)?  loading,TResult? Function( AuthOtpSent value)?  otpSent,TResult? Function( Authenticated value)?  authenticated,TResult? Function( Unauthenticated value)?  unauthenticated,TResult? Function( AuthFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthInitial value)?  initial,TResult? Function( AuthLoading value)?  loading,TResult? Function( AuthOtpSent value)?  otpSent,TResult? Function( AuthenticatedNeedsCompany value)?  authenticatedNeedsCompany,TResult? Function( Authenticated value)?  authenticated,TResult? Function( Unauthenticated value)?  unauthenticated,TResult? Function( AuthFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial(_that);case AuthLoading() when loading != null:
 return loading(_that);case AuthOtpSent() when otpSent != null:
-return otpSent(_that);case Authenticated() when authenticated != null:
+return otpSent(_that);case AuthenticatedNeedsCompany() when authenticatedNeedsCompany != null:
+return authenticatedNeedsCompany(_that);case Authenticated() when authenticated != null:
 return authenticated(_that);case Unauthenticated() when unauthenticated != null:
 return unauthenticated(_that);case AuthFailure() when failure != null:
 return failure(_that);case _:
@@ -134,13 +137,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( OtpResponse data)?  otpSent,TResult Function( Tokens tokens,  Admin? currentAdmin)?  authenticated,TResult Function()?  unauthenticated,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( OtpResponse data)?  otpSent,TResult Function( Tokens tokens,  Admin? currentAdmin)?  authenticatedNeedsCompany,TResult Function( Tokens tokens,  Admin? currentAdmin,  String? selectedCompanyId)?  authenticated,TResult Function()?  unauthenticated,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
 return loading();case AuthOtpSent() when otpSent != null:
-return otpSent(_that.data);case Authenticated() when authenticated != null:
-return authenticated(_that.tokens,_that.currentAdmin);case Unauthenticated() when unauthenticated != null:
+return otpSent(_that.data);case AuthenticatedNeedsCompany() when authenticatedNeedsCompany != null:
+return authenticatedNeedsCompany(_that.tokens,_that.currentAdmin);case Authenticated() when authenticated != null:
+return authenticated(_that.tokens,_that.currentAdmin,_that.selectedCompanyId);case Unauthenticated() when unauthenticated != null:
 return unauthenticated();case AuthFailure() when failure != null:
 return failure(_that.message);case _:
   return orElse();
@@ -160,13 +164,14 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( OtpResponse data)  otpSent,required TResult Function( Tokens tokens,  Admin? currentAdmin)  authenticated,required TResult Function()  unauthenticated,required TResult Function( String message)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( OtpResponse data)  otpSent,required TResult Function( Tokens tokens,  Admin? currentAdmin)  authenticatedNeedsCompany,required TResult Function( Tokens tokens,  Admin? currentAdmin,  String? selectedCompanyId)  authenticated,required TResult Function()  unauthenticated,required TResult Function( String message)  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial();case AuthLoading():
 return loading();case AuthOtpSent():
-return otpSent(_that.data);case Authenticated():
-return authenticated(_that.tokens,_that.currentAdmin);case Unauthenticated():
+return otpSent(_that.data);case AuthenticatedNeedsCompany():
+return authenticatedNeedsCompany(_that.tokens,_that.currentAdmin);case Authenticated():
+return authenticated(_that.tokens,_that.currentAdmin,_that.selectedCompanyId);case Unauthenticated():
 return unauthenticated();case AuthFailure():
 return failure(_that.message);case _:
   throw StateError('Unexpected subclass');
@@ -185,13 +190,14 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( OtpResponse data)?  otpSent,TResult? Function( Tokens tokens,  Admin? currentAdmin)?  authenticated,TResult? Function()?  unauthenticated,TResult? Function( String message)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( OtpResponse data)?  otpSent,TResult? Function( Tokens tokens,  Admin? currentAdmin)?  authenticatedNeedsCompany,TResult? Function( Tokens tokens,  Admin? currentAdmin,  String? selectedCompanyId)?  authenticated,TResult? Function()?  unauthenticated,TResult? Function( String message)?  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
 return loading();case AuthOtpSent() when otpSent != null:
-return otpSent(_that.data);case Authenticated() when authenticated != null:
-return authenticated(_that.tokens,_that.currentAdmin);case Unauthenticated() when unauthenticated != null:
+return otpSent(_that.data);case AuthenticatedNeedsCompany() when authenticatedNeedsCompany != null:
+return authenticatedNeedsCompany(_that.tokens,_that.currentAdmin);case Authenticated() when authenticated != null:
+return authenticated(_that.tokens,_that.currentAdmin,_that.selectedCompanyId);case Unauthenticated() when unauthenticated != null:
 return unauthenticated();case AuthFailure() when failure != null:
 return failure(_that.message);case _:
   return null;
@@ -334,12 +340,81 @@ as OtpResponse,
 /// @nodoc
 
 
-class Authenticated implements AuthState {
-  const Authenticated(this.tokens, {this.currentAdmin});
+class AuthenticatedNeedsCompany implements AuthState {
+  const AuthenticatedNeedsCompany(this.tokens, {this.currentAdmin});
   
 
  final  Tokens tokens;
  final  Admin? currentAdmin;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthenticatedNeedsCompanyCopyWith<AuthenticatedNeedsCompany> get copyWith => _$AuthenticatedNeedsCompanyCopyWithImpl<AuthenticatedNeedsCompany>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthenticatedNeedsCompany&&(identical(other.tokens, tokens) || other.tokens == tokens)&&(identical(other.currentAdmin, currentAdmin) || other.currentAdmin == currentAdmin));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,tokens,currentAdmin);
+
+@override
+String toString() {
+  return 'AuthState.authenticatedNeedsCompany(tokens: $tokens, currentAdmin: $currentAdmin)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AuthenticatedNeedsCompanyCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
+  factory $AuthenticatedNeedsCompanyCopyWith(AuthenticatedNeedsCompany value, $Res Function(AuthenticatedNeedsCompany) _then) = _$AuthenticatedNeedsCompanyCopyWithImpl;
+@useResult
+$Res call({
+ Tokens tokens, Admin? currentAdmin
+});
+
+
+
+
+}
+/// @nodoc
+class _$AuthenticatedNeedsCompanyCopyWithImpl<$Res>
+    implements $AuthenticatedNeedsCompanyCopyWith<$Res> {
+  _$AuthenticatedNeedsCompanyCopyWithImpl(this._self, this._then);
+
+  final AuthenticatedNeedsCompany _self;
+  final $Res Function(AuthenticatedNeedsCompany) _then;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? tokens = null,Object? currentAdmin = freezed,}) {
+  return _then(AuthenticatedNeedsCompany(
+null == tokens ? _self.tokens : tokens // ignore: cast_nullable_to_non_nullable
+as Tokens,currentAdmin: freezed == currentAdmin ? _self.currentAdmin : currentAdmin // ignore: cast_nullable_to_non_nullable
+as Admin?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class Authenticated implements AuthState {
+  const Authenticated(this.tokens, {this.currentAdmin, this.selectedCompanyId});
+  
+
+ final  Tokens tokens;
+ final  Admin? currentAdmin;
+ final  String? selectedCompanyId;
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
@@ -351,16 +426,16 @@ $AuthenticatedCopyWith<Authenticated> get copyWith => _$AuthenticatedCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Authenticated&&(identical(other.tokens, tokens) || other.tokens == tokens)&&(identical(other.currentAdmin, currentAdmin) || other.currentAdmin == currentAdmin));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Authenticated&&(identical(other.tokens, tokens) || other.tokens == tokens)&&(identical(other.currentAdmin, currentAdmin) || other.currentAdmin == currentAdmin)&&(identical(other.selectedCompanyId, selectedCompanyId) || other.selectedCompanyId == selectedCompanyId));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,tokens,currentAdmin);
+int get hashCode => Object.hash(runtimeType,tokens,currentAdmin,selectedCompanyId);
 
 @override
 String toString() {
-  return 'AuthState.authenticated(tokens: $tokens, currentAdmin: $currentAdmin)';
+  return 'AuthState.authenticated(tokens: $tokens, currentAdmin: $currentAdmin, selectedCompanyId: $selectedCompanyId)';
 }
 
 
@@ -371,7 +446,7 @@ abstract mixin class $AuthenticatedCopyWith<$Res> implements $AuthStateCopyWith<
   factory $AuthenticatedCopyWith(Authenticated value, $Res Function(Authenticated) _then) = _$AuthenticatedCopyWithImpl;
 @useResult
 $Res call({
- Tokens tokens, Admin? currentAdmin
+ Tokens tokens, Admin? currentAdmin, String? selectedCompanyId
 });
 
 
@@ -388,11 +463,12 @@ class _$AuthenticatedCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? tokens = null,Object? currentAdmin = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? tokens = null,Object? currentAdmin = freezed,Object? selectedCompanyId = freezed,}) {
   return _then(Authenticated(
 null == tokens ? _self.tokens : tokens // ignore: cast_nullable_to_non_nullable
 as Tokens,currentAdmin: freezed == currentAdmin ? _self.currentAdmin : currentAdmin // ignore: cast_nullable_to_non_nullable
-as Admin?,
+as Admin?,selectedCompanyId: freezed == selectedCompanyId ? _self.selectedCompanyId : selectedCompanyId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

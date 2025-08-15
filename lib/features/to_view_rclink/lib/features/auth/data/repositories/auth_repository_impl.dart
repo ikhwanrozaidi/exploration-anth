@@ -5,14 +5,20 @@ import '../../../../core/network/network_info.dart';
 import '../../domain/entities/otp_response.dart';
 import '../../domain/entities/tokens.dart';
 import '../../domain/repositories/auth_repository.dart';
+import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
 
 @LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource _remoteDataSource;
+  final AuthLocalDataSource _localDataSource;
   final NetworkInfo _networkInfo;
 
-  AuthRepositoryImpl(this._remoteDataSource, this._networkInfo);
+  AuthRepositoryImpl(
+    this._remoteDataSource,
+    this._localDataSource,
+    this._networkInfo,
+  );
 
   @override
   Future<Either<Failure, OtpResponse>> requestOtp(String phone) async {
@@ -60,5 +66,20 @@ class AuthRepositoryImpl implements AuthRepository {
       (failure) => Left(failure),
       (model) => Right(model.toEntity()),
     );
+  }
+
+  @override
+  Future<Either<Failure, void>> storeTokens(Tokens tokens) async {
+    return await _localDataSource.storeTokens(tokens);
+  }
+
+  @override
+  Future<Either<Failure, Tokens?>> getTokens() async {
+    return await _localDataSource.getTokens();
+  }
+
+  @override
+  Future<Either<Failure, void>> clearAuthCache() async {
+    return await _localDataSource.clearCache();
   }
 }

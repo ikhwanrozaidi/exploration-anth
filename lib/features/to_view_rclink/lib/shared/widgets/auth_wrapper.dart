@@ -26,19 +26,22 @@ class _AuthWrapperState extends State<AuthWrapper> {
         return state.when(
           initial: () {
             context.read<AuthBloc>().add(CheckAuthStatus());
+
             return const _SplashScreen();
           },
           loading: () {
-            // During auth operations, stay on the same LoginPage instance
             return _loginPage;
           },
           otpSent: (_) {
-            // Stay on the same LoginPage instance - it will handle the OTP screen internally
             return _loginPage;
           },
-          authenticated: (_, _) => const RootPage(), // Main app with navigation
-          unauthenticated: () => _loginPage, // Use the same LoginPage instance
-          failure: (_) => _loginPage, // Use the same LoginPage instance
+          authenticatedNeedsCompany: (_, __) {
+            // User is authenticated but needs to select company - stay on LoginPage
+            return _loginPage;
+          },
+          authenticated: (_, __, ___) => const RootPage(),
+          unauthenticated: () => _loginPage,
+          failure: (_) => _loginPage,
         );
       },
     );

@@ -33,9 +33,13 @@ import '../../features/auth/data/datasources/auth_remote_data_source.dart'
 import '../../features/auth/data/repositories/auth_repository_impl.dart'
     as _i153;
 import '../../features/auth/domain/repositories/auth_repository.dart' as _i787;
+import '../../features/auth/domain/usecases/clear_auth_cache_usecase.dart'
+    as _i871;
+import '../../features/auth/domain/usecases/get_tokens_usecase.dart' as _i625;
 import '../../features/auth/domain/usecases/refresh_token_usecase.dart'
     as _i157;
 import '../../features/auth/domain/usecases/request_otp_usecase.dart' as _i29;
+import '../../features/auth/domain/usecases/store_tokens_usecase.dart' as _i388;
 import '../../features/auth/domain/usecases/verify_otp_usecase.dart' as _i503;
 import '../../features/auth/presentation/bloc/auth_bloc.dart' as _i797;
 import '../../features/locale/presentation/bloc/locale_bloc.dart' as _i458;
@@ -100,30 +104,42 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i517.AdminRemoteDataSource>(),
       ),
     );
+    gh.lazySingleton<_i257.GetCurrentAdminUseCase>(
+      () => _i257.GetCurrentAdminUseCase(gh<_i583.AdminRepository>()),
+    );
     gh.lazySingleton<_i787.AuthRepository>(
       () => _i153.AuthRepositoryImpl(
         gh<_i107.AuthRemoteDataSource>(),
+        gh<_i852.AuthLocalDataSource>(),
         gh<_i932.NetworkInfo>(),
       ),
     );
-    gh.lazySingleton<_i157.RefreshTokenUseCase>(
-      () => _i157.RefreshTokenUseCase(gh<_i787.AuthRepository>()),
+    gh.lazySingleton<_i871.ClearAuthCacheUseCase>(
+      () => _i871.ClearAuthCacheUseCase(gh<_i787.AuthRepository>()),
     );
-    gh.lazySingleton<_i257.GetCurrentAdminUseCase>(
-      () => _i257.GetCurrentAdminUseCase(gh<_i583.AdminRepository>()),
+    gh.lazySingleton<_i388.StoreTokensUseCase>(
+      () => _i388.StoreTokensUseCase(gh<_i787.AuthRepository>()),
     );
     gh.lazySingleton<_i29.RequestOtpUseCase>(
       () => _i29.RequestOtpUseCase(gh<_i787.AuthRepository>()),
     );
+    gh.lazySingleton<_i625.GetTokensUseCase>(
+      () => _i625.GetTokensUseCase(gh<_i787.AuthRepository>()),
+    );
     gh.lazySingleton<_i503.VerifyOtpUseCase>(
       () => _i503.VerifyOtpUseCase(gh<_i787.AuthRepository>()),
+    );
+    gh.lazySingleton<_i157.RefreshTokenUseCase>(
+      () => _i157.RefreshTokenUseCase(gh<_i787.AuthRepository>()),
     );
     gh.lazySingleton<_i797.AuthBloc>(
       () => _i797.AuthBloc(
         gh<_i29.RequestOtpUseCase>(),
         gh<_i503.VerifyOtpUseCase>(),
         gh<_i257.GetCurrentAdminUseCase>(),
-        gh<_i852.AuthLocalDataSource>(),
+        gh<_i388.StoreTokensUseCase>(),
+        gh<_i625.GetTokensUseCase>(),
+        gh<_i871.ClearAuthCacheUseCase>(),
       ),
     );
     return this;

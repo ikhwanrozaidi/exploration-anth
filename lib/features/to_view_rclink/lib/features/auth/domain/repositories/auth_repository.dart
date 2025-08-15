@@ -7,4 +7,9 @@ abstract class AuthRepository {
   Future<Either<Failure, OtpResponse>> requestOtp(String phone);
   Future<Either<Failure, Tokens>> verifyOtp(String phone, String otp);
   Future<Either<Failure, Tokens>> refreshToken(String refreshToken);
+  
+  // Token storage methods
+  Future<Either<Failure, void>> storeTokens(Tokens tokens);
+  Future<Either<Failure, Tokens?>> getTokens();
+  Future<Either<Failure, void>> clearAuthCache();
 }

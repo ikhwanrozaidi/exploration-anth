@@ -38,6 +38,15 @@ class VerifyOtpRequested extends AuthEvent {
   List<Object> get props => [phone, otp];
 }
 
+class CompanySelected extends AuthEvent {
+  final String companyId;
+
+  const CompanySelected(this.companyId);
+
+  @override
+  List<Object> get props => [companyId];
+}
+
 class LogoutRequested extends AuthEvent {
   const LogoutRequested();
 

@@ -5,7 +5,9 @@ import 'package:rclink_app/features/auth/domain/entities/tokens.dart';
 import 'package:rclink_app/features/auth/domain/usecases/request_otp_usecase.dart';
 import '../../../admin/domain/usecases/get_current_admin_usecase.dart';
 import '../../domain/usecases/verify_otp_usecase.dart';
-import '../../data/datasources/auth_local_data_source.dart';
+import '../../domain/usecases/store_tokens_usecase.dart';
+import '../../domain/usecases/get_tokens_usecase.dart';
+import '../../domain/usecases/clear_auth_cache_usecase.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -14,18 +16,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final RequestOtpUseCase _requestOtpUseCase;
   final VerifyOtpUseCase _verifyOtpUseCase;
   final GetCurrentAdminUseCase _getCurrentAdminUseCase;
-  final AuthLocalDataSource _authLocalDataSource;
+  final StoreTokensUseCase _storeTokensUseCase;
+  final GetTokensUseCase _getTokensUseCase;
+  final ClearAuthCacheUseCase _clearAuthCacheUseCase;
 
   AuthBloc(
     this._requestOtpUseCase,
     this._verifyOtpUseCase,
     this._getCurrentAdminUseCase,
-    this._authLocalDataSource,
+    this._storeTokensUseCase,
+    this._getTokensUseCase,
+    this._clearAuthCacheUseCase,
   ) : super(const AuthInitial()) {
     on<RequestOtpRequested>(_onRequestOtpRequested);
     on<VerifyOtpRequested>(_onVerifyOtpRequested);
     on<CheckAuthStatus>(_onCheckAuthStatus);
     on<LoadCurrentAdmin>(_onLoadCurrentAdmin);
+    on<CompanySelected>(_onCompanySelected);
     on<LogoutRequested>(_onLogoutRequested);
   }
 
@@ -69,9 +76,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       },
       (tokens) async {
         print(
-          '✅ AuthBloc: Verify OTP success, storing tokens and emitting authenticated state',
+          '✅ AuthBloc: Verify OTP success, storing tokens and emitting authenticatedNeedsCompany state',
         );
-        final storeResult = await _authLocalDataSource.storeTokens(tokens);
+        final storeResult = await _storeTokensUseCase(StoreTokensParams(tokens: tokens));
 
         storeResult.fold(
           (failure) {
@@ -79,12 +86,35 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             emit(AuthFailure('Failed to save authentication data'));
           },
           (_) {
-            print('✅ AuthBloc: Tokens stored successfully');
-            emit(AuthState.authenticated(tokens));
+            print(
+              '✅ AuthBloc: Tokens stored successfully - needs company selection',
+            );
+            emit(AuthState.authenticatedNeedsCompany(tokens));
           },
         );
       },
     );
+  }
+
+  Future<void> _onCompanySelected(
+    CompanySelected event,
+    Emitter<AuthState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is AuthenticatedNeedsCompany) {
+      print('✅ AuthBloc: Company selected: ${event.companyId}');
+
+      // TODO: Store selected company in local storage if needed
+      // await _storeSelectedCompany(event.companyId);
+
+      emit(
+        AuthState.authenticated(
+          currentState.tokens,
+          currentAdmin: currentState.currentAdmin,
+          selectedCompanyId: event.companyId,
+        ),
+      );
+    }
   }
 
   Future<void> _onCheckAuthStatus(
@@ -93,7 +123,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    final tokensResult = await _authLocalDataSource.getTokens();
+    final tokensResult = await _getTokensUseCase();
 
     tokensResult.fold(
       (failure) {
@@ -106,16 +136,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(const Unauthenticated());
         } else {
           final now = DateTime.now();
-
           if (tokens.accessTokenExpiresAt.isAfter(now)) {
-            print('✅ AuthBloc: Valid tokens found, user is authenticated');
+            print(
+              '✅ AuthBloc: Valid tokens found, user is fully authenticated',
+            );
+            // TODO: Check if company is already selected from storage
             emit(AuthState.authenticated(tokens));
           } else if (tokens.refreshTokenExpiresAt.isAfter(now)) {
             print('🔄 AuthBloc: Access token expired but refresh token valid');
             emit(AuthState.authenticated(tokens));
           } else {
             print('❌ AuthBloc: All tokens expired');
-            await _authLocalDataSource.clearCache();
+            await _clearAuthCacheUseCase();
             emit(const Unauthenticated());
           }
         }
@@ -128,7 +160,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     final currentState = state;
-    if (currentState is! Authenticated) {
+    if (currentState is! Authenticated &&
+        currentState is! AuthenticatedNeedsCompany) {
       return;
     }
 
@@ -139,12 +172,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ),
     );
 
-    result.fold(
-      (failure) => emit(AuthFailure(_mapFailureToMessage(failure))),
-      (admin) => emit(
-        AuthState.authenticated(currentState.tokens, currentAdmin: admin),
-      ),
-    );
+    result.fold((failure) => emit(AuthFailure(_mapFailureToMessage(failure))), (
+      admin,
+    ) {
+      if (currentState is Authenticated) {
+        emit(
+          AuthState.authenticated(
+            currentState.tokens,
+            currentAdmin: admin,
+            selectedCompanyId: currentState.selectedCompanyId,
+          ),
+        );
+      } else if (currentState is AuthenticatedNeedsCompany) {
+        emit(
+          AuthState.authenticatedNeedsCompany(
+            currentState.tokens,
+            currentAdmin: admin,
+          ),
+        );
+      }
+    });
   }
 
   Future<void> _onLogoutRequested(
@@ -153,7 +200,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(const AuthLoading());
 
-    final result = await _authLocalDataSource.clearCache();
+    final result = await _clearAuthCacheUseCase();
 
     result.fold(
       (failure) {
