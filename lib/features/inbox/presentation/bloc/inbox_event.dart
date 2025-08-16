@@ -4,22 +4,11 @@ abstract class InboxEvent extends Equatable {
   const InboxEvent();
 
   @override
-  List<Object?> get props => [];
+  List<Object> get props => [];
 }
 
-class LoadInbox extends InboxEvent {
-  const LoadInbox();
-}
+class GetMarketingEvent extends InboxEvent {}
 
-class RefreshInbox extends InboxEvent {
-  const RefreshInbox();
-}
+class GetMailboxEvent extends InboxEvent {}
 
-class MarkMessageAsRead extends InboxEvent {
-  final String messageId;
-
-  const MarkMessageAsRead(this.messageId);
-
-  @override
-  List<Object> get props => [messageId];
-}
+class RefreshInboxEvent extends InboxEvent {}

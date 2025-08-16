@@ -1,26 +1,20 @@
-// lib/features/inbox/presentation/pages/inbox_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gatepay_app/shared/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/dio/injection.dart';
-import '../../../../shared/utils/build_loading_indicator.dart';
-import '../../../../shared/utils/theme.dart';
 import '../bloc/inbox_bloc.dart';
 import '../bloc/inbox_event.dart';
 import '../bloc/inbox_state.dart';
+import 'widgets/mailbox_item.dart';
 
 class InboxPage extends StatelessWidget {
-  final String? title;
-  
-  const InboxPage({
-    super.key,
-    this.title,
-  });
+  const InboxPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<InboxBloc>()..add(const LoadInbox()),
+      create: (context) => getIt<InboxBloc>()..add(RefreshInboxEvent()),
       child: const InboxView(),
     );
   }
@@ -31,228 +25,295 @@ class InboxView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final h = MediaQuery.of(context).size.height;
-    final w = MediaQuery.of(context).size.width;
-
-    return Scaffold(
-      body: BlocBuilder<InboxBloc, InboxState>(
-        builder: (context, state) {
-          if (state is InboxLoaded) {
-            return _buildLoadedContent(w, h, context);
-          } else if (state is InboxLoading) {
-            return Center(
-              child: buildLoadingIndicator(
-                blur: 0,
-                isCentered: true,
-              ),
-            );
-          } else if (state is InboxError) {
-            return _buildErrorContent(state.message, context);
-          } else {
-            return _buildErrorContent('Something went wrong', context);
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildLoadedContent(double w, double h, BuildContext context) {
-    return SingleChildScrollView(
+    return Material(
+      color: backgroundColor,
       child: SafeArea(
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Text(
-                      'Inbox',
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: w * 0.08),
-                  Text(
-                    'Stay Updated!',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w500,
-                      fontSize: w * 0.04,
-                    ),
-                  ),
-                ],
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 10,
               ),
-            ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SizedBox(width: 10),
-                  Container(
-                    width: w / 1.9,
-                    height: w / 2.5,
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: tPrimaryColorShade2,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Together We Stop Scam',
-                          style: GoogleFonts.inter(
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                  Text(
+                    'Inbox',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Container(
-                    width: w / 1.9,
-                    height: w / 2.5,
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: tPrimaryColorShade2,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Secure your transactions',
-                          style: GoogleFonts.inter(
-                            fontWeight: FontWeight.w500,
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        style: IconButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: Colors.white,
+                          padding: const EdgeInsets.all(5),
+                        ),
+                        onPressed: () {
+                          print("Add button clicked");
+                        },
+                        icon: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: const Icon(
+                            Icons.notifications_none_sharp,
+                            color: Colors.black,
+                            size: 25,
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(width: 8),
+                      IconButton(
+                        style: IconButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: Colors.white,
+                          padding: const EdgeInsets.all(5),
+                        ),
+                        onPressed: () {
+                          print("Delete button clicked");
+                        },
+                        icon: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: const Icon(
+                            Icons.support_agent_sharp,
+                            color: Colors.black,
+                            size: 25,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 10),
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 30),
-                  Text(
-                    'Mailbox',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w500,
-                      fontSize: w * 0.04,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildMessageItem(context),
-                ],
+            Expanded(
+              child: BlocBuilder<InboxBloc, InboxState>(
+                builder: (context, state) {
+                  if (state is InboxLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (state is InboxError) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Error: ${state.message}',
+                            style: const TextStyle(color: Colors.red),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              context.read<InboxBloc>().add(
+                                RefreshInboxEvent(),
+                              );
+                            },
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (state is InboxLoaded) {
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        context.read<InboxBloc>().add(RefreshInboxEvent());
+                      },
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Marketing Section
+                            if (state.marketing.isNotEmpty) ...[
+                              SizedBox(
+                                height: 200,
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Container(
+                                        padding: EdgeInsets.all(15),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Colors.white,
+                                              Color.fromARGB(255, 77, 191, 232),
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Knowledge',
+                                              style: GoogleFonts.poppins(
+                                                fontWeight: FontWeight.w500,
+                                                color: Color.fromARGB(
+                                                  255,
+                                                  77,
+                                                  191,
+                                                  232,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 10),
+                                            Text(
+                                              'Do you know how safe your information is?',
+                                              style: GoogleFonts.poppins(
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 20),
+                                    Expanded(
+                                      child: Container(
+                                        padding: EdgeInsets.all(15),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                          gradient: LinearGradient(
+                                            colors: [
+                                              Colors.white,
+                                              Color.fromARGB(255, 77, 191, 232),
+                                            ],
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                          ),
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Promotions',
+                                              style: GoogleFonts.poppins(
+                                                color: Color.fromARGB(
+                                                  255,
+                                                  77,
+                                                  191,
+                                                  232,
+                                                ),
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            ),
+                                            SizedBox(height: 10),
+                                            Text(
+                                              'Invite your friends and earn RM10 per person!',
+                                              style: GoogleFonts.poppins(
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              const SizedBox(height: 30),
+                            ],
+
+                            // Mailbox Section
+                            if (state.mailbox.isNotEmpty) ...[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20.0,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Mailbox',
+                                          style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                        SizedBox(width: 10),
+                                        Text(
+                                          '(12 Notifications)',
+                                          style: GoogleFonts.poppins(
+                                            color: onholdOrange,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Text(
+                                      'View',
+                                      style: GoogleFonts.poppins(fontSize: 13),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: state.mailbox.length,
+                                itemBuilder: (context, index) {
+                                  return MailboxItem(
+                                    mailbox: state.mailbox[index],
+                                  );
+                                },
+                              ),
+                            ],
+
+                            // Empty state
+                            if (state.marketing.isEmpty &&
+                                state.mailbox.isEmpty)
+                              const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(32),
+                                  child: Text(
+                                    'No messages or marketing content available',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.grey,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+
+                            SizedBox(height: 100),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  return const SizedBox.shrink();
+                },
               ),
-            )
+            ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildMessageItem(BuildContext context) {
-    return Column(
-      children: [
-        GestureDetector(
-          onTap: () {
-            // Mark as read when tapped
-            context.read<InboxBloc>().add(const MarkMessageAsRead('message_1'));
-          },
-          child: Row(
-            children: [
-              Container(
-                width: 50.0,
-                height: 50.0,
-                decoration: const BoxDecoration(
-                  color: tPrimaryColor,
-                  shape: BoxShape.circle,
-                ),
-                child: const Center(
-                  child: Icon(
-                    Icons.mail_outline_outlined,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 15),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Hello Enquiry! Here's Quick Update",
-                      style: GoogleFonts.poppins(
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      "Lorem Ipsum is simply dummy...",
-                      style: GoogleFonts.poppins(),
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-        const SizedBox(height: 10),
-        Divider(
-          thickness: 1,
-          color: Colors.grey.shade300,
-        )
-      ],
-    );
-  }
-
-  Widget _buildErrorContent(String message, BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, cons) {
-        return ListView(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20.0),
-              constraints: BoxConstraints(minHeight: cons.maxHeight),
-              child: Center(
-                child: GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    context.read<InboxBloc>().add(const LoadInbox());
-                  },
-                  child: const Chip(
-                    label: Column(
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.refresh, color: Colors.white),
-                            SizedBox(width: 10),
-                            Text(
-                              'Try again',
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    backgroundColor: tPrimaryColor,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
     );
   }
 }
