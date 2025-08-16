@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
-
+import 'package:flutter/material.dart';
+import '../../domain/entities/seller_info_entity.dart';
 import 'escrow_pay_event.dart';
 
 abstract class EscrowpayState extends Equatable {
@@ -26,6 +27,9 @@ class EscrowpayLoaded extends EscrowpayState {
   final String sellerIdentifier;
   final Map<AgreementType, bool> agreements;
   final double incrementFactor;
+  final SellerValidationState sellerValidationState;
+  final String validationMessage;
+  final SellerInfo? sellerInfo;
 
   const EscrowpayLoaded({
     this.productName = '',
@@ -40,19 +44,25 @@ class EscrowpayLoaded extends EscrowpayState {
       AgreementType.termsAndConditions: false,
     },
     this.incrementFactor = 0.03,
+    this.sellerValidationState = SellerValidationState.initial,
+    this.validationMessage = '',
+    this.sellerInfo,
   });
 
   @override
   List<Object?> get props => [
-        productName,
-        productDescription,
-        sellerReceive,
-        youPay,
-        hasAccount,
-        sellerIdentifier,
-        agreements,
-        incrementFactor,
-      ];
+    productName,
+    productDescription,
+    sellerReceive,
+    youPay,
+    hasAccount,
+    sellerIdentifier,
+    agreements,
+    incrementFactor,
+    sellerValidationState,
+    validationMessage,
+    sellerInfo,
+  ];
 
   EscrowpayLoaded copyWith({
     String? productName,
@@ -63,6 +73,9 @@ class EscrowpayLoaded extends EscrowpayState {
     String? sellerIdentifier,
     Map<AgreementType, bool>? agreements,
     double? incrementFactor,
+    SellerValidationState? sellerValidationState,
+    String? validationMessage,
+    SellerInfo? sellerInfo,
   }) {
     return EscrowpayLoaded(
       productName: productName ?? this.productName,
@@ -73,20 +86,57 @@ class EscrowpayLoaded extends EscrowpayState {
       sellerIdentifier: sellerIdentifier ?? this.sellerIdentifier,
       agreements: agreements ?? this.agreements,
       incrementFactor: incrementFactor ?? this.incrementFactor,
+      sellerValidationState:
+          sellerValidationState ?? this.sellerValidationState,
+      validationMessage: validationMessage ?? this.validationMessage,
+      sellerInfo: sellerInfo ?? this.sellerInfo,
     );
   }
 
   bool get isFormValid {
     return productName.isNotEmpty &&
-           productDescription.isNotEmpty &&
-           sellerReceive > 0 &&
-           youPay > 0 &&
-           sellerIdentifier.isNotEmpty &&
-           agreements.values.every((agreed) => agreed);
+        productDescription.isNotEmpty &&
+        sellerReceive > 0 &&
+        youPay > 0 &&
+        sellerIdentifier.isNotEmpty &&
+        sellerValidationState == SellerValidationState.valid &&
+        agreements.values.every((agreed) => agreed);
   }
 
   bool get areAllAgreementsChecked {
     return agreements.values.every((agreed) => agreed);
+  }
+
+  // Get border color for validation feedback
+  Color get validationBorderColor {
+    switch (sellerValidationState) {
+      case SellerValidationState.initial:
+        return Colors.grey.shade300;
+      case SellerValidationState.validating:
+        return Colors.blue;
+      case SellerValidationState.valid:
+        return Colors.green;
+      case SellerValidationState.invalid:
+      case SellerValidationState.shouldUseUsername:
+      case SellerValidationState.shouldUsePhone:
+        return Colors.red;
+    }
+  }
+
+  // Get validation icon
+  IconData? get validationIcon {
+    switch (sellerValidationState) {
+      case SellerValidationState.validating:
+        return null; // Will show loading indicator
+      case SellerValidationState.valid:
+        return Icons.check_circle;
+      case SellerValidationState.invalid:
+      case SellerValidationState.shouldUseUsername:
+      case SellerValidationState.shouldUsePhone:
+        return Icons.error;
+      case SellerValidationState.initial:
+        return null;
+    }
   }
 }
 
@@ -100,10 +150,19 @@ class EscrowpayError extends EscrowpayState {
 }
 
 class EscrowpayTransactionSubmitted extends EscrowpayState {
-  final String transactionId;
+  final String message;
 
-  const EscrowpayTransactionSubmitted(this.transactionId);
+  const EscrowpayTransactionSubmitted(this.message);
 
   @override
-  List<Object> get props => [transactionId];
+  List<Object> get props => [message];
+}
+
+enum SellerValidationState {
+  initial,
+  validating,
+  valid,
+  invalid,
+  shouldUseUsername,
+  shouldUsePhone,
 }

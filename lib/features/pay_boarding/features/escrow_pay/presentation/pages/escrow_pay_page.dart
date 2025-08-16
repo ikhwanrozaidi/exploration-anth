@@ -1,3 +1,4 @@
+// lib/features/pay_boarding/features/escrow_pay/presentation/pages/escrow_pay_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -238,13 +239,15 @@ class _EscrowpayViewState extends State<EscrowpayView> {
                 ElevatedButton(
                   onPressed: () {
                     if (_canProceed(state)) {
+                      print(
+                        'Navigating to Form1 with BLoC state: ${state.runtimeType}',
+                      );
+                      final currentBloc = context.read<EscrowpayBloc>();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BlocProvider.value(
-                            value: context.read<EscrowpayBloc>(),
-                            child: const EscrowpayForm1Page(),
-                          ),
+                          builder: (context) =>
+                              EscrowpayForm1Page(bloc: currentBloc),
                         ),
                       );
                     } else {
