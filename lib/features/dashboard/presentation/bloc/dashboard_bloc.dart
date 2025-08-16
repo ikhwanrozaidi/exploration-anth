@@ -36,12 +36,26 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     RefreshDashboardData event,
     Emitter<DashboardState> emit,
   ) async {
-    // Don't show loading for refresh, keep current state
     await _loadDashboardData(emit);
   }
 
   Future<void> _loadDashboardData(Emitter<DashboardState> emit) async {
     try {
+      ///
+      /// This is for TESTING ONLY
+      ///
+      emit(
+        DashboardLoaded(
+          userDetail: dummyUserDetail,
+          onholdTransactions: dummyTransactions,
+          onholdBalance: dummyBalance,
+        ),
+      );
+
+      /*
+      ///
+      /// -------------------------------------- REAL API CALLS
+      ///
       // Load all data concurrently
       final results = await Future.wait([
         _getUserDetailUseCase(),
@@ -61,6 +75,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       if (userDetailSuccess != null && 
           transactionsSuccess != null && 
           balanceSuccess != null) {
+
         // All data loaded successfully
         emit(DashboardLoaded(
           userDetail: userDetailSuccess,
@@ -88,8 +103,53 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           emit(DashboardError(errors.join(', ')));
         }
       }
+      */
     } catch (e) {
       emit(DashboardError('Unexpected error: $e'));
     }
   }
 }
+
+///
+/// Dummy Data
+///
+final dummyUserDetail = UserDetail(
+  firstName: "John",
+  lastName: "Doe",
+  phone: "+601323456789",
+  country: "Malaysia",
+  email: "test@test.dev",
+  verify: "true",
+  gatePoint: "000",
+  balance: "1234.45",
+  vaccount: " ",
+);
+final dummyTransactions = <OnholdTransaction>[
+  OnholdTransaction(
+    createdAt: "20250821",
+    paymentId: "12345678",
+    paymentType: "p2p",
+    senderId: "12345",
+    receiverId: "67890",
+    merchantId: "12345",
+    productName: "Product A",
+    productDesc: "A is a Product",
+    productCat: "Fashion",
+    amount: "123.50",
+    refundable: "false",
+  ),
+  OnholdTransaction(
+    createdAt: "20250820",
+    paymentId: "87654321",
+    paymentType: "merchant",
+    senderId: "54321",
+    receiverId: "09876",
+    merchantId: "67890",
+    productName: "Product B",
+    productDesc: "B is another Product",
+    productCat: "Electronics",
+    amount: "456.75",
+    refundable: "true",
+  ),
+];
+final dummyBalance = OnholdBalance(withheld: "123.00", awaiting: "234.20");

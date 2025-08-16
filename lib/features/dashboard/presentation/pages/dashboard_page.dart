@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/material_symbols.dart';
+import 'package:iconify_flutter/icons/uil.dart';
 import '../../../../core/dio/injection.dart';
+import '../../../../shared/utils/string_formatter.dart';
+import '../../../../shared/utils/theme.dart';
 import '../bloc/dashboard_bloc.dart';
 import '../bloc/dashboard_event.dart';
 import '../bloc/dashboard_state.dart';
@@ -11,7 +17,8 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<DashboardBloc>()..add(const LoadDashboardData()),
+      create: (context) =>
+          getIt<DashboardBloc>()..add(const LoadDashboardData()),
       child: const DashboardView(),
     );
   }
@@ -22,36 +29,109 @@ class DashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Dashboard'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              context.read<DashboardBloc>().add(const RefreshDashboardData());
-            },
-          ),
-        ],
-      ),
-      body: BlocBuilder<DashboardBloc, DashboardState>(
-        builder: (context, state) {
-          return RefreshIndicator(
-            onRefresh: () async {
-              context.read<DashboardBloc>().add(const RefreshDashboardData());
-            },
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(16),
-              child:  _buildContent(context, state),
+    return Material(
+      color: backgroundColor,
+      child: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 10,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Image.asset(
+                        'assets/images/gatepay-logo.png',
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.cover,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        'Gatepay',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          color: Color.fromARGB(255, 77, 191, 232),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        style: IconButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: primaryColor,
+                          padding: const EdgeInsets.all(5),
+                        ),
+                        onPressed: () {
+                          print("Add button clicked");
+                        },
+                        icon: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: const Icon(
+                            Icons.qr_code_scanner_sharp,
+                            color: Colors.black,
+                            size: 25,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      IconButton(
+                        style: IconButton.styleFrom(
+                          shape: const CircleBorder(),
+                          backgroundColor: Colors.white,
+                          padding: const EdgeInsets.all(5),
+                        ),
+                        onPressed: () {
+                          print("Delete button clicked");
+                        },
+                        icon: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: const Icon(
+                            Icons.person_outline,
+                            color: Colors.black,
+                            size: 25,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          );
-        },
+            Expanded(
+              child: BlocBuilder<DashboardBloc, DashboardState>(
+                builder: (context, state) {
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<DashboardBloc>().add(
+                        const RefreshDashboardData(),
+                      );
+                    },
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(16),
+                      child: _buildContent(context, state),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildContent(BuildContext context, DashboardState state) {
+    // Dashboard Loading
     if (state is DashboardLoading) {
       return const Center(
         child: Column(
@@ -65,6 +145,7 @@ class DashboardView extends StatelessWidget {
       );
     }
 
+    // Dashboard Error
     if (state is DashboardError) {
       return Center(
         child: Column(
@@ -87,19 +168,86 @@ class DashboardView extends StatelessWidget {
       );
     }
 
+    // Dashboard Loaded
     if (state is DashboardLoaded) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildUserDetailCard(state.userDetail),
           const SizedBox(height: 16),
+
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromARGB(255, 0, 69, 129),
+                  Color.fromARGB(255, 77, 191, 232),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Buy and sell your things \nwith Gatepay',
+                  style: GoogleFonts.poppins(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                ),
+                SizedBox(height: 20),
+                TextButton(
+                  onPressed: () {},
+                  style: TextButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    foregroundColor: Colors.black87,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 8,
+                    ),
+                  ),
+                  child: Text(
+                    'Explore',
+                    style: GoogleFonts.poppins(color: Colors.black),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          SizedBox(height: 16),
           _buildOnholdBalanceCard(state.onholdBalance),
-          const SizedBox(height: 16),
+
+          SizedBox(height: 30),
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Text(
+              'In & Out Transaction',
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w500,
+                fontSize: 13,
+              ),
+            ),
+          ),
+          SizedBox(height: 16),
           _buildTransactionsCard(state.onholdTransactions),
+
+          SizedBox(height: 100),
         ],
       );
     }
 
+    // Dashboard PartialLoad
     if (state is DashboardPartialLoaded) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,6 +275,7 @@ class DashboardView extends StatelessWidget {
                 ],
               ),
             ),
+
           if (state.userDetail != null) ...[
             _buildUserDetailCard(state.userDetail!),
             const SizedBox(height: 16),
@@ -146,35 +295,85 @@ class DashboardView extends StatelessWidget {
   }
 
   Widget _buildUserDetailCard(userDetail) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
+    return Container(
+      padding: EdgeInsets.all(3),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color.fromARGB(255, 77, 191, 232),
+            Color.fromARGB(255, 0, 104, 195),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(11),
+        ),
+        padding: EdgeInsets.symmetric(vertical: 30, horizontal: 15),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Text(
+              'Total Balance',
+              style: GoogleFonts.poppins(
+                color: Colors.grey.shade400,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
             Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Icon(Icons.person, color: Colors.blue),
-                const SizedBox(width: 8),
                 Text(
-                  'User Details',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                  "RM ${formatCurrency(userDetail.balance)}",
+                  style: GoogleFonts.poppins(
+                    fontSize: 25,
+                    fontWeight: FontWeight.w600,
+                    color: Color.fromARGB(255, 48, 158, 218),
                   ),
+                ),
+                SizedBox(width: 10),
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(Icons.add, size: 16, color: Colors.black),
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            _buildDetailRow('Name', '${userDetail.firstName} ${userDetail.lastName}'),
-            _buildDetailRow('Email', userDetail.email),
-            _buildDetailRow('Phone', userDetail.phone),
-            _buildDetailRow('Country', userDetail.country),
-            _buildDetailRow('Verified', userDetail.verify == 'true' ? 'Yes' : 'No'),
-            _buildDetailRow('Balance', '\$${userDetail.balance}'),
-            _buildDetailRow('Gate Points', userDetail.gatePoint),
-            if (userDetail.vaccount.isNotEmpty)
-              _buildDetailRow('V-Account', userDetail.vaccount),
+            Divider(thickness: 2, color: Colors.grey.shade200, height: 50),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _quickAction(
+                  icon: MaterialSymbols.add_circle_outline_rounded,
+                  title: 'Topup',
+                  onTap: () {},
+                ),
+                _quickAction(
+                  icon: Uil.money_stack,
+                  title: 'Request',
+                  onTap: () {},
+                ),
+                _quickAction(
+                  icon: Uil.money_withdraw,
+                  title: 'Withdraw',
+                  onTap: () {},
+                ),
+                _quickAction(
+                  icon: Uil.transaction,
+                  title: 'Transfer',
+                  onTap: () {},
+                ),
+              ],
+            ),
           ],
         ),
       ),
@@ -182,205 +381,228 @@ class DashboardView extends StatelessWidget {
   }
 
   Widget _buildOnholdBalanceCard(onholdBalance) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.account_balance_wallet, color: Colors.green),
-                const SizedBox(width: 8),
-                const Text(
-                  'On-hold Balance',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            color: Colors.white,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  SizedBox(width: 10),
+                  Icon(
+                    Icons.trending_up,
+                    color: Color.fromARGB(255, 0, 213, 53),
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.red.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.red.shade200),
-                    ),
-                    child: Column(
-                      children: [
-                        const Text('Withheld', style: TextStyle(fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 4),
-                        Text(
-                          '\$${onholdBalance.withheld}',
-                          style: const TextStyle(fontSize: 20, color: Colors.red),
-                        ),
-                      ],
+                  SizedBox(width: 15),
+                  Text(
+                    'Awaiting Payment',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
                     ),
                   ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.orange.shade50,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.orange.shade200),
-                    ),
-                    child: Column(
-                      children: [
-                        const Text('Awaiting', style: TextStyle(fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 4),
-                        Text(
-                          '\$${onholdBalance.awaiting}',
-                          style: const TextStyle(fontSize: 20, color: Colors.orange),
-                        ),
-                      ],
-                    ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.fromARGB(255, 77, 191, 232),
+                      Color.fromARGB(255, 0, 203, 162),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
                 ),
-              ],
-            ),
-          ],
+                child: Text(
+                  '+RM ${formatCurrency(onholdBalance.awaiting)}',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+        SizedBox(height: 10),
+        Container(
+          padding: EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            color: Colors.white,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  SizedBox(width: 10),
+                  Icon(Icons.trending_down, color: red),
+                  SizedBox(width: 15),
+                  Text(
+                    'Withheld Payment',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.fromARGB(255, 77, 191, 232),
+                      Color.fromARGB(255, 216, 144, 0),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                ),
+                child: Text(
+                  '-RM ${formatCurrency(onholdBalance.withheld)}',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildTransactionsCard(List transactions) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Icon(Icons.list_alt, color: Colors.purple),
-                const SizedBox(width: 8),
-                Text(
-                  'On-hold Transactions (${transactions.length})',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            if (transactions.isEmpty)
-              const Center(
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Container(
+        child: transactions.isEmpty
+            ? Center(
                 child: Padding(
                   padding: EdgeInsets.all(20),
                   child: Text('No on-hold transactions'),
                 ),
               )
-            else
-              ListView.separated(
+            : ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: transactions.length,
-                separatorBuilder: (context, index) => const Divider(),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: 18),
                 itemBuilder: (context, index) {
                   final transaction = transactions[index];
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(
-                      backgroundColor: _getPaymentTypeColor(transaction.paymentType),
-                      child: Text(
-                        transaction.paymentType.toUpperCase().substring(0, 1),
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    title: Text(
-                      transaction.productName,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Payment ID: ${transaction.paymentId}'),
-                        Text('Type: ${transaction.paymentType}'),
-                        Text('Category: ${transaction.productCat}'),
-                        Text('Created: ${transaction.createdAt}'),
-                        if (transaction.productDesc.isNotEmpty)
-                          Text('Description: ${transaction.productDesc}'),
-                      ],
-                    ),
-                    trailing: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          '\$${transaction.amount}',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                          decoration: BoxDecoration(
-                            color: transaction.refundable == 'true' ? Colors.green : Colors.red,
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Text(
-                            transaction.refundable == 'true' ? 'Refundable' : 'Non-refundable',
-                            style: const TextStyle(
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Color.fromARGB(255, 77, 191, 232),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.flight_class_outlined,
+                              size: 25,
                               color: Colors.white,
-                              fontSize: 10,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                          SizedBox(width: 15),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                transaction.productName,
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              Text(
+                                '${transaction.senderId} • ${transaction.createdAt}',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 10,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '-RM ${formatCurrency(transaction.amount)}',
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.w500,
+                              color: red,
+                            ),
+                          ),
+                          Text(
+                            'ONHOLD',
+                            style: GoogleFonts.poppins(
+                              fontSize: 10,
+                              color: onholdOrange,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   );
                 },
               ),
-          ],
-        ),
       ),
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _quickAction({
+    required String icon,
+    required String title,
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              label,
-              style: const TextStyle(fontWeight: FontWeight.w500),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              shape: BoxShape.circle,
             ),
+            child: Iconify(icon, size: 30, color: Colors.grey.shade600),
           ),
-          const Text(': '),
-          Expanded(
-            child: Text(value),
+          const SizedBox(height: 8),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 12,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),
     );
-  }
-
-  Color _getPaymentTypeColor(String paymentType) {
-    switch (paymentType.toLowerCase()) {
-      case 'p2p':
-        return Colors.blue;
-      case 'merchant':
-        return Colors.green;
-      case 'escrow':
-        return Colors.purple;
-      default:
-        return Colors.grey;
-    }
   }
 }

@@ -96,7 +96,7 @@ class _DashboardApiService implements DashboardApiService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/client/onhold-transaction-balance',
+            '/client/onhold-balance',
             queryParameters: queryParameters,
             data: _data,
           )
