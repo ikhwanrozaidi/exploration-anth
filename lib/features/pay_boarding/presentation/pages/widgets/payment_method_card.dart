@@ -22,9 +22,7 @@ class PaymentMethodCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: method.isEnabled 
-              ? tPrimaryColorShade4 
-              : Colors.grey.shade200,
+          color: method.isEnabled ? tPrimaryColorShade4 : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
@@ -33,8 +31,8 @@ class PaymentMethodCard extends StatelessWidget {
               width: 80.0,
               height: 80.0,
               decoration: BoxDecoration(
-                color: method.isEnabled 
-                    ? tPrimaryColorShade2 
+                color: method.isEnabled
+                    ? tPrimaryColorShade2
                     : Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -49,8 +47,8 @@ class PaymentMethodCard extends StatelessWidget {
                     : Icon(
                         _getIconForMethod(method.type),
                         size: 40,
-                        color: method.isEnabled 
-                            ? tPrimaryColorShade3 
+                        color: method.isEnabled
+                            ? tPrimaryColorShade3
                             : Colors.grey,
                       ),
               ),
@@ -60,9 +58,7 @@ class PaymentMethodCard extends StatelessWidget {
               method.title,
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.w500,
-                color: method.isEnabled 
-                    ? Colors.black 
-                    : Colors.grey,
+                color: method.isEnabled ? Colors.black : Colors.grey,
               ),
             ),
           ],

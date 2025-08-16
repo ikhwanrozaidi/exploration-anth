@@ -28,14 +28,11 @@ Future<void> main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider<LocaleBloc>(
-          create: (context) => getIt<LocaleBloc>()..add(const LoadSavedLocale()),
+          create: (context) =>
+              getIt<LocaleBloc>()..add(const LoadSavedLocale()),
         ),
-        BlocProvider<AuthBloc>(
-          create: (context) => getIt<AuthBloc>(),
-        ),
-        BlocProvider<LoginBloc>(
-          create: (context) => getIt<LoginBloc>(),
-        ),
+        BlocProvider<AuthBloc>(create: (context) => getIt<AuthBloc>()),
+        BlocProvider<LoginBloc>(create: (context) => getIt<LoginBloc>()),
         BlocProvider<OnboardingBloc>(
           create: (context) => getIt<OnboardingBloc>(),
         ),

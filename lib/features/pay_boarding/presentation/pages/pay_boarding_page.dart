@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gatepay_app/features/pay_boarding/features/qr_pay/presentation/pages/qrpay_page.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/dio/injection.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../features/escrow_pay/presentation/pages/escrow_pay_page.dart';
-import '../../features/qr_pay/presentation/pages/qrpay_page.dart';
 import '../bloc/pay_boarding_bloc.dart';
 import '../bloc/pay_boarding_event.dart';
 import '../bloc/pay_boarding_state.dart';
@@ -13,16 +13,14 @@ import 'widgets/payment_method_card.dart';
 
 class PayBoardingPage extends StatelessWidget {
   final String? title;
-  
-  const PayBoardingPage({
-    super.key,
-    this.title,
-  });
+
+  const PayBoardingPage({super.key, this.title});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<PayBoardingBloc>()..add(const LoadPayBoarding()),
+      create: (context) =>
+          getIt<PayBoardingBloc>()..add(const LoadPayBoarding()),
       child: const PayBoardingView(),
     );
   }
@@ -36,11 +34,8 @@ class PayBoardingView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Pay',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
-          ),
+          'Create Order',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18),
         ),
       ),
       body: BlocConsumer<PayBoardingBloc, PayBoardingState>(
@@ -58,9 +53,7 @@ class PayBoardingView extends StatelessWidget {
           if (state is PayBoardingLoaded) {
             return _buildLoadedContent(context, state);
           } else if (state is PayBoardingLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           } else if (state is PayBoardingError) {
             return _buildErrorContent(context, state.message);
           } else {
@@ -73,7 +66,7 @@ class PayBoardingView extends StatelessWidget {
 
   Widget _buildLoadedContent(BuildContext context, PayBoardingLoaded state) {
     final w = MediaQuery.of(context).size.width;
-    
+
     return SafeArea(
       child: ListView(
         children: [
@@ -99,7 +92,7 @@ class PayBoardingView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 40),
-                
+
                 // Payment Method Cards
                 Row(
                   children: state.availableMethods.map((method) {
@@ -116,13 +109,11 @@ class PayBoardingView extends StatelessWidget {
                     );
                   }).toList(),
                 ),
-                
+
                 const SizedBox(height: 60),
-                
+
                 // Payment Information Section
-                PaymentInfoSection(
-                  availableMethods: state.availableMethods,
-                ),
+                PaymentInfoSection(availableMethods: state.availableMethods),
               ],
             ),
           ),
@@ -143,7 +134,9 @@ class PayBoardingView extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     ScaffoldMessenger.of(context).clearSnackBars();
-                    context.read<PayBoardingBloc>().add(const LoadPayBoarding());
+                    context.read<PayBoardingBloc>().add(
+                      const LoadPayBoarding(),
+                    );
                   },
                   child: const Chip(
                     label: Row(
@@ -171,7 +164,7 @@ class PayBoardingView extends StatelessWidget {
   void _onMethodSelected(BuildContext context, PaymentMethodType methodType) {
     // Update selected method in BLoC
     context.read<PayBoardingBloc>().add(SelectPaymentMethod(methodType));
-    
+
     // Navigate to appropriate page
     Widget targetPage;
     switch (methodType) {
@@ -182,7 +175,7 @@ class PayBoardingView extends StatelessWidget {
         targetPage = const EscrowpayPage();
         break;
     }
-    
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => targetPage),

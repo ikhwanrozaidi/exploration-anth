@@ -16,7 +16,7 @@ class PriceCalculatorWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -24,7 +24,7 @@ class PriceCalculatorWidget extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: tPrimaryBackground,
+              color: tPrimaryColorShade4,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
@@ -40,7 +40,9 @@ class PriceCalculatorWidget extends StatelessWidget {
                 ),
                 TextFormField(
                   controller: sellerReceiveController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                   ],
@@ -49,9 +51,7 @@ class PriceCalculatorWidget extends StatelessWidget {
                     isDense: true,
                     hintText: '0.00',
                   ),
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -62,7 +62,7 @@ class PriceCalculatorWidget extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: tPrimaryBackground,
+              color: tPrimaryColorShade4,
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
@@ -77,7 +77,9 @@ class PriceCalculatorWidget extends StatelessWidget {
                 ),
                 TextFormField(
                   controller: youPayController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   inputFormatters: [
                     FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                   ],
@@ -86,9 +88,7 @@ class PriceCalculatorWidget extends StatelessWidget {
                     isDense: true,
                     hintText: '0.00',
                   ),
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
                 ),
               ],
             ),
@@ -98,4 +98,3 @@ class PriceCalculatorWidget extends StatelessWidget {
     );
   }
 }
-

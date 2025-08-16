@@ -24,39 +24,11 @@ class PayBoardingBloc extends Bloc<PayBoardingEvent, PayBoardingState> {
     emit(const PayBoardingLoading());
 
     try {
-      // TODO: Implement when use case is ready
-      // final result = await _getAvailablePaymentMethodsUseCase();
-      
-      // Simulate loading for now
-      await Future.delayed(const Duration(milliseconds: 500));
-      
-      // Mock available payment methods
-      final availableMethods = [
-        const PaymentMethod(
-          type: PaymentMethodType.qrCode,
-          title: 'QR Code',
-          description: 'Quick and easy QR code payments',
-          features: [
-            'Direct bank account transaction (Note: Scam can occur)',
-            'Scan seller\'s QR Code for escrow transaction',
-          ],
-        ),
-        const PaymentMethod(
-          type: PaymentMethodType.escrow,
-          title: 'Escrow',
-          description: 'Secure escrow transactions',
-          features: [
-            'Create your own escrow transaction to any sellers with GatePay account',
-            'Full protection for both buyer and seller',
-          ],
-        ),
-      ];
-      
       // result.fold(
       //   (failure) => emit(PayBoardingError(_mapFailureToMessage(failure))),
       //   (methods) => emit(PayBoardingLoaded(availableMethods: methods)),
       // );
-      
+
       emit(PayBoardingLoaded(availableMethods: availableMethods));
     } catch (e) {
       emit(PayBoardingError('Failed to load payment methods: ${e.toString()}'));
@@ -71,7 +43,7 @@ class PayBoardingBloc extends Bloc<PayBoardingEvent, PayBoardingState> {
       try {
         // Refresh without showing loading
         await Future.delayed(const Duration(milliseconds: 300));
-        
+
         // Keep current state but refresh any dynamic data
         final currentState = state as PayBoardingLoaded;
         emit(currentState.copyWith());
@@ -110,3 +82,25 @@ class PayBoardingBloc extends Bloc<PayBoardingEvent, PayBoardingState> {
     }
   }
 }
+
+// Mock available payment methods
+final availableMethods = [
+  const PaymentMethod(
+    type: PaymentMethodType.qrCode,
+    title: 'QR Code',
+    description: 'Quick and easy QR code payments',
+    features: [
+      'Direct bank account transaction (Note: Scam can occur)',
+      'Scan seller\'s QR Code for escrow transaction',
+    ],
+  ),
+  const PaymentMethod(
+    type: PaymentMethodType.escrow,
+    title: 'Escrow',
+    description: 'Secure escrow transactions',
+    features: [
+      'Create your own escrow transaction to any sellers with GatePay account',
+      'Full protection for both buyer and seller',
+    ],
+  ),
+];
