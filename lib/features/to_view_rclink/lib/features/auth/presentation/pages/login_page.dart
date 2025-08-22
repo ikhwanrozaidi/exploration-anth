@@ -8,6 +8,8 @@ import 'package:intl_phone_field/country_picker_dialog.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:rclink_app/shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../company/presentation/pages/company_selection_page.dart';
+import '../../../company/presentation/pages/company_signin_page.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -353,12 +355,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     if (isCompanySignInScreen) {
       return Container(
         key: const ValueKey('companySignIn'),
-        child: _buildCompanySignIn(localization),
+        child: CompanySignInPage(onBackPressed: _backToSignInFromCompany),
       );
     } else if (isCompanyScreen) {
       return Container(
         key: const ValueKey('company'),
-        child: _buildSelectCompany(localization),
+        child: CompanySelectionPage(onBackPressed: _backToSignInFromCompany),
       );
     } else if (isOtpScreen) {
       return Container(
@@ -1077,6 +1079,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                       String otp = _otpControllers
                           .map((controller) => controller.text)
                           .join();
+
                       if (otp.length == 6) {
                         _verifyOtp();
                       } else {
@@ -1143,121 +1146,121 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildSelectCompany(AppLocalizations localization) {
-    return Padding(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              margin: const EdgeInsets.only(bottom: 24),
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
+  // Widget _buildSelectCompany(AppLocalizations localization) {
+  //   return Padding(
+  //     padding: const EdgeInsets.all(24),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.center,
+  //       children: [
+  //         Center(
+  //           child: Container(
+  //             width: 40,
+  //             height: 4,
+  //             margin: const EdgeInsets.only(bottom: 24),
+  //             decoration: BoxDecoration(
+  //               color: Colors.grey[300],
+  //               borderRadius: BorderRadius.circular(2),
+  //             ),
+  //           ),
+  //         ),
 
-          const Text(
-            'Choose Company to Manage',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
+  //         const Text(
+  //           'Choose Company to Manage',
+  //           textAlign: TextAlign.center,
+  //           style: TextStyle(
+  //             fontSize: 30,
+  //             fontWeight: FontWeight.bold,
+  //             color: Colors.black,
+  //           ),
+  //         ),
 
-          const SizedBox(height: 20),
+  //         const SizedBox(height: 20),
 
-          TextButton(
-            style: TextButton.styleFrom(
-              padding: EdgeInsets.zero,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50),
-              ),
-              backgroundColor: Colors.grey.shade200,
-            ),
-            onPressed: () {
-              _showCompanySelectionBottomSheet(context);
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.search,
-                    size: 30,
-                    color: Colors.black.withOpacity(0.6),
-                  ),
-                  SizedBox(width: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Select Company',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        'Choose which company you want to manage',
-                        style: TextStyle(
-                          color: Colors.black.withOpacity(0.7),
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
+  //         TextButton(
+  //           style: TextButton.styleFrom(
+  //             padding: EdgeInsets.zero,
+  //             shape: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(50),
+  //             ),
+  //             backgroundColor: Colors.grey.shade200,
+  //           ),
+  //           onPressed: () {
+  //             _showCompanySelectionBottomSheet(context);
+  //           },
+  //           child: Padding(
+  //             padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 25),
+  //             child: Row(
+  //               children: [
+  //                 Icon(
+  //                   Icons.search,
+  //                   size: 30,
+  //                   color: Colors.black.withOpacity(0.6),
+  //                 ),
+  //                 SizedBox(width: 20),
+  //                 Column(
+  //                   crossAxisAlignment: CrossAxisAlignment.start,
+  //                   children: [
+  //                     Text(
+  //                       'Select Company',
+  //                       style: TextStyle(
+  //                         color: Colors.black,
+  //                         fontWeight: FontWeight.w500,
+  //                       ),
+  //                     ),
+  //                     Text(
+  //                       'Choose which company you want to manage',
+  //                       style: TextStyle(
+  //                         color: Colors.black.withOpacity(0.7),
+  //                         fontSize: 12,
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ),
 
-          SizedBox(height: 20),
+  //         SizedBox(height: 20),
 
-          Container(
-            margin: const EdgeInsets.only(bottom: 50),
-            child: Opacity(
-              opacity: _fadeAnimation.value,
-              child: Image.asset(
-                'assets/images/choose_company_vector.png',
-                height: 200,
-                width: 350,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
+  //         Container(
+  //           margin: const EdgeInsets.only(bottom: 50),
+  //           child: Opacity(
+  //             opacity: _fadeAnimation.value,
+  //             child: Image.asset(
+  //               'assets/images/choose_company_vector.png',
+  //               height: 200,
+  //               width: 350,
+  //               fit: BoxFit.contain,
+  //             ),
+  //           ),
+  //         ),
 
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton(
-              onPressed: _backToSignInFromCompany,
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: primaryColor),
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-              ),
-              child: const Text(
-                'Back to sign in',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: primaryColor,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  //         SizedBox(
+  //           width: double.infinity,
+  //           child: OutlinedButton(
+  //             onPressed: _backToSignInFromCompany,
+  //             style: OutlinedButton.styleFrom(
+  //               side: BorderSide(color: primaryColor),
+  //               padding: const EdgeInsets.symmetric(vertical: 4),
+  //               shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(14),
+  //               ),
+  //             ),
+  //             child: const Text(
+  //               'Back to sign in',
+  //               style: TextStyle(
+  //                 fontSize: 16,
+  //                 fontWeight: FontWeight.w600,
+  //                 color: primaryColor,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildCompanySignIn(AppLocalizations localization) {
     return Padding(
