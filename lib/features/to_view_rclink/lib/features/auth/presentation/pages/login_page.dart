@@ -553,6 +553,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           print('🔥 LoginPage listener: ${state.runtimeType}');
 
           state.whenOrNull(
+            // if Fail
             failure: (message) {
               print('❌ LoginPage: Handling failure state: $message');
               _setLoading(false);
@@ -563,6 +564,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               CustomSnackBar.show(context, message, type: SnackBarType.error);
               _backToSignInFromOtp();
             },
+
+            // if OtpSent
             otpSent: (data) {
               print('✅ LoginPage: Handling otpSent state: ${data.message}');
               _setLoading(false);
@@ -584,6 +587,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               });
               _startResendTimer();
             },
+
+            // if already authenticate
             authenticatedNeedsCompany: (tokens, admin) {
               print(
                 '🎉 LoginPage: User authenticated but needs company selection!',
@@ -594,6 +599,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               });
               _showCompanyScreen();
             },
+
+            // after authenticate with Company
             authenticated: (tokens, admin, companyId) {
               print('✅ LoginPage: User fully authenticated with company!');
               setState(() {
@@ -601,6 +608,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 _isCompletingLoginFlow = false;
               });
             },
+
+            // if unauthenticate
             unauthenticated: () {
               print('🔄 LoginPage: Handling unauthenticated state');
               _setLoading(false);
