@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rclink_app/features/auth/presentation/bloc/auth_event.dart';
-import 'package:rclink_app/features/company/presentation/pages/select_company_page.dart';
 import 'package:rclink_app/features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/bloc/auth_state.dart';
@@ -38,7 +37,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
           },
           authenticatedNeedsCompany: (_, __) {
             // User is authenticated but needs to select company - stay on LoginPage
-            return SelectCompanyPage();
+            return _loginPage;
           },
           authenticated: (_, __, ___) => const RootPage(),
           unauthenticated: () => _loginPage,
