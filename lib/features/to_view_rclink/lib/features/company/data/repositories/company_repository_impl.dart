@@ -4,6 +4,7 @@ import '../../../../core/errors/failures.dart';
 import '../../../../core/network/network_info.dart';
 import '../../../auth/data/datasources/auth_local_data_source.dart';
 import '../../domain/entities/company.dart';
+import '../../domain/entities/role.dart';
 import '../datasources/company_remote_datasource.dart';
 import '../../domain/repositories/company_repository.dart';
 import '../datasources/company_api_service.dart';
@@ -13,12 +14,14 @@ import '../datasources/company_local_datasource.dart';
 class CompanyRepositoryImpl implements CompanyRepository {
   final CompanyApiService _apiService;
   final CompanyLocalDataSource _localDataSource;
+  final CompanyRemoteDataSource _remoteDataSource;
   final AuthLocalDataSource _authLocalDataSource;
   final NetworkInfo _networkInfo;
 
   CompanyRepositoryImpl(
     this._apiService,
     this._localDataSource,
+    this._remoteDataSource,
     this._authLocalDataSource,
     this._networkInfo,
   );
@@ -57,7 +60,6 @@ class CompanyRepositoryImpl implements CompanyRepository {
       }
     } else {
       // Use cached data when offline
-      print('📱 CompanyRepository: Using cached companies (offline)');
       final cachedResult = await _localDataSource.getCachedCompanies();
 
       return cachedResult.fold((failure) => Left(failure), (cachedCompanies) {
@@ -82,5 +84,19 @@ class CompanyRepositoryImpl implements CompanyRepository {
   @override
   Future<Either<Failure, void>> clearCompanyCache() async {
     return await _localDataSource.clearCache();
+  }
+
+  @override
+  Future<Either<Failure, Role>> getRole(String roleUid) async {
+    try {
+      final result = await _remoteDataSource.getRole(roleUid);
+
+      return result.fold(
+        (failure) => Left(failure),
+        (roleModel) => Right(roleModel.toEntity()),
+      );
+    } catch (e) {
+      return Left(ServerFailure('Failed to fetch role: ${e.toString()}'));
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../domain/entities/company.dart';
+import '../../domain/entities/role.dart';
 
 part 'company_state.freezed.dart';
 
@@ -12,4 +13,7 @@ class CompanyState with _$CompanyState {
     String? selectedCompanyId,
   }) = CompanyLoaded;
   const factory CompanyState.failure(String message) = CompanyFailure;
+  const factory CompanyState.roleLoading() = CompanyRoleLoading;
+  const factory CompanyState.roleLoaded(Role role) = CompanyRoleLoaded;
+  const factory CompanyState.roleFailure(String message) = CompanyRoleFailure;
 }

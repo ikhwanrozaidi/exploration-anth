@@ -55,13 +55,14 @@ extension CompanyEventPatterns on CompanyEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadCompanies value)?  loadCompanies,TResult Function( SelectCompany value)?  selectCompany,TResult Function( ClearSelection value)?  clearSelection,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadCompanies value)?  loadCompanies,TResult Function( SelectCompany value)?  selectCompany,TResult Function( ClearSelection value)?  clearSelection,TResult Function( FetchRole value)?  fetchRole,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadCompanies() when loadCompanies != null:
 return loadCompanies(_that);case SelectCompany() when selectCompany != null:
 return selectCompany(_that);case ClearSelection() when clearSelection != null:
-return clearSelection(_that);case _:
+return clearSelection(_that);case FetchRole() when fetchRole != null:
+return fetchRole(_that);case _:
   return orElse();
 
 }
@@ -79,13 +80,14 @@ return clearSelection(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadCompanies value)  loadCompanies,required TResult Function( SelectCompany value)  selectCompany,required TResult Function( ClearSelection value)  clearSelection,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadCompanies value)  loadCompanies,required TResult Function( SelectCompany value)  selectCompany,required TResult Function( ClearSelection value)  clearSelection,required TResult Function( FetchRole value)  fetchRole,}){
 final _that = this;
 switch (_that) {
 case LoadCompanies():
 return loadCompanies(_that);case SelectCompany():
 return selectCompany(_that);case ClearSelection():
-return clearSelection(_that);case _:
+return clearSelection(_that);case FetchRole():
+return fetchRole(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -102,13 +104,14 @@ return clearSelection(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadCompanies value)?  loadCompanies,TResult? Function( SelectCompany value)?  selectCompany,TResult? Function( ClearSelection value)?  clearSelection,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadCompanies value)?  loadCompanies,TResult? Function( SelectCompany value)?  selectCompany,TResult? Function( ClearSelection value)?  clearSelection,TResult? Function( FetchRole value)?  fetchRole,}){
 final _that = this;
 switch (_that) {
 case LoadCompanies() when loadCompanies != null:
 return loadCompanies(_that);case SelectCompany() when selectCompany != null:
 return selectCompany(_that);case ClearSelection() when clearSelection != null:
-return clearSelection(_that);case _:
+return clearSelection(_that);case FetchRole() when fetchRole != null:
+return fetchRole(_that);case _:
   return null;
 
 }
@@ -125,12 +128,13 @@ return clearSelection(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadCompanies,TResult Function( String companyId)?  selectCompany,TResult Function()?  clearSelection,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadCompanies,TResult Function( String companyId)?  selectCompany,TResult Function()?  clearSelection,TResult Function( String roleUid)?  fetchRole,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadCompanies() when loadCompanies != null:
 return loadCompanies();case SelectCompany() when selectCompany != null:
 return selectCompany(_that.companyId);case ClearSelection() when clearSelection != null:
-return clearSelection();case _:
+return clearSelection();case FetchRole() when fetchRole != null:
+return fetchRole(_that.roleUid);case _:
   return orElse();
 
 }
@@ -148,12 +152,13 @@ return clearSelection();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadCompanies,required TResult Function( String companyId)  selectCompany,required TResult Function()  clearSelection,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadCompanies,required TResult Function( String companyId)  selectCompany,required TResult Function()  clearSelection,required TResult Function( String roleUid)  fetchRole,}) {final _that = this;
 switch (_that) {
 case LoadCompanies():
 return loadCompanies();case SelectCompany():
 return selectCompany(_that.companyId);case ClearSelection():
-return clearSelection();case _:
+return clearSelection();case FetchRole():
+return fetchRole(_that.roleUid);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -170,12 +175,13 @@ return clearSelection();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadCompanies,TResult? Function( String companyId)?  selectCompany,TResult? Function()?  clearSelection,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadCompanies,TResult? Function( String companyId)?  selectCompany,TResult? Function()?  clearSelection,TResult? Function( String roleUid)?  fetchRole,}) {final _that = this;
 switch (_that) {
 case LoadCompanies() when loadCompanies != null:
 return loadCompanies();case SelectCompany() when selectCompany != null:
 return selectCompany(_that.companyId);case ClearSelection() when clearSelection != null:
-return clearSelection();case _:
+return clearSelection();case FetchRole() when fetchRole != null:
+return fetchRole(_that.roleUid);case _:
   return null;
 
 }
@@ -312,5 +318,71 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class FetchRole implements CompanyEvent {
+  const FetchRole(this.roleUid);
+  
+
+ final  String roleUid;
+
+/// Create a copy of CompanyEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$FetchRoleCopyWith<FetchRole> get copyWith => _$FetchRoleCopyWithImpl<FetchRole>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FetchRole&&(identical(other.roleUid, roleUid) || other.roleUid == roleUid));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,roleUid);
+
+@override
+String toString() {
+  return 'CompanyEvent.fetchRole(roleUid: $roleUid)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $FetchRoleCopyWith<$Res> implements $CompanyEventCopyWith<$Res> {
+  factory $FetchRoleCopyWith(FetchRole value, $Res Function(FetchRole) _then) = _$FetchRoleCopyWithImpl;
+@useResult
+$Res call({
+ String roleUid
+});
+
+
+
+
+}
+/// @nodoc
+class _$FetchRoleCopyWithImpl<$Res>
+    implements $FetchRoleCopyWith<$Res> {
+  _$FetchRoleCopyWithImpl(this._self, this._then);
+
+  final FetchRole _self;
+  final $Res Function(FetchRole) _then;
+
+/// Create a copy of CompanyEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? roleUid = null,}) {
+  return _then(FetchRole(
+null == roleUid ? _self.roleUid : roleUid // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 // dart format on

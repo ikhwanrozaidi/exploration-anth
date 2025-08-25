@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../company/presentation/pages/choose_company_page.dart';
-import '../../../company/presentation/pages/widgets/confirmation_company_page.dart';
 import '../../../locale/presentation/widgets/app_localization.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -175,8 +174,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         return _buildOtpContent(localization);
       case AuthScreen.company:
         return CompanySelectionPage(onBackPressed: _backToSignIn);
-      case AuthScreen.companySignIn:
-        return CompanySignInPage(onBackPressed: _backToSignIn);
     }
   }
 
@@ -285,7 +282,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             isLoading: _isOtpLoading,
           ),
 
-          SizedBox(height: ResponsiveHelper.spacing(context, 10)),
+          SizedBox(height: ResponsiveHelper.spacing(context, 8)),
 
           // Back Button
           AuthButton(
@@ -389,4 +386,4 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 }
 
-enum AuthScreen { signIn, otp, company, companySignIn }
+enum AuthScreen { signIn, otp, company }
