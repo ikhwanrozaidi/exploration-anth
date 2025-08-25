@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../company/presentation/pages/company_selection_page.dart';
-import '../../../company/presentation/pages/company_signin_page.dart';
+import '../../../company/presentation/pages/widgets/company_signin_page.dart';
 import '../../../locale/presentation/widgets/app_localization.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -23,8 +23,7 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage>
-    with TickerProviderStateMixin {
+class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   // Controllers
   final _phoneController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -311,81 +310,81 @@ class _LoginPageState extends State<LoginPage>
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          state.whenOrNull(
-            failure: (message) {
-              _setLoading(false);
-              setState(() {
-                _isOtpLoading = false;
-              });
-              CustomSnackBar.show(context, message, type: SnackBarType.error);
-              _backToSignIn();
-            },
-            otpSent: (data) {
-              _setLoading(false);
-              CustomSnackBar.show(
-                context,
-                data.message,
-                type: SnackBarType.success,
-              );
-              _showOtpScreen();
-            },
-            authenticatedNeedsCompany: (tokens, admin) {
-              setState(() {
-                _isOtpLoading = false;
-              });
-              _showCompanyScreen();
-            },
-            authenticated: (tokens, admin, companyId) {
-              setState(() {
-                _isOtpLoading = false;
-              });
-            },
-            unauthenticated: () {
-              _setLoading(false);
-              setState(() {
-                _isOtpLoading = false;
-              });
-              _backToSignIn();
-            },
-          );
-        },
-        child: AuthBackground(
-          imagePath: 'assets/images/signin_bg.png',
-          fadeController: _backgroundController,
-          child: Stack(
-            children: [
-              // Logo positioned above the bottom sheet
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom:
-                    MediaQuery.of(context).size.height *
-                    0.65, // Adjusted to match new sheet height
-                child: Center(
-                  child: AuthLogo(
-                    logoPath: 'assets/images/rclink_logo.png',
-                    fadeController: _backgroundController,
+          listener: (context, state) {
+            state.whenOrNull(
+              failure: (message) {
+                _setLoading(false);
+                setState(() {
+                  _isOtpLoading = false;
+                });
+                CustomSnackBar.show(context, message, type: SnackBarType.error);
+                _backToSignIn();
+              },
+              otpSent: (data) {
+                _setLoading(false);
+                CustomSnackBar.show(
+                  context,
+                  data.message,
+                  type: SnackBarType.success,
+                );
+                _showOtpScreen();
+              },
+              authenticatedNeedsCompany: (tokens, admin) {
+                setState(() {
+                  _isOtpLoading = false;
+                });
+                _showCompanyScreen();
+              },
+              authenticated: (tokens, admin, companyId) {
+                setState(() {
+                  _isOtpLoading = false;
+                });
+              },
+              unauthenticated: () {
+                _setLoading(false);
+                setState(() {
+                  _isOtpLoading = false;
+                });
+                _backToSignIn();
+              },
+            );
+          },
+          child: AuthBackground(
+            imagePath: 'assets/images/signin_bg.png',
+            fadeController: _backgroundController,
+            child: Stack(
+              children: [
+                // Logo positioned above the bottom sheet
+                Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom:
+                      MediaQuery.of(context).size.height *
+                      0.65, // Adjusted to match new sheet height
+                  child: Center(
+                    child: AuthLogo(
+                      logoPath: 'assets/images/rclink_logo.png',
+                      fadeController: _backgroundController,
+                    ),
                   ),
                 ),
-              ),
 
-              // Bottom Sheet
-              AuthBottomSheet(
-                controller: _bottomSheetController,
-                child: AuthPageSwitcher(
-                  child: Container(
-                    key: ValueKey(_currentScreen),
-                    child: _getCurrentScreen(localization),
+                // Bottom Sheet
+                AuthBottomSheet(
+                  controller: _bottomSheetController,
+                  child: AuthPageSwitcher(
+                    child: Container(
+                      key: ValueKey(_currentScreen),
+                      child: _getCurrentScreen(localization),
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ),
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../shared/utils/theme.dart';
-import '../../../locale/presentation/widgets/app_localization.dart';
+import '../../../../../shared/utils/theme.dart';
+import '../../../../locale/presentation/widgets/app_localization.dart';
 
 class CompanySignInPage extends StatefulWidget {
   final VoidCallback? onBackPressed;
