@@ -15,14 +15,16 @@ class ListingItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+
     return GestureDetector(
       onTap: onTap,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Container(
-            width: 60,
-            height: 60,
+            width: w * 0.15,
+            height: w * 0.15,
             padding: EdgeInsets.all(13),
             decoration: BoxDecoration(
               color: Colors.white,
@@ -36,7 +38,7 @@ class ListingItem extends StatelessWidget {
             textAlign: TextAlign.center,
             style: TextStyle(
               color: isBlack ? Colors.black : Colors.white,
-              fontSize: 10,
+              fontSize: w * 0.025,
               fontWeight: FontWeight.w500,
             ),
           ),

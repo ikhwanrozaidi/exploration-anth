@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rclink_app/features/auth/presentation/bloc/auth_event.dart';
-import 'package:rclink_app/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:rclink_app/features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../features/auth/presentation/bloc/auth_state.dart';
-import '../../features/auth/presentation/pages/login_page.dart';
 import '../pages/root_page.dart';
 
 /// AuthWrapper decides what to show based on authentication state
@@ -35,11 +34,10 @@ class _AuthWrapperState extends State<AuthWrapper> {
           otpSent: (_) {
             return _loginPage;
           },
-          authenticatedNeedsCompany: (_, __) {
-            // User is authenticated but needs to select company - stay on LoginPage
+          authenticatedNeedsCompany: (_, _) {
             return _loginPage;
           },
-          authenticated: (_, __, ___) => const RootPage(),
+          authenticated: (_, _, _) => const RootPage(),
           unauthenticated: () => _loginPage,
           failure: (_) => _loginPage,
         );
@@ -62,27 +60,6 @@ class _SplashScreen extends StatelessWidget {
             CircularProgressIndicator(),
             SizedBox(height: 16),
             Text('Loading...'),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Loading screen during authentication
-class _LoadingScreen extends StatelessWidget {
-  const _LoadingScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Authenticating...'),
           ],
         ),
       ),

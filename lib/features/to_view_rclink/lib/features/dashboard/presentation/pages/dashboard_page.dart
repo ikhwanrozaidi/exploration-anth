@@ -26,9 +26,10 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     double bottomContainerHeight = showActionRequired
-        ? MediaQuery.of(context).size.height * 0.29
-        : MediaQuery.of(context).size.height * 0.40;
+        ? MediaQuery.of(context).size.height * 0.23
+        : MediaQuery.of(context).size.height * 0.35;
 
     return Scaffold(
       body: Container(
@@ -51,7 +52,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       children: [
                         Image.asset(
                           'assets/images/rclink_logo.png',
-                          height: 40,
+                          height: w * 0.09,
                           fit: BoxFit.contain,
                         ),
                         IconButton(
@@ -80,9 +81,9 @@ class _DashboardPageState extends State<DashboardPage> {
                       onPressed: () =>
                           context.read<AuthBloc>().add(const LogoutRequested()),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 12,
-                          horizontal: 25,
+                        padding: EdgeInsets.symmetric(
+                          vertical: w * 0.03,
+                          horizontal: w * 0.05,
                         ),
                         child: Row(
                           children: [
@@ -106,7 +107,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   'By district or contractor',
                                   style: TextStyle(
                                     color: Colors.black.withOpacity(0.7),
-                                    fontSize: 12,
+                                    fontSize: w * 0.03,
                                   ),
                                 ),
                               ],
@@ -136,9 +137,9 @@ class _DashboardPageState extends State<DashboardPage> {
                             crossAxisCount: 4,
                             shrinkWrap: true,
                             physics: NeverScrollableScrollPhysics(),
-                            mainAxisSpacing: 16,
-                            crossAxisSpacing: 16,
-                            childAspectRatio: 0.7,
+                            mainAxisSpacing: w * 0.04,
+                            crossAxisSpacing: w * 0.05,
+                            childAspectRatio: w * 0.0015,
                             children: [
                               ListingItem(
                                 isBlack: false,
@@ -224,65 +225,68 @@ class _DashboardPageState extends State<DashboardPage> {
                             bottom: showActionRequired ? 10 : 0,
                           ),
                           padding: EdgeInsets.symmetric(
-                            vertical: 15,
-                            horizontal: 20,
+                            vertical: w * 0.04,
+                            horizontal: w * 0.05,
                           ),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(w * 0.03),
                             color: Colors.white.withOpacity(0.5),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 15,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(18),
-                                    ),
-                                    child: Center(
-                                      child: AnimatedSwitcher(
-                                        duration: Duration(milliseconds: 300),
-                                        child: Text(
-                                          '$actionCount',
-                                          key: ValueKey(actionCount),
-                                          style: TextStyle(
-                                            fontSize: 20,
-                                            color: Colors.red,
-                                            fontWeight: FontWeight.bold,
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        vertical: 10,
+                                        horizontal: 15,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: Center(
+                                        child: AnimatedSwitcher(
+                                          duration: Duration(milliseconds: 300),
+                                          child: Text(
+                                            '$actionCount',
+                                            key: ValueKey(actionCount),
+                                            style: TextStyle(
+                                              fontSize: w * 0.05,
+                                              color: Colors.red,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  SizedBox(width: 15),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        'Action Required',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                    SizedBox(width: 15),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Action Required',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        'Please complete it promptly',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 12,
+                                        Text(
+                                          'Please complete it promptly',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: w * 0.03,
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                               Icon(
                                 Icons.keyboard_arrow_right,

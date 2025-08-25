@@ -12,8 +12,7 @@ class ProgramPage extends StatefulWidget {
 }
 
 class _ProgramPageState extends State<ProgramPage> {
-  bool showActionRequired =
-      true; //was in DashboardPage, but will use as AnimatedContainer later
+  bool showActionRequired = true;
   int selectedMonth = DateTime.now().month;
   int selectedYear = DateTime.now().year;
 
@@ -33,6 +32,7 @@ class _ProgramPageState extends State<ProgramPage> {
 
   @override
   Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     double bottomContainerHeight = showActionRequired
         ? MediaQuery.of(context).size.height * 0.76
         : MediaQuery.of(context).size.height * 0.70;
@@ -267,7 +267,7 @@ class _ProgramPageState extends State<ProgramPage> {
                                             'Contractor',
                                             style: TextStyle(
                                               color: Colors.black,
-                                              fontSize: 10,
+                                              fontSize: w * 0.022,
                                               // fontWeight: FontWeight.w400,
                                             ),
                                           ),
@@ -306,22 +306,28 @@ class _ProgramPageState extends State<ProgramPage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.restaurant_menu,
-                                            size: 10,
-                                            color: Colors.black,
-                                          ),
-                                          SizedBox(width: 5),
-                                          Text(
-                                            'Scope Work',
-                                            style: TextStyle(
+                                      Expanded(
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.restaurant_menu,
+                                              size: 10,
                                               color: Colors.black,
-                                              fontSize: 10,
                                             ),
-                                          ),
-                                        ],
+                                            SizedBox(width: 5),
+                                            Expanded(
+                                              child: Text(
+                                                'Scope Work',
+                                                style: TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Colors.black,
+                                                  fontSize: w * 0.022,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                       Icon(
                                         Icons.expand_more,
@@ -368,7 +374,7 @@ class _ProgramPageState extends State<ProgramPage> {
                                             'Status',
                                             style: TextStyle(
                                               color: Colors.black,
-                                              fontSize: 10,
+                                              fontSize: w * 0.022,
                                             ),
                                           ),
                                         ],

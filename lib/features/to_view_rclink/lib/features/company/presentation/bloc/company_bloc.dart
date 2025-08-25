@@ -35,14 +35,15 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
 
     final result = await _getMyCompaniesUseCase();
 
-    result.fold(
-      (failure) => emit(CompanyFailure(_mapFailureToMessage(failure))),
+    await result.fold(
+      (failure) async => emit(CompanyFailure(_mapFailureToMessage(failure))),
       (companies) async {
-        // Check if there's a previously selected company
         final selectedResult = await _getSelectedCompanyUseCase();
         final selectedCompanyId = selectedResult.getOrElse(() => null);
 
-        emit(CompanyLoaded(companies, selectedCompanyId: selectedCompanyId));
+        if (!emit.isDone) {
+          emit(CompanyLoaded(companies, selectedCompanyId: selectedCompanyId));
+        }
       },
     );
   }
@@ -60,7 +61,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       result.fold(
         (failure) => emit(CompanyFailure(_mapFailureToMessage(failure))),
         (_) {
-          // Update the state with selected company
           emit(
             CompanyLoaded(
               currentState.companies,
@@ -68,7 +68,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
             ),
           );
 
-          // Notify auth bloc that company has been selected
           _authBloc.add(CompanySelected(event.companyId));
         },
       );

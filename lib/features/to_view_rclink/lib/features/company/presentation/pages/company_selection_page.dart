@@ -21,7 +21,6 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
     with TickerProviderStateMixin {
   final TextEditingController _searchController = TextEditingController();
 
-  // Animation controllers for smooth transitions
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
@@ -29,7 +28,6 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
   void initState() {
     super.initState();
 
-    // Initialize animations
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -40,7 +38,6 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
       end: 1.0,
     ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeOut));
 
-    // Start animations
     _fadeController.forward();
   }
 
@@ -52,6 +49,7 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
   }
 
   void _showCompanySelectionBottomSheet(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
     _searchController.clear();
 
     showModalBottomSheet(
@@ -91,7 +89,7 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
                     decoration: InputDecoration(
                       hintText: 'Search Contractor',
                       hintStyle: TextStyle(
-                        fontSize: 13,
+                        fontSize: w * 0.035,
                         color: Colors.black.withOpacity(0.6),
                       ),
                       prefixIcon: Padding(
@@ -228,14 +226,14 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
                                           children: [
                                             // Company Avatar
                                             Container(
-                                              width: 56,
-                                              height: 56,
+                                              width: w * 0.13,
+                                              height: w * 0.13,
                                               decoration: BoxDecoration(
                                                 color: isSelected
                                                     ? primaryColor
                                                     : Colors.grey[100],
                                                 borderRadius:
-                                                    BorderRadius.circular(16),
+                                                    BorderRadius.circular(10),
                                               ),
                                               child: Center(
                                                 child: Text(
@@ -271,7 +269,7 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
                                                       color: isSelected
                                                           ? primaryColor
                                                           : Colors.black,
-                                                      fontSize: 16,
+                                                      fontSize: w * 0.035,
                                                     ),
                                                     maxLines: 2,
                                                     overflow:
@@ -290,7 +288,7 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
                                                                     0.8,
                                                                   )
                                                             : Colors.grey[600],
-                                                        fontSize: 13,
+                                                        fontSize: w * 0.03,
                                                         fontWeight:
                                                             FontWeight.w500,
                                                       ),
@@ -310,7 +308,7 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
                                                                     0.8,
                                                                   )
                                                             : Colors.grey[600],
-                                                        fontSize: 12,
+                                                        fontSize: w * 0.03,
                                                       ),
                                                     ),
                                                   ],
@@ -320,10 +318,10 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
 
                                             // Selection indicator
                                             if (isSelected)
-                                              const Icon(
+                                              Icon(
                                                 Icons.check_circle,
                                                 color: primaryColor,
-                                                size: 24,
+                                                size: w * 0.04,
                                               ),
                                           ],
                                         ),
@@ -373,6 +371,7 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
   @override
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context);
+    final w = MediaQuery.of(context).size.width;
 
     return Padding(
       padding: const EdgeInsets.all(24),
@@ -391,11 +390,11 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
             ),
           ),
 
-          const Text(
+          Text(
             'Choose Company to Manage',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 30,
+              fontSize: w * 0.07,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
@@ -420,28 +419,31 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
                 children: [
                   Icon(
                     Icons.search,
-                    size: 30,
+                    size: w * 0.06,
                     color: Colors.black.withOpacity(0.6),
                   ),
                   const SizedBox(width: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Select Company',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w500,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Select Company',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      Text(
-                        'Choose which company you want to manage',
-                        style: TextStyle(
-                          color: Colors.black.withOpacity(0.7),
-                          fontSize: 12,
+                        Text(
+                          'Choose which company you want to manage',
+                          style: TextStyle(
+                            overflow: TextOverflow.ellipsis,
+                            color: Colors.black.withOpacity(0.7),
+                            fontSize: w * 0.03,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -474,10 +476,10 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
                   borderRadius: BorderRadius.circular(14),
                 ),
               ),
-              child: const Text(
+              child: Text(
                 'Back to sign in',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: w * 0.035,
                   fontWeight: FontWeight.w600,
                   color: primaryColor,
                 ),

@@ -13,7 +13,6 @@ class CompanySignInPage extends StatefulWidget {
 
 class _CompanySignInPageState extends State<CompanySignInPage>
     with TickerProviderStateMixin {
-  // Animation controllers for smooth transitions
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
@@ -21,7 +20,6 @@ class _CompanySignInPageState extends State<CompanySignInPage>
   void initState() {
     super.initState();
 
-    // Initialize animations
     _fadeController = AnimationController(
       duration: const Duration(milliseconds: 800),
       vsync: this,
@@ -32,7 +30,6 @@ class _CompanySignInPageState extends State<CompanySignInPage>
       end: 1.0,
     ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeOut));
 
-    // Start animations
     _fadeController.forward();
   }
 
@@ -68,7 +65,7 @@ class _CompanySignInPageState extends State<CompanySignInPage>
             child: Opacity(
               opacity: _fadeAnimation.value,
               child: Image.asset(
-                'assets/images/company_signin_vector.png', // Update with correct asset path
+                'assets/images/company_signin_vector.png',
                 height: 200,
                 width: 350,
                 fit: BoxFit.contain,
@@ -99,7 +96,6 @@ class _CompanySignInPageState extends State<CompanySignInPage>
 
           const SizedBox(height: 40),
 
-          // Loading indicator
           const CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
           ),
