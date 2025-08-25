@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 
-enum AuthButtonType { primary, secondary, text }
+enum AuthButtonType {
+  primary,
+  secondary,
+  text,
+}
 
 class AuthButton extends StatelessWidget {
   final String text;
@@ -30,14 +34,16 @@ class AuthButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final fontSize = ResponsiveHelper.adaptive<double>(
       context,
-      mobile: 14,
-      tablet: 16,
-      desktop: 18,
+      mobile: 16,
+      tablet: 18,
+      desktop: 20,
     );
 
-    final buttonPadding =
-        padding ??
-        ResponsiveHelper.padding(context, vertical: 10, horizontal: 20);
+    final buttonPadding = padding ?? ResponsiveHelper.padding(
+      context,
+      vertical: 16,
+      horizontal: 24,
+    );
 
     final borderRadius = ResponsiveHelper.borderRadius(context, all: 14);
 
@@ -55,7 +61,9 @@ class AuthButton extends StatelessWidget {
               backgroundColor: customColor ?? primaryColor,
               disabledBackgroundColor: Colors.grey[300],
               padding: buttonPadding,
-              shape: RoundedRectangleBorder(borderRadius: borderRadius),
+              shape: RoundedRectangleBorder(
+                borderRadius: borderRadius,
+              ),
               elevation: ResponsiveHelper.adaptive(
                 context,
                 mobile: 1,
@@ -83,7 +91,9 @@ class AuthButton extends StatelessWidget {
                 ),
               ),
               padding: buttonPadding,
-              shape: RoundedRectangleBorder(borderRadius: borderRadius),
+              shape: RoundedRectangleBorder(
+                borderRadius: borderRadius,
+              ),
             ),
             child: buttonChild,
           ),
@@ -94,7 +104,9 @@ class AuthButton extends StatelessWidget {
           onPressed: isLoading ? null : onPressed,
           style: TextButton.styleFrom(
             padding: buttonPadding,
-            shape: RoundedRectangleBorder(borderRadius: borderRadius),
+            shape: RoundedRectangleBorder(
+              borderRadius: borderRadius,
+            ),
           ),
           child: buttonChild,
         );
