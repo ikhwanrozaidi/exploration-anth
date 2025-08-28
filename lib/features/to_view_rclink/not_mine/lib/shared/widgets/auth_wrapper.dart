@@ -52,7 +52,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
         if (companyState is CompanyInitial) {
           context.read<CompanyBloc>().add(const LoadCompanies());
         }
-        
+
         return companyState.when(
           initial: () => _loginPage,
           loading: () => _loginPage,

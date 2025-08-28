@@ -82,6 +82,36 @@ class SyncQueue extends Table {
   BoolColumn get isProcessed => boolean().withDefault(const Constant(false))();
 }
 
+// Companies table
+@DataClassName('CompanyRecord')
+class Companies extends Table {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID - unique for public lookup
+  TextColumn get name => text()();
+  TextColumn get regNo => text().nullable()(); // Registration number
+  TextColumn get cidbNo => text().nullable()(); // CIDB number
+  TextColumn get address => text().nullable()();
+  TextColumn get postalCode => text().nullable()();
+  TextColumn get city => text().nullable()();
+  TextColumn get state => text().nullable()();
+  TextColumn get country => text().nullable()();
+  TextColumn get phone => text().nullable()();
+  TextColumn get email => text().nullable()();
+  TextColumn get website => text().nullable()();
+  TextColumn get companyType => text()(); // e.g., "ENTERPRISE"
+  IntColumn get ownerID => integer()(); // Owner admin ID
+  TextColumn get defaultBankAcc => text().nullable()(); // Default bank account
+  TextColumn get defaultBankAccType => text().nullable()(); // e.g., "MAYBANK"
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
 // Single role record for current company (only 1 row at a time)
 @DataClassName('RoleRecord')
 class Roles extends Table with SyncableTable {
@@ -109,12 +139,12 @@ class Permissions extends Table with SyncableTable {
   IntColumn get roleID => integer()(); // Link to current role
 }
 
-@DriftDatabase(tables: [Admins, SyncQueue, Roles, Permissions])
+@DriftDatabase(tables: [Admins, SyncQueue, Roles, Permissions, Companies])
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 4; // Added Roles and Permissions tables
+  int get schemaVersion => 5; // Added Roles and Permissions tables
 
   @override
   MigrationStrategy get migration {
@@ -127,16 +157,16 @@ class AppDatabase extends _$AppDatabase {
         if (from < 3) {
           // Migration from version 2 to 3: Drop avatarUrl column
           // SQLite doesn't support DROP COLUMN, so we need to recreate the table
-          
+
           // Disable foreign keys temporarily
           await customStatement('PRAGMA foreign_keys = OFF');
-          
+
           // Rename existing table
           await customStatement('ALTER TABLE admins RENAME TO admins_old');
-          
+
           // Create new table with new schema (without avatarUrl)
           await m.createTable(admins);
-          
+
           // Copy data from old table to new table (excluding avatarUrl)
           await customStatement('''
             INSERT INTO admins (id, uid, phone, first_name, last_name, email, 
@@ -147,18 +177,23 @@ class AppDatabase extends _$AppDatabase {
                    sync_action, sync_retry_count, sync_error, last_sync_attempt
             FROM admins_old
           ''');
-          
+
           // Drop old table
           await customStatement('DROP TABLE admins_old');
-          
+
           // Re-enable foreign keys
           await customStatement('PRAGMA foreign_keys = ON');
         }
-        
+
         if (from < 4) {
           // Migration from version 3 to 4: Add Roles and Permissions tables
           await m.createTable(roles);
           await m.createTable(permissions);
+        }
+
+        if (from < 5) {
+          // Migration from version 4 to 5: Add Companies tables
+          await m.createTable(companies);
         }
       },
       beforeOpen: (details) async {

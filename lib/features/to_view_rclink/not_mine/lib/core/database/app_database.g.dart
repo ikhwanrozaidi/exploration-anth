@@ -3137,6 +3137,1107 @@ class PermissionsCompanion extends UpdateCompanion<PermissionRecord> {
   }
 }
 
+class $CompaniesTable extends Companies
+    with TableInfo<$CompaniesTable, CompanyRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CompaniesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _regNoMeta = const VerificationMeta('regNo');
+  @override
+  late final GeneratedColumn<String> regNo = GeneratedColumn<String>(
+    'reg_no',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cidbNoMeta = const VerificationMeta('cidbNo');
+  @override
+  late final GeneratedColumn<String> cidbNo = GeneratedColumn<String>(
+    'cidb_no',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _addressMeta = const VerificationMeta(
+    'address',
+  );
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+    'address',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _postalCodeMeta = const VerificationMeta(
+    'postalCode',
+  );
+  @override
+  late final GeneratedColumn<String> postalCode = GeneratedColumn<String>(
+    'postal_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cityMeta = const VerificationMeta('city');
+  @override
+  late final GeneratedColumn<String> city = GeneratedColumn<String>(
+    'city',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _stateMeta = const VerificationMeta('state');
+  @override
+  late final GeneratedColumn<String> state = GeneratedColumn<String>(
+    'state',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _countryMeta = const VerificationMeta(
+    'country',
+  );
+  @override
+  late final GeneratedColumn<String> country = GeneratedColumn<String>(
+    'country',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+    'email',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _websiteMeta = const VerificationMeta(
+    'website',
+  );
+  @override
+  late final GeneratedColumn<String> website = GeneratedColumn<String>(
+    'website',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _companyTypeMeta = const VerificationMeta(
+    'companyType',
+  );
+  @override
+  late final GeneratedColumn<String> companyType = GeneratedColumn<String>(
+    'company_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ownerIDMeta = const VerificationMeta(
+    'ownerID',
+  );
+  @override
+  late final GeneratedColumn<int> ownerID = GeneratedColumn<int>(
+    'owner_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _defaultBankAccMeta = const VerificationMeta(
+    'defaultBankAcc',
+  );
+  @override
+  late final GeneratedColumn<String> defaultBankAcc = GeneratedColumn<String>(
+    'default_bank_acc',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _defaultBankAccTypeMeta =
+      const VerificationMeta('defaultBankAccType');
+  @override
+  late final GeneratedColumn<String> defaultBankAccType =
+      GeneratedColumn<String>(
+        'default_bank_acc_type',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    uid,
+    name,
+    regNo,
+    cidbNo,
+    address,
+    postalCode,
+    city,
+    state,
+    country,
+    phone,
+    email,
+    website,
+    companyType,
+    ownerID,
+    defaultBankAcc,
+    defaultBankAccType,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'companies';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CompanyRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('reg_no')) {
+      context.handle(
+        _regNoMeta,
+        regNo.isAcceptableOrUnknown(data['reg_no']!, _regNoMeta),
+      );
+    }
+    if (data.containsKey('cidb_no')) {
+      context.handle(
+        _cidbNoMeta,
+        cidbNo.isAcceptableOrUnknown(data['cidb_no']!, _cidbNoMeta),
+      );
+    }
+    if (data.containsKey('address')) {
+      context.handle(
+        _addressMeta,
+        address.isAcceptableOrUnknown(data['address']!, _addressMeta),
+      );
+    }
+    if (data.containsKey('postal_code')) {
+      context.handle(
+        _postalCodeMeta,
+        postalCode.isAcceptableOrUnknown(data['postal_code']!, _postalCodeMeta),
+      );
+    }
+    if (data.containsKey('city')) {
+      context.handle(
+        _cityMeta,
+        city.isAcceptableOrUnknown(data['city']!, _cityMeta),
+      );
+    }
+    if (data.containsKey('state')) {
+      context.handle(
+        _stateMeta,
+        state.isAcceptableOrUnknown(data['state']!, _stateMeta),
+      );
+    }
+    if (data.containsKey('country')) {
+      context.handle(
+        _countryMeta,
+        country.isAcceptableOrUnknown(data['country']!, _countryMeta),
+      );
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+        _emailMeta,
+        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
+      );
+    }
+    if (data.containsKey('website')) {
+      context.handle(
+        _websiteMeta,
+        website.isAcceptableOrUnknown(data['website']!, _websiteMeta),
+      );
+    }
+    if (data.containsKey('company_type')) {
+      context.handle(
+        _companyTypeMeta,
+        companyType.isAcceptableOrUnknown(
+          data['company_type']!,
+          _companyTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_companyTypeMeta);
+    }
+    if (data.containsKey('owner_i_d')) {
+      context.handle(
+        _ownerIDMeta,
+        ownerID.isAcceptableOrUnknown(data['owner_i_d']!, _ownerIDMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ownerIDMeta);
+    }
+    if (data.containsKey('default_bank_acc')) {
+      context.handle(
+        _defaultBankAccMeta,
+        defaultBankAcc.isAcceptableOrUnknown(
+          data['default_bank_acc']!,
+          _defaultBankAccMeta,
+        ),
+      );
+    }
+    if (data.containsKey('default_bank_acc_type')) {
+      context.handle(
+        _defaultBankAccTypeMeta,
+        defaultBankAccType.isAcceptableOrUnknown(
+          data['default_bank_acc_type']!,
+          _defaultBankAccTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  CompanyRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CompanyRecord(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      regNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reg_no'],
+      ),
+      cidbNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cidb_no'],
+      ),
+      address: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}address'],
+      ),
+      postalCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}postal_code'],
+      ),
+      city: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}city'],
+      ),
+      state: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}state'],
+      ),
+      country: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}country'],
+      ),
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      ),
+      email: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}email'],
+      ),
+      website: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}website'],
+      ),
+      companyType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}company_type'],
+      )!,
+      ownerID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}owner_i_d'],
+      )!,
+      defaultBankAcc: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}default_bank_acc'],
+      ),
+      defaultBankAccType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}default_bank_acc_type'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+    );
+  }
+
+  @override
+  $CompaniesTable createAlias(String alias) {
+    return $CompaniesTable(attachedDatabase, alias);
+  }
+}
+
+class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
+  final int id;
+  final String uid;
+  final String name;
+  final String? regNo;
+  final String? cidbNo;
+  final String? address;
+  final String? postalCode;
+  final String? city;
+  final String? state;
+  final String? country;
+  final String? phone;
+  final String? email;
+  final String? website;
+  final String companyType;
+  final int ownerID;
+  final String? defaultBankAcc;
+  final String? defaultBankAccType;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  const CompanyRecord({
+    required this.id,
+    required this.uid,
+    required this.name,
+    this.regNo,
+    this.cidbNo,
+    this.address,
+    this.postalCode,
+    this.city,
+    this.state,
+    this.country,
+    this.phone,
+    this.email,
+    this.website,
+    required this.companyType,
+    required this.ownerID,
+    this.defaultBankAcc,
+    this.defaultBankAccType,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || regNo != null) {
+      map['reg_no'] = Variable<String>(regNo);
+    }
+    if (!nullToAbsent || cidbNo != null) {
+      map['cidb_no'] = Variable<String>(cidbNo);
+    }
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || postalCode != null) {
+      map['postal_code'] = Variable<String>(postalCode);
+    }
+    if (!nullToAbsent || city != null) {
+      map['city'] = Variable<String>(city);
+    }
+    if (!nullToAbsent || state != null) {
+      map['state'] = Variable<String>(state);
+    }
+    if (!nullToAbsent || country != null) {
+      map['country'] = Variable<String>(country);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || email != null) {
+      map['email'] = Variable<String>(email);
+    }
+    if (!nullToAbsent || website != null) {
+      map['website'] = Variable<String>(website);
+    }
+    map['company_type'] = Variable<String>(companyType);
+    map['owner_i_d'] = Variable<int>(ownerID);
+    if (!nullToAbsent || defaultBankAcc != null) {
+      map['default_bank_acc'] = Variable<String>(defaultBankAcc);
+    }
+    if (!nullToAbsent || defaultBankAccType != null) {
+      map['default_bank_acc_type'] = Variable<String>(defaultBankAccType);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    return map;
+  }
+
+  CompaniesCompanion toCompanion(bool nullToAbsent) {
+    return CompaniesCompanion(
+      id: Value(id),
+      uid: Value(uid),
+      name: Value(name),
+      regNo: regNo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(regNo),
+      cidbNo: cidbNo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cidbNo),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      postalCode: postalCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(postalCode),
+      city: city == null && nullToAbsent ? const Value.absent() : Value(city),
+      state: state == null && nullToAbsent
+          ? const Value.absent()
+          : Value(state),
+      country: country == null && nullToAbsent
+          ? const Value.absent()
+          : Value(country),
+      phone: phone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phone),
+      email: email == null && nullToAbsent
+          ? const Value.absent()
+          : Value(email),
+      website: website == null && nullToAbsent
+          ? const Value.absent()
+          : Value(website),
+      companyType: Value(companyType),
+      ownerID: Value(ownerID),
+      defaultBankAcc: defaultBankAcc == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultBankAcc),
+      defaultBankAccType: defaultBankAccType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultBankAccType),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+    );
+  }
+
+  factory CompanyRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CompanyRecord(
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      name: serializer.fromJson<String>(json['name']),
+      regNo: serializer.fromJson<String?>(json['regNo']),
+      cidbNo: serializer.fromJson<String?>(json['cidbNo']),
+      address: serializer.fromJson<String?>(json['address']),
+      postalCode: serializer.fromJson<String?>(json['postalCode']),
+      city: serializer.fromJson<String?>(json['city']),
+      state: serializer.fromJson<String?>(json['state']),
+      country: serializer.fromJson<String?>(json['country']),
+      phone: serializer.fromJson<String?>(json['phone']),
+      email: serializer.fromJson<String?>(json['email']),
+      website: serializer.fromJson<String?>(json['website']),
+      companyType: serializer.fromJson<String>(json['companyType']),
+      ownerID: serializer.fromJson<int>(json['ownerID']),
+      defaultBankAcc: serializer.fromJson<String?>(json['defaultBankAcc']),
+      defaultBankAccType: serializer.fromJson<String?>(
+        json['defaultBankAccType'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'name': serializer.toJson<String>(name),
+      'regNo': serializer.toJson<String?>(regNo),
+      'cidbNo': serializer.toJson<String?>(cidbNo),
+      'address': serializer.toJson<String?>(address),
+      'postalCode': serializer.toJson<String?>(postalCode),
+      'city': serializer.toJson<String?>(city),
+      'state': serializer.toJson<String?>(state),
+      'country': serializer.toJson<String?>(country),
+      'phone': serializer.toJson<String?>(phone),
+      'email': serializer.toJson<String?>(email),
+      'website': serializer.toJson<String?>(website),
+      'companyType': serializer.toJson<String>(companyType),
+      'ownerID': serializer.toJson<int>(ownerID),
+      'defaultBankAcc': serializer.toJson<String?>(defaultBankAcc),
+      'defaultBankAccType': serializer.toJson<String?>(defaultBankAccType),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+    };
+  }
+
+  CompanyRecord copyWith({
+    int? id,
+    String? uid,
+    String? name,
+    Value<String?> regNo = const Value.absent(),
+    Value<String?> cidbNo = const Value.absent(),
+    Value<String?> address = const Value.absent(),
+    Value<String?> postalCode = const Value.absent(),
+    Value<String?> city = const Value.absent(),
+    Value<String?> state = const Value.absent(),
+    Value<String?> country = const Value.absent(),
+    Value<String?> phone = const Value.absent(),
+    Value<String?> email = const Value.absent(),
+    Value<String?> website = const Value.absent(),
+    String? companyType,
+    int? ownerID,
+    Value<String?> defaultBankAcc = const Value.absent(),
+    Value<String?> defaultBankAccType = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+  }) => CompanyRecord(
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    regNo: regNo.present ? regNo.value : this.regNo,
+    cidbNo: cidbNo.present ? cidbNo.value : this.cidbNo,
+    address: address.present ? address.value : this.address,
+    postalCode: postalCode.present ? postalCode.value : this.postalCode,
+    city: city.present ? city.value : this.city,
+    state: state.present ? state.value : this.state,
+    country: country.present ? country.value : this.country,
+    phone: phone.present ? phone.value : this.phone,
+    email: email.present ? email.value : this.email,
+    website: website.present ? website.value : this.website,
+    companyType: companyType ?? this.companyType,
+    ownerID: ownerID ?? this.ownerID,
+    defaultBankAcc: defaultBankAcc.present
+        ? defaultBankAcc.value
+        : this.defaultBankAcc,
+    defaultBankAccType: defaultBankAccType.present
+        ? defaultBankAccType.value
+        : this.defaultBankAccType,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+  );
+  CompanyRecord copyWithCompanion(CompaniesCompanion data) {
+    return CompanyRecord(
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      name: data.name.present ? data.name.value : this.name,
+      regNo: data.regNo.present ? data.regNo.value : this.regNo,
+      cidbNo: data.cidbNo.present ? data.cidbNo.value : this.cidbNo,
+      address: data.address.present ? data.address.value : this.address,
+      postalCode: data.postalCode.present
+          ? data.postalCode.value
+          : this.postalCode,
+      city: data.city.present ? data.city.value : this.city,
+      state: data.state.present ? data.state.value : this.state,
+      country: data.country.present ? data.country.value : this.country,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      email: data.email.present ? data.email.value : this.email,
+      website: data.website.present ? data.website.value : this.website,
+      companyType: data.companyType.present
+          ? data.companyType.value
+          : this.companyType,
+      ownerID: data.ownerID.present ? data.ownerID.value : this.ownerID,
+      defaultBankAcc: data.defaultBankAcc.present
+          ? data.defaultBankAcc.value
+          : this.defaultBankAcc,
+      defaultBankAccType: data.defaultBankAccType.present
+          ? data.defaultBankAccType.value
+          : this.defaultBankAccType,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CompanyRecord(')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('regNo: $regNo, ')
+          ..write('cidbNo: $cidbNo, ')
+          ..write('address: $address, ')
+          ..write('postalCode: $postalCode, ')
+          ..write('city: $city, ')
+          ..write('state: $state, ')
+          ..write('country: $country, ')
+          ..write('phone: $phone, ')
+          ..write('email: $email, ')
+          ..write('website: $website, ')
+          ..write('companyType: $companyType, ')
+          ..write('ownerID: $ownerID, ')
+          ..write('defaultBankAcc: $defaultBankAcc, ')
+          ..write('defaultBankAccType: $defaultBankAccType, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    uid,
+    name,
+    regNo,
+    cidbNo,
+    address,
+    postalCode,
+    city,
+    state,
+    country,
+    phone,
+    email,
+    website,
+    companyType,
+    ownerID,
+    defaultBankAcc,
+    defaultBankAccType,
+    createdAt,
+    updatedAt,
+    deletedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CompanyRecord &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.name == this.name &&
+          other.regNo == this.regNo &&
+          other.cidbNo == this.cidbNo &&
+          other.address == this.address &&
+          other.postalCode == this.postalCode &&
+          other.city == this.city &&
+          other.state == this.state &&
+          other.country == this.country &&
+          other.phone == this.phone &&
+          other.email == this.email &&
+          other.website == this.website &&
+          other.companyType == this.companyType &&
+          other.ownerID == this.ownerID &&
+          other.defaultBankAcc == this.defaultBankAcc &&
+          other.defaultBankAccType == this.defaultBankAccType &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt);
+}
+
+class CompaniesCompanion extends UpdateCompanion<CompanyRecord> {
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> name;
+  final Value<String?> regNo;
+  final Value<String?> cidbNo;
+  final Value<String?> address;
+  final Value<String?> postalCode;
+  final Value<String?> city;
+  final Value<String?> state;
+  final Value<String?> country;
+  final Value<String?> phone;
+  final Value<String?> email;
+  final Value<String?> website;
+  final Value<String> companyType;
+  final Value<int> ownerID;
+  final Value<String?> defaultBankAcc;
+  final Value<String?> defaultBankAccType;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  const CompaniesCompanion({
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.regNo = const Value.absent(),
+    this.cidbNo = const Value.absent(),
+    this.address = const Value.absent(),
+    this.postalCode = const Value.absent(),
+    this.city = const Value.absent(),
+    this.state = const Value.absent(),
+    this.country = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.email = const Value.absent(),
+    this.website = const Value.absent(),
+    this.companyType = const Value.absent(),
+    this.ownerID = const Value.absent(),
+    this.defaultBankAcc = const Value.absent(),
+    this.defaultBankAccType = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+  });
+  CompaniesCompanion.insert({
+    this.id = const Value.absent(),
+    required String uid,
+    required String name,
+    this.regNo = const Value.absent(),
+    this.cidbNo = const Value.absent(),
+    this.address = const Value.absent(),
+    this.postalCode = const Value.absent(),
+    this.city = const Value.absent(),
+    this.state = const Value.absent(),
+    this.country = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.email = const Value.absent(),
+    this.website = const Value.absent(),
+    required String companyType,
+    required int ownerID,
+    this.defaultBankAcc = const Value.absent(),
+    this.defaultBankAccType = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+  }) : uid = Value(uid),
+       name = Value(name),
+       companyType = Value(companyType),
+       ownerID = Value(ownerID),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<CompanyRecord> custom({
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? name,
+    Expression<String>? regNo,
+    Expression<String>? cidbNo,
+    Expression<String>? address,
+    Expression<String>? postalCode,
+    Expression<String>? city,
+    Expression<String>? state,
+    Expression<String>? country,
+    Expression<String>? phone,
+    Expression<String>? email,
+    Expression<String>? website,
+    Expression<String>? companyType,
+    Expression<int>? ownerID,
+    Expression<String>? defaultBankAcc,
+    Expression<String>? defaultBankAccType,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (name != null) 'name': name,
+      if (regNo != null) 'reg_no': regNo,
+      if (cidbNo != null) 'cidb_no': cidbNo,
+      if (address != null) 'address': address,
+      if (postalCode != null) 'postal_code': postalCode,
+      if (city != null) 'city': city,
+      if (state != null) 'state': state,
+      if (country != null) 'country': country,
+      if (phone != null) 'phone': phone,
+      if (email != null) 'email': email,
+      if (website != null) 'website': website,
+      if (companyType != null) 'company_type': companyType,
+      if (ownerID != null) 'owner_i_d': ownerID,
+      if (defaultBankAcc != null) 'default_bank_acc': defaultBankAcc,
+      if (defaultBankAccType != null)
+        'default_bank_acc_type': defaultBankAccType,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+    });
+  }
+
+  CompaniesCompanion copyWith({
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? name,
+    Value<String?>? regNo,
+    Value<String?>? cidbNo,
+    Value<String?>? address,
+    Value<String?>? postalCode,
+    Value<String?>? city,
+    Value<String?>? state,
+    Value<String?>? country,
+    Value<String?>? phone,
+    Value<String?>? email,
+    Value<String?>? website,
+    Value<String>? companyType,
+    Value<int>? ownerID,
+    Value<String?>? defaultBankAcc,
+    Value<String?>? defaultBankAccType,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+  }) {
+    return CompaniesCompanion(
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      regNo: regNo ?? this.regNo,
+      cidbNo: cidbNo ?? this.cidbNo,
+      address: address ?? this.address,
+      postalCode: postalCode ?? this.postalCode,
+      city: city ?? this.city,
+      state: state ?? this.state,
+      country: country ?? this.country,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
+      website: website ?? this.website,
+      companyType: companyType ?? this.companyType,
+      ownerID: ownerID ?? this.ownerID,
+      defaultBankAcc: defaultBankAcc ?? this.defaultBankAcc,
+      defaultBankAccType: defaultBankAccType ?? this.defaultBankAccType,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (regNo.present) {
+      map['reg_no'] = Variable<String>(regNo.value);
+    }
+    if (cidbNo.present) {
+      map['cidb_no'] = Variable<String>(cidbNo.value);
+    }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (postalCode.present) {
+      map['postal_code'] = Variable<String>(postalCode.value);
+    }
+    if (city.present) {
+      map['city'] = Variable<String>(city.value);
+    }
+    if (state.present) {
+      map['state'] = Variable<String>(state.value);
+    }
+    if (country.present) {
+      map['country'] = Variable<String>(country.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (website.present) {
+      map['website'] = Variable<String>(website.value);
+    }
+    if (companyType.present) {
+      map['company_type'] = Variable<String>(companyType.value);
+    }
+    if (ownerID.present) {
+      map['owner_i_d'] = Variable<int>(ownerID.value);
+    }
+    if (defaultBankAcc.present) {
+      map['default_bank_acc'] = Variable<String>(defaultBankAcc.value);
+    }
+    if (defaultBankAccType.present) {
+      map['default_bank_acc_type'] = Variable<String>(defaultBankAccType.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CompaniesCompanion(')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('regNo: $regNo, ')
+          ..write('cidbNo: $cidbNo, ')
+          ..write('address: $address, ')
+          ..write('postalCode: $postalCode, ')
+          ..write('city: $city, ')
+          ..write('state: $state, ')
+          ..write('country: $country, ')
+          ..write('phone: $phone, ')
+          ..write('email: $email, ')
+          ..write('website: $website, ')
+          ..write('companyType: $companyType, ')
+          ..write('ownerID: $ownerID, ')
+          ..write('defaultBankAcc: $defaultBankAcc, ')
+          ..write('defaultBankAccType: $defaultBankAccType, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   _$AppDatabase.connect(DatabaseConnection c) : super.connect(c);
@@ -3145,6 +4246,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SyncQueueTable syncQueue = $SyncQueueTable(this);
   late final $RolesTable roles = $RolesTable(this);
   late final $PermissionsTable permissions = $PermissionsTable(this);
+  late final $CompaniesTable companies = $CompaniesTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -3154,6 +4256,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     syncQueue,
     roles,
     permissions,
+    companies,
   ];
 }
 
@@ -4601,6 +5704,493 @@ typedef $$PermissionsTableProcessedTableManager =
       PermissionRecord,
       PrefetchHooks Function()
     >;
+typedef $$CompaniesTableCreateCompanionBuilder =
+    CompaniesCompanion Function({
+      Value<int> id,
+      required String uid,
+      required String name,
+      Value<String?> regNo,
+      Value<String?> cidbNo,
+      Value<String?> address,
+      Value<String?> postalCode,
+      Value<String?> city,
+      Value<String?> state,
+      Value<String?> country,
+      Value<String?> phone,
+      Value<String?> email,
+      Value<String?> website,
+      required String companyType,
+      required int ownerID,
+      Value<String?> defaultBankAcc,
+      Value<String?> defaultBankAccType,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> deletedAt,
+    });
+typedef $$CompaniesTableUpdateCompanionBuilder =
+    CompaniesCompanion Function({
+      Value<int> id,
+      Value<String> uid,
+      Value<String> name,
+      Value<String?> regNo,
+      Value<String?> cidbNo,
+      Value<String?> address,
+      Value<String?> postalCode,
+      Value<String?> city,
+      Value<String?> state,
+      Value<String?> country,
+      Value<String?> phone,
+      Value<String?> email,
+      Value<String?> website,
+      Value<String> companyType,
+      Value<int> ownerID,
+      Value<String?> defaultBankAcc,
+      Value<String?> defaultBankAccType,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+    });
+
+class $$CompaniesTableFilterComposer
+    extends Composer<_$AppDatabase, $CompaniesTable> {
+  $$CompaniesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get regNo => $composableBuilder(
+    column: $table.regNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cidbNo => $composableBuilder(
+    column: $table.cidbNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get postalCode => $composableBuilder(
+    column: $table.postalCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get city => $composableBuilder(
+    column: $table.city,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get country => $composableBuilder(
+    column: $table.country,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get website => $composableBuilder(
+    column: $table.website,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get companyType => $composableBuilder(
+    column: $table.companyType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ownerID => $composableBuilder(
+    column: $table.ownerID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get defaultBankAcc => $composableBuilder(
+    column: $table.defaultBankAcc,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get defaultBankAccType => $composableBuilder(
+    column: $table.defaultBankAccType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CompaniesTableOrderingComposer
+    extends Composer<_$AppDatabase, $CompaniesTable> {
+  $$CompaniesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get regNo => $composableBuilder(
+    column: $table.regNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cidbNo => $composableBuilder(
+    column: $table.cidbNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get postalCode => $composableBuilder(
+    column: $table.postalCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get city => $composableBuilder(
+    column: $table.city,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get country => $composableBuilder(
+    column: $table.country,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get website => $composableBuilder(
+    column: $table.website,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get companyType => $composableBuilder(
+    column: $table.companyType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ownerID => $composableBuilder(
+    column: $table.ownerID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get defaultBankAcc => $composableBuilder(
+    column: $table.defaultBankAcc,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get defaultBankAccType => $composableBuilder(
+    column: $table.defaultBankAccType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CompaniesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CompaniesTable> {
+  $$CompaniesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get regNo =>
+      $composableBuilder(column: $table.regNo, builder: (column) => column);
+
+  GeneratedColumn<String> get cidbNo =>
+      $composableBuilder(column: $table.cidbNo, builder: (column) => column);
+
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumn<String> get postalCode => $composableBuilder(
+    column: $table.postalCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get city =>
+      $composableBuilder(column: $table.city, builder: (column) => column);
+
+  GeneratedColumn<String> get state =>
+      $composableBuilder(column: $table.state, builder: (column) => column);
+
+  GeneratedColumn<String> get country =>
+      $composableBuilder(column: $table.country, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get email =>
+      $composableBuilder(column: $table.email, builder: (column) => column);
+
+  GeneratedColumn<String> get website =>
+      $composableBuilder(column: $table.website, builder: (column) => column);
+
+  GeneratedColumn<String> get companyType => $composableBuilder(
+    column: $table.companyType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get ownerID =>
+      $composableBuilder(column: $table.ownerID, builder: (column) => column);
+
+  GeneratedColumn<String> get defaultBankAcc => $composableBuilder(
+    column: $table.defaultBankAcc,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get defaultBankAccType => $composableBuilder(
+    column: $table.defaultBankAccType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+}
+
+class $$CompaniesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CompaniesTable,
+          CompanyRecord,
+          $$CompaniesTableFilterComposer,
+          $$CompaniesTableOrderingComposer,
+          $$CompaniesTableAnnotationComposer,
+          $$CompaniesTableCreateCompanionBuilder,
+          $$CompaniesTableUpdateCompanionBuilder,
+          (
+            CompanyRecord,
+            BaseReferences<_$AppDatabase, $CompaniesTable, CompanyRecord>,
+          ),
+          CompanyRecord,
+          PrefetchHooks Function()
+        > {
+  $$CompaniesTableTableManager(_$AppDatabase db, $CompaniesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CompaniesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CompaniesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CompaniesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> regNo = const Value.absent(),
+                Value<String?> cidbNo = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> postalCode = const Value.absent(),
+                Value<String?> city = const Value.absent(),
+                Value<String?> state = const Value.absent(),
+                Value<String?> country = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> email = const Value.absent(),
+                Value<String?> website = const Value.absent(),
+                Value<String> companyType = const Value.absent(),
+                Value<int> ownerID = const Value.absent(),
+                Value<String?> defaultBankAcc = const Value.absent(),
+                Value<String?> defaultBankAccType = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+              }) => CompaniesCompanion(
+                id: id,
+                uid: uid,
+                name: name,
+                regNo: regNo,
+                cidbNo: cidbNo,
+                address: address,
+                postalCode: postalCode,
+                city: city,
+                state: state,
+                country: country,
+                phone: phone,
+                email: email,
+                website: website,
+                companyType: companyType,
+                ownerID: ownerID,
+                defaultBankAcc: defaultBankAcc,
+                defaultBankAccType: defaultBankAccType,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String name,
+                Value<String?> regNo = const Value.absent(),
+                Value<String?> cidbNo = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> postalCode = const Value.absent(),
+                Value<String?> city = const Value.absent(),
+                Value<String?> state = const Value.absent(),
+                Value<String?> country = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> email = const Value.absent(),
+                Value<String?> website = const Value.absent(),
+                required String companyType,
+                required int ownerID,
+                Value<String?> defaultBankAcc = const Value.absent(),
+                Value<String?> defaultBankAccType = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+              }) => CompaniesCompanion.insert(
+                id: id,
+                uid: uid,
+                name: name,
+                regNo: regNo,
+                cidbNo: cidbNo,
+                address: address,
+                postalCode: postalCode,
+                city: city,
+                state: state,
+                country: country,
+                phone: phone,
+                email: email,
+                website: website,
+                companyType: companyType,
+                ownerID: ownerID,
+                defaultBankAcc: defaultBankAcc,
+                defaultBankAccType: defaultBankAccType,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CompaniesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CompaniesTable,
+      CompanyRecord,
+      $$CompaniesTableFilterComposer,
+      $$CompaniesTableOrderingComposer,
+      $$CompaniesTableAnnotationComposer,
+      $$CompaniesTableCreateCompanionBuilder,
+      $$CompaniesTableUpdateCompanionBuilder,
+      (
+        CompanyRecord,
+        BaseReferences<_$AppDatabase, $CompaniesTable, CompanyRecord>,
+      ),
+      CompanyRecord,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4613,4 +6203,6 @@ class $AppDatabaseManager {
       $$RolesTableTableManager(_db, _db.roles);
   $$PermissionsTableTableManager get permissions =>
       $$PermissionsTableTableManager(_db, _db.permissions);
+  $$CompaniesTableTableManager get companies =>
+      $$CompaniesTableTableManager(_db, _db.companies);
 }

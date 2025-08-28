@@ -1,72 +1,72 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
+
 import '../../../../core/errors/failures.dart';
-import '../../../../core/network/network_info.dart';
-import '../../../auth/data/datasources/auth_local_data_source.dart';
+import '../../../../core/repositories/base_sync_repository.dart';
 import '../../domain/entities/company.dart';
 import '../datasources/company_remote_datasource.dart';
 import '../../domain/repositories/company_repository.dart';
-import '../datasources/company_api_service.dart';
 import '../datasources/company_local_datasource.dart';
+import '../models/company_model.dart';
 
 @Injectable(as: CompanyRepository)
-class CompanyRepositoryImpl implements CompanyRepository {
-  final CompanyApiService _apiService;
+class CompanyRepositoryImpl
+    extends BaseOfflineSyncRepository<List<Company>, List<CompanyModel>>
+    implements CompanyRepository {
   final CompanyLocalDataSource _localDataSource;
   final CompanyRemoteDataSource _remoteDataSource;
-  final AuthLocalDataSource _authLocalDataSource;
-  final NetworkInfo _networkInfo;
 
-  CompanyRepositoryImpl(
-    this._apiService,
-    this._localDataSource,
-    this._remoteDataSource,
-    this._authLocalDataSource,
-    this._networkInfo,
-  );
+  CompanyRepositoryImpl(this._localDataSource, this._remoteDataSource);
 
   @override
-  Future<Either<Failure, List<Company>>> getMyCompanies() async {
-    if (await _networkInfo.isConnected) {
-      try {
-        // Get access token for API call
-        final tokenResult = await _authLocalDataSource.getAccessToken();
+  Future<Either<Failure, List<Company>>> getMyCompanies({
+    bool forceRefresh = false,
+    Duration? cacheTimeout = const Duration(hours: 1),
+  }) async {
+    return await getOfflineFirst(
+      getLocal: () => _getLocalCompanies(),
+      getRemote: () => _getRemoteCompanies(),
+      saveLocal: (companies, {bool markForSync = false}) =>
+          _saveLocalCompanies(companies),
+      toEntity: (models) => models.map((model) => model.toEntity()).toList(),
+      forceRefresh: forceRefresh,
+      cacheTimeout: cacheTimeout,
+    );
+  }
 
-        return await tokenResult.fold((failure) => Left(failure), (
-          accessToken,
-        ) async {
-          if (accessToken == null) {
-            return const Left(UnauthorizedFailure());
-          }
-
-          final response = await _apiService.getMyCompanies();
-
-          if (response.isSuccess && response.data != null) {
-            final companies = response.data!;
-
-            // Cache the companies for offline use
-            await _localDataSource.cacheCompanies(companies);
-
-            return Right(companies.map((model) => model.toEntity()).toList());
-          } else {
-            return Left(
-              ServerFailure(response.message ?? 'Failed to get companies'),
-            );
-          }
-        });
-      } catch (e) {
-        return Left(NetworkFailure(e.toString()));
-      }
-    } else {
-      // Use cached data when offline
+  /// Get companies from local cache
+  Future<List<Company>?> _getLocalCompanies() async {
+    try {
       final cachedResult = await _localDataSource.getCachedCompanies();
 
-      return cachedResult.fold((failure) => Left(failure), (cachedCompanies) {
-        if (cachedCompanies.isEmpty) {
-          return const Left(ConnectionFailure());
-        }
-        return Right(cachedCompanies.map((model) => model.toEntity()).toList());
-      });
+      return cachedResult.fold(
+        (failure) => null, // Return null if cache fails or is empty
+        (cachedModels) {
+          if (cachedModels.isEmpty) return null;
+          return cachedModels.map((model) => model.toEntity()).toList();
+        },
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Get companies from remote API
+  Future<Either<Failure, List<CompanyModel>>> _getRemoteCompanies() async {
+    return await _remoteDataSource.getMyCompanies();
+  }
+
+  /// Save companies to local cache
+  Future<void> _saveLocalCompanies(List<Company> companies) async {
+    try {
+      // Convert entities back to models for caching
+      // You'll need to implement CompanyModel.fromEntity() or modify this approach
+      final models = companies
+          .map((entity) => CompanyModel.fromEntity(entity))
+          .toList();
+      await _localDataSource.cacheCompanies(models);
+    } catch (e) {
+      // Handle save failure silently - base class handles main error flow
     }
   }
 
@@ -82,6 +82,11 @@ class CompanyRepositoryImpl implements CompanyRepository {
 
   @override
   Future<Either<Failure, void>> clearCompanyCache() async {
-    return await _localDataSource.clearCache();
+    try {
+      await _localDataSource.clearCache();
+      return const Right(null);
+    } catch (e) {
+      return Left(CacheFailure('Failed to clear cache: $e'));
+    }
   }
 }

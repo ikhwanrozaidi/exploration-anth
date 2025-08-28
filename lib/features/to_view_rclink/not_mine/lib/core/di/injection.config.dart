@@ -163,15 +163,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i517.AdminRemoteDataSource>(),
       ),
     );
-    gh.factory<_i752.CompanyRepository>(
-      () => _i726.CompanyRepositoryImpl(
-        gh<_i178.CompanyApiService>(),
-        gh<_i594.CompanyLocalDataSource>(),
-        gh<_i469.CompanyRemoteDataSource>(),
-        gh<_i852.AuthLocalDataSource>(),
-        gh<_i932.NetworkInfo>(),
-      ),
-    );
     gh.lazySingleton<_i107.AuthRemoteDataSource>(
       () => _i107.AuthRemoteDataSourceImpl(gh<_i156.AuthApiService>()),
     );
@@ -194,6 +185,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i335.AdminRepositoryImpl(
         gh<_i691.AdminLocalDataSource>(),
         gh<_i517.AdminRemoteDataSource>(),
+      ),
+    );
+    gh.factory<_i752.CompanyRepository>(
+      () => _i726.CompanyRepositoryImpl(
+        gh<_i594.CompanyLocalDataSource>(),
+        gh<_i469.CompanyRemoteDataSource>(),
       ),
     );
     gh.lazySingleton<_i257.GetCurrentAdminUseCase>(
