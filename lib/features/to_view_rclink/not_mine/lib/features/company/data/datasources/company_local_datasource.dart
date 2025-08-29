@@ -1,99 +1,148 @@
-import 'package:dartz/dartz.dart';
+import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import '../../../../core/errors/failures.dart';
-import '../models/company_model.dart';
+
+import '../../../../core/database/app_database.dart';
+import '../../domain/entities/company.dart';
 
 abstract class CompanyLocalDataSource {
-  Future<Either<Failure, List<CompanyModel>>> getCachedCompanies();
-  Future<Either<Failure, void>> cacheCompanies(List<CompanyModel> companies);
-  Future<Either<Failure, void>> cacheSelectedCompany(String companyId);
-  Future<Either<Failure, String?>> getSelectedCompany();
-  Future<Either<Failure, void>> clearCache();
+  Future<List<Company>?> getCachedCompanies();
+  Future<void> cacheCompanies(List<Company> companies);
+  Future<void> cacheSelectedCompany(String companyId);
+  Future<String?> getSelectedCompany();
+  Future<void> clearCache();
 }
 
 @LazySingleton(as: CompanyLocalDataSource)
 class CompanyLocalDataSourceImpl implements CompanyLocalDataSource {
-  static const String _companiesKey = 'cached_companies';
+  final DatabaseService _databaseService;
   static const String _selectedCompanyKey = 'selected_company_id';
 
-  @override
-  Future<Either<Failure, List<CompanyModel>>> getCachedCompanies() async {
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final companiesJson = prefs.getString(_companiesKey);
+  CompanyLocalDataSourceImpl(this._databaseService);
 
-      if (companiesJson == null) {
-        return const Right([]);
+  AppDatabase get _database => _databaseService.database;
+
+  @override
+  Future<List<Company>?> getCachedCompanies() async {
+    try {
+      final companyRecords = await _database.select(_database.companies).get();
+
+      if (companyRecords.isEmpty) {
+        return null;
       }
 
-      final List<dynamic> companiesList = json.decode(companiesJson);
-      final companies = companiesList
-          .map((json) => CompanyModel.fromJson(json))
+      // Convert database records to domain entities
+      final companies = companyRecords
+          .map(
+            (record) => Company(
+              id: record.id,
+              uid: record.uid,
+              name: record.name,
+              regNo: record.regNo ?? '',
+              cidbNo: record.cidbNo ?? '',
+              address: record.address ?? '',
+              postalCode: record.postalCode ?? '',
+              city: record.city ?? '',
+              state: record.state ?? '',
+              country: record.country ?? '',
+              phone: record.phone ?? '',
+              email: record.email ?? '',
+              website: record.website ?? '',
+              companyType: record.companyType,
+              createdAt: record.createdAt,
+              updatedAt: record.updatedAt,
+              deletedAt: record.deletedAt,
+              ownerID: record.ownerID,
+              adminRole: null, // AdminRole is not stored in Companies table
+              adminCount: 0, // AdminCount is not stored in Companies table
+            ),
+          )
           .toList();
 
-      return Right(companies);
+      return companies.isEmpty ? null : companies;
     } catch (e) {
-      return Left(
-        CacheFailure('Failed to get cached companies: ${e.toString()}'),
-      );
+      return null;
     }
   }
 
   @override
-  Future<Either<Failure, void>> cacheCompanies(
-    List<CompanyModel> companies,
-  ) async {
+  Future<void> cacheCompanies(List<Company> companies) async {
     try {
-      final prefs = await SharedPreferences.getInstance();
-      final companiesJson = json.encode(
-        companies.map((company) => company.toJson()).toList(),
-      );
-      await prefs.setString(_companiesKey, companiesJson);
-      return const Right(null);
+      // Clear existing companies
+      await _database.delete(_database.companies).go();
+
+      // Insert new companies
+      for (final company in companies) {
+        await _database
+            .into(_database.companies)
+            .insert(
+              CompaniesCompanion(
+                uid: Value(company.uid),
+                name: Value(company.name),
+                regNo: Value(company.regNo.isNotEmpty ? company.regNo : null),
+                cidbNo: Value(
+                  company.cidbNo.isNotEmpty ? company.cidbNo : null,
+                ),
+                address: Value(
+                  company.address.isNotEmpty ? company.address : null,
+                ),
+                postalCode: Value(
+                  company.postalCode.isNotEmpty ? company.postalCode : null,
+                ),
+                city: Value(company.city.isNotEmpty ? company.city : null),
+                state: Value(company.state.isNotEmpty ? company.state : null),
+                country: Value(
+                  company.country.isNotEmpty ? company.country : null,
+                ),
+                phone: Value(company.phone.isNotEmpty ? company.phone : null),
+                email: Value(company.email.isNotEmpty ? company.email : null),
+                website: Value(
+                  company.website.isNotEmpty ? company.website : null,
+                ),
+                companyType: Value(company.companyType),
+                ownerID: Value(company.ownerID),
+                createdAt: Value(company.createdAt),
+                updatedAt: Value(company.updatedAt),
+                deletedAt: Value(company.deletedAt),
+              ),
+            );
+      }
     } catch (e) {
-      return Left(CacheFailure('Failed to cache companies: ${e.toString()}'));
+      // Handle silently bcs errors are handled by the repository layer
     }
   }
 
   @override
-  Future<Either<Failure, void>> cacheSelectedCompany(String companyId) async {
+  Future<void> cacheSelectedCompany(String companyId) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_selectedCompanyKey, companyId);
-      return const Right(null);
     } catch (e) {
-      return Left(
-        CacheFailure('Failed to cache selected company: ${e.toString()}'),
-      );
+      // Handle silently
     }
   }
 
   @override
-  Future<Either<Failure, String?>> getSelectedCompany() async {
+  Future<String?> getSelectedCompany() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final companyId = prefs.getString(_selectedCompanyKey);
-      return Right(companyId);
+      return prefs.getString(_selectedCompanyKey);
     } catch (e) {
-      return Left(
-        CacheFailure('Failed to get selected company: ${e.toString()}'),
-      );
+      return null;
     }
   }
 
   @override
-  Future<Either<Failure, void>> clearCache() async {
+  Future<void> clearCache() async {
     try {
+      // Delete all companies from database
+      await _database.delete(_database.companies).go();
+
+      // Clear selected company from SharedPreferences
       final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_companiesKey);
       await prefs.remove(_selectedCompanyKey);
-      return const Right(null);
     } catch (e) {
-      return Left(
-        CacheFailure('Failed to clear company cache: ${e.toString()}'),
-      );
+      // Handle silently
     }
   }
 }

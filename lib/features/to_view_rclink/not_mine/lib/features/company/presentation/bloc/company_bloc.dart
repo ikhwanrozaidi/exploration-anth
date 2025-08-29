@@ -4,6 +4,7 @@ import 'package:rclink_app/core/di/injection.dart';
 import 'package:rclink_app/features/rbac/presentation/bloc/rbac_bloc.dart';
 import 'package:rclink_app/features/rbac/presentation/bloc/rbac_event.dart';
 import '../../../../core/errors/failures.dart';
+import '../../domain/usecases/company_clear_cache_usecase.dart';
 import '../../domain/usecases/get_my_companies_usecase.dart';
 import '../../domain/usecases/select_company_usecase.dart';
 import '../../domain/usecases/get_selected_company_usecase.dart';
@@ -15,15 +16,18 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
   final GetMyCompaniesUseCase _getMyCompaniesUseCase;
   final SelectCompanyUseCase _selectCompanyUseCase;
   final GetSelectedCompanyUseCase _getSelectedCompanyUseCase;
+  final ClearCompanyCacheUseCase _clearCompanyCacheUseCase;
 
   CompanyBloc(
     this._getMyCompaniesUseCase,
     this._selectCompanyUseCase,
     this._getSelectedCompanyUseCase,
+    this._clearCompanyCacheUseCase,
   ) : super(const CompanyInitial()) {
     on<LoadCompanies>(_onLoadCompanies);
     on<SelectCompany>(_onSelectCompany);
     on<ClearSelection>(_onClearSelection);
+    on<ClearCompanyCache>(_onClearCache);
   }
 
   Future<void> _onLoadCompanies(
@@ -91,6 +95,20 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
     }
   }
 
+  Future<void> _onClearCache(
+    ClearCompanyCache event,
+    Emitter<CompanyState> emit,
+  ) async {
+    final result = await _clearCompanyCacheUseCase();
+
+    result.fold(
+      (failure) => emit(CompanyFailure(_mapFailureToMessage(failure))),
+      (_) {
+        emit(const CompanyInitial());
+        add(const LoadCompanies());
+      },
+    );
+  }
 
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {

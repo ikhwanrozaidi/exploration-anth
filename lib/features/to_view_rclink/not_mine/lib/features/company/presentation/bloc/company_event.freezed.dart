@@ -55,13 +55,14 @@ extension CompanyEventPatterns on CompanyEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadCompanies value)?  loadCompanies,TResult Function( SelectCompany value)?  selectCompany,TResult Function( ClearSelection value)?  clearSelection,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadCompanies value)?  loadCompanies,TResult Function( SelectCompany value)?  selectCompany,TResult Function( ClearSelection value)?  clearSelection,TResult Function( ClearCompanyCache value)?  clearCache,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadCompanies() when loadCompanies != null:
 return loadCompanies(_that);case SelectCompany() when selectCompany != null:
 return selectCompany(_that);case ClearSelection() when clearSelection != null:
-return clearSelection(_that);case _:
+return clearSelection(_that);case ClearCompanyCache() when clearCache != null:
+return clearCache(_that);case _:
   return orElse();
 
 }
@@ -79,13 +80,14 @@ return clearSelection(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadCompanies value)  loadCompanies,required TResult Function( SelectCompany value)  selectCompany,required TResult Function( ClearSelection value)  clearSelection,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadCompanies value)  loadCompanies,required TResult Function( SelectCompany value)  selectCompany,required TResult Function( ClearSelection value)  clearSelection,required TResult Function( ClearCompanyCache value)  clearCache,}){
 final _that = this;
 switch (_that) {
 case LoadCompanies():
 return loadCompanies(_that);case SelectCompany():
 return selectCompany(_that);case ClearSelection():
-return clearSelection(_that);case _:
+return clearSelection(_that);case ClearCompanyCache():
+return clearCache(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -102,13 +104,14 @@ return clearSelection(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadCompanies value)?  loadCompanies,TResult? Function( SelectCompany value)?  selectCompany,TResult? Function( ClearSelection value)?  clearSelection,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadCompanies value)?  loadCompanies,TResult? Function( SelectCompany value)?  selectCompany,TResult? Function( ClearSelection value)?  clearSelection,TResult? Function( ClearCompanyCache value)?  clearCache,}){
 final _that = this;
 switch (_that) {
 case LoadCompanies() when loadCompanies != null:
 return loadCompanies(_that);case SelectCompany() when selectCompany != null:
 return selectCompany(_that);case ClearSelection() when clearSelection != null:
-return clearSelection(_that);case _:
+return clearSelection(_that);case ClearCompanyCache() when clearCache != null:
+return clearCache(_that);case _:
   return null;
 
 }
@@ -125,12 +128,13 @@ return clearSelection(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadCompanies,TResult Function( String companyId)?  selectCompany,TResult Function()?  clearSelection,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadCompanies,TResult Function( String companyId)?  selectCompany,TResult Function()?  clearSelection,TResult Function()?  clearCache,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadCompanies() when loadCompanies != null:
 return loadCompanies();case SelectCompany() when selectCompany != null:
 return selectCompany(_that.companyId);case ClearSelection() when clearSelection != null:
-return clearSelection();case _:
+return clearSelection();case ClearCompanyCache() when clearCache != null:
+return clearCache();case _:
   return orElse();
 
 }
@@ -148,12 +152,13 @@ return clearSelection();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadCompanies,required TResult Function( String companyId)  selectCompany,required TResult Function()  clearSelection,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadCompanies,required TResult Function( String companyId)  selectCompany,required TResult Function()  clearSelection,required TResult Function()  clearCache,}) {final _that = this;
 switch (_that) {
 case LoadCompanies():
 return loadCompanies();case SelectCompany():
 return selectCompany(_that.companyId);case ClearSelection():
-return clearSelection();case _:
+return clearSelection();case ClearCompanyCache():
+return clearCache();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -170,12 +175,13 @@ return clearSelection();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadCompanies,TResult? Function( String companyId)?  selectCompany,TResult? Function()?  clearSelection,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadCompanies,TResult? Function( String companyId)?  selectCompany,TResult? Function()?  clearSelection,TResult? Function()?  clearCache,}) {final _that = this;
 switch (_that) {
 case LoadCompanies() when loadCompanies != null:
 return loadCompanies();case SelectCompany() when selectCompany != null:
 return selectCompany(_that.companyId);case ClearSelection() when clearSelection != null:
-return clearSelection();case _:
+return clearSelection();case ClearCompanyCache() when clearCache != null:
+return clearCache();case _:
   return null;
 
 }
@@ -305,6 +311,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'CompanyEvent.clearSelection()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class ClearCompanyCache implements CompanyEvent {
+  const ClearCompanyCache();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClearCompanyCache);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'CompanyEvent.clearCache()';
 }
 
 

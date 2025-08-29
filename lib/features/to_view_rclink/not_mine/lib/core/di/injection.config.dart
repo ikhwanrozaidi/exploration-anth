@@ -52,6 +52,8 @@ import '../../features/company/data/repositories/company_repository_impl.dart'
     as _i726;
 import '../../features/company/domain/repositories/company_repository.dart'
     as _i752;
+import '../../features/company/domain/usecases/company_clear_cache_usecase.dart'
+    as _i29;
 import '../../features/company/domain/usecases/get_my_companies_usecase.dart'
     as _i825;
 import '../../features/company/domain/usecases/get_selected_company_usecase.dart'
@@ -101,7 +103,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1004.ErrorInterceptor>(() => _i1004.ErrorInterceptor());
     gh.lazySingleton<_i458.LocaleBloc>(() => _i458.LocaleBloc());
     gh.lazySingleton<_i594.CompanyLocalDataSource>(
-      () => _i594.CompanyLocalDataSourceImpl(),
+      () => _i594.CompanyLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
     gh.lazySingleton<_i691.AdminLocalDataSource>(
       () => _i691.AdminLocalDataSourceImpl(gh<_i982.DatabaseService>()),
@@ -189,8 +191,8 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i752.CompanyRepository>(
       () => _i726.CompanyRepositoryImpl(
-        gh<_i594.CompanyLocalDataSource>(),
         gh<_i469.CompanyRemoteDataSource>(),
+        gh<_i594.CompanyLocalDataSource>(),
       ),
     );
     gh.lazySingleton<_i257.GetCurrentAdminUseCase>(
@@ -205,11 +207,22 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i825.GetMyCompaniesUseCase>(
       () => _i825.GetMyCompaniesUseCase(gh<_i752.CompanyRepository>()),
     );
+    gh.factory<_i29.ClearCompanyCacheUseCase>(
+      () => _i29.ClearCompanyCacheUseCase(gh<_i752.CompanyRepository>()),
+    );
     gh.lazySingleton<_i787.AuthRepository>(
       () => _i153.AuthRepositoryImpl(
         gh<_i107.AuthRemoteDataSource>(),
         gh<_i852.AuthLocalDataSource>(),
         gh<_i932.NetworkInfo>(),
+      ),
+    );
+    gh.lazySingleton<_i426.CompanyBloc>(
+      () => _i426.CompanyBloc(
+        gh<_i825.GetMyCompaniesUseCase>(),
+        gh<_i876.SelectCompanyUseCase>(),
+        gh<_i385.GetSelectedCompanyUseCase>(),
+        gh<_i29.ClearCompanyCacheUseCase>(),
       ),
     );
     gh.lazySingleton<_i871.ClearAuthCacheUseCase>(
@@ -229,13 +242,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i157.RefreshTokenUseCase>(
       () => _i157.RefreshTokenUseCase(gh<_i787.AuthRepository>()),
-    );
-    gh.lazySingleton<_i426.CompanyBloc>(
-      () => _i426.CompanyBloc(
-        gh<_i825.GetMyCompaniesUseCase>(),
-        gh<_i876.SelectCompanyUseCase>(),
-        gh<_i385.GetSelectedCompanyUseCase>(),
-      ),
     );
     gh.lazySingleton<_i797.AuthBloc>(
       () => _i797.AuthBloc(

@@ -1,16 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rclink_app/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:rclink_app/features/profile/presentation/pages/profile_page.dart';
 import 'package:rclink_app/features/program/presentation/pages/program_page.dart';
 import 'package:rclink_app/features/warnings/presentation/pages/warning_page.dart';
 import 'package:rclink_app/shared/utils/theme.dart';
 import '../../core/config/flavor_config.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import '../../features/locale/presentation/bloc/locale_bloc.dart';
-import '../../features/locale/presentation/bloc/locale_event.dart';
-import '../../features/locale/presentation/bloc/locale_state.dart';
 import '../../features/locale/presentation/widgets/app_localization.dart';
-import 'home_page.dart';
 
 /// RootPage manages the main app navigation and pages for authenticated users
 class RootPage extends StatefulWidget {
@@ -29,7 +24,7 @@ class _RootPageState extends State<RootPage> {
     ProgramPage(),
     _AddPage(),
     WarningPage(),
-    _ProfilePage(),
+    ProfilePage(),
   ];
 
   @override
