@@ -35,6 +35,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
           },
           loading: () => _loginPage,
           otpSent: (_) => _loginPage,
+          // authenticated: (tokens, currentAdmin) => RootPage(),
           authenticated: (tokens, currentAdmin) => _buildAuthenticatedView(),
           unauthenticated: () => _loginPage,
           failure: (_) => _loginPage,

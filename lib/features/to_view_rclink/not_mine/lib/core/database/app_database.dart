@@ -98,13 +98,18 @@ class Companies extends Table {
   TextColumn get phone => text().nullable()();
   TextColumn get email => text().nullable()();
   TextColumn get website => text().nullable()();
-  TextColumn get companyType => text()(); // e.g., "ENTERPRISE"
+  TextColumn get companyType => text()(); // e.g., "PRIVATE_LIMITED_COMPANY"
   IntColumn get ownerID => integer()(); // Owner admin ID
   TextColumn get defaultBankAcc => text().nullable()(); // Default bank account
   TextColumn get defaultBankAccType => text().nullable()(); // e.g., "MAYBANK"
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
   DateTimeColumn get deletedAt => dateTime().nullable()();
+  TextColumn get adminRoleUid => text().nullable()(); // Admin role UID
+  TextColumn get adminRoleName => text().nullable()(); // Admin role name
+  BoolColumn get bumiputera => boolean().withDefault(const Constant(false))();
+  TextColumn get einvoiceTinNo => text().nullable()();
+  DateTimeColumn get registrationDate => dateTime().nullable()();
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -144,7 +149,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 5; // Added Roles and Permissions tables
+  int get schemaVersion => 6; // Added Roles and Permissions tables
 
   @override
   MigrationStrategy get migration {
@@ -194,6 +199,15 @@ class AppDatabase extends _$AppDatabase {
         if (from < 5) {
           // Migration from version 4 to 5: Add Companies tables
           await m.createTable(companies);
+        }
+
+        if (from < 6) {
+          // Migration from version 5 to 6: Add new columns to Companies table
+          await m.addColumn(companies, companies.bumiputera);
+          await m.addColumn(companies, companies.einvoiceTinNo);
+          await m.addColumn(companies, companies.registrationDate);
+          await m.addColumn(companies, companies.adminRoleUid);
+          await m.addColumn(companies, companies.adminRoleName);
         }
       },
       beforeOpen: (details) async {

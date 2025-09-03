@@ -117,6 +117,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i267.PermissionLocalDataSource>(
       () => _i267.PermissionLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
+    gh.factory<_i1020.RoleApiService>(
+      () => _i1020.RoleApiService.new(gh<_i361.Dio>()),
+    );
     gh.factory<_i156.AuthApiService>(
       () => _i156.AuthApiService.new(gh<_i361.Dio>()),
     );
@@ -125,9 +128,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i178.CompanyApiService>(
       () => _i178.CompanyApiService.new(gh<_i361.Dio>()),
-    );
-    gh.factory<_i1020.RoleApiService>(
-      () => _i1020.RoleApiService.new(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i432.PermissionRemoteDataSource>(
       () => _i432.PermissionRemoteDataSourceImpl(gh<_i1020.RoleApiService>()),

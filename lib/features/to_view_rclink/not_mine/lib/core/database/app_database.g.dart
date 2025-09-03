@@ -3349,6 +3349,66 @@ class $CompaniesTable extends Companies
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _adminRoleUidMeta = const VerificationMeta(
+    'adminRoleUid',
+  );
+  @override
+  late final GeneratedColumn<String> adminRoleUid = GeneratedColumn<String>(
+    'admin_role_uid',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _adminRoleNameMeta = const VerificationMeta(
+    'adminRoleName',
+  );
+  @override
+  late final GeneratedColumn<String> adminRoleName = GeneratedColumn<String>(
+    'admin_role_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bumiputeraMeta = const VerificationMeta(
+    'bumiputera',
+  );
+  @override
+  late final GeneratedColumn<bool> bumiputera = GeneratedColumn<bool>(
+    'bumiputera',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("bumiputera" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _einvoiceTinNoMeta = const VerificationMeta(
+    'einvoiceTinNo',
+  );
+  @override
+  late final GeneratedColumn<String> einvoiceTinNo = GeneratedColumn<String>(
+    'einvoice_tin_no',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _registrationDateMeta = const VerificationMeta(
+    'registrationDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> registrationDate =
+      GeneratedColumn<DateTime>(
+        'registration_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -3371,6 +3431,11 @@ class $CompaniesTable extends Companies
     createdAt,
     updatedAt,
     deletedAt,
+    adminRoleUid,
+    adminRoleName,
+    bumiputera,
+    einvoiceTinNo,
+    registrationDate,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3522,6 +3587,48 @@ class $CompaniesTable extends Companies
         deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
       );
     }
+    if (data.containsKey('admin_role_uid')) {
+      context.handle(
+        _adminRoleUidMeta,
+        adminRoleUid.isAcceptableOrUnknown(
+          data['admin_role_uid']!,
+          _adminRoleUidMeta,
+        ),
+      );
+    }
+    if (data.containsKey('admin_role_name')) {
+      context.handle(
+        _adminRoleNameMeta,
+        adminRoleName.isAcceptableOrUnknown(
+          data['admin_role_name']!,
+          _adminRoleNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bumiputera')) {
+      context.handle(
+        _bumiputeraMeta,
+        bumiputera.isAcceptableOrUnknown(data['bumiputera']!, _bumiputeraMeta),
+      );
+    }
+    if (data.containsKey('einvoice_tin_no')) {
+      context.handle(
+        _einvoiceTinNoMeta,
+        einvoiceTinNo.isAcceptableOrUnknown(
+          data['einvoice_tin_no']!,
+          _einvoiceTinNoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('registration_date')) {
+      context.handle(
+        _registrationDateMeta,
+        registrationDate.isAcceptableOrUnknown(
+          data['registration_date']!,
+          _registrationDateMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -3615,6 +3722,26 @@ class $CompaniesTable extends Companies
         DriftSqlType.dateTime,
         data['${effectivePrefix}deleted_at'],
       ),
+      adminRoleUid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}admin_role_uid'],
+      ),
+      adminRoleName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}admin_role_name'],
+      ),
+      bumiputera: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}bumiputera'],
+      )!,
+      einvoiceTinNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}einvoice_tin_no'],
+      ),
+      registrationDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}registration_date'],
+      ),
     );
   }
 
@@ -3645,6 +3772,11 @@ class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? deletedAt;
+  final String? adminRoleUid;
+  final String? adminRoleName;
+  final bool bumiputera;
+  final String? einvoiceTinNo;
+  final DateTime? registrationDate;
   const CompanyRecord({
     required this.id,
     required this.uid,
@@ -3666,6 +3798,11 @@ class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
+    this.adminRoleUid,
+    this.adminRoleName,
+    required this.bumiputera,
+    this.einvoiceTinNo,
+    this.registrationDate,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3716,6 +3853,19 @@ class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
     if (!nullToAbsent || deletedAt != null) {
       map['deleted_at'] = Variable<DateTime>(deletedAt);
     }
+    if (!nullToAbsent || adminRoleUid != null) {
+      map['admin_role_uid'] = Variable<String>(adminRoleUid);
+    }
+    if (!nullToAbsent || adminRoleName != null) {
+      map['admin_role_name'] = Variable<String>(adminRoleName);
+    }
+    map['bumiputera'] = Variable<bool>(bumiputera);
+    if (!nullToAbsent || einvoiceTinNo != null) {
+      map['einvoice_tin_no'] = Variable<String>(einvoiceTinNo);
+    }
+    if (!nullToAbsent || registrationDate != null) {
+      map['registration_date'] = Variable<DateTime>(registrationDate);
+    }
     return map;
   }
 
@@ -3765,6 +3915,19 @@ class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
       deletedAt: deletedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(deletedAt),
+      adminRoleUid: adminRoleUid == null && nullToAbsent
+          ? const Value.absent()
+          : Value(adminRoleUid),
+      adminRoleName: adminRoleName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(adminRoleName),
+      bumiputera: Value(bumiputera),
+      einvoiceTinNo: einvoiceTinNo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(einvoiceTinNo),
+      registrationDate: registrationDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(registrationDate),
     );
   }
 
@@ -3796,6 +3959,13 @@ class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      adminRoleUid: serializer.fromJson<String?>(json['adminRoleUid']),
+      adminRoleName: serializer.fromJson<String?>(json['adminRoleName']),
+      bumiputera: serializer.fromJson<bool>(json['bumiputera']),
+      einvoiceTinNo: serializer.fromJson<String?>(json['einvoiceTinNo']),
+      registrationDate: serializer.fromJson<DateTime?>(
+        json['registrationDate'],
+      ),
     );
   }
   @override
@@ -3822,6 +3992,11 @@ class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'adminRoleUid': serializer.toJson<String?>(adminRoleUid),
+      'adminRoleName': serializer.toJson<String?>(adminRoleName),
+      'bumiputera': serializer.toJson<bool>(bumiputera),
+      'einvoiceTinNo': serializer.toJson<String?>(einvoiceTinNo),
+      'registrationDate': serializer.toJson<DateTime?>(registrationDate),
     };
   }
 
@@ -3846,6 +4021,11 @@ class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
     DateTime? createdAt,
     DateTime? updatedAt,
     Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> adminRoleUid = const Value.absent(),
+    Value<String?> adminRoleName = const Value.absent(),
+    bool? bumiputera,
+    Value<String?> einvoiceTinNo = const Value.absent(),
+    Value<DateTime?> registrationDate = const Value.absent(),
   }) => CompanyRecord(
     id: id ?? this.id,
     uid: uid ?? this.uid,
@@ -3871,6 +4051,17 @@ class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    adminRoleUid: adminRoleUid.present ? adminRoleUid.value : this.adminRoleUid,
+    adminRoleName: adminRoleName.present
+        ? adminRoleName.value
+        : this.adminRoleName,
+    bumiputera: bumiputera ?? this.bumiputera,
+    einvoiceTinNo: einvoiceTinNo.present
+        ? einvoiceTinNo.value
+        : this.einvoiceTinNo,
+    registrationDate: registrationDate.present
+        ? registrationDate.value
+        : this.registrationDate,
   );
   CompanyRecord copyWithCompanion(CompaniesCompanion data) {
     return CompanyRecord(
@@ -3902,6 +4093,21 @@ class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      adminRoleUid: data.adminRoleUid.present
+          ? data.adminRoleUid.value
+          : this.adminRoleUid,
+      adminRoleName: data.adminRoleName.present
+          ? data.adminRoleName.value
+          : this.adminRoleName,
+      bumiputera: data.bumiputera.present
+          ? data.bumiputera.value
+          : this.bumiputera,
+      einvoiceTinNo: data.einvoiceTinNo.present
+          ? data.einvoiceTinNo.value
+          : this.einvoiceTinNo,
+      registrationDate: data.registrationDate.present
+          ? data.registrationDate.value
+          : this.registrationDate,
     );
   }
 
@@ -3927,13 +4133,18 @@ class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
           ..write('defaultBankAccType: $defaultBankAccType, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('deletedAt: $deletedAt')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('adminRoleUid: $adminRoleUid, ')
+          ..write('adminRoleName: $adminRoleName, ')
+          ..write('bumiputera: $bumiputera, ')
+          ..write('einvoiceTinNo: $einvoiceTinNo, ')
+          ..write('registrationDate: $registrationDate')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(
+  int get hashCode => Object.hashAll([
     id,
     uid,
     name,
@@ -3954,7 +4165,12 @@ class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
     createdAt,
     updatedAt,
     deletedAt,
-  );
+    adminRoleUid,
+    adminRoleName,
+    bumiputera,
+    einvoiceTinNo,
+    registrationDate,
+  ]);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3978,7 +4194,12 @@ class CompanyRecord extends DataClass implements Insertable<CompanyRecord> {
           other.defaultBankAccType == this.defaultBankAccType &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
-          other.deletedAt == this.deletedAt);
+          other.deletedAt == this.deletedAt &&
+          other.adminRoleUid == this.adminRoleUid &&
+          other.adminRoleName == this.adminRoleName &&
+          other.bumiputera == this.bumiputera &&
+          other.einvoiceTinNo == this.einvoiceTinNo &&
+          other.registrationDate == this.registrationDate);
 }
 
 class CompaniesCompanion extends UpdateCompanion<CompanyRecord> {
@@ -4002,6 +4223,11 @@ class CompaniesCompanion extends UpdateCompanion<CompanyRecord> {
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<DateTime?> deletedAt;
+  final Value<String?> adminRoleUid;
+  final Value<String?> adminRoleName;
+  final Value<bool> bumiputera;
+  final Value<String?> einvoiceTinNo;
+  final Value<DateTime?> registrationDate;
   const CompaniesCompanion({
     this.id = const Value.absent(),
     this.uid = const Value.absent(),
@@ -4023,6 +4249,11 @@ class CompaniesCompanion extends UpdateCompanion<CompanyRecord> {
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
+    this.adminRoleUid = const Value.absent(),
+    this.adminRoleName = const Value.absent(),
+    this.bumiputera = const Value.absent(),
+    this.einvoiceTinNo = const Value.absent(),
+    this.registrationDate = const Value.absent(),
   });
   CompaniesCompanion.insert({
     this.id = const Value.absent(),
@@ -4045,6 +4276,11 @@ class CompaniesCompanion extends UpdateCompanion<CompanyRecord> {
     required DateTime createdAt,
     required DateTime updatedAt,
     this.deletedAt = const Value.absent(),
+    this.adminRoleUid = const Value.absent(),
+    this.adminRoleName = const Value.absent(),
+    this.bumiputera = const Value.absent(),
+    this.einvoiceTinNo = const Value.absent(),
+    this.registrationDate = const Value.absent(),
   }) : uid = Value(uid),
        name = Value(name),
        companyType = Value(companyType),
@@ -4072,6 +4308,11 @@ class CompaniesCompanion extends UpdateCompanion<CompanyRecord> {
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
     Expression<DateTime>? deletedAt,
+    Expression<String>? adminRoleUid,
+    Expression<String>? adminRoleName,
+    Expression<bool>? bumiputera,
+    Expression<String>? einvoiceTinNo,
+    Expression<DateTime>? registrationDate,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -4095,6 +4336,11 @@ class CompaniesCompanion extends UpdateCompanion<CompanyRecord> {
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (deletedAt != null) 'deleted_at': deletedAt,
+      if (adminRoleUid != null) 'admin_role_uid': adminRoleUid,
+      if (adminRoleName != null) 'admin_role_name': adminRoleName,
+      if (bumiputera != null) 'bumiputera': bumiputera,
+      if (einvoiceTinNo != null) 'einvoice_tin_no': einvoiceTinNo,
+      if (registrationDate != null) 'registration_date': registrationDate,
     });
   }
 
@@ -4119,6 +4365,11 @@ class CompaniesCompanion extends UpdateCompanion<CompanyRecord> {
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<DateTime?>? deletedAt,
+    Value<String?>? adminRoleUid,
+    Value<String?>? adminRoleName,
+    Value<bool>? bumiputera,
+    Value<String?>? einvoiceTinNo,
+    Value<DateTime?>? registrationDate,
   }) {
     return CompaniesCompanion(
       id: id ?? this.id,
@@ -4141,6 +4392,11 @@ class CompaniesCompanion extends UpdateCompanion<CompanyRecord> {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       deletedAt: deletedAt ?? this.deletedAt,
+      adminRoleUid: adminRoleUid ?? this.adminRoleUid,
+      adminRoleName: adminRoleName ?? this.adminRoleName,
+      bumiputera: bumiputera ?? this.bumiputera,
+      einvoiceTinNo: einvoiceTinNo ?? this.einvoiceTinNo,
+      registrationDate: registrationDate ?? this.registrationDate,
     );
   }
 
@@ -4207,6 +4463,21 @@ class CompaniesCompanion extends UpdateCompanion<CompanyRecord> {
     if (deletedAt.present) {
       map['deleted_at'] = Variable<DateTime>(deletedAt.value);
     }
+    if (adminRoleUid.present) {
+      map['admin_role_uid'] = Variable<String>(adminRoleUid.value);
+    }
+    if (adminRoleName.present) {
+      map['admin_role_name'] = Variable<String>(adminRoleName.value);
+    }
+    if (bumiputera.present) {
+      map['bumiputera'] = Variable<bool>(bumiputera.value);
+    }
+    if (einvoiceTinNo.present) {
+      map['einvoice_tin_no'] = Variable<String>(einvoiceTinNo.value);
+    }
+    if (registrationDate.present) {
+      map['registration_date'] = Variable<DateTime>(registrationDate.value);
+    }
     return map;
   }
 
@@ -4232,7 +4503,12 @@ class CompaniesCompanion extends UpdateCompanion<CompanyRecord> {
           ..write('defaultBankAccType: $defaultBankAccType, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('deletedAt: $deletedAt')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('adminRoleUid: $adminRoleUid, ')
+          ..write('adminRoleName: $adminRoleName, ')
+          ..write('bumiputera: $bumiputera, ')
+          ..write('einvoiceTinNo: $einvoiceTinNo, ')
+          ..write('registrationDate: $registrationDate')
           ..write(')'))
         .toString();
   }
@@ -5726,6 +6002,11 @@ typedef $$CompaniesTableCreateCompanionBuilder =
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<DateTime?> deletedAt,
+      Value<String?> adminRoleUid,
+      Value<String?> adminRoleName,
+      Value<bool> bumiputera,
+      Value<String?> einvoiceTinNo,
+      Value<DateTime?> registrationDate,
     });
 typedef $$CompaniesTableUpdateCompanionBuilder =
     CompaniesCompanion Function({
@@ -5749,6 +6030,11 @@ typedef $$CompaniesTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<DateTime?> deletedAt,
+      Value<String?> adminRoleUid,
+      Value<String?> adminRoleName,
+      Value<bool> bumiputera,
+      Value<String?> einvoiceTinNo,
+      Value<DateTime?> registrationDate,
     });
 
 class $$CompaniesTableFilterComposer
@@ -5857,6 +6143,31 @@ class $$CompaniesTableFilterComposer
 
   ColumnFilters<DateTime> get deletedAt => $composableBuilder(
     column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get adminRoleUid => $composableBuilder(
+    column: $table.adminRoleUid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get adminRoleName => $composableBuilder(
+    column: $table.adminRoleName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get bumiputera => $composableBuilder(
+    column: $table.bumiputera,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get einvoiceTinNo => $composableBuilder(
+    column: $table.einvoiceTinNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get registrationDate => $composableBuilder(
+    column: $table.registrationDate,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -5969,6 +6280,31 @@ class $$CompaniesTableOrderingComposer
     column: $table.deletedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get adminRoleUid => $composableBuilder(
+    column: $table.adminRoleUid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get adminRoleName => $composableBuilder(
+    column: $table.adminRoleName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get bumiputera => $composableBuilder(
+    column: $table.bumiputera,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get einvoiceTinNo => $composableBuilder(
+    column: $table.einvoiceTinNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get registrationDate => $composableBuilder(
+    column: $table.registrationDate,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CompaniesTableAnnotationComposer
@@ -6047,6 +6383,31 @@ class $$CompaniesTableAnnotationComposer
 
   GeneratedColumn<DateTime> get deletedAt =>
       $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get adminRoleUid => $composableBuilder(
+    column: $table.adminRoleUid,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get adminRoleName => $composableBuilder(
+    column: $table.adminRoleName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get bumiputera => $composableBuilder(
+    column: $table.bumiputera,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get einvoiceTinNo => $composableBuilder(
+    column: $table.einvoiceTinNo,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get registrationDate => $composableBuilder(
+    column: $table.registrationDate,
+    builder: (column) => column,
+  );
 }
 
 class $$CompaniesTableTableManager
@@ -6100,6 +6461,11 @@ class $$CompaniesTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> adminRoleUid = const Value.absent(),
+                Value<String?> adminRoleName = const Value.absent(),
+                Value<bool> bumiputera = const Value.absent(),
+                Value<String?> einvoiceTinNo = const Value.absent(),
+                Value<DateTime?> registrationDate = const Value.absent(),
               }) => CompaniesCompanion(
                 id: id,
                 uid: uid,
@@ -6121,6 +6487,11 @@ class $$CompaniesTableTableManager
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,
+                adminRoleUid: adminRoleUid,
+                adminRoleName: adminRoleName,
+                bumiputera: bumiputera,
+                einvoiceTinNo: einvoiceTinNo,
+                registrationDate: registrationDate,
               ),
           createCompanionCallback:
               ({
@@ -6144,6 +6515,11 @@ class $$CompaniesTableTableManager
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> adminRoleUid = const Value.absent(),
+                Value<String?> adminRoleName = const Value.absent(),
+                Value<bool> bumiputera = const Value.absent(),
+                Value<String?> einvoiceTinNo = const Value.absent(),
+                Value<DateTime?> registrationDate = const Value.absent(),
               }) => CompaniesCompanion.insert(
                 id: id,
                 uid: uid,
@@ -6165,6 +6541,11 @@ class $$CompaniesTableTableManager
                 createdAt: createdAt,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,
+                adminRoleUid: adminRoleUid,
+                adminRoleName: adminRoleName,
+                bumiputera: bumiputera,
+                einvoiceTinNo: einvoiceTinNo,
+                registrationDate: registrationDate,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

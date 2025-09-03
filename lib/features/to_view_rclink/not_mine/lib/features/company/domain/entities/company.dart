@@ -19,6 +19,9 @@ class Company extends Equatable {
   final String email;
   final String website;
   final String companyType;
+  final bool bumiputera;
+  final String? einvoiceTinNo;
+  final DateTime? registrationDate;
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? deletedAt;
@@ -41,6 +44,9 @@ class Company extends Equatable {
     required this.email,
     required this.website,
     required this.companyType,
+    required this.bumiputera,
+    this.einvoiceTinNo,
+    this.registrationDate,
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,
@@ -65,6 +71,9 @@ class Company extends Equatable {
     email,
     website,
     companyType,
+    bumiputera,
+    einvoiceTinNo,
+    registrationDate,
     createdAt,
     updatedAt,
     deletedAt,
@@ -88,6 +97,9 @@ class Company extends Equatable {
     String? email,
     String? website,
     String? companyType,
+    bool? bumiputera,
+    String? einvoiceTinNo,
+    DateTime? registrationDate,
     DateTime? createdAt,
     DateTime? updatedAt,
     DateTime? deletedAt,
@@ -110,6 +122,9 @@ class Company extends Equatable {
       email: email ?? this.email,
       website: website ?? this.website,
       companyType: companyType ?? this.companyType,
+      bumiputera: bumiputera ?? this.bumiputera,
+      einvoiceTinNo: einvoiceTinNo ?? this.einvoiceTinNo,
+      registrationDate: registrationDate ?? this.registrationDate,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
       deletedAt: deletedAt ?? this.deletedAt,

@@ -49,18 +49,30 @@ class CompanyLocalDataSourceImpl implements CompanyLocalDataSource {
               email: record.email ?? '',
               website: record.website ?? '',
               companyType: record.companyType,
+              bumiputera: record.bumiputera,
+              einvoiceTinNo: record.einvoiceTinNo,
+              registrationDate: record.registrationDate,
               createdAt: record.createdAt,
               updatedAt: record.updatedAt,
               deletedAt: record.deletedAt,
               ownerID: record.ownerID,
-              adminRole: null, // AdminRole is not stored in Companies table
-              adminCount: 0, // AdminCount is not stored in Companies table
+              // Convert adminRole from stored fields
+              adminRole:
+                  (record.adminRoleUid != null && record.adminRoleName != null)
+                  ? AdminRole(
+                      uid: record.adminRoleUid!,
+                      name: record.adminRoleName!,
+                    )
+                  : null,
+              adminCount:
+                  0, // AdminCount is not stored, could be computed or fetched separately
             ),
           )
           .toList();
 
       return companies.isEmpty ? null : companies;
     } catch (e) {
+      print('Error loading cached companies: $e');
       return null;
     }
   }
@@ -100,7 +112,12 @@ class CompanyLocalDataSourceImpl implements CompanyLocalDataSource {
                   company.website.isNotEmpty ? company.website : null,
                 ),
                 companyType: Value(company.companyType),
+                bumiputera: Value(company.bumiputera),
+                einvoiceTinNo: Value(company.einvoiceTinNo),
+                registrationDate: Value(company.registrationDate),
                 ownerID: Value(company.ownerID),
+                adminRoleUid: Value(company.adminRole?.uid),
+                adminRoleName: Value(company.adminRole?.name),
                 createdAt: Value(company.createdAt),
                 updatedAt: Value(company.updatedAt),
                 deletedAt: Value(company.deletedAt),
@@ -108,7 +125,7 @@ class CompanyLocalDataSourceImpl implements CompanyLocalDataSource {
             );
       }
     } catch (e) {
-      // Handle silently bcs errors are handled by the repository layer
+      print('Error caching companies: $e');
     }
   }
 

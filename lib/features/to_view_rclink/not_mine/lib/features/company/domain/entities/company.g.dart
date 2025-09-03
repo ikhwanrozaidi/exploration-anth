@@ -21,6 +21,11 @@ Company _$CompanyFromJson(Map<String, dynamic> json) => Company(
   email: json['email'] as String,
   website: json['website'] as String,
   companyType: json['companyType'] as String,
+  bumiputera: json['bumiputera'] as bool,
+  einvoiceTinNo: json['einvoiceTinNo'] as String?,
+  registrationDate: json['registrationDate'] == null
+      ? null
+      : DateTime.parse(json['registrationDate'] as String),
   createdAt: DateTime.parse(json['createdAt'] as String),
   updatedAt: DateTime.parse(json['updatedAt'] as String),
   deletedAt: json['deletedAt'] == null
@@ -48,6 +53,9 @@ Map<String, dynamic> _$CompanyToJson(Company instance) => <String, dynamic>{
   'email': instance.email,
   'website': instance.website,
   'companyType': instance.companyType,
+  'bumiputera': instance.bumiputera,
+  'einvoiceTinNo': instance.einvoiceTinNo,
+  'registrationDate': instance.registrationDate?.toIso8601String(),
   'createdAt': instance.createdAt.toIso8601String(),
   'updatedAt': instance.updatedAt.toIso8601String(),
   'deletedAt': instance.deletedAt?.toIso8601String(),

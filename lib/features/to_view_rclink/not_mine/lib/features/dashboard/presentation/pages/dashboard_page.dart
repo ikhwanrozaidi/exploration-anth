@@ -5,6 +5,9 @@ import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
+import '../../../company/presentation/bloc/company_bloc.dart';
+import '../../../company/presentation/bloc/company_event.dart';
+import '../../../daily_report/presentation/pages/daily_report_page.dart';
 import 'widgets/listingitem_widget.dart';
 import 'widgets/reportitem_widget.dart';
 
@@ -81,6 +84,9 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                       onPressed: () =>
                           context.read<AuthBloc>().add(const LogoutRequested()),
+                      // context.read<CompanyBloc>().add(
+                      //   const ClearCompanyCache(),
+                      // ),
                       child: Padding(
                         padding: ResponsiveHelper.padding(
                           context,
@@ -163,7 +169,12 @@ class _DashboardPageState extends State<DashboardPage> {
                                 image: 'assets/images/icons/daily_report.png',
                                 label: 'Daily\nReport',
                                 onTap: () {
-                                  print('Daily Report tapped');
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => DailyReportPage(),
+                                    ),
+                                  );
                                 },
                               ),
                             ),
