@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_event.dart';
 import '../../../rbac/presentation/bloc/rbac_bloc.dart';
 import '../../../rbac/presentation/bloc/rbac_state.dart';
 import '../../domain/entities/company.dart';
@@ -90,9 +92,10 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
   }
 
   void _exitCompanySelection() {
-    if (widget.onBackPressed != null) {
-      widget.onBackPressed!();
-    }
+    // if (widget.onBackPressed != null) {
+    //   widget.onBackPressed!();
+    // }
+    context.read<AuthBloc>().add(const LogoutRequested());
   }
 
   void _signInToCompany() {

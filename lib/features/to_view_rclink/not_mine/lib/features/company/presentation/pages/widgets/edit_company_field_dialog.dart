@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
+import '../../../../../shared/widgets/custom_snackbar.dart';
 import '../../bloc/company_bloc.dart';
 import '../../bloc/company_event.dart';
 import '../../bloc/company_state.dart';
@@ -30,6 +31,10 @@ class EditCompanyFieldDialog extends StatefulWidget {
 class _EditCompanyFieldDialogState extends State<EditCompanyFieldDialog> {
   late TextEditingController _controller;
   late FocusNode _focusNode;
+
+  bool _isUpdating = false;
+  String? _errorMessage;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -61,24 +66,38 @@ class _EditCompanyFieldDialogState extends State<EditCompanyFieldDialog> {
         state.when(
           initial: () {},
           loading: () {},
-          updating: () {},
+          updating: () {
+            setState(() {
+              _isUpdating = true;
+              _errorMessage = null;
+            });
+          },
           loaded: (companies, selectedCompany) {
-            // Successfully updated, close dialog
-            Navigator.of(context).pop();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${widget.fieldTitle} updated successfully'),
-                backgroundColor: Colors.green,
-              ),
-            );
+            // Only close if we were updating and now loaded successfully
+            if (_isUpdating) {
+              setState(() {
+                _isUpdating = false;
+              });
+              Navigator.of(context).pop();
+              CustomSnackBar.show(
+                context,
+                '${widget.fieldTitle} updated successfully',
+              );
+            }
+          },
+          fieldUpdateFailure: (companies, errorMessage, selectedCompany) {
+            setState(() {
+              _isUpdating = false;
+              _errorMessage = _getErrorMessage(errorMessage);
+            });
+            // DO NOT close dialog on field update error - let user retry
           },
           failure: (message) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Failed to update: $message'),
-                backgroundColor: Colors.red,
-              ),
-            );
+            setState(() {
+              _isUpdating = false;
+              _errorMessage = _getErrorMessage(message);
+            });
+            // DO NOT close dialog on error - let user retry
           },
         );
       },
@@ -240,5 +259,35 @@ class _EditCompanyFieldDialogState extends State<EditCompanyFieldDialog> {
   bool _isValidWebsite(String website) {
     return Uri.tryParse(website) != null &&
         (website.startsWith('http://') || website.startsWith('https://'));
+  }
+
+  String _getErrorMessage(String originalMessage) {
+    // Handle specific API error messages
+    if (originalMessage.toLowerCase().contains('forbidden') ||
+        originalMessage.contains('403')) {
+      return 'You don\'t have permission to update this company. Please contact your administrator.';
+    }
+
+    if (originalMessage.toLowerCase().contains('unauthorized') ||
+        originalMessage.contains('401')) {
+      return 'Your session has expired. Please log in again.';
+    }
+
+    if (originalMessage.toLowerCase().contains('network') ||
+        originalMessage.toLowerCase().contains('connection')) {
+      return 'Network error. Please check your internet connection and try again.';
+    }
+
+    if (originalMessage.toLowerCase().contains('timeout')) {
+      return 'Request timed out. Please try again.';
+    }
+
+    if (originalMessage.toLowerCase().contains('server') ||
+        originalMessage.contains('500')) {
+      return 'Server error. Please try again later.';
+    }
+
+    // Default fallback
+    return 'Failed to update ${widget.fieldTitle.toLowerCase()}. Please try again.';
   }
 }

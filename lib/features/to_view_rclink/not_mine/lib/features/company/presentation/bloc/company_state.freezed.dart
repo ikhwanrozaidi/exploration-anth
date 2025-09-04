@@ -55,7 +55,7 @@ extension CompanyStatePatterns on CompanyState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CompanyInitial value)?  initial,TResult Function( CompanyLoading value)?  loading,TResult Function( CompanyLoaded value)?  loaded,TResult Function( CompanyFailure value)?  failure,TResult Function( CompanyUpdating value)?  updating,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CompanyInitial value)?  initial,TResult Function( CompanyLoading value)?  loading,TResult Function( CompanyLoaded value)?  loaded,TResult Function( CompanyFailure value)?  failure,TResult Function( CompanyUpdating value)?  updating,TResult Function( CompanyFieldUpdateFailure value)?  fieldUpdateFailure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case CompanyInitial() when initial != null:
@@ -63,7 +63,8 @@ return initial(_that);case CompanyLoading() when loading != null:
 return loading(_that);case CompanyLoaded() when loaded != null:
 return loaded(_that);case CompanyFailure() when failure != null:
 return failure(_that);case CompanyUpdating() when updating != null:
-return updating(_that);case _:
+return updating(_that);case CompanyFieldUpdateFailure() when fieldUpdateFailure != null:
+return fieldUpdateFailure(_that);case _:
   return orElse();
 
 }
@@ -81,7 +82,7 @@ return updating(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CompanyInitial value)  initial,required TResult Function( CompanyLoading value)  loading,required TResult Function( CompanyLoaded value)  loaded,required TResult Function( CompanyFailure value)  failure,required TResult Function( CompanyUpdating value)  updating,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CompanyInitial value)  initial,required TResult Function( CompanyLoading value)  loading,required TResult Function( CompanyLoaded value)  loaded,required TResult Function( CompanyFailure value)  failure,required TResult Function( CompanyUpdating value)  updating,required TResult Function( CompanyFieldUpdateFailure value)  fieldUpdateFailure,}){
 final _that = this;
 switch (_that) {
 case CompanyInitial():
@@ -89,7 +90,8 @@ return initial(_that);case CompanyLoading():
 return loading(_that);case CompanyLoaded():
 return loaded(_that);case CompanyFailure():
 return failure(_that);case CompanyUpdating():
-return updating(_that);case _:
+return updating(_that);case CompanyFieldUpdateFailure():
+return fieldUpdateFailure(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -106,7 +108,7 @@ return updating(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CompanyInitial value)?  initial,TResult? Function( CompanyLoading value)?  loading,TResult? Function( CompanyLoaded value)?  loaded,TResult? Function( CompanyFailure value)?  failure,TResult? Function( CompanyUpdating value)?  updating,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CompanyInitial value)?  initial,TResult? Function( CompanyLoading value)?  loading,TResult? Function( CompanyLoaded value)?  loaded,TResult? Function( CompanyFailure value)?  failure,TResult? Function( CompanyUpdating value)?  updating,TResult? Function( CompanyFieldUpdateFailure value)?  fieldUpdateFailure,}){
 final _that = this;
 switch (_that) {
 case CompanyInitial() when initial != null:
@@ -114,7 +116,8 @@ return initial(_that);case CompanyLoading() when loading != null:
 return loading(_that);case CompanyLoaded() when loaded != null:
 return loaded(_that);case CompanyFailure() when failure != null:
 return failure(_that);case CompanyUpdating() when updating != null:
-return updating(_that);case _:
+return updating(_that);case CompanyFieldUpdateFailure() when fieldUpdateFailure != null:
+return fieldUpdateFailure(_that);case _:
   return null;
 
 }
@@ -131,14 +134,15 @@ return updating(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Company> companies,  Company? selectedCompany)?  loaded,TResult Function( String message)?  failure,TResult Function()?  updating,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Company> companies,  Company? selectedCompany)?  loaded,TResult Function( String message)?  failure,TResult Function()?  updating,TResult Function( List<Company> companies,  String errorMessage,  Company? selectedCompany)?  fieldUpdateFailure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CompanyInitial() when initial != null:
 return initial();case CompanyLoading() when loading != null:
 return loading();case CompanyLoaded() when loaded != null:
 return loaded(_that.companies,_that.selectedCompany);case CompanyFailure() when failure != null:
 return failure(_that.message);case CompanyUpdating() when updating != null:
-return updating();case _:
+return updating();case CompanyFieldUpdateFailure() when fieldUpdateFailure != null:
+return fieldUpdateFailure(_that.companies,_that.errorMessage,_that.selectedCompany);case _:
   return orElse();
 
 }
@@ -156,14 +160,15 @@ return updating();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Company> companies,  Company? selectedCompany)  loaded,required TResult Function( String message)  failure,required TResult Function()  updating,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Company> companies,  Company? selectedCompany)  loaded,required TResult Function( String message)  failure,required TResult Function()  updating,required TResult Function( List<Company> companies,  String errorMessage,  Company? selectedCompany)  fieldUpdateFailure,}) {final _that = this;
 switch (_that) {
 case CompanyInitial():
 return initial();case CompanyLoading():
 return loading();case CompanyLoaded():
 return loaded(_that.companies,_that.selectedCompany);case CompanyFailure():
 return failure(_that.message);case CompanyUpdating():
-return updating();case _:
+return updating();case CompanyFieldUpdateFailure():
+return fieldUpdateFailure(_that.companies,_that.errorMessage,_that.selectedCompany);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -180,14 +185,15 @@ return updating();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Company> companies,  Company? selectedCompany)?  loaded,TResult? Function( String message)?  failure,TResult? Function()?  updating,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Company> companies,  Company? selectedCompany)?  loaded,TResult? Function( String message)?  failure,TResult? Function()?  updating,TResult? Function( List<Company> companies,  String errorMessage,  Company? selectedCompany)?  fieldUpdateFailure,}) {final _that = this;
 switch (_that) {
 case CompanyInitial() when initial != null:
 return initial();case CompanyLoading() when loading != null:
 return loading();case CompanyLoaded() when loaded != null:
 return loaded(_that.companies,_that.selectedCompany);case CompanyFailure() when failure != null:
 return failure(_that.message);case CompanyUpdating() when updating != null:
-return updating();case _:
+return updating();case CompanyFieldUpdateFailure() when fieldUpdateFailure != null:
+return fieldUpdateFailure(_that.companies,_that.errorMessage,_that.selectedCompany);case _:
   return null;
 
 }
@@ -430,5 +436,81 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class CompanyFieldUpdateFailure implements CompanyState {
+  const CompanyFieldUpdateFailure(final  List<Company> companies, this.errorMessage, {this.selectedCompany}): _companies = companies;
+  
+
+ final  List<Company> _companies;
+ List<Company> get companies {
+  if (_companies is EqualUnmodifiableListView) return _companies;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_companies);
+}
+
+ final  String errorMessage;
+ final  Company? selectedCompany;
+
+/// Create a copy of CompanyState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CompanyFieldUpdateFailureCopyWith<CompanyFieldUpdateFailure> get copyWith => _$CompanyFieldUpdateFailureCopyWithImpl<CompanyFieldUpdateFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyFieldUpdateFailure&&const DeepCollectionEquality().equals(other._companies, _companies)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.selectedCompany, selectedCompany) || other.selectedCompany == selectedCompany));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_companies),errorMessage,selectedCompany);
+
+@override
+String toString() {
+  return 'CompanyState.fieldUpdateFailure(companies: $companies, errorMessage: $errorMessage, selectedCompany: $selectedCompany)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CompanyFieldUpdateFailureCopyWith<$Res> implements $CompanyStateCopyWith<$Res> {
+  factory $CompanyFieldUpdateFailureCopyWith(CompanyFieldUpdateFailure value, $Res Function(CompanyFieldUpdateFailure) _then) = _$CompanyFieldUpdateFailureCopyWithImpl;
+@useResult
+$Res call({
+ List<Company> companies, String errorMessage, Company? selectedCompany
+});
+
+
+
+
+}
+/// @nodoc
+class _$CompanyFieldUpdateFailureCopyWithImpl<$Res>
+    implements $CompanyFieldUpdateFailureCopyWith<$Res> {
+  _$CompanyFieldUpdateFailureCopyWithImpl(this._self, this._then);
+
+  final CompanyFieldUpdateFailure _self;
+  final $Res Function(CompanyFieldUpdateFailure) _then;
+
+/// Create a copy of CompanyState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? companies = null,Object? errorMessage = null,Object? selectedCompany = freezed,}) {
+  return _then(CompanyFieldUpdateFailure(
+null == companies ? _self._companies : companies // ignore: cast_nullable_to_non_nullable
+as List<Company>,null == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String,selectedCompany: freezed == selectedCompany ? _self.selectedCompany : selectedCompany // ignore: cast_nullable_to_non_nullable
+as Company?,
+  ));
+}
+
+
+}
 
 // dart format on

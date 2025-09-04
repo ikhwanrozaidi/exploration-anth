@@ -28,6 +28,8 @@ class Company extends Equatable {
   final int ownerID;
   final AdminRole? adminRole;
   final int adminCount;
+  final String? defaultBankAcc;
+  final String? defaultBankAccType;
 
   const Company({
     required this.id,
@@ -53,6 +55,8 @@ class Company extends Equatable {
     required this.ownerID,
     this.adminRole,
     required this.adminCount,
+    this.defaultBankAcc,
+    this.defaultBankAccType,
   });
 
   @override
@@ -80,6 +84,8 @@ class Company extends Equatable {
     ownerID,
     adminRole,
     adminCount,
+    defaultBankAcc,
+    defaultBankAccType,
   ];
 
   Company copyWith({
@@ -106,6 +112,8 @@ class Company extends Equatable {
     int? ownerID,
     AdminRole? adminRole,
     int? adminCount,
+    String? defaultBankAcc,
+    String? defaultBankAccType,
   }) {
     return Company(
       id: id ?? this.id,
@@ -131,6 +139,8 @@ class Company extends Equatable {
       ownerID: ownerID ?? this.ownerID,
       adminRole: adminRole ?? this.adminRole,
       adminCount: adminCount ?? this.adminCount,
+      defaultBankAcc: defaultBankAcc ?? this.defaultBankAcc,
+      defaultBankAccType: defaultBankAccType ?? this.defaultBankAccType,
     );
   }
 

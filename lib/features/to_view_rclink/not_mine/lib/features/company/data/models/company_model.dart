@@ -32,6 +32,8 @@ abstract class CompanyModel with _$CompanyModel {
     required int ownerID,
     AdminRoleModel? adminRole,
     required int adminCount,
+    String? defaultBankAcc,
+    String? defaultBankAccType,
   }) = _CompanyModel;
 
   factory CompanyModel.fromJson(Map<String, dynamic> json) =>
@@ -63,6 +65,8 @@ abstract class CompanyModel with _$CompanyModel {
       ownerID: ownerID,
       adminRole: adminRole?.toEntity(),
       adminCount: adminCount,
+      defaultBankAcc: defaultBankAcc,
+      defaultBankAccType: defaultBankAccType,
     );
   }
 
@@ -94,6 +98,8 @@ abstract class CompanyModel with _$CompanyModel {
           ? AdminRoleModel.fromEntity(entity.adminRole!)
           : null,
       adminCount: entity.adminCount,
+      defaultBankAcc: entity.defaultBankAcc,
+      defaultBankAccType: entity.defaultBankAccType,
     );
   }
 }

@@ -5,6 +5,7 @@ import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/widgets/theme_listtile_widget.dart';
 import '../../../domain/entities/company.dart';
 import '../../bloc/company_bloc.dart';
+import '../../bloc/company_event.dart';
 import '../../bloc/company_state.dart';
 import 'edit_company_field_dialog.dart';
 
@@ -73,7 +74,14 @@ class _EditCompanyPageState extends State<EditCompanyPage> {
               }
               return _buildCompanyDetails(selectedCompany);
             },
-            failure: (message) => Center(child: Text('Error: $message')),
+            fieldUpdateFailure: (companies, errorMessage, selectedCompany) {
+              // CRITICAL: Still show company details even when field update fails
+              if (selectedCompany == null) {
+                return const Center(child: Text('No company selected'));
+              }
+              return _buildCompanyDetails(selectedCompany);
+            },
+            failure: (message) => _buildErrorStateWithRetry(message),
             orElse: () => const Center(child: CircularProgressIndicator()),
           );
         },
@@ -245,5 +253,67 @@ class _EditCompanyPageState extends State<EditCompanyPage> {
 
   Widget dividerConfig() {
     return Divider(height: 30, thickness: 0.5, color: Colors.grey);
+  }
+
+  Widget _buildErrorStateWithRetry(String message) {
+    return Center(
+      child: Padding(
+        padding: ResponsiveHelper.padding(context, all: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: ResponsiveHelper.adaptive(
+                context,
+                mobile: 48,
+                tablet: 56,
+                desktop: 64,
+              ),
+              color: Colors.red,
+            ),
+            SizedBox(height: ResponsiveHelper.spacing(context, 16)),
+            Text(
+              'Something went wrong',
+              style: TextStyle(
+                fontSize: ResponsiveHelper.fontSize(context, base: 18),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: ResponsiveHelper.spacing(context, 8)),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: ResponsiveHelper.fontSize(context, base: 14),
+                color: Colors.grey[600],
+              ),
+            ),
+            SizedBox(height: ResponsiveHelper.spacing(context, 24)),
+            ElevatedButton(
+              onPressed: () {
+                context.read<CompanyBloc>().add(const LoadCompanies());
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+                padding: ResponsiveHelper.padding(
+                  context,
+                  horizontal: 24,
+                  vertical: 12,
+                ),
+              ),
+              child: Text(
+                'Try Again',
+                style: TextStyle(
+                  fontSize: ResponsiveHelper.fontSize(context, base: 14),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

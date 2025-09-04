@@ -134,6 +134,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
   ) async {
     final currentState = state;
     if (currentState is CompanyLoaded) {
+      // Emit updating state but preserve current data
       emit(const CompanyUpdating());
 
       final result = await _updateCompanyFieldUseCase(
@@ -145,15 +146,33 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
       );
 
       result.fold(
-        (failure) => emit(CompanyFailure(_mapFailureToMessage(failure))),
+        (failure) {
+          // CRITICAL FIX: Preserve current loaded state + show error
+          // Don't emit CompanyFailure - it destroys the company data!
+          emit(
+            CompanyFieldUpdateFailure(
+              currentState.companies,
+              _mapFailureToMessage(failure),
+              selectedCompany: currentState.selectedCompany,
+            ),
+          );
+        },
         (updatedCompany) {
-          // Update the company in the list and selected company
+          // Success: Update the company in the list and selected company
           final updatedCompanies = currentState.companies.map((company) {
             return company.uid == updatedCompany.uid ? updatedCompany : company;
           }).toList();
 
+          final updatedSelectedCompany =
+              currentState.selectedCompany?.uid == updatedCompany.uid
+              ? updatedCompany
+              : currentState.selectedCompany;
+
           emit(
-            CompanyLoaded(updatedCompanies, selectedCompany: updatedCompany),
+            CompanyLoaded(
+              updatedCompanies,
+              selectedCompany: updatedSelectedCompany,
+            ),
           );
         },
       );

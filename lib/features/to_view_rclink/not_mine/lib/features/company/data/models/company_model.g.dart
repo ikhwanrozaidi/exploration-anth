@@ -37,6 +37,8 @@ _CompanyModel _$CompanyModelFromJson(Map<String, dynamic> json) =>
           ? null
           : AdminRoleModel.fromJson(json['adminRole'] as Map<String, dynamic>),
       adminCount: (json['adminCount'] as num).toInt(),
+      defaultBankAcc: json['defaultBankAcc'] as String?,
+      defaultBankAccType: json['defaultBankAccType'] as String?,
     );
 
 Map<String, dynamic> _$CompanyModelToJson(_CompanyModel instance) =>
@@ -64,6 +66,8 @@ Map<String, dynamic> _$CompanyModelToJson(_CompanyModel instance) =>
       'ownerID': instance.ownerID,
       'adminRole': instance.adminRole,
       'adminCount': instance.adminCount,
+      'defaultBankAcc': instance.defaultBankAcc,
+      'defaultBankAccType': instance.defaultBankAccType,
     };
 
 _AdminRoleModel _$AdminRoleModelFromJson(Map<String, dynamic> json) =>
