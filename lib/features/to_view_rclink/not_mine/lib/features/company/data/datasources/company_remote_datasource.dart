@@ -6,6 +6,11 @@ import 'company_api_service.dart';
 
 abstract class CompanyRemoteDataSource {
   Future<Either<Failure, List<CompanyModel>>> getMyCompanies();
+  Future<CompanyModel> updateCompanyField({
+    required String companyUid,
+    required String fieldName,
+    required String fieldValue,
+  });
 }
 
 @LazySingleton(as: CompanyRemoteDataSource)
@@ -29,5 +34,20 @@ class CompanyRemoteDataSourceImpl implements CompanyRemoteDataSource {
     } catch (e) {
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
+  }
+
+  @override
+  Future<CompanyModel> updateCompanyField({
+    required String companyUid,
+    required String fieldName,
+    required String fieldValue,
+  }) async {
+    final updateData = {fieldName: fieldValue};
+
+    final response = await _apiService.updateCompanyField(
+      companyUid: companyUid,
+      updateData: updateData,
+    );
+    return CompanyModel.fromJson(response.data);
   }
 }

@@ -12,4 +12,6 @@ class CompanyState with _$CompanyState {
     Company? selectedCompany,
   }) = CompanyLoaded;
   const factory CompanyState.failure(String message) = CompanyFailure;
+
+  const factory CompanyState.updating() = CompanyUpdating;
 }

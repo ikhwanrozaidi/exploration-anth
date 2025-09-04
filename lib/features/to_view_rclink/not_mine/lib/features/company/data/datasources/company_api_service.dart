@@ -14,4 +14,10 @@ abstract class CompanyApiService {
 
   @GET('/companies/me')
   Future<ApiResponse<List<CompanyModel>>> getMyCompanies();
+
+  @PUT('/companies/{uid}')
+  Future<ApiResponse> updateCompanyField({
+    @Path('uid') required String companyUid,
+    @Body() required Map<String, dynamic> updateData,
+  });
 }

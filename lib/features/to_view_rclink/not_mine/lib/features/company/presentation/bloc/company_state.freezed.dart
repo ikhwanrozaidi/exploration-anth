@@ -55,14 +55,15 @@ extension CompanyStatePatterns on CompanyState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CompanyInitial value)?  initial,TResult Function( CompanyLoading value)?  loading,TResult Function( CompanyLoaded value)?  loaded,TResult Function( CompanyFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( CompanyInitial value)?  initial,TResult Function( CompanyLoading value)?  loading,TResult Function( CompanyLoaded value)?  loaded,TResult Function( CompanyFailure value)?  failure,TResult Function( CompanyUpdating value)?  updating,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case CompanyInitial() when initial != null:
 return initial(_that);case CompanyLoading() when loading != null:
 return loading(_that);case CompanyLoaded() when loaded != null:
 return loaded(_that);case CompanyFailure() when failure != null:
-return failure(_that);case _:
+return failure(_that);case CompanyUpdating() when updating != null:
+return updating(_that);case _:
   return orElse();
 
 }
@@ -80,14 +81,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CompanyInitial value)  initial,required TResult Function( CompanyLoading value)  loading,required TResult Function( CompanyLoaded value)  loaded,required TResult Function( CompanyFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( CompanyInitial value)  initial,required TResult Function( CompanyLoading value)  loading,required TResult Function( CompanyLoaded value)  loaded,required TResult Function( CompanyFailure value)  failure,required TResult Function( CompanyUpdating value)  updating,}){
 final _that = this;
 switch (_that) {
 case CompanyInitial():
 return initial(_that);case CompanyLoading():
 return loading(_that);case CompanyLoaded():
 return loaded(_that);case CompanyFailure():
-return failure(_that);case _:
+return failure(_that);case CompanyUpdating():
+return updating(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -104,14 +106,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CompanyInitial value)?  initial,TResult? Function( CompanyLoading value)?  loading,TResult? Function( CompanyLoaded value)?  loaded,TResult? Function( CompanyFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( CompanyInitial value)?  initial,TResult? Function( CompanyLoading value)?  loading,TResult? Function( CompanyLoaded value)?  loaded,TResult? Function( CompanyFailure value)?  failure,TResult? Function( CompanyUpdating value)?  updating,}){
 final _that = this;
 switch (_that) {
 case CompanyInitial() when initial != null:
 return initial(_that);case CompanyLoading() when loading != null:
 return loading(_that);case CompanyLoaded() when loaded != null:
 return loaded(_that);case CompanyFailure() when failure != null:
-return failure(_that);case _:
+return failure(_that);case CompanyUpdating() when updating != null:
+return updating(_that);case _:
   return null;
 
 }
@@ -128,13 +131,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Company> companies,  Company? selectedCompany)?  loaded,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Company> companies,  Company? selectedCompany)?  loaded,TResult Function( String message)?  failure,TResult Function()?  updating,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case CompanyInitial() when initial != null:
 return initial();case CompanyLoading() when loading != null:
 return loading();case CompanyLoaded() when loaded != null:
 return loaded(_that.companies,_that.selectedCompany);case CompanyFailure() when failure != null:
-return failure(_that.message);case _:
+return failure(_that.message);case CompanyUpdating() when updating != null:
+return updating();case _:
   return orElse();
 
 }
@@ -152,13 +156,14 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Company> companies,  Company? selectedCompany)  loaded,required TResult Function( String message)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Company> companies,  Company? selectedCompany)  loaded,required TResult Function( String message)  failure,required TResult Function()  updating,}) {final _that = this;
 switch (_that) {
 case CompanyInitial():
 return initial();case CompanyLoading():
 return loading();case CompanyLoaded():
 return loaded(_that.companies,_that.selectedCompany);case CompanyFailure():
-return failure(_that.message);case _:
+return failure(_that.message);case CompanyUpdating():
+return updating();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +180,14 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Company> companies,  Company? selectedCompany)?  loaded,TResult? Function( String message)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Company> companies,  Company? selectedCompany)?  loaded,TResult? Function( String message)?  failure,TResult? Function()?  updating,}) {final _that = this;
 switch (_that) {
 case CompanyInitial() when initial != null:
 return initial();case CompanyLoading() when loading != null:
 return loading();case CompanyLoaded() when loaded != null:
 return loaded(_that.companies,_that.selectedCompany);case CompanyFailure() when failure != null:
-return failure(_that.message);case _:
+return failure(_that.message);case CompanyUpdating() when updating != null:
+return updating();case _:
   return null;
 
 }
@@ -392,5 +398,37 @@ as String,
 
 
 }
+
+/// @nodoc
+
+
+class CompanyUpdating implements CompanyState {
+  const CompanyUpdating();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CompanyUpdating);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'CompanyState.updating()';
+}
+
+
+}
+
+
+
 
 // dart format on

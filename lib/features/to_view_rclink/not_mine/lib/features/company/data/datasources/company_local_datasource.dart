@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../domain/entities/company.dart';
+import '../models/company_model.dart';
 
 abstract class CompanyLocalDataSource {
   Future<List<Company>?> getCachedCompanies();
@@ -11,6 +12,7 @@ abstract class CompanyLocalDataSource {
   Future<void> cacheSelectedCompany(String companyId);
   Future<String?> getSelectedCompany();
   Future<void> clearCache();
+  Future<void> cacheCompany(Company company);
 }
 
 @LazySingleton(as: CompanyLocalDataSource)
@@ -160,6 +162,51 @@ class CompanyLocalDataSourceImpl implements CompanyLocalDataSource {
       await prefs.remove(_selectedCompanyKey);
     } catch (e) {
       // Handle silently
+    }
+  }
+
+  @override
+  Future<void> cacheCompany(Company company) async {
+    try {
+      // Use insertOnConflictUpdate to update if exists, insert if not
+      await _database
+          .into(_database.companies)
+          .insertOnConflictUpdate(
+            CompaniesCompanion(
+              uid: Value(company.uid),
+              name: Value(company.name),
+              regNo: Value(company.regNo.isNotEmpty ? company.regNo : null),
+              cidbNo: Value(company.cidbNo.isNotEmpty ? company.cidbNo : null),
+              address: Value(
+                company.address.isNotEmpty ? company.address : null,
+              ),
+              postalCode: Value(
+                company.postalCode.isNotEmpty ? company.postalCode : null,
+              ),
+              city: Value(company.city.isNotEmpty ? company.city : null),
+              state: Value(company.state.isNotEmpty ? company.state : null),
+              country: Value(
+                company.country.isNotEmpty ? company.country : null,
+              ),
+              phone: Value(company.phone.isNotEmpty ? company.phone : null),
+              email: Value(company.email.isNotEmpty ? company.email : null),
+              website: Value(
+                company.website.isNotEmpty ? company.website : null,
+              ),
+              companyType: Value(company.companyType),
+              bumiputera: Value(company.bumiputera),
+              einvoiceTinNo: Value(company.einvoiceTinNo),
+              registrationDate: Value(company.registrationDate),
+              ownerID: Value(company.ownerID),
+              adminRoleUid: Value(company.adminRole?.uid),
+              adminRoleName: Value(company.adminRole?.name),
+              createdAt: Value(company.createdAt),
+              updatedAt: Value(company.updatedAt),
+              deletedAt: Value(company.deletedAt),
+            ),
+          );
+    } catch (e) {
+      print('Error caching company: $e');
     }
   }
 }

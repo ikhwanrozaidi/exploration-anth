@@ -11,4 +11,10 @@ abstract class CompanyRepository {
   Future<Either<Failure, void>> clearCache();
   Future<Either<Failure, void>> cacheSelectedCompany(String companyId);
   Future<Either<Failure, String?>> getSelectedCompany();
+
+  Future<Either<Failure, Company>> updateCompanyField({
+    required String companyUid,
+    required String fieldName,
+    required String fieldValue,
+  });
 }

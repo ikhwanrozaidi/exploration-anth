@@ -8,6 +8,7 @@ import '../../domain/usecases/company_clear_cache_usecase.dart';
 import '../../domain/usecases/get_my_companies_usecase.dart';
 import '../../domain/usecases/select_company_usecase.dart';
 import '../../domain/usecases/get_selected_company_usecase.dart';
+import '../../domain/usecases/update_company_usecase.dart';
 import 'company_event.dart';
 import 'company_state.dart';
 
@@ -17,17 +18,20 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
   final SelectCompanyUseCase _selectCompanyUseCase;
   final GetSelectedCompanyUseCase _getSelectedCompanyUseCase;
   final ClearCompanyCacheUseCase _clearCompanyCacheUseCase;
+  final UpdateCompanyFieldUseCase _updateCompanyFieldUseCase;
 
   CompanyBloc(
     this._getMyCompaniesUseCase,
     this._selectCompanyUseCase,
     this._getSelectedCompanyUseCase,
     this._clearCompanyCacheUseCase,
+    this._updateCompanyFieldUseCase,
   ) : super(const CompanyInitial()) {
     on<LoadCompanies>(_onLoadCompanies);
     on<SelectCompany>(_onSelectCompany);
     on<ClearSelection>(_onClearSelection);
     on<ClearCompanyCache>(_onClearCache);
+    on<UpdateCompanyField>(_onUpdateCompanyField);
   }
 
   Future<void> _onLoadCompanies(
@@ -122,6 +126,38 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
         add(const LoadCompanies());
       },
     );
+  }
+
+  Future<void> _onUpdateCompanyField(
+    UpdateCompanyField event,
+    Emitter<CompanyState> emit,
+  ) async {
+    final currentState = state;
+    if (currentState is CompanyLoaded) {
+      emit(const CompanyUpdating());
+
+      final result = await _updateCompanyFieldUseCase(
+        UpdateCompanyFieldParams(
+          companyUid: event.companyUid,
+          fieldName: event.fieldName,
+          fieldValue: event.fieldValue,
+        ),
+      );
+
+      result.fold(
+        (failure) => emit(CompanyFailure(_mapFailureToMessage(failure))),
+        (updatedCompany) {
+          // Update the company in the list and selected company
+          final updatedCompanies = currentState.companies.map((company) {
+            return company.uid == updatedCompany.uid ? updatedCompany : company;
+          }).toList();
+
+          emit(
+            CompanyLoaded(updatedCompanies, selectedCompany: updatedCompany),
+          );
+        },
+      );
+    }
   }
 
   String _mapFailureToMessage(Failure failure) {

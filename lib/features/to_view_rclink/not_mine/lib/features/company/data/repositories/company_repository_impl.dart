@@ -63,4 +63,28 @@ class CompanyRepositoryImpl
       return Left(CacheFailure('Failed to get selected company: $e'));
     }
   }
+
+  @override
+  Future<Either<Failure, Company>> updateCompanyField({
+    required String companyUid,
+    required String fieldName,
+    required String fieldValue,
+  }) async {
+    try {
+      final result = await _remoteDataSource.updateCompanyField(
+        companyUid: companyUid,
+        fieldName: fieldName,
+        fieldValue: fieldValue,
+      );
+
+      // Update local cache
+      await _localDataSource.cacheCompany(result.toEntity());
+
+      return Right(result.toEntity());
+    } on ServerFailure {
+      return const Left(ServerFailure('Failed to update company field'));
+    } on CacheFailure {
+      return const Left(CacheFailure('Failed to cache updated company'));
+    }
+  }
 }
