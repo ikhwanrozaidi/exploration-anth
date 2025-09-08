@@ -1,11 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:drift/drift.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
 import '../../domain/entities/tokens.dart';
-import '../../domain/entities/admin.dart';
 
 abstract class AuthLocalDataSource {
   Future<Either<Failure, void>> storeTokens(Tokens tokens);
@@ -153,7 +151,21 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   // Helper methods for secure token storage
   Future<void> _storeToken(String key, String value) async {
-    await _secureStorage.write(key: key, value: value);
+    try {
+      // Delete first to avoid conflicts, then write
+      await _deleteToken(key);
+      await _secureStorage.write(key: key, value: value);
+    } catch (e) {
+      // If regular write fails, try force overwrite
+      await _secureStorage.write(
+        key: key,
+        value: value,
+        aOptions: const AndroidOptions(encryptedSharedPreferences: true),
+        iOptions: const IOSOptions(
+          accessibility: KeychainAccessibility.first_unlock_this_device,
+        ),
+      );
+    }
   }
 
   Future<String?> _getToken(String key) async {
@@ -161,6 +173,15 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   Future<void> _deleteToken(String key) async {
-    await _secureStorage.delete(key: key);
+    try {
+      // Check if key exists first
+      final exists = await _secureStorage.containsKey(key: key);
+      if (exists) {
+        await _secureStorage.delete(key: key);
+      }
+    } catch (e) {
+      // Silently handle deletion errors - this is common on iOS
+      print('Warning: Failed to delete token $key: $e');
+    }
   }
 }

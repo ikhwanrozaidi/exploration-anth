@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
+import '../../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../../auth/presentation/bloc/auth_event.dart';
 
 class CompanySelectionContent extends StatelessWidget {
   final VoidCallback onBackPressed;
@@ -140,7 +143,9 @@ class CompanySelectionContent extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: OutlinedButton(
-              onPressed: onBackPressed,
+              onPressed: () {
+                context.read<AuthBloc>().add(const LogoutRequested());
+              },
               style: OutlinedButton.styleFrom(
                 side: const BorderSide(color: primaryColor),
                 padding: ResponsiveHelper.padding(context, vertical: 12),

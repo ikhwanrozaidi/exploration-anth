@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:rclink_app/features/profile/presentation/pages/widgets/profile_listtile_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rclink_app/shared/widgets/theme_listtile_widget.dart';
+import 'package:rclink_app/features/rbac/presentation/widgets/permission_gate.dart';
 
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_event.dart';
+import '../../../company/presentation/pages/widgets/edit_company_page.dart';
 import '../../../dashboard/presentation/pages/widgets/listingitem_widget.dart';
 import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
+import '../../../rbac/domain/constants/permission_codes.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -195,11 +201,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 20),
-                            SizedBox(
+
+                            Container(
+                              margin: EdgeInsets.only(top: 20),
                               width: double.infinity,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => EditCompanyPage(),
+                                    ),
+                                  );
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: primaryColor,
                                   padding: ResponsiveHelper.padding(
@@ -212,7 +225,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   elevation: 2,
                                 ),
                                 child: Text(
-                                  'Edit Company & User',
+                                  'Edit Company',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: ResponsiveHelper.fontSize(
@@ -222,7 +235,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                               ),
-                            ),
+                            ).withPermission(PermissionCodes.COMPANY_UPDATE),
                           ],
                         ),
                       ),
@@ -372,7 +385,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               child: Column(
                                 children: [
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: 'Name',
                                     titleDetails: 'Lorem Ipsum',
                                     icon: Icons.abc,
@@ -380,7 +393,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                   dividerConfig(),
 
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: 'Phone',
                                     titleDetails: '+6012435678',
                                     icon: Icons.abc,
@@ -388,7 +401,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                   dividerConfig(),
 
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: 'Email',
                                     titleDetails: 'name@contractor.com',
                                     icon: Icons.abc,
@@ -396,7 +409,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                   dividerConfig(),
 
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: 'Signature',
                                     titleDetails: 'Updated',
                                     icon: Icons.abc,
@@ -404,7 +417,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                   dividerConfig(),
 
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: 'Branch',
                                     titleDetails: 'RS HEADQUATER',
                                     icon: Icons.abc,
@@ -412,7 +425,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                   dividerConfig(),
 
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: 'Position',
                                     titleDetails: 'Contract Assistant',
                                     icon: Icons.abc,
@@ -420,7 +433,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                   dividerConfig(),
 
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: 'CIDB',
                                     titleDetails: 'Not updated yet',
                                     icon: Icons.abc,
@@ -471,7 +484,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               ),
                               child: Column(
                                 children: [
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: 'Support',
                                     titleDetails: 'Get help on WhatsApp',
                                     icon: Icons.abc,
@@ -479,7 +492,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                   dividerConfig(),
 
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: 'Language',
                                     titleDetails: 'English',
                                     icon: Icons.abc,
@@ -487,7 +500,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                   dividerConfig(),
 
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: 'Application version',
                                     titleDetails: '3.8',
                                     icon: Icons.abc,
@@ -495,7 +508,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                   dividerConfig(),
 
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: '',
                                     titleDetails: 'App Settings',
                                     icon: Icons.abc,
@@ -503,7 +516,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                   dividerConfig(),
 
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: '',
                                     titleDetails: 'Manage Companies',
                                     icon: Icons.abc,
@@ -511,7 +524,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                   dividerConfig(),
 
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: '',
                                     titleDetails: 'Delete Account',
                                     icon: Icons.abc,
@@ -520,10 +533,15 @@ class _ProfilePageState extends State<ProfilePage> {
 
                                   dividerConfig(),
 
-                                  ProfileListTile(
+                                  ThemeListTileWidget(
                                     title: '',
                                     titleDetails: 'Logout',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      context.read<AuthBloc>().add(
+                                        const LogoutRequested(),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),

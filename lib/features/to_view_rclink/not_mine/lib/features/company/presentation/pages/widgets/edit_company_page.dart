@@ -75,7 +75,7 @@ class _EditCompanyPageState extends State<EditCompanyPage> {
               return _buildCompanyDetails(selectedCompany);
             },
             fieldUpdateFailure: (companies, errorMessage, selectedCompany) {
-              // CRITICAL: Still show company details even when field update fails
+              // Need to fix this
               if (selectedCompany == null) {
                 return const Center(child: Text('No company selected'));
               }

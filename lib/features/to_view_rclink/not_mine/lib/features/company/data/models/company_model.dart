@@ -31,7 +31,7 @@ abstract class CompanyModel with _$CompanyModel {
     DateTime? deletedAt,
     required int ownerID,
     AdminRoleModel? adminRole,
-    required int adminCount,
+    @JsonKey(defaultValue: 0) int? adminCount,
     String? defaultBankAcc,
     String? defaultBankAccType,
   }) = _CompanyModel;
@@ -64,7 +64,7 @@ abstract class CompanyModel with _$CompanyModel {
       deletedAt: deletedAt,
       ownerID: ownerID,
       adminRole: adminRole?.toEntity(),
-      adminCount: adminCount,
+      adminCount: adminCount ?? 0,
       defaultBankAcc: defaultBankAcc,
       defaultBankAccType: defaultBankAccType,
     );

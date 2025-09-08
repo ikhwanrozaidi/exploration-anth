@@ -16,7 +16,8 @@ class RoleModel {
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? deletedAt;
-  final List<PermissionModel> permissions;
+  @JsonKey(defaultValue: <PermissionModel>[])
+  final List<PermissionModel>? permissions;
 
   const RoleModel({
     required this.id,
@@ -49,7 +50,7 @@ class RoleModel {
     createdAt: createdAt,
     updatedAt: updatedAt,
     deletedAt: deletedAt,
-    permissions: permissions.map((p) => p.toEntity()).toList(),
+    permissions: permissions?.map((p) => p.toEntity()).toList() ?? [],
   );
 
   // Create from domain entity

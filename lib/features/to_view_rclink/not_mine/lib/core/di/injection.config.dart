@@ -60,6 +60,8 @@ import '../../features/company/domain/usecases/get_selected_company_usecase.dart
     as _i385;
 import '../../features/company/domain/usecases/select_company_usecase.dart'
     as _i876;
+import '../../features/company/domain/usecases/update_company_usecase.dart'
+    as _i8;
 import '../../features/company/presentation/bloc/company_bloc.dart' as _i426;
 import '../../features/locale/presentation/bloc/locale_bloc.dart' as _i458;
 import '../../features/rbac/data/datasources/permission_local_datasource.dart'
@@ -195,6 +197,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i594.CompanyLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i8.UpdateCompanyFieldUseCase>(
+      () => _i8.UpdateCompanyFieldUseCase(gh<_i752.CompanyRepository>()),
+    );
     gh.lazySingleton<_i257.GetCurrentAdminUseCase>(
       () => _i257.GetCurrentAdminUseCase(gh<_i583.AdminRepository>()),
     );
@@ -217,14 +222,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i932.NetworkInfo>(),
       ),
     );
-    gh.lazySingleton<_i426.CompanyBloc>(
-      () => _i426.CompanyBloc(
-        gh<_i825.GetMyCompaniesUseCase>(),
-        gh<_i876.SelectCompanyUseCase>(),
-        gh<_i385.GetSelectedCompanyUseCase>(),
-        gh<_i29.ClearCompanyCacheUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i871.ClearAuthCacheUseCase>(
       () => _i871.ClearAuthCacheUseCase(gh<_i787.AuthRepository>()),
     );
@@ -239,6 +236,15 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i503.VerifyOtpUseCase>(
       () => _i503.VerifyOtpUseCase(gh<_i787.AuthRepository>()),
+    );
+    gh.lazySingleton<_i426.CompanyBloc>(
+      () => _i426.CompanyBloc(
+        gh<_i825.GetMyCompaniesUseCase>(),
+        gh<_i876.SelectCompanyUseCase>(),
+        gh<_i385.GetSelectedCompanyUseCase>(),
+        gh<_i29.ClearCompanyCacheUseCase>(),
+        gh<_i8.UpdateCompanyFieldUseCase>(),
+      ),
     );
     gh.lazySingleton<_i157.RefreshTokenUseCase>(
       () => _i157.RefreshTokenUseCase(gh<_i787.AuthRepository>()),

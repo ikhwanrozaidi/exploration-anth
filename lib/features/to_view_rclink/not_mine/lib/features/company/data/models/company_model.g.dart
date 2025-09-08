@@ -36,7 +36,7 @@ _CompanyModel _$CompanyModelFromJson(Map<String, dynamic> json) =>
       adminRole: json['adminRole'] == null
           ? null
           : AdminRoleModel.fromJson(json['adminRole'] as Map<String, dynamic>),
-      adminCount: (json['adminCount'] as num).toInt(),
+      adminCount: (json['adminCount'] as num?)?.toInt() ?? 0,
       defaultBankAcc: json['defaultBankAcc'] as String?,
       defaultBankAccType: json['defaultBankAccType'] as String?,
     );

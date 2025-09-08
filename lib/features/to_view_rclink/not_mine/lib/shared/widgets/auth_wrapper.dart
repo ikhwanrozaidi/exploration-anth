@@ -57,6 +57,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
         return companyState.when(
           initial: () => _loginPage,
           loading: () => _loginPage,
+          updating: () => _loginPage,
           loaded: (companies, selectedCompany) {
             // Check if a company is selected
             if (selectedCompany == null) {
@@ -73,6 +74,27 @@ class _AuthWrapperState extends State<AuthWrapper> {
                   loaded: (role, permissions) => const RootPage(),
                   noPermissions: () => const RootPage(),
                   error: (message) => _loginPage, // Could show error dialog
+                );
+              },
+            );
+          },
+          fieldUpdateFailure: (companies, errorMessage, selectedCompany) {
+            // Handle field update failure - still allow user to proceed to RootPage
+            // since this is just a field update error, not a critical app error
+            if (selectedCompany == null) {
+              return _loginPage;
+            }
+
+            // Company is still selected, proceed with RBAC check
+            return BlocBuilder<RbacBloc, RbacState>(
+              builder: (context, rbacState) {
+                print('rbacState: $rbacState');
+                return rbacState.when(
+                  initial: () => const _PermissionLoadingScreen(),
+                  loading: () => const _PermissionLoadingScreen(),
+                  loaded: (role, permissions) => const RootPage(),
+                  noPermissions: () => const RootPage(),
+                  error: (message) => _loginPage,
                 );
               },
             );

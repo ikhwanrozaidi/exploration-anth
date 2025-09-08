@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../shared/utils/responsive_helper.dart';
+import '../utils/responsive_helper.dart';
 
-class ProfileListTile extends StatelessWidget {
+class ThemeListTileWidget extends StatelessWidget {
   final String title;
   final String titleDetails;
   final IconData icon;
   final VoidCallback? onTap;
   final Color? primaryColor;
   final bool focus;
+  final IconData? trailingIcon;
 
-  const ProfileListTile({
+  const ThemeListTileWidget({
     Key? key,
     required this.title,
     required this.titleDetails,
@@ -18,6 +19,7 @@ class ProfileListTile extends StatelessWidget {
     this.onTap,
     this.primaryColor,
     this.focus = false,
+    this.trailingIcon,
   }) : super(key: key);
 
   @override
@@ -67,7 +69,7 @@ class ProfileListTile extends StatelessWidget {
             ),
             // Chevron icon
             child: Icon(
-              Icons.chevron_right_rounded,
+              trailingIcon == null ? Icons.chevron_right_rounded : trailingIcon,
               color: defaultPrimaryColor,
             ),
           ),

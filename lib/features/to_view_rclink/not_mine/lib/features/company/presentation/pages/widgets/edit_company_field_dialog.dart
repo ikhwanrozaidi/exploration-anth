@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
+import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/custom_snackbar.dart';
 import '../../bloc/company_bloc.dart';
 import '../../bloc/company_event.dart';
@@ -42,7 +43,6 @@ class _EditCompanyFieldDialogState extends State<EditCompanyFieldDialog> {
     _controller = TextEditingController(text: widget.currentValue);
     _focusNode = FocusNode();
 
-    // Auto-focus and select all text
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _focusNode.requestFocus();
       _controller.selection = TextSelection(
@@ -73,7 +73,6 @@ class _EditCompanyFieldDialogState extends State<EditCompanyFieldDialog> {
             });
           },
           loaded: (companies, selectedCompany) {
-            // Only close if we were updating and now loaded successfully
             if (_isUpdating) {
               setState(() {
                 _isUpdating = false;
@@ -82,6 +81,7 @@ class _EditCompanyFieldDialogState extends State<EditCompanyFieldDialog> {
               CustomSnackBar.show(
                 context,
                 '${widget.fieldTitle} updated successfully',
+                type: SnackBarType.success,
               );
             }
           },
@@ -90,18 +90,18 @@ class _EditCompanyFieldDialogState extends State<EditCompanyFieldDialog> {
               _isUpdating = false;
               _errorMessage = _getErrorMessage(errorMessage);
             });
-            // DO NOT close dialog on field update error - let user retry
           },
           failure: (message) {
             setState(() {
               _isUpdating = false;
               _errorMessage = _getErrorMessage(message);
             });
-            // DO NOT close dialog on error - let user retry
           },
         );
       },
       child: AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         title: Text(
           'Edit ${widget.fieldTitle}',
           style: TextStyle(
@@ -118,7 +118,7 @@ class _EditCompanyFieldDialogState extends State<EditCompanyFieldDialog> {
               keyboardType: widget.keyboardType ?? TextInputType.text,
               maxLines: widget.maxLines,
               decoration: InputDecoration(
-                labelText: widget.fieldTitle,
+                // labelText: widget.fieldTitle,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -135,54 +135,75 @@ class _EditCompanyFieldDialogState extends State<EditCompanyFieldDialog> {
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(
-              'Cancel',
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: ResponsiveHelper.fontSize(context, base: 14),
-              ),
-            ),
-          ),
-          BlocBuilder<CompanyBloc, CompanyState>(
-            builder: (context, state) {
-              final isUpdating = state is CompanyUpdating;
+          Column(
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: BlocBuilder<CompanyBloc, CompanyState>(
+                  builder: (context, state) {
+                    final isUpdating = state is CompanyUpdating;
 
-              return ElevatedButton(
-                onPressed: isUpdating ? null : _handleSave,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white,
-                  padding: ResponsiveHelper.padding(
-                    context,
-                    horizontal: 20,
-                    vertical: 12,
+                    return ElevatedButton(
+                      onPressed: isUpdating ? null : _handleSave,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        padding: ResponsiveHelper.padding(
+                          context,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 2,
+                      ),
+                      child: isUpdating
+                          ? SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            )
+                          : Text(
+                              'Save',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: ResponsiveHelper.fontSize(
+                                  context,
+                                  base: 14,
+                                ),
+                              ),
+                            ),
+                    );
+                  },
+                ),
+              ),
+
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: primaryColor),
+                    padding: ResponsiveHelper.padding(context, vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: ResponsiveHelper.fontSize(context, base: 14),
+                      fontWeight: FontWeight.w600,
+                      color: primaryColor,
+                    ),
                   ),
                 ),
-                child: isUpdating
-                    ? SizedBox(
-                        width: 16,
-                        height: 16,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.white,
-                          ),
-                        ),
-                      )
-                    : Text(
-                        'Save',
-                        style: TextStyle(
-                          fontSize: ResponsiveHelper.fontSize(
-                            context,
-                            base: 14,
-                          ),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-              );
-            },
+              ),
+            ],
           ),
         ],
       ),

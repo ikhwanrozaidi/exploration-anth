@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:rclink_app/features/dailyreport_creation/presentation/pages/dailyreport_creation_page.dart';
+import 'package:rclink_app/features/daily_report_creation/presentation/pages/daily_report_creation_page.dart';
 
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';

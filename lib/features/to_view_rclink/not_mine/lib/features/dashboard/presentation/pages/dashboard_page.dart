@@ -82,8 +82,8 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                         backgroundColor: Colors.white.withOpacity(0.6),
                       ),
-                      onPressed: () =>
-                          context.read<AuthBloc>().add(const LogoutRequested()),
+                      onPressed: () {},
+                      // context.read<AuthBloc>().add(const LogoutRequested()),
                       // context.read<CompanyBloc>().add(
                       //   const ClearCompanyCache(),
                       // ),
