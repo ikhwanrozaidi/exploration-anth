@@ -33,6 +33,15 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<Either<Failure, void>> storeTokens(Tokens tokens) async {
     try {
+      // First, clear any existing tokens to avoid conflicts
+      await _deleteToken('access_token');
+      await _deleteToken('refresh_token');
+      await _deleteToken('access_token_expires_at');
+      await _deleteToken('refresh_token_expires_at');
+
+      // Add a small delay to ensure deletion is complete
+      await Future.delayed(const Duration(milliseconds: 100));
+
       // Store sensitive tokens in secure storage
       await _storeToken('access_token', tokens.accessToken);
       await _storeToken('refresh_token', tokens.refreshToken);
@@ -137,11 +146,19 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
         await _database.delete(_database.admins).go();
       });
 
-      // Clear tokens from secure storage
-      await _deleteToken('access_token');
-      await _deleteToken('refresh_token');
-      await _deleteToken('access_token_expires_at');
-      await _deleteToken('refresh_token_expires_at');
+      // Clear tokens from secure storage with error handling
+      try {
+        await _deleteToken('access_token');
+        await _deleteToken('refresh_token');
+        await _deleteToken('access_token_expires_at');
+        await _deleteToken('refresh_token_expires_at');
+
+        // Add delay to ensure deletion is complete
+        await Future.delayed(const Duration(milliseconds: 100));
+      } catch (e) {
+        // Log but don't fail the entire operation if secure storage has issues
+        print('Warning: Failed to clear some tokens from secure storage: $e');
+      }
 
       return const Right(null);
     } catch (e) {
@@ -151,21 +168,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   // Helper methods for secure token storage
   Future<void> _storeToken(String key, String value) async {
-    try {
-      // Delete first to avoid conflicts, then write
-      await _deleteToken(key);
-      await _secureStorage.write(key: key, value: value);
-    } catch (e) {
-      // If regular write fails, try force overwrite
-      await _secureStorage.write(
-        key: key,
-        value: value,
-        aOptions: const AndroidOptions(encryptedSharedPreferences: true),
-        iOptions: const IOSOptions(
-          accessibility: KeychainAccessibility.first_unlock_this_device,
-        ),
-      );
-    }
+    await _secureStorage.write(key: key, value: value);
   }
 
   Future<String?> _getToken(String key) async {
@@ -173,15 +176,6 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   Future<void> _deleteToken(String key) async {
-    try {
-      // Check if key exists first
-      final exists = await _secureStorage.containsKey(key: key);
-      if (exists) {
-        await _secureStorage.delete(key: key);
-      }
-    } catch (e) {
-      // Silently handle deletion errors - this is common on iOS
-      print('Warning: Failed to delete token $key: $e');
-    }
+    await _secureStorage.delete(key: key);
   }
 }

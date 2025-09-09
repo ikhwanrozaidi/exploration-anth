@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../company/presentation/pages/company_selection_page.dart';
@@ -120,6 +121,14 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     _clearOtpFields();
   }
 
+  void _logout() {
+    getIt<AuthBloc>().add(const LogoutRequested());
+    setState(() {
+      _currentScreen = AuthScreen.signIn;
+    });
+    _clearOtpFields();
+  }
+
   // Helper methods
   void _clearOtpFields() {
     for (var controller in _otpControllers) {
@@ -186,7 +195,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       case AuthScreen.otp:
         return _buildOtpContent(localization);
       case AuthScreen.company:
-        return CompanySelectionPage(onBackPressed: _backToSignIn);
+        return CompanySelectionPage(onBackPressed: _logout);
     }
   }
 
@@ -343,11 +352,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 setState(() {
                   _isOtpLoading = false;
                 });
-                // Only show company screen if coming from OTP verification
-                // If already authenticated on app start, initState handles it
-                if (_currentScreen == AuthScreen.otp) {
-                  _showCompanyScreen();
-                }
+                // Always show company screen when authenticated
+                _showCompanyScreen();
               },
               unauthenticated: () {
                 _setLoading(false);
@@ -361,21 +367,20 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           child: BlocBuilder<AuthBloc, AuthState>(
             builder: (context, authState) {
               // Don't show signin/otp screens if already authenticated
-              final shouldSkipAuth = authState is Authenticated && 
-                                    (_currentScreen == AuthScreen.signIn || 
-                                     _currentScreen == AuthScreen.otp);
-              
+              final shouldSkipAuth =
+                  authState is Authenticated &&
+                  (_currentScreen == AuthScreen.signIn ||
+                      _currentScreen == AuthScreen.otp);
+
               if (shouldSkipAuth) {
                 // Show a loading state while navigating to company screen
                 return AuthBackground(
                   imagePath: 'assets/images/signin_bg.png',
                   fadeController: _backgroundController,
-                  child: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
+                  child: const Center(child: CircularProgressIndicator()),
                 );
               }
-              
+
               return AuthBackground(
                 imagePath: 'assets/images/signin_bg.png',
                 fadeController: _backgroundController,

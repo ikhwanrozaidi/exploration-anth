@@ -203,11 +203,30 @@ class AppDatabase extends _$AppDatabase {
 
         if (from < 6) {
           // Migration from version 5 to 6: Add new columns to Companies table
-          await m.addColumn(companies, companies.bumiputera);
-          await m.addColumn(companies, companies.einvoiceTinNo);
-          await m.addColumn(companies, companies.registrationDate);
-          await m.addColumn(companies, companies.adminRoleUid);
-          await m.addColumn(companies, companies.adminRoleName);
+          // Check which columns exist before adding them
+          final result = await customSelect(
+            "PRAGMA table_info('companies')",
+          ).get();
+
+          final existingColumns = result
+              .map((row) => row.data['name'] as String)
+              .toSet();
+
+          if (!existingColumns.contains('bumiputera')) {
+            await m.addColumn(companies, companies.bumiputera);
+          }
+          if (!existingColumns.contains('einvoice_tin_no')) {
+            await m.addColumn(companies, companies.einvoiceTinNo);
+          }
+          if (!existingColumns.contains('registration_date')) {
+            await m.addColumn(companies, companies.registrationDate);
+          }
+          if (!existingColumns.contains('admin_role_uid')) {
+            await m.addColumn(companies, companies.adminRoleUid);
+          }
+          if (!existingColumns.contains('admin_role_name')) {
+            await m.addColumn(companies, companies.adminRoleName);
+          }
         }
       },
       beforeOpen: (details) async {
