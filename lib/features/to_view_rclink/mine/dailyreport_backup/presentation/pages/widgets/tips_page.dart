@@ -3,9 +3,10 @@ import 'package:rclink_app/features/daily_report_detail/presentation/pages/daily
 
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
-import 'draft_report_creation_page.dart';
+import '../draft_report_creation_page.dart';
 
 class TipsOnboardingPage extends StatefulWidget {
+  // Add these parameters
   final String scopeOfWork;
   final String weather;
   final String location;
@@ -28,6 +29,7 @@ class _TipsOnboardingPageState extends State<TipsOnboardingPage> {
   int _currentPage = 0;
   final int _maxPages = 3;
 
+  // Sample data for the tips
   final List<TipData> _tips = [
     TipData(
       title: "Safety",
@@ -69,6 +71,7 @@ class _TipsOnboardingPageState extends State<TipsOnboardingPage> {
   }
 
   void _proceed() {
+    // Navigate to DraftDailyReportPage with the parameters
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (context) => DraftDailyReportPage(
@@ -82,9 +85,10 @@ class _TipsOnboardingPageState extends State<TipsOnboardingPage> {
   }
 
   void _openPlan() {
-    // Navigator.of(
-    //   context,
-    // ).push(MaterialPageRoute(builder: (context) => DailyReportDetailPage()));
+    // Navigate to DailyReportDetailPage for viewing plan
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (context) => DailyReportDetailPage()));
   }
 
   @override
@@ -204,108 +208,125 @@ class _TipsOnboardingPageState extends State<TipsOnboardingPage> {
           Padding(
             padding: EdgeInsets.all(30),
             child: _currentPage == _maxPages - 1
-                ? Row(
-                    children: [
-                      // Open Plan button
-                      Expanded(
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _openPlan,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              side: BorderSide(color: primaryColor),
-                              padding: ResponsiveHelper.padding(
-                                context,
-                                vertical: 12,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 2,
-                            ),
-                            child: Text(
-                              'Open Plan',
-                              style: TextStyle(
-                                color: primaryColor,
-                                fontSize: ResponsiveHelper.fontSize(
-                                  context,
-                                  base: 14,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(width: 16),
-
-                      // Next button (now goes to DraftDailyReportPage)
-                      Expanded(
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _proceed,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: primaryColor,
-                              padding: ResponsiveHelper.padding(
-                                context,
-                                vertical: 12,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 2,
-                            ),
-                            child: Text(
-                              'Next',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: ResponsiveHelper.fontSize(
-                                  context,
-                                  base: 14,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                : SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _nextPage();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        padding: ResponsiveHelper.padding(
-                          context,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 2,
-                      ),
-                      child: Text(
-                        'Next',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: ResponsiveHelper.fontSize(
-                            context,
-                            base: 14,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+                ? _buildFinalPageButtons()
+                : _buildNextButton(),
           ),
 
           SizedBox(height: 30),
         ],
       ),
+    );
+  }
+
+  Widget _buildTipImage(int index) {
+    IconData iconData;
+    switch (index) {
+      case 0:
+        iconData = Icons.security;
+        break;
+      case 1:
+        iconData = Icons.build;
+        break;
+      case 2:
+        iconData = Icons.chat;
+        break;
+      default:
+        iconData = Icons.info;
+    }
+
+    return Container(
+      width: 120,
+      height: 120,
+      decoration: BoxDecoration(
+        color: Colors.orange[100],
+        shape: BoxShape.circle,
+      ),
+      child: Icon(iconData, size: 60, color: Colors.orange[600]),
+    );
+  }
+
+  Widget _buildNextButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        onPressed: () {
+          _nextPage();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryColor,
+          padding: ResponsiveHelper.padding(context, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          elevation: 2,
+        ),
+        child: Text(
+          'Next',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: ResponsiveHelper.fontSize(context, base: 14),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFinalPageButtons() {
+    return Row(
+      children: [
+        // Open Plan button
+        Expanded(
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _openPlan,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                side: BorderSide(color: primaryColor),
+                padding: ResponsiveHelper.padding(context, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 2,
+              ),
+              child: Text(
+                'Open Plan',
+                style: TextStyle(
+                  color: primaryColor,
+                  fontSize: ResponsiveHelper.fontSize(context, base: 14),
+                ),
+              ),
+            ),
+          ),
+        ),
+
+        SizedBox(width: 16),
+
+        // Next button (now goes to DraftDailyReportPage)
+        Expanded(
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _proceed,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                padding: ResponsiveHelper.padding(context, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 2,
+              ),
+              child: Text(
+                'Next',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: ResponsiveHelper.fontSize(context, base: 14),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

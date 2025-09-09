@@ -1,3 +1,4 @@
+// BLoC Events
 abstract class ReportCreationEvent {}
 
 class ScopeSelectedEvent extends ReportCreationEvent {

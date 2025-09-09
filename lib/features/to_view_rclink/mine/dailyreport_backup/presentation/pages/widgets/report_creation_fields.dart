@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Custom Daily Report FIELDS
+// Custom Field Widget
 class DailyReportCreationFields extends StatelessWidget {
   final bool focus;
   final String title;
@@ -69,7 +69,6 @@ class DailyReportCreationFields extends StatelessWidget {
     );
   }
 
-  // Click and bottomsheet appear
   Widget _buildBottomSheetField(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
@@ -118,7 +117,6 @@ class DailyReportCreationFields extends StatelessWidget {
     );
   }
 
-  // Textfield
   Widget _buildTextFieldField() {
     return Row(
       children: [
@@ -185,7 +183,6 @@ class DailyReportCreationFields extends StatelessWidget {
     );
   }
 
-  // Input Image
   Widget _buildImageField() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
