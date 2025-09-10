@@ -39,26 +39,53 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 0,
+        automaticallyImplyLeading: false,
+        titleSpacing: 20,
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12.withOpacity(0.1),
+                      blurRadius: 5,
+                      offset: Offset(-2, 6),
+                    ),
+                  ],
+                ),
+                child: Icon(
+                  Icons.arrow_back_rounded,
+                  color: Colors.black,
+                  size: 25,
+                ),
+              ),
+            ),
 
-        title: Text(
-          'Quantity',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        centerTitle: false,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context, currentQuantities);
-          },
+            SizedBox(width: ResponsiveHelper.spacing(context, 15)),
+
+            const Text(
+              'Quantity',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+              ),
+            ),
+          ],
         ),
       ),
+
       body: Padding(
         padding: const EdgeInsets.all(25.0),
         child: Column(
@@ -73,8 +100,8 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
                     'Added Quantities',
                     style: TextStyle(
                       fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green.shade700,
+                      fontWeight: FontWeight.w500,
+                      color: primaryColor,
                     ),
                   ),
                   Text(
@@ -84,192 +111,252 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
                 ],
               ),
               SizedBox(height: 10),
-              Container(
-                height: 80,
+
+              // Added quantities list
+              Expanded(
                 child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
                   itemCount: currentQuantities.length,
                   itemBuilder: (context, index) {
                     final quantity = currentQuantities[index];
+
+                    print(quantity.toString());
+
                     return Container(
-                      width: 180,
-                      margin: EdgeInsets.only(right: 8),
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.green.shade50,
-                        border: Border.all(color: Colors.green.shade200),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.check_circle,
-                                color: Colors.green,
-                                size: 16,
-                              ),
-                              SizedBox(width: 6),
-                              Expanded(
-                                child: Text(
-                                  quantity['name'],
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 13,
+                      margin: EdgeInsets.only(bottom: 12),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () => _editQuantity(quantity),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              border: Border.all(color: primaryColor, width: 2),
+                              borderRadius: BorderRadius.circular(12),
+                              color: primaryShade,
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: primaryColor.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(8),
                                   ),
-                                  overflow: TextOverflow.ellipsis,
+                                  child: Icon(
+                                    Icons.check_circle,
+                                    color: primaryColor,
+                                    size: 24,
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            '${quantity['fieldsCount']} fields completed',
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: Colors.grey.shade600,
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        quantity['name'],
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+
+                                      Text(
+                                        'Completed - Tap to edit',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: primaryColor,
+                                          // fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                // IconButton(
+                                //   onPressed: () => _removeQuantity(index),
+                                //   icon: Icon(
+                                //     Icons.delete,
+                                //     color: Colors.red.shade400,
+                                //     size: 20,
+                                //   ),
+                                // ),
+                                Icon(Icons.edit, color: primaryColor, size: 16),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     );
                   },
                 ),
               ),
-              SizedBox(height: 20),
-            ],
-
-            // Available options
-            Expanded(
-              child: ListView.builder(
-                itemCount: widget.scopeConfig.quantityOptions.length,
-                itemBuilder: (context, index) {
-                  final quantityOption =
-                      widget.scopeConfig.quantityOptions[index];
-                  final isAdded = currentQuantities.any(
-                    (q) => q['id'] == quantityOption.id,
-                  );
-
-                  return Container(
-                    margin: EdgeInsets.only(bottom: 12),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: () async {
-                          final result = await Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => QuantityFieldsPage(
-                                scopeOfWork: widget.scopeOfWork,
-                                weather: widget.weather,
-                                location: widget.location,
-                                section: widget.section,
-                                quantityOption: quantityOption,
-                                scopeConfig: widget.scopeConfig,
-                                existingData: isAdded
-                                    ? currentQuantities.firstWhere(
-                                        (q) => q['id'] == quantityOption.id,
-                                      )['data']
-                                    : null,
-                              ),
-                            ),
-                          );
-
-                          if (result != null) {
-                            setState(() {
-                              // Remove existing if present
-                              currentQuantities.removeWhere(
-                                (q) => q['id'] == quantityOption.id,
-                              );
-                              // Add new/updated data
-                              currentQuantities.add({
-                                'id': quantityOption.id,
-                                'name': quantityOption.name,
-                                'fieldsCount': quantityOption.fields.length,
-                                'data': result,
-                              });
-                            });
-                          }
-                        },
-                        borderRadius: BorderRadius.circular(12),
-                        child: Container(
-                          padding: EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: isAdded
-                                  ? Colors.green.shade300
-                                  : Colors.grey.shade300,
-                              width: isAdded ? 2 : 1,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            color: isAdded ? Colors.green.shade50 : null,
-                          ),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: isAdded
-                                      ? Colors.green.withOpacity(0.1)
-                                      : primaryColor.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Icon(
-                                  isAdded ? Icons.check_circle : Icons.category,
-                                  color: isAdded ? Colors.green : primaryColor,
-                                  size: 24,
-                                ),
-                              ),
-                              SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      quantityOption.name,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      isAdded
-                                          ? 'Completed - Tap to edit'
-                                          : '${quantityOption.fields.length} fields to fill',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: isAdded
-                                            ? Colors.green.shade700
-                                            : Colors.grey.shade600,
-                                        fontWeight: isAdded
-                                            ? FontWeight.w500
-                                            : FontWeight.normal,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Icon(
-                                isAdded ? Icons.edit : Icons.arrow_forward_ios,
-                                color: isAdded
-                                    ? Colors.green
-                                    : Colors.grey.shade400,
-                                size: 16,
-                              ),
-                            ],
-                          ),
+            ] else ...[
+              // Empty state
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.category_outlined,
+                        size: 80,
+                        color: Colors.grey.shade300,
+                      ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Empty Quantity',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey.shade600,
                         ),
                       ),
-                    ),
-                  );
-                },
+                      SizedBox(height: 8),
+                      Text(
+                        'Add quantity to display',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey.shade500,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+
+            // Add Quantity Button
+            Container(
+              width: double.infinity,
+              margin: EdgeInsets.only(bottom: 20),
+              child: ElevatedButton(
+                onPressed: () => _showQuantityOptions(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  padding: ResponsiveHelper.padding(context, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 2,
+                ),
+                child: Text(
+                  '+  Add Quantity',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: ResponsiveHelper.fontSize(context, base: 14),
+                  ),
+                ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _showQuantityOptions() {
+    final quantityNames = widget.scopeConfig.quantityOptions
+        .map((option) => option.name)
+        .toList();
+
+    showFlexibleBottomsheet(
+      context: context,
+      title: 'Select Quantity Type',
+      attributes: quantityNames,
+      isRadio: false, // Not using radio for this case
+      isNavigate: true, // Enable navigation mode
+      onTap: (selectedName) {
+        // Close bottomsheet first
+        Navigator.pop(context);
+
+        // Then navigate after a small delay
+        Future.delayed(Duration(milliseconds: 100), () {
+          final quantityOption = widget.scopeConfig.quantityOptions.firstWhere(
+            (option) => option.name == selectedName,
+          );
+
+          _navigateToQuantityFields(quantityOption);
+        });
+      },
+    );
+  }
+
+  void _navigateToQuantityFields(QuantityOption quantityOption) async {
+    // Check if this quantity is already added to get existing data
+    final existingQuantity = currentQuantities
+        .where((q) => q['id'] == quantityOption.id)
+        .firstOrNull;
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuantityFieldsPage(
+          scopeOfWork: widget.scopeOfWork,
+          weather: widget.weather,
+          location: widget.location,
+          section: widget.section,
+          quantityOption: quantityOption,
+          scopeConfig: widget.scopeConfig,
+          existingData: existingQuantity?['data'],
+        ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        // Remove existing if present
+        currentQuantities.removeWhere((q) => q['id'] == quantityOption.id);
+        // Add new/updated data
+        currentQuantities.add({
+          'id': quantityOption.id,
+          'name': quantityOption.name,
+          'fieldsCount': quantityOption.fields.length,
+          'data': result,
+        });
+      });
+    }
+  }
+
+  void _editQuantity(Map<String, dynamic> quantity) async {
+    // Find the quantity option
+    final quantityOption = widget.scopeConfig.quantityOptions.firstWhere(
+      (option) => option.id == quantity['id'],
+    );
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuantityFieldsPage(
+          scopeOfWork: widget.scopeOfWork,
+          weather: widget.weather,
+          location: widget.location,
+          section: widget.section,
+          quantityOption: quantityOption,
+          scopeConfig: widget.scopeConfig,
+          existingData: quantity['data'],
+        ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        // Find and update the existing quantity
+        final index = currentQuantities.indexWhere(
+          (q) => q['id'] == quantity['id'],
+        );
+        if (index != -1) {
+          currentQuantities[index]['data'] = result;
+        }
+      });
+    }
+  }
+
+  void _removeQuantity(int index) {
+    setState(() {
+      currentQuantities.removeAt(index);
+    });
   }
 }

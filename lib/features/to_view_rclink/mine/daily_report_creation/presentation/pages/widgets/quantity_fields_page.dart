@@ -10,8 +10,9 @@ class QuantityFieldsPage extends StatefulWidget {
   final String weather;
   final String location;
   final String section;
-  final QuantityOption quantityOption;
   final ScopeConfig scopeConfig;
+
+  final QuantityOption quantityOption;
   final Map<String, dynamic>? existingData;
 
   const QuantityFieldsPage({
@@ -36,6 +37,7 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
   @override
   void initState() {
     super.initState();
+
     if (widget.existingData != null) {
       fieldValues = Map.from(widget.existingData!['fieldValues'] ?? {});
       imageFields = Map<String, List<String>>.from(
@@ -50,168 +52,98 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color.fromARGB(255, 135, 167, 247), primaryColor],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [0.0, 0.2],
-          ),
-        ),
-        child: SafeArea(
-          bottom: false,
-          child: Column(
-            children: [
-              // Header
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          style: IconButton.styleFrom(
-                            shape: const CircleBorder(),
-                            backgroundColor: Colors.white,
-                            padding: const EdgeInsets.all(5),
-                          ),
-                          onPressed: () => Navigator.pop(context),
-                          icon: const Icon(
-                            Icons.arrow_back_rounded,
-                            color: primaryColor,
-                            size: 25,
-                          ),
-                        ),
-                        SizedBox(width: ResponsiveHelper.spacing(context, 10)),
-                        Expanded(
-                          child: Text(
-                            widget.quantityOption.name,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ),
-                      ],
+      backgroundColor: Colors.white,
+
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
+        titleSpacing: 20,
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12.withOpacity(0.1),
+                      blurRadius: 5,
+                      offset: Offset(-2, 6),
                     ),
-                    SizedBox(height: 30),
+                  ],
+                ),
+                child: Icon(
+                  Icons.arrow_back_rounded,
+                  color: Colors.black,
+                  size: 25,
+                ),
+              ),
+            ),
+
+            SizedBox(width: ResponsiveHelper.spacing(context, 15)),
+
+            Text(
+              widget.quantityOption.name,
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 20,
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      body: Padding(
+        padding: const EdgeInsets.all(25.0),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Fields
+                    ...widget.quantityOption.fields.map(
+                      (field) => _buildField(field),
+                    ),
                   ],
                 ),
               ),
+            ),
 
-              // Content
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
-                        offset: Offset(0, -2),
-                      ),
-                    ],
+            // Save Button
+            SizedBox(height: 20),
+
+            Container(
+              margin: EdgeInsets.only(top: 20),
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () => _saveData(),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  padding: ResponsiveHelper.padding(context, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              SizedBox(height: 10),
-
-                              // Info header
-                              Container(
-                                padding: EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  color: primaryColor.withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: primaryColor.withOpacity(0.3),
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.category, color: primaryColor),
-                                    SizedBox(width: 12),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            widget.quantityOption.name,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              color: primaryColor,
-                                            ),
-                                          ),
-                                          Text(
-                                            'Fill in the required fields below',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.grey.shade600,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              SizedBox(height: 20),
-
-                              // Fields
-                              ...widget.quantityOption.fields.map(
-                                (field) => _buildField(field),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      // Save Button
-                      SizedBox(height: 20),
-                      Container(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () => _saveData(),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryColor,
-                            padding: EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 2,
-                          ),
-                          child: Text(
-                            'Save ${widget.quantityOption.name}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                    ],
+                  elevation: 2,
+                ),
+                child: Text(
+                  'Save',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: ResponsiveHelper.fontSize(context, base: 14),
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 20),
+          ],
         ),
       ),
     );

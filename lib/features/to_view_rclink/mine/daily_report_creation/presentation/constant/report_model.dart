@@ -5,7 +5,7 @@ class FieldConfig {
   final String id;
   final String title;
   final String description;
-  final IconData icon;
+  final IconData? icon;
   final FieldType type;
   final String? hintText;
   final double? numericMin;
@@ -18,7 +18,7 @@ class FieldConfig {
     required this.id,
     required this.title,
     required this.description,
-    required this.icon,
+    this.icon,
     required this.type,
     this.hintText,
     this.numericMin,

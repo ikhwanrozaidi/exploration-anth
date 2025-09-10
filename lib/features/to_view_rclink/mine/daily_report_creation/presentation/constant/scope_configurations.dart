@@ -68,10 +68,10 @@ class ScopeConfigurations {
             FieldConfig(
               id: 'pothole_reference',
               title: 'Pothole Reference',
-              description: 'Enter reference',
-              icon: Icons.tag,
+              description: 'Pothole Reference',
+              units: 'nos',
               type: FieldType.textField,
-              hintText: 'Enter reference',
+              hintText: 'Pothole Reference Number',
             ),
           ],
         ),

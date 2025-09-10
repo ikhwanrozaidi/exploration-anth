@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:rclink_app/shared/utils/theme.dart';
 
 // Custom Daily Report FIELDS
 class DailyReportCreationFields extends StatelessWidget {
   final bool focus;
   final String title;
   final String description;
-  final IconData icon;
+  final IconData? icon;
   final bool isTextField;
   final bool isBottomSheet;
   final bool isTextNumber;
@@ -27,7 +28,7 @@ class DailyReportCreationFields extends StatelessWidget {
     required this.focus,
     required this.title,
     required this.description,
-    required this.icon,
+    this.icon,
     required this.isTextField,
     required this.isBottomSheet,
     required this.isTextNumber,
@@ -81,7 +82,7 @@ class DailyReportCreationFields extends StatelessWidget {
               color: Color.fromARGB(255, 214, 226, 255),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: Theme.of(context).primaryColor),
+            child: Icon(icon, color: primaryColor),
           ),
           const SizedBox(width: 20),
           Expanded(
@@ -122,54 +123,73 @@ class DailyReportCreationFields extends StatelessWidget {
   Widget _buildTextFieldField() {
     return Row(
       children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Color.fromARGB(255, 214, 226, 255),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: Colors.blue),
-        ),
+        icon == null
+            ? SizedBox()
+            : Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Color.fromARGB(255, 214, 226, 255),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: primaryColor),
+              ),
+
         const SizedBox(width: 20),
+
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(title),
+
               SizedBox(height: 5),
-              TextField(
-                keyboardType: isTextNumber
-                    ? TextInputType.number
-                    : TextInputType.text,
-                onChanged: onTextChanged,
-                decoration: InputDecoration(
-                  isDense: true,
-                  hintText: textFieldHintText,
-                  suffixText: textFieldUnits,
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade300,
-                      width: 1,
+
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300, width: 1),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        keyboardType: isTextNumber
+                            ? TextInputType.number
+                            : TextInputType.text,
+                        onChanged: onTextChanged,
+                        decoration: InputDecoration(
+                          isDense: true,
+                          hintText: textFieldHintText,
+                          border: InputBorder.none,
+
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(
-                      color: Colors.grey.shade300,
-                      width: 1,
+
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: primaryColor,
+                        borderRadius: BorderRadius.circular(100),
+                      ),
+                      child: textFieldUnits == null
+                          ? SizedBox()
+                          : Text(
+                              textFieldUnits ?? '',
+                              style: TextStyle(color: Colors.white),
+                            ),
                     ),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                    borderSide: BorderSide(color: Colors.blue, width: 1.5),
-                  ),
+                  ],
                 ),
               ),
+
               if (textFieldRange != null)
                 Padding(
                   padding: EdgeInsets.only(top: 5),
