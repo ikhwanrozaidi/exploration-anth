@@ -1,14 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
-import '../../bloc/report_creation_bloc.dart';
-import '../../bloc/report_creation_event.dart';
-import '../../bloc/report_creation_state.dart';
 import '../../constant/report_model.dart';
-import '../../constant/scope_configurations.dart';
 import 'report_creation_fields.dart';
 
 class QuantityFieldsPage extends StatefulWidget {
@@ -18,6 +12,7 @@ class QuantityFieldsPage extends StatefulWidget {
   final String section;
   final QuantityOption quantityOption;
   final ScopeConfig scopeConfig;
+  final Map<String, dynamic>? existingData;
 
   const QuantityFieldsPage({
     Key? key,
@@ -27,6 +22,7 @@ class QuantityFieldsPage extends StatefulWidget {
     required this.section,
     required this.quantityOption,
     required this.scopeConfig,
+    this.existingData,
   }) : super(key: key);
 
   @override
@@ -34,212 +30,197 @@ class QuantityFieldsPage extends StatefulWidget {
 }
 
 class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
-  late ReportCreationBloc _reportBloc;
+  Map<String, dynamic> fieldValues = {};
+  Map<String, List<String>> imageFields = {};
 
   @override
   void initState() {
     super.initState();
-    _reportBloc = ReportCreationBloc(ScopeConfigurations.all);
-    _reportBloc.add(ScopeSelectedEvent(widget.scopeConfig.id));
-  }
-
-  @override
-  void dispose() {
-    _reportBloc.close();
-    super.dispose();
+    if (widget.existingData != null) {
+      fieldValues = Map.from(widget.existingData!['fieldValues'] ?? {});
+      imageFields = Map<String, List<String>>.from(
+        widget.existingData!['imageFields']?.map(
+              (k, v) => MapEntry(k, List<String>.from(v)),
+            ) ??
+            {},
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => _reportBloc,
-      child: GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Scaffold(
-          body: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color.fromARGB(255, 135, 167, 247), primaryColor],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                stops: [0.0, 0.2],
-              ),
-            ),
-            child: SafeArea(
-              bottom: false,
-              child: Column(
-                children: [
-                  // Header Section
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    child: Column(
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color.fromARGB(255, 135, 167, 247), primaryColor],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            stops: [0.0, 0.2],
+          ),
+        ),
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              // Header
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  children: [
+                    Row(
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                IconButton(
-                                  style: IconButton.styleFrom(
-                                    shape: const CircleBorder(),
-                                    backgroundColor: Colors.white,
-                                    padding: const EdgeInsets.all(5),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: const Icon(
-                                    Icons.arrow_back_rounded,
-                                    color: primaryColor,
-                                    size: 25,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: ResponsiveHelper.spacing(context, 10),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    widget.quantityOption.name,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+                        IconButton(
+                          style: IconButton.styleFrom(
+                            shape: const CircleBorder(),
+                            backgroundColor: Colors.white,
+                            padding: const EdgeInsets.all(5),
+                          ),
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(
+                            Icons.arrow_back_rounded,
+                            color: primaryColor,
+                            size: 25,
+                          ),
                         ),
-                        SizedBox(height: 30),
+                        SizedBox(width: ResponsiveHelper.spacing(context, 10)),
+                        Expanded(
+                          child: Text(
+                            widget.quantityOption.name,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
+                    SizedBox(height: 30),
+                  ],
+                ),
+              ),
+
+              // Content
+              Expanded(
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 20),
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                        offset: Offset(0, -2),
+                      ),
+                    ],
                   ),
-
-                  // Main Content
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 25,
-                        vertical: 20,
-                      ),
-                      width: double.infinity,
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24),
-                          topRight: Radius.circular(24),
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 10,
-                            offset: Offset(0, -2),
-                          ),
-                        ],
-                      ),
-                      child: BlocBuilder<ReportCreationBloc, ReportCreationState>(
-                        builder: (context, state) {
-                          return Column(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Expanded(
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: 10),
+                              SizedBox(height: 10),
 
-                                      // Quantity Info
-                                      Container(
-                                        padding: EdgeInsets.all(16),
-                                        decoration: BoxDecoration(
-                                          color: primaryColor.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(
-                                            12,
-                                          ),
-                                          border: Border.all(
-                                            color: primaryColor.withOpacity(
-                                              0.3,
-                                            ),
-                                          ),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.category,
+                              // Info header
+                              Container(
+                                padding: EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: primaryColor.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: primaryColor.withOpacity(0.3),
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.category, color: primaryColor),
+                                    SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            widget.quantityOption.name,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
                                               color: primaryColor,
                                             ),
-                                            SizedBox(width: 12),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    widget.quantityOption.name,
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: primaryColor,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    'Fill in the required fields below',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color:
-                                                          Colors.grey.shade600,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                          ),
+                                          Text(
+                                            'Fill in the required fields below',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey.shade600,
                                             ),
-                                          ],
-                                        ),
+                                          ),
+                                        ],
                                       ),
-
-                                      SizedBox(height: 20),
-
-                                      // Fields
-                                      ...widget.quantityOption.fields.map(
-                                        (field) =>
-                                            _buildField(context, state, field),
-                                      ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
 
-                              // Save Button
                               SizedBox(height: 20),
-                              _buildSaveButton(context, state),
-                              SizedBox(height: 20),
+
+                              // Fields
+                              ...widget.quantityOption.fields.map(
+                                (field) => _buildField(field),
+                              ),
                             ],
-                          );
-                        },
+                          ),
+                        ),
                       ),
-                    ),
+
+                      // Save Button
+                      SizedBox(height: 20),
+                      Container(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () => _saveData(),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 2,
+                          ),
+                          child: Text(
+                            'Save ${widget.quantityOption.name}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildField(
-    BuildContext context,
-    ReportCreationState state,
-    FieldConfig field,
-  ) {
-    final fieldId = '${widget.quantityOption.id}_${field.id}';
-    final currentValue = state.fieldValues[fieldId];
-    final currentImages = state.imageFields[fieldId];
-    final errorText = state.fieldErrors[fieldId];
+  Widget _buildField(FieldConfig field) {
+    final fieldId = field.id;
+    final currentValue = fieldValues[fieldId];
+    final currentImages = imageFields[fieldId];
 
     switch (field.type) {
       case FieldType.multipleImages:
@@ -252,16 +233,18 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
           isBottomSheet: false,
           isTextNumber: false,
           currentImages: currentImages,
-          errorText: errorText,
           onImageAdded: (imagePath) {
-            context.read<ReportCreationBloc>().add(
-              ImageAddedEvent(fieldId, imagePath),
-            );
+            setState(() {
+              final images = imageFields[fieldId] ?? [];
+              imageFields[fieldId] = [...images, imagePath];
+            });
           },
           onImageRemoved: (imagePath) {
-            context.read<ReportCreationBloc>().add(
-              ImageRemovedEvent(fieldId, imagePath),
-            );
+            setState(() {
+              final images = imageFields[fieldId] ?? [];
+              images.remove(imagePath);
+              imageFields[fieldId] = images;
+            });
           },
         );
 
@@ -275,7 +258,6 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
           isBottomSheet: true,
           isTextNumber: false,
           currentValue: currentValue,
-          errorText: errorText,
           onTap: () {
             showFlexibleBottomsheet(
               context: context,
@@ -283,9 +265,9 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
               attributes: field.dropdownOptions ?? [],
               isRadio: true,
               onSelectionChanged: (selectedValue) {
-                context.read<ReportCreationBloc>().add(
-                  FieldUpdatedEvent(fieldId, selectedValue),
-                );
+                setState(() {
+                  fieldValues[fieldId] = selectedValue;
+                });
               },
             );
           },
@@ -304,11 +286,10 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
           textFieldRange: field.numericMax,
           textFieldUnits: field.units,
           currentValue: currentValue?.toString(),
-          errorText: errorText,
           onTextChanged: (value) {
-            context.read<ReportCreationBloc>().add(
-              FieldUpdatedEvent(fieldId, value),
-            );
+            setState(() {
+              fieldValues[fieldId] = value;
+            });
           },
         );
 
@@ -324,60 +305,18 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
           isTextNumber: false,
           textFieldHintText: field.hintText,
           currentValue: currentValue?.toString(),
-          errorText: errorText,
           onTextChanged: (value) {
-            context.read<ReportCreationBloc>().add(
-              FieldUpdatedEvent(fieldId, value),
-            );
+            setState(() {
+              fieldValues[fieldId] = value;
+            });
           },
         );
     }
   }
 
-  Widget _buildSaveButton(BuildContext context, ReportCreationState state) {
-    return Container(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          // Save the current quantity data and go back
-          _showSaveDialog(context);
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
-          padding: EdgeInsets.symmetric(vertical: 15),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 2,
-        ),
-        child: Text(
-          'Save ${widget.quantityOption.name}',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-    );
-  }
+  void _saveData() {
+    final data = {'fieldValues': fieldValues, 'imageFields': imageFields};
 
-  void _showSaveDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Saved Successfully'),
-        content: Text('${widget.quantityOption.name} data has been saved.'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Close dialog
-              Navigator.pop(context); // Go back to quantity selection
-            },
-            child: Text('OK'),
-          ),
-        ],
-      ),
-    );
+    Navigator.pop(context, data);
   }
 }

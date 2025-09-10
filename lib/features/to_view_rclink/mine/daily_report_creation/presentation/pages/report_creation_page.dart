@@ -250,24 +250,7 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
 
                             // Weather
                             GestureDetector(
-                              onTap: () {
-                                showFlexibleBottomsheet(
-                                  context: context,
-                                  title: "Choose Weather",
-                                  attributes: [
-                                    "Sunny",
-                                    "Rain",
-                                    "Heavy Rain - No work performed",
-                                  ],
-                                  isRadio: true,
-                                  onSelectionChanged: (selectedValue) {
-                                    setState(() {
-                                      selectedWeather =
-                                          selectedValue ?? 'Sunny';
-                                    });
-                                  },
-                                );
-                              },
+                              onTap: () {},
                               child: Container(
                                 margin: EdgeInsets.only(bottom: 15),
                                 padding: EdgeInsets.symmetric(
