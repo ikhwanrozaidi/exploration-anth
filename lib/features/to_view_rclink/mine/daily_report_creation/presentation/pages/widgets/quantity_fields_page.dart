@@ -3,7 +3,7 @@ import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../constant/report_model.dart';
-import 'report_creation_fields.dart';
+import 'creation_fields_widget.dart';
 
 class QuantityFieldsPage extends StatefulWidget {
   final String scopeOfWork;

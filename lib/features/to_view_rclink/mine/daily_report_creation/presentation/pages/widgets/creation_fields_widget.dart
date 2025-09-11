@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rclink_app/shared/utils/theme.dart';
 
 // Custom Daily Report FIELDS
-class DailyReportCreationFields extends StatelessWidget {
+class DailyReportCreationFields extends StatefulWidget {
   final bool focus;
   final String title;
   final String description;
@@ -47,24 +47,54 @@ class DailyReportCreationFields extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<DailyReportCreationFields> createState() =>
+      _DailyReportCreationFieldsState();
+}
+
+class _DailyReportCreationFieldsState extends State<DailyReportCreationFields> {
+  late TextEditingController _textController;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controller with current value
+    _textController = TextEditingController(text: widget.currentValue ?? '');
+  }
+
+  @override
+  void didUpdateWidget(DailyReportCreationFields oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update controller when currentValue changes
+    if (widget.currentValue != oldWidget.currentValue) {
+      _textController.text = widget.currentValue ?? '';
+    }
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 15),
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       decoration: BoxDecoration(
         border: Border.all(
-          color: errorText != null ? Colors.red : Colors.grey.shade400,
-          width: errorText != null ? 1.5 : 0.5,
+          color: widget.errorText != null ? Colors.red : Colors.grey.shade400,
+          width: widget.errorText != null ? 1.5 : 0.5,
         ),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (isBottomSheet) _buildBottomSheetField(context),
-          if (isTextField) _buildTextFieldField(),
-          if (!isTextField && !isBottomSheet) _buildImageField(),
-          if (errorText != null) _buildErrorText(),
+          if (widget.isBottomSheet) _buildBottomSheetField(context),
+          if (widget.isTextField) _buildTextFieldField(),
+          if (!widget.isTextField && !widget.isBottomSheet) _buildImageField(),
+          if (widget.errorText != null) _buildErrorText(),
         ],
       ),
     );
@@ -73,7 +103,7 @@ class DailyReportCreationFields extends StatelessWidget {
   // Click and bottomsheet appear
   Widget _buildBottomSheetField(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: Row(
         children: [
           Container(
@@ -82,20 +112,22 @@ class DailyReportCreationFields extends StatelessWidget {
               color: Color.fromARGB(255, 214, 226, 255),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: primaryColor),
+            child: Icon(widget.icon, color: primaryColor),
           ),
           const SizedBox(width: 20),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title),
+                Text(widget.title),
                 Text(
-                  currentValue ?? description,
+                  widget.currentValue ?? widget.description,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color: currentValue == null ? Colors.red : Colors.black,
+                    color: widget.currentValue == null
+                        ? Colors.red
+                        : Colors.black,
                   ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
@@ -123,7 +155,7 @@ class DailyReportCreationFields extends StatelessWidget {
   Widget _buildTextFieldField() {
     return Row(
       children: [
-        icon == null
+        widget.icon == null
             ? SizedBox()
             : Container(
                 padding: const EdgeInsets.all(12),
@@ -131,7 +163,7 @@ class DailyReportCreationFields extends StatelessWidget {
                   color: Color.fromARGB(255, 214, 226, 255),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: primaryColor),
+                child: Icon(widget.icon, color: primaryColor),
               ),
 
         const SizedBox(width: 20),
@@ -140,7 +172,7 @@ class DailyReportCreationFields extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title),
+              Text(widget.title),
 
               SizedBox(height: 5),
 
@@ -152,15 +184,18 @@ class DailyReportCreationFields extends StatelessWidget {
                   children: [
                     Expanded(
                       child: TextField(
-                        keyboardType: isTextNumber
+                        controller: _textController, // Use the controller here
+                        keyboardType: widget.isTextNumber
                             ? TextInputType.number
                             : TextInputType.text,
-                        onChanged: onTextChanged,
+                        onChanged: (value) {
+                          // Call the callback when text changes
+                          widget.onTextChanged?.call(value);
+                        },
                         decoration: InputDecoration(
                           isDense: true,
-                          hintText: textFieldHintText,
+                          hintText: widget.textFieldHintText,
                           border: InputBorder.none,
-
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: 12,
                             vertical: 8,
@@ -179,10 +214,10 @@ class DailyReportCreationFields extends StatelessWidget {
                         color: primaryColor,
                         borderRadius: BorderRadius.circular(100),
                       ),
-                      child: textFieldUnits == null
+                      child: widget.textFieldUnits == null
                           ? SizedBox()
                           : Text(
-                              textFieldUnits ?? '',
+                              widget.textFieldUnits ?? '',
                               style: TextStyle(color: Colors.white),
                             ),
                     ),
@@ -190,11 +225,11 @@ class DailyReportCreationFields extends StatelessWidget {
                 ),
               ),
 
-              if (textFieldRange != null)
+              if (widget.textFieldRange != null)
                 Padding(
                   padding: EdgeInsets.only(top: 5),
                   child: Text(
-                    'Range: 0.00 to ${textFieldRange!.toStringAsFixed(2)}',
+                    'Range: 0.00 to ${widget.textFieldRange!.toStringAsFixed(2)}',
                     style: TextStyle(fontSize: 10),
                   ),
                 ),
@@ -218,10 +253,10 @@ class DailyReportCreationFields extends StatelessWidget {
                 color: Color.fromARGB(255, 214, 226, 255),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: Colors.blue),
+              child: Icon(widget.icon, color: Colors.blue),
             ),
             const SizedBox(width: 20),
-            Text(title),
+            Text(widget.title),
           ],
         ),
         SizedBox(height: 10),
@@ -232,7 +267,7 @@ class DailyReportCreationFields extends StatelessWidget {
   }
 
   Widget _buildImageGrid() {
-    if (currentImages == null || currentImages!.isEmpty) {
+    if (widget.currentImages == null || widget.currentImages!.isEmpty) {
       return Container(
         height: 60,
         decoration: BoxDecoration(
@@ -256,7 +291,7 @@ class DailyReportCreationFields extends StatelessWidget {
         crossAxisSpacing: 8,
         mainAxisSpacing: 8,
       ),
-      itemCount: currentImages!.length,
+      itemCount: widget.currentImages!.length,
       itemBuilder: (context, index) {
         return Stack(
           children: [
@@ -283,7 +318,8 @@ class DailyReportCreationFields extends StatelessWidget {
               top: 4,
               right: 4,
               child: GestureDetector(
-                onTap: () => onImageRemoved?.call(currentImages![index]),
+                onTap: () =>
+                    widget.onImageRemoved?.call(widget.currentImages![index]),
                 child: Container(
                   padding: EdgeInsets.all(2),
                   decoration: BoxDecoration(
@@ -306,7 +342,7 @@ class DailyReportCreationFields extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           // Simulate image picker
-          onImageAdded?.call(
+          widget.onImageAdded?.call(
             'image_${DateTime.now().millisecondsSinceEpoch}.jpg',
           );
         },
@@ -333,7 +369,7 @@ class DailyReportCreationFields extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: 5),
       child: Text(
-        errorText!,
+        widget.errorText!,
         style: TextStyle(color: Colors.red, fontSize: 12),
       ),
     );

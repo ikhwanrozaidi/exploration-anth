@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rclink_app/shared/widgets/divider_config.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
@@ -40,7 +41,6 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
@@ -49,7 +49,7 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.pop(context);
+                Navigator.pop(context, currentQuantities);
               },
               child: Container(
                 padding: EdgeInsets.all(10),
@@ -85,7 +85,6 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
           ],
         ),
       ),
-
       body: Padding(
         padding: const EdgeInsets.all(25.0),
         child: Column(
@@ -112,84 +111,13 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
               ),
               SizedBox(height: 10),
 
-              // Added quantities list
+              // Added quantities list with detailed view
               Expanded(
                 child: ListView.builder(
                   itemCount: currentQuantities.length,
                   itemBuilder: (context, index) {
                     final quantity = currentQuantities[index];
-
-                    print(quantity.toString());
-
-                    return Container(
-                      margin: EdgeInsets.only(bottom: 12),
-                      child: Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: () => _editQuantity(quantity),
-                          borderRadius: BorderRadius.circular(12),
-                          child: Container(
-                            padding: EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: primaryColor, width: 2),
-                              borderRadius: BorderRadius.circular(12),
-                              color: primaryShade,
-                            ),
-                            child: Row(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: primaryColor.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Icon(
-                                    Icons.check_circle,
-                                    color: primaryColor,
-                                    size: 24,
-                                  ),
-                                ),
-                                SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        quantity['name'],
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-
-                                      Text(
-                                        'Completed - Tap to edit',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: primaryColor,
-                                          // fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-                                // IconButton(
-                                //   onPressed: () => _removeQuantity(index),
-                                //   icon: Icon(
-                                //     Icons.delete,
-                                //     color: Colors.red.shade400,
-                                //     size: 20,
-                                //   ),
-                                // ),
-                                Icon(Icons.edit, color: primaryColor, size: 16),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
+                    return _buildQuantityCard(quantity, index);
                   },
                 ),
               ),
@@ -257,6 +185,205 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
     );
   }
 
+  Widget _buildQuantityCard(Map<String, dynamic> quantity, int index) {
+    final data = quantity['data'] as Map<String, dynamic>?;
+
+    final fieldValues = data?['fieldValues'] as Map<String, dynamic>? ?? {};
+    final imageFields =
+        data?['imageFields'] as Map<String, List<String>>? ?? {};
+
+    String summary = _generateSummary(fieldValues, imageFields);
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 12),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () => _editQuantity(quantity),
+          borderRadius: BorderRadius.circular(12),
+          child: Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              border: Border.all(color: primaryColor, width: 2),
+              borderRadius: BorderRadius.circular(12),
+              color: primaryShade,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header row
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: primaryColor.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Icon(
+                        Icons.check_circle,
+                        color: primaryColor,
+                        size: 24,
+                      ),
+                    ),
+                    SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            quantity['name'],
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            'Completed - Tap to edit',
+                            style: TextStyle(fontSize: 14, color: primaryColor),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.edit, color: primaryColor, size: 16),
+                  ],
+                ),
+
+                // Summary section
+                if (summary.isNotEmpty) ...[
+                  SizedBox(height: 12),
+                  Container(
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Filled Data:',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey.shade700,
+                          ),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          summary,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey.shade600,
+                          ),
+                          maxLines: 3,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
+                // Summary mine
+                if (summary.isNotEmpty) ...[
+                  SizedBox(height: 12),
+
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 0.5),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Title',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                          ),
+                        ),
+
+                        dividerConfig(),
+
+                        Text(
+                          'Key 1',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                          ),
+                        ),
+
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical: 5),
+                          width: double.infinity,
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey, width: 0.5),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Text('Value 1'),
+                        ),
+
+                        SizedBox(height: 5),
+
+                        Text(
+                          'Key 2',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12,
+                          ),
+                        ),
+
+                        Container(
+                          margin: EdgeInsets.symmetric(vertical: 5),
+                          width: double.infinity,
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey, width: 0.5),
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: Text('Value 2'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _generateSummary(
+    Map<String, dynamic> fieldValues,
+    Map<String, List<String>> imageFields,
+  ) {
+    List<String> summaryItems = [];
+
+    // Add field values summary
+    fieldValues.forEach((key, value) {
+      if (value != null && value.toString().isNotEmpty) {
+        summaryItems.add('$key: $value');
+      }
+    });
+
+    // Add image fields summary
+    imageFields.forEach((key, images) {
+      if (images.isNotEmpty) {
+        summaryItems.add('$key: ${images.length} image(s)');
+      }
+    });
+
+    return summaryItems.isEmpty
+        ? 'No data filled yet'
+        : summaryItems.join(', ');
+  }
+
   void _showQuantityOptions() {
     final quantityNames = widget.scopeConfig.quantityOptions
         .map((option) => option.name)
@@ -266,62 +393,52 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
       context: context,
       title: 'Select Quantity Type',
       attributes: quantityNames,
-      isRadio: false, // Not using radio for this case
-      isNavigate: true, // Enable navigation mode
+      isRadio: false,
+      isNavigate: true,
       onTap: (selectedName) {
-        // Close bottomsheet first
         Navigator.pop(context);
-
-        // Then navigate after a small delay
-        Future.delayed(Duration(milliseconds: 100), () {
+        Future.delayed(Duration(milliseconds: 100), () async {
           final quantityOption = widget.scopeConfig.quantityOptions.firstWhere(
             (option) => option.name == selectedName,
           );
+          final existingQuantity = currentQuantities
+              .where((q) => q['id'] == quantityOption.id)
+              .firstOrNull;
 
-          _navigateToQuantityFields(quantityOption);
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => QuantityFieldsPage(
+                scopeOfWork: widget.scopeOfWork,
+                weather: widget.weather,
+                location: widget.location,
+                section: widget.section,
+                quantityOption: quantityOption,
+                scopeConfig: widget.scopeConfig,
+                existingData: existingQuantity?['data'],
+              ),
+            ),
+          );
+
+          if (result != null) {
+            setState(() {
+              currentQuantities.removeWhere(
+                (q) => q['id'] == quantityOption.id,
+              );
+              currentQuantities.add({
+                'id': quantityOption.id,
+                'name': quantityOption.name,
+                'fieldsCount': quantityOption.fields.length,
+                'data': result,
+              });
+            });
+          }
         });
       },
     );
   }
 
-  void _navigateToQuantityFields(QuantityOption quantityOption) async {
-    // Check if this quantity is already added to get existing data
-    final existingQuantity = currentQuantities
-        .where((q) => q['id'] == quantityOption.id)
-        .firstOrNull;
-
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => QuantityFieldsPage(
-          scopeOfWork: widget.scopeOfWork,
-          weather: widget.weather,
-          location: widget.location,
-          section: widget.section,
-          quantityOption: quantityOption,
-          scopeConfig: widget.scopeConfig,
-          existingData: existingQuantity?['data'],
-        ),
-      ),
-    );
-
-    if (result != null) {
-      setState(() {
-        // Remove existing if present
-        currentQuantities.removeWhere((q) => q['id'] == quantityOption.id);
-        // Add new/updated data
-        currentQuantities.add({
-          'id': quantityOption.id,
-          'name': quantityOption.name,
-          'fieldsCount': quantityOption.fields.length,
-          'data': result,
-        });
-      });
-    }
-  }
-
   void _editQuantity(Map<String, dynamic> quantity) async {
-    // Find the quantity option
     final quantityOption = widget.scopeConfig.quantityOptions.firstWhere(
       (option) => option.id == quantity['id'],
     );
@@ -343,7 +460,6 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
 
     if (result != null) {
       setState(() {
-        // Find and update the existing quantity
         final index = currentQuantities.indexWhere(
           (q) => q['id'] == quantity['id'],
         );
@@ -352,11 +468,5 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
         }
       });
     }
-  }
-
-  void _removeQuantity(int index) {
-    setState(() {
-      currentQuantities.removeAt(index);
-    });
   }
 }

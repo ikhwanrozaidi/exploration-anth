@@ -61,7 +61,7 @@ class ScopeConfigurations {
               icon: Icons.height,
               type: FieldType.numericField,
               hintText: 'Enter thickness',
-              units: 'mm',
+              units: 'km',
               numericMin: 0,
               numericMax: 500,
             ),
