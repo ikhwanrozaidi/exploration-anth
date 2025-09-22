@@ -4,11 +4,11 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/repositories/base_sync_repository.dart';
 import '../../../company/presentation/bloc/company_state.dart';
-import '../../domain/entities/scope_of_work/scope_of_work.dart';
+import '../../domain/entities/scope_of_work.dart';
 import '../../domain/repository/daily_report_creation_repository.dart';
 import '../datasources/daily_report_creation_remote_datasource.dart';
 import '../datasources/daily_report_creation_local_datasource.dart';
-import '../models/scope_of_work/scope_of_work_model.dart';
+import '../models/scope_of_work_model.dart';
 import '../../../../features/company/presentation/bloc/company_bloc.dart';
 
 @Injectable(as: DailyReportCreationRepository)
@@ -25,7 +25,6 @@ class DailyReportCreationRepositoryImpl
     this._companyBloc,
   );
 
-  // GET Scope of Work [expanded]
   @override
   Future<Either<Failure, List<ScopeOfWork>>> getWorkScopes({
     bool forceRefresh = false,

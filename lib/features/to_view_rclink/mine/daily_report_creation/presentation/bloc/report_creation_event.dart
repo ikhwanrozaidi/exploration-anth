@@ -27,11 +27,3 @@ class ImageRemovedEvent extends ReportCreationEvent {
   final String imagePath;
   ImageRemovedEvent(this.fieldId, this.imagePath);
 }
-
-// New events with APIs
-class LoadWorkScopesEvent extends ReportCreationEvent {
-  final bool forceRefresh;
-  LoadWorkScopesEvent({this.forceRefresh = false});
-}
-
-class ClearCacheEvent extends ReportCreationEvent {}

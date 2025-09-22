@@ -1,0 +1,1133 @@
+import 'package:flutter/material.dart';
+import 'package:rclink_app/features/company/presentation/pages/widgets/edit_company_page.dart';
+import 'report_model.dart';
+
+// Scope Configurations Data
+class ScopeConfigurations {
+  static Map<String, ScopeConfig> get all => {
+    //R01 - PAVEMENT / PATCHING POTHOLES
+    //
+    //
+    'R01': ScopeConfig(
+      id: 'R01',
+      name: 'R01 - PAVEMENT / PATCHING POTHOLES',
+      commonFields: _getCommonFields(),
+      quantityOptions: [
+        QuantityOption(
+          id: 'potholes_hotmix',
+          name: 'Potholes - Hotmix',
+          fields: [
+            FieldConfig(
+              id: 'method',
+              title: 'Method',
+              description: 'Choose a working method',
+              icon: Icons.build,
+              type: FieldType.dropdown,
+              dropdownOptions: ['CUT', 'NOT CUT'],
+            ),
+            FieldConfig(
+              id: 'direction',
+              title: 'Direction',
+              description: 'Choose a direction of work',
+              icon: Icons.navigation,
+              type: FieldType.dropdown,
+              dropdownOptions: ['LHS', 'RHS'],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'width',
+              title: 'Width',
+              description: 'Enter width',
+              hintText: 'Type total width',
+              units: 'meter',
+              icon: Icons.width_normal,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'thickness',
+              title: 'Thickness',
+              description: 'Enter thickness',
+              hintText: 'Enter total thickness',
+              units: 'meter',
+              icon: Icons.height,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'pothole_reference',
+              title: 'Pothole Reference',
+              description: 'Pothole Reference',
+              hintText: 'Pothole Reference Number',
+              units: 'nos',
+              type: FieldType.textField,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'crack_sealing',
+          name: 'Crack Sealing',
+          fields: [
+            FieldConfig(
+              id: 'direction',
+              title: 'Direction',
+              description: 'Choose a direction of work',
+              icon: Icons.navigation,
+              type: FieldType.dropdown,
+              dropdownOptions: ['LHS', 'RHS'],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'width',
+              title: 'Width',
+              description: 'Enter width',
+              hintText: 'Type total width',
+              units: 'meter',
+              icon: Icons.width_normal,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'liter',
+              title: 'Liter',
+              description: 'Enter liter',
+              hintText: 'C.Sealant (liter)',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'material_weight',
+              title: 'Material Weight (Quarry Dust / Sand)',
+              description: 'Enter weight',
+              hintText: 'e.g. 500 kg',
+              units: 'kg',
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'reconstruction',
+          name: 'Reconstruction',
+          fields: [
+            FieldConfig(
+              id: 'method',
+              title: 'Method',
+              description: 'Choose method',
+              icon: Icons.build,
+              type: FieldType.dropdown,
+              dropdownOptions: [
+                'Sub-based material',
+                'Crushed aggregate',
+                'Prime Coat',
+                'ACB 2B',
+                'Tack coat',
+                'ACW',
+              ],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'width',
+              title: 'Width',
+              description: 'Enter width',
+              hintText: 'Type total width',
+              units: 'meter',
+              icon: Icons.width_normal,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'thickness',
+              title: 'Thickness',
+              description: 'Enter thickness',
+              hintText: 'Enter total thickness',
+              units: 'meter',
+              icon: Icons.height,
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'pothole_coldmix',
+          name: 'Pothole Coldmix',
+          fields: [
+            FieldConfig(
+              id: 'method',
+              title: 'Method',
+              description: 'Choose a working method',
+              icon: Icons.build,
+              type: FieldType.dropdown,
+              dropdownOptions: ['CUT', 'NOT CUT'],
+            ),
+            FieldConfig(
+              id: 'direction',
+              title: 'Direction',
+              description: 'Choose a direction of work',
+              icon: Icons.navigation,
+              type: FieldType.dropdown,
+              dropdownOptions: ['LHS', 'RHS'],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'width',
+              title: 'Width',
+              description: 'Enter width',
+              hintText: 'Type total width',
+              units: 'meter',
+              icon: Icons.width_normal,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'thickness',
+              title: 'Thickness',
+              description: 'Enter thickness',
+              hintText: 'Enter total thickness',
+              units: 'meter',
+              icon: Icons.height,
+              type: FieldType.numericField,
+              numericMin: 0.030,
+              numericMax: 0.075,
+            ),
+            FieldConfig(
+              id: 'pothole_reference',
+              title: 'Pothole Reference',
+              description: 'Pothole Reference',
+              hintText: 'Pothole Reference Number',
+              units: 'nos',
+              type: FieldType.textField,
+            ),
+            FieldConfig(
+              id: 'coldmix_quantity',
+              title: 'Coldmix Quantity',
+              description: 'Enter quantity',
+              hintText: 'Coldmix (bag)',
+              units: 'bag',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'ultracrete_quantity',
+              title: 'UltraCrete Quantity',
+              description: 'Enter quantity',
+              hintText: 'UltraCrete (Tong)',
+              units: 'Tong',
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'asphalt_heater',
+          name: 'Asphalt Heater',
+          fields: [
+            FieldConfig(
+              id: 'pothole_reference',
+              title: 'Pothole Reference',
+              description: 'Pothole Reference',
+              hintText: 'Pothole Reference Number',
+              units: 'nos',
+              type: FieldType.textField,
+            ),
+            FieldConfig(
+              id: 'direction',
+              title: 'Direction',
+              description: 'Choose a direction of work',
+              icon: Icons.navigation,
+              type: FieldType.dropdown,
+              dropdownOptions: ['LHS', 'RHS'],
+            ),
+            FieldConfig(
+              id: 'thickness',
+              title: 'Thickness',
+              description: 'Enter thickness',
+              hintText: 'Enter total thickness',
+              units: 'meter',
+              icon: Icons.height,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'panels_used',
+              title: 'Number of Panels Used',
+              description: 'Enter number',
+              hintText: 'Enter number of panels',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'coldmix_quantity',
+              title: 'Coldmix Quantity',
+              description: 'Enter quantity',
+              hintText: 'Coldmix (bag)',
+              units: 'bag',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'gas_lpg_quantity',
+              title: 'Gas LPG Quantity',
+              description: 'Enter quantity',
+              hintText: 'Gas LPG (Tong)',
+              units: 'Tong',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'rejuvenating_agent_quantity',
+              title: 'Rejuvenating Agent Quantity (L)',
+              description: 'Enter quantity',
+              hintText: 'Enter amount in liters',
+              units: 'Liter',
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'heavy_patching',
+          name: 'Heavy Patching',
+          fields: [
+            FieldConfig(
+              id: 'direction',
+              title: 'Direction',
+              description: 'Choose a direction of work',
+              icon: Icons.navigation,
+              type: FieldType.dropdown,
+              dropdownOptions: ['LHS', 'RHS'],
+            ),
+            FieldConfig(
+              id: 'method',
+              title: 'Method',
+              description: 'Choose a working method',
+              icon: Icons.build,
+              type: FieldType.dropdown,
+              dropdownOptions: ['CUT', 'NOT CUT'],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'width',
+              title: 'Width',
+              description: 'Enter width',
+              hintText: 'Type total width',
+              units: 'meter',
+              icon: Icons.width_normal,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'thickness',
+              title: 'Thickness',
+              description: 'Enter thickness',
+              hintText: 'Enter total thickness',
+              units: 'meter',
+              icon: Icons.height,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'pothole_reference',
+              title: 'Pothole Reference',
+              description: 'Pothole Reference',
+              hintText: 'Pothole Reference Number',
+              units: 'nos',
+              type: FieldType.textField,
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    //R02 - ROAD SHOULDER
+    //
+    //
+    'R02': ScopeConfig(
+      id: 'R02',
+      name: 'R02 - ROAD SHOULDER',
+      commonFields: _getCommonFields(),
+      quantityOptions: [
+        QuantityOption(
+          id: 'road_shoulder',
+          name: 'Road Shoulder Work',
+          fields: [
+            FieldConfig(
+              id: 'direction',
+              title: 'Direction',
+              description: 'Choose a direction of work',
+              icon: Icons.navigation,
+              type: FieldType.dropdown,
+              dropdownOptions: ['LHS', 'RHS'],
+            ),
+            FieldConfig(
+              id: 'method',
+              title: 'Method',
+              description: 'Choose a working method',
+              icon: Icons.build,
+              type: FieldType.dropdown,
+              dropdownOptions: [
+                'REGRADING',
+                'TOPPING UP - LATERITE',
+                'TOPPING UP - CRUSHER RUN',
+              ],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+              numericMin: 0,
+              numericMax: 1000,
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    //R03 - GRASS CUTTING
+    //
+    //
+    'R03': ScopeConfig(
+      id: 'R03',
+      name: 'R03 - GRASS CUTTING',
+      commonFields: _getCommonFields(),
+      quantityOptions: [
+        QuantityOption(
+          id: 'grass_cutting',
+          name: 'Grass Cutting',
+          fields: [
+            FieldConfig(
+              id: 'direction',
+              title: 'Direction',
+              description: 'Choose a direction of work',
+              icon: Icons.navigation,
+              type: FieldType.dropdown,
+              dropdownOptions: [
+                'LHS',
+                'MEDIAN',
+                'RHS',
+                'SUSUR',
+                'BERM 1 & 2',
+                'BERM 3 KE ATAS',
+                'BAWAH JAMBATAN',
+              ],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+              numericMin: 0,
+              numericMax: 300,
+            ),
+            FieldConfig(
+              id: 'thickness',
+              title: 'Thickness',
+              description: 'Enter thickness',
+              hintText: 'Enter total thickness',
+              units: 'meter',
+              icon: Icons.height,
+              type: FieldType.numericField,
+              numericMin: 0,
+              numericMax: 50,
+            ),
+            FieldConfig(
+              id: 'width',
+              title: 'Width',
+              description: 'Enter width',
+              hintText: 'Type total width',
+              units: 'meter',
+              icon: Icons.width_normal,
+              type: FieldType.numericField,
+              numericMin: 0.05,
+              numericMax: 0.10,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'clearing_vegetation',
+          name: 'Clearing Vegetation',
+          fields: [
+            FieldConfig(
+              id: 'direction',
+              title: 'Direction',
+              description: 'Choose a direction of work',
+              icon: Icons.navigation,
+              type: FieldType.dropdown,
+              dropdownOptions: [
+                'LHS',
+                'MEDIAN',
+                'RHS',
+                'SUSUR',
+                'BAWAH JAMBATAN',
+              ],
+            ),
+            FieldConfig(
+              id: 'edge_pavement',
+              title: 'Edge Pavement Length (m)',
+              description: 'Enter edge pavement',
+              hintText: 'Enter length in meters',
+              units: 'meter',
+              icon: Icons.linear_scale,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'kerb_length',
+              title: 'Kerb Length (m)',
+              description: 'Enter kerb length',
+              hintText: 'Enter length in meters',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    //R04 - CLEANING ROAD FURNITURES
+    //
+    //
+    'R04': ScopeConfig(
+      id: 'R04',
+      name: 'R04 - CLEANING ROAD FURNITURES',
+      commonFields: _getCommonFields(),
+      quantityOptions: [
+        QuantityOption(
+          id: 'guardrail_barrier',
+          name: 'Guardrail & Barrier',
+          fields: [
+            FieldConfig(
+              id: 'guardrail_length',
+              title: 'Guardrail Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'new_jersey_barrier',
+              title: 'New Jersey Barrier (NJB)',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'roller_barrier',
+              title: 'Roller Barrier',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'parapet_bridge_railing',
+              title: 'Parapet / Bridge Railing',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'signboard_pole',
+          name: 'Signboard & Pole',
+          fields: [
+            FieldConfig(
+              id: 'number_signboards',
+              title: 'Number of Signboards',
+              description: 'Enter number',
+              hintText: 'Enter number of signboards',
+              units: 'Nos',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'number_gantry',
+              title: 'Number of Gantry Signboards',
+              description: 'Enter number',
+              hintText: 'Enter number of gantry signboards',
+              units: 'Nos',
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'distance_delineator',
+          name: 'Distance Marker & Delineator Post',
+          fields: [
+            FieldConfig(
+              id: 'number_posts',
+              title: 'Number of Kilometre Posts',
+              description: 'Enter number',
+              hintText: 'Enter number of kilometre posts',
+              units: 'Nos',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'number_gantry',
+              title: 'Number of Delineator Posts',
+              description: 'Enter number',
+              hintText: 'Enter number of delineator posts',
+              units: 'Nos',
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'traffic_equipment',
+          name: 'Traffic Equipment Aspects',
+          fields: [
+            FieldConfig(
+              id: 'number_trafficlight',
+              title: 'Number of Traffic Light',
+              description: 'Enter number',
+              hintText: 'Enter number of traffic light',
+              units: 'Nos',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'number_amberlight',
+              title: 'Number of Amber Light',
+              description: 'Enter number',
+              hintText: 'Enter number of amber light',
+              units: 'Nos',
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    //R05 - CLEANING CULVERTS & BRIDGES
+    //
+    //
+    // Need Customization!
+    'R05': ScopeConfig(
+      id: 'R05',
+      name: 'R05 - CLEANING CULVERTS & BRIDGES',
+      commonFields: _getR05CommonFields(),
+      quantityOptions: [
+        QuantityOption(
+          id: 'bridge_cleaning_works',
+          name:
+              'Bridge Cleaning Works - Including Grass Cutting, Drainage Hole Cleaning, and Vegetation Removal',
+          fields: [
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'width',
+              title: 'Width',
+              description: 'Enter width',
+              hintText: 'Type total width',
+              units: 'meter',
+              icon: Icons.width_normal,
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'cleaning_culverts',
+          name: 'Cleaning Culverts',
+          fields: [
+            FieldConfig(
+              id: 'culvert_type',
+              title: 'Culvert Type',
+              description: 'Select Type',
+              hintText: 'Select the culvert type',
+              type: FieldType.dropdown,
+              dropdownOptions: [
+                'CMP',
+                'RCP',
+                'BCR',
+                'TWIN CMP',
+                'TWIN RCP',
+                'TWIN BRR',
+              ],
+              isTips: true,
+              tipsTitle: 'Culvert Type',
+              pageNavigate: EditCompanyPage(),
+            ),
+            FieldConfig(
+              id: 'culvert_size',
+              title: 'Culvert Size',
+              description: 'Enter size',
+              hintText: 'Enter the size',
+              units: 'mm',
+              type: FieldType.numericField,
+              numericMin: 600,
+              numericMax: 3500,
+            ),
+            FieldConfig(
+              id: 'culvert_length',
+              title: 'Culvert Length',
+              description: 'Enter length',
+              hintText: 'Enter the length',
+              units: 'meter',
+              type: FieldType.numericField,
+              numericMin: 3,
+              numericMax: 30,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'cleaning_under_bridge',
+          name:
+              'Cleaning Under The Bridge - Grass Cutting and Removing Obstructions from the waterway',
+          fields: [
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'width',
+              title: 'Width',
+              description: 'Enter width',
+              hintText: 'Type total width',
+              units: 'meter',
+              icon: Icons.width_normal,
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    //R07 - CLEANING DRAINS
+    //
+    //
+    'R07': ScopeConfig(
+      id: 'R07',
+      name: 'R07 - CLEANING DRAINS',
+      commonFields: _getCommonFields(),
+      quantityOptions: [
+        QuantityOption(
+          id: 'earth_drain',
+          name: 'Earth Drain',
+          fields: [
+            FieldConfig(
+              id: 'direction',
+              title: 'Direction',
+              description: 'Choose a direction of work',
+              icon: Icons.navigation,
+              type: FieldType.dropdown,
+              dropdownOptions: ['LHS', 'MEDIAN', 'RHS', 'SUSUR'],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+              numericMin: 0,
+              numericMax: 200,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'concrete_drain',
+          name: 'Concrete Drain',
+          fields: [
+            FieldConfig(
+              id: 'type_drain',
+              title: 'Type of Drain',
+              description: 'Choose type of drain',
+              type: FieldType.dropdown,
+              dropdownOptions: [
+                'U-SHAPE',
+                'V-SHAPE',
+                'EGG-SHAPE',
+                'HALF-ROUND',
+              ],
+              isTips: true,
+              tipsTitle: 'Drain Type',
+              pageNavigate: EditCompanyPage(),
+            ),
+            FieldConfig(
+              id: 'direction',
+              title: 'Direction',
+              description: 'Choose a direction of work',
+              icon: Icons.navigation,
+              type: FieldType.dropdown,
+              dropdownOptions: ['LHS', 'MEDIAN', 'RHS', 'SUSUR'],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+              numericMin: 0,
+              numericMax: 200,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'berm_drain',
+          name: 'Berm Drain 1 & 2',
+          fields: [
+            FieldConfig(
+              id: 'type_edge',
+              title: 'Type of Edge Feature',
+              description: 'Choose type of edge feature',
+              type: FieldType.dropdown,
+              dropdownOptions: ['BERM', 'BENCH'],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+              numericMin: 0,
+              numericMax: 200,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'berm_drain3',
+          name: 'Berm Drain 3 and above',
+          fields: [
+            FieldConfig(
+              id: 'type_edge',
+              title: 'Type of Edge Feature',
+              description: 'Choose type of edge feature',
+              type: FieldType.dropdown,
+              dropdownOptions: ['BERM', 'BENCH'],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+              numericMin: 0,
+              numericMax: 200,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'interceptor_cascade',
+          name: 'Interceptor / Cascade Drain',
+          fields: [
+            FieldConfig(
+              id: 'type_edge',
+              title: 'Type of Edge Feature',
+              description: 'Choose type of edge feature',
+              type: FieldType.dropdown,
+              dropdownOptions: ['BERM', 'BENCH'],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+              numericMin: 0,
+              numericMax: 200,
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    //GW - GENERAL WORKS
+    //
+    //
+    'GW': ScopeConfig(
+      id: 'GW',
+      name: 'GW - GENERAL WORKS',
+      commonFields: _getCommonFields(),
+      quantityOptions: [
+        QuantityOption(
+          id: 'minor_repair_road',
+          name: 'Minor Repair Works on Road Furniture',
+          fields: [
+            FieldConfig(
+              id: 'type_road_furniture',
+              title: 'Types of road furniture',
+              description: 'Enter type',
+              hintText: 'Fill in the type of road furniture',
+              type: FieldType.textField,
+            ),
+            FieldConfig(
+              id: 'units',
+              title: 'Number of units',
+              description: 'Enter units',
+              hintText: 'Enter Quantity',
+              units: 'Nos',
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'minor_repair_drain',
+          name: 'Minor Repair Works on Drains',
+          fields: [
+            FieldConfig(
+              id: 'description',
+              title: 'Work Description',
+              description: 'Enter description',
+              hintText: 'Fill in the work description',
+              type: FieldType.textField,
+            ),
+            FieldConfig(
+              id: 'meter',
+              title: 'Meter',
+              description: 'Enter meter',
+              hintText: 'Fill in meter reading',
+              units: 'meter',
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'general_maintainance',
+          name: 'General Maintainance',
+          fields: [
+            FieldConfig(
+              id: 'description',
+              title: 'Work Description',
+              description: 'Enter description',
+              hintText: 'Fill in the work description',
+              type: FieldType.textField,
+            ),
+            FieldConfig(
+              id: 'meter',
+              title: 'Meter',
+              description: 'Enter meter',
+              hintText: 'Fill in meter reading',
+              units: 'meter',
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+        QuantityOption(
+          id: 'emergency',
+          name: 'Emergency Works',
+          fields: [
+            FieldConfig(
+              id: 'description',
+              title: 'Type of work',
+              description: 'Enter type of work',
+              hintText: 'Fill in the type of work',
+              type: FieldType.textField,
+            ),
+            FieldConfig(
+              id: 'meter',
+              title: 'Meter',
+              description: 'Enter meter',
+              hintText: 'Fill in meter reading',
+              units: 'meter',
+              type: FieldType.numericField,
+            ),
+          ],
+        ),
+      ],
+    ),
+
+    //UT - UJIAN TEMPALAN
+    //
+    //
+    'UP': ScopeConfig(
+      id: 'UP',
+      name: 'UP - UJIAN TEMPALAN',
+      commonFields: _getCommonFields(),
+      quantityOptions: [
+        QuantityOption(
+          id: 'ujian_tempalan',
+          name: 'UJIAN TEMPALAN',
+          fields: [
+            FieldConfig(
+              id: 'condition',
+              title: 'Condition',
+              description: 'Choose Condition',
+              hintText: 'Choose the condition',
+              type: FieldType.dropdown,
+              dropdownOptions: ['DRY', 'WET'],
+            ),
+            FieldConfig(
+              id: 'weather',
+              title: 'Weather',
+              description: 'Choose Weather',
+              hintText: 'Choose the weather',
+              type: FieldType.dropdown,
+              dropdownOptions: ['SUNNY', 'RAIN'],
+            ),
+            FieldConfig(
+              id: 'pavement',
+              title: 'Type of Pavement',
+              description: 'Choose Pavement',
+              hintText: 'Choose the pavement',
+              type: FieldType.dropdown,
+              dropdownOptions: ['HOTMIX', 'COLDMIX'],
+            ),
+            FieldConfig(
+              id: 'length',
+              title: 'Length',
+              description: 'Enter length',
+              hintText: 'Type total length',
+              units: 'meter',
+              icon: Icons.straighten,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'width',
+              title: 'Width',
+              description: 'Enter width',
+              hintText: 'Type total width',
+              units: 'meter',
+              icon: Icons.width_normal,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'depth',
+              title: 'Depth',
+              description: 'Enter depth',
+              hintText: 'Enter total depth',
+              units: 'mm',
+              icon: Icons.height,
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'marshall_density',
+              title: 'Marshal Density',
+              description: 'Enter marshall density',
+              hintText: 'e.g. 90 - 100%',
+              units: '%',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'distance',
+              title: 'Distance',
+              description: 'Enter distance',
+              hintText: 'Enter total distance',
+              units: 'mm',
+              type: FieldType.numericField,
+            ),
+            FieldConfig(
+              id: 'reference',
+              title: 'Reference No.',
+              description: 'Enter reference',
+              hintText: 'Enter total reference',
+              type: FieldType.textField,
+            ),
+          ],
+        ),
+      ],
+    ),
+  };
+
+  static List<FieldConfig> _getCommonFields() {
+    return [
+      FieldConfig(
+        id: 'worker_pictures',
+        title: 'Worker (Pictures)',
+        description: 'Add worker pictures',
+        icon: Icons.person,
+        type: FieldType.multipleImages,
+        isRequired: true,
+      ),
+      FieldConfig(
+        id: 'equipment',
+        title: 'Equipment',
+        description: 'Enter equipment details',
+        icon: Icons.construction,
+        type: FieldType.textField,
+        hintText: 'Enter equipment used',
+        isRequired: true,
+      ),
+      FieldConfig(
+        id: 'condition_snapshot',
+        title: 'Condition Snapshot (Before, Current, After)',
+        description: 'Add condition photos',
+        icon: Icons.camera_alt,
+        type: FieldType.multipleImages,
+        isRequired: true,
+      ),
+      FieldConfig(
+        id: 'notes',
+        title: 'Notes',
+        description: 'Additional notes',
+        icon: Icons.note,
+        type: FieldType.notes,
+        hintText: 'Enter additional notes',
+      ),
+    ];
+  }
+
+  static List<FieldConfig> _getR05CommonFields() {
+    return [
+      ..._getCommonFields(),
+
+      FieldConfig(
+        id: 'photo_inlet',
+        title: 'Photo Inlet',
+        description: 'Please take inlet photo',
+        icon: Icons.camera_alt,
+        type: FieldType.multipleImages,
+        isRequired: true,
+      ),
+      FieldConfig(
+        id: 'photo_outlet',
+        title: 'Photo Outlet',
+        description: 'Please take outlet photo',
+        icon: Icons.camera_alt,
+        type: FieldType.multipleImages,
+        isRequired: true,
+      ),
+    ];
+  }
+}

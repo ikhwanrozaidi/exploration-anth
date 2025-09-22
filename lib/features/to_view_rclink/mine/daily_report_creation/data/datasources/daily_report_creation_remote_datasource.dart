@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 import 'package:rclink_app/features/daily_report_creation/data/datasources/daily_report_creation_api_service.dart';
-import 'package:rclink_app/features/daily_report_creation/data/models/scope_of_work/scope_of_work_model.dart';
+import 'package:rclink_app/features/daily_report_creation/data/models/scope_of_work_model.dart';
 import '../../../../core/errors/failures.dart';
 
 abstract class DailyReportCreationRemoteDataSource {

@@ -1,36 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/errors/failures.dart';
-import '../../domain/usecases/clear_work_scopes_cache_usecase.dart';
-import '../../domain/usecases/get_work_scopes_usecase.dart';
 import '../constant/report_model.dart';
 import '../constant/scope_configurations.dart';
 import 'report_creation_event.dart';
 import 'report_creation_state.dart';
 
+// BLoC Implementation
 class ReportCreationBloc
     extends Bloc<ReportCreationEvent, ReportCreationState> {
   final Map<String, ScopeConfig> scopeConfigurations;
 
-  // New with APIs
-  final GetWorkScopesUseCase _getWorkScopesUseCase;
-  final ClearWorkScopesCacheUseCase _clearCacheUseCase;
-
-  ReportCreationBloc(
-    this.scopeConfigurations,
-
-    // New with APIs
-    this._getWorkScopesUseCase,
-    this._clearCacheUseCase,
-  ) : super(ReportCreationState()) {
+  ReportCreationBloc(this.scopeConfigurations) : super(ReportCreationState()) {
     on<ScopeSelectedEvent>(_onScopeSelected);
     on<QuantitySelectedEvent>(_onQuantitySelected);
     on<FieldUpdatedEvent>(_onFieldUpdated);
     on<ImageAddedEvent>(_onImageAdded);
     on<ImageRemovedEvent>(_onImageRemoved);
-
-    //New with APIs
-    on<LoadWorkScopesEvent>(_onLoadWorkScopes);
-    on<ClearCacheEvent>(_onClearCache);
   }
 
   void _onScopeSelected(
@@ -156,64 +140,5 @@ class ReportCreationBloc
         state.fieldErrors.values.every((error) => error == null) &&
         state.selectedScopeId != null;
     emit(state.copyWith(isValid: isValid));
-  }
-
-  /*
-  // New with APIs -------------------------------------------
-  */
-  Future<void> _onLoadWorkScopes(
-    LoadWorkScopesEvent event,
-    Emitter<ReportCreationState> emit,
-  ) async {
-    emit(state.copyWith(isLoadingWorkScopes: true, workScopesError: null));
-
-    final result = await _getWorkScopesUseCase(
-      GetWorkScopesParams(forceRefresh: event.forceRefresh),
-    );
-
-    result.fold(
-      (failure) => emit(
-        state.copyWith(
-          isLoadingWorkScopes: false,
-          workScopesError: _mapFailureToMessage(failure),
-        ),
-      ),
-      (workScopes) => emit(
-        state.copyWith(
-          isLoadingWorkScopes: false,
-          workScopes: workScopes,
-          workScopesError: null,
-        ),
-      ),
-    );
-  }
-
-  Future<void> _onClearCache(
-    ClearCacheEvent event,
-    Emitter<ReportCreationState> emit,
-  ) async {
-    final result = await _clearCacheUseCase();
-
-    result.fold(
-      (failure) =>
-          emit(state.copyWith(workScopesError: _mapFailureToMessage(failure))),
-      (_) {
-        // After clearing cache, reload data
-        add(LoadWorkScopesEvent(forceRefresh: true));
-      },
-    );
-  }
-
-  String _mapFailureToMessage(Failure failure) {
-    switch (failure.runtimeType) {
-      case ServerFailure:
-        return failure.message;
-      case CacheFailure:
-        return failure.message;
-      case NetworkFailure:
-        return 'Network connection failed';
-      default:
-        return 'An unexpected error occurred';
-    }
   }
 }

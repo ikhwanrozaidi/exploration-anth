@@ -2,12 +2,12 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/database/app_database.dart';
-import '../../domain/entities/scope_of_work/dropdown_option.dart';
-import '../../domain/entities/scope_of_work/quantity_field.dart';
-import '../../domain/entities/scope_of_work/scope_of_work.dart';
-import '../../domain/entities/scope_of_work/work_equipment.dart';
-import '../../domain/entities/scope_of_work/work_quantity_type.dart';
-import '../models/scope_of_work/scope_of_work_model.dart';
+import '../../domain/entities/dropdown_option.dart';
+import '../../domain/entities/quantity_field.dart';
+import '../../domain/entities/scope_of_work.dart';
+import '../../domain/entities/work_equipment.dart';
+import '../../domain/entities/work_quantity_type.dart';
+import '../models/scope_of_work_model.dart';
 
 abstract class DailyReportCreationLocalDatasource {
   // Foundation

@@ -1,6 +1,6 @@
-import '../../domain/entities/scope_of_work/scope_of_work.dart';
 import '../constant/report_model.dart';
 
+// BLoC State
 class ReportCreationState {
   final String? selectedScopeId;
   final List<String> selectedQuantityIds;
@@ -9,11 +9,6 @@ class ReportCreationState {
   final Map<String, String?> fieldErrors;
   final bool isValid;
 
-  // New State with APIs
-  final List<ScopeOfWork>? workScopes;
-  final bool isLoadingWorkScopes;
-  final String? workScopesError;
-
   ReportCreationState({
     this.selectedScopeId,
     this.selectedQuantityIds = const [],
@@ -21,11 +16,6 @@ class ReportCreationState {
     this.imageFields = const {},
     this.fieldErrors = const {},
     this.isValid = false,
-
-    // New with APIs
-    this.workScopes,
-    this.isLoadingWorkScopes = false,
-    this.workScopesError,
   });
 
   ReportCreationState copyWith({
@@ -35,9 +25,6 @@ class ReportCreationState {
     Map<String, List<String>>? imageFields,
     Map<String, String?>? fieldErrors,
     bool? isValid,
-    List<ScopeOfWork>? workScopes,
-    bool? isLoadingWorkScopes,
-    String? workScopesError,
   }) {
     return ReportCreationState(
       selectedScopeId: selectedScopeId ?? this.selectedScopeId,
@@ -46,9 +33,6 @@ class ReportCreationState {
       imageFields: imageFields ?? this.imageFields,
       fieldErrors: fieldErrors ?? this.fieldErrors,
       isValid: isValid ?? this.isValid,
-      workScopes: workScopes ?? this.workScopes,
-      isLoadingWorkScopes: isLoadingWorkScopes ?? this.isLoadingWorkScopes,
-      workScopesError: workScopesError ?? this.workScopesError,
     );
   }
 
