@@ -43,8 +43,8 @@ class DailyReportCreationRepositoryImpl
     return await getOfflineFirst(
       getLocal: () => _localDataSource.getCachedScopeOfWorks(),
       getRemote: () => _remoteDataSource.getWorkScopes(companyUID),
-      saveLocal: (models, {bool markForSync = false}) =>
-          _localDataSource.cacheScopeOfWorks(models),
+      saveLocal: (scopeOfWorks, {bool markForSync = false}) =>
+          _localDataSource.cacheScopeOfWorks(scopeOfWorks),
       toEntity: (models) => models.map((model) => model.toEntity()).toList(),
       forceRefresh: forceRefresh,
       cacheTimeout: cacheTimeout,

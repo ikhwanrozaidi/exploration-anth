@@ -2,6 +2,7 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../domain/entities/province/province_entity.dart';
 import '../../domain/entities/scope_of_work/dropdown_option.dart';
 import '../../domain/entities/scope_of_work/quantity_field.dart';
 import '../../domain/entities/scope_of_work/scope_of_work.dart';
@@ -12,18 +13,21 @@ import '../models/scope_of_work/scope_of_work_model.dart';
 abstract class DailyReportCreationLocalDatasource {
   // Foundation
   Future<void> clearCache();
+  // Future<void> clearProvinceCache();
 
   // GET scope
   Future<List<ScopeOfWork>?> getCachedScopeOfWorks();
   Future<void> cacheScopeOfWorks(List<ScopeOfWork> scopeOfWorks);
-
   // GET scope
   Future<List<ScopeOfWorkModel>> getCachedWorkScopeModels();
   Future<void> cacheWorkScopeModels(List<ScopeOfWorkModel> models);
-
   // GET equipments
   Future<List<WorkEquipment>?> getCachedWorkEquipments();
   Future<void> cacheWorkEquipments(List<WorkEquipment> equipments);
+
+  // GET province
+  // Future<List<ProvinceEntity>?> getCachedProvinces();
+  // Future<void> cacheProvinces(List<ProvinceEntity> provinces);
 }
 
 @LazySingleton(as: DailyReportCreationLocalDatasource)
