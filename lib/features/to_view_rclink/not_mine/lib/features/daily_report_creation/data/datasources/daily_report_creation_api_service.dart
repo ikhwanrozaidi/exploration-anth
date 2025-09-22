@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../../../../shared/models/api_response.dart';
+import '../models/province/district_model.dart';
 import '../models/province/province_model.dart';
+import '../models/province/road_model.dart';
 import '../models/scope_of_work/scope_of_work_model.dart';
 
 part 'daily_report_creation_api_service.g.dart';
@@ -36,5 +38,29 @@ abstract class DailyReportCreationApiService {
     @Query('sortBy') String? sortBy = 'name',
     @Query('countryID') int? countryID,
     @Query('search') String? search,
+  });
+
+  @GET('/districts')
+  Future<ApiResponse<List<DistrictModel>>> getDistricts({
+    @Query('page') int? page = 1,
+    @Query('limit') int? limit = 0, // 0 = all items
+    @Query('sortOrder') String? sortOrder = 'asc',
+    @Query('sortBy') String? sortBy = 'name',
+    @Query('stateID') int? stateID, // Match API parameter name
+    @Query('search') String? search,
+  });
+
+  @GET('/roads')
+  Future<ApiResponse<List<RoadModel>>> getRoads({
+    @Query('page') int? page = 1,
+    @Query('limit') int? limit = 0, // 0 = all items
+    @Query('sortOrder') String? sortOrder = 'asc',
+    @Query('sortBy') String? sortBy = 'name',
+    @Query('districtID') int? districtID,
+    @Query('mainCategoryID') int? mainCategoryID,
+    @Query('secondaryCategoryID') int? secondaryCategoryID,
+    @Query('search') String? search,
+    @Query('sectionStartMin') double? sectionStartMin,
+    @Query('sectionFinishMax') double? sectionFinishMax,
   });
 }

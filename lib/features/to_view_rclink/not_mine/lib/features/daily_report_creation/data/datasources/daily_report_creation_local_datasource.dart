@@ -3,20 +3,27 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/database/app_database.dart';
 import '../../domain/entities/province/country_entity.dart';
+import '../../domain/entities/province/district_entity.dart';
 import '../../domain/entities/province/province_entity.dart';
+import '../../domain/entities/province/road_category_entity.dart';
+import '../../domain/entities/province/road_entity.dart';
 import '../../domain/entities/scope_of_work/dropdown_option.dart';
 import '../../domain/entities/scope_of_work/quantity_field.dart';
 import '../../domain/entities/scope_of_work/scope_of_work.dart';
 import '../../domain/entities/scope_of_work/work_equipment.dart';
 import '../../domain/entities/scope_of_work/work_quantity_type.dart';
-import '../models/province/country_model.dart';
+
+import '../models/province/district_model.dart';
 import '../models/province/province_model.dart';
+import '../models/province/road_model.dart';
 import '../models/scope_of_work/scope_of_work_model.dart';
 
 abstract class DailyReportCreationLocalDatasource {
   // Foundation
   Future<void> clearCache();
   Future<void> clearProvinceCache();
+  Future<void> clearDistrictCache();
+  Future<void> clearRoadCache();
 
   ///------------------------- GET scope
   Future<List<ScopeOfWork>?> getCachedScopeOfWorks();
@@ -34,6 +41,20 @@ abstract class DailyReportCreationLocalDatasource {
   // province getOfflineFirst
   Future<List<ProvinceModel>> getCachedProvinceModels();
   Future<void> cacheProvinceModels(List<ProvinceModel> models);
+
+  ///------------------------- GET District
+  Future<List<District>?> getCachedDistricts();
+  Future<void> cacheDistricts(List<District> districts);
+  // district getOfflineFirst
+  Future<List<DistrictModel>> getCachedDistrictModels();
+  Future<void> cacheDistrictModels(List<DistrictModel> models);
+
+  ///------------------------- GET Road
+  Future<List<Road>?> getCachedRoads();
+  Future<void> cacheRoads(List<Road> roads);
+  // roads getOfflineFirst
+  Future<List<RoadModel>> getCachedRoadModels();
+  Future<void> cacheRoadModels(List<RoadModel> models);
 }
 
 @LazySingleton(as: DailyReportCreationLocalDatasource)
@@ -599,5 +620,388 @@ class DailyReportCreationLocalDatasourceImpl
   Future<void> cacheProvinceModels(List<ProvinceModel> models) async {
     final entities = models.map((model) => model.toEntity()).toList();
     await cacheProvinces(entities);
+  }
+
+  /* 
+  // District datasource
+  */
+  @override
+  Future<void> clearDistrictCache() async {
+    try {
+      await _database.transaction(() async {
+        // Clear in proper order due to foreign key constraints
+        await _database.delete(_database.roads).go();
+        await _database.delete(_database.districts).go();
+      });
+      print('✅ District cache cleared from database');
+    } catch (e) {
+      print('❌ Error clearing district cache: $e');
+    }
+  }
+
+  @override
+  Future<List<District>?> getCachedDistricts() async {
+    try {
+      // Get districts with their state and country information using joins
+      final query = _database.select(_database.districts).join([
+        leftOuterJoin(
+          _database.provinces,
+          _database.provinces.id.equalsExp(_database.districts.stateId),
+        ),
+        leftOuterJoin(
+          _database.countries,
+          _database.countries.id.equalsExp(_database.provinces.countryID),
+        ),
+      ]);
+
+      final results = await query.get();
+
+      if (results.isEmpty) {
+        print('💾 No cached districts found');
+        return null;
+      }
+
+      final districts = results.map((row) {
+        final district = row.readTable(_database.districts);
+        final province = row.readTableOrNull(_database.provinces);
+        final country = row.readTableOrNull(_database.countries);
+
+        return District(
+          id: district.id,
+          uid: district.uid,
+          name: district.name,
+          stateId: district.stateId,
+          state: province != null
+              ? Province(
+                  id: province.id,
+                  uid: province.uid,
+                  name: province.name,
+                  countryId: province.countryID,
+                  createdAt: province.createdAt.toIso8601String(),
+                  updatedAt: province.updatedAt.toIso8601String(),
+                  country: country != null
+                      ? Countryr(
+                          id: country.id,
+                          uid: country.uid,
+                          name: country.name,
+                          createdAt: country.createdAt.toIso8601String(),
+                          updatedAt: country.updatedAt.toIso8601String(),
+                        )
+                      : null,
+                )
+              : null,
+        );
+      }).toList();
+
+      print('💾 Retrieved ${districts.length} districts from database');
+      return districts;
+    } catch (e) {
+      print('❌ Error loading cached districts: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheDistricts(List<District> districts) async {
+    try {
+      await _database.transaction(() async {
+        // First, cache all unique provinces and countries
+        final uniqueProvinces = <int, Province>{};
+        final uniqueCountries = <int, Countryr>{};
+
+        for (final district in districts) {
+          if (district.state != null && district.state!.id != null) {
+            uniqueProvinces[district.state!.id!] = district.state!;
+
+            if (district.state!.country != null &&
+                district.state!.country!.id != null) {
+              uniqueCountries[district.state!.country!.id!] =
+                  district.state!.country!;
+            }
+          }
+        }
+
+        // Insert/update countries first
+        for (final country in uniqueCountries.values) {
+          await _database
+              .into(_database.countries)
+              .insertOnConflictUpdate(
+                CountriesCompanion(
+                  id: Value(country.id!),
+                  uid: Value(country.uid!),
+                  name: Value(country.name!),
+                  createdAt: Value(DateTime.parse(country.createdAt!)),
+                  updatedAt: Value(DateTime.parse(country.updatedAt!)),
+                  isSynced: const Value(true),
+                ),
+              );
+        }
+
+        // Insert/update provinces
+        for (final province in uniqueProvinces.values) {
+          await _database
+              .into(_database.provinces)
+              .insertOnConflictUpdate(
+                ProvincesCompanion(
+                  id: Value(province.id!),
+                  uid: Value(province.uid!),
+                  name: Value(province.name!),
+                  countryID: Value(province.countryId!),
+                  createdAt: Value(DateTime.parse(province.createdAt!)),
+                  updatedAt: Value(DateTime.parse(province.updatedAt!)),
+                  isSynced: const Value(true),
+                ),
+              );
+        }
+
+        // Insert/update districts
+        for (final district in districts) {
+          await _database
+              .into(_database.districts)
+              .insertOnConflictUpdate(
+                DistrictsCompanion(
+                  id: Value(district.id!),
+                  uid: Value(district.uid!),
+                  name: Value(district.name!),
+                  stateId: Value(district.stateId!),
+                  createdAt: Value(
+                    DateTime.now(),
+                  ), // API response doesn't include timestamps for districts
+                  updatedAt: Value(DateTime.now()),
+                  isSynced: const Value(true),
+                ),
+              );
+        }
+      });
+
+      print('💾 Cached ${districts.length} districts in database');
+    } catch (e) {
+      print('❌ Error caching districts: $e');
+    }
+  }
+
+  @override
+  Future<List<DistrictModel>> getCachedDistrictModels() async {
+    final entities = await getCachedDistricts();
+    if (entities == null) return [];
+
+    return entities.map((entity) => DistrictModel.fromEntity(entity)).toList();
+  }
+
+  @override
+  Future<void> cacheDistrictModels(List<DistrictModel> models) async {
+    final entities = models.map((model) => model.toEntity()).toList();
+    await cacheDistricts(entities);
+  }
+
+  /* 
+  // Road datasource
+  */
+  @override
+  Future<void> clearRoadCache() async {
+    try {
+      // Clear roads only (no foreign key dependencies from other tables)
+      await _database.delete(_database.roads).go();
+      print('✅ Road cache cleared from database');
+    } catch (e) {
+      print('❌ Error clearing road cache: $e');
+    }
+  }
+
+  @override
+  Future<List<Road>?> getCachedRoads() async {
+    try {
+      // Get roads with their district and main category information
+      final query = _database.select(_database.roads).join([
+        leftOuterJoin(
+          _database.districts,
+          _database.districts.id.equalsExp(_database.roads.districtId),
+        ),
+        leftOuterJoin(
+          _database.roadCategories,
+          _database.roadCategories.id.equalsExp(_database.roads.mainCategoryId),
+        ),
+      ]);
+
+      final results = await query.get();
+
+      if (results.isEmpty) {
+        print('💾 No cached roads found');
+        return null;
+      }
+
+      final roads = <Road>[];
+
+      for (final row in results) {
+        final road = row.readTable(_database.roads);
+        final district = row.readTableOrNull(_database.districts);
+        final mainCategory = row.readTableOrNull(_database.roadCategories);
+
+        // Get secondary category separately if it exists
+        RoadCategoryRecord? secondaryCategory;
+        if (road.secondaryCategoryId != null) {
+          final secondaryCategoryQuery = _database.select(
+            _database.roadCategories,
+          )..where((tbl) => tbl.id.equals(road.secondaryCategoryId!));
+          final secondaryCategoryResults = await secondaryCategoryQuery.get();
+          if (secondaryCategoryResults.isNotEmpty) {
+            secondaryCategory = secondaryCategoryResults.first;
+          }
+        }
+
+        roads.add(
+          Road(
+            id: road.id,
+            uid: road.uid,
+            name: road.name,
+            roadNo: road.roadNo,
+            sectionStart: road.sectionStart,
+            sectionFinish: road.sectionFinish,
+            mainCategoryId: road.mainCategoryId,
+            secondaryCategoryId: road.secondaryCategoryId,
+            districtId: road.districtId,
+            createdAt: road.createdAt.toIso8601String(),
+            updatedAt: road.updatedAt.toIso8601String(),
+            district: district != null
+                ? District(
+                    id: district.id,
+                    uid: district.uid,
+                    name: district.name,
+                    stateId: district.stateId,
+                    state:
+                        null, // Don't fetch nested state to avoid complex joins
+                  )
+                : null,
+            mainCategory: mainCategory != null
+                ? RoadCategory(
+                    id: mainCategory.id,
+                    uid: mainCategory.uid,
+                    name: mainCategory.name,
+                    createdAt: mainCategory.createdAt.toIso8601String(),
+                    updatedAt: mainCategory.updatedAt.toIso8601String(),
+                  )
+                : null,
+            secondaryCategory: secondaryCategory != null
+                ? RoadCategory(
+                    id: secondaryCategory.id,
+                    uid: secondaryCategory.uid,
+                    name: secondaryCategory.name,
+                    createdAt: secondaryCategory.createdAt.toIso8601String(),
+                    updatedAt: secondaryCategory.updatedAt.toIso8601String(),
+                  )
+                : null,
+          ),
+        );
+      }
+
+      print('💾 Retrieved ${roads.length} roads from database');
+      return roads;
+    } catch (e) {
+      print('❌ Error loading cached roads: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheRoads(List<Road> roads) async {
+    try {
+      await _database.transaction(() async {
+        // Cache unique districts and road categories first
+        final uniqueDistricts = <int, District>{};
+        final uniqueMainCategories = <int, RoadCategory>{};
+        final uniqueSecondaryCategories = <int, RoadCategory>{};
+
+        for (final road in roads) {
+          if (road.district != null && road.district!.id != null) {
+            uniqueDistricts[road.district!.id!] = road.district!;
+          }
+          if (road.mainCategory != null && road.mainCategory!.id != null) {
+            uniqueMainCategories[road.mainCategory!.id!] = road.mainCategory!;
+          }
+          if (road.secondaryCategory != null &&
+              road.secondaryCategory!.id != null) {
+            uniqueSecondaryCategories[road.secondaryCategory!.id!] =
+                road.secondaryCategory!;
+          }
+        }
+
+        // Insert/update districts (simplified - no state relationship for now)
+        for (final district in uniqueDistricts.values) {
+          await _database
+              .into(_database.districts)
+              .insertOnConflictUpdate(
+                DistrictsCompanion(
+                  id: Value(district.id!),
+                  uid: Value(district.uid!),
+                  name: Value(district.name!),
+                  stateId: Value(district.stateId!),
+                  createdAt: Value(DateTime.now()),
+                  updatedAt: Value(DateTime.now()),
+                  isSynced: const Value(true),
+                ),
+              );
+        }
+
+        // Insert/update road categories (both main and secondary)
+        final allCategories = {
+          ...uniqueMainCategories.values,
+          ...uniqueSecondaryCategories.values,
+        };
+        for (final category in allCategories) {
+          await _database
+              .into(_database.roadCategories)
+              .insertOnConflictUpdate(
+                RoadCategoriesCompanion(
+                  id: Value(category.id!),
+                  uid: Value(category.uid!),
+                  name: Value(category.name!),
+                  createdAt: Value(DateTime.parse(category.createdAt!)),
+                  updatedAt: Value(DateTime.parse(category.updatedAt!)),
+                  isSynced: const Value(true),
+                ),
+              );
+        }
+
+        // Insert/update roads
+        for (final road in roads) {
+          await _database
+              .into(_database.roads)
+              .insertOnConflictUpdate(
+                RoadsCompanion(
+                  id: Value(road.id!),
+                  uid: Value(road.uid!),
+                  name: Value(road.name!),
+                  roadNo: Value(road.roadNo),
+                  sectionStart: Value(road.sectionStart),
+                  sectionFinish: Value(road.sectionFinish),
+                  mainCategoryId: Value(road.mainCategoryId),
+                  secondaryCategoryId: Value(road.secondaryCategoryId),
+                  districtId: Value(road.districtId!),
+                  createdAt: Value(DateTime.parse(road.createdAt!)),
+                  updatedAt: Value(DateTime.parse(road.updatedAt!)),
+                  isSynced: const Value(true),
+                ),
+              );
+        }
+      });
+
+      print('💾 Cached ${roads.length} roads in database');
+    } catch (e) {
+      print('❌ Error caching roads: $e');
+    }
+  }
+
+  @override
+  Future<List<RoadModel>> getCachedRoadModels() async {
+    final entities = await getCachedRoads();
+    if (entities == null) return [];
+
+    return entities.map((entity) => RoadModel.fromEntity(entity)).toList();
+  }
+
+  @override
+  Future<void> cacheRoadModels(List<RoadModel> models) async {
+    final entities = models.map((model) => model.toEntity()).toList();
+    await cacheRoads(entities);
   }
 }
