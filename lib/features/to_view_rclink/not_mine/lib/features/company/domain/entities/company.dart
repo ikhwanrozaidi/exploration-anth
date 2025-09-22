@@ -17,7 +17,7 @@ class Company extends Equatable {
   final String country;
   final String phone;
   final String email;
-  final String website;
+  final String? website;
   final String companyType;
   final bool bumiputera;
   final String? einvoiceTinNo;
@@ -44,7 +44,7 @@ class Company extends Equatable {
     required this.country,
     required this.phone,
     required this.email,
-    required this.website,
+    this.website,
     required this.companyType,
     required this.bumiputera,
     this.einvoiceTinNo,

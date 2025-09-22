@@ -5,6 +5,7 @@ import 'package:rclink_app/features/rbac/presentation/widgets/permission_gate.da
 
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
+import '../../../../shared/widgets/divider_config.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
 import '../../../company/presentation/pages/widgets/edit_company_page.dart';
@@ -560,9 +561,5 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     );
-  }
-
-  Widget dividerConfig() {
-    return Divider(height: 30, thickness: 0.5, color: Colors.grey);
   }
 }

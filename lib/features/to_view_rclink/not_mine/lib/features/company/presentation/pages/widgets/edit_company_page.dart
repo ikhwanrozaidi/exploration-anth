@@ -229,13 +229,13 @@ class _EditCompanyPageState extends State<EditCompanyPage> {
 
                       ThemeListTileWidget(
                         title: 'Website',
-                        titleDetails: selectedCompany.website,
+                        titleDetails: selectedCompany.website ?? '',
                         icon: Icons.language,
                         onTap: () => _showEditDialog(
                           context,
                           fieldName: 'website',
                           fieldTitle: 'Website',
-                          currentValue: selectedCompany.website,
+                          currentValue: selectedCompany.website ?? '',
                           companyUid: selectedCompany.uid,
                           keyboardType: TextInputType.url,
                         ),

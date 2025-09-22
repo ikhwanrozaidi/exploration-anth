@@ -111,7 +111,7 @@ class CompanyLocalDataSourceImpl implements CompanyLocalDataSource {
                 phone: Value(company.phone.isNotEmpty ? company.phone : null),
                 email: Value(company.email.isNotEmpty ? company.email : null),
                 website: Value(
-                  company.website.isNotEmpty ? company.website : null,
+                  company.website!.isNotEmpty ? company.website : null,
                 ),
                 companyType: Value(company.companyType),
                 bumiputera: Value(company.bumiputera),
@@ -191,7 +191,7 @@ class CompanyLocalDataSourceImpl implements CompanyLocalDataSource {
               phone: Value(company.phone.isNotEmpty ? company.phone : null),
               email: Value(company.email.isNotEmpty ? company.email : null),
               website: Value(
-                company.website.isNotEmpty ? company.website : null,
+                company.website!.isNotEmpty ? company.website : null,
               ),
               companyType: Value(company.companyType),
               bumiputera: Value(company.bumiputera),

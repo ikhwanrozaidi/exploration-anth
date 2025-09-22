@@ -144,12 +144,133 @@ class Permissions extends Table with SyncableTable {
   IntColumn get roleID => integer()(); // Link to current role
 }
 
-@DriftDatabase(tables: [Admins, SyncQueue, Roles, Permissions, Companies])
+// Work Scope table
+@DataClassName('WorkScopeRecord')
+class WorkScopes extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  TextColumn get code => text()();
+  TextColumn get description => text()();
+  BoolColumn get allowMultipleQuantities =>
+      boolean().withDefault(const Constant(false))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+  IntColumn get companyID => integer()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Work Quantity Types table
+@DataClassName('WorkQuantityTypeRecord')
+class WorkQuantityTypes extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  TextColumn get code => text()();
+  IntColumn get displayOrder => integer()();
+  BoolColumn get hasSegmentBreakdown =>
+      boolean().withDefault(const Constant(false))();
+  IntColumn get segmentSize => integer().nullable()();
+  IntColumn get maxSegmentLength => integer().nullable()();
+  IntColumn get workScopeID => integer()(); // Foreign key to WorkScopes
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Work Quantity Fields table
+@DataClassName('WorkQuantityFieldRecord')
+class WorkQuantityFields extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  TextColumn get code => text()();
+  TextColumn get fieldType => text()(); // e.g., "DROPDOWN", "TEXT", "NUMBER"
+  TextColumn get unit => text().nullable()();
+  TextColumn get validationRules => text().nullable()();
+  IntColumn get displayOrder => integer()();
+  BoolColumn get isRequired => boolean().withDefault(const Constant(false))();
+  BoolColumn get isForSegment => boolean().withDefault(const Constant(false))();
+  TextColumn get defaultValue => text().nullable()();
+  TextColumn get placeholder => text().nullable()();
+  TextColumn get helpText => text().nullable()();
+  IntColumn get quantityTypeID =>
+      integer()(); // Foreign key to WorkQuantityTypes
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Work Quantity Field Options table
+@DataClassName('WorkQuantityFieldOptionRecord')
+class WorkQuantityFieldOptions extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get value => text()();
+  IntColumn get displayOrder => integer()();
+  IntColumn get fieldID => integer()(); // Foreign key to WorkQuantityFields
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Work Scope Equipments table
+@DataClassName('WorkScopeEquipmentsRecord')
+class WorkScopeEquipments extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  TextColumn get code => text()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Junction table for many-to-many relationship between WorkScope and WorkScopeEquipments
+@DataClassName('WorkScopeEquipmentRecord')
+class WorkScopeEquipment extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get workScopeID => integer()(); // Foreign key to WorkScopes
+  IntColumn get workEquipmentID => integer()(); // Foreign key to WorkScopeEquipments
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {workScopeID, workEquipmentID}, // Prevent duplicate relationships
+  ];
+}
+
+@DriftDatabase(
+  tables: [
+    Admins,
+    SyncQueue,
+    Roles,
+    Permissions,
+    Companies,
+    WorkScopes,
+    WorkQuantityTypes,
+    WorkQuantityFields,
+    WorkQuantityFieldOptions,
+    WorkScopeEquipments,
+    WorkScopeEquipment,
+  ],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 6; // Added Roles and Permissions tables
+  int get schemaVersion => 8; // Renamed tables in version 8
 
   @override
   MigrationStrategy get migration {
@@ -227,6 +348,142 @@ class AppDatabase extends _$AppDatabase {
           if (!existingColumns.contains('admin_role_name')) {
             await m.addColumn(companies, companies.adminRoleName);
           }
+        }
+
+        if (from < 7) {
+          // Migration from version 6 to 7: Add Scope of Work related tables (original names)
+          // These tables were created with old names in version 7
+          // They will be renamed in version 8
+          await customStatement('''
+            CREATE TABLE IF NOT EXISTS scope_of_works (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              uid TEXT NOT NULL,
+              name TEXT NOT NULL,
+              code TEXT NOT NULL,
+              description TEXT NOT NULL,
+              allow_multiple_quantities INTEGER NOT NULL DEFAULT 0,
+              created_at INTEGER NOT NULL,
+              updated_at INTEGER NOT NULL,
+              company_i_d INTEGER NOT NULL,
+              is_synced INTEGER NOT NULL DEFAULT 0,
+              deleted_at INTEGER,
+              sync_action TEXT,
+              sync_retry_count INTEGER NOT NULL DEFAULT 0,
+              sync_error TEXT,
+              last_sync_attempt INTEGER,
+              UNIQUE(uid)
+            )
+          ''');
+
+          await customStatement('''
+            CREATE TABLE IF NOT EXISTS work_quantity_types (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              uid TEXT NOT NULL,
+              name TEXT NOT NULL,
+              code TEXT NOT NULL,
+              display_order INTEGER NOT NULL,
+              has_segment_breakdown INTEGER NOT NULL DEFAULT 0,
+              segment_size INTEGER,
+              max_segment_length INTEGER,
+              scope_of_work_id INTEGER NOT NULL,
+              is_synced INTEGER NOT NULL DEFAULT 0,
+              deleted_at INTEGER,
+              sync_action TEXT,
+              sync_retry_count INTEGER NOT NULL DEFAULT 0,
+              sync_error TEXT,
+              last_sync_attempt INTEGER,
+              UNIQUE(uid)
+            )
+          ''');
+
+          await customStatement('''
+            CREATE TABLE IF NOT EXISTS quantity_fields (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              uid TEXT NOT NULL,
+              name TEXT NOT NULL,
+              code TEXT NOT NULL,
+              field_type TEXT NOT NULL,
+              unit TEXT,
+              validation_rules TEXT,
+              display_order INTEGER NOT NULL,
+              is_required INTEGER NOT NULL DEFAULT 0,
+              is_for_segment INTEGER NOT NULL DEFAULT 0,
+              default_value TEXT,
+              placeholder TEXT,
+              help_text TEXT,
+              work_quantity_type_id INTEGER NOT NULL,
+              is_synced INTEGER NOT NULL DEFAULT 0,
+              deleted_at INTEGER,
+              sync_action TEXT,
+              sync_retry_count INTEGER NOT NULL DEFAULT 0,
+              sync_error TEXT,
+              last_sync_attempt INTEGER,
+              UNIQUE(uid)
+            )
+          ''');
+
+          await customStatement('''
+            CREATE TABLE IF NOT EXISTS dropdown_options (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              uid TEXT NOT NULL,
+              value TEXT NOT NULL,
+              display_order INTEGER NOT NULL,
+              quantity_field_id INTEGER NOT NULL,
+              is_synced INTEGER NOT NULL DEFAULT 0,
+              deleted_at INTEGER,
+              sync_action TEXT,
+              sync_retry_count INTEGER NOT NULL DEFAULT 0,
+              sync_error TEXT,
+              last_sync_attempt INTEGER,
+              UNIQUE(uid)
+            )
+          ''');
+
+          await customStatement('''
+            CREATE TABLE IF NOT EXISTS work_equipments (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              uid TEXT NOT NULL,
+              name TEXT NOT NULL,
+              code TEXT NOT NULL,
+              is_synced INTEGER NOT NULL DEFAULT 0,
+              deleted_at INTEGER,
+              sync_action TEXT,
+              sync_retry_count INTEGER NOT NULL DEFAULT 0,
+              sync_error TEXT,
+              last_sync_attempt INTEGER,
+              UNIQUE(uid)
+            )
+          ''');
+
+          await customStatement('''
+            CREATE TABLE IF NOT EXISTS scope_of_work_equipments (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              scope_of_work_id INTEGER NOT NULL,
+              work_equipment_id INTEGER NOT NULL,
+              is_synced INTEGER NOT NULL DEFAULT 0,
+              deleted_at INTEGER,
+              sync_action TEXT,
+              sync_retry_count INTEGER NOT NULL DEFAULT 0,
+              sync_error TEXT,
+              last_sync_attempt INTEGER,
+              UNIQUE(scope_of_work_id, work_equipment_id)
+            )
+          ''');
+        }
+
+        if (from < 8) {
+          // Migration from version 7 to 8: Rename tables and columns
+          // Note: SQLite doesn't support direct column renaming, but table renaming works
+
+          // Rename tables
+          await customStatement('ALTER TABLE scope_of_works RENAME TO work_scopes');
+          await customStatement('ALTER TABLE quantity_fields RENAME TO work_quantity_fields');
+          await customStatement('ALTER TABLE dropdown_options RENAME TO work_quantity_field_options');
+          await customStatement('ALTER TABLE work_equipments RENAME TO work_scope_equipments');
+          await customStatement('ALTER TABLE scope_of_work_equipments RENAME TO work_scope_equipment');
+
+          // For column renames in SQLite, we need to recreate tables with new column names
+          // This is handled automatically by Drift when we regenerate the migration helpers
         }
       },
       beforeOpen: (details) async {

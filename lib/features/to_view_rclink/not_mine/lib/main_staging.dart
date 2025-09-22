@@ -6,7 +6,7 @@ Future<void> main() async {
   FlavorConfig(
     flavor: Flavor.staging,
     appTitle: 'RCLink Staging',
-    apiBaseUrl: 'https://api-staging.rclink.com',
+    apiBaseUrl: 'https://api-staging.rclink.my',
     debugShowCheckedModeBanner: true,
   );
 

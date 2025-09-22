@@ -1170,12 +1170,1128 @@ i1.GeneratedColumn<DateTime> _column_50(String aliasedName) =>
       true,
       type: i1.DriftSqlType.dateTime,
     );
+
+final class Schema7 extends i0.VersionedSchema {
+  Schema7({required super.database}) : super(version: 7);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    admins,
+    syncQueue,
+    roles,
+    permissions,
+    companies,
+    scopeOfWorks,
+    workQuantityTypes,
+    quantityFields,
+    dropdownOptions,
+    workEquipments,
+    scopeOfWorkEquipments,
+  ];
+  late final Shape2 admins = Shape2(
+    source: i0.VersionedTable(
+      entityName: 'admins',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)', 'UNIQUE(phone)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_8,
+        _column_9,
+        _column_10,
+        _column_11,
+        _column_13,
+        _column_14,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape1 syncQueue = Shape1(
+    source: i0.VersionedTable(
+      entityName: 'sync_queue',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_6,
+        _column_15,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_19,
+        _column_20,
+        _column_21,
+        _column_14,
+        _column_22,
+        _column_23,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape3 roles = Shape3(
+    source: i0.VersionedTable(
+      entityName: 'roles',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_25,
+        _column_26,
+        _column_27,
+        _column_28,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape4 permissions = Shape4(
+    source: i0.VersionedTable(
+      entityName: 'permissions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_29,
+        _column_24,
+        _column_25,
+        _column_30,
+        _column_31,
+        _column_32,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape6 companies = Shape6(
+    source: i0.VersionedTable(
+      entityName: 'companies',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_33,
+        _column_34,
+        _column_35,
+        _column_36,
+        _column_37,
+        _column_38,
+        _column_39,
+        _column_40,
+        _column_11,
+        _column_41,
+        _column_42,
+        _column_43,
+        _column_44,
+        _column_45,
+        _column_14,
+        _column_13,
+        _column_1,
+        _column_46,
+        _column_47,
+        _column_48,
+        _column_49,
+        _column_50,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape7 scopeOfWorks = Shape7(
+    source: i0.VersionedTable(
+      entityName: 'scope_of_works',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_29,
+        _column_51,
+        _column_52,
+        _column_14,
+        _column_13,
+        _column_26,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape8 workQuantityTypes = Shape8(
+    source: i0.VersionedTable(
+      entityName: 'work_quantity_types',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_29,
+        _column_53,
+        _column_54,
+        _column_55,
+        _column_56,
+        _column_57,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape9 quantityFields = Shape9(
+    source: i0.VersionedTable(
+      entityName: 'quantity_fields',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_29,
+        _column_58,
+        _column_59,
+        _column_60,
+        _column_53,
+        _column_61,
+        _column_62,
+        _column_63,
+        _column_64,
+        _column_65,
+        _column_66,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape10 dropdownOptions = Shape10(
+    source: i0.VersionedTable(
+      entityName: 'dropdown_options',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_67,
+        _column_53,
+        _column_68,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape11 workEquipments = Shape11(
+    source: i0.VersionedTable(
+      entityName: 'work_equipments',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_29,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape12 scopeOfWorkEquipments = Shape12(
+    source: i0.VersionedTable(
+      entityName: 'scope_of_work_equipments',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(scope_of_work_id, work_equipment_id)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_57,
+        _column_69,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+}
+
+class Shape7 extends i0.VersionedTable {
+  Shape7({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<bool> get isSynced =>
+      columnsByName['is_synced']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get syncAction =>
+      columnsByName['sync_action']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get syncRetryCount =>
+      columnsByName['sync_retry_count']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get syncError =>
+      columnsByName['sync_error']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get lastSyncAttempt =>
+      columnsByName['last_sync_attempt']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get uid =>
+      columnsByName['uid']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get code =>
+      columnsByName['code']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get description =>
+      columnsByName['description']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<bool> get allowMultipleQuantities =>
+      columnsByName['allow_multiple_quantities']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get createdAt =>
+      columnsByName['created_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get updatedAt =>
+      columnsByName['updated_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get companyID =>
+      columnsByName['company_i_d']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<String> _column_51(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'description',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<bool> _column_52(String aliasedName) =>
+    i1.GeneratedColumn<bool>(
+      'allow_multiple_quantities',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.bool,
+      defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
+        'CHECK ("allow_multiple_quantities" IN (0, 1))',
+      ),
+      defaultValue: const CustomExpression('0'),
+    );
+
+class Shape8 extends i0.VersionedTable {
+  Shape8({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<bool> get isSynced =>
+      columnsByName['is_synced']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get syncAction =>
+      columnsByName['sync_action']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get syncRetryCount =>
+      columnsByName['sync_retry_count']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get syncError =>
+      columnsByName['sync_error']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get lastSyncAttempt =>
+      columnsByName['last_sync_attempt']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get uid =>
+      columnsByName['uid']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get code =>
+      columnsByName['code']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get displayOrder =>
+      columnsByName['display_order']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<bool> get hasSegmentBreakdown =>
+      columnsByName['has_segment_breakdown']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<int> get segmentSize =>
+      columnsByName['segment_size']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get maxSegmentLength =>
+      columnsByName['max_segment_length']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get scopeOfWorkId =>
+      columnsByName['scope_of_work_id']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<int> _column_53(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'display_order',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+    );
+i1.GeneratedColumn<bool> _column_54(String aliasedName) =>
+    i1.GeneratedColumn<bool>(
+      'has_segment_breakdown',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.bool,
+      defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
+        'CHECK ("has_segment_breakdown" IN (0, 1))',
+      ),
+      defaultValue: const CustomExpression('0'),
+    );
+i1.GeneratedColumn<int> _column_55(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'segment_size',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.int,
+    );
+i1.GeneratedColumn<int> _column_56(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'max_segment_length',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.int,
+    );
+i1.GeneratedColumn<int> _column_57(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'scope_of_work_id',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+    );
+
+class Shape9 extends i0.VersionedTable {
+  Shape9({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<bool> get isSynced =>
+      columnsByName['is_synced']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get syncAction =>
+      columnsByName['sync_action']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get syncRetryCount =>
+      columnsByName['sync_retry_count']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get syncError =>
+      columnsByName['sync_error']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get lastSyncAttempt =>
+      columnsByName['last_sync_attempt']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get uid =>
+      columnsByName['uid']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get code =>
+      columnsByName['code']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get fieldType =>
+      columnsByName['field_type']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get unit =>
+      columnsByName['unit']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get validationRules =>
+      columnsByName['validation_rules']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get displayOrder =>
+      columnsByName['display_order']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<bool> get isRequired =>
+      columnsByName['is_required']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<bool> get isForSegment =>
+      columnsByName['is_for_segment']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<String> get defaultValue =>
+      columnsByName['default_value']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get placeholder =>
+      columnsByName['placeholder']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get helpText =>
+      columnsByName['help_text']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get workQuantityTypeId =>
+      columnsByName['work_quantity_type_id']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<String> _column_58(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'field_type',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_59(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'unit',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_60(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'validation_rules',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<bool> _column_61(String aliasedName) =>
+    i1.GeneratedColumn<bool>(
+      'is_required',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.bool,
+      defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
+        'CHECK ("is_required" IN (0, 1))',
+      ),
+      defaultValue: const CustomExpression('0'),
+    );
+i1.GeneratedColumn<bool> _column_62(String aliasedName) =>
+    i1.GeneratedColumn<bool>(
+      'is_for_segment',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.bool,
+      defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
+        'CHECK ("is_for_segment" IN (0, 1))',
+      ),
+      defaultValue: const CustomExpression('0'),
+    );
+i1.GeneratedColumn<String> _column_63(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'default_value',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_64(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'placeholder',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_65(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'help_text',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<int> _column_66(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'work_quantity_type_id',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+    );
+
+class Shape10 extends i0.VersionedTable {
+  Shape10({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<bool> get isSynced =>
+      columnsByName['is_synced']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get syncAction =>
+      columnsByName['sync_action']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get syncRetryCount =>
+      columnsByName['sync_retry_count']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get syncError =>
+      columnsByName['sync_error']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get lastSyncAttempt =>
+      columnsByName['last_sync_attempt']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get uid =>
+      columnsByName['uid']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get value =>
+      columnsByName['value']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get displayOrder =>
+      columnsByName['display_order']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get quantityFieldId =>
+      columnsByName['quantity_field_id']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<String> _column_67(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'value',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<int> _column_68(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'quantity_field_id',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+    );
+
+class Shape11 extends i0.VersionedTable {
+  Shape11({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<bool> get isSynced =>
+      columnsByName['is_synced']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get syncAction =>
+      columnsByName['sync_action']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get syncRetryCount =>
+      columnsByName['sync_retry_count']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get syncError =>
+      columnsByName['sync_error']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get lastSyncAttempt =>
+      columnsByName['last_sync_attempt']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get uid =>
+      columnsByName['uid']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get code =>
+      columnsByName['code']! as i1.GeneratedColumn<String>;
+}
+
+class Shape12 extends i0.VersionedTable {
+  Shape12({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<bool> get isSynced =>
+      columnsByName['is_synced']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get syncAction =>
+      columnsByName['sync_action']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get syncRetryCount =>
+      columnsByName['sync_retry_count']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get syncError =>
+      columnsByName['sync_error']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get lastSyncAttempt =>
+      columnsByName['last_sync_attempt']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get scopeOfWorkId =>
+      columnsByName['scope_of_work_id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get workEquipmentId =>
+      columnsByName['work_equipment_id']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<int> _column_69(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'work_equipment_id',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+    );
+
+final class Schema8 extends i0.VersionedSchema {
+  Schema8({required super.database}) : super(version: 8);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    admins,
+    syncQueue,
+    roles,
+    permissions,
+    companies,
+    workScopes,
+    workQuantityTypes,
+    workQuantityFields,
+    workQuantityFieldOptions,
+    workScopeEquipments,
+    workScopeEquipment,
+  ];
+  late final Shape2 admins = Shape2(
+    source: i0.VersionedTable(
+      entityName: 'admins',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)', 'UNIQUE(phone)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_8,
+        _column_9,
+        _column_10,
+        _column_11,
+        _column_13,
+        _column_14,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape1 syncQueue = Shape1(
+    source: i0.VersionedTable(
+      entityName: 'sync_queue',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_6,
+        _column_15,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_19,
+        _column_20,
+        _column_21,
+        _column_14,
+        _column_22,
+        _column_23,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape3 roles = Shape3(
+    source: i0.VersionedTable(
+      entityName: 'roles',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_25,
+        _column_26,
+        _column_27,
+        _column_28,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape4 permissions = Shape4(
+    source: i0.VersionedTable(
+      entityName: 'permissions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_29,
+        _column_24,
+        _column_25,
+        _column_30,
+        _column_31,
+        _column_32,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape6 companies = Shape6(
+    source: i0.VersionedTable(
+      entityName: 'companies',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_33,
+        _column_34,
+        _column_35,
+        _column_36,
+        _column_37,
+        _column_38,
+        _column_39,
+        _column_40,
+        _column_11,
+        _column_41,
+        _column_42,
+        _column_43,
+        _column_44,
+        _column_45,
+        _column_14,
+        _column_13,
+        _column_1,
+        _column_46,
+        _column_47,
+        _column_48,
+        _column_49,
+        _column_50,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape7 workScopes = Shape7(
+    source: i0.VersionedTable(
+      entityName: 'work_scopes',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_29,
+        _column_51,
+        _column_52,
+        _column_14,
+        _column_13,
+        _column_26,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape13 workQuantityTypes = Shape13(
+    source: i0.VersionedTable(
+      entityName: 'work_quantity_types',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_29,
+        _column_53,
+        _column_54,
+        _column_55,
+        _column_56,
+        _column_70,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape14 workQuantityFields = Shape14(
+    source: i0.VersionedTable(
+      entityName: 'work_quantity_fields',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_29,
+        _column_58,
+        _column_59,
+        _column_60,
+        _column_53,
+        _column_61,
+        _column_62,
+        _column_63,
+        _column_64,
+        _column_65,
+        _column_71,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape15 workQuantityFieldOptions = Shape15(
+    source: i0.VersionedTable(
+      entityName: 'work_quantity_field_options',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_67,
+        _column_53,
+        _column_72,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape11 workScopeEquipments = Shape11(
+    source: i0.VersionedTable(
+      entityName: 'work_scope_equipments',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_29,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape16 workScopeEquipment = Shape16(
+    source: i0.VersionedTable(
+      entityName: 'work_scope_equipment',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(work_scope_i_d, work_equipment_i_d)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_70,
+        _column_73,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+}
+
+class Shape13 extends i0.VersionedTable {
+  Shape13({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<bool> get isSynced =>
+      columnsByName['is_synced']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get syncAction =>
+      columnsByName['sync_action']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get syncRetryCount =>
+      columnsByName['sync_retry_count']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get syncError =>
+      columnsByName['sync_error']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get lastSyncAttempt =>
+      columnsByName['last_sync_attempt']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get uid =>
+      columnsByName['uid']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get code =>
+      columnsByName['code']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get displayOrder =>
+      columnsByName['display_order']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<bool> get hasSegmentBreakdown =>
+      columnsByName['has_segment_breakdown']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<int> get segmentSize =>
+      columnsByName['segment_size']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get maxSegmentLength =>
+      columnsByName['max_segment_length']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get workScopeID =>
+      columnsByName['work_scope_i_d']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<int> _column_70(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'work_scope_i_d',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+    );
+
+class Shape14 extends i0.VersionedTable {
+  Shape14({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<bool> get isSynced =>
+      columnsByName['is_synced']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get syncAction =>
+      columnsByName['sync_action']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get syncRetryCount =>
+      columnsByName['sync_retry_count']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get syncError =>
+      columnsByName['sync_error']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get lastSyncAttempt =>
+      columnsByName['last_sync_attempt']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get uid =>
+      columnsByName['uid']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get code =>
+      columnsByName['code']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get fieldType =>
+      columnsByName['field_type']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get unit =>
+      columnsByName['unit']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get validationRules =>
+      columnsByName['validation_rules']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get displayOrder =>
+      columnsByName['display_order']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<bool> get isRequired =>
+      columnsByName['is_required']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<bool> get isForSegment =>
+      columnsByName['is_for_segment']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<String> get defaultValue =>
+      columnsByName['default_value']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get placeholder =>
+      columnsByName['placeholder']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get helpText =>
+      columnsByName['help_text']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get quantityTypeID =>
+      columnsByName['quantity_type_i_d']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<int> _column_71(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'quantity_type_i_d',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+    );
+
+class Shape15 extends i0.VersionedTable {
+  Shape15({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<bool> get isSynced =>
+      columnsByName['is_synced']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get syncAction =>
+      columnsByName['sync_action']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get syncRetryCount =>
+      columnsByName['sync_retry_count']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get syncError =>
+      columnsByName['sync_error']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get lastSyncAttempt =>
+      columnsByName['last_sync_attempt']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get uid =>
+      columnsByName['uid']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get value =>
+      columnsByName['value']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get displayOrder =>
+      columnsByName['display_order']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get fieldID =>
+      columnsByName['field_i_d']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<int> _column_72(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'field_i_d',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+    );
+
+class Shape16 extends i0.VersionedTable {
+  Shape16({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<bool> get isSynced =>
+      columnsByName['is_synced']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get syncAction =>
+      columnsByName['sync_action']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get syncRetryCount =>
+      columnsByName['sync_retry_count']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get syncError =>
+      columnsByName['sync_error']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get lastSyncAttempt =>
+      columnsByName['last_sync_attempt']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get workScopeID =>
+      columnsByName['work_scope_i_d']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get workEquipmentID =>
+      columnsByName['work_equipment_i_d']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<int> _column_73(String aliasedName) =>
+    i1.GeneratedColumn<int>(
+      'work_equipment_i_d',
+      aliasedName,
+      false,
+      type: i1.DriftSqlType.int,
+    );
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
   required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
   required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
   required Future<void> Function(i1.Migrator m, Schema6 schema) from5To6,
+  required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
+  required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -1204,6 +2320,16 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from5To6(migrator, schema);
         return 6;
+      case 6:
+        final schema = Schema7(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from6To7(migrator, schema);
+        return 7;
+      case 7:
+        final schema = Schema8(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from7To8(migrator, schema);
+        return 8;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -1216,6 +2342,8 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema4 schema) from3To4,
   required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
   required Future<void> Function(i1.Migrator m, Schema6 schema) from5To6,
+  required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
+  required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
 }) => i0.VersionedSchema.stepByStepHelper(
   step: migrationSteps(
     from1To2: from1To2,
@@ -1223,5 +2351,7 @@ i1.OnUpgrade stepByStep({
     from3To4: from3To4,
     from4To5: from4To5,
     from5To6: from5To6,
+    from6To7: from6To7,
+    from7To8: from7To8,
   ),
 );

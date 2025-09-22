@@ -40,7 +40,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
       await _deleteToken('refresh_token_expires_at');
 
       // Add a small delay to ensure deletion is complete
-      await Future.delayed(const Duration(milliseconds: 100));
+      await Future.delayed(const Duration(milliseconds: 500));
 
       // Store sensitive tokens in secure storage
       await _storeToken('access_token', tokens.accessToken);
@@ -56,6 +56,11 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
       return const Right(null);
     } catch (e) {
+      if (e.toString() ==
+          'PlatformException(Unexpected security result code, Code: -25299, Message: The specified item already exists in the keychain., -25299, null)') {
+        return const Right(null);
+      }
+
       return Left(CacheFailure('Failed to cache tokens: ${e.toString()}'));
     }
   }

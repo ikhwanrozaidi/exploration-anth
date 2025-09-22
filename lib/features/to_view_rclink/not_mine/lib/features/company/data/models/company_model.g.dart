@@ -20,7 +20,7 @@ _CompanyModel _$CompanyModelFromJson(Map<String, dynamic> json) =>
       country: json['country'] as String,
       phone: json['phone'] as String,
       email: json['email'] as String,
-      website: json['website'] as String,
+      website: json['website'] as String?,
       companyType: json['companyType'] as String,
       bumiputera: json['bumiputera'] as bool,
       einvoiceTinNo: json['einvoiceTinNo'] as String?,

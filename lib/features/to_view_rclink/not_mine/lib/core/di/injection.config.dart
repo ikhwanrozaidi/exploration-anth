@@ -63,6 +63,12 @@ import '../../features/company/domain/usecases/select_company_usecase.dart'
 import '../../features/company/domain/usecases/update_company_usecase.dart'
     as _i8;
 import '../../features/company/presentation/bloc/company_bloc.dart' as _i426;
+import '../../features/daily_report_creation/data/datasources/daily_report_creation_api_service.dart'
+    as _i691;
+import '../../features/daily_report_creation/data/datasources/daily_report_creation_local_datasource.dart'
+    as _i987;
+import '../../features/daily_report_creation/data/datasources/daily_report_creation_remote_datasource.dart'
+    as _i521;
 import '../../features/locale/presentation/bloc/locale_bloc.dart' as _i458;
 import '../../features/rbac/data/datasources/permission_local_datasource.dart'
     as _i267;
@@ -104,6 +110,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i895.Connectivity>(() => registerModule.connectivity);
     gh.lazySingleton<_i1004.ErrorInterceptor>(() => _i1004.ErrorInterceptor());
     gh.lazySingleton<_i458.LocaleBloc>(() => _i458.LocaleBloc());
+    gh.lazySingleton<_i987.DailyReportCreationLocalDatasource>(
+      () => _i987.DailyReportCreationLocalDatasourceImpl(
+        gh<_i982.DatabaseService>(),
+      ),
+    );
     gh.lazySingleton<_i594.CompanyLocalDataSource>(
       () => _i594.CompanyLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
@@ -127,6 +138,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i472.AdminApiService>(
       () => _i472.AdminApiService.new(gh<_i361.Dio>()),
+    );
+    gh.factory<_i691.DailyReportCreationApiService>(
+      () => _i691.DailyReportCreationApiService.new(gh<_i361.Dio>()),
     );
     gh.factory<_i178.CompanyApiService>(
       () => _i178.CompanyApiService.new(gh<_i361.Dio>()),
@@ -195,6 +209,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i726.CompanyRepositoryImpl(
         gh<_i469.CompanyRemoteDataSource>(),
         gh<_i594.CompanyLocalDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i521.DailyReportCreationRemoteDataSource>(
+      () => _i521.DailyReportCreationRemoteDataSourceImpl(
+        gh<_i691.DailyReportCreationApiService>(),
       ),
     );
     gh.lazySingleton<_i8.UpdateCompanyFieldUseCase>(

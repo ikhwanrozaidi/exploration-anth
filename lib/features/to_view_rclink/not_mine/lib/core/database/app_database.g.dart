@@ -4514,6 +4514,4792 @@ class CompaniesCompanion extends UpdateCompanion<CompanyRecord> {
   }
 }
 
+class $WorkScopesTable extends WorkScopes
+    with TableInfo<$WorkScopesTable, WorkScopeRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkScopesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<String> code = GeneratedColumn<String>(
+    'code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _allowMultipleQuantitiesMeta =
+      const VerificationMeta('allowMultipleQuantities');
+  @override
+  late final GeneratedColumn<bool> allowMultipleQuantities =
+      GeneratedColumn<bool>(
+        'allow_multiple_quantities',
+        aliasedName,
+        false,
+        type: DriftSqlType.bool,
+        requiredDuringInsert: false,
+        defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("allow_multiple_quantities" IN (0, 1))',
+        ),
+        defaultValue: const Constant(false),
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _companyIDMeta = const VerificationMeta(
+    'companyID',
+  );
+  @override
+  late final GeneratedColumn<int> companyID = GeneratedColumn<int>(
+    'company_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    code,
+    description,
+    allowMultipleQuantities,
+    createdAt,
+    updatedAt,
+    companyID,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'work_scopes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkScopeRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('code')) {
+      context.handle(
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_codeMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('allow_multiple_quantities')) {
+      context.handle(
+        _allowMultipleQuantitiesMeta,
+        allowMultipleQuantities.isAcceptableOrUnknown(
+          data['allow_multiple_quantities']!,
+          _allowMultipleQuantitiesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('company_i_d')) {
+      context.handle(
+        _companyIDMeta,
+        companyID.isAcceptableOrUnknown(data['company_i_d']!, _companyIDMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_companyIDMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  WorkScopeRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkScopeRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      allowMultipleQuantities: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}allow_multiple_quantities'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      companyID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}company_i_d'],
+      )!,
+    );
+  }
+
+  @override
+  $WorkScopesTable createAlias(String alias) {
+    return $WorkScopesTable(attachedDatabase, alias);
+  }
+}
+
+class WorkScopeRecord extends DataClass implements Insertable<WorkScopeRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String name;
+  final String code;
+  final String description;
+  final bool allowMultipleQuantities;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final int companyID;
+  const WorkScopeRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.name,
+    required this.code,
+    required this.description,
+    required this.allowMultipleQuantities,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.companyID,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['name'] = Variable<String>(name);
+    map['code'] = Variable<String>(code);
+    map['description'] = Variable<String>(description);
+    map['allow_multiple_quantities'] = Variable<bool>(allowMultipleQuantities);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['company_i_d'] = Variable<int>(companyID);
+    return map;
+  }
+
+  WorkScopesCompanion toCompanion(bool nullToAbsent) {
+    return WorkScopesCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      name: Value(name),
+      code: Value(code),
+      description: Value(description),
+      allowMultipleQuantities: Value(allowMultipleQuantities),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      companyID: Value(companyID),
+    );
+  }
+
+  factory WorkScopeRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WorkScopeRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      name: serializer.fromJson<String>(json['name']),
+      code: serializer.fromJson<String>(json['code']),
+      description: serializer.fromJson<String>(json['description']),
+      allowMultipleQuantities: serializer.fromJson<bool>(
+        json['allowMultipleQuantities'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      companyID: serializer.fromJson<int>(json['companyID']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'name': serializer.toJson<String>(name),
+      'code': serializer.toJson<String>(code),
+      'description': serializer.toJson<String>(description),
+      'allowMultipleQuantities': serializer.toJson<bool>(
+        allowMultipleQuantities,
+      ),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'companyID': serializer.toJson<int>(companyID),
+    };
+  }
+
+  WorkScopeRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? name,
+    String? code,
+    String? description,
+    bool? allowMultipleQuantities,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? companyID,
+  }) => WorkScopeRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    code: code ?? this.code,
+    description: description ?? this.description,
+    allowMultipleQuantities:
+        allowMultipleQuantities ?? this.allowMultipleQuantities,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    companyID: companyID ?? this.companyID,
+  );
+  WorkScopeRecord copyWithCompanion(WorkScopesCompanion data) {
+    return WorkScopeRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      name: data.name.present ? data.name.value : this.name,
+      code: data.code.present ? data.code.value : this.code,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      allowMultipleQuantities: data.allowMultipleQuantities.present
+          ? data.allowMultipleQuantities.value
+          : this.allowMultipleQuantities,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      companyID: data.companyID.present ? data.companyID.value : this.companyID,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkScopeRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('code: $code, ')
+          ..write('description: $description, ')
+          ..write('allowMultipleQuantities: $allowMultipleQuantities, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('companyID: $companyID')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    code,
+    description,
+    allowMultipleQuantities,
+    createdAt,
+    updatedAt,
+    companyID,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WorkScopeRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.name == this.name &&
+          other.code == this.code &&
+          other.description == this.description &&
+          other.allowMultipleQuantities == this.allowMultipleQuantities &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.companyID == this.companyID);
+}
+
+class WorkScopesCompanion extends UpdateCompanion<WorkScopeRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> name;
+  final Value<String> code;
+  final Value<String> description;
+  final Value<bool> allowMultipleQuantities;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> companyID;
+  const WorkScopesCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.code = const Value.absent(),
+    this.description = const Value.absent(),
+    this.allowMultipleQuantities = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.companyID = const Value.absent(),
+  });
+  WorkScopesCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String name,
+    required String code,
+    required String description,
+    this.allowMultipleQuantities = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    required int companyID,
+  }) : uid = Value(uid),
+       name = Value(name),
+       code = Value(code),
+       description = Value(description),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       companyID = Value(companyID);
+  static Insertable<WorkScopeRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? name,
+    Expression<String>? code,
+    Expression<String>? description,
+    Expression<bool>? allowMultipleQuantities,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? companyID,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (name != null) 'name': name,
+      if (code != null) 'code': code,
+      if (description != null) 'description': description,
+      if (allowMultipleQuantities != null)
+        'allow_multiple_quantities': allowMultipleQuantities,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (companyID != null) 'company_i_d': companyID,
+    });
+  }
+
+  WorkScopesCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? name,
+    Value<String>? code,
+    Value<String>? description,
+    Value<bool>? allowMultipleQuantities,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? companyID,
+  }) {
+    return WorkScopesCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      code: code ?? this.code,
+      description: description ?? this.description,
+      allowMultipleQuantities:
+          allowMultipleQuantities ?? this.allowMultipleQuantities,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      companyID: companyID ?? this.companyID,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (code.present) {
+      map['code'] = Variable<String>(code.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (allowMultipleQuantities.present) {
+      map['allow_multiple_quantities'] = Variable<bool>(
+        allowMultipleQuantities.value,
+      );
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (companyID.present) {
+      map['company_i_d'] = Variable<int>(companyID.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkScopesCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('code: $code, ')
+          ..write('description: $description, ')
+          ..write('allowMultipleQuantities: $allowMultipleQuantities, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('companyID: $companyID')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WorkQuantityTypesTable extends WorkQuantityTypes
+    with TableInfo<$WorkQuantityTypesTable, WorkQuantityTypeRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkQuantityTypesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<String> code = GeneratedColumn<String>(
+    'code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayOrderMeta = const VerificationMeta(
+    'displayOrder',
+  );
+  @override
+  late final GeneratedColumn<int> displayOrder = GeneratedColumn<int>(
+    'display_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _hasSegmentBreakdownMeta =
+      const VerificationMeta('hasSegmentBreakdown');
+  @override
+  late final GeneratedColumn<bool> hasSegmentBreakdown = GeneratedColumn<bool>(
+    'has_segment_breakdown',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("has_segment_breakdown" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _segmentSizeMeta = const VerificationMeta(
+    'segmentSize',
+  );
+  @override
+  late final GeneratedColumn<int> segmentSize = GeneratedColumn<int>(
+    'segment_size',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxSegmentLengthMeta = const VerificationMeta(
+    'maxSegmentLength',
+  );
+  @override
+  late final GeneratedColumn<int> maxSegmentLength = GeneratedColumn<int>(
+    'max_segment_length',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _workScopeIDMeta = const VerificationMeta(
+    'workScopeID',
+  );
+  @override
+  late final GeneratedColumn<int> workScopeID = GeneratedColumn<int>(
+    'work_scope_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    code,
+    displayOrder,
+    hasSegmentBreakdown,
+    segmentSize,
+    maxSegmentLength,
+    workScopeID,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'work_quantity_types';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkQuantityTypeRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('code')) {
+      context.handle(
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_codeMeta);
+    }
+    if (data.containsKey('display_order')) {
+      context.handle(
+        _displayOrderMeta,
+        displayOrder.isAcceptableOrUnknown(
+          data['display_order']!,
+          _displayOrderMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayOrderMeta);
+    }
+    if (data.containsKey('has_segment_breakdown')) {
+      context.handle(
+        _hasSegmentBreakdownMeta,
+        hasSegmentBreakdown.isAcceptableOrUnknown(
+          data['has_segment_breakdown']!,
+          _hasSegmentBreakdownMeta,
+        ),
+      );
+    }
+    if (data.containsKey('segment_size')) {
+      context.handle(
+        _segmentSizeMeta,
+        segmentSize.isAcceptableOrUnknown(
+          data['segment_size']!,
+          _segmentSizeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_segment_length')) {
+      context.handle(
+        _maxSegmentLengthMeta,
+        maxSegmentLength.isAcceptableOrUnknown(
+          data['max_segment_length']!,
+          _maxSegmentLengthMeta,
+        ),
+      );
+    }
+    if (data.containsKey('work_scope_i_d')) {
+      context.handle(
+        _workScopeIDMeta,
+        workScopeID.isAcceptableOrUnknown(
+          data['work_scope_i_d']!,
+          _workScopeIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workScopeIDMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  WorkQuantityTypeRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkQuantityTypeRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      )!,
+      displayOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}display_order'],
+      )!,
+      hasSegmentBreakdown: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}has_segment_breakdown'],
+      )!,
+      segmentSize: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}segment_size'],
+      ),
+      maxSegmentLength: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_segment_length'],
+      ),
+      workScopeID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}work_scope_i_d'],
+      )!,
+    );
+  }
+
+  @override
+  $WorkQuantityTypesTable createAlias(String alias) {
+    return $WorkQuantityTypesTable(attachedDatabase, alias);
+  }
+}
+
+class WorkQuantityTypeRecord extends DataClass
+    implements Insertable<WorkQuantityTypeRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String name;
+  final String code;
+  final int displayOrder;
+  final bool hasSegmentBreakdown;
+  final int? segmentSize;
+  final int? maxSegmentLength;
+  final int workScopeID;
+  const WorkQuantityTypeRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.name,
+    required this.code,
+    required this.displayOrder,
+    required this.hasSegmentBreakdown,
+    this.segmentSize,
+    this.maxSegmentLength,
+    required this.workScopeID,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['name'] = Variable<String>(name);
+    map['code'] = Variable<String>(code);
+    map['display_order'] = Variable<int>(displayOrder);
+    map['has_segment_breakdown'] = Variable<bool>(hasSegmentBreakdown);
+    if (!nullToAbsent || segmentSize != null) {
+      map['segment_size'] = Variable<int>(segmentSize);
+    }
+    if (!nullToAbsent || maxSegmentLength != null) {
+      map['max_segment_length'] = Variable<int>(maxSegmentLength);
+    }
+    map['work_scope_i_d'] = Variable<int>(workScopeID);
+    return map;
+  }
+
+  WorkQuantityTypesCompanion toCompanion(bool nullToAbsent) {
+    return WorkQuantityTypesCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      name: Value(name),
+      code: Value(code),
+      displayOrder: Value(displayOrder),
+      hasSegmentBreakdown: Value(hasSegmentBreakdown),
+      segmentSize: segmentSize == null && nullToAbsent
+          ? const Value.absent()
+          : Value(segmentSize),
+      maxSegmentLength: maxSegmentLength == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxSegmentLength),
+      workScopeID: Value(workScopeID),
+    );
+  }
+
+  factory WorkQuantityTypeRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WorkQuantityTypeRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      name: serializer.fromJson<String>(json['name']),
+      code: serializer.fromJson<String>(json['code']),
+      displayOrder: serializer.fromJson<int>(json['displayOrder']),
+      hasSegmentBreakdown: serializer.fromJson<bool>(
+        json['hasSegmentBreakdown'],
+      ),
+      segmentSize: serializer.fromJson<int?>(json['segmentSize']),
+      maxSegmentLength: serializer.fromJson<int?>(json['maxSegmentLength']),
+      workScopeID: serializer.fromJson<int>(json['workScopeID']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'name': serializer.toJson<String>(name),
+      'code': serializer.toJson<String>(code),
+      'displayOrder': serializer.toJson<int>(displayOrder),
+      'hasSegmentBreakdown': serializer.toJson<bool>(hasSegmentBreakdown),
+      'segmentSize': serializer.toJson<int?>(segmentSize),
+      'maxSegmentLength': serializer.toJson<int?>(maxSegmentLength),
+      'workScopeID': serializer.toJson<int>(workScopeID),
+    };
+  }
+
+  WorkQuantityTypeRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? name,
+    String? code,
+    int? displayOrder,
+    bool? hasSegmentBreakdown,
+    Value<int?> segmentSize = const Value.absent(),
+    Value<int?> maxSegmentLength = const Value.absent(),
+    int? workScopeID,
+  }) => WorkQuantityTypeRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    code: code ?? this.code,
+    displayOrder: displayOrder ?? this.displayOrder,
+    hasSegmentBreakdown: hasSegmentBreakdown ?? this.hasSegmentBreakdown,
+    segmentSize: segmentSize.present ? segmentSize.value : this.segmentSize,
+    maxSegmentLength: maxSegmentLength.present
+        ? maxSegmentLength.value
+        : this.maxSegmentLength,
+    workScopeID: workScopeID ?? this.workScopeID,
+  );
+  WorkQuantityTypeRecord copyWithCompanion(WorkQuantityTypesCompanion data) {
+    return WorkQuantityTypeRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      name: data.name.present ? data.name.value : this.name,
+      code: data.code.present ? data.code.value : this.code,
+      displayOrder: data.displayOrder.present
+          ? data.displayOrder.value
+          : this.displayOrder,
+      hasSegmentBreakdown: data.hasSegmentBreakdown.present
+          ? data.hasSegmentBreakdown.value
+          : this.hasSegmentBreakdown,
+      segmentSize: data.segmentSize.present
+          ? data.segmentSize.value
+          : this.segmentSize,
+      maxSegmentLength: data.maxSegmentLength.present
+          ? data.maxSegmentLength.value
+          : this.maxSegmentLength,
+      workScopeID: data.workScopeID.present
+          ? data.workScopeID.value
+          : this.workScopeID,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkQuantityTypeRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('code: $code, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('hasSegmentBreakdown: $hasSegmentBreakdown, ')
+          ..write('segmentSize: $segmentSize, ')
+          ..write('maxSegmentLength: $maxSegmentLength, ')
+          ..write('workScopeID: $workScopeID')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    code,
+    displayOrder,
+    hasSegmentBreakdown,
+    segmentSize,
+    maxSegmentLength,
+    workScopeID,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WorkQuantityTypeRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.name == this.name &&
+          other.code == this.code &&
+          other.displayOrder == this.displayOrder &&
+          other.hasSegmentBreakdown == this.hasSegmentBreakdown &&
+          other.segmentSize == this.segmentSize &&
+          other.maxSegmentLength == this.maxSegmentLength &&
+          other.workScopeID == this.workScopeID);
+}
+
+class WorkQuantityTypesCompanion
+    extends UpdateCompanion<WorkQuantityTypeRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> name;
+  final Value<String> code;
+  final Value<int> displayOrder;
+  final Value<bool> hasSegmentBreakdown;
+  final Value<int?> segmentSize;
+  final Value<int?> maxSegmentLength;
+  final Value<int> workScopeID;
+  const WorkQuantityTypesCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.code = const Value.absent(),
+    this.displayOrder = const Value.absent(),
+    this.hasSegmentBreakdown = const Value.absent(),
+    this.segmentSize = const Value.absent(),
+    this.maxSegmentLength = const Value.absent(),
+    this.workScopeID = const Value.absent(),
+  });
+  WorkQuantityTypesCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String name,
+    required String code,
+    required int displayOrder,
+    this.hasSegmentBreakdown = const Value.absent(),
+    this.segmentSize = const Value.absent(),
+    this.maxSegmentLength = const Value.absent(),
+    required int workScopeID,
+  }) : uid = Value(uid),
+       name = Value(name),
+       code = Value(code),
+       displayOrder = Value(displayOrder),
+       workScopeID = Value(workScopeID);
+  static Insertable<WorkQuantityTypeRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? name,
+    Expression<String>? code,
+    Expression<int>? displayOrder,
+    Expression<bool>? hasSegmentBreakdown,
+    Expression<int>? segmentSize,
+    Expression<int>? maxSegmentLength,
+    Expression<int>? workScopeID,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (name != null) 'name': name,
+      if (code != null) 'code': code,
+      if (displayOrder != null) 'display_order': displayOrder,
+      if (hasSegmentBreakdown != null)
+        'has_segment_breakdown': hasSegmentBreakdown,
+      if (segmentSize != null) 'segment_size': segmentSize,
+      if (maxSegmentLength != null) 'max_segment_length': maxSegmentLength,
+      if (workScopeID != null) 'work_scope_i_d': workScopeID,
+    });
+  }
+
+  WorkQuantityTypesCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? name,
+    Value<String>? code,
+    Value<int>? displayOrder,
+    Value<bool>? hasSegmentBreakdown,
+    Value<int?>? segmentSize,
+    Value<int?>? maxSegmentLength,
+    Value<int>? workScopeID,
+  }) {
+    return WorkQuantityTypesCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      code: code ?? this.code,
+      displayOrder: displayOrder ?? this.displayOrder,
+      hasSegmentBreakdown: hasSegmentBreakdown ?? this.hasSegmentBreakdown,
+      segmentSize: segmentSize ?? this.segmentSize,
+      maxSegmentLength: maxSegmentLength ?? this.maxSegmentLength,
+      workScopeID: workScopeID ?? this.workScopeID,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (code.present) {
+      map['code'] = Variable<String>(code.value);
+    }
+    if (displayOrder.present) {
+      map['display_order'] = Variable<int>(displayOrder.value);
+    }
+    if (hasSegmentBreakdown.present) {
+      map['has_segment_breakdown'] = Variable<bool>(hasSegmentBreakdown.value);
+    }
+    if (segmentSize.present) {
+      map['segment_size'] = Variable<int>(segmentSize.value);
+    }
+    if (maxSegmentLength.present) {
+      map['max_segment_length'] = Variable<int>(maxSegmentLength.value);
+    }
+    if (workScopeID.present) {
+      map['work_scope_i_d'] = Variable<int>(workScopeID.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkQuantityTypesCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('code: $code, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('hasSegmentBreakdown: $hasSegmentBreakdown, ')
+          ..write('segmentSize: $segmentSize, ')
+          ..write('maxSegmentLength: $maxSegmentLength, ')
+          ..write('workScopeID: $workScopeID')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WorkQuantityFieldsTable extends WorkQuantityFields
+    with TableInfo<$WorkQuantityFieldsTable, WorkQuantityFieldRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkQuantityFieldsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<String> code = GeneratedColumn<String>(
+    'code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fieldTypeMeta = const VerificationMeta(
+    'fieldType',
+  );
+  @override
+  late final GeneratedColumn<String> fieldType = GeneratedColumn<String>(
+    'field_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _unitMeta = const VerificationMeta('unit');
+  @override
+  late final GeneratedColumn<String> unit = GeneratedColumn<String>(
+    'unit',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _validationRulesMeta = const VerificationMeta(
+    'validationRules',
+  );
+  @override
+  late final GeneratedColumn<String> validationRules = GeneratedColumn<String>(
+    'validation_rules',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _displayOrderMeta = const VerificationMeta(
+    'displayOrder',
+  );
+  @override
+  late final GeneratedColumn<int> displayOrder = GeneratedColumn<int>(
+    'display_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _isRequiredMeta = const VerificationMeta(
+    'isRequired',
+  );
+  @override
+  late final GeneratedColumn<bool> isRequired = GeneratedColumn<bool>(
+    'is_required',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_required" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isForSegmentMeta = const VerificationMeta(
+    'isForSegment',
+  );
+  @override
+  late final GeneratedColumn<bool> isForSegment = GeneratedColumn<bool>(
+    'is_for_segment',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_for_segment" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _defaultValueMeta = const VerificationMeta(
+    'defaultValue',
+  );
+  @override
+  late final GeneratedColumn<String> defaultValue = GeneratedColumn<String>(
+    'default_value',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _placeholderMeta = const VerificationMeta(
+    'placeholder',
+  );
+  @override
+  late final GeneratedColumn<String> placeholder = GeneratedColumn<String>(
+    'placeholder',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _helpTextMeta = const VerificationMeta(
+    'helpText',
+  );
+  @override
+  late final GeneratedColumn<String> helpText = GeneratedColumn<String>(
+    'help_text',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _quantityTypeIDMeta = const VerificationMeta(
+    'quantityTypeID',
+  );
+  @override
+  late final GeneratedColumn<int> quantityTypeID = GeneratedColumn<int>(
+    'quantity_type_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    code,
+    fieldType,
+    unit,
+    validationRules,
+    displayOrder,
+    isRequired,
+    isForSegment,
+    defaultValue,
+    placeholder,
+    helpText,
+    quantityTypeID,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'work_quantity_fields';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkQuantityFieldRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('code')) {
+      context.handle(
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_codeMeta);
+    }
+    if (data.containsKey('field_type')) {
+      context.handle(
+        _fieldTypeMeta,
+        fieldType.isAcceptableOrUnknown(data['field_type']!, _fieldTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fieldTypeMeta);
+    }
+    if (data.containsKey('unit')) {
+      context.handle(
+        _unitMeta,
+        unit.isAcceptableOrUnknown(data['unit']!, _unitMeta),
+      );
+    }
+    if (data.containsKey('validation_rules')) {
+      context.handle(
+        _validationRulesMeta,
+        validationRules.isAcceptableOrUnknown(
+          data['validation_rules']!,
+          _validationRulesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('display_order')) {
+      context.handle(
+        _displayOrderMeta,
+        displayOrder.isAcceptableOrUnknown(
+          data['display_order']!,
+          _displayOrderMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayOrderMeta);
+    }
+    if (data.containsKey('is_required')) {
+      context.handle(
+        _isRequiredMeta,
+        isRequired.isAcceptableOrUnknown(data['is_required']!, _isRequiredMeta),
+      );
+    }
+    if (data.containsKey('is_for_segment')) {
+      context.handle(
+        _isForSegmentMeta,
+        isForSegment.isAcceptableOrUnknown(
+          data['is_for_segment']!,
+          _isForSegmentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('default_value')) {
+      context.handle(
+        _defaultValueMeta,
+        defaultValue.isAcceptableOrUnknown(
+          data['default_value']!,
+          _defaultValueMeta,
+        ),
+      );
+    }
+    if (data.containsKey('placeholder')) {
+      context.handle(
+        _placeholderMeta,
+        placeholder.isAcceptableOrUnknown(
+          data['placeholder']!,
+          _placeholderMeta,
+        ),
+      );
+    }
+    if (data.containsKey('help_text')) {
+      context.handle(
+        _helpTextMeta,
+        helpText.isAcceptableOrUnknown(data['help_text']!, _helpTextMeta),
+      );
+    }
+    if (data.containsKey('quantity_type_i_d')) {
+      context.handle(
+        _quantityTypeIDMeta,
+        quantityTypeID.isAcceptableOrUnknown(
+          data['quantity_type_i_d']!,
+          _quantityTypeIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_quantityTypeIDMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  WorkQuantityFieldRecord map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkQuantityFieldRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      )!,
+      fieldType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}field_type'],
+      )!,
+      unit: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unit'],
+      ),
+      validationRules: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}validation_rules'],
+      ),
+      displayOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}display_order'],
+      )!,
+      isRequired: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_required'],
+      )!,
+      isForSegment: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_for_segment'],
+      )!,
+      defaultValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}default_value'],
+      ),
+      placeholder: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}placeholder'],
+      ),
+      helpText: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}help_text'],
+      ),
+      quantityTypeID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}quantity_type_i_d'],
+      )!,
+    );
+  }
+
+  @override
+  $WorkQuantityFieldsTable createAlias(String alias) {
+    return $WorkQuantityFieldsTable(attachedDatabase, alias);
+  }
+}
+
+class WorkQuantityFieldRecord extends DataClass
+    implements Insertable<WorkQuantityFieldRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String name;
+  final String code;
+  final String fieldType;
+  final String? unit;
+  final String? validationRules;
+  final int displayOrder;
+  final bool isRequired;
+  final bool isForSegment;
+  final String? defaultValue;
+  final String? placeholder;
+  final String? helpText;
+  final int quantityTypeID;
+  const WorkQuantityFieldRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.name,
+    required this.code,
+    required this.fieldType,
+    this.unit,
+    this.validationRules,
+    required this.displayOrder,
+    required this.isRequired,
+    required this.isForSegment,
+    this.defaultValue,
+    this.placeholder,
+    this.helpText,
+    required this.quantityTypeID,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['name'] = Variable<String>(name);
+    map['code'] = Variable<String>(code);
+    map['field_type'] = Variable<String>(fieldType);
+    if (!nullToAbsent || unit != null) {
+      map['unit'] = Variable<String>(unit);
+    }
+    if (!nullToAbsent || validationRules != null) {
+      map['validation_rules'] = Variable<String>(validationRules);
+    }
+    map['display_order'] = Variable<int>(displayOrder);
+    map['is_required'] = Variable<bool>(isRequired);
+    map['is_for_segment'] = Variable<bool>(isForSegment);
+    if (!nullToAbsent || defaultValue != null) {
+      map['default_value'] = Variable<String>(defaultValue);
+    }
+    if (!nullToAbsent || placeholder != null) {
+      map['placeholder'] = Variable<String>(placeholder);
+    }
+    if (!nullToAbsent || helpText != null) {
+      map['help_text'] = Variable<String>(helpText);
+    }
+    map['quantity_type_i_d'] = Variable<int>(quantityTypeID);
+    return map;
+  }
+
+  WorkQuantityFieldsCompanion toCompanion(bool nullToAbsent) {
+    return WorkQuantityFieldsCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      name: Value(name),
+      code: Value(code),
+      fieldType: Value(fieldType),
+      unit: unit == null && nullToAbsent ? const Value.absent() : Value(unit),
+      validationRules: validationRules == null && nullToAbsent
+          ? const Value.absent()
+          : Value(validationRules),
+      displayOrder: Value(displayOrder),
+      isRequired: Value(isRequired),
+      isForSegment: Value(isForSegment),
+      defaultValue: defaultValue == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultValue),
+      placeholder: placeholder == null && nullToAbsent
+          ? const Value.absent()
+          : Value(placeholder),
+      helpText: helpText == null && nullToAbsent
+          ? const Value.absent()
+          : Value(helpText),
+      quantityTypeID: Value(quantityTypeID),
+    );
+  }
+
+  factory WorkQuantityFieldRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WorkQuantityFieldRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      name: serializer.fromJson<String>(json['name']),
+      code: serializer.fromJson<String>(json['code']),
+      fieldType: serializer.fromJson<String>(json['fieldType']),
+      unit: serializer.fromJson<String?>(json['unit']),
+      validationRules: serializer.fromJson<String?>(json['validationRules']),
+      displayOrder: serializer.fromJson<int>(json['displayOrder']),
+      isRequired: serializer.fromJson<bool>(json['isRequired']),
+      isForSegment: serializer.fromJson<bool>(json['isForSegment']),
+      defaultValue: serializer.fromJson<String?>(json['defaultValue']),
+      placeholder: serializer.fromJson<String?>(json['placeholder']),
+      helpText: serializer.fromJson<String?>(json['helpText']),
+      quantityTypeID: serializer.fromJson<int>(json['quantityTypeID']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'name': serializer.toJson<String>(name),
+      'code': serializer.toJson<String>(code),
+      'fieldType': serializer.toJson<String>(fieldType),
+      'unit': serializer.toJson<String?>(unit),
+      'validationRules': serializer.toJson<String?>(validationRules),
+      'displayOrder': serializer.toJson<int>(displayOrder),
+      'isRequired': serializer.toJson<bool>(isRequired),
+      'isForSegment': serializer.toJson<bool>(isForSegment),
+      'defaultValue': serializer.toJson<String?>(defaultValue),
+      'placeholder': serializer.toJson<String?>(placeholder),
+      'helpText': serializer.toJson<String?>(helpText),
+      'quantityTypeID': serializer.toJson<int>(quantityTypeID),
+    };
+  }
+
+  WorkQuantityFieldRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? name,
+    String? code,
+    String? fieldType,
+    Value<String?> unit = const Value.absent(),
+    Value<String?> validationRules = const Value.absent(),
+    int? displayOrder,
+    bool? isRequired,
+    bool? isForSegment,
+    Value<String?> defaultValue = const Value.absent(),
+    Value<String?> placeholder = const Value.absent(),
+    Value<String?> helpText = const Value.absent(),
+    int? quantityTypeID,
+  }) => WorkQuantityFieldRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    code: code ?? this.code,
+    fieldType: fieldType ?? this.fieldType,
+    unit: unit.present ? unit.value : this.unit,
+    validationRules: validationRules.present
+        ? validationRules.value
+        : this.validationRules,
+    displayOrder: displayOrder ?? this.displayOrder,
+    isRequired: isRequired ?? this.isRequired,
+    isForSegment: isForSegment ?? this.isForSegment,
+    defaultValue: defaultValue.present ? defaultValue.value : this.defaultValue,
+    placeholder: placeholder.present ? placeholder.value : this.placeholder,
+    helpText: helpText.present ? helpText.value : this.helpText,
+    quantityTypeID: quantityTypeID ?? this.quantityTypeID,
+  );
+  WorkQuantityFieldRecord copyWithCompanion(WorkQuantityFieldsCompanion data) {
+    return WorkQuantityFieldRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      name: data.name.present ? data.name.value : this.name,
+      code: data.code.present ? data.code.value : this.code,
+      fieldType: data.fieldType.present ? data.fieldType.value : this.fieldType,
+      unit: data.unit.present ? data.unit.value : this.unit,
+      validationRules: data.validationRules.present
+          ? data.validationRules.value
+          : this.validationRules,
+      displayOrder: data.displayOrder.present
+          ? data.displayOrder.value
+          : this.displayOrder,
+      isRequired: data.isRequired.present
+          ? data.isRequired.value
+          : this.isRequired,
+      isForSegment: data.isForSegment.present
+          ? data.isForSegment.value
+          : this.isForSegment,
+      defaultValue: data.defaultValue.present
+          ? data.defaultValue.value
+          : this.defaultValue,
+      placeholder: data.placeholder.present
+          ? data.placeholder.value
+          : this.placeholder,
+      helpText: data.helpText.present ? data.helpText.value : this.helpText,
+      quantityTypeID: data.quantityTypeID.present
+          ? data.quantityTypeID.value
+          : this.quantityTypeID,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkQuantityFieldRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('code: $code, ')
+          ..write('fieldType: $fieldType, ')
+          ..write('unit: $unit, ')
+          ..write('validationRules: $validationRules, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('isRequired: $isRequired, ')
+          ..write('isForSegment: $isForSegment, ')
+          ..write('defaultValue: $defaultValue, ')
+          ..write('placeholder: $placeholder, ')
+          ..write('helpText: $helpText, ')
+          ..write('quantityTypeID: $quantityTypeID')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    code,
+    fieldType,
+    unit,
+    validationRules,
+    displayOrder,
+    isRequired,
+    isForSegment,
+    defaultValue,
+    placeholder,
+    helpText,
+    quantityTypeID,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WorkQuantityFieldRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.name == this.name &&
+          other.code == this.code &&
+          other.fieldType == this.fieldType &&
+          other.unit == this.unit &&
+          other.validationRules == this.validationRules &&
+          other.displayOrder == this.displayOrder &&
+          other.isRequired == this.isRequired &&
+          other.isForSegment == this.isForSegment &&
+          other.defaultValue == this.defaultValue &&
+          other.placeholder == this.placeholder &&
+          other.helpText == this.helpText &&
+          other.quantityTypeID == this.quantityTypeID);
+}
+
+class WorkQuantityFieldsCompanion
+    extends UpdateCompanion<WorkQuantityFieldRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> name;
+  final Value<String> code;
+  final Value<String> fieldType;
+  final Value<String?> unit;
+  final Value<String?> validationRules;
+  final Value<int> displayOrder;
+  final Value<bool> isRequired;
+  final Value<bool> isForSegment;
+  final Value<String?> defaultValue;
+  final Value<String?> placeholder;
+  final Value<String?> helpText;
+  final Value<int> quantityTypeID;
+  const WorkQuantityFieldsCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.code = const Value.absent(),
+    this.fieldType = const Value.absent(),
+    this.unit = const Value.absent(),
+    this.validationRules = const Value.absent(),
+    this.displayOrder = const Value.absent(),
+    this.isRequired = const Value.absent(),
+    this.isForSegment = const Value.absent(),
+    this.defaultValue = const Value.absent(),
+    this.placeholder = const Value.absent(),
+    this.helpText = const Value.absent(),
+    this.quantityTypeID = const Value.absent(),
+  });
+  WorkQuantityFieldsCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String name,
+    required String code,
+    required String fieldType,
+    this.unit = const Value.absent(),
+    this.validationRules = const Value.absent(),
+    required int displayOrder,
+    this.isRequired = const Value.absent(),
+    this.isForSegment = const Value.absent(),
+    this.defaultValue = const Value.absent(),
+    this.placeholder = const Value.absent(),
+    this.helpText = const Value.absent(),
+    required int quantityTypeID,
+  }) : uid = Value(uid),
+       name = Value(name),
+       code = Value(code),
+       fieldType = Value(fieldType),
+       displayOrder = Value(displayOrder),
+       quantityTypeID = Value(quantityTypeID);
+  static Insertable<WorkQuantityFieldRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? name,
+    Expression<String>? code,
+    Expression<String>? fieldType,
+    Expression<String>? unit,
+    Expression<String>? validationRules,
+    Expression<int>? displayOrder,
+    Expression<bool>? isRequired,
+    Expression<bool>? isForSegment,
+    Expression<String>? defaultValue,
+    Expression<String>? placeholder,
+    Expression<String>? helpText,
+    Expression<int>? quantityTypeID,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (name != null) 'name': name,
+      if (code != null) 'code': code,
+      if (fieldType != null) 'field_type': fieldType,
+      if (unit != null) 'unit': unit,
+      if (validationRules != null) 'validation_rules': validationRules,
+      if (displayOrder != null) 'display_order': displayOrder,
+      if (isRequired != null) 'is_required': isRequired,
+      if (isForSegment != null) 'is_for_segment': isForSegment,
+      if (defaultValue != null) 'default_value': defaultValue,
+      if (placeholder != null) 'placeholder': placeholder,
+      if (helpText != null) 'help_text': helpText,
+      if (quantityTypeID != null) 'quantity_type_i_d': quantityTypeID,
+    });
+  }
+
+  WorkQuantityFieldsCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? name,
+    Value<String>? code,
+    Value<String>? fieldType,
+    Value<String?>? unit,
+    Value<String?>? validationRules,
+    Value<int>? displayOrder,
+    Value<bool>? isRequired,
+    Value<bool>? isForSegment,
+    Value<String?>? defaultValue,
+    Value<String?>? placeholder,
+    Value<String?>? helpText,
+    Value<int>? quantityTypeID,
+  }) {
+    return WorkQuantityFieldsCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      code: code ?? this.code,
+      fieldType: fieldType ?? this.fieldType,
+      unit: unit ?? this.unit,
+      validationRules: validationRules ?? this.validationRules,
+      displayOrder: displayOrder ?? this.displayOrder,
+      isRequired: isRequired ?? this.isRequired,
+      isForSegment: isForSegment ?? this.isForSegment,
+      defaultValue: defaultValue ?? this.defaultValue,
+      placeholder: placeholder ?? this.placeholder,
+      helpText: helpText ?? this.helpText,
+      quantityTypeID: quantityTypeID ?? this.quantityTypeID,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (code.present) {
+      map['code'] = Variable<String>(code.value);
+    }
+    if (fieldType.present) {
+      map['field_type'] = Variable<String>(fieldType.value);
+    }
+    if (unit.present) {
+      map['unit'] = Variable<String>(unit.value);
+    }
+    if (validationRules.present) {
+      map['validation_rules'] = Variable<String>(validationRules.value);
+    }
+    if (displayOrder.present) {
+      map['display_order'] = Variable<int>(displayOrder.value);
+    }
+    if (isRequired.present) {
+      map['is_required'] = Variable<bool>(isRequired.value);
+    }
+    if (isForSegment.present) {
+      map['is_for_segment'] = Variable<bool>(isForSegment.value);
+    }
+    if (defaultValue.present) {
+      map['default_value'] = Variable<String>(defaultValue.value);
+    }
+    if (placeholder.present) {
+      map['placeholder'] = Variable<String>(placeholder.value);
+    }
+    if (helpText.present) {
+      map['help_text'] = Variable<String>(helpText.value);
+    }
+    if (quantityTypeID.present) {
+      map['quantity_type_i_d'] = Variable<int>(quantityTypeID.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkQuantityFieldsCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('code: $code, ')
+          ..write('fieldType: $fieldType, ')
+          ..write('unit: $unit, ')
+          ..write('validationRules: $validationRules, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('isRequired: $isRequired, ')
+          ..write('isForSegment: $isForSegment, ')
+          ..write('defaultValue: $defaultValue, ')
+          ..write('placeholder: $placeholder, ')
+          ..write('helpText: $helpText, ')
+          ..write('quantityTypeID: $quantityTypeID')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WorkQuantityFieldOptionsTable extends WorkQuantityFieldOptions
+    with
+        TableInfo<
+          $WorkQuantityFieldOptionsTable,
+          WorkQuantityFieldOptionRecord
+        > {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkQuantityFieldOptionsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _displayOrderMeta = const VerificationMeta(
+    'displayOrder',
+  );
+  @override
+  late final GeneratedColumn<int> displayOrder = GeneratedColumn<int>(
+    'display_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fieldIDMeta = const VerificationMeta(
+    'fieldID',
+  );
+  @override
+  late final GeneratedColumn<int> fieldID = GeneratedColumn<int>(
+    'field_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    value,
+    displayOrder,
+    fieldID,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'work_quantity_field_options';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkQuantityFieldOptionRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    if (data.containsKey('display_order')) {
+      context.handle(
+        _displayOrderMeta,
+        displayOrder.isAcceptableOrUnknown(
+          data['display_order']!,
+          _displayOrderMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_displayOrderMeta);
+    }
+    if (data.containsKey('field_i_d')) {
+      context.handle(
+        _fieldIDMeta,
+        fieldID.isAcceptableOrUnknown(data['field_i_d']!, _fieldIDMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fieldIDMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  WorkQuantityFieldOptionRecord map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkQuantityFieldOptionRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}value'],
+      )!,
+      displayOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}display_order'],
+      )!,
+      fieldID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}field_i_d'],
+      )!,
+    );
+  }
+
+  @override
+  $WorkQuantityFieldOptionsTable createAlias(String alias) {
+    return $WorkQuantityFieldOptionsTable(attachedDatabase, alias);
+  }
+}
+
+class WorkQuantityFieldOptionRecord extends DataClass
+    implements Insertable<WorkQuantityFieldOptionRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String value;
+  final int displayOrder;
+  final int fieldID;
+  const WorkQuantityFieldOptionRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.value,
+    required this.displayOrder,
+    required this.fieldID,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['value'] = Variable<String>(value);
+    map['display_order'] = Variable<int>(displayOrder);
+    map['field_i_d'] = Variable<int>(fieldID);
+    return map;
+  }
+
+  WorkQuantityFieldOptionsCompanion toCompanion(bool nullToAbsent) {
+    return WorkQuantityFieldOptionsCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      value: Value(value),
+      displayOrder: Value(displayOrder),
+      fieldID: Value(fieldID),
+    );
+  }
+
+  factory WorkQuantityFieldOptionRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WorkQuantityFieldOptionRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      value: serializer.fromJson<String>(json['value']),
+      displayOrder: serializer.fromJson<int>(json['displayOrder']),
+      fieldID: serializer.fromJson<int>(json['fieldID']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'value': serializer.toJson<String>(value),
+      'displayOrder': serializer.toJson<int>(displayOrder),
+      'fieldID': serializer.toJson<int>(fieldID),
+    };
+  }
+
+  WorkQuantityFieldOptionRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? value,
+    int? displayOrder,
+    int? fieldID,
+  }) => WorkQuantityFieldOptionRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    value: value ?? this.value,
+    displayOrder: displayOrder ?? this.displayOrder,
+    fieldID: fieldID ?? this.fieldID,
+  );
+  WorkQuantityFieldOptionRecord copyWithCompanion(
+    WorkQuantityFieldOptionsCompanion data,
+  ) {
+    return WorkQuantityFieldOptionRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      value: data.value.present ? data.value.value : this.value,
+      displayOrder: data.displayOrder.present
+          ? data.displayOrder.value
+          : this.displayOrder,
+      fieldID: data.fieldID.present ? data.fieldID.value : this.fieldID,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkQuantityFieldOptionRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('value: $value, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('fieldID: $fieldID')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    value,
+    displayOrder,
+    fieldID,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WorkQuantityFieldOptionRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.value == this.value &&
+          other.displayOrder == this.displayOrder &&
+          other.fieldID == this.fieldID);
+}
+
+class WorkQuantityFieldOptionsCompanion
+    extends UpdateCompanion<WorkQuantityFieldOptionRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> value;
+  final Value<int> displayOrder;
+  final Value<int> fieldID;
+  const WorkQuantityFieldOptionsCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.value = const Value.absent(),
+    this.displayOrder = const Value.absent(),
+    this.fieldID = const Value.absent(),
+  });
+  WorkQuantityFieldOptionsCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String value,
+    required int displayOrder,
+    required int fieldID,
+  }) : uid = Value(uid),
+       value = Value(value),
+       displayOrder = Value(displayOrder),
+       fieldID = Value(fieldID);
+  static Insertable<WorkQuantityFieldOptionRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? value,
+    Expression<int>? displayOrder,
+    Expression<int>? fieldID,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (value != null) 'value': value,
+      if (displayOrder != null) 'display_order': displayOrder,
+      if (fieldID != null) 'field_i_d': fieldID,
+    });
+  }
+
+  WorkQuantityFieldOptionsCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? value,
+    Value<int>? displayOrder,
+    Value<int>? fieldID,
+  }) {
+    return WorkQuantityFieldOptionsCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      value: value ?? this.value,
+      displayOrder: displayOrder ?? this.displayOrder,
+      fieldID: fieldID ?? this.fieldID,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (displayOrder.present) {
+      map['display_order'] = Variable<int>(displayOrder.value);
+    }
+    if (fieldID.present) {
+      map['field_i_d'] = Variable<int>(fieldID.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkQuantityFieldOptionsCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('value: $value, ')
+          ..write('displayOrder: $displayOrder, ')
+          ..write('fieldID: $fieldID')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WorkScopeEquipmentsTable extends WorkScopeEquipments
+    with TableInfo<$WorkScopeEquipmentsTable, WorkScopeEquipmentsRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkScopeEquipmentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _codeMeta = const VerificationMeta('code');
+  @override
+  late final GeneratedColumn<String> code = GeneratedColumn<String>(
+    'code',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    code,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'work_scope_equipments';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkScopeEquipmentsRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('code')) {
+      context.handle(
+        _codeMeta,
+        code.isAcceptableOrUnknown(data['code']!, _codeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_codeMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  WorkScopeEquipmentsRecord map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkScopeEquipmentsRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      code: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}code'],
+      )!,
+    );
+  }
+
+  @override
+  $WorkScopeEquipmentsTable createAlias(String alias) {
+    return $WorkScopeEquipmentsTable(attachedDatabase, alias);
+  }
+}
+
+class WorkScopeEquipmentsRecord extends DataClass
+    implements Insertable<WorkScopeEquipmentsRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String name;
+  final String code;
+  const WorkScopeEquipmentsRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.name,
+    required this.code,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['name'] = Variable<String>(name);
+    map['code'] = Variable<String>(code);
+    return map;
+  }
+
+  WorkScopeEquipmentsCompanion toCompanion(bool nullToAbsent) {
+    return WorkScopeEquipmentsCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      name: Value(name),
+      code: Value(code),
+    );
+  }
+
+  factory WorkScopeEquipmentsRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WorkScopeEquipmentsRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      name: serializer.fromJson<String>(json['name']),
+      code: serializer.fromJson<String>(json['code']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'name': serializer.toJson<String>(name),
+      'code': serializer.toJson<String>(code),
+    };
+  }
+
+  WorkScopeEquipmentsRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? name,
+    String? code,
+  }) => WorkScopeEquipmentsRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    code: code ?? this.code,
+  );
+  WorkScopeEquipmentsRecord copyWithCompanion(
+    WorkScopeEquipmentsCompanion data,
+  ) {
+    return WorkScopeEquipmentsRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      name: data.name.present ? data.name.value : this.name,
+      code: data.code.present ? data.code.value : this.code,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkScopeEquipmentsRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('code: $code')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    code,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WorkScopeEquipmentsRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.name == this.name &&
+          other.code == this.code);
+}
+
+class WorkScopeEquipmentsCompanion
+    extends UpdateCompanion<WorkScopeEquipmentsRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> name;
+  final Value<String> code;
+  const WorkScopeEquipmentsCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.code = const Value.absent(),
+  });
+  WorkScopeEquipmentsCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String name,
+    required String code,
+  }) : uid = Value(uid),
+       name = Value(name),
+       code = Value(code);
+  static Insertable<WorkScopeEquipmentsRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? name,
+    Expression<String>? code,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (name != null) 'name': name,
+      if (code != null) 'code': code,
+    });
+  }
+
+  WorkScopeEquipmentsCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? name,
+    Value<String>? code,
+  }) {
+    return WorkScopeEquipmentsCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      code: code ?? this.code,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (code.present) {
+      map['code'] = Variable<String>(code.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkScopeEquipmentsCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('code: $code')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $WorkScopeEquipmentTable extends WorkScopeEquipment
+    with TableInfo<$WorkScopeEquipmentTable, WorkScopeEquipmentRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $WorkScopeEquipmentTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _workScopeIDMeta = const VerificationMeta(
+    'workScopeID',
+  );
+  @override
+  late final GeneratedColumn<int> workScopeID = GeneratedColumn<int>(
+    'work_scope_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workEquipmentIDMeta = const VerificationMeta(
+    'workEquipmentID',
+  );
+  @override
+  late final GeneratedColumn<int> workEquipmentID = GeneratedColumn<int>(
+    'work_equipment_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    workScopeID,
+    workEquipmentID,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'work_scope_equipment';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<WorkScopeEquipmentRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('work_scope_i_d')) {
+      context.handle(
+        _workScopeIDMeta,
+        workScopeID.isAcceptableOrUnknown(
+          data['work_scope_i_d']!,
+          _workScopeIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workScopeIDMeta);
+    }
+    if (data.containsKey('work_equipment_i_d')) {
+      context.handle(
+        _workEquipmentIDMeta,
+        workEquipmentID.isAcceptableOrUnknown(
+          data['work_equipment_i_d']!,
+          _workEquipmentIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workEquipmentIDMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {workScopeID, workEquipmentID},
+  ];
+  @override
+  WorkScopeEquipmentRecord map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return WorkScopeEquipmentRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      workScopeID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}work_scope_i_d'],
+      )!,
+      workEquipmentID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}work_equipment_i_d'],
+      )!,
+    );
+  }
+
+  @override
+  $WorkScopeEquipmentTable createAlias(String alias) {
+    return $WorkScopeEquipmentTable(attachedDatabase, alias);
+  }
+}
+
+class WorkScopeEquipmentRecord extends DataClass
+    implements Insertable<WorkScopeEquipmentRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final int workScopeID;
+  final int workEquipmentID;
+  const WorkScopeEquipmentRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.workScopeID,
+    required this.workEquipmentID,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['work_scope_i_d'] = Variable<int>(workScopeID);
+    map['work_equipment_i_d'] = Variable<int>(workEquipmentID);
+    return map;
+  }
+
+  WorkScopeEquipmentCompanion toCompanion(bool nullToAbsent) {
+    return WorkScopeEquipmentCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      workScopeID: Value(workScopeID),
+      workEquipmentID: Value(workEquipmentID),
+    );
+  }
+
+  factory WorkScopeEquipmentRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return WorkScopeEquipmentRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      workScopeID: serializer.fromJson<int>(json['workScopeID']),
+      workEquipmentID: serializer.fromJson<int>(json['workEquipmentID']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'workScopeID': serializer.toJson<int>(workScopeID),
+      'workEquipmentID': serializer.toJson<int>(workEquipmentID),
+    };
+  }
+
+  WorkScopeEquipmentRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    int? workScopeID,
+    int? workEquipmentID,
+  }) => WorkScopeEquipmentRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    workScopeID: workScopeID ?? this.workScopeID,
+    workEquipmentID: workEquipmentID ?? this.workEquipmentID,
+  );
+  WorkScopeEquipmentRecord copyWithCompanion(WorkScopeEquipmentCompanion data) {
+    return WorkScopeEquipmentRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      workScopeID: data.workScopeID.present
+          ? data.workScopeID.value
+          : this.workScopeID,
+      workEquipmentID: data.workEquipmentID.present
+          ? data.workEquipmentID.value
+          : this.workEquipmentID,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkScopeEquipmentRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('workScopeID: $workScopeID, ')
+          ..write('workEquipmentID: $workEquipmentID')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    workScopeID,
+    workEquipmentID,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is WorkScopeEquipmentRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.workScopeID == this.workScopeID &&
+          other.workEquipmentID == this.workEquipmentID);
+}
+
+class WorkScopeEquipmentCompanion
+    extends UpdateCompanion<WorkScopeEquipmentRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<int> workScopeID;
+  final Value<int> workEquipmentID;
+  const WorkScopeEquipmentCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.workScopeID = const Value.absent(),
+    this.workEquipmentID = const Value.absent(),
+  });
+  WorkScopeEquipmentCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required int workScopeID,
+    required int workEquipmentID,
+  }) : workScopeID = Value(workScopeID),
+       workEquipmentID = Value(workEquipmentID);
+  static Insertable<WorkScopeEquipmentRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<int>? workScopeID,
+    Expression<int>? workEquipmentID,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (workScopeID != null) 'work_scope_i_d': workScopeID,
+      if (workEquipmentID != null) 'work_equipment_i_d': workEquipmentID,
+    });
+  }
+
+  WorkScopeEquipmentCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<int>? workScopeID,
+    Value<int>? workEquipmentID,
+  }) {
+    return WorkScopeEquipmentCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      workScopeID: workScopeID ?? this.workScopeID,
+      workEquipmentID: workEquipmentID ?? this.workEquipmentID,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (workScopeID.present) {
+      map['work_scope_i_d'] = Variable<int>(workScopeID.value);
+    }
+    if (workEquipmentID.present) {
+      map['work_equipment_i_d'] = Variable<int>(workEquipmentID.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('WorkScopeEquipmentCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('workScopeID: $workScopeID, ')
+          ..write('workEquipmentID: $workEquipmentID')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   _$AppDatabase.connect(DatabaseConnection c) : super.connect(c);
@@ -4523,6 +9309,17 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $RolesTable roles = $RolesTable(this);
   late final $PermissionsTable permissions = $PermissionsTable(this);
   late final $CompaniesTable companies = $CompaniesTable(this);
+  late final $WorkScopesTable workScopes = $WorkScopesTable(this);
+  late final $WorkQuantityTypesTable workQuantityTypes =
+      $WorkQuantityTypesTable(this);
+  late final $WorkQuantityFieldsTable workQuantityFields =
+      $WorkQuantityFieldsTable(this);
+  late final $WorkQuantityFieldOptionsTable workQuantityFieldOptions =
+      $WorkQuantityFieldOptionsTable(this);
+  late final $WorkScopeEquipmentsTable workScopeEquipments =
+      $WorkScopeEquipmentsTable(this);
+  late final $WorkScopeEquipmentTable workScopeEquipment =
+      $WorkScopeEquipmentTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4533,6 +9330,12 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     roles,
     permissions,
     companies,
+    workScopes,
+    workQuantityTypes,
+    workQuantityFields,
+    workQuantityFieldOptions,
+    workScopeEquipments,
+    workScopeEquipment,
   ];
 }
 
@@ -6572,6 +11375,2264 @@ typedef $$CompaniesTableProcessedTableManager =
       CompanyRecord,
       PrefetchHooks Function()
     >;
+typedef $$WorkScopesTableCreateCompanionBuilder =
+    WorkScopesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String name,
+      required String code,
+      required String description,
+      Value<bool> allowMultipleQuantities,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      required int companyID,
+    });
+typedef $$WorkScopesTableUpdateCompanionBuilder =
+    WorkScopesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> name,
+      Value<String> code,
+      Value<String> description,
+      Value<bool> allowMultipleQuantities,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> companyID,
+    });
+
+class $$WorkScopesTableFilterComposer
+    extends Composer<_$AppDatabase, $WorkScopesTable> {
+  $$WorkScopesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get allowMultipleQuantities => $composableBuilder(
+    column: $table.allowMultipleQuantities,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get companyID => $composableBuilder(
+    column: $table.companyID,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkScopesTableOrderingComposer
+    extends Composer<_$AppDatabase, $WorkScopesTable> {
+  $$WorkScopesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get allowMultipleQuantities => $composableBuilder(
+    column: $table.allowMultipleQuantities,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get companyID => $composableBuilder(
+    column: $table.companyID,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkScopesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WorkScopesTable> {
+  $$WorkScopesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get code =>
+      $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get allowMultipleQuantities => $composableBuilder(
+    column: $table.allowMultipleQuantities,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get companyID =>
+      $composableBuilder(column: $table.companyID, builder: (column) => column);
+}
+
+class $$WorkScopesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WorkScopesTable,
+          WorkScopeRecord,
+          $$WorkScopesTableFilterComposer,
+          $$WorkScopesTableOrderingComposer,
+          $$WorkScopesTableAnnotationComposer,
+          $$WorkScopesTableCreateCompanionBuilder,
+          $$WorkScopesTableUpdateCompanionBuilder,
+          (
+            WorkScopeRecord,
+            BaseReferences<_$AppDatabase, $WorkScopesTable, WorkScopeRecord>,
+          ),
+          WorkScopeRecord,
+          PrefetchHooks Function()
+        > {
+  $$WorkScopesTableTableManager(_$AppDatabase db, $WorkScopesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkScopesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WorkScopesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WorkScopesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> code = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<bool> allowMultipleQuantities = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> companyID = const Value.absent(),
+              }) => WorkScopesCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                code: code,
+                description: description,
+                allowMultipleQuantities: allowMultipleQuantities,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                companyID: companyID,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String name,
+                required String code,
+                required String description,
+                Value<bool> allowMultipleQuantities = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                required int companyID,
+              }) => WorkScopesCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                code: code,
+                description: description,
+                allowMultipleQuantities: allowMultipleQuantities,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                companyID: companyID,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkScopesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WorkScopesTable,
+      WorkScopeRecord,
+      $$WorkScopesTableFilterComposer,
+      $$WorkScopesTableOrderingComposer,
+      $$WorkScopesTableAnnotationComposer,
+      $$WorkScopesTableCreateCompanionBuilder,
+      $$WorkScopesTableUpdateCompanionBuilder,
+      (
+        WorkScopeRecord,
+        BaseReferences<_$AppDatabase, $WorkScopesTable, WorkScopeRecord>,
+      ),
+      WorkScopeRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$WorkQuantityTypesTableCreateCompanionBuilder =
+    WorkQuantityTypesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String name,
+      required String code,
+      required int displayOrder,
+      Value<bool> hasSegmentBreakdown,
+      Value<int?> segmentSize,
+      Value<int?> maxSegmentLength,
+      required int workScopeID,
+    });
+typedef $$WorkQuantityTypesTableUpdateCompanionBuilder =
+    WorkQuantityTypesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> name,
+      Value<String> code,
+      Value<int> displayOrder,
+      Value<bool> hasSegmentBreakdown,
+      Value<int?> segmentSize,
+      Value<int?> maxSegmentLength,
+      Value<int> workScopeID,
+    });
+
+class $$WorkQuantityTypesTableFilterComposer
+    extends Composer<_$AppDatabase, $WorkQuantityTypesTable> {
+  $$WorkQuantityTypesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get hasSegmentBreakdown => $composableBuilder(
+    column: $table.hasSegmentBreakdown,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get segmentSize => $composableBuilder(
+    column: $table.segmentSize,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxSegmentLength => $composableBuilder(
+    column: $table.maxSegmentLength,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkQuantityTypesTableOrderingComposer
+    extends Composer<_$AppDatabase, $WorkQuantityTypesTable> {
+  $$WorkQuantityTypesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get hasSegmentBreakdown => $composableBuilder(
+    column: $table.hasSegmentBreakdown,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get segmentSize => $composableBuilder(
+    column: $table.segmentSize,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxSegmentLength => $composableBuilder(
+    column: $table.maxSegmentLength,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkQuantityTypesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WorkQuantityTypesTable> {
+  $$WorkQuantityTypesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get code =>
+      $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumn<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get hasSegmentBreakdown => $composableBuilder(
+    column: $table.hasSegmentBreakdown,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get segmentSize => $composableBuilder(
+    column: $table.segmentSize,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxSegmentLength => $composableBuilder(
+    column: $table.maxSegmentLength,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => column,
+  );
+}
+
+class $$WorkQuantityTypesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WorkQuantityTypesTable,
+          WorkQuantityTypeRecord,
+          $$WorkQuantityTypesTableFilterComposer,
+          $$WorkQuantityTypesTableOrderingComposer,
+          $$WorkQuantityTypesTableAnnotationComposer,
+          $$WorkQuantityTypesTableCreateCompanionBuilder,
+          $$WorkQuantityTypesTableUpdateCompanionBuilder,
+          (
+            WorkQuantityTypeRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $WorkQuantityTypesTable,
+              WorkQuantityTypeRecord
+            >,
+          ),
+          WorkQuantityTypeRecord,
+          PrefetchHooks Function()
+        > {
+  $$WorkQuantityTypesTableTableManager(
+    _$AppDatabase db,
+    $WorkQuantityTypesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkQuantityTypesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WorkQuantityTypesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WorkQuantityTypesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> code = const Value.absent(),
+                Value<int> displayOrder = const Value.absent(),
+                Value<bool> hasSegmentBreakdown = const Value.absent(),
+                Value<int?> segmentSize = const Value.absent(),
+                Value<int?> maxSegmentLength = const Value.absent(),
+                Value<int> workScopeID = const Value.absent(),
+              }) => WorkQuantityTypesCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                code: code,
+                displayOrder: displayOrder,
+                hasSegmentBreakdown: hasSegmentBreakdown,
+                segmentSize: segmentSize,
+                maxSegmentLength: maxSegmentLength,
+                workScopeID: workScopeID,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String name,
+                required String code,
+                required int displayOrder,
+                Value<bool> hasSegmentBreakdown = const Value.absent(),
+                Value<int?> segmentSize = const Value.absent(),
+                Value<int?> maxSegmentLength = const Value.absent(),
+                required int workScopeID,
+              }) => WorkQuantityTypesCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                code: code,
+                displayOrder: displayOrder,
+                hasSegmentBreakdown: hasSegmentBreakdown,
+                segmentSize: segmentSize,
+                maxSegmentLength: maxSegmentLength,
+                workScopeID: workScopeID,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkQuantityTypesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WorkQuantityTypesTable,
+      WorkQuantityTypeRecord,
+      $$WorkQuantityTypesTableFilterComposer,
+      $$WorkQuantityTypesTableOrderingComposer,
+      $$WorkQuantityTypesTableAnnotationComposer,
+      $$WorkQuantityTypesTableCreateCompanionBuilder,
+      $$WorkQuantityTypesTableUpdateCompanionBuilder,
+      (
+        WorkQuantityTypeRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $WorkQuantityTypesTable,
+          WorkQuantityTypeRecord
+        >,
+      ),
+      WorkQuantityTypeRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$WorkQuantityFieldsTableCreateCompanionBuilder =
+    WorkQuantityFieldsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String name,
+      required String code,
+      required String fieldType,
+      Value<String?> unit,
+      Value<String?> validationRules,
+      required int displayOrder,
+      Value<bool> isRequired,
+      Value<bool> isForSegment,
+      Value<String?> defaultValue,
+      Value<String?> placeholder,
+      Value<String?> helpText,
+      required int quantityTypeID,
+    });
+typedef $$WorkQuantityFieldsTableUpdateCompanionBuilder =
+    WorkQuantityFieldsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> name,
+      Value<String> code,
+      Value<String> fieldType,
+      Value<String?> unit,
+      Value<String?> validationRules,
+      Value<int> displayOrder,
+      Value<bool> isRequired,
+      Value<bool> isForSegment,
+      Value<String?> defaultValue,
+      Value<String?> placeholder,
+      Value<String?> helpText,
+      Value<int> quantityTypeID,
+    });
+
+class $$WorkQuantityFieldsTableFilterComposer
+    extends Composer<_$AppDatabase, $WorkQuantityFieldsTable> {
+  $$WorkQuantityFieldsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fieldType => $composableBuilder(
+    column: $table.fieldType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get validationRules => $composableBuilder(
+    column: $table.validationRules,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isRequired => $composableBuilder(
+    column: $table.isRequired,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isForSegment => $composableBuilder(
+    column: $table.isForSegment,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get defaultValue => $composableBuilder(
+    column: $table.defaultValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get placeholder => $composableBuilder(
+    column: $table.placeholder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get helpText => $composableBuilder(
+    column: $table.helpText,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get quantityTypeID => $composableBuilder(
+    column: $table.quantityTypeID,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkQuantityFieldsTableOrderingComposer
+    extends Composer<_$AppDatabase, $WorkQuantityFieldsTable> {
+  $$WorkQuantityFieldsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fieldType => $composableBuilder(
+    column: $table.fieldType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unit => $composableBuilder(
+    column: $table.unit,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get validationRules => $composableBuilder(
+    column: $table.validationRules,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isRequired => $composableBuilder(
+    column: $table.isRequired,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isForSegment => $composableBuilder(
+    column: $table.isForSegment,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get defaultValue => $composableBuilder(
+    column: $table.defaultValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get placeholder => $composableBuilder(
+    column: $table.placeholder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get helpText => $composableBuilder(
+    column: $table.helpText,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get quantityTypeID => $composableBuilder(
+    column: $table.quantityTypeID,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkQuantityFieldsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WorkQuantityFieldsTable> {
+  $$WorkQuantityFieldsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get code =>
+      $composableBuilder(column: $table.code, builder: (column) => column);
+
+  GeneratedColumn<String> get fieldType =>
+      $composableBuilder(column: $table.fieldType, builder: (column) => column);
+
+  GeneratedColumn<String> get unit =>
+      $composableBuilder(column: $table.unit, builder: (column) => column);
+
+  GeneratedColumn<String> get validationRules => $composableBuilder(
+    column: $table.validationRules,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isRequired => $composableBuilder(
+    column: $table.isRequired,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isForSegment => $composableBuilder(
+    column: $table.isForSegment,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get defaultValue => $composableBuilder(
+    column: $table.defaultValue,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get placeholder => $composableBuilder(
+    column: $table.placeholder,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get helpText =>
+      $composableBuilder(column: $table.helpText, builder: (column) => column);
+
+  GeneratedColumn<int> get quantityTypeID => $composableBuilder(
+    column: $table.quantityTypeID,
+    builder: (column) => column,
+  );
+}
+
+class $$WorkQuantityFieldsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WorkQuantityFieldsTable,
+          WorkQuantityFieldRecord,
+          $$WorkQuantityFieldsTableFilterComposer,
+          $$WorkQuantityFieldsTableOrderingComposer,
+          $$WorkQuantityFieldsTableAnnotationComposer,
+          $$WorkQuantityFieldsTableCreateCompanionBuilder,
+          $$WorkQuantityFieldsTableUpdateCompanionBuilder,
+          (
+            WorkQuantityFieldRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $WorkQuantityFieldsTable,
+              WorkQuantityFieldRecord
+            >,
+          ),
+          WorkQuantityFieldRecord,
+          PrefetchHooks Function()
+        > {
+  $$WorkQuantityFieldsTableTableManager(
+    _$AppDatabase db,
+    $WorkQuantityFieldsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkQuantityFieldsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WorkQuantityFieldsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WorkQuantityFieldsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> code = const Value.absent(),
+                Value<String> fieldType = const Value.absent(),
+                Value<String?> unit = const Value.absent(),
+                Value<String?> validationRules = const Value.absent(),
+                Value<int> displayOrder = const Value.absent(),
+                Value<bool> isRequired = const Value.absent(),
+                Value<bool> isForSegment = const Value.absent(),
+                Value<String?> defaultValue = const Value.absent(),
+                Value<String?> placeholder = const Value.absent(),
+                Value<String?> helpText = const Value.absent(),
+                Value<int> quantityTypeID = const Value.absent(),
+              }) => WorkQuantityFieldsCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                code: code,
+                fieldType: fieldType,
+                unit: unit,
+                validationRules: validationRules,
+                displayOrder: displayOrder,
+                isRequired: isRequired,
+                isForSegment: isForSegment,
+                defaultValue: defaultValue,
+                placeholder: placeholder,
+                helpText: helpText,
+                quantityTypeID: quantityTypeID,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String name,
+                required String code,
+                required String fieldType,
+                Value<String?> unit = const Value.absent(),
+                Value<String?> validationRules = const Value.absent(),
+                required int displayOrder,
+                Value<bool> isRequired = const Value.absent(),
+                Value<bool> isForSegment = const Value.absent(),
+                Value<String?> defaultValue = const Value.absent(),
+                Value<String?> placeholder = const Value.absent(),
+                Value<String?> helpText = const Value.absent(),
+                required int quantityTypeID,
+              }) => WorkQuantityFieldsCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                code: code,
+                fieldType: fieldType,
+                unit: unit,
+                validationRules: validationRules,
+                displayOrder: displayOrder,
+                isRequired: isRequired,
+                isForSegment: isForSegment,
+                defaultValue: defaultValue,
+                placeholder: placeholder,
+                helpText: helpText,
+                quantityTypeID: quantityTypeID,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkQuantityFieldsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WorkQuantityFieldsTable,
+      WorkQuantityFieldRecord,
+      $$WorkQuantityFieldsTableFilterComposer,
+      $$WorkQuantityFieldsTableOrderingComposer,
+      $$WorkQuantityFieldsTableAnnotationComposer,
+      $$WorkQuantityFieldsTableCreateCompanionBuilder,
+      $$WorkQuantityFieldsTableUpdateCompanionBuilder,
+      (
+        WorkQuantityFieldRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $WorkQuantityFieldsTable,
+          WorkQuantityFieldRecord
+        >,
+      ),
+      WorkQuantityFieldRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$WorkQuantityFieldOptionsTableCreateCompanionBuilder =
+    WorkQuantityFieldOptionsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String value,
+      required int displayOrder,
+      required int fieldID,
+    });
+typedef $$WorkQuantityFieldOptionsTableUpdateCompanionBuilder =
+    WorkQuantityFieldOptionsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> value,
+      Value<int> displayOrder,
+      Value<int> fieldID,
+    });
+
+class $$WorkQuantityFieldOptionsTableFilterComposer
+    extends Composer<_$AppDatabase, $WorkQuantityFieldOptionsTable> {
+  $$WorkQuantityFieldOptionsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get fieldID => $composableBuilder(
+    column: $table.fieldID,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkQuantityFieldOptionsTableOrderingComposer
+    extends Composer<_$AppDatabase, $WorkQuantityFieldOptionsTable> {
+  $$WorkQuantityFieldOptionsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get fieldID => $composableBuilder(
+    column: $table.fieldID,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkQuantityFieldOptionsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WorkQuantityFieldOptionsTable> {
+  $$WorkQuantityFieldOptionsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<int> get displayOrder => $composableBuilder(
+    column: $table.displayOrder,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get fieldID =>
+      $composableBuilder(column: $table.fieldID, builder: (column) => column);
+}
+
+class $$WorkQuantityFieldOptionsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WorkQuantityFieldOptionsTable,
+          WorkQuantityFieldOptionRecord,
+          $$WorkQuantityFieldOptionsTableFilterComposer,
+          $$WorkQuantityFieldOptionsTableOrderingComposer,
+          $$WorkQuantityFieldOptionsTableAnnotationComposer,
+          $$WorkQuantityFieldOptionsTableCreateCompanionBuilder,
+          $$WorkQuantityFieldOptionsTableUpdateCompanionBuilder,
+          (
+            WorkQuantityFieldOptionRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $WorkQuantityFieldOptionsTable,
+              WorkQuantityFieldOptionRecord
+            >,
+          ),
+          WorkQuantityFieldOptionRecord,
+          PrefetchHooks Function()
+        > {
+  $$WorkQuantityFieldOptionsTableTableManager(
+    _$AppDatabase db,
+    $WorkQuantityFieldOptionsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkQuantityFieldOptionsTableFilterComposer(
+                $db: db,
+                $table: table,
+              ),
+          createOrderingComposer: () =>
+              $$WorkQuantityFieldOptionsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$WorkQuantityFieldOptionsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> value = const Value.absent(),
+                Value<int> displayOrder = const Value.absent(),
+                Value<int> fieldID = const Value.absent(),
+              }) => WorkQuantityFieldOptionsCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                value: value,
+                displayOrder: displayOrder,
+                fieldID: fieldID,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String value,
+                required int displayOrder,
+                required int fieldID,
+              }) => WorkQuantityFieldOptionsCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                value: value,
+                displayOrder: displayOrder,
+                fieldID: fieldID,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkQuantityFieldOptionsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WorkQuantityFieldOptionsTable,
+      WorkQuantityFieldOptionRecord,
+      $$WorkQuantityFieldOptionsTableFilterComposer,
+      $$WorkQuantityFieldOptionsTableOrderingComposer,
+      $$WorkQuantityFieldOptionsTableAnnotationComposer,
+      $$WorkQuantityFieldOptionsTableCreateCompanionBuilder,
+      $$WorkQuantityFieldOptionsTableUpdateCompanionBuilder,
+      (
+        WorkQuantityFieldOptionRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $WorkQuantityFieldOptionsTable,
+          WorkQuantityFieldOptionRecord
+        >,
+      ),
+      WorkQuantityFieldOptionRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$WorkScopeEquipmentsTableCreateCompanionBuilder =
+    WorkScopeEquipmentsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String name,
+      required String code,
+    });
+typedef $$WorkScopeEquipmentsTableUpdateCompanionBuilder =
+    WorkScopeEquipmentsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> name,
+      Value<String> code,
+    });
+
+class $$WorkScopeEquipmentsTableFilterComposer
+    extends Composer<_$AppDatabase, $WorkScopeEquipmentsTable> {
+  $$WorkScopeEquipmentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkScopeEquipmentsTableOrderingComposer
+    extends Composer<_$AppDatabase, $WorkScopeEquipmentsTable> {
+  $$WorkScopeEquipmentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get code => $composableBuilder(
+    column: $table.code,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkScopeEquipmentsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WorkScopeEquipmentsTable> {
+  $$WorkScopeEquipmentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get code =>
+      $composableBuilder(column: $table.code, builder: (column) => column);
+}
+
+class $$WorkScopeEquipmentsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WorkScopeEquipmentsTable,
+          WorkScopeEquipmentsRecord,
+          $$WorkScopeEquipmentsTableFilterComposer,
+          $$WorkScopeEquipmentsTableOrderingComposer,
+          $$WorkScopeEquipmentsTableAnnotationComposer,
+          $$WorkScopeEquipmentsTableCreateCompanionBuilder,
+          $$WorkScopeEquipmentsTableUpdateCompanionBuilder,
+          (
+            WorkScopeEquipmentsRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $WorkScopeEquipmentsTable,
+              WorkScopeEquipmentsRecord
+            >,
+          ),
+          WorkScopeEquipmentsRecord,
+          PrefetchHooks Function()
+        > {
+  $$WorkScopeEquipmentsTableTableManager(
+    _$AppDatabase db,
+    $WorkScopeEquipmentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkScopeEquipmentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WorkScopeEquipmentsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$WorkScopeEquipmentsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> code = const Value.absent(),
+              }) => WorkScopeEquipmentsCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                code: code,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String name,
+                required String code,
+              }) => WorkScopeEquipmentsCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                code: code,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkScopeEquipmentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WorkScopeEquipmentsTable,
+      WorkScopeEquipmentsRecord,
+      $$WorkScopeEquipmentsTableFilterComposer,
+      $$WorkScopeEquipmentsTableOrderingComposer,
+      $$WorkScopeEquipmentsTableAnnotationComposer,
+      $$WorkScopeEquipmentsTableCreateCompanionBuilder,
+      $$WorkScopeEquipmentsTableUpdateCompanionBuilder,
+      (
+        WorkScopeEquipmentsRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $WorkScopeEquipmentsTable,
+          WorkScopeEquipmentsRecord
+        >,
+      ),
+      WorkScopeEquipmentsRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$WorkScopeEquipmentTableCreateCompanionBuilder =
+    WorkScopeEquipmentCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required int workScopeID,
+      required int workEquipmentID,
+    });
+typedef $$WorkScopeEquipmentTableUpdateCompanionBuilder =
+    WorkScopeEquipmentCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<int> workScopeID,
+      Value<int> workEquipmentID,
+    });
+
+class $$WorkScopeEquipmentTableFilterComposer
+    extends Composer<_$AppDatabase, $WorkScopeEquipmentTable> {
+  $$WorkScopeEquipmentTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get workEquipmentID => $composableBuilder(
+    column: $table.workEquipmentID,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$WorkScopeEquipmentTableOrderingComposer
+    extends Composer<_$AppDatabase, $WorkScopeEquipmentTable> {
+  $$WorkScopeEquipmentTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get workEquipmentID => $composableBuilder(
+    column: $table.workEquipmentID,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$WorkScopeEquipmentTableAnnotationComposer
+    extends Composer<_$AppDatabase, $WorkScopeEquipmentTable> {
+  $$WorkScopeEquipmentTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get workEquipmentID => $composableBuilder(
+    column: $table.workEquipmentID,
+    builder: (column) => column,
+  );
+}
+
+class $$WorkScopeEquipmentTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $WorkScopeEquipmentTable,
+          WorkScopeEquipmentRecord,
+          $$WorkScopeEquipmentTableFilterComposer,
+          $$WorkScopeEquipmentTableOrderingComposer,
+          $$WorkScopeEquipmentTableAnnotationComposer,
+          $$WorkScopeEquipmentTableCreateCompanionBuilder,
+          $$WorkScopeEquipmentTableUpdateCompanionBuilder,
+          (
+            WorkScopeEquipmentRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $WorkScopeEquipmentTable,
+              WorkScopeEquipmentRecord
+            >,
+          ),
+          WorkScopeEquipmentRecord,
+          PrefetchHooks Function()
+        > {
+  $$WorkScopeEquipmentTableTableManager(
+    _$AppDatabase db,
+    $WorkScopeEquipmentTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$WorkScopeEquipmentTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$WorkScopeEquipmentTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$WorkScopeEquipmentTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<int> workScopeID = const Value.absent(),
+                Value<int> workEquipmentID = const Value.absent(),
+              }) => WorkScopeEquipmentCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                workScopeID: workScopeID,
+                workEquipmentID: workEquipmentID,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required int workScopeID,
+                required int workEquipmentID,
+              }) => WorkScopeEquipmentCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                workScopeID: workScopeID,
+                workEquipmentID: workEquipmentID,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$WorkScopeEquipmentTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $WorkScopeEquipmentTable,
+      WorkScopeEquipmentRecord,
+      $$WorkScopeEquipmentTableFilterComposer,
+      $$WorkScopeEquipmentTableOrderingComposer,
+      $$WorkScopeEquipmentTableAnnotationComposer,
+      $$WorkScopeEquipmentTableCreateCompanionBuilder,
+      $$WorkScopeEquipmentTableUpdateCompanionBuilder,
+      (
+        WorkScopeEquipmentRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $WorkScopeEquipmentTable,
+          WorkScopeEquipmentRecord
+        >,
+      ),
+      WorkScopeEquipmentRecord,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6586,4 +13647,19 @@ class $AppDatabaseManager {
       $$PermissionsTableTableManager(_db, _db.permissions);
   $$CompaniesTableTableManager get companies =>
       $$CompaniesTableTableManager(_db, _db.companies);
+  $$WorkScopesTableTableManager get workScopes =>
+      $$WorkScopesTableTableManager(_db, _db.workScopes);
+  $$WorkQuantityTypesTableTableManager get workQuantityTypes =>
+      $$WorkQuantityTypesTableTableManager(_db, _db.workQuantityTypes);
+  $$WorkQuantityFieldsTableTableManager get workQuantityFields =>
+      $$WorkQuantityFieldsTableTableManager(_db, _db.workQuantityFields);
+  $$WorkQuantityFieldOptionsTableTableManager get workQuantityFieldOptions =>
+      $$WorkQuantityFieldOptionsTableTableManager(
+        _db,
+        _db.workQuantityFieldOptions,
+      );
+  $$WorkScopeEquipmentsTableTableManager get workScopeEquipments =>
+      $$WorkScopeEquipmentsTableTableManager(_db, _db.workScopeEquipments);
+  $$WorkScopeEquipmentTableTableManager get workScopeEquipment =>
+      $$WorkScopeEquipmentTableTableManager(_db, _db.workScopeEquipment);
 }

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CompanyModel {
 
- int get id; String get uid; String get name; String get regNo; String get cidbNo; String get address; String get postalCode; String get city; String get state; String get country; String get phone; String get email; String get website; String get companyType; bool get bumiputera; String? get einvoiceTinNo; DateTime? get registrationDate; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt; int get ownerID; AdminRoleModel? get adminRole;@JsonKey(defaultValue: 0) int? get adminCount; String? get defaultBankAcc; String? get defaultBankAccType;
+ int get id; String get uid; String get name; String get regNo; String get cidbNo; String get address; String get postalCode; String get city; String get state; String get country; String get phone; String get email; String? get website; String get companyType; bool get bumiputera; String? get einvoiceTinNo; DateTime? get registrationDate; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt; int get ownerID; AdminRoleModel? get adminRole;@JsonKey(defaultValue: 0) int? get adminCount; String? get defaultBankAcc; String? get defaultBankAccType;
 /// Create a copy of CompanyModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $CompanyModelCopyWith<$Res>  {
   factory $CompanyModelCopyWith(CompanyModel value, $Res Function(CompanyModel) _then) = _$CompanyModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String uid, String name, String regNo, String cidbNo, String address, String postalCode, String city, String state, String country, String phone, String email, String website, String companyType, bool bumiputera, String? einvoiceTinNo, DateTime? registrationDate, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, int ownerID, AdminRoleModel? adminRole,@JsonKey(defaultValue: 0) int? adminCount, String? defaultBankAcc, String? defaultBankAccType
+ int id, String uid, String name, String regNo, String cidbNo, String address, String postalCode, String city, String state, String country, String phone, String email, String? website, String companyType, bool bumiputera, String? einvoiceTinNo, DateTime? registrationDate, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, int ownerID, AdminRoleModel? adminRole,@JsonKey(defaultValue: 0) int? adminCount, String? defaultBankAcc, String? defaultBankAccType
 });
 
 
@@ -65,7 +65,7 @@ class _$CompanyModelCopyWithImpl<$Res>
 
 /// Create a copy of CompanyModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? regNo = null,Object? cidbNo = null,Object? address = null,Object? postalCode = null,Object? city = null,Object? state = null,Object? country = null,Object? phone = null,Object? email = null,Object? website = null,Object? companyType = null,Object? bumiputera = null,Object? einvoiceTinNo = freezed,Object? registrationDate = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? ownerID = null,Object? adminRole = freezed,Object? adminCount = freezed,Object? defaultBankAcc = freezed,Object? defaultBankAccType = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? regNo = null,Object? cidbNo = null,Object? address = null,Object? postalCode = null,Object? city = null,Object? state = null,Object? country = null,Object? phone = null,Object? email = null,Object? website = freezed,Object? companyType = null,Object? bumiputera = null,Object? einvoiceTinNo = freezed,Object? registrationDate = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? ownerID = null,Object? adminRole = freezed,Object? adminCount = freezed,Object? defaultBankAcc = freezed,Object? defaultBankAccType = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -79,8 +79,8 @@ as String,state: null == state ? _self.state : state // ignore: cast_nullable_to
 as String,country: null == country ? _self.country : country // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,website: null == website ? _self.website : website // ignore: cast_nullable_to_non_nullable
-as String,companyType: null == companyType ? _self.companyType : companyType // ignore: cast_nullable_to_non_nullable
+as String,website: freezed == website ? _self.website : website // ignore: cast_nullable_to_non_nullable
+as String?,companyType: null == companyType ? _self.companyType : companyType // ignore: cast_nullable_to_non_nullable
 as String,bumiputera: null == bumiputera ? _self.bumiputera : bumiputera // ignore: cast_nullable_to_non_nullable
 as bool,einvoiceTinNo: freezed == einvoiceTinNo ? _self.einvoiceTinNo : einvoiceTinNo // ignore: cast_nullable_to_non_nullable
 as String?,registrationDate: freezed == registrationDate ? _self.registrationDate : registrationDate // ignore: cast_nullable_to_non_nullable
@@ -189,7 +189,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String regNo,  String cidbNo,  String address,  String postalCode,  String city,  String state,  String country,  String phone,  String email,  String website,  String companyType,  bool bumiputera,  String? einvoiceTinNo,  DateTime? registrationDate,  DateTime createdAt,  DateTime updatedAt,  DateTime? deletedAt,  int ownerID,  AdminRoleModel? adminRole, @JsonKey(defaultValue: 0)  int? adminCount,  String? defaultBankAcc,  String? defaultBankAccType)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String regNo,  String cidbNo,  String address,  String postalCode,  String city,  String state,  String country,  String phone,  String email,  String? website,  String companyType,  bool bumiputera,  String? einvoiceTinNo,  DateTime? registrationDate,  DateTime createdAt,  DateTime updatedAt,  DateTime? deletedAt,  int ownerID,  AdminRoleModel? adminRole, @JsonKey(defaultValue: 0)  int? adminCount,  String? defaultBankAcc,  String? defaultBankAccType)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CompanyModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.regNo,_that.cidbNo,_that.address,_that.postalCode,_that.city,_that.state,_that.country,_that.phone,_that.email,_that.website,_that.companyType,_that.bumiputera,_that.einvoiceTinNo,_that.registrationDate,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.ownerID,_that.adminRole,_that.adminCount,_that.defaultBankAcc,_that.defaultBankAccType);case _:
@@ -210,7 +210,7 @@ return $default(_that.id,_that.uid,_that.name,_that.regNo,_that.cidbNo,_that.add
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String regNo,  String cidbNo,  String address,  String postalCode,  String city,  String state,  String country,  String phone,  String email,  String website,  String companyType,  bool bumiputera,  String? einvoiceTinNo,  DateTime? registrationDate,  DateTime createdAt,  DateTime updatedAt,  DateTime? deletedAt,  int ownerID,  AdminRoleModel? adminRole, @JsonKey(defaultValue: 0)  int? adminCount,  String? defaultBankAcc,  String? defaultBankAccType)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String regNo,  String cidbNo,  String address,  String postalCode,  String city,  String state,  String country,  String phone,  String email,  String? website,  String companyType,  bool bumiputera,  String? einvoiceTinNo,  DateTime? registrationDate,  DateTime createdAt,  DateTime updatedAt,  DateTime? deletedAt,  int ownerID,  AdminRoleModel? adminRole, @JsonKey(defaultValue: 0)  int? adminCount,  String? defaultBankAcc,  String? defaultBankAccType)  $default,) {final _that = this;
 switch (_that) {
 case _CompanyModel():
 return $default(_that.id,_that.uid,_that.name,_that.regNo,_that.cidbNo,_that.address,_that.postalCode,_that.city,_that.state,_that.country,_that.phone,_that.email,_that.website,_that.companyType,_that.bumiputera,_that.einvoiceTinNo,_that.registrationDate,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.ownerID,_that.adminRole,_that.adminCount,_that.defaultBankAcc,_that.defaultBankAccType);case _:
@@ -230,7 +230,7 @@ return $default(_that.id,_that.uid,_that.name,_that.regNo,_that.cidbNo,_that.add
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uid,  String name,  String regNo,  String cidbNo,  String address,  String postalCode,  String city,  String state,  String country,  String phone,  String email,  String website,  String companyType,  bool bumiputera,  String? einvoiceTinNo,  DateTime? registrationDate,  DateTime createdAt,  DateTime updatedAt,  DateTime? deletedAt,  int ownerID,  AdminRoleModel? adminRole, @JsonKey(defaultValue: 0)  int? adminCount,  String? defaultBankAcc,  String? defaultBankAccType)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uid,  String name,  String regNo,  String cidbNo,  String address,  String postalCode,  String city,  String state,  String country,  String phone,  String email,  String? website,  String companyType,  bool bumiputera,  String? einvoiceTinNo,  DateTime? registrationDate,  DateTime createdAt,  DateTime updatedAt,  DateTime? deletedAt,  int ownerID,  AdminRoleModel? adminRole, @JsonKey(defaultValue: 0)  int? adminCount,  String? defaultBankAcc,  String? defaultBankAccType)?  $default,) {final _that = this;
 switch (_that) {
 case _CompanyModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.regNo,_that.cidbNo,_that.address,_that.postalCode,_that.city,_that.state,_that.country,_that.phone,_that.email,_that.website,_that.companyType,_that.bumiputera,_that.einvoiceTinNo,_that.registrationDate,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.ownerID,_that.adminRole,_that.adminCount,_that.defaultBankAcc,_that.defaultBankAccType);case _:
@@ -245,7 +245,7 @@ return $default(_that.id,_that.uid,_that.name,_that.regNo,_that.cidbNo,_that.add
 @JsonSerializable()
 
 class _CompanyModel extends CompanyModel {
-  const _CompanyModel({required this.id, required this.uid, required this.name, required this.regNo, required this.cidbNo, required this.address, required this.postalCode, required this.city, required this.state, required this.country, required this.phone, required this.email, required this.website, required this.companyType, required this.bumiputera, this.einvoiceTinNo, this.registrationDate, required this.createdAt, required this.updatedAt, this.deletedAt, required this.ownerID, this.adminRole, @JsonKey(defaultValue: 0) this.adminCount, this.defaultBankAcc, this.defaultBankAccType}): super._();
+  const _CompanyModel({required this.id, required this.uid, required this.name, required this.regNo, required this.cidbNo, required this.address, required this.postalCode, required this.city, required this.state, required this.country, required this.phone, required this.email, this.website, required this.companyType, required this.bumiputera, this.einvoiceTinNo, this.registrationDate, required this.createdAt, required this.updatedAt, this.deletedAt, required this.ownerID, this.adminRole, @JsonKey(defaultValue: 0) this.adminCount, this.defaultBankAcc, this.defaultBankAccType}): super._();
   factory _CompanyModel.fromJson(Map<String, dynamic> json) => _$CompanyModelFromJson(json);
 
 @override final  int id;
@@ -260,7 +260,7 @@ class _CompanyModel extends CompanyModel {
 @override final  String country;
 @override final  String phone;
 @override final  String email;
-@override final  String website;
+@override final  String? website;
 @override final  String companyType;
 @override final  bool bumiputera;
 @override final  String? einvoiceTinNo;
@@ -307,7 +307,7 @@ abstract mixin class _$CompanyModelCopyWith<$Res> implements $CompanyModelCopyWi
   factory _$CompanyModelCopyWith(_CompanyModel value, $Res Function(_CompanyModel) _then) = __$CompanyModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String uid, String name, String regNo, String cidbNo, String address, String postalCode, String city, String state, String country, String phone, String email, String website, String companyType, bool bumiputera, String? einvoiceTinNo, DateTime? registrationDate, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, int ownerID, AdminRoleModel? adminRole,@JsonKey(defaultValue: 0) int? adminCount, String? defaultBankAcc, String? defaultBankAccType
+ int id, String uid, String name, String regNo, String cidbNo, String address, String postalCode, String city, String state, String country, String phone, String email, String? website, String companyType, bool bumiputera, String? einvoiceTinNo, DateTime? registrationDate, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, int ownerID, AdminRoleModel? adminRole,@JsonKey(defaultValue: 0) int? adminCount, String? defaultBankAcc, String? defaultBankAccType
 });
 
 
@@ -324,7 +324,7 @@ class __$CompanyModelCopyWithImpl<$Res>
 
 /// Create a copy of CompanyModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? regNo = null,Object? cidbNo = null,Object? address = null,Object? postalCode = null,Object? city = null,Object? state = null,Object? country = null,Object? phone = null,Object? email = null,Object? website = null,Object? companyType = null,Object? bumiputera = null,Object? einvoiceTinNo = freezed,Object? registrationDate = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? ownerID = null,Object? adminRole = freezed,Object? adminCount = freezed,Object? defaultBankAcc = freezed,Object? defaultBankAccType = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? regNo = null,Object? cidbNo = null,Object? address = null,Object? postalCode = null,Object? city = null,Object? state = null,Object? country = null,Object? phone = null,Object? email = null,Object? website = freezed,Object? companyType = null,Object? bumiputera = null,Object? einvoiceTinNo = freezed,Object? registrationDate = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? ownerID = null,Object? adminRole = freezed,Object? adminCount = freezed,Object? defaultBankAcc = freezed,Object? defaultBankAccType = freezed,}) {
   return _then(_CompanyModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -338,8 +338,8 @@ as String,state: null == state ? _self.state : state // ignore: cast_nullable_to
 as String,country: null == country ? _self.country : country // ignore: cast_nullable_to_non_nullable
 as String,phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
 as String,email: null == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
-as String,website: null == website ? _self.website : website // ignore: cast_nullable_to_non_nullable
-as String,companyType: null == companyType ? _self.companyType : companyType // ignore: cast_nullable_to_non_nullable
+as String,website: freezed == website ? _self.website : website // ignore: cast_nullable_to_non_nullable
+as String?,companyType: null == companyType ? _self.companyType : companyType // ignore: cast_nullable_to_non_nullable
 as String,bumiputera: null == bumiputera ? _self.bumiputera : bumiputera // ignore: cast_nullable_to_non_nullable
 as bool,einvoiceTinNo: freezed == einvoiceTinNo ? _self.einvoiceTinNo : einvoiceTinNo // ignore: cast_nullable_to_non_nullable
 as String?,registrationDate: freezed == registrationDate ? _self.registrationDate : registrationDate // ignore: cast_nullable_to_non_nullable

@@ -10,6 +10,8 @@ class ThemeListTileWidget extends StatelessWidget {
   final Color? primaryColor;
   final bool focus;
   final IconData? trailingIcon;
+  final bool isChevron;
+  final bool isInverseBold;
 
   const ThemeListTileWidget({
     Key? key,
@@ -20,6 +22,8 @@ class ThemeListTileWidget extends StatelessWidget {
     this.primaryColor,
     this.focus = false,
     this.trailingIcon,
+    this.isChevron = true,
+    this.isInverseBold = false,
   }) : super(key: key);
 
   @override
@@ -47,13 +51,24 @@ class ThemeListTileWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Title - only show if not empty
-                  if (title.isNotEmpty) Text(title),
+                  if (title.isNotEmpty)
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: ResponsiveHelper.fontSize(context, base: 13),
+                        fontWeight: isInverseBold
+                            ? FontWeight.w600
+                            : FontWeight.normal,
+                      ),
+                    ),
                   // Title Detail - red color if focus is true
                   Text(
                     titleDetails,
                     style: TextStyle(
-                      fontSize: ResponsiveHelper.fontSize(context, base: 14),
-                      fontWeight: FontWeight.w600,
+                      fontSize: ResponsiveHelper.fontSize(context, base: 12),
+                      fontWeight: isInverseBold
+                          ? FontWeight.normal
+                          : FontWeight.w600,
                       color: focus ? Colors.red : null,
                     ),
                   ),
@@ -61,18 +76,21 @@ class ThemeListTileWidget extends StatelessWidget {
               ),
             ],
           ),
-          Container(
-            padding: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(7),
-              color: Color.fromARGB(255, 214, 226, 255),
+          if (isChevron)
+            Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(7),
+                color: Color.fromARGB(255, 214, 226, 255),
+              ),
+              // Chevron icon
+              child: Icon(
+                trailingIcon == null
+                    ? Icons.chevron_right_rounded
+                    : trailingIcon,
+                color: defaultPrimaryColor,
+              ),
             ),
-            // Chevron icon
-            child: Icon(
-              trailingIcon == null ? Icons.chevron_right_rounded : trailingIcon,
-              color: defaultPrimaryColor,
-            ),
-          ),
         ],
       ),
     );

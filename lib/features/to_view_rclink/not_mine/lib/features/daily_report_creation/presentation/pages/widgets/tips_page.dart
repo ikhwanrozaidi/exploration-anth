@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:rclink_app/features/daily_report_detail/presentation/pages/daily_report_detail_page.dart';
+import 'package:rclink_app/features/daily_report/presentation/pages/daily_report_detail_page.dart';
 
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
+import 'draft_page.dart';
 
 class TipsOnboardingPage extends StatefulWidget {
+  final String scopeOfWork;
+  final String weather;
+  final String location;
+  final String section;
+
+  const TipsOnboardingPage({
+    Key? key,
+    required this.scopeOfWork,
+    required this.weather,
+    required this.location,
+    required this.section,
+  }) : super(key: key);
+
   @override
   State<TipsOnboardingPage> createState() => _TipsOnboardingPageState();
 }
@@ -14,7 +28,6 @@ class _TipsOnboardingPageState extends State<TipsOnboardingPage> {
   int _currentPage = 0;
   final int _maxPages = 3;
 
-  // Sample data for the tips
   final List<TipData> _tips = [
     TipData(
       title: "Safety",
@@ -56,11 +69,22 @@ class _TipsOnboardingPageState extends State<TipsOnboardingPage> {
   }
 
   void _proceed() {
-    // Navigator.of(context).pushReplacementNamed('/main'); // Replace with route
-
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => DailyReportDetailPage()),
+      MaterialPageRoute(
+        builder: (context) => DraftDailyReportPage(
+          scopeOfWork: widget.scopeOfWork,
+          weather: widget.weather,
+          location: widget.location,
+          section: widget.section,
+        ),
+      ),
     );
+  }
+
+  void _openPlan() {
+    // Navigator.of(
+    //   context,
+    // ).push(MaterialPageRoute(builder: (context) => DailyReportDetailPage()));
   }
 
   @override
@@ -107,7 +131,6 @@ class _TipsOnboardingPageState extends State<TipsOnboardingPage> {
                         width: 300,
                         height: 250,
                         decoration: BoxDecoration(
-                          // color: Color(0xFFE3F2FD),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: Center(
@@ -181,139 +204,108 @@ class _TipsOnboardingPageState extends State<TipsOnboardingPage> {
           Padding(
             padding: EdgeInsets.all(30),
             child: _currentPage == _maxPages - 1
-                ? _buildFinalPageButtons()
-                : _buildNextButton(),
+                ? Row(
+                    children: [
+                      // Open Plan button
+                      Expanded(
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _openPlan,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              side: BorderSide(color: primaryColor),
+                              padding: ResponsiveHelper.padding(
+                                context,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 2,
+                            ),
+                            child: Text(
+                              'Open Plan',
+                              style: TextStyle(
+                                color: primaryColor,
+                                fontSize: ResponsiveHelper.fontSize(
+                                  context,
+                                  base: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(width: 16),
+
+                      // Next button (now goes to DraftDailyReportPage)
+                      Expanded(
+                        child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _proceed,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryColor,
+                              padding: ResponsiveHelper.padding(
+                                context,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 2,
+                            ),
+                            child: Text(
+                              'Next',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: ResponsiveHelper.fontSize(
+                                  context,
+                                  base: 14,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        _nextPage();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        padding: ResponsiveHelper.padding(
+                          context,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 2,
+                      ),
+                      child: Text(
+                        'Next',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: ResponsiveHelper.fontSize(
+                            context,
+                            base: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
           ),
 
           SizedBox(height: 30),
         ],
       ),
-    );
-  }
-
-  Widget _buildTipImage(int index) {
-    // For a while...
-    IconData iconData;
-    switch (index) {
-      case 0:
-        iconData = Icons.security;
-        break;
-      case 1:
-        iconData = Icons.build;
-        break;
-      case 2:
-        iconData = Icons.chat;
-        break;
-      default:
-        iconData = Icons.info;
-    }
-
-    return Container(
-      width: 120,
-      height: 120,
-      decoration: BoxDecoration(
-        color: Colors.orange[100],
-        shape: BoxShape.circle,
-      ),
-      child: Icon(iconData, size: 60, color: Colors.orange[600]),
-    );
-
-    // To use actual image
-    //
-    // return Image.asset(
-    //   _tips[index].imagePath,
-    //   width: 200,
-    //   height: 150,
-    //   fit: BoxFit.contain,
-    // );
-  }
-
-  Widget _buildNextButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          _nextPage();
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: primaryColor,
-          padding: ResponsiveHelper.padding(context, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 2,
-        ),
-        child: Text(
-          'Next',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: ResponsiveHelper.fontSize(context, base: 14),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFinalPageButtons() {
-    return Row(
-      children: [
-        // Open Plan button
-        Expanded(
-          child: SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                _nextPage();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white,
-                side: BorderSide(color: primaryColor),
-                padding: ResponsiveHelper.padding(context, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 2,
-              ),
-              child: Text(
-                'Open Plan',
-                style: TextStyle(
-                  color: primaryColor,
-                  fontSize: ResponsiveHelper.fontSize(context, base: 14),
-                ),
-              ),
-            ),
-          ),
-        ),
-
-        SizedBox(width: 16),
-
-        // Next button
-        Expanded(
-          child: SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                _proceed();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryColor,
-                padding: ResponsiveHelper.padding(context, vertical: 12),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 2,
-              ),
-              child: Text(
-                'Next',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: ResponsiveHelper.fontSize(context, base: 14),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

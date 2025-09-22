@@ -9,6 +9,12 @@ class FlexibleBottomsheet extends StatefulWidget {
   final List<String> attributes;
   final bool isRadio;
   final bool blurry;
+  final bool isNavigate; // Parameter for navigation mode
+  final bool isTips; // New parameter to show/hide Tips button
+  final Function(dynamic)? onSelectionChanged;
+  final Function(String)? onTap; // Callback for navigation
+  final VoidCallback? onPressTips; // New callback for Tips button
+  final String? tipsTitle;
 
   const FlexibleBottomsheet({
     Key? key,
@@ -16,6 +22,12 @@ class FlexibleBottomsheet extends StatefulWidget {
     required this.attributes,
     required this.isRadio,
     this.blurry = false,
+    this.isNavigate = false, // Default to false for backward compatibility
+    this.isTips = false, // Default to false to hide Tips button
+    this.onSelectionChanged,
+    this.onTap,
+    this.onPressTips,
+    this.tipsTitle,
   }) : super(key: key);
 
   @override
@@ -58,10 +70,31 @@ class _FlexibleBottomsheetState extends State<FlexibleBottomsheet> {
 
           SizedBox(height: 15),
 
-          // Title
-          Text(
-            widget.title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          // Revise Title
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Text(
+                  widget.title,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                ),
+              ),
+              if (widget.isTips)
+                TextButton(
+                  onPressed: widget.onPressTips,
+                  style: TextButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    foregroundColor: primaryColor,
+                    side: BorderSide(color: primaryColor, width: 1.5),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  child: Text(widget.tipsTitle ?? 'Tips'),
+                ),
+            ],
           ),
 
           SizedBox(height: 15),
@@ -74,6 +107,33 @@ class _FlexibleBottomsheetState extends State<FlexibleBottomsheet> {
               itemBuilder: (context, index) {
                 final attribute = widget.attributes[index];
 
+                // Navigation mode - simple list items with onTap
+                if (widget.isNavigate) {
+                  return ListTile(
+                    dense: true,
+                    contentPadding: EdgeInsets.symmetric(vertical: 4),
+                    title: Text(
+                      attribute,
+                      style: TextStyle(
+                        fontSize: ResponsiveHelper.fontSize(context, base: 16),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.grey.shade400,
+                      size: 16,
+                    ),
+                    onTap: () {
+                      // Call the onTap callback
+                      widget.onTap?.call(attribute);
+                      // Don't manually close bottomsheet in navigation mode
+                      // Let the navigation handle the UI transitions
+                    },
+                  );
+                }
+
+                // Original selection mode
                 if (widget.isRadio) {
                   // Radio button implementation
                   return RadioListTile<String>(
@@ -92,7 +152,9 @@ class _FlexibleBottomsheetState extends State<FlexibleBottomsheet> {
                       setState(() {
                         selectedRadioValue = value;
                       });
-                      _printSelection();
+                      // Call the callback and close the bottomsheet
+                      widget.onSelectionChanged?.call(value);
+                      Navigator.pop(context);
                     },
                     activeColor: primaryColor,
                     controlAffinity: ListTileControlAffinity.leading,
@@ -117,7 +179,6 @@ class _FlexibleBottomsheetState extends State<FlexibleBottomsheet> {
                           selectedCheckboxValues.remove(attribute);
                         }
                       });
-                      _printSelection();
                     },
                     activeColor: primaryColor,
                     controlAffinity: ListTileControlAffinity.leading,
@@ -126,6 +187,35 @@ class _FlexibleBottomsheetState extends State<FlexibleBottomsheet> {
               },
             ),
           ),
+
+          // Done button for multi-select (checkbox) - not shown in navigation mode
+          if (!widget.isRadio && !widget.isNavigate)
+            Padding(
+              padding: EdgeInsets.only(top: 15),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    widget.onSelectionChanged?.call(selectedCheckboxValues);
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    padding: EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    'Done',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -143,24 +233,20 @@ class _FlexibleBottomsheetState extends State<FlexibleBottomsheet> {
       return bottomsheetContent;
     }
   }
-
-  void _printSelection() {
-    if (widget.isRadio) {
-      print('Selected Radio: $selectedRadioValue');
-    } else {
-      print('Selected Checkboxes: $selectedCheckboxValues');
-    }
-  }
 }
 
-// Helper function to show the bottomsheet
+// Updated helper function to show the bottomsheet
 void showFlexibleBottomsheet({
   required BuildContext context,
   required String title,
   required List<String> attributes,
   required bool isRadio,
-  bool blurry = false, // New optional parameter
+  bool blurry = false,
+  bool isNavigate = false,
+  bool isTips = false, // New parameter
   Function(dynamic)? onSelectionChanged,
+  Function(String)? onTap,
+  VoidCallback? onPressTips, // New parameter
 }) {
   showModalBottomSheet(
     context: context,
@@ -170,11 +256,16 @@ void showFlexibleBottomsheet({
       title: title,
       attributes: attributes,
       isRadio: isRadio,
-      blurry: blurry, // Pass the blur parameter
+      blurry: blurry,
+      isNavigate: isNavigate,
+      isTips: isTips,
+      onSelectionChanged: onSelectionChanged,
+      onTap: onTap,
+      onPressTips: onPressTips,
     ),
   ).then((value) {
-    // Handle result if needed
-    if (onSelectionChanged != null && value != null) {
+    // Handle result if needed - only for non-navigation mode
+    if (!isNavigate && onSelectionChanged != null && value != null) {
       onSelectionChanged(value);
     }
   });

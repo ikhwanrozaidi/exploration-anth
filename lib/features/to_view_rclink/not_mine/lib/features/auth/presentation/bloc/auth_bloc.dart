@@ -5,6 +5,8 @@ import 'package:rclink_app/features/auth/domain/entities/tokens.dart';
 import 'package:rclink_app/features/auth/domain/usecases/request_otp_usecase.dart';
 import '../../../../core/di/injection.dart';
 import '../../../admin/domain/usecases/get_current_admin_usecase.dart';
+import '../../../company/presentation/bloc/company_bloc.dart';
+import '../../../company/presentation/bloc/company_event.dart';
 import '../../../rbac/domain/entities/role.dart';
 import '../../../rbac/presentation/bloc/rbac_bloc.dart';
 import '../../../rbac/presentation/bloc/rbac_event.dart';
@@ -80,9 +82,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthFailure(_mapFailureToMessage(failure)));
       },
       (tokens) async {
-        print(
-          '✅ AuthBloc: Verify OTP success, storing tokens',
-        );
+        print('✅ AuthBloc: Verify OTP success, storing tokens');
         final storeResult = await _storeTokensUseCase(
           StoreTokensParams(tokens: tokens),
         );
@@ -93,9 +93,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             emit(AuthFailure('Failed to save authentication data'));
           },
           (_) {
-            print(
-              '✅ AuthBloc: Tokens stored successfully',
-            );
+            print('✅ AuthBloc: Tokens stored successfully');
             emit(AuthState.authenticated(tokens));
           },
         );
@@ -170,15 +168,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ),
     );
 
-    result.fold(
-      (failure) => emit(AuthFailure(_mapFailureToMessage(failure))),
-      (admin) {
-        emit(AuthState.authenticated(
-          currentState.tokens,
-          currentAdmin: admin,
-        ));
-      },
-    );
+    result.fold((failure) => emit(AuthFailure(_mapFailureToMessage(failure))), (
+      admin,
+    ) {
+      emit(AuthState.authenticated(currentState.tokens, currentAdmin: admin));
+    });
   }
 
   Future<void> _onLogoutRequested(
@@ -190,6 +184,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     // Clear permissions when logging out using RbacBloc
     final rbacBloc = getIt<RbacBloc>();
     rbacBloc.add(const ClearPermissions());
+
+    // Clear company cache when logging out using CompanyBloc
+    final companyBloc = getIt<CompanyBloc>();
+    companyBloc.add(const ClearCompanyCache());
 
     final result = await _clearAuthCacheUseCase();
 
