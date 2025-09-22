@@ -3,7 +3,7 @@ import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../constant/report_model.dart';
-import 'creation_fields_widget.dart';
+import 'shared/creation_fields_widget.dart';
 
 class QuantityFieldsPage extends StatefulWidget {
   final String scopeOfWork;
@@ -87,12 +87,15 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
 
             SizedBox(width: ResponsiveHelper.spacing(context, 15)),
 
-            Text(
-              widget.quantityOption.name,
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
+            Expanded(
+              child: Text(
+                widget.quantityOption.name,
+                style: TextStyle(
+                  overflow: TextOverflow.ellipsis,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 20,
+                ),
               ),
             ),
           ],
@@ -196,11 +199,28 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
               title: field.title,
               attributes: field.dropdownOptions ?? [],
               isRadio: true,
+              // Use the field's isTips property (default to false if null)
+              isTips: field.isTips ?? false,
               onSelectionChanged: (selectedValue) {
                 setState(() {
                   fieldValues[fieldId] = selectedValue;
                 });
               },
+              // Handle Tips button press if pageNavigate is provided
+              onPressTips: (field.isTips == true && field.pageNavigate != null)
+                  ? () {
+                      // Close the current bottomsheet first
+                      Navigator.pop(context);
+
+                      // Navigate to the specified page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => field.pageNavigate!,
+                        ),
+                      );
+                    }
+                  : null,
             );
           },
         );

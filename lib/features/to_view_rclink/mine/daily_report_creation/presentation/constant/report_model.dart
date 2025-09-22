@@ -13,6 +13,9 @@ class FieldConfig {
   final String? units;
   final List<String>? dropdownOptions;
   final bool isRequired;
+  final bool? isTips;
+  final Widget? pageNavigate;
+  final String? tipsTitle;
 
   FieldConfig({
     required this.id,
@@ -26,6 +29,9 @@ class FieldConfig {
     this.units,
     this.dropdownOptions,
     this.isRequired = false,
+    this.isTips,
+    this.pageNavigate,
+    this.tipsTitle,
   });
 }
 

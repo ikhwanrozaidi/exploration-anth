@@ -146,8 +146,8 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                     "R04 - CLEANING ROAD FURNITURES",
                                     "R05 - CLEANING CULVERTS & BRIDGES",
                                     "R07 - CLEANING DRAINS",
-                                    "General Work",
-                                    "Ujian Tempalan",
+                                    "GW - GENERAL WORK",
+                                    "UP - UJIAN TEMPALAN",
                                   ],
                                   isRadio: true,
                                   onSelectionChanged: (selectedValue) {
@@ -674,7 +674,7 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                               ),
                             ),
 
-                            SizedBox(height: 30),
+                            SizedBox(height: 40),
                           ],
                         ),
                       ],

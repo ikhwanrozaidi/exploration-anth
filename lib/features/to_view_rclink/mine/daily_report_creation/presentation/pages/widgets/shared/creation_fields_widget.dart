@@ -154,6 +154,7 @@ class _DailyReportCreationFieldsState extends State<DailyReportCreationFields> {
   // Textfield
   Widget _buildTextFieldField() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         widget.icon == null
             ? SizedBox()
@@ -172,7 +173,10 @@ class _DailyReportCreationFieldsState extends State<DailyReportCreationFields> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(widget.title),
+              Text(
+                widget.title,
+                style: TextStyle(overflow: TextOverflow.ellipsis),
+              ),
 
               SizedBox(height: 5),
 
@@ -195,6 +199,7 @@ class _DailyReportCreationFieldsState extends State<DailyReportCreationFields> {
                         decoration: InputDecoration(
                           isDense: true,
                           hintText: widget.textFieldHintText,
+                          hintStyle: TextStyle(fontSize: 14),
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.symmetric(
                             horizontal: 12,
@@ -204,23 +209,25 @@ class _DailyReportCreationFieldsState extends State<DailyReportCreationFields> {
                       ),
                     ),
 
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 10),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: primaryColor,
-                        borderRadius: BorderRadius.circular(100),
-                      ),
-                      child: widget.textFieldUnits == null
-                          ? SizedBox()
-                          : Text(
-                              widget.textFieldUnits ?? '',
-                              style: TextStyle(color: Colors.white),
+                    widget.textFieldUnits == null
+                        ? SizedBox()
+                        : Container(
+                            margin: EdgeInsets.symmetric(horizontal: 10),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 2,
                             ),
-                    ),
+                            decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius: BorderRadius.circular(100),
+                            ),
+                            child: widget.textFieldUnits == null
+                                ? SizedBox()
+                                : Text(
+                                    widget.textFieldUnits ?? '',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                          ),
                   ],
                 ),
               ),

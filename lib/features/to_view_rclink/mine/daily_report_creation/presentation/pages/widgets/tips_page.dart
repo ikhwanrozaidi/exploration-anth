@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:rclink_app/features/daily_report_detail/presentation/pages/daily_report_detail_page.dart';
+import 'package:rclink_app/features/daily_report/presentation/pages/daily_report_detail_page.dart';
 
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
-import 'draft_report_creation_page.dart';
+import 'draft_page.dart';
 
 class TipsOnboardingPage extends StatefulWidget {
   final String scopeOfWork;

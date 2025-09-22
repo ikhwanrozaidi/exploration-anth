@@ -1,0 +1,418 @@
+import 'dart:io';
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
+import 'package:injectable/injectable.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
+import '../config/flavor_config.dart';
+
+part 'app_database.g.dart';
+
+// Configure drift runtime options to handle multiple database instances during development
+void _configureDriftOptions() {
+  // Only configure in development to avoid multiple database warnings during hot reload
+  driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+}
+
+// Base mixin for all syncable tables
+mixin SyncableTable on Table {
+  // Sync metadata columns
+  BoolColumn get isSynced => boolean().withDefault(const Constant(false))();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+  TextColumn get syncAction =>
+      text().nullable()(); // 'create', 'update', 'delete'
+  IntColumn get syncRetryCount => integer().withDefault(const Constant(0))();
+  TextColumn get syncError => text().nullable()();
+  DateTimeColumn get lastSyncAttempt => dateTime().nullable()();
+}
+
+// Admins table for authentication
+@DataClassName('AdminRecord')
+class Admins extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID - unique for public lookup
+  TextColumn get phone => text()();
+  TextColumn get firstName => text().nullable()();
+  TextColumn get lastName => text().nullable()();
+  TextColumn get email => text().nullable()();
+  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+    {phone}, // Phone must be unique
+  ];
+}
+
+// Device registration table (for push notifications, etc.)
+// @DataClassName('DeviceEntity')
+// class Devices extends Table with SyncableTable {
+//   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+//   TextColumn get uid => text()(); // Business UUID - unique for public lookup
+//   TextColumn get deviceId => text()(); // Unique device identifier
+//   TextColumn get deviceCode => text()(); // Human-readable device code
+//   TextColumn get type => text()(); // 'mobile', 'web', 'desktop'
+//   TextColumn get name => text().nullable()(); // Device name
+//   DateTimeColumn get lastActiveAt => dateTime().nullable()();
+//   DateTimeColumn get updatedAt => dateTime()();
+//   DateTimeColumn get createdAt => dateTime()();
+
+//   @override
+//   List<Set<Column>> get uniqueKeys => [
+//     {uid}, // UID must be unique for public lookup
+//     {deviceId}, // Device ID must be unique
+//     {deviceCode}, // Device code must be unique
+//   ];
+// }
+
+// Sync queue for offline operations
+@DataClassName('SyncQueueRecord')
+class SyncQueue extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get entityType => text()(); // 'admin', 'device', etc.
+  TextColumn get entityUid => text()(); // UID of the entity
+  TextColumn get action => text()(); // 'create', 'update', 'delete'
+  TextColumn get payload => text().nullable()(); // JSON payload
+  IntColumn get priority => integer().withDefault(const Constant(0))();
+  IntColumn get retryCount => integer().withDefault(const Constant(0))();
+  TextColumn get error => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get scheduledAt => dateTime().nullable()();
+  BoolColumn get isProcessed => boolean().withDefault(const Constant(false))();
+}
+
+// Companies table
+@DataClassName('CompanyRecord')
+class Companies extends Table {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID - unique for public lookup
+  TextColumn get name => text()();
+  TextColumn get regNo => text().nullable()(); // Registration number
+  TextColumn get cidbNo => text().nullable()(); // CIDB number
+  TextColumn get address => text().nullable()();
+  TextColumn get postalCode => text().nullable()();
+  TextColumn get city => text().nullable()();
+  TextColumn get state => text().nullable()();
+  TextColumn get country => text().nullable()();
+  TextColumn get phone => text().nullable()();
+  TextColumn get email => text().nullable()();
+  TextColumn get website => text().nullable()();
+  TextColumn get companyType => text()(); // e.g., "PRIVATE_LIMITED_COMPANY"
+  IntColumn get ownerID => integer()(); // Owner admin ID
+  TextColumn get defaultBankAcc => text().nullable()(); // Default bank account
+  TextColumn get defaultBankAccType => text().nullable()(); // e.g., "MAYBANK"
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+  TextColumn get adminRoleUid => text().nullable()(); // Admin role UID
+  TextColumn get adminRoleName => text().nullable()(); // Admin role name
+  BoolColumn get bumiputera => boolean().withDefault(const Constant(false))();
+  TextColumn get einvoiceTinNo => text().nullable()();
+  DateTimeColumn get registrationDate => dateTime().nullable()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Single role record for current company (only 1 row at a time)
+@DataClassName('RoleRecord')
+class Roles extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get uid => text()();
+  TextColumn get name => text()();
+  TextColumn get description => text().nullable()();
+  IntColumn get companyID => integer()(); // Match API field name
+  BoolColumn get isSystemRole => boolean().withDefault(const Constant(false))();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+}
+
+// Permissions table - stores all permissions for current role
+@DataClassName('PermissionRecord')
+class Permissions extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get uid => text()();
+  TextColumn get code => text()(); // e.g., "COMPANY_VIEW"
+  TextColumn get name => text()();
+  TextColumn get description => text().nullable()();
+  TextColumn get category => text()(); // e.g., "Company", "User", "Role"
+  TextColumn get scope => text()(); // e.g., "COMPANY"
+  IntColumn get roleID => integer()(); // Link to current role
+}
+
+// Work Scopes table (renamed from ScopeOfWorks)
+@DataClassName('WorkScopeRecord')
+class WorkScopes extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  TextColumn get code => text()();
+  TextColumn get description => text()();
+  BoolColumn get allowMultipleQuantities =>
+      boolean().withDefault(const Constant(false))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+  IntColumn get companyID => integer()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Work Quantity Types table
+@DataClassName('WorkQuantityTypeRecord')
+class WorkQuantityTypes extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  TextColumn get code => text()();
+  IntColumn get displayOrder => integer()();
+  BoolColumn get hasSegmentBreakdown =>
+      boolean().withDefault(const Constant(false))();
+  IntColumn get segmentSize => integer().nullable()();
+  IntColumn get maxSegmentLength => integer().nullable()();
+  IntColumn get scopeOfWorkId => integer()(); // Foreign key to ScopeOfWorks
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Work Quantity Fields table (renamed from QuantityFields)
+@DataClassName('WorkQuantityFieldRecord')
+class WorkQuantityFields extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  TextColumn get code => text()();
+  TextColumn get fieldType => text()(); // e.g., "DROPDOWN", "TEXT", "NUMBER"
+  TextColumn get unit => text().nullable()();
+  TextColumn get validationRules => text().nullable()();
+  IntColumn get displayOrder => integer()();
+  BoolColumn get isRequired => boolean().withDefault(const Constant(false))();
+  BoolColumn get isForSegment => boolean().withDefault(const Constant(false))();
+  TextColumn get defaultValue => text().nullable()();
+  TextColumn get placeholder => text().nullable()();
+  TextColumn get helpText => text().nullable()();
+  IntColumn get workQuantityTypeId =>
+      integer()(); // Foreign key to WorkQuantityTypes
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Work Quantity Field Options table (renamed from DropdownOptions)
+@DataClassName('WorkQuantityFieldOptionRecord')
+class WorkQuantityFieldOptions extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get value => text()();
+  IntColumn get displayOrder => integer()();
+  IntColumn get workQuantityFieldId =>
+      integer()(); // Foreign key to WorkQuantityFields
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Work Equipment table
+@DataClassName('WorkEquipmentRecord')
+class WorkEquipments extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  TextColumn get code => text()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Junction table for many-to-many relationship between ScopeOfWork and WorkEquipment
+@DataClassName('ScopeOfWorkEquipmentRecord')
+class ScopeOfWorkEquipments extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get scopeOfWorkId => integer()(); // Foreign key to ScopeOfWorks
+  IntColumn get workEquipmentId => integer()(); // Foreign key to WorkEquipments
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {scopeOfWorkId, workEquipmentId}, // Prevent duplicate relationships
+  ];
+}
+
+@DriftDatabase(
+  tables: [
+    Admins,
+    SyncQueue,
+    Roles,
+    Permissions,
+    Companies,
+    WorkScopes,
+    WorkQuantityTypes,
+    WorkQuantityFields,
+    WorkQuantityFieldOptions,
+    WorkEquipments,
+    ScopeOfWorkEquipments,
+  ],
+)
+class AppDatabase extends _$AppDatabase {
+  AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
+
+  @override
+  int get schemaVersion => 8; // Increments for rename tables
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        // Called when installing the app for the first time
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from < 3) {
+          // Migration from version 2 to 3: Drop avatarUrl column
+          // SQLite doesn't support DROP COLUMN, so we need to recreate the table
+
+          // Disable foreign keys temporarily
+          await customStatement('PRAGMA foreign_keys = OFF');
+
+          // Rename existing table
+          await customStatement('ALTER TABLE admins RENAME TO admins_old');
+
+          // Create new table with new schema (without avatarUrl)
+          await m.createTable(admins);
+
+          // Copy data from old table to new table (excluding avatarUrl)
+          await customStatement('''
+            INSERT INTO admins (id, uid, phone, first_name, last_name, email, 
+                               updated_at, created_at, is_synced, deleted_at, 
+                               sync_action, sync_retry_count, sync_error, last_sync_attempt)
+            SELECT id, uid, phone, first_name, last_name, email, 
+                   updated_at, created_at, is_synced, deleted_at, 
+                   sync_action, sync_retry_count, sync_error, last_sync_attempt
+            FROM admins_old
+          ''');
+
+          // Drop old table
+          await customStatement('DROP TABLE admins_old');
+
+          // Re-enable foreign keys
+          await customStatement('PRAGMA foreign_keys = ON');
+        }
+
+        if (from < 4) {
+          // Migration from version 3 to 4: Add Roles and Permissions tables
+          await m.createTable(roles);
+          await m.createTable(permissions);
+        }
+
+        if (from < 5) {
+          // Migration from version 4 to 5: Add Companies tables
+          await m.createTable(companies);
+        }
+
+        if (from < 6) {
+          // Migration from version 5 to 6: Add new columns to Companies table
+          // Check which columns exist before adding them
+          final result = await customSelect(
+            "PRAGMA table_info('companies')",
+          ).get();
+
+          final existingColumns = result
+              .map((row) => row.data['name'] as String)
+              .toSet();
+
+          if (!existingColumns.contains('bumiputera')) {
+            await m.addColumn(companies, companies.bumiputera);
+          }
+          if (!existingColumns.contains('einvoice_tin_no')) {
+            await m.addColumn(companies, companies.einvoiceTinNo);
+          }
+          if (!existingColumns.contains('registration_date')) {
+            await m.addColumn(companies, companies.registrationDate);
+          }
+          if (!existingColumns.contains('admin_role_uid')) {
+            await m.addColumn(companies, companies.adminRoleUid);
+          }
+          if (!existingColumns.contains('admin_role_name')) {
+            await m.addColumn(companies, companies.adminRoleName);
+          }
+        }
+
+        if (from < 7) {
+          // Migration from version 6 to 7: Add Scope of Work related tables
+          await m.createTable(workScopes);
+          await m.createTable(workQuantityTypes);
+          await m.createTable(workQuantityFields);
+          await m.createTable(workQuantityFieldOptions);
+          await m.createTable(workEquipments);
+          await m.createTable(scopeOfWorkEquipments);
+        }
+
+        if (from < 8) {
+          // Migration from version 7 to 8: Drop old tables and create new ones with correct names
+          await customStatement('PRAGMA foreign_keys = OFF');
+
+          // Drop old tables if they exist
+          await customStatement('DROP TABLE IF EXISTS dropdown_options');
+          await customStatement('DROP TABLE IF EXISTS quantity_fields');
+          await customStatement('DROP TABLE IF EXISTS scope_of_works');
+
+          // Create new tables with correct names
+          await m.createTable(workScopes);
+          await m.createTable(workQuantityFields);
+          await m.createTable(workQuantityFieldOptions);
+
+          await customStatement('PRAGMA foreign_keys = ON');
+        }
+      },
+      beforeOpen: (details) async {
+        // Enable foreign keys
+        await customStatement('PRAGMA foreign_keys = ON');
+      },
+    );
+  }
+
+  static QueryExecutor _openConnection() {
+    return LazyDatabase(() async {
+      final dbFolder = await getApplicationDocumentsDirectory();
+      final flavorName = FlavorConfig.flavorName;
+      final dbName = 'rclink_$flavorName.db';
+      final file = File(p.join(dbFolder.path, dbName));
+
+      return NativeDatabase.createInBackground(file);
+    });
+  }
+}
+
+@singleton
+class DatabaseService {
+  static AppDatabase? _database;
+
+  DatabaseService() {
+    // Configure drift options to prevent warnings during development
+    _configureDriftOptions();
+
+    // Only create database if it doesn't exist
+    _database ??= AppDatabase();
+  }
+
+  AppDatabase get database => _database!;
+
+  Future<void> close() async {
+    await _database?.close();
+    _database = null;
+  }
+}

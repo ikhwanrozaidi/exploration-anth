@@ -4,7 +4,7 @@ import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/divider_config.dart';
 import '../../constant/report_model.dart';
 import '../../constant/scope_configurations.dart';
-import 'custom_fields_tile.dart';
+import 'shared/custom_fields_tile_widget.dart';
 import 'quantity_selection_page.dart';
 
 class DraftDailyReportPage extends StatefulWidget {
@@ -101,7 +101,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
 
                             TextButton(
                               onPressed: () {
-                                print('Tips button pressed');
+                                print('Remove button pressed');
                               },
                               style: TextButton.styleFrom(
                                 backgroundColor: Colors.white,
