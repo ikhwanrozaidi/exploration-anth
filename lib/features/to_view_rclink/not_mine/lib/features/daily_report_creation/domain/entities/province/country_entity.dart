@@ -4,14 +4,14 @@ import 'package:json_annotation/json_annotation.dart';
 part 'country_entity.g.dart';
 
 @JsonSerializable()
-class CountryEntity extends Equatable {
+class Countryr extends Equatable {
   final int? id;
   final String? uid;
   final String? name;
   final String? createdAt;
   final String? updatedAt;
 
-  const CountryEntity({
+  const Countryr({
     this.id,
     this.uid,
     this.name,
@@ -19,10 +19,10 @@ class CountryEntity extends Equatable {
     this.updatedAt,
   });
 
-  factory CountryEntity.fromJson(Map<String, dynamic> json) =>
-      _$CountryEntityFromJson(json);
+  factory Countryr.fromJson(Map<String, dynamic> json) =>
+      _$CountryrFromJson(json);
 
-  Map<String, dynamic> toJson() => _$CountryEntityToJson(this);
+  Map<String, dynamic> toJson() => _$CountryrToJson(this);
 
   @override
   List<Object?> get props => [id, uid, name, createdAt, updatedAt];

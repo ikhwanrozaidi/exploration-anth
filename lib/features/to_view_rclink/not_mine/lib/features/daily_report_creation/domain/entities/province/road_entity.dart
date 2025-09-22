@@ -7,7 +7,7 @@ import 'road_category_entity.dart';
 part 'road_entity.g.dart';
 
 @JsonSerializable()
-class RoadEntity extends Equatable {
+class Road extends Equatable {
   final int? id;
   final String? uid;
   final String? name;
@@ -19,11 +19,11 @@ class RoadEntity extends Equatable {
   final int? districtId;
   final String? createdAt;
   final String? updatedAt;
-  final DistrictEntity? district;
-  final RoadCategoryEntity? mainCategory;
-  final RoadCategoryEntity? secondaryCategory;
+  final District? district;
+  final RoadCategory? mainCategory;
+  final RoadCategory? secondaryCategory;
 
-  const RoadEntity({
+  const Road({
     this.id,
     this.uid,
     this.name,
@@ -40,10 +40,9 @@ class RoadEntity extends Equatable {
     this.secondaryCategory,
   });
 
-  factory RoadEntity.fromJson(Map<String, dynamic> json) =>
-      _$RoadEntityFromJson(json);
+  factory Road.fromJson(Map<String, dynamic> json) => _$RoadFromJson(json);
 
-  Map<String, dynamic> toJson() => _$RoadEntityToJson(this);
+  Map<String, dynamic> toJson() => _$RoadToJson(this);
 
   @override
   List<Object?> get props => [

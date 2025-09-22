@@ -257,8 +257,8 @@ return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_t
 /// @nodoc
 @JsonSerializable()
 
-class _RoadModel implements RoadModel {
-   _RoadModel({this.id, this.uid, this.name, this.roadNo, this.sectionStart, this.sectionFinish, @JsonKey(name: 'mainCategoryID') this.mainCategoryId, @JsonKey(name: 'secondaryCategoryID') this.secondaryCategoryId, @JsonKey(name: 'districtID') this.districtId, this.createdAt, this.updatedAt, this.district, this.mainCategory, this.secondaryCategory});
+class _RoadModel extends RoadModel {
+  const _RoadModel({this.id, this.uid, this.name, this.roadNo, this.sectionStart, this.sectionFinish, @JsonKey(name: 'mainCategoryID') this.mainCategoryId, @JsonKey(name: 'secondaryCategoryID') this.secondaryCategoryId, @JsonKey(name: 'districtID') this.districtId, this.createdAt, this.updatedAt, this.district, this.mainCategory, this.secondaryCategory}): super._();
   factory _RoadModel.fromJson(Map<String, dynamic> json) => _$RoadModelFromJson(json);
 
 @override final  int? id;

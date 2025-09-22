@@ -11,7 +11,7 @@ _DistrictModel _$DistrictModelFromJson(Map<String, dynamic> json) =>
       id: (json['id'] as num?)?.toInt(),
       uid: json['uid'] as String?,
       name: json['name'] as String?,
-      stateId: (json['provinceID'] as num?)?.toInt(),
+      stateId: (json['stateID'] as num?)?.toInt(),
       state: json['state'] == null
           ? null
           : ProvinceModel.fromJson(json['state'] as Map<String, dynamic>),
@@ -22,6 +22,6 @@ Map<String, dynamic> _$DistrictModelToJson(_DistrictModel instance) =>
       'id': instance.id,
       'uid': instance.uid,
       'name': instance.name,
-      'provinceID': instance.stateId,
+      'stateID': instance.stateId,
       'state': instance.state,
     };

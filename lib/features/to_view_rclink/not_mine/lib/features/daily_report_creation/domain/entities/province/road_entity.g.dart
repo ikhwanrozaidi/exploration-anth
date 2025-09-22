@@ -6,7 +6,7 @@ part of 'road_entity.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-RoadEntity _$RoadEntityFromJson(Map<String, dynamic> json) => RoadEntity(
+Road _$RoadFromJson(Map<String, dynamic> json) => Road(
   id: (json['id'] as num?)?.toInt(),
   uid: json['uid'] as String?,
   name: json['name'] as String?,
@@ -20,33 +20,30 @@ RoadEntity _$RoadEntityFromJson(Map<String, dynamic> json) => RoadEntity(
   updatedAt: json['updatedAt'] as String?,
   district: json['district'] == null
       ? null
-      : DistrictEntity.fromJson(json['district'] as Map<String, dynamic>),
+      : District.fromJson(json['district'] as Map<String, dynamic>),
   mainCategory: json['mainCategory'] == null
       ? null
-      : RoadCategoryEntity.fromJson(
-          json['mainCategory'] as Map<String, dynamic>,
-        ),
+      : RoadCategory.fromJson(json['mainCategory'] as Map<String, dynamic>),
   secondaryCategory: json['secondaryCategory'] == null
       ? null
-      : RoadCategoryEntity.fromJson(
+      : RoadCategory.fromJson(
           json['secondaryCategory'] as Map<String, dynamic>,
         ),
 );
 
-Map<String, dynamic> _$RoadEntityToJson(RoadEntity instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'uid': instance.uid,
-      'name': instance.name,
-      'roadNo': instance.roadNo,
-      'sectionStart': instance.sectionStart,
-      'sectionFinish': instance.sectionFinish,
-      'mainCategoryId': instance.mainCategoryId,
-      'secondaryCategoryId': instance.secondaryCategoryId,
-      'districtId': instance.districtId,
-      'createdAt': instance.createdAt,
-      'updatedAt': instance.updatedAt,
-      'district': instance.district,
-      'mainCategory': instance.mainCategory,
-      'secondaryCategory': instance.secondaryCategory,
-    };
+Map<String, dynamic> _$RoadToJson(Road instance) => <String, dynamic>{
+  'id': instance.id,
+  'uid': instance.uid,
+  'name': instance.name,
+  'roadNo': instance.roadNo,
+  'sectionStart': instance.sectionStart,
+  'sectionFinish': instance.sectionFinish,
+  'mainCategoryId': instance.mainCategoryId,
+  'secondaryCategoryId': instance.secondaryCategoryId,
+  'districtId': instance.districtId,
+  'createdAt': instance.createdAt,
+  'updatedAt': instance.updatedAt,
+  'district': instance.district,
+  'mainCategory': instance.mainCategory,
+  'secondaryCategory': instance.secondaryCategory,
+};

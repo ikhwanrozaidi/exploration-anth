@@ -5,25 +5,19 @@ import 'package:rclink_app/features/daily_report_creation/domain/entities/provin
 part 'district_entity.g.dart';
 
 @JsonSerializable()
-class DistrictEntity extends Equatable {
+class District extends Equatable {
   final int? id;
   final String? uid;
   final String? name;
   final int? stateId;
-  final ProvinceEntity? state;
+  final Province? state;
 
-  const DistrictEntity({
-    this.id,
-    this.uid,
-    this.name,
-    this.stateId,
-    this.state,
-  });
+  const District({this.id, this.uid, this.name, this.stateId, this.state});
 
-  factory DistrictEntity.fromJson(Map<String, dynamic> json) =>
-      _$DistrictEntityFromJson(json);
+  factory District.fromJson(Map<String, dynamic> json) =>
+      _$DistrictFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DistrictEntityToJson(this);
+  Map<String, dynamic> toJson() => _$DistrictToJson(this);
 
   @override
   List<Object?> get props => [id, uid, name, stateId, state];

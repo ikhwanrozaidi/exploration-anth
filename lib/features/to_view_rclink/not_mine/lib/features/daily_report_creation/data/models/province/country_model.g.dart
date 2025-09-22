@@ -6,8 +6,8 @@ part of 'country_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_CountryModel _$CountryModelFromJson(Map<String, dynamic> json) =>
-    _CountryModel(
+_CountryrModel _$CountryrModelFromJson(Map<String, dynamic> json) =>
+    _CountryrModel(
       id: (json['id'] as num?)?.toInt(),
       uid: json['uid'] as String?,
       name: json['name'] as String?,
@@ -15,7 +15,7 @@ _CountryModel _$CountryModelFromJson(Map<String, dynamic> json) =>
       updatedAt: json['updatedAt'] as String?,
     );
 
-Map<String, dynamic> _$CountryModelToJson(_CountryModel instance) =>
+Map<String, dynamic> _$CountryrModelToJson(_CountryrModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'uid': instance.uid,

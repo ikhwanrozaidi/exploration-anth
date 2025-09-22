@@ -4,14 +4,14 @@ import 'package:json_annotation/json_annotation.dart';
 part 'road_category_entity.g.dart';
 
 @JsonSerializable()
-class RoadCategoryEntity extends Equatable {
+class RoadCategory extends Equatable {
   final int? id;
   final String? uid;
   final String? name;
   final String? createdAt;
   final String? updatedAt;
 
-  const RoadCategoryEntity({
+  const RoadCategory({
     this.id,
     this.uid,
     this.name,
@@ -19,10 +19,10 @@ class RoadCategoryEntity extends Equatable {
     this.updatedAt,
   });
 
-  factory RoadCategoryEntity.fromJson(Map<String, dynamic> json) =>
-      _$RoadCategoryEntityFromJson(json);
+  factory RoadCategory.fromJson(Map<String, dynamic> json) =>
+      _$RoadCategoryFromJson(json);
 
-  Map<String, dynamic> toJson() => _$RoadCategoryEntityToJson(this);
+  Map<String, dynamic> toJson() => _$RoadCategoryToJson(this);
 
   @override
   List<Object?> get props => [id, uid, name, createdAt, updatedAt];

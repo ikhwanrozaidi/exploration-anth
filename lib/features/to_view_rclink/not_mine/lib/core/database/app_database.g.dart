@@ -9300,6 +9300,3743 @@ class WorkScopeEquipmentCompanion
   }
 }
 
+class $CountriesTable extends Countries
+    with TableInfo<$CountriesTable, CountryRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CountriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'countries';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CountryRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  CountryRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CountryRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CountriesTable createAlias(String alias) {
+    return $CountriesTable(attachedDatabase, alias);
+  }
+}
+
+class CountryRecord extends DataClass implements Insertable<CountryRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String name;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const CountryRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.name,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['name'] = Variable<String>(name);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  CountriesCompanion toCompanion(bool nullToAbsent) {
+    return CountriesCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      name: Value(name),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory CountryRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CountryRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      name: serializer.fromJson<String>(json['name']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'name': serializer.toJson<String>(name),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  CountryRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? name,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => CountryRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  CountryRecord copyWithCompanion(CountriesCompanion data) {
+    return CountryRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      name: data.name.present ? data.name.value : this.name,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CountryRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CountryRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.name == this.name &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class CountriesCompanion extends UpdateCompanion<CountryRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> name;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const CountriesCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  CountriesCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String name,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : uid = Value(uid),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<CountryRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? name,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (name != null) 'name': name,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  CountriesCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? name,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return CountriesCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CountriesCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProvincesTable extends Provinces
+    with TableInfo<$ProvincesTable, ProvinceRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProvincesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _countryIDMeta = const VerificationMeta(
+    'countryID',
+  );
+  @override
+  late final GeneratedColumn<int> countryID = GeneratedColumn<int>(
+    'country_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    countryID,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'provinces';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProvinceRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('country_i_d')) {
+      context.handle(
+        _countryIDMeta,
+        countryID.isAcceptableOrUnknown(data['country_i_d']!, _countryIDMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_countryIDMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  ProvinceRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProvinceRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      countryID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}country_i_d'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ProvincesTable createAlias(String alias) {
+    return $ProvincesTable(attachedDatabase, alias);
+  }
+}
+
+class ProvinceRecord extends DataClass implements Insertable<ProvinceRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String name;
+  final int countryID;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ProvinceRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.name,
+    required this.countryID,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['name'] = Variable<String>(name);
+    map['country_i_d'] = Variable<int>(countryID);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ProvincesCompanion toCompanion(bool nullToAbsent) {
+    return ProvincesCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      name: Value(name),
+      countryID: Value(countryID),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ProvinceRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProvinceRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      name: serializer.fromJson<String>(json['name']),
+      countryID: serializer.fromJson<int>(json['countryID']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'name': serializer.toJson<String>(name),
+      'countryID': serializer.toJson<int>(countryID),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ProvinceRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? name,
+    int? countryID,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ProvinceRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    countryID: countryID ?? this.countryID,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ProvinceRecord copyWithCompanion(ProvincesCompanion data) {
+    return ProvinceRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      name: data.name.present ? data.name.value : this.name,
+      countryID: data.countryID.present ? data.countryID.value : this.countryID,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProvinceRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('countryID: $countryID, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    countryID,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProvinceRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.name == this.name &&
+          other.countryID == this.countryID &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ProvincesCompanion extends UpdateCompanion<ProvinceRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> name;
+  final Value<int> countryID;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const ProvincesCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.countryID = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  ProvincesCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String name,
+    required int countryID,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : uid = Value(uid),
+       name = Value(name),
+       countryID = Value(countryID),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ProvinceRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? name,
+    Expression<int>? countryID,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (name != null) 'name': name,
+      if (countryID != null) 'country_i_d': countryID,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  ProvincesCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? name,
+    Value<int>? countryID,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return ProvincesCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      countryID: countryID ?? this.countryID,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (countryID.present) {
+      map['country_i_d'] = Variable<int>(countryID.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProvincesCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('countryID: $countryID, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $DistrictsTable extends Districts
+    with TableInfo<$DistrictsTable, DistrictRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DistrictsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _stateIdMeta = const VerificationMeta(
+    'stateId',
+  );
+  @override
+  late final GeneratedColumn<int> stateId = GeneratedColumn<int>(
+    'state_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    stateId,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'districts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DistrictRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('state_id')) {
+      context.handle(
+        _stateIdMeta,
+        stateId.isAcceptableOrUnknown(data['state_id']!, _stateIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_stateIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  DistrictRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DistrictRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      stateId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}state_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DistrictsTable createAlias(String alias) {
+    return $DistrictsTable(attachedDatabase, alias);
+  }
+}
+
+class DistrictRecord extends DataClass implements Insertable<DistrictRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String name;
+  final int stateId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const DistrictRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.name,
+    required this.stateId,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['name'] = Variable<String>(name);
+    map['state_id'] = Variable<int>(stateId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  DistrictsCompanion toCompanion(bool nullToAbsent) {
+    return DistrictsCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      name: Value(name),
+      stateId: Value(stateId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory DistrictRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DistrictRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      name: serializer.fromJson<String>(json['name']),
+      stateId: serializer.fromJson<int>(json['stateId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'name': serializer.toJson<String>(name),
+      'stateId': serializer.toJson<int>(stateId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  DistrictRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? name,
+    int? stateId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => DistrictRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    stateId: stateId ?? this.stateId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  DistrictRecord copyWithCompanion(DistrictsCompanion data) {
+    return DistrictRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      name: data.name.present ? data.name.value : this.name,
+      stateId: data.stateId.present ? data.stateId.value : this.stateId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DistrictRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('stateId: $stateId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    stateId,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DistrictRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.name == this.name &&
+          other.stateId == this.stateId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class DistrictsCompanion extends UpdateCompanion<DistrictRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> name;
+  final Value<int> stateId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const DistrictsCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.stateId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  DistrictsCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String name,
+    required int stateId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : uid = Value(uid),
+       name = Value(name),
+       stateId = Value(stateId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<DistrictRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? name,
+    Expression<int>? stateId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (name != null) 'name': name,
+      if (stateId != null) 'state_id': stateId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  DistrictsCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? name,
+    Value<int>? stateId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return DistrictsCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      stateId: stateId ?? this.stateId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (stateId.present) {
+      map['state_id'] = Variable<int>(stateId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DistrictsCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('stateId: $stateId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RoadCategoriesTable extends RoadCategories
+    with TableInfo<$RoadCategoriesTable, RoadCategoryRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoadCategoriesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'road_categories';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RoadCategoryRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  RoadCategoryRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RoadCategoryRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $RoadCategoriesTable createAlias(String alias) {
+    return $RoadCategoriesTable(attachedDatabase, alias);
+  }
+}
+
+class RoadCategoryRecord extends DataClass
+    implements Insertable<RoadCategoryRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String name;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const RoadCategoryRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.name,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['name'] = Variable<String>(name);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  RoadCategoriesCompanion toCompanion(bool nullToAbsent) {
+    return RoadCategoriesCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      name: Value(name),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory RoadCategoryRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RoadCategoryRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      name: serializer.fromJson<String>(json['name']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'name': serializer.toJson<String>(name),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  RoadCategoryRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? name,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => RoadCategoryRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  RoadCategoryRecord copyWithCompanion(RoadCategoriesCompanion data) {
+    return RoadCategoryRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      name: data.name.present ? data.name.value : this.name,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoadCategoryRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RoadCategoryRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.name == this.name &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class RoadCategoriesCompanion extends UpdateCompanion<RoadCategoryRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> name;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const RoadCategoriesCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  RoadCategoriesCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String name,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : uid = Value(uid),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<RoadCategoryRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? name,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (name != null) 'name': name,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  RoadCategoriesCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? name,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return RoadCategoriesCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoadCategoriesCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $RoadsTable extends Roads with TableInfo<$RoadsTable, RoadRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $RoadsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roadNoMeta = const VerificationMeta('roadNo');
+  @override
+  late final GeneratedColumn<String> roadNo = GeneratedColumn<String>(
+    'road_no',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sectionStartMeta = const VerificationMeta(
+    'sectionStart',
+  );
+  @override
+  late final GeneratedColumn<String> sectionStart = GeneratedColumn<String>(
+    'section_start',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _sectionFinishMeta = const VerificationMeta(
+    'sectionFinish',
+  );
+  @override
+  late final GeneratedColumn<String> sectionFinish = GeneratedColumn<String>(
+    'section_finish',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _mainCategoryIdMeta = const VerificationMeta(
+    'mainCategoryId',
+  );
+  @override
+  late final GeneratedColumn<int> mainCategoryId = GeneratedColumn<int>(
+    'main_category_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _secondaryCategoryIdMeta =
+      const VerificationMeta('secondaryCategoryId');
+  @override
+  late final GeneratedColumn<int> secondaryCategoryId = GeneratedColumn<int>(
+    'secondary_category_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _districtIdMeta = const VerificationMeta(
+    'districtId',
+  );
+  @override
+  late final GeneratedColumn<int> districtId = GeneratedColumn<int>(
+    'district_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    roadNo,
+    sectionStart,
+    sectionFinish,
+    mainCategoryId,
+    secondaryCategoryId,
+    districtId,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'roads';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<RoadRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('road_no')) {
+      context.handle(
+        _roadNoMeta,
+        roadNo.isAcceptableOrUnknown(data['road_no']!, _roadNoMeta),
+      );
+    }
+    if (data.containsKey('section_start')) {
+      context.handle(
+        _sectionStartMeta,
+        sectionStart.isAcceptableOrUnknown(
+          data['section_start']!,
+          _sectionStartMeta,
+        ),
+      );
+    }
+    if (data.containsKey('section_finish')) {
+      context.handle(
+        _sectionFinishMeta,
+        sectionFinish.isAcceptableOrUnknown(
+          data['section_finish']!,
+          _sectionFinishMeta,
+        ),
+      );
+    }
+    if (data.containsKey('main_category_id')) {
+      context.handle(
+        _mainCategoryIdMeta,
+        mainCategoryId.isAcceptableOrUnknown(
+          data['main_category_id']!,
+          _mainCategoryIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('secondary_category_id')) {
+      context.handle(
+        _secondaryCategoryIdMeta,
+        secondaryCategoryId.isAcceptableOrUnknown(
+          data['secondary_category_id']!,
+          _secondaryCategoryIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('district_id')) {
+      context.handle(
+        _districtIdMeta,
+        districtId.isAcceptableOrUnknown(data['district_id']!, _districtIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_districtIdMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  RoadRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return RoadRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      roadNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}road_no'],
+      ),
+      sectionStart: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}section_start'],
+      ),
+      sectionFinish: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}section_finish'],
+      ),
+      mainCategoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}main_category_id'],
+      ),
+      secondaryCategoryId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}secondary_category_id'],
+      ),
+      districtId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}district_id'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $RoadsTable createAlias(String alias) {
+    return $RoadsTable(attachedDatabase, alias);
+  }
+}
+
+class RoadRecord extends DataClass implements Insertable<RoadRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String name;
+  final String? roadNo;
+  final String? sectionStart;
+  final String? sectionFinish;
+  final int? mainCategoryId;
+  final int? secondaryCategoryId;
+  final int districtId;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const RoadRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.name,
+    this.roadNo,
+    this.sectionStart,
+    this.sectionFinish,
+    this.mainCategoryId,
+    this.secondaryCategoryId,
+    required this.districtId,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || roadNo != null) {
+      map['road_no'] = Variable<String>(roadNo);
+    }
+    if (!nullToAbsent || sectionStart != null) {
+      map['section_start'] = Variable<String>(sectionStart);
+    }
+    if (!nullToAbsent || sectionFinish != null) {
+      map['section_finish'] = Variable<String>(sectionFinish);
+    }
+    if (!nullToAbsent || mainCategoryId != null) {
+      map['main_category_id'] = Variable<int>(mainCategoryId);
+    }
+    if (!nullToAbsent || secondaryCategoryId != null) {
+      map['secondary_category_id'] = Variable<int>(secondaryCategoryId);
+    }
+    map['district_id'] = Variable<int>(districtId);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  RoadsCompanion toCompanion(bool nullToAbsent) {
+    return RoadsCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      name: Value(name),
+      roadNo: roadNo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(roadNo),
+      sectionStart: sectionStart == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sectionStart),
+      sectionFinish: sectionFinish == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sectionFinish),
+      mainCategoryId: mainCategoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(mainCategoryId),
+      secondaryCategoryId: secondaryCategoryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(secondaryCategoryId),
+      districtId: Value(districtId),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory RoadRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return RoadRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      name: serializer.fromJson<String>(json['name']),
+      roadNo: serializer.fromJson<String?>(json['roadNo']),
+      sectionStart: serializer.fromJson<String?>(json['sectionStart']),
+      sectionFinish: serializer.fromJson<String?>(json['sectionFinish']),
+      mainCategoryId: serializer.fromJson<int?>(json['mainCategoryId']),
+      secondaryCategoryId: serializer.fromJson<int?>(
+        json['secondaryCategoryId'],
+      ),
+      districtId: serializer.fromJson<int>(json['districtId']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'name': serializer.toJson<String>(name),
+      'roadNo': serializer.toJson<String?>(roadNo),
+      'sectionStart': serializer.toJson<String?>(sectionStart),
+      'sectionFinish': serializer.toJson<String?>(sectionFinish),
+      'mainCategoryId': serializer.toJson<int?>(mainCategoryId),
+      'secondaryCategoryId': serializer.toJson<int?>(secondaryCategoryId),
+      'districtId': serializer.toJson<int>(districtId),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  RoadRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? name,
+    Value<String?> roadNo = const Value.absent(),
+    Value<String?> sectionStart = const Value.absent(),
+    Value<String?> sectionFinish = const Value.absent(),
+    Value<int?> mainCategoryId = const Value.absent(),
+    Value<int?> secondaryCategoryId = const Value.absent(),
+    int? districtId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => RoadRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    roadNo: roadNo.present ? roadNo.value : this.roadNo,
+    sectionStart: sectionStart.present ? sectionStart.value : this.sectionStart,
+    sectionFinish: sectionFinish.present
+        ? sectionFinish.value
+        : this.sectionFinish,
+    mainCategoryId: mainCategoryId.present
+        ? mainCategoryId.value
+        : this.mainCategoryId,
+    secondaryCategoryId: secondaryCategoryId.present
+        ? secondaryCategoryId.value
+        : this.secondaryCategoryId,
+    districtId: districtId ?? this.districtId,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  RoadRecord copyWithCompanion(RoadsCompanion data) {
+    return RoadRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      name: data.name.present ? data.name.value : this.name,
+      roadNo: data.roadNo.present ? data.roadNo.value : this.roadNo,
+      sectionStart: data.sectionStart.present
+          ? data.sectionStart.value
+          : this.sectionStart,
+      sectionFinish: data.sectionFinish.present
+          ? data.sectionFinish.value
+          : this.sectionFinish,
+      mainCategoryId: data.mainCategoryId.present
+          ? data.mainCategoryId.value
+          : this.mainCategoryId,
+      secondaryCategoryId: data.secondaryCategoryId.present
+          ? data.secondaryCategoryId.value
+          : this.secondaryCategoryId,
+      districtId: data.districtId.present
+          ? data.districtId.value
+          : this.districtId,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoadRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('roadNo: $roadNo, ')
+          ..write('sectionStart: $sectionStart, ')
+          ..write('sectionFinish: $sectionFinish, ')
+          ..write('mainCategoryId: $mainCategoryId, ')
+          ..write('secondaryCategoryId: $secondaryCategoryId, ')
+          ..write('districtId: $districtId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    roadNo,
+    sectionStart,
+    sectionFinish,
+    mainCategoryId,
+    secondaryCategoryId,
+    districtId,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is RoadRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.name == this.name &&
+          other.roadNo == this.roadNo &&
+          other.sectionStart == this.sectionStart &&
+          other.sectionFinish == this.sectionFinish &&
+          other.mainCategoryId == this.mainCategoryId &&
+          other.secondaryCategoryId == this.secondaryCategoryId &&
+          other.districtId == this.districtId &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class RoadsCompanion extends UpdateCompanion<RoadRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> name;
+  final Value<String?> roadNo;
+  final Value<String?> sectionStart;
+  final Value<String?> sectionFinish;
+  final Value<int?> mainCategoryId;
+  final Value<int?> secondaryCategoryId;
+  final Value<int> districtId;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const RoadsCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.roadNo = const Value.absent(),
+    this.sectionStart = const Value.absent(),
+    this.sectionFinish = const Value.absent(),
+    this.mainCategoryId = const Value.absent(),
+    this.secondaryCategoryId = const Value.absent(),
+    this.districtId = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  RoadsCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String name,
+    this.roadNo = const Value.absent(),
+    this.sectionStart = const Value.absent(),
+    this.sectionFinish = const Value.absent(),
+    this.mainCategoryId = const Value.absent(),
+    this.secondaryCategoryId = const Value.absent(),
+    required int districtId,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : uid = Value(uid),
+       name = Value(name),
+       districtId = Value(districtId),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<RoadRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? name,
+    Expression<String>? roadNo,
+    Expression<String>? sectionStart,
+    Expression<String>? sectionFinish,
+    Expression<int>? mainCategoryId,
+    Expression<int>? secondaryCategoryId,
+    Expression<int>? districtId,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (name != null) 'name': name,
+      if (roadNo != null) 'road_no': roadNo,
+      if (sectionStart != null) 'section_start': sectionStart,
+      if (sectionFinish != null) 'section_finish': sectionFinish,
+      if (mainCategoryId != null) 'main_category_id': mainCategoryId,
+      if (secondaryCategoryId != null)
+        'secondary_category_id': secondaryCategoryId,
+      if (districtId != null) 'district_id': districtId,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  RoadsCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? name,
+    Value<String?>? roadNo,
+    Value<String?>? sectionStart,
+    Value<String?>? sectionFinish,
+    Value<int?>? mainCategoryId,
+    Value<int?>? secondaryCategoryId,
+    Value<int>? districtId,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return RoadsCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      roadNo: roadNo ?? this.roadNo,
+      sectionStart: sectionStart ?? this.sectionStart,
+      sectionFinish: sectionFinish ?? this.sectionFinish,
+      mainCategoryId: mainCategoryId ?? this.mainCategoryId,
+      secondaryCategoryId: secondaryCategoryId ?? this.secondaryCategoryId,
+      districtId: districtId ?? this.districtId,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (roadNo.present) {
+      map['road_no'] = Variable<String>(roadNo.value);
+    }
+    if (sectionStart.present) {
+      map['section_start'] = Variable<String>(sectionStart.value);
+    }
+    if (sectionFinish.present) {
+      map['section_finish'] = Variable<String>(sectionFinish.value);
+    }
+    if (mainCategoryId.present) {
+      map['main_category_id'] = Variable<int>(mainCategoryId.value);
+    }
+    if (secondaryCategoryId.present) {
+      map['secondary_category_id'] = Variable<int>(secondaryCategoryId.value);
+    }
+    if (districtId.present) {
+      map['district_id'] = Variable<int>(districtId.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('RoadsCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('roadNo: $roadNo, ')
+          ..write('sectionStart: $sectionStart, ')
+          ..write('sectionFinish: $sectionFinish, ')
+          ..write('mainCategoryId: $mainCategoryId, ')
+          ..write('secondaryCategoryId: $secondaryCategoryId, ')
+          ..write('districtId: $districtId, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   _$AppDatabase.connect(DatabaseConnection c) : super.connect(c);
@@ -9320,6 +13057,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $WorkScopeEquipmentsTable(this);
   late final $WorkScopeEquipmentTable workScopeEquipment =
       $WorkScopeEquipmentTable(this);
+  late final $CountriesTable countries = $CountriesTable(this);
+  late final $ProvincesTable provinces = $ProvincesTable(this);
+  late final $DistrictsTable districts = $DistrictsTable(this);
+  late final $RoadCategoriesTable roadCategories = $RoadCategoriesTable(this);
+  late final $RoadsTable roads = $RoadsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -9336,6 +13078,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     workQuantityFieldOptions,
     workScopeEquipments,
     workScopeEquipment,
+    countries,
+    provinces,
+    districts,
+    roadCategories,
+    roads,
   ];
 }
 
@@ -13633,6 +17380,1737 @@ typedef $$WorkScopeEquipmentTableProcessedTableManager =
       WorkScopeEquipmentRecord,
       PrefetchHooks Function()
     >;
+typedef $$CountriesTableCreateCompanionBuilder =
+    CountriesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String name,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$CountriesTableUpdateCompanionBuilder =
+    CountriesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> name,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$CountriesTableFilterComposer
+    extends Composer<_$AppDatabase, $CountriesTable> {
+  $$CountriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CountriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $CountriesTable> {
+  $$CountriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CountriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $CountriesTable> {
+  $$CountriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$CountriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $CountriesTable,
+          CountryRecord,
+          $$CountriesTableFilterComposer,
+          $$CountriesTableOrderingComposer,
+          $$CountriesTableAnnotationComposer,
+          $$CountriesTableCreateCompanionBuilder,
+          $$CountriesTableUpdateCompanionBuilder,
+          (
+            CountryRecord,
+            BaseReferences<_$AppDatabase, $CountriesTable, CountryRecord>,
+          ),
+          CountryRecord,
+          PrefetchHooks Function()
+        > {
+  $$CountriesTableTableManager(_$AppDatabase db, $CountriesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CountriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CountriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CountriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => CountriesCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String name,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => CountriesCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CountriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $CountriesTable,
+      CountryRecord,
+      $$CountriesTableFilterComposer,
+      $$CountriesTableOrderingComposer,
+      $$CountriesTableAnnotationComposer,
+      $$CountriesTableCreateCompanionBuilder,
+      $$CountriesTableUpdateCompanionBuilder,
+      (
+        CountryRecord,
+        BaseReferences<_$AppDatabase, $CountriesTable, CountryRecord>,
+      ),
+      CountryRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$ProvincesTableCreateCompanionBuilder =
+    ProvincesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String name,
+      required int countryID,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$ProvincesTableUpdateCompanionBuilder =
+    ProvincesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> name,
+      Value<int> countryID,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$ProvincesTableFilterComposer
+    extends Composer<_$AppDatabase, $ProvincesTable> {
+  $$ProvincesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get countryID => $composableBuilder(
+    column: $table.countryID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProvincesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProvincesTable> {
+  $$ProvincesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get countryID => $composableBuilder(
+    column: $table.countryID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProvincesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProvincesTable> {
+  $$ProvincesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get countryID =>
+      $composableBuilder(column: $table.countryID, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ProvincesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProvincesTable,
+          ProvinceRecord,
+          $$ProvincesTableFilterComposer,
+          $$ProvincesTableOrderingComposer,
+          $$ProvincesTableAnnotationComposer,
+          $$ProvincesTableCreateCompanionBuilder,
+          $$ProvincesTableUpdateCompanionBuilder,
+          (
+            ProvinceRecord,
+            BaseReferences<_$AppDatabase, $ProvincesTable, ProvinceRecord>,
+          ),
+          ProvinceRecord,
+          PrefetchHooks Function()
+        > {
+  $$ProvincesTableTableManager(_$AppDatabase db, $ProvincesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProvincesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProvincesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProvincesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> countryID = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => ProvincesCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                countryID: countryID,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String name,
+                required int countryID,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => ProvincesCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                countryID: countryID,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProvincesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProvincesTable,
+      ProvinceRecord,
+      $$ProvincesTableFilterComposer,
+      $$ProvincesTableOrderingComposer,
+      $$ProvincesTableAnnotationComposer,
+      $$ProvincesTableCreateCompanionBuilder,
+      $$ProvincesTableUpdateCompanionBuilder,
+      (
+        ProvinceRecord,
+        BaseReferences<_$AppDatabase, $ProvincesTable, ProvinceRecord>,
+      ),
+      ProvinceRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$DistrictsTableCreateCompanionBuilder =
+    DistrictsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String name,
+      required int stateId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$DistrictsTableUpdateCompanionBuilder =
+    DistrictsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> name,
+      Value<int> stateId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$DistrictsTableFilterComposer
+    extends Composer<_$AppDatabase, $DistrictsTable> {
+  $$DistrictsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get stateId => $composableBuilder(
+    column: $table.stateId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DistrictsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DistrictsTable> {
+  $$DistrictsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get stateId => $composableBuilder(
+    column: $table.stateId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DistrictsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DistrictsTable> {
+  $$DistrictsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<int> get stateId =>
+      $composableBuilder(column: $table.stateId, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$DistrictsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DistrictsTable,
+          DistrictRecord,
+          $$DistrictsTableFilterComposer,
+          $$DistrictsTableOrderingComposer,
+          $$DistrictsTableAnnotationComposer,
+          $$DistrictsTableCreateCompanionBuilder,
+          $$DistrictsTableUpdateCompanionBuilder,
+          (
+            DistrictRecord,
+            BaseReferences<_$AppDatabase, $DistrictsTable, DistrictRecord>,
+          ),
+          DistrictRecord,
+          PrefetchHooks Function()
+        > {
+  $$DistrictsTableTableManager(_$AppDatabase db, $DistrictsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DistrictsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DistrictsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DistrictsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<int> stateId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => DistrictsCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                stateId: stateId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String name,
+                required int stateId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => DistrictsCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                stateId: stateId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DistrictsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DistrictsTable,
+      DistrictRecord,
+      $$DistrictsTableFilterComposer,
+      $$DistrictsTableOrderingComposer,
+      $$DistrictsTableAnnotationComposer,
+      $$DistrictsTableCreateCompanionBuilder,
+      $$DistrictsTableUpdateCompanionBuilder,
+      (
+        DistrictRecord,
+        BaseReferences<_$AppDatabase, $DistrictsTable, DistrictRecord>,
+      ),
+      DistrictRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$RoadCategoriesTableCreateCompanionBuilder =
+    RoadCategoriesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String name,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$RoadCategoriesTableUpdateCompanionBuilder =
+    RoadCategoriesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> name,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$RoadCategoriesTableFilterComposer
+    extends Composer<_$AppDatabase, $RoadCategoriesTable> {
+  $$RoadCategoriesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RoadCategoriesTableOrderingComposer
+    extends Composer<_$AppDatabase, $RoadCategoriesTable> {
+  $$RoadCategoriesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RoadCategoriesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RoadCategoriesTable> {
+  $$RoadCategoriesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$RoadCategoriesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RoadCategoriesTable,
+          RoadCategoryRecord,
+          $$RoadCategoriesTableFilterComposer,
+          $$RoadCategoriesTableOrderingComposer,
+          $$RoadCategoriesTableAnnotationComposer,
+          $$RoadCategoriesTableCreateCompanionBuilder,
+          $$RoadCategoriesTableUpdateCompanionBuilder,
+          (
+            RoadCategoryRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $RoadCategoriesTable,
+              RoadCategoryRecord
+            >,
+          ),
+          RoadCategoryRecord,
+          PrefetchHooks Function()
+        > {
+  $$RoadCategoriesTableTableManager(
+    _$AppDatabase db,
+    $RoadCategoriesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RoadCategoriesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RoadCategoriesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RoadCategoriesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => RoadCategoriesCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String name,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => RoadCategoriesCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RoadCategoriesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RoadCategoriesTable,
+      RoadCategoryRecord,
+      $$RoadCategoriesTableFilterComposer,
+      $$RoadCategoriesTableOrderingComposer,
+      $$RoadCategoriesTableAnnotationComposer,
+      $$RoadCategoriesTableCreateCompanionBuilder,
+      $$RoadCategoriesTableUpdateCompanionBuilder,
+      (
+        RoadCategoryRecord,
+        BaseReferences<_$AppDatabase, $RoadCategoriesTable, RoadCategoryRecord>,
+      ),
+      RoadCategoryRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$RoadsTableCreateCompanionBuilder =
+    RoadsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String name,
+      Value<String?> roadNo,
+      Value<String?> sectionStart,
+      Value<String?> sectionFinish,
+      Value<int?> mainCategoryId,
+      Value<int?> secondaryCategoryId,
+      required int districtId,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$RoadsTableUpdateCompanionBuilder =
+    RoadsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> name,
+      Value<String?> roadNo,
+      Value<String?> sectionStart,
+      Value<String?> sectionFinish,
+      Value<int?> mainCategoryId,
+      Value<int?> secondaryCategoryId,
+      Value<int> districtId,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$RoadsTableFilterComposer extends Composer<_$AppDatabase, $RoadsTable> {
+  $$RoadsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get roadNo => $composableBuilder(
+    column: $table.roadNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sectionStart => $composableBuilder(
+    column: $table.sectionStart,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get sectionFinish => $composableBuilder(
+    column: $table.sectionFinish,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get mainCategoryId => $composableBuilder(
+    column: $table.mainCategoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get secondaryCategoryId => $composableBuilder(
+    column: $table.secondaryCategoryId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get districtId => $composableBuilder(
+    column: $table.districtId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$RoadsTableOrderingComposer
+    extends Composer<_$AppDatabase, $RoadsTable> {
+  $$RoadsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get roadNo => $composableBuilder(
+    column: $table.roadNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sectionStart => $composableBuilder(
+    column: $table.sectionStart,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get sectionFinish => $composableBuilder(
+    column: $table.sectionFinish,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get mainCategoryId => $composableBuilder(
+    column: $table.mainCategoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get secondaryCategoryId => $composableBuilder(
+    column: $table.secondaryCategoryId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get districtId => $composableBuilder(
+    column: $table.districtId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$RoadsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $RoadsTable> {
+  $$RoadsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get roadNo =>
+      $composableBuilder(column: $table.roadNo, builder: (column) => column);
+
+  GeneratedColumn<String> get sectionStart => $composableBuilder(
+    column: $table.sectionStart,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get sectionFinish => $composableBuilder(
+    column: $table.sectionFinish,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get mainCategoryId => $composableBuilder(
+    column: $table.mainCategoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get secondaryCategoryId => $composableBuilder(
+    column: $table.secondaryCategoryId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get districtId => $composableBuilder(
+    column: $table.districtId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$RoadsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $RoadsTable,
+          RoadRecord,
+          $$RoadsTableFilterComposer,
+          $$RoadsTableOrderingComposer,
+          $$RoadsTableAnnotationComposer,
+          $$RoadsTableCreateCompanionBuilder,
+          $$RoadsTableUpdateCompanionBuilder,
+          (RoadRecord, BaseReferences<_$AppDatabase, $RoadsTable, RoadRecord>),
+          RoadRecord,
+          PrefetchHooks Function()
+        > {
+  $$RoadsTableTableManager(_$AppDatabase db, $RoadsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$RoadsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$RoadsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$RoadsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> roadNo = const Value.absent(),
+                Value<String?> sectionStart = const Value.absent(),
+                Value<String?> sectionFinish = const Value.absent(),
+                Value<int?> mainCategoryId = const Value.absent(),
+                Value<int?> secondaryCategoryId = const Value.absent(),
+                Value<int> districtId = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => RoadsCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                roadNo: roadNo,
+                sectionStart: sectionStart,
+                sectionFinish: sectionFinish,
+                mainCategoryId: mainCategoryId,
+                secondaryCategoryId: secondaryCategoryId,
+                districtId: districtId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String name,
+                Value<String?> roadNo = const Value.absent(),
+                Value<String?> sectionStart = const Value.absent(),
+                Value<String?> sectionFinish = const Value.absent(),
+                Value<int?> mainCategoryId = const Value.absent(),
+                Value<int?> secondaryCategoryId = const Value.absent(),
+                required int districtId,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => RoadsCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                roadNo: roadNo,
+                sectionStart: sectionStart,
+                sectionFinish: sectionFinish,
+                mainCategoryId: mainCategoryId,
+                secondaryCategoryId: secondaryCategoryId,
+                districtId: districtId,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$RoadsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $RoadsTable,
+      RoadRecord,
+      $$RoadsTableFilterComposer,
+      $$RoadsTableOrderingComposer,
+      $$RoadsTableAnnotationComposer,
+      $$RoadsTableCreateCompanionBuilder,
+      $$RoadsTableUpdateCompanionBuilder,
+      (RoadRecord, BaseReferences<_$AppDatabase, $RoadsTable, RoadRecord>),
+      RoadRecord,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -13662,4 +19140,14 @@ class $AppDatabaseManager {
       $$WorkScopeEquipmentsTableTableManager(_db, _db.workScopeEquipments);
   $$WorkScopeEquipmentTableTableManager get workScopeEquipment =>
       $$WorkScopeEquipmentTableTableManager(_db, _db.workScopeEquipment);
+  $$CountriesTableTableManager get countries =>
+      $$CountriesTableTableManager(_db, _db.countries);
+  $$ProvincesTableTableManager get provinces =>
+      $$ProvincesTableTableManager(_db, _db.provinces);
+  $$DistrictsTableTableManager get districts =>
+      $$DistrictsTableTableManager(_db, _db.districts);
+  $$RoadCategoriesTableTableManager get roadCategories =>
+      $$RoadCategoriesTableTableManager(_db, _db.roadCategories);
+  $$RoadsTableTableManager get roads =>
+      $$RoadsTableTableManager(_db, _db.roads);
 }

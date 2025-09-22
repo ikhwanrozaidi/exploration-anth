@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$DistrictModel {
 
- int? get id; String? get uid; String? get name;@JsonKey(name: 'provinceID') int? get stateId; ProvinceModel? get state;
+ int? get id; String? get uid; String? get name;@JsonKey(name: 'stateID') int? get stateId; ProvinceModel? get state;
 /// Create a copy of DistrictModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $DistrictModelCopyWith<$Res>  {
   factory $DistrictModelCopyWith(DistrictModel value, $Res Function(DistrictModel) _then) = _$DistrictModelCopyWithImpl;
 @useResult
 $Res call({
- int? id, String? uid, String? name,@JsonKey(name: 'provinceID') int? stateId, ProvinceModel? state
+ int? id, String? uid, String? name,@JsonKey(name: 'stateID') int? stateId, ProvinceModel? state
 });
 
 
@@ -169,7 +169,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name, @JsonKey(name: 'provinceID')  int? stateId,  ProvinceModel? state)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name, @JsonKey(name: 'stateID')  int? stateId,  ProvinceModel? state)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DistrictModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.stateId,_that.state);case _:
@@ -190,7 +190,7 @@ return $default(_that.id,_that.uid,_that.name,_that.stateId,_that.state);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name, @JsonKey(name: 'provinceID')  int? stateId,  ProvinceModel? state)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name, @JsonKey(name: 'stateID')  int? stateId,  ProvinceModel? state)  $default,) {final _that = this;
 switch (_that) {
 case _DistrictModel():
 return $default(_that.id,_that.uid,_that.name,_that.stateId,_that.state);case _:
@@ -210,7 +210,7 @@ return $default(_that.id,_that.uid,_that.name,_that.stateId,_that.state);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? uid,  String? name, @JsonKey(name: 'provinceID')  int? stateId,  ProvinceModel? state)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? uid,  String? name, @JsonKey(name: 'stateID')  int? stateId,  ProvinceModel? state)?  $default,) {final _that = this;
 switch (_that) {
 case _DistrictModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.stateId,_that.state);case _:
@@ -224,14 +224,14 @@ return $default(_that.id,_that.uid,_that.name,_that.stateId,_that.state);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _DistrictModel implements DistrictModel {
-   _DistrictModel({this.id, this.uid, this.name, @JsonKey(name: 'provinceID') this.stateId, this.state});
+class _DistrictModel extends DistrictModel {
+  const _DistrictModel({this.id, this.uid, this.name, @JsonKey(name: 'stateID') this.stateId, this.state}): super._();
   factory _DistrictModel.fromJson(Map<String, dynamic> json) => _$DistrictModelFromJson(json);
 
 @override final  int? id;
 @override final  String? uid;
 @override final  String? name;
-@override@JsonKey(name: 'provinceID') final  int? stateId;
+@override@JsonKey(name: 'stateID') final  int? stateId;
 @override final  ProvinceModel? state;
 
 /// Create a copy of DistrictModel
@@ -267,7 +267,7 @@ abstract mixin class _$DistrictModelCopyWith<$Res> implements $DistrictModelCopy
   factory _$DistrictModelCopyWith(_DistrictModel value, $Res Function(_DistrictModel) _then) = __$DistrictModelCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, String? uid, String? name,@JsonKey(name: 'provinceID') int? stateId, ProvinceModel? state
+ int? id, String? uid, String? name,@JsonKey(name: 'stateID') int? stateId, ProvinceModel? state
 });
 
 

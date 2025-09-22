@@ -6,16 +6,16 @@ import 'country_entity.dart';
 part 'province_entity.g.dart';
 
 @JsonSerializable()
-class ProvinceEntity extends Equatable {
+class Province extends Equatable {
   final int? id;
   final String? uid;
   final String? name;
   final int? countryId;
   final String? createdAt;
   final String? updatedAt;
-  final CountryEntity? country;
+  final Countryr? country;
 
-  const ProvinceEntity({
+  const Province({
     this.id,
     this.uid,
     this.name,
@@ -25,10 +25,10 @@ class ProvinceEntity extends Equatable {
     this.country,
   });
 
-  factory ProvinceEntity.fromJson(Map<String, dynamic> json) =>
-      _$ProvinceEntityFromJson(json);
+  factory Province.fromJson(Map<String, dynamic> json) =>
+      _$ProvinceFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ProvinceEntityToJson(this);
+  Map<String, dynamic> toJson() => _$ProvinceToJson(this);
 
   @override
   List<Object?> get props => [

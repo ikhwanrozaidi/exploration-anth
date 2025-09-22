@@ -243,11 +243,98 @@ class WorkScopeEquipments extends Table with SyncableTable {
 class WorkScopeEquipment extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()();
   IntColumn get workScopeID => integer()(); // Foreign key to WorkScopes
-  IntColumn get workEquipmentID => integer()(); // Foreign key to WorkScopeEquipments
+  IntColumn get workEquipmentID =>
+      integer()(); // Foreign key to WorkScopeEquipments
 
   @override
   List<Set<Column>> get uniqueKeys => [
     {workScopeID, workEquipmentID}, // Prevent duplicate relationships
+  ];
+}
+
+// Countries table
+@DataClassName('CountryRecord')
+class Countries extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Provinces/States table
+@DataClassName('ProvinceRecord')
+class Provinces extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  IntColumn get countryID => integer()(); // Foreign key to Countries
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Districts table
+@DataClassName('DistrictRecord')
+class Districts extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  IntColumn get stateId =>
+      integer()(); // Foreign key to Provinces (matches entity field name)
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Road Categories table
+@DataClassName('RoadCategoryRecord')
+class RoadCategories extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Roads table
+@DataClassName('RoadRecord')
+class Roads extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  TextColumn get roadNo => text().nullable()(); // Road number
+  TextColumn get sectionStart => text().nullable()(); // Section start point
+  TextColumn get sectionFinish => text().nullable()(); // Section finish point
+  IntColumn get mainCategoryId =>
+      integer().nullable()(); // FK to RoadCategories
+  IntColumn get secondaryCategoryId =>
+      integer().nullable()(); // FK to RoadCategories
+  IntColumn get districtId => integer()(); // Foreign key to Districts
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
   ];
 }
 
@@ -264,13 +351,18 @@ class WorkScopeEquipment extends Table with SyncableTable {
     WorkQuantityFieldOptions,
     WorkScopeEquipments,
     WorkScopeEquipment,
+    Countries,
+    Provinces,
+    Districts,
+    RoadCategories,
+    Roads,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 8; // Renamed tables in version 8
+  int get schemaVersion => 9; // Renamed tables in version 8
 
   @override
   MigrationStrategy get migration {
@@ -476,14 +568,33 @@ class AppDatabase extends _$AppDatabase {
           // Note: SQLite doesn't support direct column renaming, but table renaming works
 
           // Rename tables
-          await customStatement('ALTER TABLE scope_of_works RENAME TO work_scopes');
-          await customStatement('ALTER TABLE quantity_fields RENAME TO work_quantity_fields');
-          await customStatement('ALTER TABLE dropdown_options RENAME TO work_quantity_field_options');
-          await customStatement('ALTER TABLE work_equipments RENAME TO work_scope_equipments');
-          await customStatement('ALTER TABLE scope_of_work_equipments RENAME TO work_scope_equipment');
+          await customStatement(
+            'ALTER TABLE scope_of_works RENAME TO work_scopes',
+          );
+          await customStatement(
+            'ALTER TABLE quantity_fields RENAME TO work_quantity_fields',
+          );
+          await customStatement(
+            'ALTER TABLE dropdown_options RENAME TO work_quantity_field_options',
+          );
+          await customStatement(
+            'ALTER TABLE work_equipments RENAME TO work_scope_equipments',
+          );
+          await customStatement(
+            'ALTER TABLE scope_of_work_equipments RENAME TO work_scope_equipment',
+          );
 
           // For column renames in SQLite, we need to recreate tables with new column names
           // This is handled automatically by Drift when we regenerate the migration helpers
+        }
+
+        if (from < 9) {
+          // Migration from version 8 to 9: Add Countries and Provinces tables
+          await m.createTable(countries);
+          await m.createTable(provinces);
+          await m.createTable(districts);
+          await m.createTable(roadCategories);
+          await m.createTable(roads);
         }
       },
       beforeOpen: (details) async {

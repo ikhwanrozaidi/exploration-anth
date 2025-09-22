@@ -2,32 +2,38 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/database/app_database.dart';
+import '../../domain/entities/province/country_entity.dart';
 import '../../domain/entities/province/province_entity.dart';
 import '../../domain/entities/scope_of_work/dropdown_option.dart';
 import '../../domain/entities/scope_of_work/quantity_field.dart';
 import '../../domain/entities/scope_of_work/scope_of_work.dart';
 import '../../domain/entities/scope_of_work/work_equipment.dart';
 import '../../domain/entities/scope_of_work/work_quantity_type.dart';
+import '../models/province/country_model.dart';
+import '../models/province/province_model.dart';
 import '../models/scope_of_work/scope_of_work_model.dart';
 
 abstract class DailyReportCreationLocalDatasource {
   // Foundation
   Future<void> clearCache();
-  // Future<void> clearProvinceCache();
+  Future<void> clearProvinceCache();
 
-  // GET scope
+  ///------------------------- GET scope
   Future<List<ScopeOfWork>?> getCachedScopeOfWorks();
   Future<void> cacheScopeOfWorks(List<ScopeOfWork> scopeOfWorks);
-  // GET scope
+  // scope getOfflineFirst
   Future<List<ScopeOfWorkModel>> getCachedWorkScopeModels();
   Future<void> cacheWorkScopeModels(List<ScopeOfWorkModel> models);
   // GET equipments
   Future<List<WorkEquipment>?> getCachedWorkEquipments();
   Future<void> cacheWorkEquipments(List<WorkEquipment> equipments);
 
-  // GET province
-  // Future<List<ProvinceEntity>?> getCachedProvinces();
-  // Future<void> cacheProvinces(List<ProvinceEntity> provinces);
+  ///------------------------- GET Province
+  Future<List<Province>?> getCachedProvinces();
+  Future<void> cacheProvinces(List<Province> provinces);
+  // province getOfflineFirst
+  Future<List<ProvinceModel>> getCachedProvinceModels();
+  Future<void> cacheProvinceModels(List<ProvinceModel> models);
 }
 
 @LazySingleton(as: DailyReportCreationLocalDatasource)
@@ -456,5 +462,142 @@ class DailyReportCreationLocalDatasourceImpl
         code: equipment.code,
       );
     }).toList();
+  }
+
+  /* 
+  // Province datasource
+  */
+  @override
+  Future<void> clearProvinceCache() async {
+    try {
+      await _database.transaction(() async {
+        // Clear in proper order due to foreign key constraints
+        await _database.delete(_database.roads).go();
+        await _database.delete(_database.districts).go();
+        await _database.delete(_database.provinces).go();
+        await _database.delete(_database.countries).go();
+        await _database
+            .delete(_database.roadCategories)
+            .go(); // No FK constraints
+      });
+      print('✅ Province cache cleared from database');
+    } catch (e) {
+      print('❌ Error clearing province cache: $e');
+    }
+  }
+
+  @override
+  Future<List<Province>?> getCachedProvinces() async {
+    try {
+      // Get provinces with their country information using join
+      final query = _database.select(_database.provinces).join([
+        leftOuterJoin(
+          _database.countries,
+          _database.countries.id.equalsExp(_database.provinces.countryID),
+        ),
+      ]);
+
+      final results = await query.get();
+
+      if (results.isEmpty) {
+        print('💾 No cached provinces found');
+        return null;
+      }
+
+      final provinces = results.map((row) {
+        final province = row.readTable(_database.provinces);
+        final country = row.readTableOrNull(_database.countries);
+
+        return Province(
+          id: province.id,
+          uid: province.uid,
+          name: province.name,
+          countryId: province.countryID,
+          createdAt: province.createdAt.toIso8601String(),
+          updatedAt: province.updatedAt.toIso8601String(),
+          country: country != null
+              ? Countryr(
+                  id: country.id,
+                  uid: country.uid,
+                  name: country.name,
+                  createdAt: country.createdAt.toIso8601String(),
+                  updatedAt: country.updatedAt.toIso8601String(),
+                )
+              : null,
+        );
+      }).toList();
+
+      print('💾 Retrieved ${provinces.length} provinces from database');
+      return provinces;
+    } catch (e) {
+      print('❌ Error loading cached provinces: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheProvinces(List<Province> provinces) async {
+    try {
+      await _database.transaction(() async {
+        // First, cache all unique countries
+        final uniqueCountries = <int, Countryr>{};
+        for (final province in provinces) {
+          if (province.country != null && province.country!.id != null) {
+            uniqueCountries[province.country!.id!] = province.country!;
+          }
+        }
+
+        // Insert/update countries
+        for (final country in uniqueCountries.values) {
+          await _database
+              .into(_database.countries)
+              .insertOnConflictUpdate(
+                CountriesCompanion(
+                  id: Value(country.id!),
+                  uid: Value(country.uid!),
+                  name: Value(country.name!),
+                  createdAt: Value(DateTime.parse(country.createdAt!)),
+                  updatedAt: Value(DateTime.parse(country.updatedAt!)),
+                  isSynced: const Value(true),
+                ),
+              );
+        }
+
+        // Insert/update provinces
+        for (final province in provinces) {
+          await _database
+              .into(_database.provinces)
+              .insertOnConflictUpdate(
+                ProvincesCompanion(
+                  id: Value(province.id!),
+                  uid: Value(province.uid!),
+                  name: Value(province.name!),
+                  countryID: Value(province.countryId!),
+                  createdAt: Value(DateTime.parse(province.createdAt!)),
+                  updatedAt: Value(DateTime.parse(province.updatedAt!)),
+                  isSynced: const Value(true),
+                ),
+              );
+        }
+      });
+
+      print('💾 Cached ${provinces.length} provinces in database');
+    } catch (e) {
+      print('❌ Error caching provinces: $e');
+    }
+  }
+
+  @override
+  Future<List<ProvinceModel>> getCachedProvinceModels() async {
+    final entities = await getCachedProvinces();
+    if (entities == null) return [];
+
+    return entities.map((entity) => ProvinceModel.fromEntity(entity)).toList();
+  }
+
+  @override
+  Future<void> cacheProvinceModels(List<ProvinceModel> models) async {
+    final entities = models.map((model) => model.toEntity()).toList();
+    await cacheProvinces(entities);
   }
 }
