@@ -7,6 +7,7 @@ import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../bloc/report_creation_bloc.dart';
+import '../bloc/report_creation_data.dart';
 import '../bloc/report_creation_event.dart';
 import '../bloc/report_creation_state.dart';
 import '../constant/field_enhancements.dart';
@@ -35,8 +36,8 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
     _bloc = getIt<ReportCreationBloc>();
 
     // Load initial data
-    _bloc.add(const LoadWorkScopesRequested());
-    _bloc.add(const LoadStatesRequested());
+    _bloc.add(const LoadWorkScopes());
+    _bloc.add(const LoadStates());
   }
 
   @override
@@ -68,22 +69,52 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
             ),
             child: BlocListener<ReportCreationBloc, ReportCreationState>(
               listener: (context, state) {
-                // Show errors
-                if (state.hasErrors) {
-                  for (final error in state.allErrors) {
-                    CustomSnackBar.show(context, error);
-                  }
-                }
-                // Update section controller when section changes externally
-                if (state.section != _sectionController.text) {
-                  _sectionController.text = state.section ?? '';
+                // Handle errors
+                state.maybeWhen(
+                  page1Error: (apiData, selections, errorMessage) {
+                    CustomSnackBar.show(context, errorMessage);
+                  },
+                  page2Error: (apiData, selections, formData, errorMessage) {
+                    CustomSnackBar.show(context, errorMessage);
+                  },
+                  submissionError: (reportData, errorMessage) {
+                    CustomSnackBar.show(context, errorMessage);
+                  },
+                  draftError: (reportData, errorMessage) {
+                    CustomSnackBar.show(context, errorMessage);
+                  },
+                  orElse: () {},
+                );
+
+                final currentSection = state.maybeWhen(
+                  page1Ready: (apiData, selections) => selections.section,
+                  page1Error: (apiData, selections, errorMessage) =>
+                      selections.section,
+                  page2Ready: (apiData, selections, formData) =>
+                      selections.section,
+                  page2Error: (apiData, selections, formData, errorMessage) =>
+                      selections.section,
+                  orElse: () => null,
+                );
+
+                if (currentSection != _sectionController.text) {
+                  _sectionController.text = currentSection ?? '';
                 }
               },
 
               child: BlocBuilder<ReportCreationBloc, ReportCreationState>(
                 builder: (context, state) {
-                  final hasError = state.hasFieldError('section');
-                  final errorMessage = state.getFieldError('section');
+                  // Extract field errors for section
+                  final fieldErrors = state.maybeWhen(
+                    page2Ready: (apiData, selections, formData) =>
+                        formData.fieldErrors,
+                    page2Error: (apiData, selections, formData, errorMessage) =>
+                        formData.fieldErrors,
+                    orElse: () => <String, String?>{},
+                  );
+
+                  final hasError = fieldErrors.containsKey('section');
+                  final errorMessage = fieldErrors['section'];
 
                   return SafeArea(
                     bottom: false,
@@ -646,7 +677,7 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                                                       ReportCreationBloc
                                                                     >()
                                                                     .add(
-                                                                      SectionUpdated(
+                                                                      UpdateSection(
                                                                         value,
                                                                       ),
                                                                     );
@@ -713,39 +744,62 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
 
                                                           SizedBox(height: 5),
 
-                                                          if (state
-                                                                      .selectedRoad
-                                                                      ?.sectionStart !=
-                                                                  null &&
-                                                              state
-                                                                      .selectedRoad
-                                                                      ?.sectionFinish !=
-                                                                  null)
-                                                            Text(
-                                                              'Range from ${state.selectedRoad!.sectionStart} - ${state.selectedRoad!.sectionFinish}',
-                                                              style: TextStyle(
-                                                                fontWeight:
-                                                                    hasError &&
-                                                                        errorMessage !=
-                                                                            null
-                                                                    ? FontWeight
-                                                                          .bold
-                                                                    : FontWeight
-                                                                          .normal,
-                                                                fontSize:
-                                                                    ResponsiveHelper.fontSize(
-                                                                      context,
-                                                                      base: 10,
-                                                                    ),
-                                                                color:
-                                                                    hasError &&
-                                                                        errorMessage !=
-                                                                            null
-                                                                    ? Colors.red
-                                                                    : Colors
-                                                                          .black,
-                                                              ),
-                                                            ),
+                                                          Builder(
+                                                            builder: (context) {
+                                                              final selectedRoad = state.maybeWhen(
+                                                                page1Ready:
+                                                                    (
+                                                                      apiData,
+                                                                      selections,
+                                                                    ) => selections
+                                                                        .selectedRoad,
+                                                                page1Error:
+                                                                    (
+                                                                      apiData,
+                                                                      selections,
+                                                                      errorMessage,
+                                                                    ) => selections
+                                                                        .selectedRoad,
+                                                                orElse: () =>
+                                                                    null,
+                                                              );
+
+                                                              if (selectedRoad
+                                                                          ?.sectionStart !=
+                                                                      null &&
+                                                                  selectedRoad
+                                                                          ?.sectionFinish !=
+                                                                      null)
+                                                                return Text(
+                                                                  'Range from ${selectedRoad!.sectionStart} - ${selectedRoad!.sectionFinish}',
+                                                                  style: TextStyle(
+                                                                    fontWeight:
+                                                                        hasError &&
+                                                                            errorMessage !=
+                                                                                null
+                                                                        ? FontWeight
+                                                                              .bold
+                                                                        : FontWeight
+                                                                              .normal,
+                                                                    fontSize:
+                                                                        ResponsiveHelper.fontSize(
+                                                                          context,
+                                                                          base:
+                                                                              10,
+                                                                        ),
+                                                                    color:
+                                                                        hasError &&
+                                                                            errorMessage !=
+                                                                                null
+                                                                        ? Colors
+                                                                              .red
+                                                                        : Colors
+                                                                              .black,
+                                                                  ),
+                                                                );
+                                                              return const SizedBox.shrink();
+                                                            },
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
@@ -772,12 +826,26 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                 SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(
-                                    onPressed:
-                                        state.canProceedToTips &&
-                                            !hasError &&
-                                            errorMessage == null
-                                        ? () => _navigateToTips(context, state)
-                                        : null,
+                                    onPressed: () {
+                                      final canProceed = state.maybeWhen(
+                                        page1Ready: (apiData, selections) =>
+                                            selections.selectedScopeUid !=
+                                                null &&
+                                            selections.selectedWeather !=
+                                                null &&
+                                            selections.selectedRoadUid !=
+                                                null &&
+                                            selections.section != null &&
+                                            selections.section!.isNotEmpty,
+                                        orElse: () => false,
+                                      );
+
+                                      if (canProceed &&
+                                          !hasError &&
+                                          errorMessage == null) {
+                                        _navigateToTips(context, state);
+                                      }
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: primaryColor,
                                       padding: ResponsiveHelper.padding(
@@ -789,26 +857,18 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                       ),
                                       elevation: 2,
                                     ),
-                                    child: state.isLoading
-                                        ? const SizedBox(
-                                            height: 20,
-                                            width: 20,
-                                            child: CircularProgressIndicator(
-                                              color: Colors.white,
-                                              strokeWidth: 2,
-                                            ),
-                                          )
-                                        : Text(
-                                            'Add',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize:
-                                                  ResponsiveHelper.fontSize(
-                                                    context,
-                                                    base: 14,
-                                                  ),
-                                            ),
+                                    child: state.maybeWhen(
+                                      orElse: () => Text(
+                                        'Add',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: ResponsiveHelper.fontSize(
+                                            context,
+                                            base: 14,
                                           ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
@@ -835,30 +895,30 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
   // ============================================================================
 
   void _showScopeSelection(BuildContext context, ReportCreationState state) {
-    if (state.workScopes == null || state.workScopes!.isEmpty) {
-      if (state.isLoadingWorkScopes) {
-        CustomSnackBar.show(context, 'Loading work scopes...');
-      } else {
-        CustomSnackBar.show(context, 'No work scopes available');
-      }
+    final workScopes = state.maybeWhen(
+      page1Ready: (apiData, selections) => apiData.workScopes,
+      page1Error: (apiData, selections, errorMessage) => apiData.workScopes,
+      orElse: () => null,
+    );
+
+    if (workScopes == null || workScopes.isEmpty) {
+      CustomSnackBar.show(context, 'No work scopes available');
       return;
     }
 
     showFlexibleBottomsheet(
       context: context,
       title: 'Select Scope of Work',
-      attributes: state.workScopes!
+      attributes: workScopes
           .where((scope) => scope.name.isNotEmpty)
           .map((scope) => '${scope.code} - ${scope.name}')
           .toList(),
       isRadio: true,
       onSelectionChanged: (selectedName) {
-        final selectedScope = state.workScopes!.firstWhere(
+        final selectedScope = workScopes.firstWhere(
           (scope) => '${scope.code} - ${scope.name}' == selectedName,
         );
-        context.read<ReportCreationBloc>().add(
-          ScopeOfWorkSelected(selectedScope.uid),
-        );
+        context.read<ReportCreationBloc>().add(SelectScope(selectedScope.uid));
 
         setState(() {
           selectedScopeOfWork = selectedName;
@@ -876,13 +936,10 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
       attributes: weatherOptions,
       isRadio: true,
       onSelectionChanged: (selectedDisplayName) {
-        // Find the enum key for the selected display name
         final weatherData = WeatherEnhancements.weatherData.entries.firstWhere(
           (entry) => entry.value.displayName == selectedDisplayName,
         );
-        context.read<ReportCreationBloc>().add(
-          WeatherSelected(weatherData.key),
-        );
+        context.read<ReportCreationBloc>().add(SelectWeather(weatherData.key));
 
         setState(() {
           selectedWeather = selectedDisplayName;
@@ -892,29 +949,36 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
   }
 
   void _showLocationSelection(BuildContext context, ReportCreationState state) {
-    if (state.states == null || state.states!.isEmpty) {
+    final states = state.maybeWhen(
+      page1Ready: (apiData, selections) => apiData.states,
+      page1Error: (apiData, selections, errorMessage) => apiData.states,
+      orElse: () => null,
+    );
+
+    if (states == null || states.isEmpty) {
       CustomSnackBar.show(context, 'No states available');
       return;
     }
 
-    // Show state selection first
     showFlexibleBottomsheet(
       context: context,
       title: 'Select State',
-      attributes: state.states!
+      attributes: states
           .map((state) => state.name)
           .whereType<String>()
           .toList(),
       isRadio: true,
       onSelectionChanged: (selectedName) {
-        final selectedState = state.states!.firstWhere(
+        final selectedState = states.firstWhere(
           (state) => state.name == selectedName,
         );
+        context.read<ReportCreationBloc>().add(SelectState(selectedState.uid!));
+
+        // Trigger loading districts
         context.read<ReportCreationBloc>().add(
-          StateSelected(selectedState.uid!),
+          LoadDistricts(stateUid: selectedState.uid!),
         );
 
-        // Show district selection after state is selected
         Future.delayed(const Duration(milliseconds: 500), () {
           _showDistrictSelection(context);
         });
@@ -925,22 +989,21 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
   void _showDistrictSelection(BuildContext context) {
     final state = context.read<ReportCreationBloc>().state;
 
-    if (state.districts == null || state.districts!.isEmpty) {
-      if (state.isLoadingDistricts) {
-        CustomSnackBar.show(context, 'Loading districts...');
-      } else {
-        CustomSnackBar.show(
-          context,
-          'No districts available for selected state',
-        );
-      }
+    final districts = state.maybeWhen(
+      page1Ready: (apiData, selections) => apiData.districts,
+      page1Error: (apiData, selections, errorMessage) => apiData.districts,
+      orElse: () => null,
+    );
+
+    if (districts == null || districts.isEmpty) {
+      CustomSnackBar.show(context, 'No districts available for selected state');
       return;
     }
 
     showFlexibleBottomsheet(
       context: context,
       title: 'Select District',
-      attributes: state.districts!
+      attributes: districts
           .where(
             (district) => district.name != null && district.name!.isNotEmpty,
           )
@@ -948,15 +1011,19 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
           .toList(),
       isRadio: true,
       onSelectionChanged: (selectedName) {
-        final selectedDistrict = state.districts!.firstWhere(
+        final selectedDistrict = districts.firstWhere(
           (district) => district.name == selectedName,
         );
         if (selectedDistrict.uid != null) {
           context.read<ReportCreationBloc>().add(
-            DistrictSelected(selectedDistrict.uid!),
+            SelectDistrict(selectedDistrict.uid!),
           );
 
-          // Show road selection after district is selected
+          // Trigger loading roads
+          context.read<ReportCreationBloc>().add(
+            LoadRoads(districtUid: selectedDistrict.uid!),
+          );
+
           Future.delayed(const Duration(milliseconds: 500), () {
             _showRoadSelection(context);
           });
@@ -970,34 +1037,31 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
   void _showRoadSelection(BuildContext context) {
     final state = context.read<ReportCreationBloc>().state;
 
-    if (state.roads == null || state.roads!.isEmpty) {
-      if (state.isLoadingRoads) {
-        CustomSnackBar.show(context, 'Loading roads...');
-      } else {
-        CustomSnackBar.show(
-          context,
-          'No roads available for selected district',
-        );
-      }
+    final roads = state.maybeWhen(
+      page1Ready: (apiData, selections) => apiData.roads,
+      page1Error: (apiData, selections, errorMessage) => apiData.roads,
+      orElse: () => null,
+    );
+
+    if (roads == null || roads.isEmpty) {
+      CustomSnackBar.show(context, 'No roads available for selected district');
       return;
     }
 
     showFlexibleBottomsheet(
       context: context,
       title: 'Select Road',
-      attributes: state.roads!
+      attributes: roads
           .where((road) => road.name != null && road.name!.isNotEmpty)
           .map((road) => '${road.name!} (${road.roadNo ?? ''})')
           .toList(),
       isRadio: true,
       onSelectionChanged: (selectedName) {
-        final selectedRoad = state.roads!.firstWhere(
+        final selectedRoad = roads.firstWhere(
           (road) => '${road.name!} (${road.roadNo ?? ''})' == selectedName,
         );
         if (selectedRoad.uid != null) {
-          context.read<ReportCreationBloc>().add(
-            RoadSelected(selectedRoad.uid!),
-          );
+          context.read<ReportCreationBloc>().add(SelectRoad(selectedRoad.uid!));
         } else {
           CustomSnackBar.show(context, 'Invalid road selection');
         }
@@ -1009,98 +1073,22 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
     );
   }
 
-  Widget _buildSectionField(BuildContext context, ReportCreationState state) {
-    final hasError = state.hasFieldError('section');
-    final errorMessage = state.getFieldError('section');
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          padding: ResponsiveHelper.padding(context, all: 16),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: hasError ? Colors.red.shade300 : Colors.grey.shade300,
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.straighten,
-                color: hasError ? Colors.red.shade600 : Colors.grey.shade600,
-                size: ResponsiveHelper.fontSize(context, base: 20),
-              ),
-              SizedBox(width: ResponsiveHelper.spacing(context, 12)),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Section',
-                      style: TextStyle(
-                        fontSize: ResponsiveHelper.fontSize(context, base: 12),
-                        color: hasError
-                            ? Colors.red.shade600
-                            : Colors.grey.shade600,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    SizedBox(height: ResponsiveHelper.spacing(context, 4)),
-                    TextFormField(
-                      controller: _sectionController,
-                      focusNode: _focusNode,
-                      style: TextStyle(
-                        fontSize: ResponsiveHelper.fontSize(context, base: 14),
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      decoration: InputDecoration(
-                        hintText: state.selectedRoad != null
-                            ? 'Enter section (${state.selectedRoad!.sectionStart ?? '0'} - ${state.selectedRoad!.sectionFinish ?? '0'})'
-                            : 'Enter section',
-                        hintStyle: TextStyle(color: Colors.grey.shade500),
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: EdgeInsets.zero,
-                      ),
-                      onChanged: (value) {
-                        context.read<ReportCreationBloc>().add(
-                          SectionUpdated(value),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        if (hasError && errorMessage != null)
-          Padding(
-            padding: ResponsiveHelper.padding(context, top: 8, left: 12),
-            child: Text(
-              errorMessage,
-              style: TextStyle(
-                fontSize: ResponsiveHelper.fontSize(context, base: 12),
-                color: Colors.red.shade600,
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
   void _navigateToTips(BuildContext context, ReportCreationState state) {
-    if (!state.canProceedToTips) {
-      List<String> missingFields = [];
+    final selections = state.maybeWhen(
+      page1Ready: (apiData, selections) => selections,
+      page1Error: (apiData, selections, errorMessage) => selections,
+      orElse: () => const ReportSelections(),
+    );
 
-      if (state.selectedScopeUid == null) missingFields.add('Scope of Work');
-      if (state.selectedWeather == null) missingFields.add('Weather');
-      if (state.selectedRoadUid == null) missingFields.add('Location');
-      if (state.section == null || state.section!.isEmpty)
-        missingFields.add('Section');
+    // Check if can proceed
+    List<String> missingFields = [];
+    if (selections.selectedScopeUid == null) missingFields.add('Scope of Work');
+    if (selections.selectedWeather == null) missingFields.add('Weather');
+    if (selections.selectedRoadUid == null) missingFields.add('Location');
+    if (selections.section == null || selections.section!.isEmpty)
+      missingFields.add('Section');
 
+    if (missingFields.isNotEmpty) {
       CustomSnackBar.show(
         context,
         'Please complete: ${missingFields.join(', ')}',
@@ -1114,15 +1102,15 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
           value: _bloc,
           child: TipsOnboardingPage(
             scopeOfWork:
-                '${state.selectedScope!.code} - ${state.selectedScope!.name}',
+                '${selections.selectedScope!.code} - ${selections.selectedScope!.name}',
             weather:
                 WeatherEnhancements.getWeatherData(
-                  state.selectedWeather!,
+                  selections.selectedWeather!,
                 )?.displayName ??
-                state.selectedWeather!,
+                selections.selectedWeather!,
             location:
-                '${state.selectedRoad?.name ?? ''}, ${state.selectedDistrict?.name ?? ''}',
-            section: state.section!,
+                '${selections.selectedRoad?.name ?? ''}, ${selections.selectedDistrict?.name ?? ''}',
+            section: selections.section!,
           ),
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:rclink_app/core/database/app_database.dart';
 
 import 'package:rclink_app/features/daily_report_creation/data/datasources/daily_report_creation_api_service.dart';
 import 'package:rclink_app/features/daily_report_creation/data/models/scope_of_work/scope_of_work_model.dart';
+import 'package:rclink_app/features/daily_report_creation/data/models/scope_of_work/work_quantity_type_model.dart';
 import '../../../../core/errors/failures.dart';
 import '../models/province/district_model.dart';
 import '../models/province/province_model.dart';
@@ -45,10 +46,10 @@ abstract class DailyReportCreationRemoteDataSource {
     double? sectionFinishMax,
   });
 
-  Future<Either<Failure, List<WorkQuantityTypes>>> getQuantities({
+  Future<Either<Failure, List<WorkQuantityTypeModel>>> getQuantities(
     String companyUID,
     String workScopeUID,
-  });
+  );
 }
 
 @LazySingleton(as: DailyReportCreationRemoteDataSource)
@@ -187,7 +188,7 @@ class DailyReportCreationRemoteDataSourceImpl
   }
 
   @override
-  Future<Either<Failure, List<WorkQuantityTypes>>> getQuantities(
+  Future<Either<Failure, List<WorkQuantityTypeModel>>> getQuantities(
     String companyUID,
     String workScopeUID,
   ) async {

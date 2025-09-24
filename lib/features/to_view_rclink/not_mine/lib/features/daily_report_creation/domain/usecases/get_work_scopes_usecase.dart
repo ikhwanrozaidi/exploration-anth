@@ -19,7 +19,7 @@ class GetWorkScopesParams {
 @injectable
 class GetWorkScopesUseCase
     implements UseCase<List<ScopeOfWork>, GetWorkScopesParams> {
-  final WorkscopesRepository _repository;
+  final WorkScopesRepository _repository;
 
   GetWorkScopesUseCase(this._repository);
 

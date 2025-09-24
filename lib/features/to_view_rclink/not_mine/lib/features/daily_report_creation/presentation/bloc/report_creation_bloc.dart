@@ -2,189 +2,304 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../domain/repository/workscopes_repository.dart';
+import '../../../company/presentation/bloc/company_bloc.dart';
+import '../../../company/presentation/bloc/company_state.dart';
+import '../../data/datasources/daily_report_creation_remote_datasource.dart';
 
+import '../../domain/usecases/clear_work_scopes_cache_usecase.dart';
+import '../../domain/usecases/get_district_usecase.dart';
+import '../../domain/usecases/get_quantity_usecase.dart';
+import '../../domain/usecases/get_road_usecase.dart';
+import '../../domain/usecases/get_states_usecases.dart';
+import '../../domain/usecases/get_work_scopes_usecase.dart';
 import 'report_creation_event.dart';
 import 'report_creation_state.dart';
+import 'report_creation_data.dart';
 
 @lazySingleton
 class ReportCreationBloc
     extends Bloc<ReportCreationEvent, ReportCreationState> {
-  final WorkScopesRepository _repository;
+  final GetWorkScopesUseCase _getWorkScopesUseCase;
+  final ClearWorkScopesCacheUseCase _clearCacheUseCase;
+  final GetStatesUseCase _getStatesUseCase;
+  final GetDistrictsUseCase _getDistrictsUseCase;
+  final GetRoadsUseCase _getRoadsUseCase;
+  final GetQuantityUseCase _getQuantitiesUseCase;
+  final CompanyBloc _companyBloc;
 
-  ReportCreationBloc(this._repository) : super(const ReportCreationState()) {
+  ReportCreationBloc(
+    this._getWorkScopesUseCase,
+    this._clearCacheUseCase,
+    this._getStatesUseCase,
+    this._getDistrictsUseCase,
+    this._getRoadsUseCase,
+    this._getQuantitiesUseCase,
+    this._companyBloc,
+  ) : super(const ReportCreationState.initial()) {
     // Initial load events
-    on<LoadWorkScopesRequested>(_onLoadWorkScopesRequested);
-    on<LoadStatesRequested>(_onLoadStatesRequested);
-    on<LoadDistrictsRequested>(_onLoadDistrictsRequested);
-    on<LoadRoadsRequested>(_onLoadRoadsRequested);
+    on<LoadWorkScopes>(_onLoadWorkScopes);
+    on<LoadStates>(_onLoadStates);
+    on<LoadDistricts>(_onLoadDistricts);
+    on<LoadRoads>(_onLoadRoads);
+    on<LoadQuantitiesAndEquipment>(_onLoadQuantitiesAndEquipment);
 
     // Selection events
-    on<ScopeOfWorkSelected>(_onScopeOfWorkSelected);
-    on<WeatherSelected>(_onWeatherSelected);
-    on<StateSelected>(_onStateSelected);
-    on<DistrictSelected>(_onDistrictSelected);
-    on<RoadSelected>(_onRoadSelected);
-    on<SectionUpdated>(_onSectionUpdated);
+    on<SelectScope>(_onSelectScope);
+    on<SelectWeather>(_onSelectWeather);
+    on<SelectState>(_onSelectState);
+    on<SelectDistrict>(_onSelectDistrict);
+    on<SelectRoad>(_onSelectRoad);
+    on<UpdateSection>(_onUpdateSection);
 
-    // Quantity and equipment events
-    on<QuantityTypesSelected>(_onQuantityTypesSelected);
-    on<QuantityTypeToggled>(_onQuantityTypeToggled);
-    on<EquipmentSelected>(_onEquipmentSelected);
-    on<EquipmentToggled>(_onEquipmentToggled);
+    // Quantity and equipment selection events
+    on<SelectQuantityTypes>(_onSelectQuantityTypes);
+    on<ToggleQuantityType>(_onToggleQuantityType);
+    on<SelectEquipment>(_onSelectEquipment);
+    on<ToggleEquipment>(_onToggleEquipment);
 
-    // Field input events
-    on<FieldValueUpdated>(_onFieldValueUpdated);
-    on<ImagesAdded>(_onImagesAdded);
-    on<ImageRemoved>(_onImageRemoved);
+    // Form data events
+    on<UpdateFieldValue>(_onUpdateFieldValue);
+    on<AddImages>(_onAddImages);
+    on<RemoveImage>(_onRemoveImage);
 
-    // Validation events
-    on<ValidateFormRequested>(_onValidateFormRequested);
-    on<FieldErrorCleared>(_onFieldErrorCleared);
+    // Validation and submission events
+    on<ValidateForm>(_onValidateForm);
+    on<ClearFieldError>(_onClearFieldError);
+    on<SubmitReport>(_onSubmitReport);
+    on<SaveAsDraft>(_onSaveAsDraft);
 
-    // Submission events
-    on<SubmitReportRequested>(_onSubmitReportRequested);
-    on<SaveAsDraftRequested>(_onSaveAsDraftRequested);
+    // Utility events
+    on<ClearCache>(_onClearCache);
+    on<ResetForm>(_onResetForm);
+    on<StartOver>(_onStartOver);
+  }
 
-    // Clear/reset events
-    on<ClearCacheRequested>(_onClearCacheRequested);
-    on<ResetFormRequested>(_onResetFormRequested);
-    on<StartOverRequested>(_onStartOverRequested);
+  // ============================================================================
+  // HELPER METHODS
+  // ============================================================================
+
+  ReportApiData _getCurrentApiData() {
+    return state.maybeMap(
+      page1Ready: (state) => state.apiData,
+      page1Error: (state) => state.apiData,
+      page2Ready: (state) => state.apiData,
+      page2Error: (state) => state.apiData,
+      submitting: (state) => state.reportData.apiData,
+      submitted: (state) => state.reportData.apiData,
+      submissionError: (state) => state.reportData.apiData,
+      draftSaved: (state) => state.reportData.apiData,
+      draftError: (state) => state.reportData.apiData,
+      orElse: () => const ReportApiData(),
+    );
+  }
+
+  ReportSelections _getCurrentSelections() {
+    return state.maybeMap(
+      page1Ready: (state) => state.selections,
+      page1Error: (state) => state.selections,
+      page2Ready: (state) => state.selections,
+      page2Error: (state) => state.selections,
+      submitting: (state) => state.reportData.selections,
+      submitted: (state) => state.reportData.selections,
+      submissionError: (state) => state.reportData.selections,
+      draftSaved: (state) => state.reportData.selections,
+      draftError: (state) => state.reportData.selections,
+      orElse: () => const ReportSelections(),
+    );
+  }
+
+  ReportFormData _getCurrentFormData() {
+    return state.maybeMap(
+      page2Ready: (state) => state.formData,
+      page2Error: (state) => state.formData,
+      submitting: (state) => state.reportData.formData,
+      submitted: (state) => state.reportData.formData,
+      submissionError: (state) => state.reportData.formData,
+      draftSaved: (state) => state.reportData.formData,
+      draftError: (state) => state.reportData.formData,
+      orElse: () => const ReportFormData(),
+    );
   }
 
   // ============================================================================
   // INITIAL LOAD EVENT HANDLERS
   // ============================================================================
 
-  // Load Scopes
-  Future<void> _onLoadWorkScopesRequested(
-    LoadWorkScopesRequested event,
+  Future<void> _onLoadWorkScopes(
+    LoadWorkScopes event,
     Emitter<ReportCreationState> emit,
   ) async {
-    emit(state.copyWith(isLoadingWorkScopes: true, workScopesError: null));
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
 
-    final result = await _repository.getWorkScopes(
-      forceRefresh: event.forceRefresh,
+    final result = await _getWorkScopesUseCase(
+      GetWorkScopesParams(forceRefresh: event.forceRefresh),
     );
 
     result.fold(
       (failure) => emit(
-        state.copyWith(
-          isLoadingWorkScopes: false,
-          workScopesError: _mapFailureToMessage(failure),
+        ReportCreationState.page1Error(
+          apiData: currentApiData,
+          selections: currentSelections,
+          errorMessage: failure.message,
         ),
       ),
       (workScopes) => emit(
-        state.copyWith(
-          isLoadingWorkScopes: false,
-          workScopes: workScopes,
-          workScopesError: null,
+        ReportCreationState.page1Ready(
+          apiData: currentApiData.copyWith(workScopes: workScopes),
+          selections: currentSelections,
         ),
       ),
     );
   }
 
-  // Load States/Provinces
-  Future<void> _onLoadStatesRequested(
-    LoadStatesRequested event,
+  Future<void> _onLoadStates(
+    LoadStates event,
     Emitter<ReportCreationState> emit,
   ) async {
-    emit(state.copyWith(isLoadingStates: true, statesError: null));
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
 
-    final result = await _repository.getStates(
-      forceRefresh: event.forceRefresh,
+    final result = await _getStatesUseCase(
+      GetStatesParams(forceRefresh: event.forceRefresh),
     );
 
     result.fold(
       (failure) => emit(
-        state.copyWith(
-          isLoadingStates: false,
-          statesError: _mapFailureToMessage(failure),
+        ReportCreationState.page1Error(
+          apiData: currentApiData,
+          selections: currentSelections,
+          errorMessage: failure.message,
         ),
       ),
       (states) => emit(
-        state.copyWith(
-          isLoadingStates: false,
-          states: states,
-          statesError: null,
+        ReportCreationState.page1Ready(
+          apiData: currentApiData.copyWith(states: states),
+          selections: currentSelections,
         ),
       ),
     );
   }
 
-  // Load Districts (need ID)
-  Future<void> _onLoadDistrictsRequested(
-    LoadDistrictsRequested event,
+  Future<void> _onLoadDistricts(
+    LoadDistricts event,
     Emitter<ReportCreationState> emit,
   ) async {
-    emit(state.copyWith(isLoadingDistricts: true, districtsError: null));
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
 
-    // Get the state ID from the selected state
-    final selectedState = state.selectedState;
-    if (selectedState?.id == null) {
+    // Get the selected state ID from selections
+    final selectedState = currentSelections.selectedState;
+    if (selectedState == null) {
       emit(
-        state.copyWith(
-          isLoadingDistricts: false,
-          districtsError: 'No state selected or invalid state ID',
+        ReportCreationState.page1Error(
+          apiData: currentApiData,
+          selections: currentSelections,
+          errorMessage: 'No state selected',
         ),
       );
       return;
     }
 
-    final result = await _repository.getDistricts(
-      stateID: selectedState!.id!,
-      forceRefresh: event.forceRefresh,
+    final result = await _getDistrictsUseCase(
+      GetDistrictsParams(
+        stateID: selectedState.id,
+        forceRefresh: event.forceRefresh,
+      ),
     );
 
     result.fold(
       (failure) => emit(
-        state.copyWith(
-          isLoadingDistricts: false,
-          districtsError: _mapFailureToMessage(failure),
+        ReportCreationState.page1Error(
+          apiData: currentApiData,
+          selections: currentSelections,
+          errorMessage: failure.message,
         ),
       ),
       (districts) => emit(
-        state.copyWith(
-          isLoadingDistricts: false,
-          districts: districts,
-          districtsError: null,
+        ReportCreationState.page1Ready(
+          apiData: currentApiData.copyWith(districts: districts),
+          selections: currentSelections,
         ),
       ),
     );
   }
 
-  // Load Roads (need ID)
-  Future<void> _onLoadRoadsRequested(
-    LoadRoadsRequested event,
+  Future<void> _onLoadRoads(
+    LoadRoads event,
     Emitter<ReportCreationState> emit,
   ) async {
-    emit(state.copyWith(isLoadingRoads: true, roadsError: null));
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
 
-    // Get the district ID from the selected district
-    final selectedDistrict = state.selectedDistrict;
-    if (selectedDistrict?.id == null) {
+    // Get the selected district ID from selections
+    final selectedDistrict = currentSelections.selectedDistrict;
+    if (selectedDistrict == null) {
       emit(
-        state.copyWith(
-          isLoadingRoads: false,
-          roadsError: 'No district selected or invalid district ID',
+        ReportCreationState.page1Error(
+          apiData: currentApiData,
+          selections: currentSelections,
+          errorMessage: 'No district selected',
         ),
       );
       return;
     }
 
-    final result = await _repository.getRoads(
-      districtID: selectedDistrict!.id!,
-      forceRefresh: event.forceRefresh,
+    final result = await _getRoadsUseCase(
+      GetRoadsParams(
+        districtID: selectedDistrict.id,
+        forceRefresh: event.forceRefresh,
+      ),
     );
 
     result.fold(
       (failure) => emit(
-        state.copyWith(
-          isLoadingRoads: false,
-          roadsError: _mapFailureToMessage(failure),
+        ReportCreationState.page1Error(
+          apiData: currentApiData,
+          selections: currentSelections,
+          errorMessage: failure.message,
         ),
       ),
       (roads) => emit(
-        state.copyWith(isLoadingRoads: false, roads: roads, roadsError: null),
+        ReportCreationState.page1Ready(
+          apiData: currentApiData.copyWith(roads: roads),
+          selections: currentSelections,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onLoadQuantitiesAndEquipment(
+    LoadQuantitiesAndEquipment event,
+    Emitter<ReportCreationState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    final result = await _getQuantitiesUseCase(
+      GetQuantityParams(
+        companyUID: event.companyUID,
+        workScopeUID: event.workScopeUID,
+        forceRefresh: event.forceRefresh,
+      ),
+    );
+
+    result.fold(
+      (failure) => emit(
+        ReportCreationState.page2Error(
+          apiData: currentApiData,
+          selections: currentSelections,
+          formData: currentFormData,
+          errorMessage: failure.message,
+        ),
+      ),
+      (quantities) => emit(
+        ReportCreationState.page2Ready(
+          apiData: currentApiData.copyWith(quantities: quantities),
+          selections: currentSelections,
+          formData: currentFormData,
+        ),
       ),
     );
   }
@@ -193,217 +308,266 @@ class ReportCreationBloc
   // SELECTION EVENT HANDLERS
   // ============================================================================
 
-  Future<void> _onScopeOfWorkSelected(
-    ScopeOfWorkSelected event,
+  Future<void> _onSelectScope(
+    SelectScope event,
     Emitter<ReportCreationState> emit,
   ) async {
-    final selectedScope = state.workScopes?.firstWhere(
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+
+    // Find the selected scope from available scopes
+    final selectedScope = currentApiData.workScopes?.firstWhere(
       (scope) => scope.uid == event.scopeUid,
-      orElse: () => throw Exception('Scope not found'),
     );
 
     emit(
-      state.copyWith(
-        selectedScopeUid: event.scopeUid,
-        selectedScope: selectedScope,
-        // Clear previous selections when scope changes
-        selectedQuantityTypeUids: [],
-        selectedQuantityTypes: [],
-        selectedEquipmentUids: [],
-        selectedEquipment: [],
-        fieldValues: {},
-        imageFields: {},
-        fieldErrors: {},
+      ReportCreationState.page1Ready(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(
+          selectedScopeUid: event.scopeUid,
+          selectedScope: selectedScope,
+        ),
       ),
     );
   }
 
-  Future<void> _onWeatherSelected(
-    WeatherSelected event,
+  Future<void> _onSelectWeather(
+    SelectWeather event,
     Emitter<ReportCreationState> emit,
   ) async {
-    emit(state.copyWith(selectedWeather: event.weather));
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+
+    emit(
+      ReportCreationState.page1Ready(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(selectedWeather: event.weather),
+      ),
+    );
   }
 
-  Future<void> _onStateSelected(
-    StateSelected event,
+  Future<void> _onSelectState(
+    SelectState event,
     Emitter<ReportCreationState> emit,
   ) async {
-    final selectedState = state.states?.firstWhere(
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+
+    // Find the selected state from available states
+    final selectedState = currentApiData.states?.firstWhere(
       (state) => state.uid == event.stateUid,
-      orElse: () => throw Exception('State not found'),
     );
 
     emit(
-      state.copyWith(
-        selectedStateUid: event.stateUid,
-        selectedState: selectedState,
-        // Clear dependent selections
-        selectedDistrictUid: null,
-        selectedDistrict: null,
-        selectedRoadUid: null,
-        selectedRoad: null,
-        districts: null,
-        roads: null,
+      ReportCreationState.page1Ready(
+        apiData: currentApiData.copyWith(districts: null), // Clear districts
+        selections: currentSelections.copyWith(
+          selectedStateUid: event.stateUid,
+          selectedState: selectedState,
+          // Clear dependent selections
+          selectedDistrictUid: null,
+          selectedDistrict: null,
+          selectedRoadUid: null,
+          selectedRoad: null,
+        ),
       ),
     );
-
-    // Auto-load districts for the selected state using the state ID
-    if (selectedState?.id != null) {
-      add(LoadDistrictsRequested(stateUid: event.stateUid));
-    }
   }
 
-  Future<void> _onDistrictSelected(
-    DistrictSelected event,
+  Future<void> _onSelectDistrict(
+    SelectDistrict event,
     Emitter<ReportCreationState> emit,
   ) async {
-    final selectedDistrict = state.districts?.firstWhere(
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+
+    // Find the selected district from available districts
+    final selectedDistrict = currentApiData.districts?.firstWhere(
       (district) => district.uid == event.districtUid,
-      orElse: () => throw Exception('District not found'),
     );
 
     emit(
-      state.copyWith(
-        selectedDistrictUid: event.districtUid,
-        selectedDistrict: selectedDistrict,
-        // Clear dependent selections
-        selectedRoadUid: null,
-        selectedRoad: null,
-        roads: null,
+      ReportCreationState.page1Ready(
+        apiData: currentApiData.copyWith(roads: null), // Clear roads
+        selections: currentSelections.copyWith(
+          selectedDistrictUid: event.districtUid,
+          selectedDistrict: selectedDistrict,
+          // Clear dependent selections
+          selectedRoadUid: null,
+          selectedRoad: null,
+        ),
       ),
     );
-
-    // Auto-load roads for the selected district using the district ID
-    if (selectedDistrict?.id != null) {
-      add(LoadRoadsRequested(districtUid: event.districtUid));
-    }
   }
 
-  Future<void> _onRoadSelected(
-    RoadSelected event,
+  Future<void> _onSelectRoad(
+    SelectRoad event,
     Emitter<ReportCreationState> emit,
   ) async {
-    final selectedRoad = state.roads?.firstWhere(
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+
+    // Find the selected road from available roads
+    final selectedRoad = currentApiData.roads?.firstWhere(
       (road) => road.uid == event.roadUid,
-      orElse: () => throw Exception('Road not found'),
     );
 
     emit(
-      state.copyWith(
-        selectedRoadUid: event.roadUid,
-        selectedRoad: selectedRoad,
+      ReportCreationState.page1Ready(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(
+          selectedRoadUid: event.roadUid,
+          selectedRoad: selectedRoad,
+        ),
       ),
     );
   }
 
-  Future<void> _onSectionUpdated(
-    SectionUpdated event,
+  Future<void> _onUpdateSection(
+    UpdateSection event,
     Emitter<ReportCreationState> emit,
   ) async {
-    emit(state.copyWith(section: event.section));
-
-    // Validate section if road is selected
-    if (state.selectedRoad != null) {
-      add(const ValidateFormRequested());
-    }
-  }
-
-  // ============================================================================
-  // QUANTITY AND EQUIPMENT EVENT HANDLERS
-  // ============================================================================
-
-  Future<void> _onQuantityTypesSelected(
-    QuantityTypesSelected event,
-    Emitter<ReportCreationState> emit,
-  ) async {
-    final selectedQuantityTypes = state.availableQuantityTypes
-        .where((qt) => event.quantityTypeUids.contains(qt.uid))
-        .toList();
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
 
     emit(
-      state.copyWith(
-        selectedQuantityTypeUids: event.quantityTypeUids,
-        selectedQuantityTypes: selectedQuantityTypes,
+      ReportCreationState.page1Ready(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(section: event.section),
       ),
     );
   }
 
-  Future<void> _onQuantityTypeToggled(
-    QuantityTypeToggled event,
+  // ============================================================================
+  // QUANTITY & EQUIPMENT SELECTION HANDLERS
+  // ============================================================================
+
+  Future<void> _onSelectQuantityTypes(
+    SelectQuantityTypes event,
     Emitter<ReportCreationState> emit,
   ) async {
-    final currentSelected = List<String>.from(state.selectedQuantityTypeUids);
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
 
-    if (currentSelected.contains(event.quantityTypeUid)) {
-      currentSelected.remove(event.quantityTypeUid);
+    // Find selected quantity types from available quantities
+    final selectedQuantityTypes =
+        currentApiData.quantities
+            ?.where((qt) => event.quantityTypeUids.contains(qt.uid))
+            .toList() ??
+        [];
+
+    emit(
+      ReportCreationState.page2Ready(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(
+          selectedQuantityTypeUids: event.quantityTypeUids,
+          selectedQuantityTypes: selectedQuantityTypes,
+        ),
+        formData: currentFormData,
+      ),
+    );
+  }
+
+  Future<void> _onToggleQuantityType(
+    ToggleQuantityType event,
+    Emitter<ReportCreationState> emit,
+  ) async {
+    final currentSelections = _getCurrentSelections();
+    final currentUids = List<String>.from(
+      currentSelections.selectedQuantityTypeUids,
+    );
+
+    if (currentUids.contains(event.quantityTypeUid)) {
+      currentUids.remove(event.quantityTypeUid);
     } else {
-      currentSelected.add(event.quantityTypeUid);
+      currentUids.add(event.quantityTypeUid);
     }
 
-    add(QuantityTypesSelected(currentSelected));
+    add(SelectQuantityTypes(currentUids));
   }
 
-  Future<void> _onEquipmentSelected(
-    EquipmentSelected event,
+  Future<void> _onSelectEquipment(
+    SelectEquipment event,
     Emitter<ReportCreationState> emit,
   ) async {
-    final selectedEquipment = state.availableEquipment
-        .where((eq) => event.equipmentUids.contains(eq.uid))
-        .toList();
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    // Find selected equipment from available equipment
+    final selectedEquipment =
+        currentApiData.equipment
+            ?.where((eq) => event.equipmentUids.contains(eq.uid))
+            .toList() ??
+        [];
 
     emit(
-      state.copyWith(
-        selectedEquipmentUids: event.equipmentUids,
-        selectedEquipment: selectedEquipment,
+      ReportCreationState.page2Ready(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(
+          selectedEquipmentUids: event.equipmentUids,
+          selectedEquipment: selectedEquipment,
+        ),
+        formData: currentFormData,
       ),
     );
   }
 
-  Future<void> _onEquipmentToggled(
-    EquipmentToggled event,
+  Future<void> _onToggleEquipment(
+    ToggleEquipment event,
     Emitter<ReportCreationState> emit,
   ) async {
-    final currentSelected = List<String>.from(state.selectedEquipmentUids);
+    final currentSelections = _getCurrentSelections();
+    final currentUids = List<String>.from(
+      currentSelections.selectedEquipmentUids,
+    );
 
-    if (currentSelected.contains(event.equipmentUid)) {
-      currentSelected.remove(event.equipmentUid);
+    if (currentUids.contains(event.equipmentUid)) {
+      currentUids.remove(event.equipmentUid);
     } else {
-      currentSelected.add(event.equipmentUid);
+      currentUids.add(event.equipmentUid);
     }
 
-    add(EquipmentSelected(currentSelected));
+    add(SelectEquipment(currentUids));
   }
 
   // ============================================================================
-  // FIELD INPUT EVENT HANDLERS
+  // FORM DATA EVENT HANDLERS
   // ============================================================================
 
-  Future<void> _onFieldValueUpdated(
-    FieldValueUpdated event,
+  Future<void> _onUpdateFieldValue(
+    UpdateFieldValue event,
     Emitter<ReportCreationState> emit,
   ) async {
-    final updatedFieldValues = Map<String, dynamic>.from(state.fieldValues);
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    final updatedFieldValues = Map<String, dynamic>.from(
+      currentFormData.fieldValues,
+    );
     updatedFieldValues[event.fieldKey] = event.value;
 
-    // Clear field error if value is updated
-    final updatedFieldErrors = Map<String, String?>.from(state.fieldErrors);
-    updatedFieldErrors.remove(event.fieldKey);
-
     emit(
-      state.copyWith(
-        fieldValues: updatedFieldValues,
-        fieldErrors: updatedFieldErrors,
+      ReportCreationState.page2Ready(
+        apiData: currentApiData,
+        selections: currentSelections,
+        formData: currentFormData.copyWith(fieldValues: updatedFieldValues),
       ),
     );
   }
 
-  Future<void> _onImagesAdded(
-    ImagesAdded event,
+  Future<void> _onAddImages(
+    AddImages event,
     Emitter<ReportCreationState> emit,
   ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
     final updatedImageFields = Map<String, List<String>>.from(
-      state.imageFields,
+      currentFormData.imageFields,
     );
     final existingImages = updatedImageFields[event.fieldKey] ?? [];
     updatedImageFields[event.fieldKey] = [
@@ -411,64 +575,78 @@ class ReportCreationBloc
       ...event.imagePaths,
     ];
 
-    emit(state.copyWith(imageFields: updatedImageFields));
+    emit(
+      ReportCreationState.page2Ready(
+        apiData: currentApiData,
+        selections: currentSelections,
+        formData: currentFormData.copyWith(imageFields: updatedImageFields),
+      ),
+    );
   }
 
-  Future<void> _onImageRemoved(
-    ImageRemoved event,
+  Future<void> _onRemoveImage(
+    RemoveImage event,
     Emitter<ReportCreationState> emit,
   ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
     final updatedImageFields = Map<String, List<String>>.from(
-      state.imageFields,
+      currentFormData.imageFields,
     );
     final existingImages = updatedImageFields[event.fieldKey] ?? [];
     existingImages.remove(event.imagePath);
     updatedImageFields[event.fieldKey] = existingImages;
 
-    emit(state.copyWith(imageFields: updatedImageFields));
+    emit(
+      ReportCreationState.page2Ready(
+        apiData: currentApiData,
+        selections: currentSelections,
+        formData: currentFormData.copyWith(imageFields: updatedImageFields),
+      ),
+    );
   }
 
   // ============================================================================
-  // VALIDATION EVENT HANDLERS
+  // VALIDATION & SUBMISSION HANDLERS
   // ============================================================================
 
-  Future<void> _onValidateFormRequested(
-    ValidateFormRequested event,
+  Future<void> _onValidateForm(
+    ValidateForm event,
     Emitter<ReportCreationState> emit,
   ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
     final fieldErrors = <String, String?>{};
     final validationErrors = <String>[];
 
     // Validate basic selections
-    if (state.selectedScopeUid == null) {
+    if (currentSelections.selectedScopeUid == null) {
       validationErrors.add('Please select a scope of work');
     }
-    if (state.selectedWeather == null) {
+    if (currentSelections.selectedWeather == null) {
       validationErrors.add('Please select weather condition');
     }
-    if (state.selectedRoadUid == null) {
+    if (currentSelections.selectedRoadUid == null) {
       validationErrors.add('Please select a road');
     }
-    if (state.section == null || state.section!.isEmpty) {
+    if (currentSelections.section == null ||
+        currentSelections.section!.isEmpty) {
       validationErrors.add('Please enter section information');
       fieldErrors['section'] = 'Section is required';
     }
 
-    // Validate section range if road is selected
-    if (!state.isSectionValid && state.selectedRoad != null) {
-      fieldErrors['section'] =
-          'Section must be within ${state.selectedRoad!.sectionStart} - ${state.selectedRoad!.sectionFinish}';
-      validationErrors.add('Invalid section range');
-    }
-
     // Validate quantity type fields
-    for (final quantityType in state.selectedQuantityTypes) {
+    for (final quantityType in currentSelections.selectedQuantityTypes) {
       for (final field in quantityType.quantityFields) {
         final fieldKey = '${quantityType.uid}_${field.code}';
 
         if (field.isRequired) {
-          final value = state.getFieldValue(fieldKey);
-          final imageValue = state.getImageFieldValue(fieldKey);
+          final value = currentFormData.fieldValues[fieldKey];
+          final imageValue = currentFormData.imageFields[fieldKey] ?? [];
 
           if ((value == null || value.toString().isEmpty) &&
               imageValue.isEmpty) {
@@ -482,178 +660,135 @@ class ReportCreationBloc
     final isFormValid = validationErrors.isEmpty;
 
     emit(
-      state.copyWith(
-        fieldErrors: fieldErrors,
-        validationErrors: validationErrors,
-        isFormValid: isFormValid,
+      ReportCreationState.page2Ready(
+        apiData: currentApiData,
+        selections: currentSelections,
+        formData: currentFormData.copyWith(
+          fieldErrors: fieldErrors,
+          validationErrors: validationErrors,
+          isFormValid: isFormValid,
+        ),
       ),
     );
   }
 
-  Future<void> _onFieldErrorCleared(
-    FieldErrorCleared event,
+  Future<void> _onClearFieldError(
+    ClearFieldError event,
     Emitter<ReportCreationState> emit,
   ) async {
-    final updatedFieldErrors = Map<String, String?>.from(state.fieldErrors);
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    final updatedFieldErrors = Map<String, String?>.from(
+      currentFormData.fieldErrors,
+    );
     updatedFieldErrors.remove(event.fieldKey);
 
-    emit(state.copyWith(fieldErrors: updatedFieldErrors));
+    emit(
+      ReportCreationState.page2Ready(
+        apiData: currentApiData,
+        selections: currentSelections,
+        formData: currentFormData.copyWith(fieldErrors: updatedFieldErrors),
+      ),
+    );
   }
 
-  // ============================================================================
-  // SUBMISSION EVENT HANDLERS
-  // ============================================================================
-
-  Future<void> _onSubmitReportRequested(
-    SubmitReportRequested event,
+  Future<void> _onSubmitReport(
+    SubmitReport event,
     Emitter<ReportCreationState> emit,
   ) async {
-    // First validate the form
-    add(const ValidateFormRequested());
+    final reportData = ReportData(
+      apiData: _getCurrentApiData(),
+      selections: _getCurrentSelections(),
+      formData: _getCurrentFormData(),
+    );
 
-    // Wait for validation to complete
-    await stream.firstWhere((state) => !state.isLoading);
-
-    if (!state.isFormValid) {
+    // First validate
+    if (!reportData.formData.isFormValid) {
       emit(
-        state.copyWith(
-          submissionError: 'Please fix validation errors before submitting',
+        ReportCreationState.submissionError(
+          reportData: reportData,
+          errorMessage: 'Please fix validation errors before submitting',
         ),
       );
       return;
     }
 
-    emit(state.copyWith(isSubmitting: true, submissionError: null));
+    emit(ReportCreationState.submitting(reportData: reportData));
 
     try {
       // TODO: Implement actual submission logic
-      // final reportData = _buildReportData();
-      // final result = await _repository.submitReport(reportData);
+      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
 
-      // Simulate submission
-      await Future.delayed(const Duration(seconds: 2));
-
-      emit(state.copyWith(isSubmitting: false, isSubmitted: true));
+      emit(ReportCreationState.submitted(reportData: reportData));
     } catch (e) {
       emit(
-        state.copyWith(
-          isSubmitting: false,
-          submissionError: 'Failed to submit report: ${e.toString()}',
+        ReportCreationState.submissionError(
+          reportData: reportData,
+          errorMessage: 'Failed to submit report: ${e.toString()}',
         ),
       );
     }
   }
 
-  Future<void> _onSaveAsDraftRequested(
-    SaveAsDraftRequested event,
+  Future<void> _onSaveAsDraft(
+    SaveAsDraft event,
     Emitter<ReportCreationState> emit,
   ) async {
-    emit(state.copyWith(isSubmitting: true, submissionError: null));
+    final reportData = ReportData(
+      apiData: _getCurrentApiData(),
+      selections: _getCurrentSelections(),
+      formData: _getCurrentFormData(),
+    );
 
     try {
       // TODO: Implement draft saving logic
-      // final draftData = _buildReportData();
-      // final result = await _repository.saveDraft(draftData);
+      await Future.delayed(const Duration(seconds: 1)); // Simulate saving
 
-      // Simulate saving
-      await Future.delayed(const Duration(seconds: 1));
-
-      emit(state.copyWith(isSubmitting: false, submissionError: null));
+      emit(ReportCreationState.draftSaved(reportData: reportData));
     } catch (e) {
       emit(
-        state.copyWith(
-          isSubmitting: false,
-          submissionError: 'Failed to save draft: ${e.toString()}',
+        ReportCreationState.draftError(
+          reportData: reportData,
+          errorMessage: 'Failed to save draft: ${e.toString()}',
         ),
       );
     }
   }
 
   // ============================================================================
-  // CLEAR/RESET EVENT HANDLERS
+  // UTILITY EVENT HANDLERS
   // ============================================================================
 
-  Future<void> _onClearCacheRequested(
-    ClearCacheRequested event,
+  Future<void> _onClearCache(
+    ClearCache event,
     Emitter<ReportCreationState> emit,
   ) async {
-    await _repository.clearCache();
-    emit(const ReportCreationState());
+    try {
+      await _clearCacheUseCase();
+      emit(const ReportCreationState.initial());
+    } catch (e) {
+      // Handle error if needed
+    }
   }
 
-  Future<void> _onResetFormRequested(
-    ResetFormRequested event,
+  Future<void> _onResetForm(
+    ResetForm event,
     Emitter<ReportCreationState> emit,
   ) async {
     emit(
-      state.copyWith(
-        selectedScopeUid: null,
-        selectedScope: null,
-        selectedWeather: null,
-        selectedStateUid: null,
-        selectedState: null,
-        selectedDistrictUid: null,
-        selectedDistrict: null,
-        selectedRoadUid: null,
-        selectedRoad: null,
-        section: null,
-        selectedQuantityTypeUids: [],
-        selectedQuantityTypes: [],
-        selectedEquipmentUids: [],
-        selectedEquipment: [],
-        fieldValues: {},
-        imageFields: {},
-        fieldErrors: {},
-        isFormValid: false,
-        validationErrors: [],
-        isSubmitting: false,
-        submissionError: null,
-        isSubmitted: false,
+      ReportCreationState.page1Ready(
+        apiData: _getCurrentApiData(),
+        selections: const ReportSelections(),
       ),
     );
   }
 
-  Future<void> _onStartOverRequested(
-    StartOverRequested event,
+  Future<void> _onStartOver(
+    StartOver event,
     Emitter<ReportCreationState> emit,
   ) async {
-    emit(const ReportCreationState());
+    emit(const ReportCreationState.initial());
   }
-
-  // ============================================================================
-  // HELPER METHODS
-  // ============================================================================
-
-  String _mapFailureToMessage(Failure failure) {
-    switch (failure.runtimeType) {
-      case NetworkFailure:
-        return 'Network error. Please check your connection.';
-      case ServerFailure:
-        return failure.message;
-      case CacheFailure:
-        return 'Cache error: ${failure.message}';
-      default:
-        return 'An unexpected error occurred: ${failure.message}';
-    }
-  }
-
-  // TODO: Implement when submission API is ready
-  // Map<String, dynamic> _buildReportData() {
-  //   return {
-  //     'scopeOfWorkUid': state.selectedScopeUid,
-  //     'weather': state.selectedWeather,
-  //     'roadUid': state.selectedRoadUid,
-  //     'section': state.section,
-  //     'quantityTypes': state.selectedQuantityTypes.map((qt) => {
-  //       'uid': qt.uid,
-  //       'fields': qt.quantityFields.map((field) => {
-  //         'code': field.code,
-  //         'value': state.getFieldValue('${qt.uid}_${field.code}'),
-  //       }).toList(),
-  //     }).toList(),
-  //     'equipment': state.selectedEquipmentUids,
-  //     'fieldValues': state.fieldValues,
-  //     'imageFields': state.imageFields,
-  //   };
-  // }
 }

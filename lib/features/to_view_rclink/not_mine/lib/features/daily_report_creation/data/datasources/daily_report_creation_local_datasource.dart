@@ -17,6 +17,7 @@ import '../models/province/district_model.dart';
 import '../models/province/province_model.dart';
 import '../models/province/road_model.dart';
 import '../models/scope_of_work/scope_of_work_model.dart';
+import '../models/scope_of_work/work_quantity_type_model.dart';
 
 abstract class DailyReportCreationLocalDatasource {
   // Foundation
@@ -55,6 +56,31 @@ abstract class DailyReportCreationLocalDatasource {
   // roads getOfflineFirst
   Future<List<RoadModel>> getCachedRoadModels();
   Future<void> cacheRoadModels(List<RoadModel> models);
+
+  ///------------------------- GET Quantity
+  Future<List<WorkQuantityType>?> getCachedQuantities({
+    required String companyUID,
+    required String workScopeUID,
+  });
+
+  Future<void> cacheQuantities(
+    List<WorkQuantityType> quantities, {
+    required String companyUID,
+    required String workScopeUID,
+  });
+
+  Future<List<WorkQuantityTypeModel>> getCachedQuantityModels({
+    required String companyUID,
+    required String workScopeUID,
+  });
+
+  Future<void> cacheQuantityModels(
+    List<WorkQuantityTypeModel> models, {
+    required String companyUID,
+    required String workScopeUID,
+  });
+
+  Future<void> clearQuantitiesCache();
 }
 
 @LazySingleton(as: DailyReportCreationLocalDatasource)
@@ -1003,5 +1029,160 @@ class DailyReportCreationLocalDatasourceImpl
   Future<void> cacheRoadModels(List<RoadModel> models) async {
     final entities = models.map((model) => model.toEntity()).toList();
     await cacheRoads(entities);
+  }
+
+  /* 
+  // Quantity datasource
+  */
+
+  @override
+  Future<List<WorkQuantityType>?> getCachedQuantities({
+    required String companyUID,
+    required String workScopeUID,
+  }) async {
+    try {
+      // Find the work scope first
+      final scopeRecords = await (_database.select(
+        _database.workScopes,
+      )..where((tbl) => tbl.uid.equals(workScopeUID))).get();
+
+      if (scopeRecords.isEmpty) {
+        return null;
+      }
+
+      final scopeRecord = scopeRecords.first;
+
+      // Get quantity types for this scope
+      final quantityTypes = await _getWorkQuantityTypesByScopeId(
+        scopeRecord.id,
+      );
+
+      return quantityTypes.isEmpty ? null : quantityTypes;
+    } catch (e) {
+      print('Error loading cached quantities: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheQuantities(
+    List<WorkQuantityType> quantities, {
+    required String companyUID,
+    required String workScopeUID,
+  }) async {
+    try {
+      await _database.transaction(() async {
+        // Find the work scope
+        final scopeRecords = await (_database.select(
+          _database.workScopes,
+        )..where((tbl) => tbl.uid.equals(workScopeUID))).get();
+
+        if (scopeRecords.isEmpty) {
+          throw Exception('Work scope not found: $workScopeUID');
+        }
+
+        final scopeId = scopeRecords.first.id;
+
+        // Get all quantity type IDs for this scope to delete related data
+        final existingQuantityTypes = await (_database.select(
+          _database.workQuantityTypes,
+        )..where((tbl) => tbl.workScopeID.equals(scopeId))).get();
+
+        // Delete related data in correct order
+        for (final quantityType in existingQuantityTypes) {
+          // Delete field options first
+          final fields = await (_database.select(
+            _database.workQuantityFields,
+          )..where((tbl) => tbl.quantityTypeID.equals(quantityType.id))).get();
+
+          for (final field in fields) {
+            await (_database.delete(
+              _database.workQuantityFieldOptions,
+            )..where((tbl) => tbl.fieldID.equals(field.id))).go();
+          }
+
+          // Delete fields
+          await (_database.delete(
+            _database.workQuantityFields,
+          )..where((tbl) => tbl.quantityTypeID.equals(quantityType.id))).go();
+        }
+
+        // Delete quantity types
+        await (_database.delete(
+          _database.workQuantityTypes,
+        )..where((tbl) => tbl.workScopeID.equals(scopeId))).go();
+
+        // Insert new quantity types
+        await _insertWorkQuantityTypesWithRelations(quantities, scopeId);
+      });
+    } catch (e) {
+      print('Error caching quantities: $e');
+      throw e;
+    }
+  }
+
+  @override
+  Future<void> clearQuantitiesCache() async {
+    try {
+      await _database.transaction(() async {
+        // Get all quantity type IDs first
+        final allQuantityTypes = await _database
+            .select(_database.workQuantityTypes)
+            .get();
+
+        // Delete field options first
+        for (final quantityType in allQuantityTypes) {
+          final fields = await (_database.select(
+            _database.workQuantityFields,
+          )..where((tbl) => tbl.quantityTypeID.equals(quantityType.id))).get();
+
+          for (final field in fields) {
+            await (_database.delete(
+              _database.workQuantityFieldOptions,
+            )..where((tbl) => tbl.fieldID.equals(field.id))).go();
+          }
+        }
+
+        // Delete all fields
+        await _database.delete(_database.workQuantityFields).go();
+
+        // Delete all quantity types
+        await _database.delete(_database.workQuantityTypes).go();
+      });
+    } catch (e) {
+      print('Error clearing quantities cache: $e');
+      throw e;
+    }
+  }
+
+  @override
+  Future<List<WorkQuantityTypeModel>> getCachedQuantityModels({
+    required String companyUID,
+    required String workScopeUID,
+  }) async {
+    final entities = await getCachedQuantities(
+      companyUID: companyUID,
+      workScopeUID: workScopeUID,
+    );
+
+    if (entities == null) return [];
+
+    return entities
+        .map((entity) => WorkQuantityTypeModel.fromEntity(entity))
+        .toList();
+  }
+
+  @override
+  Future<void> cacheQuantityModels(
+    List<WorkQuantityTypeModel> models, {
+    required String companyUID,
+    required String workScopeUID,
+  }) async {
+    final entities = models.map((model) => model.toEntity()).toList();
+    await cacheQuantities(
+      entities,
+      companyUID: companyUID,
+      workScopeUID: workScopeUID,
+    );
   }
 }

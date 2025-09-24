@@ -274,7 +274,7 @@ class _DailyReportCreationApiService implements DailyReportCreationApiService {
   }
 
   @override
-  Future<ApiResponse<List<ScopeOfWorkModel>>> getQuantityTypes({
+  Future<ApiResponse<List<WorkQuantityTypeModel>>> getQuantityTypes({
     required String companyUID,
     required String workScopeUID,
     int? page = 1,
@@ -298,7 +298,7 @@ class _DailyReportCreationApiService implements DailyReportCreationApiService {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ApiResponse<List<ScopeOfWorkModel>>>(
+    final _options = _setStreamType<ApiResponse<List<WorkQuantityTypeModel>>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -309,14 +309,16 @@ class _DailyReportCreationApiService implements DailyReportCreationApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<List<ScopeOfWorkModel>> _value;
+    late ApiResponse<List<WorkQuantityTypeModel>> _value;
     try {
-      _value = ApiResponse<List<ScopeOfWorkModel>>.fromJson(
+      _value = ApiResponse<List<WorkQuantityTypeModel>>.fromJson(
         _result.data!,
         (json) => json is List<dynamic>
             ? json
-                  .map<ScopeOfWorkModel>(
-                    (i) => ScopeOfWorkModel.fromJson(i as Map<String, dynamic>),
+                  .map<WorkQuantityTypeModel>(
+                    (i) => WorkQuantityTypeModel.fromJson(
+                      i as Map<String, dynamic>,
+                    ),
                   )
                   .toList()
             : List.empty(),

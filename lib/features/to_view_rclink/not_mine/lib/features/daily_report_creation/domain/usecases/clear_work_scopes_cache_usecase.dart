@@ -6,7 +6,7 @@ import '../repository/workscopes_repository.dart';
 
 @injectable
 class ClearWorkScopesCacheUseCase implements UseCaseNoParams<void> {
-  final WorkscopesRepository _repository;
+  final WorkScopesRepository _repository;
 
   ClearWorkScopesCacheUseCase(this._repository);
 

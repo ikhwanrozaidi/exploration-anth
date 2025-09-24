@@ -7,6 +7,7 @@ import '../models/province/district_model.dart';
 import '../models/province/province_model.dart';
 import '../models/province/road_model.dart';
 import '../models/scope_of_work/scope_of_work_model.dart';
+import '../models/scope_of_work/work_quantity_type_model.dart';
 
 part 'daily_report_creation_api_service.g.dart';
 
@@ -72,7 +73,7 @@ abstract class DailyReportCreationApiService {
   });
 
   @GET('/companies/{companyUID}/work-scopes/{workScopeUID}/quantity-types')
-  Future<ApiResponse<List<WorkQuantityTypes>>> getQuantityTypes({
+  Future<ApiResponse<List<WorkQuantityTypeModel>>> getQuantityTypes({
     @Path('companyUID') required String companyUID,
     @Path('workScopeUID') required String workScopeUID,
     @Query('page') int? page = 1,
