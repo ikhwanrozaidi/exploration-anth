@@ -234,6 +234,100 @@ class _DailyReportCreationApiService implements DailyReportCreationApiService {
     return _value;
   }
 
+  @override
+  Future<ApiResponse<List<ScopeOfWorkModel>>> getEquipments({
+    required String companyUID,
+    required String workScopeUID,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ApiResponse<List<ScopeOfWorkModel>>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/companies/${companyUID}/work-scopes/${workScopeUID}/equipments',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<List<ScopeOfWorkModel>> _value;
+    try {
+      _value = ApiResponse<List<ScopeOfWorkModel>>.fromJson(
+        _result.data!,
+        (json) => json is List<dynamic>
+            ? json
+                  .map<ScopeOfWorkModel>(
+                    (i) => ScopeOfWorkModel.fromJson(i as Map<String, dynamic>),
+                  )
+                  .toList()
+            : List.empty(),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ApiResponse<List<ScopeOfWorkModel>>> getQuantityTypes({
+    required String companyUID,
+    required String workScopeUID,
+    int? page = 1,
+    int? limit = 0,
+    String? sortOrder = 'asc',
+    String? sortBy,
+    String? search,
+    bool? isActive,
+    bool? hasSegmentBreakdown,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'page': page,
+      r'limit': limit,
+      r'sortOrder': sortOrder,
+      r'sortBy': sortBy,
+      r'search': search,
+      r'isActive': isActive,
+      r'hasSegmentBreakdown': hasSegmentBreakdown,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ApiResponse<List<ScopeOfWorkModel>>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/companies/${companyUID}/work-scopes/${workScopeUID}/quantity-types',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<List<ScopeOfWorkModel>> _value;
+    try {
+      _value = ApiResponse<List<ScopeOfWorkModel>>.fromJson(
+        _result.data!,
+        (json) => json is List<dynamic>
+            ? json
+                  .map<ScopeOfWorkModel>(
+                    (i) => ScopeOfWorkModel.fromJson(i as Map<String, dynamic>),
+                  )
+                  .toList()
+            : List.empty(),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

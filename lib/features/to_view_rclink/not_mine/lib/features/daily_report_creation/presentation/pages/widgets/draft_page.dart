@@ -149,7 +149,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
               // Content
               Expanded(
                 child: Container(
-                  padding: EdgeInsets.all(35),
+                  padding: ResponsiveHelper.padding(context, all: 30),
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     color: Colors.white,
@@ -167,6 +167,9 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                   ),
                   child: ListView(
                     children: [
+                      SizedBox(height: 10),
+
+                      // Scope of Work
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 18.0),
                         child: Row(
@@ -189,7 +192,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                   Text('Scope of Work'),
 
                                   Text(
-                                    widget.scopeOfWork,
+                                    widget.scopeOfWork.toUpperCase(),
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       fontSize: ResponsiveHelper.fontSize(
@@ -209,6 +212,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
 
                       dividerConfig(),
 
+                      // Location
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 18.0),
                         child: Row(
@@ -231,7 +235,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                   Text('Location'),
 
                                   Text(
-                                    widget.location,
+                                    widget.location.toUpperCase(),
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       fontSize: ResponsiveHelper.fontSize(
@@ -251,6 +255,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
 
                       dividerConfig(),
 
+                      // Sections
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 18.0),
                         child: Row(
@@ -291,6 +296,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
 
                       dividerConfig(),
 
+                      // Worker
                       CustomFieldTile(
                         icon: Icons.abc,
                         title: 'Worker',
@@ -302,6 +308,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                         isRequired: true,
                       ),
 
+                      // Equipment
                       CustomFieldTile(
                         icon: Icons.abc,
                         title: 'Equipment',
@@ -313,6 +320,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                         isRequired: true,
                       ),
 
+                      // Condition Snapshot
                       CustomFieldTile(
                         icon: Icons.abc,
                         title: 'Condition Snapshot',
@@ -324,7 +332,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                         isRequired: true,
                       ),
 
-                      //Quantity
+                      // Quantity
                       CustomFieldTile(
                         icon: Icons.abc,
                         title: 'Quantity',
@@ -359,6 +367,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                         isRequired: true,
                       ),
 
+                      // Notes
                       CustomFieldTile(
                         icon: Icons.abc,
                         title: 'Notes',

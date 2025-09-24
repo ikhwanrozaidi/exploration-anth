@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/scope_of_work/scope_of_work.dart';
-import '../repository/daily_report_creation_repository.dart';
+import '../repository/workscopes_repository.dart';
 
 @injectable
 class GetWorkScopesParams {
@@ -19,7 +19,7 @@ class GetWorkScopesParams {
 @injectable
 class GetWorkScopesUseCase
     implements UseCase<List<ScopeOfWork>, GetWorkScopesParams> {
-  final DailyReportCreationRepository _repository;
+  final WorkscopesRepository _repository;
 
   GetWorkScopesUseCase(this._repository);
 

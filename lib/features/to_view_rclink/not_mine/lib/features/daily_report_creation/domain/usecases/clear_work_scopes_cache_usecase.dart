@@ -2,11 +2,11 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../repository/daily_report_creation_repository.dart';
+import '../repository/workscopes_repository.dart';
 
 @injectable
 class ClearWorkScopesCacheUseCase implements UseCaseNoParams<void> {
-  final DailyReportCreationRepository _repository;
+  final WorkscopesRepository _repository;
 
   ClearWorkScopesCacheUseCase(this._repository);
 

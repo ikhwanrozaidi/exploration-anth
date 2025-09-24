@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../../../../shared/models/api_response.dart';
+import '../../../../core/database/app_database.dart';
 import '../models/province/district_model.dart';
 import '../models/province/province_model.dart';
 import '../models/province/road_model.dart';
@@ -62,5 +63,24 @@ abstract class DailyReportCreationApiService {
     @Query('search') String? search,
     @Query('sectionStartMin') double? sectionStartMin,
     @Query('sectionFinishMax') double? sectionFinishMax,
+  });
+
+  @GET('/companies/{companyUID}/work-scopes/{workScopeUID}/equipments')
+  Future<ApiResponse<List<ScopeOfWorkModel>>> getEquipments({
+    @Path('companyUID') required String companyUID,
+    @Path('workScopeUID') required String workScopeUID,
+  });
+
+  @GET('/companies/{companyUID}/work-scopes/{workScopeUID}/quantity-types')
+  Future<ApiResponse<List<WorkQuantityTypes>>> getQuantityTypes({
+    @Path('companyUID') required String companyUID,
+    @Path('workScopeUID') required String workScopeUID,
+    @Query('page') int? page = 1,
+    @Query('limit') int? limit = 0, // 0 = all items
+    @Query('sortOrder') String? sortOrder = 'asc',
+    @Query('sortBy') String? sortBy,
+    @Query('search') String? search,
+    @Query('isActive') bool? isActive,
+    @Query('hasSegmentBreakdown') bool? hasSegmentBreakdown,
   });
 }

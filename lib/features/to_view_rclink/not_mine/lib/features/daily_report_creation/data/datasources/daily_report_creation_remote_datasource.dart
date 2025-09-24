@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rclink_app/core/database/app_database.dart';
 
 import 'package:rclink_app/features/daily_report_creation/data/datasources/daily_report_creation_api_service.dart';
 import 'package:rclink_app/features/daily_report_creation/data/models/scope_of_work/scope_of_work_model.dart';
@@ -43,6 +44,11 @@ abstract class DailyReportCreationRemoteDataSource {
     double? sectionStartMin,
     double? sectionFinishMax,
   });
+
+  Future<Either<Failure, List<WorkQuantityTypes>>> getQuantities({
+    String companyUID,
+    String workScopeUID,
+  });
 }
 
 @LazySingleton(as: DailyReportCreationRemoteDataSource)
@@ -59,8 +65,8 @@ class DailyReportCreationRemoteDataSourceImpl
     try {
       final response = await _apiService.getWorkScopes(
         companyUID: companyUID,
-        limit: 0, // Get all
-        expand: ['workEquipments', 'workQuantityTypes'], // Always expanded
+        limit: 0,
+        // expand: ['workEquipments', 'workQuantityTypes'],
       );
 
       if (response.isSuccess && response.data != null) {
@@ -116,10 +122,6 @@ class DailyReportCreationRemoteDataSourceImpl
     String? search,
   }) async {
     try {
-      // print('🌐 Fetching districts from API with params:');
-      // print('   page: $page, limit: $limit, sortOrder: $sortOrder');
-      // print('   sortBy: $sortBy, stateID: $stateID, search: $search');
-
       final response = await _apiService.getDistricts(
         page: page,
         limit: limit,
@@ -132,8 +134,8 @@ class DailyReportCreationRemoteDataSourceImpl
       if (response.isSuccess && response.data != null) {
         return Right(response.data!);
       } else {
-        final error = 'API Error: ${response.message}';
-        print('❌ getDistricts: $error');
+        // final error = 'API Error: ${response.message}';
+        // print('❌ getDistricts: $error');
         return Left(
           ServerFailure(response.message, statusCode: response.statusCode),
         );
@@ -157,12 +159,6 @@ class DailyReportCreationRemoteDataSourceImpl
     double? sectionFinishMax,
   }) async {
     try {
-      // print('🌐 Fetching roads from API with params:');
-      // print('   page: $page, limit: $limit, sortOrder: $sortOrder');
-      // print('   sortBy: $sortBy, districtID: $districtID');
-      // print('   mainCategoryID: $mainCategoryID, secondaryCategoryID: $secondaryCategoryID',);
-      // print('   search: $search, sectionStartMin: $sectionStartMin, sectionFinishMax: $sectionFinishMax',);
-
       final response = await _apiService.getRoads(
         page: page,
         limit: limit,
@@ -179,8 +175,31 @@ class DailyReportCreationRemoteDataSourceImpl
       if (response.isSuccess && response.data != null) {
         return Right(response.data!);
       } else {
-        final error = 'API Error: ${response.message}';
-        print('❌ getRoads: $error');
+        // final error = 'API Error: ${response.message}';
+        // print('❌ getRoads: $error');
+        return Left(
+          ServerFailure(response.message, statusCode: response.statusCode),
+        );
+      }
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<WorkQuantityTypes>>> getQuantities(
+    String companyUID,
+    String workScopeUID,
+  ) async {
+    try {
+      final response = await _apiService.getQuantityTypes(
+        companyUID: companyUID,
+        workScopeUID: workScopeUID,
+      );
+
+      if (response.isSuccess && response.data != null) {
+        return Right(response.data!);
+      } else {
         return Left(
           ServerFailure(response.message, statusCode: response.statusCode),
         );
