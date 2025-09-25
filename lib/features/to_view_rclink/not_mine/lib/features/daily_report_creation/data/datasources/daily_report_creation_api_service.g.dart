@@ -27,7 +27,7 @@ class _DailyReportCreationApiService implements DailyReportCreationApiService {
     String? search,
     String? code,
     bool? allowMultipleQuantities,
-    List<String>? expand = const ['workEquipments', 'workQuantityTypes'],
+    List<String>? expand,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{

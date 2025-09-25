@@ -10,6 +10,7 @@ import '../../domain/entities/province/road_entity.dart';
 part 'report_creation_data.freezed.dart';
 
 // API DATA CLASSES
+
 @freezed
 abstract class ReportApiData with _$ReportApiData {
   const factory ReportApiData({
@@ -23,6 +24,7 @@ abstract class ReportApiData with _$ReportApiData {
 }
 
 // USER SELECTIONS DATA CLASS
+
 @freezed
 abstract class ReportSelections with _$ReportSelections {
   const factory ReportSelections({
@@ -36,6 +38,7 @@ abstract class ReportSelections with _$ReportSelections {
     String? selectedRoadUid,
     Road? selectedRoad,
     String? section,
+    String? sectionError,
     @Default([]) List<String> selectedQuantityTypeUids,
     @Default([]) List<WorkQuantityType> selectedQuantityTypes,
     @Default([]) List<String> selectedEquipmentUids,
@@ -44,6 +47,7 @@ abstract class ReportSelections with _$ReportSelections {
 }
 
 // FORM DATA CLASS
+
 @freezed
 abstract class ReportFormData with _$ReportFormData {
   const factory ReportFormData({
@@ -56,6 +60,7 @@ abstract class ReportFormData with _$ReportFormData {
 }
 
 // COMPLETE REPORT DATA CLASS
+
 @freezed
 abstract class ReportData with _$ReportData {
   const factory ReportData({

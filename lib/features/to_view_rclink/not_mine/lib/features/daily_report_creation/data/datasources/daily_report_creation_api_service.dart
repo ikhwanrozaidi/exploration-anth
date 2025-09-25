@@ -28,8 +28,7 @@ abstract class DailyReportCreationApiService {
     @Query('search') String? search,
     @Query('code') String? code,
     @Query('allowMultipleQuantities') bool? allowMultipleQuantities,
-    @Query('expand')
-    List<String>? expand = const ['workEquipments', 'workQuantityTypes'],
+    @Query('expand') List<String>? expand,
   });
 
   @GET('/states')

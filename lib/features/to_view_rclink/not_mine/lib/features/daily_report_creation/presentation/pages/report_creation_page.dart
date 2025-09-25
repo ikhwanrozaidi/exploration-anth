@@ -35,9 +35,13 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
     super.initState();
     _bloc = getIt<ReportCreationBloc>();
 
-    // Load initial data
+    // Load initial data sequentially
     _bloc.add(const LoadWorkScopes());
-    _bloc.add(const LoadStates());
+
+    // Delay the states loading slightly to avoid race condition
+    Future.delayed(const Duration(milliseconds: 100), () {
+      _bloc.add(const LoadStates());
+    });
   }
 
   @override
@@ -50,9 +54,6 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Color defaultPrimaryColor =
-        primaryColor ?? Theme.of(context).primaryColor;
-
     return BlocProvider.value(
       value: _bloc,
       child: GestureDetector(
@@ -104,17 +105,17 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
 
               child: BlocBuilder<ReportCreationBloc, ReportCreationState>(
                 builder: (context, state) {
-                  // Extract field errors for section
-                  final fieldErrors = state.maybeWhen(
-                    page2Ready: (apiData, selections, formData) =>
-                        formData.fieldErrors,
-                    page2Error: (apiData, selections, formData, errorMessage) =>
-                        formData.fieldErrors,
-                    orElse: () => <String, String?>{},
+                  // Extract section error from selections (Page 1 validation)
+                  final sectionError = state.maybeWhen(
+                    page1Ready: (apiData, selections) =>
+                        selections.sectionError,
+                    page1Error: (apiData, selections, errorMessage) =>
+                        selections.sectionError,
+                    orElse: () => null,
                   );
 
-                  final hasError = fieldErrors.containsKey('section');
-                  final errorMessage = fieldErrors['section'];
+                  final hasError = sectionError != null;
+                  final errorMessage = sectionError;
 
                   return SafeArea(
                     bottom: false,
@@ -258,8 +259,7 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                                           child: Icon(
                                                             Icons
                                                                 .restaurant_menu,
-                                                            color:
-                                                                defaultPrimaryColor,
+                                                            color: primaryColor,
                                                           ),
                                                         ),
                                                       ),
@@ -328,7 +328,7 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                                   ),
                                                   child: Icon(
                                                     Icons.chevron_right_rounded,
-                                                    color: defaultPrimaryColor,
+                                                    color: primaryColor,
                                                   ),
                                                 ),
                                               ],
@@ -389,8 +389,7 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                                       child: Center(
                                                         child: Icon(
                                                           Icons.sunny,
-                                                          color:
-                                                              defaultPrimaryColor,
+                                                          color: primaryColor,
                                                         ),
                                                       ),
                                                     ),
@@ -442,7 +441,7 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                                   ),
                                                   child: Icon(
                                                     Icons.chevron_right_rounded,
-                                                    color: defaultPrimaryColor,
+                                                    color: primaryColor,
                                                   ),
                                                 ),
                                               ],
@@ -507,8 +506,7 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                                         child: Center(
                                                           child: Icon(
                                                             Icons.location_on,
-                                                            color:
-                                                                defaultPrimaryColor,
+                                                            color: primaryColor,
                                                           ),
                                                         ),
                                                       ),
@@ -575,7 +573,7 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                                   ),
                                                   child: Icon(
                                                     Icons.chevron_right_rounded,
-                                                    color: defaultPrimaryColor,
+                                                    color: primaryColor,
                                                   ),
                                                 ),
                                               ],
@@ -639,7 +637,7 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                                                   errorMessage !=
                                                                       null
                                                               ? Colors.red
-                                                              : defaultPrimaryColor,
+                                                              : primaryColor,
                                                         ),
                                                       ),
                                                     ),
@@ -825,8 +823,9 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                 // Add button
                                 SizedBox(
                                   width: double.infinity,
-                                  child: ElevatedButton(
-                                    onPressed: () {
+                                  child: Builder(
+                                    builder: (context) {
+                                      // Check if form is complete and valid
                                       final canProceed = state.maybeWhen(
                                         page1Ready: (apiData, selections) =>
                                             selections.selectedScopeUid !=
@@ -840,35 +839,97 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                         orElse: () => false,
                                       );
 
-                                      if (canProceed &&
-                                          !hasError &&
-                                          errorMessage == null) {
-                                        _navigateToTips(context, state);
-                                      }
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: primaryColor,
-                                      padding: ResponsiveHelper.padding(
-                                        context,
-                                        vertical: 12,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      elevation: 2,
-                                    ),
-                                    child: state.maybeWhen(
-                                      orElse: () => Text(
-                                        'Add',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: ResponsiveHelper.fontSize(
+                                      final isButtonEnabled =
+                                          canProceed && !hasError;
+
+                                      return ElevatedButton(
+                                        onPressed: isButtonEnabled
+                                            ? () {
+                                                _navigateToTips(context, state);
+                                              }
+                                            : () {
+                                                // Show validation message when disabled button is pressed
+                                                List<String> missingFields = [];
+
+                                                final currentSelections = state
+                                                    .maybeWhen(
+                                                      page1Ready:
+                                                          (
+                                                            apiData,
+                                                            selections,
+                                                          ) => selections,
+                                                      orElse: () => null,
+                                                    );
+
+                                                if (currentSelections != null) {
+                                                  if (currentSelections
+                                                          .selectedScopeUid ==
+                                                      null)
+                                                    missingFields.add(
+                                                      'Scope of Work',
+                                                    );
+                                                  if (currentSelections
+                                                          .selectedWeather ==
+                                                      null)
+                                                    missingFields.add(
+                                                      'Weather',
+                                                    );
+                                                  if (currentSelections
+                                                          .selectedRoadUid ==
+                                                      null)
+                                                    missingFields.add(
+                                                      'Location',
+                                                    );
+                                                  if (currentSelections
+                                                              .section ==
+                                                          null ||
+                                                      currentSelections
+                                                          .section!
+                                                          .isEmpty) {
+                                                    missingFields.add(
+                                                      'Section',
+                                                    );
+                                                  } else if (hasError) {
+                                                    missingFields.add(
+                                                      'Valid Section',
+                                                    );
+                                                  }
+                                                }
+
+                                                if (missingFields.isNotEmpty) {
+                                                  CustomSnackBar.show(
+                                                    context,
+                                                    'Please complete: ${missingFields.join(', ')}',
+                                                  );
+                                                }
+                                              },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: isButtonEnabled
+                                              ? primaryColor
+                                              : Colors.grey.shade400,
+                                          padding: ResponsiveHelper.padding(
                                             context,
-                                            base: 14,
+                                            vertical: 12,
+                                          ),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          elevation: 2,
+                                        ),
+                                        child: Text(
+                                          'Add',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: ResponsiveHelper.fontSize(
+                                              context,
+                                              base: 14,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   ),
                                 ),
                                 SizedBox(
@@ -950,9 +1011,15 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
 
   void _showLocationSelection(BuildContext context, ReportCreationState state) {
     final states = state.maybeWhen(
-      page1Ready: (apiData, selections) => apiData.states,
-      page1Error: (apiData, selections, errorMessage) => apiData.states,
-      orElse: () => null,
+      page1Ready: (apiData, selections) {
+        return apiData.states;
+      },
+      page1Error: (apiData, selections, errorMessage) {
+        return apiData.states;
+      },
+      orElse: () {
+        return null;
+      },
     );
 
     if (states == null || states.isEmpty) {
@@ -960,18 +1027,21 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
       return;
     }
 
+    final attributes = states
+        .map((state) => state.name)
+        .whereType<String>()
+        .toList();
+
     showFlexibleBottomsheet(
       context: context,
       title: 'Select State',
-      attributes: states
-          .map((state) => state.name)
-          .whereType<String>()
-          .toList(),
+      attributes: attributes,
       isRadio: true,
       onSelectionChanged: (selectedName) {
         final selectedState = states.firstWhere(
           (state) => state.name == selectedName,
         );
+
         context.read<ReportCreationBloc>().add(SelectState(selectedState.uid!));
 
         // Trigger loading districts

@@ -10,7 +10,7 @@ import '../../domain/usecases/clear_work_scopes_cache_usecase.dart';
 import '../../domain/usecases/get_district_usecase.dart';
 import '../../domain/usecases/get_quantity_usecase.dart';
 import '../../domain/usecases/get_road_usecase.dart';
-import '../../domain/usecases/get_states_usecases.dart';
+import '../../domain/usecases/get_states_usecase.dart';
 import '../../domain/usecases/get_work_scopes_usecase.dart';
 import 'report_creation_event.dart';
 import 'report_creation_state.dart';
@@ -144,12 +144,26 @@ class ReportCreationBloc
           errorMessage: failure.message,
         ),
       ),
-      (workScopes) => emit(
-        ReportCreationState.page1Ready(
-          apiData: currentApiData.copyWith(workScopes: workScopes),
-          selections: currentSelections,
-        ),
-      ),
+      (workScopes) {
+        // Get the LATEST state data to avoid overwriting concurrent loads
+        final latestApiData = _getCurrentApiData();
+
+        final updatedApiData = ReportApiData(
+          workScopes: workScopes, // New data
+          states: latestApiData.states, // Preserve existing
+          districts: latestApiData.districts, // Preserve existing
+          roads: latestApiData.roads, // Preserve existing
+          quantities: latestApiData.quantities, // Preserve existing
+          equipment: latestApiData.equipment, // Preserve existing
+        );
+
+        emit(
+          ReportCreationState.page1Ready(
+            apiData: updatedApiData,
+            selections: currentSelections,
+          ),
+        );
+      },
     );
   }
 
@@ -172,12 +186,26 @@ class ReportCreationBloc
           errorMessage: failure.message,
         ),
       ),
-      (states) => emit(
-        ReportCreationState.page1Ready(
-          apiData: currentApiData.copyWith(states: states),
-          selections: currentSelections,
-        ),
-      ),
+      (states) {
+        // Get the LATEST state data to avoid overwriting concurrent loads
+        final latestApiData = _getCurrentApiData();
+
+        final updatedApiData = ReportApiData(
+          workScopes: latestApiData.workScopes, // Preserve existing
+          states: states, // New data
+          districts: latestApiData.districts, // Preserve existing
+          roads: latestApiData.roads, // Preserve existing
+          quantities: latestApiData.quantities, // Preserve existing
+          equipment: latestApiData.equipment, // Preserve existing
+        );
+
+        emit(
+          ReportCreationState.page1Ready(
+            apiData: updatedApiData,
+            selections: currentSelections,
+          ),
+        );
+      },
     );
   }
 
@@ -188,7 +216,6 @@ class ReportCreationBloc
     final currentApiData = _getCurrentApiData();
     final currentSelections = _getCurrentSelections();
 
-    // Get the selected state ID from selections
     final selectedState = currentSelections.selectedState;
     if (selectedState == null) {
       emit(
@@ -232,7 +259,6 @@ class ReportCreationBloc
     final currentApiData = _getCurrentApiData();
     final currentSelections = _getCurrentSelections();
 
-    // Get the selected district ID from selections
     final selectedDistrict = currentSelections.selectedDistrict;
     if (selectedDistrict == null) {
       emit(
@@ -430,10 +456,40 @@ class ReportCreationBloc
     final currentApiData = _getCurrentApiData();
     final currentSelections = _getCurrentSelections();
 
+    // Validate section input
+    String? sectionError;
+    if (event.section.isEmpty) {
+      sectionError = 'Section is required';
+    } else {
+      // Validate section range if road is selected
+      final selectedRoad = currentSelections.selectedRoad;
+      if (selectedRoad != null) {
+        final sectionValue = double.tryParse(event.section);
+        if (sectionValue == null) {
+          sectionError = 'Please enter a valid number';
+        } else if (selectedRoad.sectionStart != null &&
+            selectedRoad.sectionFinish != null) {
+          final start = double.tryParse(selectedRoad.sectionStart!);
+          final finish = double.tryParse(selectedRoad.sectionFinish!);
+
+          if (start != null && finish != null) {
+            if (sectionValue < start || sectionValue > finish) {
+              sectionError = 'Section must be between $start and $finish';
+            }
+          }
+        }
+      }
+    }
+
+    final updatedSelections = currentSelections.copyWith(
+      section: event.section,
+      sectionError: sectionError, // This will be null if no error
+    );
+
     emit(
       ReportCreationState.page1Ready(
         apiData: currentApiData,
-        selections: currentSelections.copyWith(section: event.section),
+        selections: updatedSelections,
       ),
     );
   }

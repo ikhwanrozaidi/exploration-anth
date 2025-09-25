@@ -26,22 +26,29 @@ class ProvinceRepositoryImpl
     String? sortBy = 'name',
     int? countryID,
     String? search,
-    bool forceRefresh = false,
+    bool forceRefresh = true,
     Duration? cacheTimeout = const Duration(hours: 1),
   }) async {
     return await getOfflineFirst(
-      getLocal: () => _localDataSource.getCachedProvinces(),
-      getRemote: () => _remoteDataSource.getStates(
-        page: page,
-        limit: limit,
-        sortOrder: sortOrder,
-        sortBy: sortBy,
-        countryID: countryID,
-        search: search,
-      ),
-      saveLocal: (provinces, {bool markForSync = false}) =>
-          _localDataSource.cacheProvinces(provinces),
-      toEntity: (models) => models.map((model) => model.toEntity()).toList(),
+      getLocal: () {
+        return _localDataSource.getCachedProvinces();
+      },
+      getRemote: () {
+        return _remoteDataSource.getStates(
+          page: page,
+          limit: limit,
+          sortOrder: sortOrder,
+          sortBy: sortBy,
+          countryID: countryID,
+          search: search,
+        );
+      },
+      saveLocal: (provinces, {bool markForSync = false}) {
+        return _localDataSource.cacheProvinces(provinces);
+      },
+      toEntity: (models) {
+        return models.map((model) => model.toEntity()).toList();
+      },
       forceRefresh: forceRefresh,
       cacheTimeout: cacheTimeout,
     );
