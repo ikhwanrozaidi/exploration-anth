@@ -4,7 +4,9 @@ import 'package:rclink_app/core/database/app_database.dart';
 
 import 'package:rclink_app/features/daily_report_creation/data/datasources/daily_report_creation_api_service.dart';
 import 'package:rclink_app/features/daily_report_creation/data/models/scope_of_work/scope_of_work_model.dart';
+import 'package:rclink_app/features/daily_report_creation/data/models/scope_of_work/work_equipment_model.dart';
 import 'package:rclink_app/features/daily_report_creation/data/models/scope_of_work/work_quantity_type_model.dart';
+import 'package:rclink_app/features/daily_report_creation/domain/entities/scope_of_work/work_equipment.dart';
 import '../../../../core/errors/failures.dart';
 import '../models/province/district_model.dart';
 import '../models/province/province_model.dart';
@@ -47,6 +49,11 @@ abstract class DailyReportCreationRemoteDataSource {
   });
 
   Future<Either<Failure, List<WorkQuantityTypeModel>>> getQuantities(
+    String companyUID,
+    String workScopeUID,
+  );
+
+  Future<Either<Failure, List<WorkEquipmentModel>>> getEquipments(
     String companyUID,
     String workScopeUID,
   );
@@ -194,6 +201,29 @@ class DailyReportCreationRemoteDataSourceImpl
   ) async {
     try {
       final response = await _apiService.getQuantityTypes(
+        companyUID: companyUID,
+        workScopeUID: workScopeUID,
+      );
+
+      if (response.isSuccess && response.data != null) {
+        return Right(response.data!);
+      } else {
+        return Left(
+          ServerFailure(response.message, statusCode: response.statusCode),
+        );
+      }
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<WorkEquipmentModel>>> getEquipments(
+    String companyUID,
+    String workScopeUID,
+  ) async {
+    try {
+      final response = await _apiService.getEquipments(
         companyUID: companyUID,
         workScopeUID: workScopeUID,
       );

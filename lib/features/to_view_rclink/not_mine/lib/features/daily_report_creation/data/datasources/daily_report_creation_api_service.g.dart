@@ -235,45 +235,6 @@ class _DailyReportCreationApiService implements DailyReportCreationApiService {
   }
 
   @override
-  Future<ApiResponse<List<ScopeOfWorkModel>>> getEquipments({
-    required String companyUID,
-    required String workScopeUID,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ApiResponse<List<ScopeOfWorkModel>>>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/companies/${companyUID}/work-scopes/${workScopeUID}/equipments',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<List<ScopeOfWorkModel>> _value;
-    try {
-      _value = ApiResponse<List<ScopeOfWorkModel>>.fromJson(
-        _result.data!,
-        (json) => json is List<dynamic>
-            ? json
-                  .map<ScopeOfWorkModel>(
-                    (i) => ScopeOfWorkModel.fromJson(i as Map<String, dynamic>),
-                  )
-                  .toList()
-            : List.empty(),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
   Future<ApiResponse<List<WorkQuantityTypeModel>>> getQuantityTypes({
     required String companyUID,
     required String workScopeUID,
@@ -319,6 +280,46 @@ class _DailyReportCreationApiService implements DailyReportCreationApiService {
                     (i) => WorkQuantityTypeModel.fromJson(
                       i as Map<String, dynamic>,
                     ),
+                  )
+                  .toList()
+            : List.empty(),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ApiResponse<List<WorkEquipmentModel>>> getEquipments({
+    required String companyUID,
+    required String workScopeUID,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ApiResponse<List<WorkEquipmentModel>>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/companies/${companyUID}/work-scopes/${workScopeUID}/equipments',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<List<WorkEquipmentModel>> _value;
+    try {
+      _value = ApiResponse<List<WorkEquipmentModel>>.fromJson(
+        _result.data!,
+        (json) => json is List<dynamic>
+            ? json
+                  .map<WorkEquipmentModel>(
+                    (i) =>
+                        WorkEquipmentModel.fromJson(i as Map<String, dynamic>),
                   )
                   .toList()
             : List.empty(),

@@ -12,6 +12,323 @@ part of 'report_creation_data.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
+mixin _$ReportData {
+
+ ReportApiData get apiData; ReportSelections get selections; ReportFormData get formData;
+/// Create a copy of ReportData
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ReportDataCopyWith<ReportData> get copyWith => _$ReportDataCopyWithImpl<ReportData>(this as ReportData, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportData&&(identical(other.apiData, apiData) || other.apiData == apiData)&&(identical(other.selections, selections) || other.selections == selections)&&(identical(other.formData, formData) || other.formData == formData));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,apiData,selections,formData);
+
+@override
+String toString() {
+  return 'ReportData(apiData: $apiData, selections: $selections, formData: $formData)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ReportDataCopyWith<$Res>  {
+  factory $ReportDataCopyWith(ReportData value, $Res Function(ReportData) _then) = _$ReportDataCopyWithImpl;
+@useResult
+$Res call({
+ ReportApiData apiData, ReportSelections selections, ReportFormData formData
+});
+
+
+$ReportApiDataCopyWith<$Res> get apiData;$ReportSelectionsCopyWith<$Res> get selections;$ReportFormDataCopyWith<$Res> get formData;
+
+}
+/// @nodoc
+class _$ReportDataCopyWithImpl<$Res>
+    implements $ReportDataCopyWith<$Res> {
+  _$ReportDataCopyWithImpl(this._self, this._then);
+
+  final ReportData _self;
+  final $Res Function(ReportData) _then;
+
+/// Create a copy of ReportData
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? apiData = null,Object? selections = null,Object? formData = null,}) {
+  return _then(_self.copyWith(
+apiData: null == apiData ? _self.apiData : apiData // ignore: cast_nullable_to_non_nullable
+as ReportApiData,selections: null == selections ? _self.selections : selections // ignore: cast_nullable_to_non_nullable
+as ReportSelections,formData: null == formData ? _self.formData : formData // ignore: cast_nullable_to_non_nullable
+as ReportFormData,
+  ));
+}
+/// Create a copy of ReportData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ReportApiDataCopyWith<$Res> get apiData {
+  
+  return $ReportApiDataCopyWith<$Res>(_self.apiData, (value) {
+    return _then(_self.copyWith(apiData: value));
+  });
+}/// Create a copy of ReportData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ReportSelectionsCopyWith<$Res> get selections {
+  
+  return $ReportSelectionsCopyWith<$Res>(_self.selections, (value) {
+    return _then(_self.copyWith(selections: value));
+  });
+}/// Create a copy of ReportData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ReportFormDataCopyWith<$Res> get formData {
+  
+  return $ReportFormDataCopyWith<$Res>(_self.formData, (value) {
+    return _then(_self.copyWith(formData: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [ReportData].
+extension ReportDataPatterns on ReportData {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ReportData value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ReportData() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ReportData value)  $default,){
+final _that = this;
+switch (_that) {
+case _ReportData():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ReportData value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ReportData() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ReportApiData apiData,  ReportSelections selections,  ReportFormData formData)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ReportData() when $default != null:
+return $default(_that.apiData,_that.selections,_that.formData);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ReportApiData apiData,  ReportSelections selections,  ReportFormData formData)  $default,) {final _that = this;
+switch (_that) {
+case _ReportData():
+return $default(_that.apiData,_that.selections,_that.formData);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ReportApiData apiData,  ReportSelections selections,  ReportFormData formData)?  $default,) {final _that = this;
+switch (_that) {
+case _ReportData() when $default != null:
+return $default(_that.apiData,_that.selections,_that.formData);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _ReportData implements ReportData {
+  const _ReportData({required this.apiData, required this.selections, required this.formData});
+  
+
+@override final  ReportApiData apiData;
+@override final  ReportSelections selections;
+@override final  ReportFormData formData;
+
+/// Create a copy of ReportData
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ReportDataCopyWith<_ReportData> get copyWith => __$ReportDataCopyWithImpl<_ReportData>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportData&&(identical(other.apiData, apiData) || other.apiData == apiData)&&(identical(other.selections, selections) || other.selections == selections)&&(identical(other.formData, formData) || other.formData == formData));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,apiData,selections,formData);
+
+@override
+String toString() {
+  return 'ReportData(apiData: $apiData, selections: $selections, formData: $formData)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ReportDataCopyWith<$Res> implements $ReportDataCopyWith<$Res> {
+  factory _$ReportDataCopyWith(_ReportData value, $Res Function(_ReportData) _then) = __$ReportDataCopyWithImpl;
+@override @useResult
+$Res call({
+ ReportApiData apiData, ReportSelections selections, ReportFormData formData
+});
+
+
+@override $ReportApiDataCopyWith<$Res> get apiData;@override $ReportSelectionsCopyWith<$Res> get selections;@override $ReportFormDataCopyWith<$Res> get formData;
+
+}
+/// @nodoc
+class __$ReportDataCopyWithImpl<$Res>
+    implements _$ReportDataCopyWith<$Res> {
+  __$ReportDataCopyWithImpl(this._self, this._then);
+
+  final _ReportData _self;
+  final $Res Function(_ReportData) _then;
+
+/// Create a copy of ReportData
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? apiData = null,Object? selections = null,Object? formData = null,}) {
+  return _then(_ReportData(
+apiData: null == apiData ? _self.apiData : apiData // ignore: cast_nullable_to_non_nullable
+as ReportApiData,selections: null == selections ? _self.selections : selections // ignore: cast_nullable_to_non_nullable
+as ReportSelections,formData: null == formData ? _self.formData : formData // ignore: cast_nullable_to_non_nullable
+as ReportFormData,
+  ));
+}
+
+/// Create a copy of ReportData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ReportApiDataCopyWith<$Res> get apiData {
+  
+  return $ReportApiDataCopyWith<$Res>(_self.apiData, (value) {
+    return _then(_self.copyWith(apiData: value));
+  });
+}/// Create a copy of ReportData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ReportSelectionsCopyWith<$Res> get selections {
+  
+  return $ReportSelectionsCopyWith<$Res>(_self.selections, (value) {
+    return _then(_self.copyWith(selections: value));
+  });
+}/// Create a copy of ReportData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ReportFormDataCopyWith<$Res> get formData {
+  
+  return $ReportFormDataCopyWith<$Res>(_self.formData, (value) {
+    return _then(_self.copyWith(formData: value));
+  });
+}
+}
+
+/// @nodoc
 mixin _$ReportApiData {
 
  List<ScopeOfWork>? get workScopes; List<Province>? get states; List<District>? get districts; List<Road>? get roads; List<WorkQuantityType>? get quantities; List<WorkEquipment>? get equipment;
@@ -945,323 +1262,6 @@ as bool,
 }
 
 
-}
-
-/// @nodoc
-mixin _$ReportData {
-
- ReportApiData get apiData; ReportSelections get selections; ReportFormData get formData;
-/// Create a copy of ReportData
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ReportDataCopyWith<ReportData> get copyWith => _$ReportDataCopyWithImpl<ReportData>(this as ReportData, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportData&&(identical(other.apiData, apiData) || other.apiData == apiData)&&(identical(other.selections, selections) || other.selections == selections)&&(identical(other.formData, formData) || other.formData == formData));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,apiData,selections,formData);
-
-@override
-String toString() {
-  return 'ReportData(apiData: $apiData, selections: $selections, formData: $formData)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $ReportDataCopyWith<$Res>  {
-  factory $ReportDataCopyWith(ReportData value, $Res Function(ReportData) _then) = _$ReportDataCopyWithImpl;
-@useResult
-$Res call({
- ReportApiData apiData, ReportSelections selections, ReportFormData formData
-});
-
-
-$ReportApiDataCopyWith<$Res> get apiData;$ReportSelectionsCopyWith<$Res> get selections;$ReportFormDataCopyWith<$Res> get formData;
-
-}
-/// @nodoc
-class _$ReportDataCopyWithImpl<$Res>
-    implements $ReportDataCopyWith<$Res> {
-  _$ReportDataCopyWithImpl(this._self, this._then);
-
-  final ReportData _self;
-  final $Res Function(ReportData) _then;
-
-/// Create a copy of ReportData
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? apiData = null,Object? selections = null,Object? formData = null,}) {
-  return _then(_self.copyWith(
-apiData: null == apiData ? _self.apiData : apiData // ignore: cast_nullable_to_non_nullable
-as ReportApiData,selections: null == selections ? _self.selections : selections // ignore: cast_nullable_to_non_nullable
-as ReportSelections,formData: null == formData ? _self.formData : formData // ignore: cast_nullable_to_non_nullable
-as ReportFormData,
-  ));
-}
-/// Create a copy of ReportData
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ReportApiDataCopyWith<$Res> get apiData {
-  
-  return $ReportApiDataCopyWith<$Res>(_self.apiData, (value) {
-    return _then(_self.copyWith(apiData: value));
-  });
-}/// Create a copy of ReportData
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ReportSelectionsCopyWith<$Res> get selections {
-  
-  return $ReportSelectionsCopyWith<$Res>(_self.selections, (value) {
-    return _then(_self.copyWith(selections: value));
-  });
-}/// Create a copy of ReportData
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ReportFormDataCopyWith<$Res> get formData {
-  
-  return $ReportFormDataCopyWith<$Res>(_self.formData, (value) {
-    return _then(_self.copyWith(formData: value));
-  });
-}
-}
-
-
-/// Adds pattern-matching-related methods to [ReportData].
-extension ReportDataPatterns on ReportData {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ReportData value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _ReportData() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ReportData value)  $default,){
-final _that = this;
-switch (_that) {
-case _ReportData():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ReportData value)?  $default,){
-final _that = this;
-switch (_that) {
-case _ReportData() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ReportApiData apiData,  ReportSelections selections,  ReportFormData formData)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _ReportData() when $default != null:
-return $default(_that.apiData,_that.selections,_that.formData);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ReportApiData apiData,  ReportSelections selections,  ReportFormData formData)  $default,) {final _that = this;
-switch (_that) {
-case _ReportData():
-return $default(_that.apiData,_that.selections,_that.formData);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ReportApiData apiData,  ReportSelections selections,  ReportFormData formData)?  $default,) {final _that = this;
-switch (_that) {
-case _ReportData() when $default != null:
-return $default(_that.apiData,_that.selections,_that.formData);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-
-
-class _ReportData implements ReportData {
-  const _ReportData({required this.apiData, required this.selections, required this.formData});
-  
-
-@override final  ReportApiData apiData;
-@override final  ReportSelections selections;
-@override final  ReportFormData formData;
-
-/// Create a copy of ReportData
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ReportDataCopyWith<_ReportData> get copyWith => __$ReportDataCopyWithImpl<_ReportData>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportData&&(identical(other.apiData, apiData) || other.apiData == apiData)&&(identical(other.selections, selections) || other.selections == selections)&&(identical(other.formData, formData) || other.formData == formData));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,apiData,selections,formData);
-
-@override
-String toString() {
-  return 'ReportData(apiData: $apiData, selections: $selections, formData: $formData)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$ReportDataCopyWith<$Res> implements $ReportDataCopyWith<$Res> {
-  factory _$ReportDataCopyWith(_ReportData value, $Res Function(_ReportData) _then) = __$ReportDataCopyWithImpl;
-@override @useResult
-$Res call({
- ReportApiData apiData, ReportSelections selections, ReportFormData formData
-});
-
-
-@override $ReportApiDataCopyWith<$Res> get apiData;@override $ReportSelectionsCopyWith<$Res> get selections;@override $ReportFormDataCopyWith<$Res> get formData;
-
-}
-/// @nodoc
-class __$ReportDataCopyWithImpl<$Res>
-    implements _$ReportDataCopyWith<$Res> {
-  __$ReportDataCopyWithImpl(this._self, this._then);
-
-  final _ReportData _self;
-  final $Res Function(_ReportData) _then;
-
-/// Create a copy of ReportData
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? apiData = null,Object? selections = null,Object? formData = null,}) {
-  return _then(_ReportData(
-apiData: null == apiData ? _self.apiData : apiData // ignore: cast_nullable_to_non_nullable
-as ReportApiData,selections: null == selections ? _self.selections : selections // ignore: cast_nullable_to_non_nullable
-as ReportSelections,formData: null == formData ? _self.formData : formData // ignore: cast_nullable_to_non_nullable
-as ReportFormData,
-  ));
-}
-
-/// Create a copy of ReportData
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ReportApiDataCopyWith<$Res> get apiData {
-  
-  return $ReportApiDataCopyWith<$Res>(_self.apiData, (value) {
-    return _then(_self.copyWith(apiData: value));
-  });
-}/// Create a copy of ReportData
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ReportSelectionsCopyWith<$Res> get selections {
-  
-  return $ReportSelectionsCopyWith<$Res>(_self.selections, (value) {
-    return _then(_self.copyWith(selections: value));
-  });
-}/// Create a copy of ReportData
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ReportFormDataCopyWith<$Res> get formData {
-  
-  return $ReportFormDataCopyWith<$Res>(_self.formData, (value) {
-    return _then(_self.copyWith(formData: value));
-  });
-}
 }
 
 // dart format on

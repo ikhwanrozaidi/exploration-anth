@@ -11,7 +11,7 @@ class ScopeConfigurations {
     'R01': ScopeConfig(
       id: 'R01',
       name: 'R01 - PAVEMENT / PATCHING POTHOLES',
-      commonFields: _getCommonFields(),
+      // commonFields: _getCommonFields(),
       quantityOptions: [
         QuantityOption(
           id: 'potholes_hotmix',
@@ -368,7 +368,7 @@ class ScopeConfigurations {
     'R02': ScopeConfig(
       id: 'R02',
       name: 'R02 - ROAD SHOULDER',
-      commonFields: _getCommonFields(),
+      // commonFields: _getCommonFields(),
       quantityOptions: [
         QuantityOption(
           id: 'road_shoulder',
@@ -416,7 +416,7 @@ class ScopeConfigurations {
     'R03': ScopeConfig(
       id: 'R03',
       name: 'R03 - GRASS CUTTING',
-      commonFields: _getCommonFields(),
+      // commonFields: _getCommonFields(),
       quantityOptions: [
         QuantityOption(
           id: 'grass_cutting',
@@ -520,7 +520,7 @@ class ScopeConfigurations {
     'R04': ScopeConfig(
       id: 'R04',
       name: 'R04 - CLEANING ROAD FURNITURES',
-      commonFields: _getCommonFields(),
+      // commonFields: _getCommonFields(),
       quantityOptions: [
         QuantityOption(
           id: 'guardrail_barrier',
@@ -636,7 +636,7 @@ class ScopeConfigurations {
     'R05': ScopeConfig(
       id: 'R05',
       name: 'R05 - CLEANING CULVERTS & BRIDGES',
-      commonFields: _getR05CommonFields(),
+      // commonFields: _getR05CommonFields(),
       quantityOptions: [
         QuantityOption(
           id: 'bridge_cleaning_works',
@@ -741,7 +741,7 @@ class ScopeConfigurations {
     'R07': ScopeConfig(
       id: 'R07',
       name: 'R07 - CLEANING DRAINS',
-      commonFields: _getCommonFields(),
+      // commonFields: _getCommonFields(),
       quantityOptions: [
         QuantityOption(
           id: 'earth_drain',
@@ -889,7 +889,7 @@ class ScopeConfigurations {
     'GW': ScopeConfig(
       id: 'GW',
       name: 'GW - GENERAL WORKS',
-      commonFields: _getCommonFields(),
+      // commonFields: _getCommonFields(),
       quantityOptions: [
         QuantityOption(
           id: 'minor_repair_road',
@@ -984,7 +984,7 @@ class ScopeConfigurations {
     'UP': ScopeConfig(
       id: 'UP',
       name: 'UP - UJIAN TEMPALAN',
-      commonFields: _getCommonFields(),
+      // commonFields: _getCommonFields(),
       quantityOptions: [
         QuantityOption(
           id: 'ujian_tempalan',
@@ -1070,64 +1070,64 @@ class ScopeConfigurations {
     ),
   };
 
-  static List<FieldConfig> _getCommonFields() {
-    return [
-      FieldConfig(
-        id: 'worker_pictures',
-        title: 'Worker (Pictures)',
-        description: 'Add worker pictures',
-        icon: Icons.person,
-        type: FieldType.multipleImages,
-        isRequired: true,
-      ),
-      FieldConfig(
-        id: 'equipment',
-        title: 'Equipment',
-        description: 'Enter equipment details',
-        icon: Icons.construction,
-        type: FieldType.textField,
-        hintText: 'Enter equipment used',
-        isRequired: true,
-      ),
-      FieldConfig(
-        id: 'condition_snapshot',
-        title: 'Condition Snapshot (Before, Current, After)',
-        description: 'Add condition photos',
-        icon: Icons.camera_alt,
-        type: FieldType.multipleImages,
-        isRequired: true,
-      ),
-      FieldConfig(
-        id: 'notes',
-        title: 'Notes',
-        description: 'Additional notes',
-        icon: Icons.note,
-        type: FieldType.notes,
-        hintText: 'Enter additional notes',
-      ),
-    ];
-  }
+  // static List<FieldConfig> _getCommonFields() {
+  //   return [
+  //     FieldConfig(
+  //       id: 'worker_pictures',
+  //       title: 'Worker (Pictures)',
+  //       description: 'Add worker pictures',
+  //       icon: Icons.person,
+  //       type: FieldType.multipleImages,
+  //       isRequired: true,
+  //     ),
+  //     FieldConfig(
+  //       id: 'equipment',
+  //       title: 'Equipment',
+  //       description: 'Enter equipment details',
+  //       icon: Icons.construction,
+  //       type: FieldType.textField,
+  //       hintText: 'Enter equipment used',
+  //       isRequired: true,
+  //     ),
+  //     FieldConfig(
+  //       id: 'condition_snapshot',
+  //       title: 'Condition Snapshot (Before, Current, After)',
+  //       description: 'Add condition photos',
+  //       icon: Icons.camera_alt,
+  //       type: FieldType.multipleImages,
+  //       isRequired: true,
+  //     ),
+  //     FieldConfig(
+  //       id: 'notes',
+  //       title: 'Notes',
+  //       description: 'Additional notes',
+  //       icon: Icons.note,
+  //       type: FieldType.notes,
+  //       hintText: 'Enter additional notes',
+  //     ),
+  //   ];
+  // }
 
-  static List<FieldConfig> _getR05CommonFields() {
-    return [
-      ..._getCommonFields(),
+  // static List<FieldConfig> _getR05CommonFields() {
+  //   return [
+  //     ..._getCommonFields(),
 
-      FieldConfig(
-        id: 'photo_inlet',
-        title: 'Photo Inlet',
-        description: 'Please take inlet photo',
-        icon: Icons.camera_alt,
-        type: FieldType.multipleImages,
-        isRequired: true,
-      ),
-      FieldConfig(
-        id: 'photo_outlet',
-        title: 'Photo Outlet',
-        description: 'Please take outlet photo',
-        icon: Icons.camera_alt,
-        type: FieldType.multipleImages,
-        isRequired: true,
-      ),
-    ];
-  }
+  //     FieldConfig(
+  //       id: 'photo_inlet',
+  //       title: 'Photo Inlet',
+  //       description: 'Please take inlet photo',
+  //       icon: Icons.camera_alt,
+  //       type: FieldType.multipleImages,
+  //       isRequired: true,
+  //     ),
+  //     FieldConfig(
+  //       id: 'photo_outlet',
+  //       title: 'Photo Outlet',
+  //       description: 'Please take outlet photo',
+  //       icon: Icons.camera_alt,
+  //       type: FieldType.multipleImages,
+  //       isRequired: true,
+  //     ),
+  //   ];
+  // }
 }

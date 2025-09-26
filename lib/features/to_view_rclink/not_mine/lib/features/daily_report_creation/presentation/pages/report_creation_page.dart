@@ -48,7 +48,7 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
   void dispose() {
     _focusNode.dispose();
     _sectionController.dispose();
-    _bloc.close();
+
     super.dispose();
   }
 
@@ -138,6 +138,9 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                                           padding: const EdgeInsets.all(5),
                                         ),
                                         onPressed: () {
+                                          context
+                                              .read<ReportCreationBloc>()
+                                              .add(const ClearAllCache());
                                           Navigator.pop(context);
                                         },
                                         icon: const Icon(

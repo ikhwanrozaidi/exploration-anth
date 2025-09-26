@@ -1,28 +1,25 @@
 import 'package:flutter/material.dart';
+
 import 'package:rclink_app/shared/widgets/divider_config.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
+
+import '../../../data/mapper/hybrid_field_mapper.dart';
+import '../../../domain/entities/scope_of_work/quantity_field.dart';
+import '../../../domain/entities/scope_of_work/work_quantity_type.dart';
 import '../../constant/report_model.dart';
 import 'quantity_fields_page.dart';
 
 class QuantitySelectionPage extends StatefulWidget {
-  final String scopeOfWork;
-  final String weather;
-  final String location;
-  final String section;
-  final ScopeConfig scopeConfig;
   final List<Map<String, dynamic>> addedQuantities;
+  final List<WorkQuantityType> quantityLists;
 
   const QuantitySelectionPage({
-    Key? key,
-    required this.scopeOfWork,
-    required this.weather,
-    required this.location,
-    required this.section,
-    required this.scopeConfig,
+    super.key,
     required this.addedQuantities,
-  }) : super(key: key);
+    required this.quantityLists,
+  });
 
   @override
   State<QuantitySelectionPage> createState() => _QuantitySelectionPageState();
@@ -35,6 +32,68 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
   void initState() {
     super.initState();
     currentQuantities = List.from(widget.addedQuantities);
+  }
+
+  void _navigateToQuantityFields(
+    WorkQuantityType selectedQuantity,
+    Map<String, dynamic>? existingData,
+  ) async {
+    final scopeId = 'R02';
+
+    // Convert API fields using hybrid mapper
+    final mappedFields =
+        selectedQuantity.quantityFields
+            ?.map(
+              (quantityField) =>
+                  HybridFieldMapper.fromQuantityField(quantityField, scopeId),
+            )
+            ?.toList() ??
+        [];
+
+    final quantityOption = QuantityOption(
+      id: selectedQuantity.uid,
+      name: selectedQuantity.name,
+      fields: mappedFields,
+    );
+
+    // Get appropriate common fields based on scope
+    // final commonFields = scopeId == 'R05'
+    //     ? ScopeConfigurations.getR05CommonFields()
+    //     : ScopeConfigurations.getCommonFields();
+
+    final scopeConfig = ScopeConfig(
+      id: scopeId,
+      name: 'Dynamic Config',
+      // commonFields: commonFields,
+      quantityOptions: [quantityOption],
+    );
+
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => QuantityFieldsPage(
+          scopeOfWork: 'Dynamic Scope',
+          weather: 'N/A',
+          location: 'N/A',
+          section: 'N/A',
+          quantityOption: quantityOption,
+          scopeConfig: scopeConfig,
+          existingData: existingData,
+        ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        currentQuantities.removeWhere((q) => q['id'] == selectedQuantity.uid);
+        currentQuantities.add({
+          'id': selectedQuantity.uid,
+          'name': selectedQuantity.name,
+          // Remove unit since WorkQuantityType doesn't have it
+          'data': result,
+        });
+      });
+    }
   }
 
   @override
@@ -192,45 +251,18 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
     final imageFields =
         data?['imageFields'] as Map<String, List<String>>? ?? {};
 
-    final quantityOption = widget.scopeConfig.quantityOptions.firstWhere(
-      (option) => option.id == quantity['id'],
+    // Find the original WorkQuantityType for this quantity
+    final workQuantityType = widget.quantityLists.firstWhere(
+      (wqt) => wqt.uid == quantity['id'],
     );
 
     return Container(
       margin: EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: () async {
-          final quantityOption = widget.scopeConfig.quantityOptions.firstWhere(
-            (option) => option.id == quantity['id'],
-          );
-
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => QuantityFieldsPage(
-                scopeOfWork: widget.scopeOfWork,
-                weather: widget.weather,
-                location: widget.location,
-                section: widget.section,
-                quantityOption: quantityOption,
-                scopeConfig: widget.scopeConfig,
-                existingData: quantity['data'],
-              ),
-            ),
-          );
-
-          if (result != null) {
-            setState(() {
-              final index = currentQuantities.indexWhere(
-                (q) => q['id'] == quantity['id'],
-              );
-              if (index != -1) {
-                currentQuantities[index]['data'] = result;
-              }
-            });
-          }
+          // Navigate to edit existing quantity
+          _navigateToQuantityFields(workQuantityType, quantity['data']);
         },
-
         borderRadius: BorderRadius.circular(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -253,7 +285,7 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      quantityOption.name,
+                      quantity['name'] ?? workQuantityType.name,
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
@@ -263,59 +295,128 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
                     dividerConfig(),
 
                     // Display all fields with their values
-                    ...quantityOption.fields
-                        .map((field) {
-                          final fieldId = field.id;
+                    ...fieldValues.entries.map((entry) {
+                      final fieldKey = entry.key;
+                      final fieldValue = entry.value;
 
-                          bool hasFieldValue =
-                              fieldValues.containsKey(fieldId) &&
-                              fieldValues[fieldId] != null &&
-                              fieldValues[fieldId].toString().isNotEmpty;
+                      if (fieldValue == null || fieldValue.toString().isEmpty) {
+                        return const SizedBox.shrink();
+                      }
 
-                          bool hasImageValue =
-                              imageFields.containsKey(fieldId) &&
-                              imageFields[fieldId]!.isNotEmpty;
-
-                          if (!hasFieldValue && !hasImageValue) {
-                            return null;
-                          }
-
-                          return Container(
-                            margin: EdgeInsets.only(bottom: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  field.title,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                  ),
-                                ),
-
-                                Container(
-                                  margin: EdgeInsets.symmetric(vertical: 5),
-                                  width: double.infinity,
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                      width: 0.5,
-                                    ),
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: _buildFieldValue(
-                                    field,
-                                    fieldValues,
-                                    imageFields,
-                                  ),
-                                ),
-                              ],
-                            ),
+                      // Try to find the field info from the WorkQuantityType
+                      final fieldInfo = workQuantityType.quantityFields
+                          ?.cast<QuantityField?>()
+                          .firstWhere(
+                            (field) =>
+                                field?.uid == fieldKey ||
+                                field?.code == fieldKey,
+                            orElse: () => null,
                           );
-                        })
-                        .where((widget) => widget != null)
-                        .cast<Widget>(),
+
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              fieldInfo?.name ?? fieldKey,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                              ),
+                            ),
+
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 5),
+                              width: double.infinity,
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.grey,
+                                  width: 0.5,
+                                ),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: _buildFieldValue(
+                                fieldInfo,
+                                fieldValue,
+                                imageFields[fieldKey],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+
+                    // Display image fields
+                    ...imageFields.entries.map((entry) {
+                      final fieldKey = entry.key;
+                      final images = entry.value;
+
+                      if (images.isEmpty) {
+                        return const SizedBox.shrink();
+                      }
+
+                      final fieldInfo = workQuantityType.quantityFields
+                          ?.cast<QuantityField?>()
+                          .firstWhere(
+                            (field) =>
+                                field?.uid == fieldKey ||
+                                field?.code == fieldKey,
+                            orElse: () => null,
+                          );
+
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              fieldInfo?.name ?? fieldKey,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 12,
+                              ),
+                            ),
+
+                            Container(
+                              margin: EdgeInsets.symmetric(vertical: 5),
+                              width: double.infinity,
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.grey,
+                                  width: 0.5,
+                                ),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Wrap(
+                                spacing: 4,
+                                runSpacing: 4,
+                                children: images.map((imagePath) {
+                                  return Container(
+                                    width: 40,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: Colors.grey.shade300,
+                                      ),
+                                      borderRadius: BorderRadius.circular(4),
+                                      color: Colors.grey.shade100,
+                                    ),
+                                    child: Icon(
+                                      Icons.image,
+                                      size: 20,
+                                      color: Colors.grey.shade500,
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
                   ],
                 ),
               ),
@@ -327,21 +428,12 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
   }
 
   Widget _buildFieldValue(
-    FieldConfig field,
-    Map<String, dynamic> fieldValues,
-    Map<String, List<String>> imageFields,
+    dynamic fieldInfo,
+    dynamic fieldValue,
+    List<String>? images,
   ) {
-    final fieldId = field.id;
-
-    if (field.type == FieldType.multipleImages) {
-      final images = imageFields[fieldId] ?? [];
-      if (images.isEmpty) {
-        return Text(
-          'No images',
-          style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-        );
-      }
-
+    // Handle image fields
+    if (images != null && images.isNotEmpty) {
       return Wrap(
         spacing: 4,
         runSpacing: 4,
@@ -358,46 +450,56 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
           );
         }).toList(),
       );
-    } else {
-      final value = fieldValues[fieldId];
-      if (value == null || value.toString().isEmpty) {
-        return Text(
-          'No data',
-          style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
-        );
-      }
+    }
 
-      // Check if field has units
-      if (field.units != null && field.units!.isNotEmpty) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(value.toString(), style: TextStyle(fontSize: 13)),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10),
-              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
-              decoration: BoxDecoration(
-                color: primaryColor,
-                borderRadius: BorderRadius.circular(100),
-              ),
-              child: Text(
-                field.units!,
-                style: TextStyle(color: Colors.white, fontSize: 12),
-              ),
+    // Handle regular field values
+    if (fieldValue == null || fieldValue.toString().isEmpty) {
+      return Text(
+        'No data',
+        style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+      );
+    }
+
+    // Check if field has units
+    final unit = fieldInfo?.unit;
+    if (unit != null && unit.isNotEmpty) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(fieldValue.toString(), style: TextStyle(fontSize: 13)),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 10),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+            decoration: BoxDecoration(
+              color: primaryColor,
+              borderRadius: BorderRadius.circular(100),
             ),
-          ],
-        );
-      } else {
-        return Text(value.toString(), style: TextStyle(fontSize: 13));
-      }
+            child: Text(
+              unit,
+              style: TextStyle(color: Colors.white, fontSize: 12),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Text(fieldValue.toString(), style: TextStyle(fontSize: 13));
     }
   }
 
-  // Open bottomsheet
   void _showQuantityOptions() {
-    final quantityNames = widget.scopeConfig.quantityOptions
-        .map((option) => option.name)
+    final quantityNames = widget.quantityLists
+        .map((quantity) => quantity.name)
         .toList();
+
+    if (quantityNames.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('No quantities available for this work scope.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
 
     showFlexibleBottomsheet(
       context: context,
@@ -408,41 +510,21 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
       onTap: (selectedName) {
         Navigator.pop(context);
         Future.delayed(Duration(milliseconds: 100), () async {
-          final quantityOption = widget.scopeConfig.quantityOptions.firstWhere(
-            (option) => option.name == selectedName,
+          // Find the selected quantity
+          final selectedQuantity = widget.quantityLists.firstWhere(
+            (quantity) => quantity.name == selectedName,
           );
+
+          // Check if this quantity is already added
           final existingQuantity = currentQuantities
-              .where((q) => q['id'] == quantityOption.id)
+              .where((q) => q['id'] == selectedQuantity.uid)
               .firstOrNull;
 
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => QuantityFieldsPage(
-                scopeOfWork: widget.scopeOfWork,
-                weather: widget.weather,
-                location: widget.location,
-                section: widget.section,
-                quantityOption: quantityOption,
-                scopeConfig: widget.scopeConfig,
-                existingData: existingQuantity?['data'],
-              ),
-            ),
+          // Call the navigation method HERE
+          _navigateToQuantityFields(
+            selectedQuantity,
+            existingQuantity?['data'],
           );
-
-          if (result != null) {
-            setState(() {
-              currentQuantities.removeWhere(
-                (q) => q['id'] == quantityOption.id,
-              );
-              currentQuantities.add({
-                'id': quantityOption.id,
-                'name': quantityOption.name,
-                'fieldsCount': quantityOption.fields.length,
-                'data': result,
-              });
-            });
-          }
         });
       },
     );

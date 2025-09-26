@@ -7,9 +7,6 @@ part 'report_creation_state.freezed.dart';
 class ReportCreationState with _$ReportCreationState {
   const factory ReportCreationState.initial() = ReportInitial;
 
-  // ============================================================================
-  // PAGE 1 STATES (DailyReportCreationPage)
-  // ============================================================================
   const factory ReportCreationState.page1Ready({
     required ReportApiData apiData,
     required ReportSelections selections,
@@ -21,9 +18,6 @@ class ReportCreationState with _$ReportCreationState {
     required String errorMessage,
   }) = ReportPage1Error;
 
-  // ============================================================================
-  // PAGE 2 STATES (TipsPage -> DraftPage)
-  // ============================================================================
   const factory ReportCreationState.page2Ready({
     required ReportApiData apiData,
     required ReportSelections selections,
@@ -37,9 +31,6 @@ class ReportCreationState with _$ReportCreationState {
     required String errorMessage,
   }) = ReportPage2Error;
 
-  // ============================================================================
-  // SUBMISSION STATES
-  // ============================================================================
   const factory ReportCreationState.submitting({
     required ReportData reportData,
   }) = ReportSubmitting;
@@ -53,9 +44,6 @@ class ReportCreationState with _$ReportCreationState {
     required String errorMessage,
   }) = ReportSubmissionError;
 
-  // ============================================================================
-  // DRAFT STATES
-  // ============================================================================
   const factory ReportCreationState.draftSaved({
     required ReportData reportData,
   }) = ReportDraftSaved;

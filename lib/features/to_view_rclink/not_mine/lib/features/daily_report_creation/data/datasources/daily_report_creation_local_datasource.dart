@@ -19,6 +19,7 @@ import '../models/province/district_model.dart';
 import '../models/province/province_model.dart';
 import '../models/province/road_model.dart';
 import '../models/scope_of_work/scope_of_work_model.dart';
+import '../models/scope_of_work/work_equipment_model.dart';
 import '../models/scope_of_work/work_quantity_type_model.dart';
 
 abstract class DailyReportCreationLocalDatasource {
@@ -27,6 +28,8 @@ abstract class DailyReportCreationLocalDatasource {
   Future<void> clearProvinceCache();
   Future<void> clearDistrictCache();
   Future<void> clearRoadCache();
+  Future<void> clearQuantitiesCache();
+  Future<void> clearEquipmentsCache();
 
   ///------------------------- GET scope
   Future<List<ScopeOfWork>?> getCachedScopeOfWorks();
@@ -34,7 +37,8 @@ abstract class DailyReportCreationLocalDatasource {
   // scope getOfflineFirst
   Future<List<ScopeOfWorkModel>> getCachedWorkScopeModels();
   Future<void> cacheWorkScopeModels(List<ScopeOfWorkModel> models);
-  // GET equipments
+
+  ///------------------------- GET Province
   Future<List<WorkEquipment>?> getCachedWorkEquipments();
   Future<void> cacheWorkEquipments(List<WorkEquipment> equipments);
 
@@ -82,7 +86,28 @@ abstract class DailyReportCreationLocalDatasource {
     required String workScopeUID,
   });
 
-  Future<void> clearQuantitiesCache();
+  ///------------------------- GET Equipment
+  Future<List<WorkEquipment>?> getCachedEquipments({
+    required String companyUID,
+    required String workScopeUID,
+  });
+
+  Future<void> cacheEquipments(
+    List<WorkEquipment> quantities, {
+    required String companyUID,
+    required String workScopeUID,
+  });
+
+  Future<List<WorkEquipmentModel>> getCachedEquipmentModels({
+    required String companyUID,
+    required String workScopeUID,
+  });
+
+  Future<void> cacheEquipmentModels(
+    List<WorkEquipmentModel> models, {
+    required String companyUID,
+    required String workScopeUID,
+  });
 }
 
 @LazySingleton(as: DailyReportCreationLocalDatasource)
@@ -94,7 +119,10 @@ class DailyReportCreationLocalDatasourceImpl
 
   AppDatabase get _database => _databaseService.database;
 
-  // GET from database
+  /* 
+  // Scope of work datasource
+  */
+
   @override
   Future<List<ScopeOfWork>?> getCachedScopeOfWorks() async {
     try {
@@ -138,7 +166,6 @@ class DailyReportCreationLocalDatasourceImpl
     }
   }
 
-  // Delete and insert new one
   @override
   Future<void> cacheScopeOfWorks(List<ScopeOfWork> scopeOfWorks) async {
     try {
@@ -161,7 +188,6 @@ class DailyReportCreationLocalDatasourceImpl
     }
   }
 
-  // Model-based methods for getOfflineFirst pattern
   @override
   Future<List<ScopeOfWorkModel>> getCachedWorkScopeModels() async {
     final entities = await getCachedScopeOfWorks();
@@ -172,7 +198,6 @@ class DailyReportCreationLocalDatasourceImpl
         .toList();
   }
 
-  // Delete all related in Scope of Work
   @override
   Future<void> clearCache() async {
     try {
@@ -196,7 +221,6 @@ class DailyReportCreationLocalDatasourceImpl
     await cacheScopeOfWorks(entities);
   }
 
-  // GET local database work equipment
   @override
   Future<List<WorkEquipment>?> getCachedWorkEquipments() async {
     try {
@@ -226,7 +250,6 @@ class DailyReportCreationLocalDatasourceImpl
     }
   }
 
-  // INSERT local database work equipment
   @override
   Future<void> cacheWorkEquipments(List<WorkEquipment> equipments) async {
     try {
@@ -1186,5 +1209,190 @@ class DailyReportCreationLocalDatasourceImpl
       companyUID: companyUID,
       workScopeUID: workScopeUID,
     );
+  }
+
+  /* 
+  // Equipment datasource
+  */
+
+  @override
+  Future<List<WorkEquipment>?> getCachedEquipments({
+    required String companyUID,
+    required String workScopeUID,
+  }) async {
+    try {
+      // Find the work scope first
+      final scopeRecords = await (_database.select(
+        _database.workScopes,
+      )..where((tbl) => tbl.uid.equals(workScopeUID))).get();
+
+      if (scopeRecords.isEmpty) {
+        return null;
+      }
+
+      final scopeId = scopeRecords.first.id;
+
+      // Get equipment IDs for this scope from junction table
+      final junctionRecords = await (_database.select(
+        _database.workScopeEquipment,
+      )..where((tbl) => tbl.workScopeID.equals(scopeId))).get();
+
+      if (junctionRecords.isEmpty) {
+        return [];
+      }
+
+      final equipmentIds = junctionRecords
+          .map((j) => j.workEquipmentID)
+          .toList();
+
+      // Get the actual equipment records
+      final equipmentRecords = await (_database.select(
+        _database.workScopeEquipments,
+      )..where((tbl) => tbl.id.isIn(equipmentIds))).get();
+
+      return equipmentRecords
+          .map(
+            (record) => WorkEquipment(
+              id: record.id,
+              uid: record.uid,
+              name: record.name,
+              code: record.code,
+            ),
+          )
+          .toList();
+    } catch (e) {
+      print('Error loading cached equipments: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheEquipments(
+    List<WorkEquipment> equipments, {
+    required String companyUID,
+    required String workScopeUID,
+  }) async {
+    try {
+      await _database.transaction(() async {
+        // Find the work scope
+        final scopeRecords = await (_database.select(
+          _database.workScopes,
+        )..where((tbl) => tbl.uid.equals(workScopeUID))).get();
+
+        if (scopeRecords.isEmpty) {
+          throw Exception('Work scope not found: $workScopeUID');
+        }
+
+        final scopeId = scopeRecords.first.id;
+
+        // Delete existing junction records for this scope
+        await (_database.delete(
+          _database.workScopeEquipment,
+        )..where((tbl) => tbl.workScopeID.equals(scopeId))).go();
+
+        // Insert/update equipment records and create junction records
+        for (final equipment in equipments) {
+          // Insert or update the equipment record
+          final existingEquipment = await (_database.select(
+            _database.workScopeEquipments,
+          )..where((tbl) => tbl.uid.equals(equipment.uid))).getSingleOrNull();
+
+          int equipmentId;
+
+          if (existingEquipment != null) {
+            // Update existing equipment
+            await (_database.update(
+              _database.workScopeEquipments,
+            )..where((tbl) => tbl.id.equals(existingEquipment.id))).write(
+              WorkScopeEquipmentsCompanion(
+                name: Value(equipment.name),
+                code: Value(equipment.code),
+                isSynced: const Value(true),
+                syncAction: const Value(null),
+                syncError: const Value(null),
+              ),
+            );
+            equipmentId = existingEquipment.id;
+          } else {
+            // Insert new equipment
+            equipmentId = await _database
+                .into(_database.workScopeEquipments)
+                .insert(
+                  WorkScopeEquipmentsCompanion(
+                    uid: Value(equipment.uid),
+                    name: Value(equipment.name),
+                    code: Value(equipment.code),
+                    isSynced: const Value(true),
+                    syncAction: const Value(null),
+                    syncError: const Value(null),
+                  ),
+                );
+          }
+
+          // Create junction record
+          await _database
+              .into(_database.workScopeEquipment)
+              .insert(
+                WorkScopeEquipmentCompanion(
+                  workScopeID: Value(scopeId),
+                  workEquipmentID: Value(equipmentId),
+                  isSynced: const Value(true),
+                  syncAction: const Value(null),
+                  syncError: const Value(null),
+                ),
+              );
+        }
+      });
+    } catch (e) {
+      print('Error caching equipments: $e');
+      throw e;
+    }
+  }
+
+  @override
+  Future<List<WorkEquipmentModel>> getCachedEquipmentModels({
+    required String companyUID,
+    required String workScopeUID,
+  }) async {
+    final entities = await getCachedEquipments(
+      companyUID: companyUID,
+      workScopeUID: workScopeUID,
+    );
+
+    if (entities == null) return [];
+
+    return entities
+        .map((entity) => WorkEquipmentModel.fromEntity(entity))
+        .toList();
+  }
+
+  @override
+  Future<void> cacheEquipmentModels(
+    List<WorkEquipmentModel> models, {
+    required String companyUID,
+    required String workScopeUID,
+  }) async {
+    final entities = models.map((model) => model.toEntity()).toList();
+    await cacheEquipments(
+      entities,
+      companyUID: companyUID,
+      workScopeUID: workScopeUID,
+    );
+  }
+
+  @override
+  Future<void> clearEquipmentsCache() async {
+    try {
+      await _database.transaction(() async {
+        // Delete all junction records first
+        await _database.delete(_database.workScopeEquipment).go();
+
+        // Delete all equipment records
+        await _database.delete(_database.workScopeEquipments).go();
+      });
+    } catch (e) {
+      print('Error clearing equipments cache: $e');
+      throw e;
+    }
   }
 }

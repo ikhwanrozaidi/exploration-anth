@@ -4,7 +4,7 @@ part 'report_creation_event.freezed.dart';
 
 @freezed
 class ReportCreationEvent with _$ReportCreationEvent {
-  // INITIAL LOAD EVENTS
+  // Page 1 Load
   const factory ReportCreationEvent.loadWorkScopes({
     @Default(false) bool forceRefresh,
   }) = LoadWorkScopes;
@@ -23,13 +23,7 @@ class ReportCreationEvent with _$ReportCreationEvent {
     @Default(false) bool forceRefresh,
   }) = LoadRoads;
 
-  const factory ReportCreationEvent.loadQuantitiesAndEquipment({
-    required String companyUID,
-    required String workScopeUID,
-    @Default(false) bool forceRefresh,
-  }) = LoadQuantitiesAndEquipment;
-
-  // SELECTION EVENTS
+  // onSelect Page 1
   const factory ReportCreationEvent.selectScope(String scopeUid) = SelectScope;
   const factory ReportCreationEvent.selectWeather(String weather) =
       SelectWeather;
@@ -40,7 +34,20 @@ class ReportCreationEvent with _$ReportCreationEvent {
   const factory ReportCreationEvent.updateSection(String section) =
       UpdateSection;
 
-  // QUANTITY & EQUIPMENT SELECTION EVENTS
+  // Page 2 Loads
+  const factory ReportCreationEvent.loadQuantities({
+    required String companyUID,
+    required String workScopeUID,
+    @Default(false) bool forceRefresh,
+  }) = LoadQuantities;
+
+  const factory ReportCreationEvent.loadEquipments({
+    required String companyUID,
+    required String workScopeUID,
+    @Default(false) bool forceRefresh,
+  }) = LoadEquipments;
+
+  // onSelect Page 2
   const factory ReportCreationEvent.selectQuantityTypes(
     List<String> quantityTypeUids,
   ) = SelectQuantityTypes;
@@ -55,7 +62,12 @@ class ReportCreationEvent with _$ReportCreationEvent {
   const factory ReportCreationEvent.toggleEquipment(String equipmentUid) =
       ToggleEquipment;
 
-  // FORM DATA EVENTS
+  // Basics Clear
+  const factory ReportCreationEvent.clearCache() = ClearCache;
+  const factory ReportCreationEvent.resetForm() = ResetForm;
+  const factory ReportCreationEvent.startOver() = StartOver;
+
+  ////--------------------------------------------------------- I don't know?
   const factory ReportCreationEvent.updateFieldValue({
     required String fieldKey,
     required dynamic value,
@@ -71,15 +83,12 @@ class ReportCreationEvent with _$ReportCreationEvent {
     required String imagePath,
   }) = RemoveImage;
 
-  // VALIDATION & SUBMISSION EVENTS
+  // Validation & Submission
   const factory ReportCreationEvent.validateForm() = ValidateForm;
   const factory ReportCreationEvent.clearFieldError(String fieldKey) =
       ClearFieldError;
   const factory ReportCreationEvent.submitReport() = SubmitReport;
   const factory ReportCreationEvent.saveAsDraft() = SaveAsDraft;
 
-  // UTILITY EVENTS
-  const factory ReportCreationEvent.clearCache() = ClearCache;
-  const factory ReportCreationEvent.resetForm() = ResetForm;
-  const factory ReportCreationEvent.startOver() = StartOver;
+  const factory ReportCreationEvent.clearAllCache() = ClearAllCache;
 }

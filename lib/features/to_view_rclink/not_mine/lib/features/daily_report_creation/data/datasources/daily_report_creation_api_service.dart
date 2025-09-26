@@ -7,6 +7,7 @@ import '../models/province/district_model.dart';
 import '../models/province/province_model.dart';
 import '../models/province/road_model.dart';
 import '../models/scope_of_work/scope_of_work_model.dart';
+import '../models/scope_of_work/work_equipment_model.dart';
 import '../models/scope_of_work/work_quantity_type_model.dart';
 
 part 'daily_report_creation_api_service.g.dart';
@@ -65,12 +66,6 @@ abstract class DailyReportCreationApiService {
     @Query('sectionFinishMax') double? sectionFinishMax,
   });
 
-  @GET('/companies/{companyUID}/work-scopes/{workScopeUID}/equipments')
-  Future<ApiResponse<List<ScopeOfWorkModel>>> getEquipments({
-    @Path('companyUID') required String companyUID,
-    @Path('workScopeUID') required String workScopeUID,
-  });
-
   @GET('/companies/{companyUID}/work-scopes/{workScopeUID}/quantity-types')
   Future<ApiResponse<List<WorkQuantityTypeModel>>> getQuantityTypes({
     @Path('companyUID') required String companyUID,
@@ -82,5 +77,11 @@ abstract class DailyReportCreationApiService {
     @Query('search') String? search,
     @Query('isActive') bool? isActive,
     @Query('hasSegmentBreakdown') bool? hasSegmentBreakdown,
+  });
+
+  @GET('/companies/{companyUID}/work-scopes/{workScopeUID}/equipments')
+  Future<ApiResponse<List<WorkEquipmentModel>>> getEquipments({
+    @Path('companyUID') required String companyUID,
+    @Path('workScopeUID') required String workScopeUID,
   });
 }

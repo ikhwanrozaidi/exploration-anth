@@ -1,11 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../core/errors/failures.dart';
-import '../../domain/repository/workscopes_repository.dart';
-import '../../../company/presentation/bloc/company_bloc.dart';
-import '../../../company/presentation/bloc/company_state.dart';
-import '../../data/datasources/daily_report_creation_remote_datasource.dart';
+import 'package:rclink_app/features/daily_report_creation/domain/usecases/get_equipment_usecase.dart';
 
+import '../../domain/usecases/clear_all_cache_usecase.dart';
 import '../../domain/usecases/clear_work_scopes_cache_usecase.dart';
 import '../../domain/usecases/get_district_usecase.dart';
 import '../../domain/usecases/get_quantity_usecase.dart';
@@ -25,7 +22,8 @@ class ReportCreationBloc
   final GetDistrictsUseCase _getDistrictsUseCase;
   final GetRoadsUseCase _getRoadsUseCase;
   final GetQuantityUseCase _getQuantitiesUseCase;
-  final CompanyBloc _companyBloc;
+  final GetEquipmentUseCase _getEquipmentUseCase;
+  final ClearAllCacheUseCase _clearAllCacheUseCase;
 
   ReportCreationBloc(
     this._getWorkScopesUseCase,
@@ -34,14 +32,16 @@ class ReportCreationBloc
     this._getDistrictsUseCase,
     this._getRoadsUseCase,
     this._getQuantitiesUseCase,
-    this._companyBloc,
+    this._getEquipmentUseCase,
+    this._clearAllCacheUseCase,
   ) : super(const ReportCreationState.initial()) {
     // Initial load events
     on<LoadWorkScopes>(_onLoadWorkScopes);
     on<LoadStates>(_onLoadStates);
     on<LoadDistricts>(_onLoadDistricts);
     on<LoadRoads>(_onLoadRoads);
-    on<LoadQuantitiesAndEquipment>(_onLoadQuantitiesAndEquipment);
+    on<LoadQuantities>(_onLoadQuantities);
+    on<LoadEquipments>(_onLoadEquipments);
 
     // Selection events
     on<SelectScope>(_onSelectScope);
@@ -72,12 +72,10 @@ class ReportCreationBloc
     on<ClearCache>(_onClearCache);
     on<ResetForm>(_onResetForm);
     on<StartOver>(_onStartOver);
+    on<ClearAllCache>(_onClearAllCache);
   }
 
-  // ============================================================================
-  // HELPER METHODS
-  // ============================================================================
-
+  // ------------------------------------------------------- Helper, Fetch from API data
   ReportApiData _getCurrentApiData() {
     return state.maybeMap(
       page1Ready: (state) => state.apiData,
@@ -121,10 +119,7 @@ class ReportCreationBloc
     );
   }
 
-  // ============================================================================
-  // INITIAL LOAD EVENT HANDLERS
-  // ============================================================================
-
+  // ------------------------------------------------------- Load API fetching
   Future<void> _onLoadWorkScopes(
     LoadWorkScopes event,
     Emitter<ReportCreationState> emit,
@@ -145,7 +140,6 @@ class ReportCreationBloc
         ),
       ),
       (workScopes) {
-        // Get the LATEST state data to avoid overwriting concurrent loads
         final latestApiData = _getCurrentApiData();
 
         final updatedApiData = ReportApiData(
@@ -295,8 +289,8 @@ class ReportCreationBloc
     );
   }
 
-  Future<void> _onLoadQuantitiesAndEquipment(
-    LoadQuantitiesAndEquipment event,
+  Future<void> _onLoadQuantities(
+    LoadQuantities event,
     Emitter<ReportCreationState> emit,
   ) async {
     final currentApiData = _getCurrentApiData();
@@ -330,9 +324,42 @@ class ReportCreationBloc
     );
   }
 
-  // ============================================================================
-  // SELECTION EVENT HANDLERS
-  // ============================================================================
+  Future<void> _onLoadEquipments(
+    LoadEquipments event,
+    Emitter<ReportCreationState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    final result = await _getEquipmentUseCase(
+      GetEquipmentParams(
+        companyUID: event.companyUID,
+        workScopeUID: event.workScopeUID,
+        forceRefresh: event.forceRefresh,
+      ),
+    );
+
+    result.fold(
+      (failure) => emit(
+        ReportCreationState.page2Error(
+          apiData: currentApiData,
+          selections: currentSelections,
+          formData: currentFormData,
+          errorMessage: failure.message,
+        ),
+      ),
+      (equipments) => emit(
+        ReportCreationState.page2Ready(
+          apiData: currentApiData.copyWith(equipment: equipments),
+          selections: currentSelections,
+          formData: currentFormData,
+        ),
+      ),
+    );
+  }
+
+  // ------------------------------------------------------- onSelect
 
   Future<void> _onSelectScope(
     SelectScope event,
@@ -494,9 +521,7 @@ class ReportCreationBloc
     );
   }
 
-  // ============================================================================
-  // QUANTITY & EQUIPMENT SELECTION HANDLERS
-  // ============================================================================
+  // ------------------------------------------------------- onSelect Page 2
 
   Future<void> _onSelectQuantityTypes(
     SelectQuantityTypes event,
@@ -588,9 +613,7 @@ class ReportCreationBloc
     add(SelectEquipment(currentUids));
   }
 
-  // ============================================================================
-  // FORM DATA EVENT HANDLERS
-  // ============================================================================
+  // ------------------------------------------------------- I dont know?
 
   Future<void> _onUpdateFieldValue(
     UpdateFieldValue event,
@@ -664,9 +687,7 @@ class ReportCreationBloc
     );
   }
 
-  // ============================================================================
-  // VALIDATION & SUBMISSION HANDLERS
-  // ============================================================================
+  // ------------------------------------------------------- Validation & Submission
 
   Future<void> _onValidateForm(
     ValidateForm event,
@@ -813,9 +834,7 @@ class ReportCreationBloc
     }
   }
 
-  // ============================================================================
-  // UTILITY EVENT HANDLERS
-  // ============================================================================
+  // ------------------------------------------------------- Basics
 
   Future<void> _onClearCache(
     ClearCache event,
@@ -846,5 +865,17 @@ class ReportCreationBloc
     Emitter<ReportCreationState> emit,
   ) async {
     emit(const ReportCreationState.initial());
+  }
+
+  Future<void> _onClearAllCache(
+    ClearAllCache event,
+    Emitter<ReportCreationState> emit,
+  ) async {
+    try {
+      await _clearAllCacheUseCase();
+      emit(const ReportCreationState.initial());
+    } catch (e) {
+      print('Error clearing caches: $e');
+    }
   }
 }

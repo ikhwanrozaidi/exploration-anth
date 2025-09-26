@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:rclink_app/features/daily_report_creation/data/models/province/province_model.dart';
+
 import '../../domain/entities/scope_of_work/scope_of_work.dart';
 import '../../domain/entities/scope_of_work/work_equipment.dart';
 import '../../domain/entities/scope_of_work/work_quantity_type.dart';
@@ -9,8 +9,17 @@ import '../../domain/entities/province/road_entity.dart';
 
 part 'report_creation_data.freezed.dart';
 
-// API DATA CLASSES
+// All of Report Data
+@freezed
+abstract class ReportData with _$ReportData {
+  const factory ReportData({
+    required ReportApiData apiData,
+    required ReportSelections selections,
+    required ReportFormData formData,
+  }) = _ReportData;
+}
 
+// Data from API
 @freezed
 abstract class ReportApiData with _$ReportApiData {
   const factory ReportApiData({
@@ -23,8 +32,7 @@ abstract class ReportApiData with _$ReportApiData {
   }) = _ReportApiData;
 }
 
-// USER SELECTIONS DATA CLASS
-
+// User Selections
 @freezed
 abstract class ReportSelections with _$ReportSelections {
   const factory ReportSelections({
@@ -46,8 +54,7 @@ abstract class ReportSelections with _$ReportSelections {
   }) = _ReportSelections;
 }
 
-// FORM DATA CLASS
-
+// I don't know
 @freezed
 abstract class ReportFormData with _$ReportFormData {
   const factory ReportFormData({
@@ -57,15 +64,4 @@ abstract class ReportFormData with _$ReportFormData {
     @Default([]) List<String> validationErrors,
     @Default(false) bool isFormValid,
   }) = _ReportFormData;
-}
-
-// COMPLETE REPORT DATA CLASS
-
-@freezed
-abstract class ReportData with _$ReportData {
-  const factory ReportData({
-    required ReportApiData apiData,
-    required ReportSelections selections,
-    required ReportFormData formData,
-  }) = _ReportData;
 }
