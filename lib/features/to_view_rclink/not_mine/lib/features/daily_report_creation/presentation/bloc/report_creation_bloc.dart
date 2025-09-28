@@ -316,7 +316,11 @@ class ReportCreationBloc
       ),
       (quantities) => emit(
         ReportCreationState.page2Ready(
-          apiData: currentApiData.copyWith(quantities: quantities),
+          apiData: currentApiData.copyWith(
+            quantities: quantities,
+            // Preserve existing equipment if they exist
+            equipment: currentApiData.equipment,
+          ),
           selections: currentSelections,
           formData: currentFormData,
         ),
@@ -351,7 +355,10 @@ class ReportCreationBloc
       ),
       (equipments) => emit(
         ReportCreationState.page2Ready(
-          apiData: currentApiData.copyWith(equipment: equipments),
+          apiData: currentApiData.copyWith(
+            equipment: equipments,
+            quantities: currentApiData.quantities,
+          ),
           selections: currentSelections,
           formData: currentFormData,
         ),

@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../domain/entities/dropdown_option.dart';
+import '../../../domain/entities/scope_of_work/dropdown_option.dart';
 
 part 'dropdown_option_model.freezed.dart';
 part 'dropdown_option_model.g.dart';

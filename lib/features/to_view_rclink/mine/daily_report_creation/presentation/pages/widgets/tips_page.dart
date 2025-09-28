@@ -70,14 +70,7 @@ class _TipsOnboardingPageState extends State<TipsOnboardingPage> {
 
   void _proceed() {
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => DraftDailyReportPage(
-          scopeOfWork: widget.scopeOfWork,
-          weather: widget.weather,
-          location: widget.location,
-          section: widget.section,
-        ),
-      ),
+      MaterialPageRoute(builder: (context) => DraftDailyReportPage()),
     );
   }
 

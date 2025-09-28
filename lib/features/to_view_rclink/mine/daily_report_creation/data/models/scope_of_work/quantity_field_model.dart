@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../domain/entities/quantity_field.dart';
+import '../../../domain/entities/scope_of_work/quantity_field.dart';
 import 'dropdown_option_model.dart';
 
 part 'quantity_field_model.freezed.dart';

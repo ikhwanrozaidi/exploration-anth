@@ -1,82 +1,55 @@
-import '../constant/report_model.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'report_creation_data.dart';
 
-// BLoC State
-class ReportCreationState {
-  final String? selectedScopeId;
-  final List<String> selectedQuantityIds;
-  final Map<String, dynamic> fieldValues;
-  final Map<String, List<String>> imageFields;
-  final Map<String, String?> fieldErrors;
-  final bool isValid;
+part 'report_creation_state.freezed.dart';
 
-  ReportCreationState({
-    this.selectedScopeId,
-    this.selectedQuantityIds = const [],
-    this.fieldValues = const {},
-    this.imageFields = const {},
-    this.fieldErrors = const {},
-    this.isValid = false,
-  });
+@freezed
+class ReportCreationState with _$ReportCreationState {
+  const factory ReportCreationState.initial() = ReportInitial;
 
-  ReportCreationState copyWith({
-    String? selectedScopeId,
-    List<String>? selectedQuantityIds,
-    Map<String, dynamic>? fieldValues,
-    Map<String, List<String>>? imageFields,
-    Map<String, String?>? fieldErrors,
-    bool? isValid,
-  }) {
-    return ReportCreationState(
-      selectedScopeId: selectedScopeId ?? this.selectedScopeId,
-      selectedQuantityIds: selectedQuantityIds ?? this.selectedQuantityIds,
-      fieldValues: fieldValues ?? this.fieldValues,
-      imageFields: imageFields ?? this.imageFields,
-      fieldErrors: fieldErrors ?? this.fieldErrors,
-      isValid: isValid ?? this.isValid,
-    );
-  }
+  const factory ReportCreationState.page1Ready({
+    required ReportApiData apiData,
+    required ReportSelections selections,
+  }) = ReportPage1Ready;
 
-  // Convert to JSON for API
-  Map<String, dynamic> toJson(Map<String, ScopeConfig> scopeConfigs) {
-    if (selectedScopeId == null) return {};
+  const factory ReportCreationState.page1Error({
+    required ReportApiData apiData,
+    required ReportSelections selections,
+    required String errorMessage,
+  }) = ReportPage1Error;
 
-    final scopeConfig = scopeConfigs[selectedScopeId!];
-    if (scopeConfig == null) return {};
+  const factory ReportCreationState.page2Ready({
+    required ReportApiData apiData,
+    required ReportSelections selections,
+    required ReportFormData formData,
+  }) = ReportPage2Ready;
 
-    Map<String, dynamic> commonFields = {};
-    Map<String, dynamic> quantities = {};
+  const factory ReportCreationState.page2Error({
+    required ReportApiData apiData,
+    required ReportSelections selections,
+    required ReportFormData formData,
+    required String errorMessage,
+  }) = ReportPage2Error;
 
-    // Process common fields
-    for (final field in scopeConfig.commonFields) {
-      if (field.type == FieldType.multipleImages) {
-        commonFields[field.id] = imageFields[field.id] ?? [];
-      } else {
-        commonFields[field.id] = fieldValues[field.id];
-      }
-    }
+  const factory ReportCreationState.submitting({
+    required ReportData reportData,
+  }) = ReportSubmitting;
 
-    // Process quantity fields
-    for (final quantityId in selectedQuantityIds) {
-      final quantityOption = scopeConfig.quantityOptions.firstWhere(
-        (q) => q.id == quantityId,
-      );
+  const factory ReportCreationState.submitted({
+    required ReportData reportData,
+  }) = ReportSubmitted;
 
-      Map<String, dynamic> quantityData = {};
-      for (final field in quantityOption.fields) {
-        if (field.type == FieldType.multipleImages) {
-          quantityData[field.id] =
-              imageFields['${quantityId}_${field.id}'] ?? [];
-        } else {
-          quantityData[field.id] = fieldValues['${quantityId}_${field.id}'];
-        }
-      }
-      quantities[quantityId] = quantityData;
-    }
+  const factory ReportCreationState.submissionError({
+    required ReportData reportData,
+    required String errorMessage,
+  }) = ReportSubmissionError;
 
-    return {
-      'scope': selectedScopeId,
-      'commonFields': commonFields,
-      'quantities': quantities,
-    };
-  }
+  const factory ReportCreationState.draftSaved({
+    required ReportData reportData,
+  }) = ReportDraftSaved;
+
+  const factory ReportCreationState.draftError({
+    required ReportData reportData,
+    required String errorMessage,
+  }) = ReportDraftError;
 }

@@ -59,8 +59,11 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
     );
 
     if (selectedWorkScopeUID != null && selectedWorkScopeUID.isNotEmpty) {
-      // Temporary Commment until LoadlEquipment Works
-      //
+      print(
+        '🔍 initState - Loading quantities and equipment for workScope: $selectedWorkScopeUID',
+      );
+
+      // Load both quantities and equipment
       _reportCreationBloc.add(
         LoadQuantities(
           companyUID: companyUID,
@@ -583,17 +586,35 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
   }
 
   void _handleQuantityTap() async {
+    print('🔍 _handleQuantityTap called');
+
     final reportState = _reportCreationBloc.state;
+    print('🔍 Current state: ${reportState.runtimeType}');
 
     // Get available quantities from current state
     final availableQuantities = reportState.maybeWhen(
-      page2Ready: (apiData, selections, formData) =>
-          apiData.quantities ?? <WorkQuantityType>[],
-      page2Error: (apiData, selections, formData, errorMessage) =>
-          apiData.quantities ?? <WorkQuantityType>[],
-      orElse: () => <WorkQuantityType>[],
+      page2Ready: (apiData, selections, formData) {
+        print(
+          '🔍 page2Ready - quantities count: ${apiData.quantities?.length ?? 0}',
+        );
+        return apiData.quantities ?? <WorkQuantityType>[];
+      },
+      page2Error: (apiData, selections, formData, errorMessage) {
+        print(
+          '🔍 page2Error - quantities count: ${apiData.quantities?.length ?? 0}',
+        );
+        return apiData.quantities ?? <WorkQuantityType>[];
+      },
+      orElse: () {
+        print('🔍 Other state - no quantities');
+        return <WorkQuantityType>[];
+      },
     );
 
+    print('🔍 availableQuantities.length: ${availableQuantities.length}');
+
+    // Since quantities should already be loaded in initState,
+    // we should always have them available
     if (availableQuantities.isNotEmpty) {
       final result = await Navigator.push(
         context,
@@ -611,39 +632,38 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
         });
       }
     } else {
-      setState(() {
-        _isLoadingQuantities = true;
-      });
+      // This should rarely happen since we load in initState
+      // Show a loading message and reload
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Loading quantities, please try again...'),
+          backgroundColor: Colors.orange,
+        ),
+      );
 
+      // Trigger reload if somehow quantities are missing
       final companyState = _companyBloc.state;
-      if (companyState is CompanyLoaded &&
-          companyState.selectedCompany != null) {
-        final selectedWorkScopeUID = reportState.maybeWhen(
-          page1Ready: (apiData, selections) => selections.selectedScopeUid,
-          page1Error: (apiData, selections, errorMessage) =>
-              selections.selectedScopeUid,
-          orElse: () => null,
-        );
+      final selectedWorkScopeUID = reportState.maybeWhen(
+        page1Ready: (apiData, selections) => selections.selectedScopeUid,
+        page2Ready: (apiData, selections, formData) =>
+            selections.selectedScopeUid,
+        page1Error: (apiData, selections, errorMessage) =>
+            selections.selectedScopeUid,
+        page2Error: (apiData, selections, formData, errorMessage) =>
+            selections.selectedScopeUid,
+        orElse: () => null,
+      );
 
-        if (selectedWorkScopeUID != null && selectedWorkScopeUID.isNotEmpty) {
-          _reportCreationBloc.add(
-            LoadQuantities(
-              companyUID: companyState.selectedCompany!.uid,
-              workScopeUID: selectedWorkScopeUID,
-              forceRefresh: true,
-            ),
-          );
-        } else {
-          setState(() {
-            _isLoadingQuantities = false;
-          });
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Please select a work scope first.'),
-              backgroundColor: Colors.orange,
-            ),
-          );
-        }
+      if (companyState is CompanyLoaded &&
+          companyState.selectedCompany != null &&
+          selectedWorkScopeUID != null) {
+        _reportCreationBloc.add(
+          LoadQuantities(
+            companyUID: companyState.selectedCompany!.uid,
+            workScopeUID: selectedWorkScopeUID,
+            forceRefresh: true,
+          ),
+        );
       }
     }
   }

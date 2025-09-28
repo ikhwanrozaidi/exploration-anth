@@ -4,22 +4,22 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/repositories/base_sync_repository.dart';
 import '../../../company/presentation/bloc/company_state.dart';
-import '../../domain/entities/scope_of_work.dart';
-import '../../domain/repository/daily_report_creation_repository.dart';
+import '../../domain/entities/scope_of_work/scope_of_work.dart';
+import '../../domain/repository/workscopes_repository.dart';
 import '../datasources/daily_report_creation_remote_datasource.dart';
 import '../datasources/daily_report_creation_local_datasource.dart';
-import '../models/scope_of_work_model.dart';
+import '../models/scope_of_work/scope_of_work_model.dart';
 import '../../../../features/company/presentation/bloc/company_bloc.dart';
 
-@Injectable(as: DailyReportCreationRepository)
-class DailyReportCreationRepositoryImpl
+@Injectable(as: WorkScopesRepository)
+class WorkScopesRepositoryImpl
     extends BaseOfflineSyncRepository<List<ScopeOfWork>, List<ScopeOfWorkModel>>
-    implements DailyReportCreationRepository {
+    implements WorkScopesRepository {
   final DailyReportCreationRemoteDataSource _remoteDataSource;
   final DailyReportCreationLocalDatasource _localDataSource;
   final CompanyBloc _companyBloc;
 
-  DailyReportCreationRepositoryImpl(
+  WorkScopesRepositoryImpl(
     this._remoteDataSource,
     this._localDataSource,
     this._companyBloc,
@@ -42,8 +42,8 @@ class DailyReportCreationRepositoryImpl
     return await getOfflineFirst(
       getLocal: () => _localDataSource.getCachedScopeOfWorks(),
       getRemote: () => _remoteDataSource.getWorkScopes(companyUID),
-      saveLocal: (models, {bool markForSync = false}) =>
-          _localDataSource.cacheScopeOfWorks(models),
+      saveLocal: (scopeOfWorks, {bool markForSync = false}) =>
+          _localDataSource.cacheScopeOfWorks(scopeOfWorks),
       toEntity: (models) => models.map((model) => model.toEntity()).toList(),
       forceRefresh: forceRefresh,
       cacheTimeout: cacheTimeout,

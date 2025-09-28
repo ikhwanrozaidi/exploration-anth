@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../../domain/entities/work_equipment.dart';
+import '../../../domain/entities/scope_of_work/work_equipment.dart';
 
 part 'work_equipment_model.freezed.dart';
 part 'work_equipment_model.g.dart';

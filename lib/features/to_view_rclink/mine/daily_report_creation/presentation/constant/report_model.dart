@@ -1,5 +1,29 @@
 import 'package:flutter/material.dart';
 
+// Quantity Option Model
+class QuantityOption {
+  final String id;
+  final String name;
+  final List<FieldConfig> fields;
+
+  QuantityOption({required this.id, required this.name, required this.fields});
+}
+
+// Scope Configuration Model
+class ScopeConfig {
+  final String id;
+  final String name;
+  // final List<FieldConfig> commonFields;
+  final List<QuantityOption> quantityOptions;
+
+  ScopeConfig({
+    required this.id,
+    required this.name,
+    // required this.commonFields,
+    required this.quantityOptions,
+  });
+}
+
 // Field Configuration Model
 class FieldConfig {
   final String id;
@@ -36,27 +60,3 @@ class FieldConfig {
 }
 
 enum FieldType { multipleImages, textField, numericField, dropdown, notes }
-
-// Quantity Option Model
-class QuantityOption {
-  final String id;
-  final String name;
-  final List<FieldConfig> fields;
-
-  QuantityOption({required this.id, required this.name, required this.fields});
-}
-
-// Scope Configuration Model
-class ScopeConfig {
-  final String id;
-  final String name;
-  final List<FieldConfig> commonFields;
-  final List<QuantityOption> quantityOptions;
-
-  ScopeConfig({
-    required this.id,
-    required this.name,
-    required this.commonFields,
-    required this.quantityOptions,
-  });
-}

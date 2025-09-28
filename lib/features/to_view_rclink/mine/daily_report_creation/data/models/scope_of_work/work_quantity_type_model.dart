@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../../domain/entities/work_quantity_type.dart';
+import '../../../domain/entities/scope_of_work/work_quantity_type.dart';
 import 'quantity_field_model.dart';
 
 part 'work_quantity_type_model.freezed.dart';
