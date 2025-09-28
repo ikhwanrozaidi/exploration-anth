@@ -46,10 +46,6 @@ class EquipmentRepositoryImpl
       return const Left(ServerFailure('Company mismatch'));
     }
 
-    print(
-      '🔍 Equipment Repository: Starting getEquipments for workScopeUID: $workScopeUID, forceRefresh: $forceRefresh',
-    );
-
     final result = await getOfflineFirst(
       getLocal: () => _localDataSource.getCachedEquipments(
         companyUID: companyUID,
@@ -66,19 +62,6 @@ class EquipmentRepositoryImpl
       toEntity: (models) => models.map((model) => model.toEntity()).toList(),
       forceRefresh: forceRefresh,
       cacheTimeout: cacheTimeout,
-    );
-
-    print(
-      '🔍 Equipment Repository: Checking cache for workScopeUID: $workScopeUID',
-    );
-    final cachedData = await _localDataSource.getCachedEquipments(
-      companyUID: companyUID,
-      workScopeUID: workScopeUID,
-    );
-    print('🔍 Equipment Repository: Cached data: $cachedData');
-
-    print(
-      '🔍 Equipment Repository: getOfflineFirst result: ${result.fold((l) => 'Error: ${l.message}', (r) => 'Success: ${r.length} equipments')}',
     );
     return result;
   }

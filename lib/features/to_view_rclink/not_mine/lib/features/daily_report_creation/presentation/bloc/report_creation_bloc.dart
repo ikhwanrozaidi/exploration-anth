@@ -2,6 +2,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rclink_app/features/daily_report_creation/domain/usecases/get_equipment_usecase.dart';
 
+import '../../domain/entities/scope_of_work/work_equipment.dart';
+import '../../domain/entities/scope_of_work/work_quantity_type.dart';
 import '../../domain/usecases/clear_all_cache_usecase.dart';
 import '../../domain/usecases/clear_work_scopes_cache_usecase.dart';
 import '../../domain/usecases/get_district_usecase.dart';
@@ -42,6 +44,7 @@ class ReportCreationBloc
     on<LoadRoads>(_onLoadRoads);
     on<LoadQuantities>(_onLoadQuantities);
     on<LoadEquipments>(_onLoadEquipments);
+    on<LoadQuantitiesAndEquipments>(_onLoadQuantitiesAndEquipments);
 
     // Selection events
     on<SelectScope>(_onSelectScope);
@@ -362,6 +365,85 @@ class ReportCreationBloc
           selections: currentSelections,
           formData: currentFormData,
         ),
+      ),
+    );
+  }
+
+  Future<void> _onLoadQuantitiesAndEquipments(
+    LoadQuantitiesAndEquipments event,
+    Emitter<ReportCreationState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    // Load both concurrently
+    final results = await Future.wait([
+      _getQuantitiesUseCase(
+        GetQuantityParams(
+          companyUID: event.companyUID,
+          workScopeUID: event.workScopeUID,
+          forceRefresh: event.forceRefresh,
+        ),
+      ),
+      _getEquipmentUseCase(
+        GetEquipmentParams(
+          companyUID: event.companyUID,
+          workScopeUID: event.workScopeUID,
+          forceRefresh: event.forceRefresh,
+        ),
+      ),
+    ]);
+
+    final quantitiesResult = results[0];
+    final equipmentsResult = results[1];
+
+    // Check if both succeeded
+    final quantitiesFailure = quantitiesResult.fold((l) => l, (r) => null);
+    final equipmentsFailure = equipmentsResult.fold((l) => l, (r) => null);
+
+    if (quantitiesFailure != null || equipmentsFailure != null) {
+      emit(
+        ReportCreationState.page2Error(
+          apiData: currentApiData,
+          selections: currentSelections,
+          formData: currentFormData,
+          errorMessage:
+              quantitiesFailure?.message ?? equipmentsFailure!.message,
+        ),
+      );
+      return;
+    }
+
+    // Both succeeded, extract data with proper type casting
+    final quantities = quantitiesResult.fold(
+      (l) => <WorkQuantityType>[],
+      (r) => r as List<WorkQuantityType>,
+    );
+    final equipments = equipmentsResult.fold(
+      (l) => <WorkEquipment>[],
+      (r) => r as List<WorkEquipment>,
+    );
+
+    emit(
+      ReportCreationState.page2Ready(
+        apiData: currentApiData.copyWith(
+          quantities: quantities,
+          equipment: equipments,
+        ),
+        selections: currentSelections,
+        formData: currentFormData,
+      ),
+    );
+
+    emit(
+      ReportCreationState.page2Ready(
+        apiData: currentApiData.copyWith(
+          quantities: quantities,
+          equipment: equipments,
+        ),
+        selections: currentSelections,
+        formData: currentFormData,
       ),
     );
   }

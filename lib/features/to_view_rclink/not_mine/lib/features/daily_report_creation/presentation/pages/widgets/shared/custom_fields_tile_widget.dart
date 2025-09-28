@@ -9,6 +9,7 @@ class CustomFieldTile extends StatelessWidget {
   final bool isRequired;
   final Color? iconBackgroundColor;
   final Color? iconColor;
+  final bool isFilled;
 
   const CustomFieldTile({
     Key? key,
@@ -20,6 +21,7 @@ class CustomFieldTile extends StatelessWidget {
     this.isRequired = false,
     this.iconBackgroundColor,
     this.iconColor,
+    this.isFilled = false,
   }) : super(key: key);
 
   @override
@@ -76,7 +78,9 @@ class CustomFieldTile extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: textColor,
+                            color: isFilled
+                                ? const Color.fromARGB(255, 46, 232, 142)
+                                : textColor,
                           ),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -100,74 +104,6 @@ class CustomFieldTile extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-// Usage examples:
-class ExampleUsage extends StatelessWidget {
-  String? selectedWorker;
-  String? selectedEquipment;
-  String? selectedMaterial;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // Worker selection - required field (shows red when empty)
-        CustomFieldTile(
-          icon: Icons.person,
-          title: 'Worker',
-          controller: selectedWorker,
-          titleDetails: 'Take picture of worker',
-          onTap: () {
-            // Handle worker selection
-            print('Worker tile tapped');
-          },
-          isRequired: true, // This makes it show red when empty
-        ),
-
-        // Equipment selection - optional field
-        CustomFieldTile(
-          icon: Icons.construction,
-          title: 'Equipment',
-          controller: selectedEquipment,
-          titleDetails: 'Select equipment used',
-          onTap: () {
-            // Handle equipment selection
-            print('Equipment tile tapped');
-          },
-          iconBackgroundColor: Colors.orange.shade100,
-          iconColor: Colors.orange.shade700,
-        ),
-
-        // Material selection - with custom colors
-        CustomFieldTile(
-          icon: Icons.inventory,
-          title: 'Materials',
-          controller: selectedMaterial,
-          titleDetails: 'Add materials used',
-          onTap: () {
-            // Handle material selection
-            print('Material tile tapped');
-          },
-          iconBackgroundColor: Colors.green.shade100,
-          iconColor: Colors.green.shade700,
-        ),
-
-        // Completed task - shows data
-        CustomFieldTile(
-          icon: Icons.check_circle,
-          title: 'Task Status',
-          controller: 'Completed successfully',
-          onTap: () {
-            // Handle status tap
-            print('Status tile tapped');
-          },
-          iconBackgroundColor: Colors.green.shade100,
-          iconColor: Colors.green,
-        ),
-      ],
     );
   }
 }

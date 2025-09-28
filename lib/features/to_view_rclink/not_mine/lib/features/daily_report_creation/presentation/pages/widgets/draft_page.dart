@@ -59,20 +59,8 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
     );
 
     if (selectedWorkScopeUID != null && selectedWorkScopeUID.isNotEmpty) {
-      print(
-        '🔍 initState - Loading quantities and equipment for workScope: $selectedWorkScopeUID',
-      );
-
-      // Load both quantities and equipment
       _reportCreationBloc.add(
-        LoadQuantities(
-          companyUID: companyUID,
-          workScopeUID: selectedWorkScopeUID,
-        ),
-      );
-
-      _reportCreationBloc.add(
-        LoadEquipments(
+        LoadQuantitiesAndEquipments(
           companyUID: companyUID,
           workScopeUID: selectedWorkScopeUID,
         ),
@@ -474,7 +462,10 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                             CustomFieldTile(
                               icon: Icons.abc,
                               title: 'Equipment',
-                              titleDetails: 'Choose tools',
+                              titleDetails: addedEquipments.isEmpty
+                                  ? 'Choose tools'
+                                  : '${addedEquipments.length} added',
+                              isFilled: addedEquipments.isEmpty ? false : true,
                               controller: equipment,
                               onTap: () async {
                                 final result = await Navigator.push(
@@ -522,6 +513,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                             CustomFieldTile(
                               icon: Icons.abc,
                               title: 'Quantity',
+                              isFilled: addedQuantities.isEmpty ? false : true,
                               titleDetails: _isLoadingQuantities
                                   ? 'Loading quantities...'
                                   : (addedQuantities.isEmpty

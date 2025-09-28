@@ -10,7 +10,7 @@ class ScopeConfigurations {
     //
     'R01': ScopeConfig(
       id: 'R01',
-      name: 'R01 - PAVEMENT / PATCHING POTHOLES',
+      name: 'R01 - PATCHING SCOPE',
       // commonFields: _getCommonFields(),
       quantityOptions: [
         QuantityOption(

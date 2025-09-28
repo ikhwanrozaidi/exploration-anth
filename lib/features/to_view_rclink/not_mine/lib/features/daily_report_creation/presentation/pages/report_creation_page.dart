@@ -35,13 +35,25 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
     super.initState();
     _bloc = getIt<ReportCreationBloc>();
 
-    // Load initial data sequentially
-    _bloc.add(const LoadWorkScopes());
+    // Check if work scopes are already loaded
+    final currentState = _bloc.state;
+    final hasWorkScopes = currentState.maybeWhen(
+      page1Ready: (apiData, selections) =>
+          apiData.workScopes?.isNotEmpty ?? false,
+      page1Error: (apiData, selections, errorMessage) =>
+          apiData.workScopes?.isNotEmpty ?? false,
+      orElse: () => false,
+    );
 
-    // Delay the states loading slightly to avoid race condition
-    Future.delayed(const Duration(milliseconds: 100), () {
-      _bloc.add(const LoadStates());
-    });
+    if (!hasWorkScopes) {
+      _bloc.add(const LoadWorkScopes());
+
+      Future.delayed(const Duration(milliseconds: 100), () {
+        _bloc.add(const LoadStates());
+      });
+    } else {
+      print('🔍 Work scopes already loaded, skipping API call');
+    }
   }
 
   @override

@@ -47,6 +47,12 @@ class ReportCreationEvent with _$ReportCreationEvent {
     @Default(false) bool forceRefresh,
   }) = LoadEquipments;
 
+  const factory ReportCreationEvent.loadQuantitiesAndEquipments({
+    required String companyUID,
+    required String workScopeUID,
+    @Default(false) bool forceRefresh,
+  }) = LoadQuantitiesAndEquipments;
+
   // onSelect Page 2
   const factory ReportCreationEvent.selectQuantityTypes(
     List<String> quantityTypeUids,
