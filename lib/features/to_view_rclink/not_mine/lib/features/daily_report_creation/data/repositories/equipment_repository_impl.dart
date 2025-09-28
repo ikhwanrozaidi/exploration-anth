@@ -46,16 +46,20 @@ class EquipmentRepositoryImpl
       return const Left(ServerFailure('Company mismatch'));
     }
 
-    return await getOfflineFirst(
+    print(
+      '🔍 Equipment Repository: Starting getEquipments for workScopeUID: $workScopeUID, forceRefresh: $forceRefresh',
+    );
+
+    final result = await getOfflineFirst(
       getLocal: () => _localDataSource.getCachedEquipments(
         companyUID: companyUID,
         workScopeUID: workScopeUID,
       ),
       getRemote: () =>
           _remoteDataSource.getEquipments(companyUID, workScopeUID),
-      saveLocal: (quantities, {bool markForSync = false}) =>
+      saveLocal: (equipments, {bool markForSync = false}) =>
           _localDataSource.cacheEquipments(
-            quantities,
+            equipments,
             companyUID: companyUID,
             workScopeUID: workScopeUID,
           ),
@@ -63,6 +67,20 @@ class EquipmentRepositoryImpl
       forceRefresh: forceRefresh,
       cacheTimeout: cacheTimeout,
     );
+
+    print(
+      '🔍 Equipment Repository: Checking cache for workScopeUID: $workScopeUID',
+    );
+    final cachedData = await _localDataSource.getCachedEquipments(
+      companyUID: companyUID,
+      workScopeUID: workScopeUID,
+    );
+    print('🔍 Equipment Repository: Cached data: $cachedData');
+
+    print(
+      '🔍 Equipment Repository: getOfflineFirst result: ${result.fold((l) => 'Error: ${l.message}', (r) => 'Success: ${r.length} equipments')}',
+    );
+    return result;
   }
 
   @override

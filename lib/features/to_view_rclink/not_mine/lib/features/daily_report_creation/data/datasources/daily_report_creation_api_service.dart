@@ -9,6 +9,7 @@ import '../models/province/road_model.dart';
 import '../models/scope_of_work/scope_of_work_model.dart';
 import '../models/scope_of_work/work_equipment_model.dart';
 import '../models/scope_of_work/work_quantity_type_model.dart';
+import '../models/scope_of_work/work_scope_equipment_model.dart';
 
 part 'daily_report_creation_api_service.g.dart';
 
@@ -80,7 +81,7 @@ abstract class DailyReportCreationApiService {
   });
 
   @GET('/companies/{companyUID}/work-scopes/{workScopeUID}/equipments')
-  Future<ApiResponse<List<WorkEquipmentModel>>> getEquipments({
+  Future<ApiResponse<List<WorkScopeEquipmentModel>>> getEquipments({
     @Path('companyUID') required String companyUID,
     @Path('workScopeUID') required String workScopeUID,
   });

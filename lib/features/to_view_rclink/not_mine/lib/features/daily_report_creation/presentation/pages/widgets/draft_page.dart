@@ -39,7 +39,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
   // final List<DraftJsonList> quantitiesDraft;
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
 
     _reportCreationBloc = getIt<ReportCreationBloc>();
@@ -61,12 +61,12 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
     if (selectedWorkScopeUID != null && selectedWorkScopeUID.isNotEmpty) {
       // Temporary Commment until LoadlEquipment Works
       //
-      // _reportCreationBloc.add(
-      //   LoadQuantities(
-      //     companyUID: companyUID,
-      //     workScopeUID: selectedWorkScopeUID,
-      //   ),
-      // );
+      _reportCreationBloc.add(
+        LoadQuantities(
+          companyUID: companyUID,
+          workScopeUID: selectedWorkScopeUID,
+        ),
+      );
 
       _reportCreationBloc.add(
         LoadEquipments(
@@ -473,8 +473,8 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                               title: 'Equipment',
                               titleDetails: 'Choose tools',
                               controller: equipment,
-                              onTap: () {
-                                Navigator.push(
+                              onTap: () async {
+                                final result = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => EquipmentPage(
@@ -483,6 +483,25 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                     ),
                                   ),
                                 );
+
+                                if (result != null) {
+                                  setState(() {
+                                    addedEquipments =
+                                        List<Map<String, dynamic>>.from(result);
+                                  });
+
+                                  // Update BLoC with selected equipment UIDs
+                                  final equipmentUids = addedEquipments
+                                      .map(
+                                        (equipment) =>
+                                            equipment['uid'] as String,
+                                      )
+                                      .toList();
+
+                                  _reportCreationBloc.add(
+                                    SelectEquipment(equipmentUids),
+                                  );
+                                }
                               },
                               isRequired: true,
                             ),

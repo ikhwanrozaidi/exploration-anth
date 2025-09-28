@@ -1238,7 +1238,7 @@ class DailyReportCreationLocalDatasourceImpl
       )..where((tbl) => tbl.workScopeID.equals(scopeId))).get();
 
       if (junctionRecords.isEmpty) {
-        return [];
+        return null;
       }
 
       final equipmentIds = junctionRecords

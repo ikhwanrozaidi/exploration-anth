@@ -11,6 +11,7 @@ import '../../../../core/errors/failures.dart';
 import '../models/province/district_model.dart';
 import '../models/province/province_model.dart';
 import '../models/province/road_model.dart';
+import '../models/scope_of_work/work_scope_equipment_model.dart';
 
 abstract class DailyReportCreationRemoteDataSource {
   Future<Either<Failure, List<ScopeOfWorkModel>>> getWorkScopes(
@@ -229,7 +230,11 @@ class DailyReportCreationRemoteDataSourceImpl
       );
 
       if (response.isSuccess && response.data != null) {
-        return Right(response.data!);
+        // Extract workEquipment from each junction object
+        final equipments = response.data!
+            .map((junction) => junction.workEquipment)
+            .toList();
+        return Right(equipments);
       } else {
         return Left(
           ServerFailure(response.message, statusCode: response.statusCode),

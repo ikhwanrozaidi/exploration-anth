@@ -292,7 +292,7 @@ class _DailyReportCreationApiService implements DailyReportCreationApiService {
   }
 
   @override
-  Future<ApiResponse<List<WorkEquipmentModel>>> getEquipments({
+  Future<ApiResponse<List<WorkScopeEquipmentModel>>> getEquipments({
     required String companyUID,
     required String workScopeUID,
   }) async {
@@ -300,7 +300,7 @@ class _DailyReportCreationApiService implements DailyReportCreationApiService {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ApiResponse<List<WorkEquipmentModel>>>(
+    final _options = _setStreamType<ApiResponse<List<WorkScopeEquipmentModel>>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -311,15 +311,16 @@ class _DailyReportCreationApiService implements DailyReportCreationApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<List<WorkEquipmentModel>> _value;
+    late ApiResponse<List<WorkScopeEquipmentModel>> _value;
     try {
-      _value = ApiResponse<List<WorkEquipmentModel>>.fromJson(
+      _value = ApiResponse<List<WorkScopeEquipmentModel>>.fromJson(
         _result.data!,
         (json) => json is List<dynamic>
             ? json
-                  .map<WorkEquipmentModel>(
-                    (i) =>
-                        WorkEquipmentModel.fromJson(i as Map<String, dynamic>),
+                  .map<WorkScopeEquipmentModel>(
+                    (i) => WorkScopeEquipmentModel.fromJson(
+                      i as Map<String, dynamic>,
+                    ),
                   )
                   .toList()
             : List.empty(),
