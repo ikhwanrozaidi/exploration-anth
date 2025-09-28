@@ -59,6 +59,8 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
     );
 
     if (selectedWorkScopeUID != null && selectedWorkScopeUID.isNotEmpty) {
+      // Temporary Commment until LoadlEquipment Works
+      //
       // _reportCreationBloc.add(
       //   LoadQuantities(
       //     companyUID: companyUID,
