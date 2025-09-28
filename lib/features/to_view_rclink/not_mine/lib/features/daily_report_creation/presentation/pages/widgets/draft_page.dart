@@ -18,7 +18,7 @@ import 'quantity_selection_page.dart';
 import 'shared/custom_fields_tile_widget.dart';
 
 class DraftDailyReportPage extends StatefulWidget {
-  const DraftDailyReportPage({Key? key}) : super(key: key);
+  const DraftDailyReportPage({super.key});
 
   @override
   State<DraftDailyReportPage> createState() => _DraftDailyReportPageState();
@@ -39,7 +39,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
   // final List<DraftJsonList> quantitiesDraft;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
 
     _reportCreationBloc = getIt<ReportCreationBloc>();
