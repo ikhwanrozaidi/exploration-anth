@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../utils/responsive_helper.dart';
+import '../../utils/theme.dart';
 import 'models/gallery_image.dart';
 import 'models/gallery_result.dart';
 import 'service/camera_service.dart';
@@ -11,24 +12,31 @@ import 'widgets/empty_gallery_state.dart';
 import 'widgets/image_grid_view.dart';
 import 'widgets/camera_button.dart';
 import 'widgets/image_preview_dialog.dart';
+import 'widgets/tab_lock_dialog.dart';
 
 class GalleryWidget extends StatefulWidget {
+  final String title;
   final bool isGallery;
   final List<String>? pictures;
   final bool inputProgress;
   final bool workerPicture;
   final bool pinPointFirst;
   final int maxImages;
+  final int? minimumImage;
+  final bool tabLock;
   final Function(GalleryResult)? onImagesChanged;
 
   const GalleryWidget({
     super.key,
+    required this.title,
     this.isGallery = false,
     this.pictures,
     this.inputProgress = false,
     this.workerPicture = false,
     this.pinPointFirst = false,
     this.maxImages = 10,
+    this.minimumImage,
+    this.tabLock = true,
     this.onImagesChanged,
   });
 
@@ -55,6 +63,9 @@ class _GalleryWidgetState extends State<GalleryWidget>
   TabController? _tabController;
   String _currentTab = 'before';
 
+  bool _beforeTabConfirmed = false;
+  bool _isCameraLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -67,12 +78,74 @@ class _GalleryWidgetState extends State<GalleryWidget>
       _tabController = TabController(length: 3, vsync: this);
       _tabController!.addListener(() {
         if (!_tabController!.indexIsChanging) {
-          setState(() {
-            _currentTab = ['before', 'current', 'after'][_tabController!.index];
-          });
+          _handleTabChange(_tabController!.index);
         }
       });
     }
+  }
+
+  Future<void> _handleTabChange(int newIndex) async {
+    final newTab = ['before', 'current', 'after'][newIndex];
+    final currentImages = _tabImages[_currentTab]!;
+
+    // Check if tab lock is enabled and minimum image requirement
+    if (widget.tabLock &&
+        widget.minimumImage != null &&
+        _currentTab == 'before' &&
+        newTab != 'before' &&
+        !_beforeTabConfirmed) {
+      // Check if minimum images met
+      if (currentImages.length >= widget.minimumImage!) {
+        // Show confirmation dialog
+        final shouldContinue = await TabLockDialog.show(context, newTab);
+
+        if (shouldContinue == true) {
+          setState(() {
+            _beforeTabConfirmed = true;
+            _currentTab = newTab;
+          });
+        } else {
+          // User wants to retake, stay on current tab
+          _tabController!.animateTo(
+            ['before', 'current', 'after'].indexOf(_currentTab),
+          );
+        }
+      } else {
+        // Not enough images, show error
+        _showMinimumImagesDialog();
+        _tabController!.animateTo(
+          ['before', 'current', 'after'].indexOf(_currentTab),
+        );
+      }
+    } else {
+      // No lock, just switch
+      setState(() {
+        _currentTab = newTab;
+
+        // Reset confirmation if user goes back to 'before' tab
+        if (newTab == 'before') {
+          _beforeTabConfirmed = false;
+        }
+      });
+    }
+  }
+
+  void _showMinimumImagesDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Minimum Images Required'),
+        content: Text(
+          'Please add at least ${widget.minimumImage} images before proceeding to the next tab.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   void _initializeImages() {
@@ -117,15 +190,25 @@ class _GalleryWidgetState extends State<GalleryWidget>
   }
 
   Future<void> _captureNormalImage() async {
+    if (_isCameraLoading) return;
+
     if (_images.length >= widget.maxImages) {
       _showMaxImagesDialog();
       return;
     }
 
+    setState(() {
+      _isCameraLoading = true;
+    });
+
     try {
       final image = await _cameraService.captureImage(
         pinPointFirst: widget.pinPointFirst,
       );
+
+      setState(() {
+        _isCameraLoading = false;
+      });
 
       if (image != null) {
         // final confirmed = await ImagePreviewDialog.show(context, image);
@@ -141,11 +224,16 @@ class _GalleryWidgetState extends State<GalleryWidget>
         }
       }
     } catch (e) {
+      setState(() {
+        _isCameraLoading = false;
+      });
       _showErrorDialog('Failed to capture image: $e');
     }
   }
 
   Future<void> _captureTabImage() async {
+    if (_isCameraLoading) return; // Prevent multiple calls
+
     final currentImages = _tabImages[_currentTab]!;
     if (currentImages.length >= widget.maxImages) {
       _showMaxImagesDialog();
@@ -154,10 +242,14 @@ class _GalleryWidgetState extends State<GalleryWidget>
 
     try {
       // Show bottom sheet to choose camera or gallery
-      final allowGallery = _currentTab != 'before'; // Before tab: camera only
+      final allowGallery = _currentTab != 'before';
 
       final source = await _showImageSourceDialog(allowGallery);
       if (source == null) return;
+
+      setState(() {
+        _isCameraLoading = true;
+      });
 
       GalleryImage? image;
       if (source == ImageSource.camera) {
@@ -171,6 +263,10 @@ class _GalleryWidgetState extends State<GalleryWidget>
           imageType: _currentTab,
         );
       }
+
+      setState(() {
+        _isCameraLoading = false;
+      });
 
       if (image != null) {
         // final confirmed = await ImagePreviewDialog.show(context, image);
@@ -186,20 +282,32 @@ class _GalleryWidgetState extends State<GalleryWidget>
         }
       }
     } catch (e) {
+      setState(() {
+        _isCameraLoading = false;
+      });
       _showErrorDialog('Failed to capture image: $e');
     }
   }
 
   Future<void> _captureWorkerImage() async {
+    if (_isCameraLoading) return; // Prevent multiple calls
+
+    setState(() {
+      _isCameraLoading = true;
+    });
+
     try {
       final image = await _cameraService.captureImage(
         pinPointFirst: widget.pinPointFirst,
       );
 
+      setState(() {
+        _isCameraLoading = false;
+      });
+
       if (image != null) {
         // final confirmed = await ImagePreviewDialog.show(context, image);
         final confirmed = true;
-
         if (confirmed == true) {
           // Delete old worker image if exists
           if (_workerImage != null) {
@@ -215,6 +323,9 @@ class _GalleryWidgetState extends State<GalleryWidget>
         }
       }
     } catch (e) {
+      setState(() {
+        _isCameraLoading = false;
+      });
       _showErrorDialog('Failed to capture image: $e');
     }
   }
@@ -366,6 +477,15 @@ class _GalleryWidgetState extends State<GalleryWidget>
 
   @override
   Widget build(BuildContext context) {
+    int currentImageCount = 0;
+    if (widget.inputProgress) {
+      currentImageCount = _tabImages[_currentTab]?.length ?? 0;
+    } else if (widget.workerPicture) {
+      currentImageCount = _workerImage != null ? 1 : 0;
+    } else {
+      currentImageCount = _images.length;
+    }
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -402,7 +522,7 @@ class _GalleryWidgetState extends State<GalleryWidget>
             SizedBox(width: ResponsiveHelper.spacing(context, 15)),
 
             Text(
-              widget.workerPicture ? 'Worker Picture' : 'Additional Images',
+              widget.title,
               style: TextStyle(
                 color: Colors.black,
                 fontWeight: FontWeight.w500,
@@ -429,7 +549,12 @@ class _GalleryWidgetState extends State<GalleryWidget>
           ],
         ),
       ),
-      floatingActionButton: CameraButton(onPressed: _captureImage),
+      floatingActionButton: CameraButton(
+        onPressed: _captureImage,
+        imageCount: currentImageCount,
+        minimumImage: widget.minimumImage,
+        isLoading: _isCameraLoading,
+      ),
     );
   }
 
@@ -522,6 +647,7 @@ class _GalleryWidgetState extends State<GalleryWidget>
         Expanded(
           child: TabBarView(
             controller: _tabController,
+            physics: const NeverScrollableScrollPhysics(),
             children: [
               _buildTabContent('before'),
               _buildTabContent('current'),
@@ -540,10 +666,95 @@ class _GalleryWidgetState extends State<GalleryWidget>
       return const EmptyGalleryState();
     }
 
-    return Column(
-      children: [
-        SizedBox(height: 10),
-        ImageGridView(images: images, onDeleteImage: _deleteImage),
+    final shouldShowAddButton =
+        widget.tabLock &&
+        widget.minimumImage != null &&
+        tabType == 'before' &&
+        images.length >= widget.minimumImage!;
+
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: EdgeInsets.symmetric(vertical: 20),
+          sliver: SliverGrid(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: ResponsiveHelper.spacing(context, 1.5),
+              mainAxisSpacing: ResponsiveHelper.spacing(context, 1.5),
+              childAspectRatio: 1,
+            ),
+            delegate: SliverChildBuilderDelegate((context, index) {
+              return ImageItem(
+                image: images[index],
+                onDelete: () => _deleteImage(index),
+              );
+            }, childCount: images.length),
+          ),
+        ),
+        if (shouldShowAddButton)
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                SizedBox(height: 10),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: ResponsiveHelper.spacing(context, 2),
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (!_beforeTabConfirmed) {
+                          final shouldContinue = await TabLockDialog.show(
+                            context,
+                            'current',
+                          );
+                          if (shouldContinue == true && mounted) {
+                            setState(() {
+                              _beforeTabConfirmed = true;
+                            });
+                            _tabController!.animateTo(1);
+                          }
+                        } else {
+                          _tabController!.animateTo(1);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        disabledBackgroundColor: Colors.grey[300],
+                        padding: ResponsiveHelper.padding(
+                          context,
+                          vertical: 10,
+                          horizontal: 20,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: ResponsiveHelper.borderRadius(
+                            context,
+                            all: 14,
+                          ),
+                        ),
+                        elevation: ResponsiveHelper.adaptive(
+                          context,
+                          mobile: 1,
+                          tablet: 2,
+                          desktop: 3,
+                        ),
+                      ),
+                      child: Text(
+                        'Add',
+                        style: TextStyle(
+                          // fontSize: fontSize,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: ResponsiveHelper.spacing(context, 2)),
+              ],
+            ),
+          ),
       ],
     );
   }

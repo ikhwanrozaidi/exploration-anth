@@ -9,6 +9,9 @@ import '../../../../../core/di/injection.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/divider_config.dart';
+import '../../../../../shared/widgets/gallery/gallery_widget.dart';
+import '../../../../../shared/widgets/gallery/models/gallery_image.dart';
+import '../../../../../shared/widgets/gallery/models/gallery_result.dart';
 import '../../../../company/presentation/bloc/company_state.dart';
 import '../../../domain/entities/scope_of_work/work_equipment.dart';
 import '../../../domain/entities/scope_of_work/work_quantity_type.dart';
@@ -35,6 +38,11 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
   bool _isLoadingQuantities = false;
   List<Map<String, dynamic>> addedQuantities = [];
   List<Map<String, dynamic>> addedEquipments = [];
+  Map<String, List<GalleryImage>> _conditionSnapshotImages = {
+    'before': [],
+    'current': [],
+    'after': [],
+  };
 
   // final List<DraftJsonList> quantitiesDraft;
 
@@ -172,9 +180,13 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                 bottom: false,
                 child: Column(
                   children: [
-                    // Header (keep your existing header code)
+                    // Header
+                    SizedBox(height: ResponsiveHelper.getHeight(context, 0.03)),
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      padding: ResponsiveHelper.padding(
+                        context,
+                        horizontal: 20,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -268,7 +280,11 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                     // Content
                     Expanded(
                       child: Container(
-                        padding: ResponsiveHelper.padding(context, all: 30),
+                        padding: ResponsiveHelper.padding(
+                          context,
+                          vertical: 30,
+                          horizontal: 20,
+                        ),
                         width: double.infinity,
                         decoration: const BoxDecoration(
                           color: Colors.white,
@@ -291,8 +307,9 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                             // Scope of Work (keep existing code but add null safety)
                             if (scopeString != null) ...[
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 18.0,
+                                padding: ResponsiveHelper.padding(
+                                  context,
+                                  horizontal: 15,
                                 ),
                                 child: Row(
                                   children: [
@@ -346,8 +363,9 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                             // Location (add null safety)
                             if (roadString != null) ...[
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 18.0,
+                                padding: ResponsiveHelper.padding(
+                                  context,
+                                  horizontal: 15,
                                 ),
                                 child: Row(
                                   children: [
@@ -401,8 +419,9 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                             // Section (add null safety)
                             if (sectionString != null) ...[
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 18.0,
+                                padding: ResponsiveHelper.padding(
+                                  context,
+                                  horizontal: 15,
                                 ),
                                 child: Row(
                                   children: [
@@ -505,7 +524,36 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                               title: 'Condition Snapshot',
                               titleDetails: "Please take a 'before' photo",
                               controller: conditionSnapshot,
-                              onTap: () => print('Condition selection tapped'),
+                              onTap: () async {
+                                final result = await Navigator.push<GalleryResult>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => GalleryWidget(
+                                      title: 'Condition Snapshot',
+                                      inputProgress: true,
+                                      pinPointFirst: true,
+                                      maxImages: 10,
+                                      minimumImage: 4,
+                                      tabLock: true,
+                                      pictures: _getAllConditionSnapshotPaths(),
+                                      onImagesChanged: (result) {
+                                        // This callback updates in real-time as user adds/deletes images
+                                      },
+                                    ),
+                                  ),
+                                );
+
+                                // When user exits the gallery, save the final result
+                                if (result != null &&
+                                    result.tabImages != null) {
+                                  setState(() {
+                                    _conditionSnapshotImages =
+                                        result.tabImages!;
+                                  });
+                                  // TODO: Save to your report creation data
+                                  _saveConditionSnapshots();
+                                }
+                              },
                               isRequired: true,
                             ),
 
@@ -658,5 +706,65 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
         );
       }
     }
+  }
+
+  // Get all image paths for pre-loading gallery
+  List<String> _getAllConditionSnapshotPaths() {
+    List<String> allPaths = [];
+    _conditionSnapshotImages.forEach((key, images) {
+      allPaths.addAll(images.map((img) => img.path));
+    });
+    return allPaths;
+  }
+
+  String? _getConditionSnapshotSummary() {
+    int totalImages = 0;
+    _conditionSnapshotImages.forEach((key, images) {
+      totalImages += images.length;
+    });
+
+    if (totalImages == 0) return null;
+
+    final before = _conditionSnapshotImages['before']?.length ?? 0;
+    final current = _conditionSnapshotImages['current']?.length ?? 0;
+    final after = _conditionSnapshotImages['after']?.length ?? 0;
+
+    return 'B:$before | C:$current | A:$after';
+  }
+
+  // Save condition snapshots to your data model
+  void _saveConditionSnapshots() {
+    // Example: Save to your report creation data
+    // You'll need to adapt this based on your actual data structure
+
+    final beforePaths =
+        _conditionSnapshotImages['before']?.map((e) => e.path).toList() ?? [];
+    final currentPaths =
+        _conditionSnapshotImages['current']?.map((e) => e.path).toList() ?? [];
+    final afterPaths =
+        _conditionSnapshotImages['after']?.map((e) => e.path).toList() ?? [];
+
+    // TODO: Update your report_creation_data or wherever you store draft data
+    // Example:
+    // context.read<ReportCreationBloc>().add(
+    //   UpdateConditionSnapshots(
+    //     before: beforePaths,
+    //     current: currentPaths,
+    //     after: afterPaths,
+    //   ),
+    // );
+
+    print('Before images: ${beforePaths.length}');
+    print('Current images: ${currentPaths.length}');
+    print('After images: ${afterPaths.length}');
+
+    // If you want to access GPS coordinates:
+    _conditionSnapshotImages.forEach((tab, images) {
+      for (var img in images) {
+        if (img.latitude != null && img.longitude != null) {
+          print('$tab - Image at: ${img.latitude}, ${img.longitude}');
+        }
+      }
+    });
   }
 }

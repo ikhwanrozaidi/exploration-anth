@@ -29,8 +29,6 @@ class GetEquipmentUseCase
   Future<Either<Failure, List<WorkEquipment>>> call(
     GetEquipmentParams params,
   ) async {
-    print('IM HEREE');
-
     return await _repository.getEquipments(
       forceRefresh: params.forceRefresh,
       companyUID: params.companyUID,

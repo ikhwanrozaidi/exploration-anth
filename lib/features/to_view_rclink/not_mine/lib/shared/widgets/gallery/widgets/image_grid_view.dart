@@ -18,6 +18,7 @@ class ImageGridView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: GridView.builder(
+        shrinkWrap: true,
         padding: EdgeInsets.all(ResponsiveHelper.spacing(context, 2)),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,

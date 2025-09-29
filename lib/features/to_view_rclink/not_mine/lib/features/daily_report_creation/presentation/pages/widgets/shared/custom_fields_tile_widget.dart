@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../../../../shared/utils/responsive_helper.dart';
+
 class CustomFieldTile extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -38,7 +40,11 @@ class CustomFieldTile extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: EdgeInsets.only(bottom: 20),
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        padding: ResponsiveHelper.padding(
+          context,
+          horizontal: 15,
+          vertical: 15,
+        ),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade400, width: 0.5),
           borderRadius: BorderRadius.circular(10),
