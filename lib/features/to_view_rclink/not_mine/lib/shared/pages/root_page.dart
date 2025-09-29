@@ -267,10 +267,9 @@ class _AddPage extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.add_circle_outline, size: 64, color: Colors.grey),
+          Icon(Icons.update, size: 64, color: Colors.grey),
           SizedBox(height: 16),
-          Text('Add New Item'),
-          Text('Create something new...'),
+          Text('Coming Soon...'),
         ],
       ),
     );

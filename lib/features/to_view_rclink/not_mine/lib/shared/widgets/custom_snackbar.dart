@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum SnackBarType { success, error, warning, info, validation }
+enum SnackBarType { success, error, warning, info, validation, comingsoon }
 
 class CustomSnackBar {
   static void show(
@@ -76,6 +76,8 @@ class CustomSnackBar {
         return const Color(0xFF2196F3);
       case SnackBarType.validation:
         return const Color(0xFFFF5722);
+      case SnackBarType.comingsoon:
+        return const Color.fromARGB(255, 141, 141, 141);
     }
   }
 
@@ -91,6 +93,8 @@ class CustomSnackBar {
         return Icons.info;
       case SnackBarType.validation:
         return Icons.warning_amber;
+      case SnackBarType.comingsoon:
+        return Icons.commit_outlined;
     }
   }
 }
