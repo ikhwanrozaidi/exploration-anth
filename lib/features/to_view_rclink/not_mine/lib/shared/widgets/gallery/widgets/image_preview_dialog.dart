@@ -8,34 +8,13 @@ import '../models/gallery_image.dart';
 
 class ImagePreviewDialog extends StatelessWidget {
   final GalleryImage image;
-  final VoidCallback? onConfirm;
 
-  const ImagePreviewDialog({super.key, required this.image, this.onConfirm});
+  const ImagePreviewDialog({super.key, required this.image});
 
   static Future<bool?> show(BuildContext context, GalleryImage image) {
     return showDialog<bool>(
       context: context,
-      barrierDismissible: false,
-      builder: (context) => ImagePreviewDialog(
-        image: image,
-        onConfirm: () => Navigator.of(context).pop(true),
-      ),
-    );
-  }
-
-  static Future<void> showWithCallbacks({
-    required BuildContext context,
-    required GalleryImage image,
-    VoidCallback? onConfirm,
-    VoidCallback? onRetake,
-  }) {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => ImagePreviewDialog(
-        image: image,
-        onConfirm: onConfirm ?? () => Navigator.of(context).pop(),
-      ),
+      builder: (context) => ImagePreviewDialog(image: image),
     );
   }
 
@@ -99,8 +78,7 @@ class ImagePreviewDialog extends StatelessWidget {
                   SizedBox(width: ResponsiveHelper.spacing(context, 4)),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed:
-                          onConfirm ?? () => Navigator.of(context).pop(true),
+                      onPressed: () => Navigator.of(context).pop(true),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: primaryColor,
                         disabledBackgroundColor: Colors.grey[300],

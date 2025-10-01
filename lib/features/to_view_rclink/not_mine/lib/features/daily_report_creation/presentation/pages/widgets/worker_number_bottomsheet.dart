@@ -12,10 +12,15 @@ class WorkerNumberBottomsheet {
       backgroundColor: Colors.transparent,
       isDismissible: true,
       enableDrag: true,
-      builder: (context) => InfoBottomsheet(
-        title: "Worker",
-        blurry: true,
-        widgetUI: _buildContent(context, nextTab),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: InfoBottomsheet(
+          title: "Worker",
+          blurry: true,
+          widgetUI: _buildContent(context, nextTab),
+        ),
       ),
     );
   }
@@ -37,14 +42,34 @@ class WorkerNumberBottomsheet {
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
 
-        const SizedBox(height: 10),
+        const SizedBox(height: 20),
 
         Text(
-          "SSUPP",
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          "Number of Workers",
+          style: const TextStyle(fontWeight: FontWeight.w500),
         ),
 
-        const SizedBox(height: 30),
+        SizedBox(height: 5),
+
+        TextField(
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            isDense: true,
+            hintText: "Enter number of workers",
+            hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey, width: 0.8),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey, width: 0.8),
+            ),
+          ),
+        ),
+
+        SizedBox(height: 30),
 
         Row(
           children: [

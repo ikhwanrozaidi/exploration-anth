@@ -297,11 +297,25 @@ class _GalleryWidgetState extends State<GalleryWidget>
       });
 
       if (image != null) {
-        await ImagePreviewDialog.showWithCallbacks(
-          context: context,
-          image: image,
-          onConfirm: widget.onDialogConfirm,
-        );
+        final confirmed = await ImagePreviewDialog.show(context, image);
+
+        if (confirmed == true) {
+          if (widget.onDialogConfirm != null) {
+            widget.onDialogConfirm!();
+          }
+
+          if (_workerImage != null) {
+            await _cameraService.deleteImage(_workerImage!.path);
+          }
+
+          setState(() {
+            _workerImage = image;
+          });
+          _notifyParent();
+        } else {
+          await _cameraService.deleteImage(image.path);
+          await _captureWorkerImage();
+        }
       }
     } catch (e) {
       setState(() {

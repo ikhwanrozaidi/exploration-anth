@@ -22,6 +22,7 @@ import '../../bloc/report_creation_event.dart';
 import 'notes_bottomsheet.dart';
 import 'quantity_selection_page.dart';
 import 'shared/custom_fields_tile_widget.dart';
+import 'worker_number_bottomsheet.dart';
 
 class DraftDailyReportPage extends StatefulWidget {
   const DraftDailyReportPage({super.key});
@@ -469,22 +470,26 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                               isFilled: _workerImage != null,
                               controller: worker,
                               onTap: () async {
-                                final result =
-                                    await Navigator.push<GalleryResult>(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => GalleryWidget(
-                                          title: 'Worker',
-                                          workerPicture: true,
-                                          maxImages: 1,
-                                          pictures: _workerImage != null
-                                              ? [_workerImage!.path]
-                                              : null,
-                                          onImagesChanged: (result) {},
-                                          onDialogConfirm: () {},
-                                        ),
-                                      ),
-                                    );
+                                final result = await Navigator.push<GalleryResult>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => GalleryWidget(
+                                      title: 'Worker',
+                                      workerPicture: true,
+                                      maxImages: 1,
+                                      pictures: _workerImage != null
+                                          ? [_workerImage!.path]
+                                          : null,
+                                      onImagesChanged: (result) {},
+                                      onDialogConfirm: () async {
+                                        await WorkerNumberBottomsheet.showWithInfoBottomsheet(
+                                          context,
+                                          'Worker Number',
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                );
 
                                 if (result != null) {
                                   if (result.images.isNotEmpty) {
