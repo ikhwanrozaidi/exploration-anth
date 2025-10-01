@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/responsive_helper.dart';
@@ -18,6 +19,7 @@ class GalleryWidget extends StatefulWidget {
   final String title;
   final bool isGallery;
   final List<String>? pictures;
+  final Map<String, List<GalleryImage>>? initialTabImages;
   final bool inputProgress;
   final bool workerPicture;
   final bool pinPointFirst;
@@ -31,6 +33,7 @@ class GalleryWidget extends StatefulWidget {
     required this.title,
     this.isGallery = false,
     this.pictures,
+    this.initialTabImages,
     this.inputProgress = false,
     this.workerPicture = false,
     this.pinPointFirst = false,
@@ -48,17 +51,13 @@ class _GalleryWidgetState extends State<GalleryWidget>
     with SingleTickerProviderStateMixin {
   final CameraService _cameraService = CameraService();
 
-  // Normal Gallery mode
   final List<GalleryImage> _images = [];
-
-  // inputProgress mode (tabs)
   final Map<String, List<GalleryImage>> _tabImages = {
     'before': [],
     'current': [],
     'after': [],
   };
 
-  // workerPicture mode
   GalleryImage? _workerImage;
   TabController? _tabController;
   String _currentTab = 'before';
@@ -88,15 +87,12 @@ class _GalleryWidgetState extends State<GalleryWidget>
     final newTab = ['before', 'current', 'after'][newIndex];
     final currentImages = _tabImages[_currentTab]!;
 
-    // Check if tab lock is enabled and minimum image requirement
     if (widget.tabLock &&
         widget.minimumImage != null &&
         _currentTab == 'before' &&
         newTab != 'before' &&
         !_beforeTabConfirmed) {
-      // Check if minimum images met
       if (currentImages.length >= widget.minimumImage!) {
-        // Show confirmation dialog
         final shouldContinue = await TabLockDialog.show(context, newTab);
 
         if (shouldContinue == true) {
@@ -105,24 +101,34 @@ class _GalleryWidgetState extends State<GalleryWidget>
             _currentTab = newTab;
           });
         } else {
-          // User wants to retake, stay on current tab
           _tabController!.animateTo(
             ['before', 'current', 'after'].indexOf(_currentTab),
           );
         }
       } else {
-        // Not enough images, show error
-        _showMinimumImagesDialog();
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Minimum Images Required'),
+            content: Text(
+              'Please add at least ${widget.minimumImage} images before proceeding to the next tab.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
         _tabController!.animateTo(
           ['before', 'current', 'after'].indexOf(_currentTab),
         );
       }
     } else {
-      // No lock, just switch
       setState(() {
         _currentTab = newTab;
 
-        // Reset confirmation if user goes back to 'before' tab
         if (newTab == 'before') {
           _beforeTabConfirmed = false;
         }
@@ -130,62 +136,47 @@ class _GalleryWidgetState extends State<GalleryWidget>
     }
   }
 
-  void _showMinimumImagesDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Minimum Images Required'),
-        content: Text(
-          'Please add at least ${widget.minimumImage} images before proceeding to the next tab.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
   void _initializeImages() {
+    if (widget.inputProgress && widget.initialTabImages != null) {
+      widget.initialTabImages!.forEach((tab, images) {
+        _tabImages[tab] = List<GalleryImage>.from(images);
+      });
+
+      if (widget.minimumImage != null) {
+        final beforeCount = _tabImages['before']?.length ?? 0;
+        if (beforeCount >= widget.minimumImage!) {
+          _beforeTabConfirmed = true;
+          print('✅ Before tab confirmed (has $beforeCount images)');
+        }
+      }
+      return;
+    }
+
     if (widget.pictures != null && widget.pictures!.isNotEmpty) {
-      if (widget.inputProgress) {
-        // For tabs mode, distribute images if needed
-        // For now, just add to current tab
-        _tabImages[_currentTab]!.addAll(
-          widget.pictures!.map(
-            (path) => GalleryImage(
-              path: path,
-              capturedAt: DateTime.now(),
-              type: _currentTab,
-            ),
-          ),
-        );
-      } else if (widget.workerPicture) {
-        // For worker picture, only take first image
+      if (widget.workerPicture) {
         _workerImage = GalleryImage(
           path: widget.pictures!.first,
           capturedAt: DateTime.now(),
         );
+      } else if (widget.inputProgress) {
+        _tabImages[_currentTab]!.addAll(
+          widget.pictures!.map((path) {
+            return GalleryImage(
+              path: path,
+              capturedAt: DateTime.now(),
+              type: _currentTab,
+            );
+          }),
+        );
       } else {
-        // Normal gallery mode
         _images.addAll(
-          widget.pictures!.map(
-            (path) => GalleryImage(path: path, capturedAt: DateTime.now()),
-          ),
+          widget.pictures!.map((path) {
+            return GalleryImage(path: path, capturedAt: DateTime.now());
+          }),
         );
       }
-    }
-  }
-
-  Future<void> _captureImage() async {
-    if (widget.workerPicture) {
-      await _captureWorkerImage();
-    } else if (widget.inputProgress) {
-      await _captureTabImage();
     } else {
-      await _captureNormalImage();
+      print('⚠️ No images to initialize');
     }
   }
 
@@ -211,7 +202,6 @@ class _GalleryWidgetState extends State<GalleryWidget>
       });
 
       if (image != null) {
-        // final confirmed = await ImagePreviewDialog.show(context, image);
         final confirmed = true;
         if (confirmed == true) {
           setState(() {
@@ -232,7 +222,7 @@ class _GalleryWidgetState extends State<GalleryWidget>
   }
 
   Future<void> _captureTabImage() async {
-    if (_isCameraLoading) return; // Prevent multiple calls
+    if (_isCameraLoading) return;
 
     final currentImages = _tabImages[_currentTab]!;
     if (currentImages.length >= widget.maxImages) {
@@ -241,7 +231,6 @@ class _GalleryWidgetState extends State<GalleryWidget>
     }
 
     try {
-      // Show bottom sheet to choose camera or gallery
       final allowGallery = _currentTab != 'before';
 
       final source = await _showImageSourceDialog(allowGallery);
@@ -290,7 +279,7 @@ class _GalleryWidgetState extends State<GalleryWidget>
   }
 
   Future<void> _captureWorkerImage() async {
-    if (_isCameraLoading) return; // Prevent multiple calls
+    if (_isCameraLoading) return;
 
     setState(() {
       _isCameraLoading = true;
@@ -306,10 +295,9 @@ class _GalleryWidgetState extends State<GalleryWidget>
       });
 
       if (image != null) {
-        // final confirmed = await ImagePreviewDialog.show(context, image);
-        final confirmed = true;
+        final confirmed = await ImagePreviewDialog.show(context, image);
+        // final confirmed = true;
         if (confirmed == true) {
-          // Delete old worker image if exists
           if (_workerImage != null) {
             await _cameraService.deleteImage(_workerImage!.path);
           }
@@ -390,17 +378,14 @@ class _GalleryWidgetState extends State<GalleryWidget>
   void _notifyParent() {
     if (widget.onImagesChanged != null) {
       if (widget.inputProgress) {
-        // Return tab images
         widget.onImagesChanged!(
           GalleryResult(images: [], tabImages: Map.from(_tabImages)),
         );
       } else if (widget.workerPicture) {
-        // Return worker image
         widget.onImagesChanged!(
           GalleryResult(images: _workerImage != null ? [_workerImage!] : []),
         );
       } else {
-        // Return normal images
         widget.onImagesChanged!(GalleryResult(images: List.from(_images)));
       }
     }
@@ -469,6 +454,22 @@ class _GalleryWidgetState extends State<GalleryWidget>
     );
   }
 
+  void _returnImagesAndPop() {
+    if (widget.inputProgress) {
+      _tabImages.forEach((tab, images) {});
+
+      Navigator.of(
+        context,
+      ).pop(GalleryResult(images: [], tabImages: Map.from(_tabImages)));
+    } else if (widget.workerPicture) {
+      Navigator.of(
+        context,
+      ).pop(GalleryResult(images: _workerImage != null ? [_workerImage!] : []));
+    } else {
+      Navigator.of(context).pop(GalleryResult(images: List.from(_images)));
+    }
+  }
+
   @override
   void dispose() {
     _tabController?.dispose();
@@ -478,6 +479,7 @@ class _GalleryWidgetState extends State<GalleryWidget>
   @override
   Widget build(BuildContext context) {
     int currentImageCount = 0;
+
     if (widget.inputProgress) {
       currentImageCount = _tabImages[_currentTab]?.length ?? 0;
     } else if (widget.workerPicture) {
@@ -496,7 +498,7 @@ class _GalleryWidgetState extends State<GalleryWidget>
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.of(context).pop();
+                _returnImagesAndPop();
               },
               child: Container(
                 padding: EdgeInsets.all(10),
@@ -536,9 +538,8 @@ class _GalleryWidgetState extends State<GalleryWidget>
       body: Padding(
         padding: const EdgeInsets.all(25.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(width: ResponsiveHelper.spacing(context, 15)),
+            SizedBox(width: 15),
             Expanded(
               child: widget.workerPicture
                   ? _buildWorkerPictureView()
@@ -549,56 +550,226 @@ class _GalleryWidgetState extends State<GalleryWidget>
           ],
         ),
       ),
-      floatingActionButton: CameraButton(
-        onPressed: _captureImage,
-        imageCount: currentImageCount,
-        minimumImage: widget.minimumImage,
-        isLoading: _isCameraLoading,
-      ),
+
+      floatingActionButton: widget.workerPicture
+          ? null
+          : CameraButton(
+              onPressed: () async {
+                if (widget.workerPicture) {
+                  await _captureWorkerImage();
+                } else if (widget.inputProgress) {
+                  await _captureTabImage();
+                } else {
+                  await _captureNormalImage();
+                }
+              },
+              imageCount: currentImageCount,
+              minimumImage: widget.minimumImage,
+              isLoading: _isCameraLoading,
+            ),
     );
   }
 
   Widget _buildWorkerPictureView() {
     if (_workerImage == null) {
-      return const EmptyGalleryState();
-    }
-
-    return Center(
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Stack(
+      return Center(
+        child: Column(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey[300]!),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.file(
-                  File(_workerImage!.path),
-                  fit: BoxFit.contain,
-                ),
-              ),
-            ),
-            Positioned(
-              top: 10,
-              right: 10,
+            DottedBorder(
+              borderType: BorderType.RRect,
+              radius: const Radius.circular(10),
+              dashPattern: const [6, 3],
+              color: Colors.grey,
+              strokeWidth: 1.5,
               child: GestureDetector(
-                onTap: _deleteWorkerImage,
+                onTap: () {
+                  _captureWorkerImage();
+                },
                 child: Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: const BoxDecoration(
-                    color: Colors.red,
-                    shape: BoxShape.circle,
+                  height: ResponsiveHelper.getHeight(context, 0.25),
+                  padding: const EdgeInsets.all(16),
+                  alignment: Alignment.center,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                              'assets/images/icons/capture_workers.png',
+                            ),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 10),
+
+                      const Text(
+                        "Click here to take photo of worker",
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
-                  child: Icon(Icons.close, size: 10, color: Colors.white),
                 ),
               ),
             ),
           ],
         ),
-      ),
+      );
+    }
+
+    return Column(
+      children: [
+        Center(
+          child: DottedBorder(
+            borderType: BorderType.RRect,
+            radius: const Radius.circular(10),
+            dashPattern: const [6, 3],
+            color: Colors.grey,
+            strokeWidth: 1.5,
+            child: GestureDetector(
+              onTap: () {
+                _captureWorkerImage();
+              },
+              child: SizedBox(
+                width: double.infinity,
+                // height: ResponsiveHelper.getHeight(context, 0.25),
+                // padding: const EdgeInsets.all(16),
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.file(
+                        File(_workerImage!.path),
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+
+                    // Left
+                    Positioned(
+                      top: 10,
+                      left: 10,
+                      child: GestureDetector(
+                        onTap: _deleteWorkerImage,
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: const BoxDecoration(
+                            color: Colors.red,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.delete,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    // Right
+                    Positioned(
+                      top: 15,
+                      right: 10,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(100),
+                          border: Border.all(color: primaryColor, width: 1),
+                        ),
+                        child: Text(
+                          'No Workers',
+                          style: TextStyle(color: primaryColor, fontSize: 12),
+                        ),
+                      ),
+                    ),
+
+                    // Bottom
+                    Positioned(
+                      bottom: 10,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: _captureWorkerImage,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            side: BorderSide(
+                              color: primaryColor,
+                              width: ResponsiveHelper.adaptive(
+                                context,
+                                mobile: 1.0,
+                                tablet: 1.5,
+                                desktop: 2.0,
+                              ),
+                            ),
+                            padding: ResponsiveHelper.padding(
+                              context,
+                              vertical: 5,
+                              horizontal: 25,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: ResponsiveHelper.borderRadius(
+                                context,
+                                all: 10,
+                              ),
+                            ),
+                          ),
+                          child: Text('Retake', style: TextStyle(fontSize: 12)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+        Spacer(),
+
+        _workerImage == null
+            ? SizedBox()
+            : SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    _returnImagesAndPop();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    disabledBackgroundColor: Colors.grey[300],
+                    padding: ResponsiveHelper.padding(
+                      context,
+                      vertical: 10,
+                      horizontal: 20,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: ResponsiveHelper.borderRadius(
+                        context,
+                        all: 14,
+                      ),
+                    ),
+                    elevation: ResponsiveHelper.adaptive(
+                      context,
+                      mobile: 1,
+                      tablet: 2,
+                      desktop: 3,
+                    ),
+                  ),
+                  child: Text('Add', style: TextStyle(color: Colors.white)),
+                ),
+              ),
+        SizedBox(height: 20),
+      ],
     );
   }
 
@@ -606,7 +777,7 @@ class _GalleryWidgetState extends State<GalleryWidget>
     final bool showEmptyState = !widget.isGallery && _images.isEmpty;
 
     return showEmptyState
-        ? const EmptyGalleryState()
+        ? Center(child: const EmptyGalleryState())
         : ImageGridView(images: _images, onDeleteImage: _deleteImage);
   }
 

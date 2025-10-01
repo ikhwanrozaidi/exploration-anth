@@ -20,7 +20,7 @@ class CameraButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final showCounter = minimumImage != null && imageCount != null;
-    final imageLeft = minimumImage! - imageCount!;
+    final imageLeft = showCounter ? minimumImage! - imageCount! : 0;
 
     return Stack(
       clipBehavior: Clip.none,

@@ -3,34 +3,33 @@ import 'package:flutter/material.dart';
 import '../../../utils/responsive_helper.dart';
 
 class EmptyGalleryState extends StatelessWidget {
-  const EmptyGalleryState({super.key});
+  final int imageCount;
+
+  const EmptyGalleryState({super.key, this.imageCount = 4});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         SizedBox(height: 60),
 
-        // TODO: Replace with illustration asset given by Sinwei
         Container(
-          width: ResponsiveHelper.spacing(context, 20),
-          height: ResponsiveHelper.spacing(context, 20),
+          width: 250,
+          height: 250,
           decoration: BoxDecoration(
-            color: Colors.grey[200],
-            shape: BoxShape.circle,
-          ),
-          child: Icon(
-            Icons.add_a_photo,
-            size: ResponsiveHelper.spacing(context, 8),
-            color: Colors.grey[400],
+            image: DecorationImage(
+              image: AssetImage(
+                'assets/images/empty_state_conditionsnapshot.png',
+              ),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
 
         SizedBox(height: 20),
 
         Text(
-          'You need to take 4 Photos',
+          'You need to take $imageCount Photos',
           style: TextStyle(
             fontSize: ResponsiveHelper.adaptive<double>(
               context,

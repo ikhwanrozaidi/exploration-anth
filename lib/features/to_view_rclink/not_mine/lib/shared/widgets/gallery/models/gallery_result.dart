@@ -2,11 +2,10 @@ import 'gallery_image.dart';
 
 class GalleryResult {
   final List<GalleryImage> images;
-  final Map<String, List<GalleryImage>>? tabImages; // for inputProgress
+  final Map<String, List<GalleryImage>>? tabImages;
 
   GalleryResult({required this.images, this.tabImages});
 
-  // Helper to get simple path list
   List<String> get imagePaths => images.map((e) => e.path).toList();
 
   Map<String, dynamic> toJson() => {
