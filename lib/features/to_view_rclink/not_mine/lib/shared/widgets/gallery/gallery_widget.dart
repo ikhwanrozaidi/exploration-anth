@@ -27,6 +27,7 @@ class GalleryWidget extends StatefulWidget {
   final int? minimumImage;
   final bool tabLock;
   final Function(GalleryResult)? onImagesChanged;
+  final VoidCallback? onDialogConfirm;
 
   const GalleryWidget({
     super.key,
@@ -41,6 +42,7 @@ class GalleryWidget extends StatefulWidget {
     this.minimumImage,
     this.tabLock = true,
     this.onImagesChanged,
+    this.onDialogConfirm,
   });
 
   @override
@@ -295,20 +297,11 @@ class _GalleryWidgetState extends State<GalleryWidget>
       });
 
       if (image != null) {
-        final confirmed = await ImagePreviewDialog.show(context, image);
-        // final confirmed = true;
-        if (confirmed == true) {
-          if (_workerImage != null) {
-            await _cameraService.deleteImage(_workerImage!.path);
-          }
-          setState(() {
-            _workerImage = image;
-          });
-          _notifyParent();
-        } else {
-          await _cameraService.deleteImage(image.path);
-          await _captureWorkerImage();
-        }
+        await ImagePreviewDialog.showWithCallbacks(
+          context: context,
+          image: image,
+          onConfirm: widget.onDialogConfirm,
+        );
       }
     } catch (e) {
       setState(() {
@@ -639,8 +632,6 @@ class _GalleryWidgetState extends State<GalleryWidget>
               },
               child: SizedBox(
                 width: double.infinity,
-                // height: ResponsiveHelper.getHeight(context, 0.25),
-                // padding: const EdgeInsets.all(16),
                 child: Stack(
                   children: [
                     ClipRRect(
