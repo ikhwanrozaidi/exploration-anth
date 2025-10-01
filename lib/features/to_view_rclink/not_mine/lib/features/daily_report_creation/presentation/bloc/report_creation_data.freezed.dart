@@ -651,7 +651,7 @@ as List<WorkEquipment>?,
 /// @nodoc
 mixin _$ReportSelections {
 
- String? get selectedScopeUid; ScopeOfWork? get selectedScope; String? get selectedWeather; String? get selectedStateUid; Province? get selectedState; String? get selectedDistrictUid; District? get selectedDistrict; String? get selectedRoadUid; Road? get selectedRoad; String? get section; String? get sectionError; List<String> get selectedQuantityTypeUids; List<WorkQuantityType> get selectedQuantityTypes; List<String> get selectedEquipmentUids; List<WorkEquipment> get selectedEquipment;
+ String? get selectedScopeUid; ScopeOfWork? get selectedScope; String? get selectedWeather; String? get selectedStateUid; Province? get selectedState; String? get selectedDistrictUid; District? get selectedDistrict; String? get selectedRoadUid; Road? get selectedRoad; String? get section; String? get sectionError; List<String> get selectedQuantityTypeUids; List<WorkQuantityType> get selectedQuantityTypes; List<String> get selectedEquipmentUids; List<WorkEquipment> get selectedEquipment; Map<String, List<Map<String, dynamic>>> get conditionSnapshots; List<Map<String, dynamic>> get workerImages;
 /// Create a copy of ReportSelections
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -662,16 +662,16 @@ $ReportSelectionsCopyWith<ReportSelections> get copyWith => _$ReportSelectionsCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportSelections&&(identical(other.selectedScopeUid, selectedScopeUid) || other.selectedScopeUid == selectedScopeUid)&&(identical(other.selectedScope, selectedScope) || other.selectedScope == selectedScope)&&(identical(other.selectedWeather, selectedWeather) || other.selectedWeather == selectedWeather)&&(identical(other.selectedStateUid, selectedStateUid) || other.selectedStateUid == selectedStateUid)&&(identical(other.selectedState, selectedState) || other.selectedState == selectedState)&&(identical(other.selectedDistrictUid, selectedDistrictUid) || other.selectedDistrictUid == selectedDistrictUid)&&(identical(other.selectedDistrict, selectedDistrict) || other.selectedDistrict == selectedDistrict)&&(identical(other.selectedRoadUid, selectedRoadUid) || other.selectedRoadUid == selectedRoadUid)&&(identical(other.selectedRoad, selectedRoad) || other.selectedRoad == selectedRoad)&&(identical(other.section, section) || other.section == section)&&(identical(other.sectionError, sectionError) || other.sectionError == sectionError)&&const DeepCollectionEquality().equals(other.selectedQuantityTypeUids, selectedQuantityTypeUids)&&const DeepCollectionEquality().equals(other.selectedQuantityTypes, selectedQuantityTypes)&&const DeepCollectionEquality().equals(other.selectedEquipmentUids, selectedEquipmentUids)&&const DeepCollectionEquality().equals(other.selectedEquipment, selectedEquipment));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportSelections&&(identical(other.selectedScopeUid, selectedScopeUid) || other.selectedScopeUid == selectedScopeUid)&&(identical(other.selectedScope, selectedScope) || other.selectedScope == selectedScope)&&(identical(other.selectedWeather, selectedWeather) || other.selectedWeather == selectedWeather)&&(identical(other.selectedStateUid, selectedStateUid) || other.selectedStateUid == selectedStateUid)&&(identical(other.selectedState, selectedState) || other.selectedState == selectedState)&&(identical(other.selectedDistrictUid, selectedDistrictUid) || other.selectedDistrictUid == selectedDistrictUid)&&(identical(other.selectedDistrict, selectedDistrict) || other.selectedDistrict == selectedDistrict)&&(identical(other.selectedRoadUid, selectedRoadUid) || other.selectedRoadUid == selectedRoadUid)&&(identical(other.selectedRoad, selectedRoad) || other.selectedRoad == selectedRoad)&&(identical(other.section, section) || other.section == section)&&(identical(other.sectionError, sectionError) || other.sectionError == sectionError)&&const DeepCollectionEquality().equals(other.selectedQuantityTypeUids, selectedQuantityTypeUids)&&const DeepCollectionEquality().equals(other.selectedQuantityTypes, selectedQuantityTypes)&&const DeepCollectionEquality().equals(other.selectedEquipmentUids, selectedEquipmentUids)&&const DeepCollectionEquality().equals(other.selectedEquipment, selectedEquipment)&&const DeepCollectionEquality().equals(other.conditionSnapshots, conditionSnapshots)&&const DeepCollectionEquality().equals(other.workerImages, workerImages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedScopeUid,selectedScope,selectedWeather,selectedStateUid,selectedState,selectedDistrictUid,selectedDistrict,selectedRoadUid,selectedRoad,section,sectionError,const DeepCollectionEquality().hash(selectedQuantityTypeUids),const DeepCollectionEquality().hash(selectedQuantityTypes),const DeepCollectionEquality().hash(selectedEquipmentUids),const DeepCollectionEquality().hash(selectedEquipment));
+int get hashCode => Object.hash(runtimeType,selectedScopeUid,selectedScope,selectedWeather,selectedStateUid,selectedState,selectedDistrictUid,selectedDistrict,selectedRoadUid,selectedRoad,section,sectionError,const DeepCollectionEquality().hash(selectedQuantityTypeUids),const DeepCollectionEquality().hash(selectedQuantityTypes),const DeepCollectionEquality().hash(selectedEquipmentUids),const DeepCollectionEquality().hash(selectedEquipment),const DeepCollectionEquality().hash(conditionSnapshots),const DeepCollectionEquality().hash(workerImages));
 
 @override
 String toString() {
-  return 'ReportSelections(selectedScopeUid: $selectedScopeUid, selectedScope: $selectedScope, selectedWeather: $selectedWeather, selectedStateUid: $selectedStateUid, selectedState: $selectedState, selectedDistrictUid: $selectedDistrictUid, selectedDistrict: $selectedDistrict, selectedRoadUid: $selectedRoadUid, selectedRoad: $selectedRoad, section: $section, sectionError: $sectionError, selectedQuantityTypeUids: $selectedQuantityTypeUids, selectedQuantityTypes: $selectedQuantityTypes, selectedEquipmentUids: $selectedEquipmentUids, selectedEquipment: $selectedEquipment)';
+  return 'ReportSelections(selectedScopeUid: $selectedScopeUid, selectedScope: $selectedScope, selectedWeather: $selectedWeather, selectedStateUid: $selectedStateUid, selectedState: $selectedState, selectedDistrictUid: $selectedDistrictUid, selectedDistrict: $selectedDistrict, selectedRoadUid: $selectedRoadUid, selectedRoad: $selectedRoad, section: $section, sectionError: $sectionError, selectedQuantityTypeUids: $selectedQuantityTypeUids, selectedQuantityTypes: $selectedQuantityTypes, selectedEquipmentUids: $selectedEquipmentUids, selectedEquipment: $selectedEquipment, conditionSnapshots: $conditionSnapshots, workerImages: $workerImages)';
 }
 
 
@@ -682,7 +682,7 @@ abstract mixin class $ReportSelectionsCopyWith<$Res>  {
   factory $ReportSelectionsCopyWith(ReportSelections value, $Res Function(ReportSelections) _then) = _$ReportSelectionsCopyWithImpl;
 @useResult
 $Res call({
- String? selectedScopeUid, ScopeOfWork? selectedScope, String? selectedWeather, String? selectedStateUid, Province? selectedState, String? selectedDistrictUid, District? selectedDistrict, String? selectedRoadUid, Road? selectedRoad, String? section, String? sectionError, List<String> selectedQuantityTypeUids, List<WorkQuantityType> selectedQuantityTypes, List<String> selectedEquipmentUids, List<WorkEquipment> selectedEquipment
+ String? selectedScopeUid, ScopeOfWork? selectedScope, String? selectedWeather, String? selectedStateUid, Province? selectedState, String? selectedDistrictUid, District? selectedDistrict, String? selectedRoadUid, Road? selectedRoad, String? section, String? sectionError, List<String> selectedQuantityTypeUids, List<WorkQuantityType> selectedQuantityTypes, List<String> selectedEquipmentUids, List<WorkEquipment> selectedEquipment, Map<String, List<Map<String, dynamic>>> conditionSnapshots, List<Map<String, dynamic>> workerImages
 });
 
 
@@ -699,7 +699,7 @@ class _$ReportSelectionsCopyWithImpl<$Res>
 
 /// Create a copy of ReportSelections
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? selectedScopeUid = freezed,Object? selectedScope = freezed,Object? selectedWeather = freezed,Object? selectedStateUid = freezed,Object? selectedState = freezed,Object? selectedDistrictUid = freezed,Object? selectedDistrict = freezed,Object? selectedRoadUid = freezed,Object? selectedRoad = freezed,Object? section = freezed,Object? sectionError = freezed,Object? selectedQuantityTypeUids = null,Object? selectedQuantityTypes = null,Object? selectedEquipmentUids = null,Object? selectedEquipment = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? selectedScopeUid = freezed,Object? selectedScope = freezed,Object? selectedWeather = freezed,Object? selectedStateUid = freezed,Object? selectedState = freezed,Object? selectedDistrictUid = freezed,Object? selectedDistrict = freezed,Object? selectedRoadUid = freezed,Object? selectedRoad = freezed,Object? section = freezed,Object? sectionError = freezed,Object? selectedQuantityTypeUids = null,Object? selectedQuantityTypes = null,Object? selectedEquipmentUids = null,Object? selectedEquipment = null,Object? conditionSnapshots = null,Object? workerImages = null,}) {
   return _then(_self.copyWith(
 selectedScopeUid: freezed == selectedScopeUid ? _self.selectedScopeUid : selectedScopeUid // ignore: cast_nullable_to_non_nullable
 as String?,selectedScope: freezed == selectedScope ? _self.selectedScope : selectedScope // ignore: cast_nullable_to_non_nullable
@@ -716,7 +716,9 @@ as String?,selectedQuantityTypeUids: null == selectedQuantityTypeUids ? _self.se
 as List<String>,selectedQuantityTypes: null == selectedQuantityTypes ? _self.selectedQuantityTypes : selectedQuantityTypes // ignore: cast_nullable_to_non_nullable
 as List<WorkQuantityType>,selectedEquipmentUids: null == selectedEquipmentUids ? _self.selectedEquipmentUids : selectedEquipmentUids // ignore: cast_nullable_to_non_nullable
 as List<String>,selectedEquipment: null == selectedEquipment ? _self.selectedEquipment : selectedEquipment // ignore: cast_nullable_to_non_nullable
-as List<WorkEquipment>,
+as List<WorkEquipment>,conditionSnapshots: null == conditionSnapshots ? _self.conditionSnapshots : conditionSnapshots // ignore: cast_nullable_to_non_nullable
+as Map<String, List<Map<String, dynamic>>>,workerImages: null == workerImages ? _self.workerImages : workerImages // ignore: cast_nullable_to_non_nullable
+as List<Map<String, dynamic>>,
   ));
 }
 
@@ -801,10 +803,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? selectedScopeUid,  ScopeOfWork? selectedScope,  String? selectedWeather,  String? selectedStateUid,  Province? selectedState,  String? selectedDistrictUid,  District? selectedDistrict,  String? selectedRoadUid,  Road? selectedRoad,  String? section,  String? sectionError,  List<String> selectedQuantityTypeUids,  List<WorkQuantityType> selectedQuantityTypes,  List<String> selectedEquipmentUids,  List<WorkEquipment> selectedEquipment)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? selectedScopeUid,  ScopeOfWork? selectedScope,  String? selectedWeather,  String? selectedStateUid,  Province? selectedState,  String? selectedDistrictUid,  District? selectedDistrict,  String? selectedRoadUid,  Road? selectedRoad,  String? section,  String? sectionError,  List<String> selectedQuantityTypeUids,  List<WorkQuantityType> selectedQuantityTypes,  List<String> selectedEquipmentUids,  List<WorkEquipment> selectedEquipment,  Map<String, List<Map<String, dynamic>>> conditionSnapshots,  List<Map<String, dynamic>> workerImages)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ReportSelections() when $default != null:
-return $default(_that.selectedScopeUid,_that.selectedScope,_that.selectedWeather,_that.selectedStateUid,_that.selectedState,_that.selectedDistrictUid,_that.selectedDistrict,_that.selectedRoadUid,_that.selectedRoad,_that.section,_that.sectionError,_that.selectedQuantityTypeUids,_that.selectedQuantityTypes,_that.selectedEquipmentUids,_that.selectedEquipment);case _:
+return $default(_that.selectedScopeUid,_that.selectedScope,_that.selectedWeather,_that.selectedStateUid,_that.selectedState,_that.selectedDistrictUid,_that.selectedDistrict,_that.selectedRoadUid,_that.selectedRoad,_that.section,_that.sectionError,_that.selectedQuantityTypeUids,_that.selectedQuantityTypes,_that.selectedEquipmentUids,_that.selectedEquipment,_that.conditionSnapshots,_that.workerImages);case _:
   return orElse();
 
 }
@@ -822,10 +824,10 @@ return $default(_that.selectedScopeUid,_that.selectedScope,_that.selectedWeather
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? selectedScopeUid,  ScopeOfWork? selectedScope,  String? selectedWeather,  String? selectedStateUid,  Province? selectedState,  String? selectedDistrictUid,  District? selectedDistrict,  String? selectedRoadUid,  Road? selectedRoad,  String? section,  String? sectionError,  List<String> selectedQuantityTypeUids,  List<WorkQuantityType> selectedQuantityTypes,  List<String> selectedEquipmentUids,  List<WorkEquipment> selectedEquipment)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? selectedScopeUid,  ScopeOfWork? selectedScope,  String? selectedWeather,  String? selectedStateUid,  Province? selectedState,  String? selectedDistrictUid,  District? selectedDistrict,  String? selectedRoadUid,  Road? selectedRoad,  String? section,  String? sectionError,  List<String> selectedQuantityTypeUids,  List<WorkQuantityType> selectedQuantityTypes,  List<String> selectedEquipmentUids,  List<WorkEquipment> selectedEquipment,  Map<String, List<Map<String, dynamic>>> conditionSnapshots,  List<Map<String, dynamic>> workerImages)  $default,) {final _that = this;
 switch (_that) {
 case _ReportSelections():
-return $default(_that.selectedScopeUid,_that.selectedScope,_that.selectedWeather,_that.selectedStateUid,_that.selectedState,_that.selectedDistrictUid,_that.selectedDistrict,_that.selectedRoadUid,_that.selectedRoad,_that.section,_that.sectionError,_that.selectedQuantityTypeUids,_that.selectedQuantityTypes,_that.selectedEquipmentUids,_that.selectedEquipment);case _:
+return $default(_that.selectedScopeUid,_that.selectedScope,_that.selectedWeather,_that.selectedStateUid,_that.selectedState,_that.selectedDistrictUid,_that.selectedDistrict,_that.selectedRoadUid,_that.selectedRoad,_that.section,_that.sectionError,_that.selectedQuantityTypeUids,_that.selectedQuantityTypes,_that.selectedEquipmentUids,_that.selectedEquipment,_that.conditionSnapshots,_that.workerImages);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -842,10 +844,10 @@ return $default(_that.selectedScopeUid,_that.selectedScope,_that.selectedWeather
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? selectedScopeUid,  ScopeOfWork? selectedScope,  String? selectedWeather,  String? selectedStateUid,  Province? selectedState,  String? selectedDistrictUid,  District? selectedDistrict,  String? selectedRoadUid,  Road? selectedRoad,  String? section,  String? sectionError,  List<String> selectedQuantityTypeUids,  List<WorkQuantityType> selectedQuantityTypes,  List<String> selectedEquipmentUids,  List<WorkEquipment> selectedEquipment)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? selectedScopeUid,  ScopeOfWork? selectedScope,  String? selectedWeather,  String? selectedStateUid,  Province? selectedState,  String? selectedDistrictUid,  District? selectedDistrict,  String? selectedRoadUid,  Road? selectedRoad,  String? section,  String? sectionError,  List<String> selectedQuantityTypeUids,  List<WorkQuantityType> selectedQuantityTypes,  List<String> selectedEquipmentUids,  List<WorkEquipment> selectedEquipment,  Map<String, List<Map<String, dynamic>>> conditionSnapshots,  List<Map<String, dynamic>> workerImages)?  $default,) {final _that = this;
 switch (_that) {
 case _ReportSelections() when $default != null:
-return $default(_that.selectedScopeUid,_that.selectedScope,_that.selectedWeather,_that.selectedStateUid,_that.selectedState,_that.selectedDistrictUid,_that.selectedDistrict,_that.selectedRoadUid,_that.selectedRoad,_that.section,_that.sectionError,_that.selectedQuantityTypeUids,_that.selectedQuantityTypes,_that.selectedEquipmentUids,_that.selectedEquipment);case _:
+return $default(_that.selectedScopeUid,_that.selectedScope,_that.selectedWeather,_that.selectedStateUid,_that.selectedState,_that.selectedDistrictUid,_that.selectedDistrict,_that.selectedRoadUid,_that.selectedRoad,_that.section,_that.sectionError,_that.selectedQuantityTypeUids,_that.selectedQuantityTypes,_that.selectedEquipmentUids,_that.selectedEquipment,_that.conditionSnapshots,_that.workerImages);case _:
   return null;
 
 }
@@ -857,7 +859,7 @@ return $default(_that.selectedScopeUid,_that.selectedScope,_that.selectedWeather
 
 
 class _ReportSelections implements ReportSelections {
-  const _ReportSelections({this.selectedScopeUid, this.selectedScope, this.selectedWeather, this.selectedStateUid, this.selectedState, this.selectedDistrictUid, this.selectedDistrict, this.selectedRoadUid, this.selectedRoad, this.section, this.sectionError, final  List<String> selectedQuantityTypeUids = const [], final  List<WorkQuantityType> selectedQuantityTypes = const [], final  List<String> selectedEquipmentUids = const [], final  List<WorkEquipment> selectedEquipment = const []}): _selectedQuantityTypeUids = selectedQuantityTypeUids,_selectedQuantityTypes = selectedQuantityTypes,_selectedEquipmentUids = selectedEquipmentUids,_selectedEquipment = selectedEquipment;
+  const _ReportSelections({this.selectedScopeUid, this.selectedScope, this.selectedWeather, this.selectedStateUid, this.selectedState, this.selectedDistrictUid, this.selectedDistrict, this.selectedRoadUid, this.selectedRoad, this.section, this.sectionError, final  List<String> selectedQuantityTypeUids = const [], final  List<WorkQuantityType> selectedQuantityTypes = const [], final  List<String> selectedEquipmentUids = const [], final  List<WorkEquipment> selectedEquipment = const [], final  Map<String, List<Map<String, dynamic>>> conditionSnapshots = const {}, final  List<Map<String, dynamic>> workerImages = const []}): _selectedQuantityTypeUids = selectedQuantityTypeUids,_selectedQuantityTypes = selectedQuantityTypes,_selectedEquipmentUids = selectedEquipmentUids,_selectedEquipment = selectedEquipment,_conditionSnapshots = conditionSnapshots,_workerImages = workerImages;
   
 
 @override final  String? selectedScopeUid;
@@ -899,6 +901,20 @@ class _ReportSelections implements ReportSelections {
   return EqualUnmodifiableListView(_selectedEquipment);
 }
 
+ final  Map<String, List<Map<String, dynamic>>> _conditionSnapshots;
+@override@JsonKey() Map<String, List<Map<String, dynamic>>> get conditionSnapshots {
+  if (_conditionSnapshots is EqualUnmodifiableMapView) return _conditionSnapshots;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_conditionSnapshots);
+}
+
+ final  List<Map<String, dynamic>> _workerImages;
+@override@JsonKey() List<Map<String, dynamic>> get workerImages {
+  if (_workerImages is EqualUnmodifiableListView) return _workerImages;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_workerImages);
+}
+
 
 /// Create a copy of ReportSelections
 /// with the given fields replaced by the non-null parameter values.
@@ -910,16 +926,16 @@ _$ReportSelectionsCopyWith<_ReportSelections> get copyWith => __$ReportSelection
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportSelections&&(identical(other.selectedScopeUid, selectedScopeUid) || other.selectedScopeUid == selectedScopeUid)&&(identical(other.selectedScope, selectedScope) || other.selectedScope == selectedScope)&&(identical(other.selectedWeather, selectedWeather) || other.selectedWeather == selectedWeather)&&(identical(other.selectedStateUid, selectedStateUid) || other.selectedStateUid == selectedStateUid)&&(identical(other.selectedState, selectedState) || other.selectedState == selectedState)&&(identical(other.selectedDistrictUid, selectedDistrictUid) || other.selectedDistrictUid == selectedDistrictUid)&&(identical(other.selectedDistrict, selectedDistrict) || other.selectedDistrict == selectedDistrict)&&(identical(other.selectedRoadUid, selectedRoadUid) || other.selectedRoadUid == selectedRoadUid)&&(identical(other.selectedRoad, selectedRoad) || other.selectedRoad == selectedRoad)&&(identical(other.section, section) || other.section == section)&&(identical(other.sectionError, sectionError) || other.sectionError == sectionError)&&const DeepCollectionEquality().equals(other._selectedQuantityTypeUids, _selectedQuantityTypeUids)&&const DeepCollectionEquality().equals(other._selectedQuantityTypes, _selectedQuantityTypes)&&const DeepCollectionEquality().equals(other._selectedEquipmentUids, _selectedEquipmentUids)&&const DeepCollectionEquality().equals(other._selectedEquipment, _selectedEquipment));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportSelections&&(identical(other.selectedScopeUid, selectedScopeUid) || other.selectedScopeUid == selectedScopeUid)&&(identical(other.selectedScope, selectedScope) || other.selectedScope == selectedScope)&&(identical(other.selectedWeather, selectedWeather) || other.selectedWeather == selectedWeather)&&(identical(other.selectedStateUid, selectedStateUid) || other.selectedStateUid == selectedStateUid)&&(identical(other.selectedState, selectedState) || other.selectedState == selectedState)&&(identical(other.selectedDistrictUid, selectedDistrictUid) || other.selectedDistrictUid == selectedDistrictUid)&&(identical(other.selectedDistrict, selectedDistrict) || other.selectedDistrict == selectedDistrict)&&(identical(other.selectedRoadUid, selectedRoadUid) || other.selectedRoadUid == selectedRoadUid)&&(identical(other.selectedRoad, selectedRoad) || other.selectedRoad == selectedRoad)&&(identical(other.section, section) || other.section == section)&&(identical(other.sectionError, sectionError) || other.sectionError == sectionError)&&const DeepCollectionEquality().equals(other._selectedQuantityTypeUids, _selectedQuantityTypeUids)&&const DeepCollectionEquality().equals(other._selectedQuantityTypes, _selectedQuantityTypes)&&const DeepCollectionEquality().equals(other._selectedEquipmentUids, _selectedEquipmentUids)&&const DeepCollectionEquality().equals(other._selectedEquipment, _selectedEquipment)&&const DeepCollectionEquality().equals(other._conditionSnapshots, _conditionSnapshots)&&const DeepCollectionEquality().equals(other._workerImages, _workerImages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedScopeUid,selectedScope,selectedWeather,selectedStateUid,selectedState,selectedDistrictUid,selectedDistrict,selectedRoadUid,selectedRoad,section,sectionError,const DeepCollectionEquality().hash(_selectedQuantityTypeUids),const DeepCollectionEquality().hash(_selectedQuantityTypes),const DeepCollectionEquality().hash(_selectedEquipmentUids),const DeepCollectionEquality().hash(_selectedEquipment));
+int get hashCode => Object.hash(runtimeType,selectedScopeUid,selectedScope,selectedWeather,selectedStateUid,selectedState,selectedDistrictUid,selectedDistrict,selectedRoadUid,selectedRoad,section,sectionError,const DeepCollectionEquality().hash(_selectedQuantityTypeUids),const DeepCollectionEquality().hash(_selectedQuantityTypes),const DeepCollectionEquality().hash(_selectedEquipmentUids),const DeepCollectionEquality().hash(_selectedEquipment),const DeepCollectionEquality().hash(_conditionSnapshots),const DeepCollectionEquality().hash(_workerImages));
 
 @override
 String toString() {
-  return 'ReportSelections(selectedScopeUid: $selectedScopeUid, selectedScope: $selectedScope, selectedWeather: $selectedWeather, selectedStateUid: $selectedStateUid, selectedState: $selectedState, selectedDistrictUid: $selectedDistrictUid, selectedDistrict: $selectedDistrict, selectedRoadUid: $selectedRoadUid, selectedRoad: $selectedRoad, section: $section, sectionError: $sectionError, selectedQuantityTypeUids: $selectedQuantityTypeUids, selectedQuantityTypes: $selectedQuantityTypes, selectedEquipmentUids: $selectedEquipmentUids, selectedEquipment: $selectedEquipment)';
+  return 'ReportSelections(selectedScopeUid: $selectedScopeUid, selectedScope: $selectedScope, selectedWeather: $selectedWeather, selectedStateUid: $selectedStateUid, selectedState: $selectedState, selectedDistrictUid: $selectedDistrictUid, selectedDistrict: $selectedDistrict, selectedRoadUid: $selectedRoadUid, selectedRoad: $selectedRoad, section: $section, sectionError: $sectionError, selectedQuantityTypeUids: $selectedQuantityTypeUids, selectedQuantityTypes: $selectedQuantityTypes, selectedEquipmentUids: $selectedEquipmentUids, selectedEquipment: $selectedEquipment, conditionSnapshots: $conditionSnapshots, workerImages: $workerImages)';
 }
 
 
@@ -930,7 +946,7 @@ abstract mixin class _$ReportSelectionsCopyWith<$Res> implements $ReportSelectio
   factory _$ReportSelectionsCopyWith(_ReportSelections value, $Res Function(_ReportSelections) _then) = __$ReportSelectionsCopyWithImpl;
 @override @useResult
 $Res call({
- String? selectedScopeUid, ScopeOfWork? selectedScope, String? selectedWeather, String? selectedStateUid, Province? selectedState, String? selectedDistrictUid, District? selectedDistrict, String? selectedRoadUid, Road? selectedRoad, String? section, String? sectionError, List<String> selectedQuantityTypeUids, List<WorkQuantityType> selectedQuantityTypes, List<String> selectedEquipmentUids, List<WorkEquipment> selectedEquipment
+ String? selectedScopeUid, ScopeOfWork? selectedScope, String? selectedWeather, String? selectedStateUid, Province? selectedState, String? selectedDistrictUid, District? selectedDistrict, String? selectedRoadUid, Road? selectedRoad, String? section, String? sectionError, List<String> selectedQuantityTypeUids, List<WorkQuantityType> selectedQuantityTypes, List<String> selectedEquipmentUids, List<WorkEquipment> selectedEquipment, Map<String, List<Map<String, dynamic>>> conditionSnapshots, List<Map<String, dynamic>> workerImages
 });
 
 
@@ -947,7 +963,7 @@ class __$ReportSelectionsCopyWithImpl<$Res>
 
 /// Create a copy of ReportSelections
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? selectedScopeUid = freezed,Object? selectedScope = freezed,Object? selectedWeather = freezed,Object? selectedStateUid = freezed,Object? selectedState = freezed,Object? selectedDistrictUid = freezed,Object? selectedDistrict = freezed,Object? selectedRoadUid = freezed,Object? selectedRoad = freezed,Object? section = freezed,Object? sectionError = freezed,Object? selectedQuantityTypeUids = null,Object? selectedQuantityTypes = null,Object? selectedEquipmentUids = null,Object? selectedEquipment = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? selectedScopeUid = freezed,Object? selectedScope = freezed,Object? selectedWeather = freezed,Object? selectedStateUid = freezed,Object? selectedState = freezed,Object? selectedDistrictUid = freezed,Object? selectedDistrict = freezed,Object? selectedRoadUid = freezed,Object? selectedRoad = freezed,Object? section = freezed,Object? sectionError = freezed,Object? selectedQuantityTypeUids = null,Object? selectedQuantityTypes = null,Object? selectedEquipmentUids = null,Object? selectedEquipment = null,Object? conditionSnapshots = null,Object? workerImages = null,}) {
   return _then(_ReportSelections(
 selectedScopeUid: freezed == selectedScopeUid ? _self.selectedScopeUid : selectedScopeUid // ignore: cast_nullable_to_non_nullable
 as String?,selectedScope: freezed == selectedScope ? _self.selectedScope : selectedScope // ignore: cast_nullable_to_non_nullable
@@ -964,7 +980,9 @@ as String?,selectedQuantityTypeUids: null == selectedQuantityTypeUids ? _self._s
 as List<String>,selectedQuantityTypes: null == selectedQuantityTypes ? _self._selectedQuantityTypes : selectedQuantityTypes // ignore: cast_nullable_to_non_nullable
 as List<WorkQuantityType>,selectedEquipmentUids: null == selectedEquipmentUids ? _self._selectedEquipmentUids : selectedEquipmentUids // ignore: cast_nullable_to_non_nullable
 as List<String>,selectedEquipment: null == selectedEquipment ? _self._selectedEquipment : selectedEquipment // ignore: cast_nullable_to_non_nullable
-as List<WorkEquipment>,
+as List<WorkEquipment>,conditionSnapshots: null == conditionSnapshots ? _self._conditionSnapshots : conditionSnapshots // ignore: cast_nullable_to_non_nullable
+as Map<String, List<Map<String, dynamic>>>,workerImages: null == workerImages ? _self._workerImages : workerImages // ignore: cast_nullable_to_non_nullable
+as List<Map<String, dynamic>>,
   ));
 }
 

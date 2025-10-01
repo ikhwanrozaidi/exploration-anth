@@ -51,10 +51,11 @@ abstract class ReportSelections with _$ReportSelections {
     @Default([]) List<WorkQuantityType> selectedQuantityTypes,
     @Default([]) List<String> selectedEquipmentUids,
     @Default([]) List<WorkEquipment> selectedEquipment,
+    @Default({}) Map<String, List<Map<String, dynamic>>> conditionSnapshots,
+    @Default([]) List<Map<String, dynamic>> workerImages,
   }) = _ReportSelections;
 }
 
-// I don't know
 @freezed
 abstract class ReportFormData with _$ReportFormData {
   const factory ReportFormData({

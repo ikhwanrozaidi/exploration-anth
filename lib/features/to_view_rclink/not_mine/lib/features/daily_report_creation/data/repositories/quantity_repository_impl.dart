@@ -37,14 +37,12 @@ class QuantityRepositoryImpl
     required String workScopeUID,
     Duration? cacheTimeout = const Duration(hours: 1),
   }) async {
-    // Validate company selection
     final currentState = _companyBloc.state;
     if (currentState is! CompanyLoaded ||
         currentState.selectedCompany == null) {
       return const Left(ServerFailure('No company selected'));
     }
 
-    // Verify the provided companyUID matches selected company
     if (currentState.selectedCompany!.uid != companyUID) {
       return const Left(ServerFailure('Company mismatch'));
     }

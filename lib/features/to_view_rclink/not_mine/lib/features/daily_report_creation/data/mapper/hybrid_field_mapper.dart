@@ -7,7 +7,7 @@ import '../../presentation/constant/scope_configurations.dart';
 import '../models/scope_of_work/quantity_field_model.dart';
 
 class HybridFieldMapper {
-  // Keep your existing scope configurations for fallback lookup
+  // fallback lookup
   static final Map<String, ScopeConfig> _existingConfigs =
       ScopeConfigurations.all;
 
@@ -15,18 +15,15 @@ class HybridFieldMapper {
     QuantityField quantityField,
     String scopeId,
   ) {
-    // Try to find existing field config for fallback
     final existingField = _findExistingField(quantityField.code, scopeId);
 
     return FieldConfig(
-      // Direct API mappings
       id: quantityField.uid,
       title: quantityField.name,
       type: _mapFieldType(quantityField.fieldType),
       units: quantityField.unit,
       isRequired: quantityField.isRequired,
 
-      // Hybrid mappings (API first, then fallback, then default)
       description:
           quantityField.helpText ??
           existingField?.description ??
@@ -41,11 +38,9 @@ class HybridFieldMapper {
           existingField?.icon ??
           _getIconForField(quantityField.code, quantityField.fieldType),
 
-      // Process dropdown options from your existing DropdownOptionModel
       dropdownOptions:
           _getDropdownOptions(quantityField) ?? existingField?.dropdownOptions,
 
-      // Numeric validation from API or existing config
       numericMin:
           _extractNumericMin(quantityField.validationRules) ??
           existingField?.numericMin,
@@ -53,7 +48,6 @@ class HybridFieldMapper {
           _extractNumericMax(quantityField.validationRules) ??
           existingField?.numericMax,
 
-      // Special features only from existing config (API doesn't have these)
       isTips: existingField?.isTips ?? false,
       pageNavigate: existingField?.pageNavigate,
       tipsTitle: existingField?.tipsTitle,
@@ -64,7 +58,6 @@ class HybridFieldMapper {
     final scopeConfig = _existingConfigs[scopeId];
     if (scopeConfig == null) return null;
 
-    // Search in all quantity options for this field code/id
     for (final quantityOption in scopeConfig.quantityOptions) {
       for (final field in quantityOption.fields) {
         if (field.id == fieldCode) {

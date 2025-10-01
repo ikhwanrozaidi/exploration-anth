@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../shared/utils/responsive_helper.dart';
+import '../../../../../../shared/utils/theme.dart';
 
 class CustomFieldTile extends StatelessWidget {
   final IconData icon;
@@ -64,10 +65,7 @@ class CustomFieldTile extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     child: Center(
-                      child: Icon(
-                        icon,
-                        color: iconColor ?? Theme.of(context).primaryColor,
-                      ),
+                      child: Icon(icon, color: iconColor ?? primaryColor),
                     ),
                   ),
                   const SizedBox(width: 20),

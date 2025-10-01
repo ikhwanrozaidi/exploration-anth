@@ -51,11 +51,10 @@ class _EquipmentPageState extends State<EquipmentPage> {
     showFlexibleBottomsheet(
       context: context,
       title: 'Add Equipment',
-      attributes: ['Hello World'], // Placeholder as requested
+      attributes: ['Hello World'],
       isRadio: false,
       onTap: (selectedValue) {
         Navigator.pop(context);
-        // TODO: Handle add equipment logic later
         print('Add equipment: $selectedValue');
       },
     );
@@ -121,7 +120,6 @@ class _EquipmentPageState extends State<EquipmentPage> {
 
             SizedBox(height: 20),
 
-            // Equipment Selection Buttons
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -131,7 +129,6 @@ class _EquipmentPageState extends State<EquipmentPage> {
                       spacing: 8.0,
                       runSpacing: 8.0,
                       children: [
-                        // Equipment buttons from API
                         ...widget.equipmentLists.map((equipment) {
                           final isSelected = selectedEquipmentUids.contains(
                             equipment.uid,
@@ -143,7 +140,6 @@ class _EquipmentPageState extends State<EquipmentPage> {
                           );
                         }),
 
-                        // Add button
                         _buildAddButton(),
                       ],
                     ),
@@ -152,7 +148,6 @@ class _EquipmentPageState extends State<EquipmentPage> {
               ),
             ),
 
-            // Bottom Add Button
             Container(
               width: double.infinity,
               margin: EdgeInsets.only(top: 20),

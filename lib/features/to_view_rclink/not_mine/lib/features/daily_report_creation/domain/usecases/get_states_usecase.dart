@@ -34,10 +34,6 @@ class GetStatesUseCase implements UseCase<List<Province>, GetStatesParams> {
 
   @override
   Future<Either<Failure, List<Province>>> call(GetStatesParams params) async {
-    print(
-      '🔍 USECASE: GetStatesUseCase called with forceRefresh: ${params.forceRefresh}',
-    );
-
     final result = await _repository.getStates(
       forceRefresh: params.forceRefresh,
       page: params.page,

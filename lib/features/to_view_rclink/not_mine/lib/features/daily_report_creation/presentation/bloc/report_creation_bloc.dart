@@ -53,6 +53,8 @@ class ReportCreationBloc
     on<SelectDistrict>(_onSelectDistrict);
     on<SelectRoad>(_onSelectRoad);
     on<UpdateSection>(_onUpdateSection);
+    on<UpdateConditionSnapshots>(_onUpdateConditionSnapshots);
+    on<UpdateWorkerImages>(_onUpdateWorkerImages);
 
     // Quantity and equipment selection events
     on<SelectQuantityTypes>(_onSelectQuantityTypes);
@@ -72,8 +74,8 @@ class ReportCreationBloc
     on<SaveAsDraft>(_onSaveAsDraft);
 
     // Utility events
-    on<ClearCache>(_onClearCache);
     on<ResetForm>(_onResetForm);
+    on<ClearCache>(_onClearCache);
     on<StartOver>(_onStartOver);
     on<ClearAllCache>(_onClearAllCache);
   }
@@ -321,7 +323,6 @@ class ReportCreationBloc
         ReportCreationState.page2Ready(
           apiData: currentApiData.copyWith(
             quantities: quantities,
-            // Preserve existing equipment if they exist
             equipment: currentApiData.equipment,
           ),
           selections: currentSelections,
@@ -377,7 +378,6 @@ class ReportCreationBloc
     final currentSelections = _getCurrentSelections();
     final currentFormData = _getCurrentFormData();
 
-    // Load both concurrently
     final results = await Future.wait([
       _getQuantitiesUseCase(
         GetQuantityParams(
@@ -398,7 +398,6 @@ class ReportCreationBloc
     final quantitiesResult = results[0];
     final equipmentsResult = results[1];
 
-    // Check if both succeeded
     final quantitiesFailure = quantitiesResult.fold((l) => l, (r) => null);
     final equipmentsFailure = equipmentsResult.fold((l) => l, (r) => null);
 
@@ -415,7 +414,6 @@ class ReportCreationBloc
       return;
     }
 
-    // Both succeeded, extract data with proper type casting
     final quantities = quantitiesResult.fold(
       (l) => <WorkQuantityType>[],
       (r) => r as List<WorkQuantityType>,
@@ -599,13 +597,49 @@ class ReportCreationBloc
 
     final updatedSelections = currentSelections.copyWith(
       section: event.section,
-      sectionError: sectionError, // This will be null if no error
+      sectionError: sectionError,
     );
 
     emit(
       ReportCreationState.page1Ready(
         apiData: currentApiData,
         selections: updatedSelections,
+      ),
+    );
+  }
+
+  Future<void> _onUpdateConditionSnapshots(
+    UpdateConditionSnapshots event,
+    Emitter<ReportCreationState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    emit(
+      ReportCreationState.page2Ready(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(
+          conditionSnapshots: event.snapshots,
+        ),
+        formData: currentFormData,
+      ),
+    );
+  }
+
+  Future<void> _onUpdateWorkerImages(
+    UpdateWorkerImages event,
+    Emitter<ReportCreationState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    emit(
+      ReportCreationState.page2Ready(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(workerImages: event.images),
+        formData: currentFormData,
       ),
     );
   }
@@ -702,7 +736,7 @@ class ReportCreationBloc
     add(SelectEquipment(currentUids));
   }
 
-  // ------------------------------------------------------- I dont know?
+  // -------------------------------------------------------
 
   Future<void> _onUpdateFieldValue(
     UpdateFieldValue event,
@@ -789,7 +823,6 @@ class ReportCreationBloc
     final fieldErrors = <String, String?>{};
     final validationErrors = <String>[];
 
-    // Validate basic selections
     if (currentSelections.selectedScopeUid == null) {
       validationErrors.add('Please select a scope of work');
     }
@@ -805,7 +838,6 @@ class ReportCreationBloc
       fieldErrors['section'] = 'Section is required';
     }
 
-    // Validate quantity type fields
     for (final quantityType in currentSelections.selectedQuantityTypes) {
       for (final field in quantityType.quantityFields) {
         final fieldKey = '${quantityType.uid}_${field.code}';
@@ -870,7 +902,6 @@ class ReportCreationBloc
       formData: _getCurrentFormData(),
     );
 
-    // First validate
     if (!reportData.formData.isFormValid) {
       emit(
         ReportCreationState.submissionError(
@@ -884,8 +915,7 @@ class ReportCreationBloc
     emit(ReportCreationState.submitting(reportData: reportData));
 
     try {
-      // TODO: Implement actual submission logic
-      await Future.delayed(const Duration(seconds: 2)); // Simulate API call
+      await Future.delayed(const Duration(seconds: 2));
 
       emit(ReportCreationState.submitted(reportData: reportData));
     } catch (e) {
@@ -909,8 +939,7 @@ class ReportCreationBloc
     );
 
     try {
-      // TODO: Implement draft saving logic
-      await Future.delayed(const Duration(seconds: 1)); // Simulate saving
+      await Future.delayed(const Duration(seconds: 1));
 
       emit(ReportCreationState.draftSaved(reportData: reportData));
     } catch (e) {
@@ -925,6 +954,39 @@ class ReportCreationBloc
 
   // ------------------------------------------------------- Basics
 
+  Future<void> _onResetForm(
+    ResetForm event,
+    Emitter<ReportCreationState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+
+    final clearedFormData = const ReportFormData(
+      fieldValues: {},
+      imageFields: {},
+      fieldErrors: {},
+      validationErrors: [],
+      isFormValid: false,
+    );
+
+    final clearedSelections = currentSelections.copyWith(
+      selectedQuantityTypeUids: [],
+      selectedQuantityTypes: [],
+      selectedEquipmentUids: [],
+      selectedEquipment: [],
+    );
+
+    emit(
+      ReportCreationState.page2Ready(
+        apiData: currentApiData,
+        selections: clearedSelections,
+        formData: clearedFormData,
+      ),
+    );
+
+    print('✅ BLoC: Form data reset successfully');
+  }
+
   Future<void> _onClearCache(
     ClearCache event,
     Emitter<ReportCreationState> emit,
@@ -933,20 +995,8 @@ class ReportCreationBloc
       await _clearCacheUseCase();
       emit(const ReportCreationState.initial());
     } catch (e) {
-      // Handle error if needed
+      print('Error clearing caches: $e');
     }
-  }
-
-  Future<void> _onResetForm(
-    ResetForm event,
-    Emitter<ReportCreationState> emit,
-  ) async {
-    emit(
-      ReportCreationState.page1Ready(
-        apiData: _getCurrentApiData(),
-        selections: const ReportSelections(),
-      ),
-    );
   }
 
   Future<void> _onStartOver(

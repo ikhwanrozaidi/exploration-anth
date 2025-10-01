@@ -4,11 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rclink_app/features/company/presentation/bloc/company_bloc.dart';
 import 'package:rclink_app/features/daily_report_creation/presentation/bloc/report_creation_state.dart';
 import 'package:rclink_app/features/daily_report_creation/presentation/pages/widgets/equipment_page.dart';
+import 'package:rclink_app/shared/widgets/info_bottomsheet.dart';
 
 import '../../../../../core/di/injection.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/divider_config.dart';
+import '../../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../../../shared/widgets/gallery/gallery_widget.dart';
 import '../../../../../shared/widgets/gallery/models/gallery_image.dart';
 import '../../../../../shared/widgets/gallery/models/gallery_result.dart';
@@ -17,6 +19,7 @@ import '../../../domain/entities/scope_of_work/work_equipment.dart';
 import '../../../domain/entities/scope_of_work/work_quantity_type.dart';
 import '../../bloc/report_creation_bloc.dart';
 import '../../bloc/report_creation_event.dart';
+import 'notes_bottomsheet.dart';
 import 'quantity_selection_page.dart';
 import 'shared/custom_fields_tile_widget.dart';
 
@@ -43,8 +46,9 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
     'current': [],
     'after': [],
   };
-
-  // final List<DraftJsonList> quantitiesDraft;
+  GalleryImage? _workerImage;
+  String? _notes;
+  List<GalleryImage> _additionalImages = [];
 
   @override
   void initState() {
@@ -83,12 +87,8 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
     return BlocListener<ReportCreationBloc, ReportCreationState>(
       bloc: _reportCreationBloc,
       listener: (context, state) {
-        // Handle automatic navigation when quantities are loaded in initState
         state.maybeWhen(
           page2Ready: (apiData, selections, formData) {
-            print(
-              'DEBUG: BlocListener - page2Ready with ${apiData.quantities?.length ?? 0} quantities',
-            );
             if (_isLoadingQuantities &&
                 apiData.quantities != null &&
                 apiData.quantities!.isNotEmpty) {
@@ -117,7 +117,6 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
       child: BlocBuilder<ReportCreationBloc, ReportCreationState>(
         bloc: _reportCreationBloc,
         builder: (context, reportState) {
-          // Get data from current state - check both page1 and page2 states
           final scopeString = reportState.maybeWhen(
             page1Ready: (apiData, selections) => selections.selectedScope?.name,
             page2Ready: (apiData, selections, formData) =>
@@ -150,14 +149,6 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
             orElse: () => null,
           );
 
-          // final availableQuantities = reportState.maybeWhen(
-          //   page2Ready: (apiData, selections, formData) =>
-          //       apiData.quantities ?? <WorkQuantityType>[],
-          //   page2Error: (apiData, selections, formData, errorMessage) =>
-          //       apiData.quantities ?? <WorkQuantityType>[],
-          //   orElse: () => <WorkQuantityType>[],
-          // );
-
           final availableEquipments = reportState.maybeWhen(
             page2Ready: (apiData, selections, formData) =>
                 apiData.equipment ?? <WorkEquipment>[],
@@ -180,8 +171,8 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                 bottom: false,
                 child: Column(
                   children: [
-                    // Header
                     SizedBox(height: ResponsiveHelper.getHeight(context, 0.03)),
+
                     Padding(
                       padding: ResponsiveHelper.padding(
                         context,
@@ -206,7 +197,6 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                   size: 25,
                                 ),
                               ),
-                              // ... rest of your header code
                               Row(
                                 children: [
                                   TextButton(
@@ -233,7 +223,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                   SizedBox(width: 6),
                                   TextButton(
                                     onPressed: () {
-                                      print('Remove button pressed');
+                                      _handleRemoveData();
                                     },
                                     style: TextButton.styleFrom(
                                       backgroundColor: Colors.white,
@@ -326,7 +316,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                       ),
                                       child: Center(
                                         child: Icon(
-                                          Icons.abc,
+                                          Icons.restaurant_menu,
                                           color: primaryColor,
                                         ),
                                       ),
@@ -382,7 +372,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                       ),
                                       child: Center(
                                         child: Icon(
-                                          Icons.abc,
+                                          Icons.sunny,
                                           color: primaryColor,
                                         ),
                                       ),
@@ -438,7 +428,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                       ),
                                       child: Center(
                                         child: Icon(
-                                          Icons.abc,
+                                          Icons.location_on,
                                           color: primaryColor,
                                         ),
                                       ),
@@ -469,21 +459,59 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                               dividerConfig(),
                             ],
 
+                            // Worker
                             CustomFieldTile(
-                              icon: Icons.abc,
+                              icon: Icons.person,
                               title: 'Worker',
-                              titleDetails: 'Take picture of worker',
+                              titleDetails: _workerImage == null
+                                  ? 'Take picture of worker'
+                                  : '1 image added',
+                              isFilled: _workerImage != null,
                               controller: worker,
-                              onTap: () => print('Worker selection tapped'),
+                              onTap: () async {
+                                final result =
+                                    await Navigator.push<GalleryResult>(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => GalleryWidget(
+                                          title: 'Worker',
+                                          workerPicture: true,
+                                          maxImages: 1,
+                                          pictures: _workerImage != null
+                                              ? [_workerImage!.path]
+                                              : null,
+                                          onImagesChanged: (result) {},
+                                          onDialogConfirm: () {},
+                                        ),
+                                      ),
+                                    );
+
+                                if (result != null) {
+                                  if (result.images.isNotEmpty) {
+                                    setState(() {
+                                      _workerImage = result.images.first;
+                                    });
+                                    _saveWorkerImages();
+                                  } else {
+                                    setState(() {
+                                      _workerImage = null;
+                                    });
+                                    _saveWorkerImages();
+                                  }
+                                } else {
+                                  print('⚠️ Result is null - user cancelled');
+                                }
+                              },
                               isRequired: true,
                             ),
 
+                            // Equipment
                             CustomFieldTile(
-                              icon: Icons.abc,
+                              icon: Icons.business_center,
                               title: 'Equipment',
                               titleDetails: addedEquipments.isEmpty
                                   ? 'Choose tools'
-                                  : '${addedEquipments.length} added',
+                                  : '${addedEquipments.length} equipment added',
                               isFilled: addedEquipments.isEmpty ? false : true,
                               controller: equipment,
                               onTap: () async {
@@ -503,7 +531,6 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                         List<Map<String, dynamic>>.from(result);
                                   });
 
-                                  // Update BLoC with selected equipment UIDs
                                   final equipmentUids = addedEquipments
                                       .map(
                                         (equipment) =>
@@ -519,10 +546,14 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                               isRequired: true,
                             ),
 
+                            // Condition Snapshot
                             CustomFieldTile(
-                              icon: Icons.abc,
+                              icon: Icons.camera_alt,
                               title: 'Condition Snapshot',
-                              titleDetails: "Please take a 'before' photo",
+                              titleDetails: _getConditionSnapshotSummary(),
+                              isFilled: _conditionSnapshotImages.values.any(
+                                (list) => list.isNotEmpty,
+                              ),
                               controller: conditionSnapshot,
                               onTap: () async {
                                 final result = await Navigator.push<GalleryResult>(
@@ -535,23 +566,26 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                       maxImages: 10,
                                       minimumImage: 4,
                                       tabLock: true,
-                                      pictures: _getAllConditionSnapshotPaths(),
+                                      initialTabImages:
+                                          _conditionSnapshotImages,
                                       onImagesChanged: (result) {
-                                        // This callback updates in real-time as user adds/deletes images
+                                        print(
+                                          '🔄 onImagesChanged callback: ${result.tabImages?.keys}',
+                                        );
                                       },
                                     ),
                                   ),
                                 );
 
-                                // When user exits the gallery, save the final result
                                 if (result != null &&
                                     result.tabImages != null) {
                                   setState(() {
                                     _conditionSnapshotImages =
                                         result.tabImages!;
                                   });
-                                  // TODO: Save to your report creation data
                                   _saveConditionSnapshots();
+                                } else {
+                                  print('⚠️ No result or tabImages is null');
                                 }
                               },
                               isRequired: true,
@@ -559,7 +593,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
 
                             // Quantity
                             CustomFieldTile(
-                              icon: Icons.abc,
+                              icon: Icons.restaurant_menu,
                               title: 'Quantity',
                               isFilled: addedQuantities.isEmpty ? false : true,
                               titleDetails: _isLoadingQuantities
@@ -575,10 +609,37 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
 
                             // Notes
                             CustomFieldTile(
-                              icon: Icons.abc,
+                              icon: Icons.note_add_sharp,
                               title: 'Notes',
-                              titleDetails: 'Notes or photos if additional',
-                              onTap: () => print('Notes selection tapped'),
+                              titleDetails:
+                                  _getNotesDisplayText() ??
+                                  'Notes or photos if additional',
+                              isFilled:
+                                  _notes != null ||
+                                  _additionalImages.isNotEmpty,
+                              onTap: () {
+                                showFlexibleBottomsheet(
+                                  context: context,
+                                  title: 'Other Information',
+                                  attributes: ['Notes', 'Additional Images'],
+                                  isRadio: false,
+                                  isNavigate: true,
+                                  onTap: (selectedOption) async {
+                                    Navigator.of(context).pop();
+
+                                    await Future.delayed(
+                                      const Duration(milliseconds: 300),
+                                    );
+
+                                    if (selectedOption == 'Notes') {
+                                      _handleNotesSelection();
+                                    } else if (selectedOption ==
+                                        'Additional Images') {
+                                      _handleAdditionalImagesSelection();
+                                    }
+                                  },
+                                );
+                              },
                               isRequired: true,
                             ),
 
@@ -626,35 +687,21 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
   }
 
   void _handleQuantityTap() async {
-    print('🔍 _handleQuantityTap called');
-
     final reportState = _reportCreationBloc.state;
-    print('🔍 Current state: ${reportState.runtimeType}');
 
     // Get available quantities from current state
     final availableQuantities = reportState.maybeWhen(
       page2Ready: (apiData, selections, formData) {
-        print(
-          '🔍 page2Ready - quantities count: ${apiData.quantities?.length ?? 0}',
-        );
         return apiData.quantities ?? <WorkQuantityType>[];
       },
       page2Error: (apiData, selections, formData, errorMessage) {
-        print(
-          '🔍 page2Error - quantities count: ${apiData.quantities?.length ?? 0}',
-        );
         return apiData.quantities ?? <WorkQuantityType>[];
       },
       orElse: () {
-        print('🔍 Other state - no quantities');
         return <WorkQuantityType>[];
       },
     );
 
-    print('🔍 availableQuantities.length: ${availableQuantities.length}');
-
-    // Since quantities should already be loaded in initState,
-    // we should always have them available
     if (availableQuantities.isNotEmpty) {
       final result = await Navigator.push(
         context,
@@ -672,8 +719,6 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
         });
       }
     } else {
-      // This should rarely happen since we load in initState
-      // Show a loading message and reload
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Loading quantities, please try again...'),
@@ -681,7 +726,6 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
         ),
       );
 
-      // Trigger reload if somehow quantities are missing
       final companyState = _companyBloc.state;
       final selectedWorkScopeUID = reportState.maybeWhen(
         page1Ready: (apiData, selections) => selections.selectedScopeUid,
@@ -708,63 +752,176 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
     }
   }
 
-  // Get all image paths for pre-loading gallery
-  List<String> _getAllConditionSnapshotPaths() {
-    List<String> allPaths = [];
-    _conditionSnapshotImages.forEach((key, images) {
-      allPaths.addAll(images.map((img) => img.path));
-    });
-    return allPaths;
-  }
-
-  String? _getConditionSnapshotSummary() {
+  String _getConditionSnapshotSummary() {
     int totalImages = 0;
     _conditionSnapshotImages.forEach((key, images) {
       totalImages += images.length;
     });
 
-    if (totalImages == 0) return null;
+    if (totalImages == 0) {
+      return "Please take a 'before' photo";
+    }
 
     final before = _conditionSnapshotImages['before']?.length ?? 0;
     final current = _conditionSnapshotImages['current']?.length ?? 0;
     final after = _conditionSnapshotImages['after']?.length ?? 0;
 
-    return 'B:$before | C:$current | A:$after';
+    List<String> summaryParts = [];
+
+    if (before > 0) {
+      summaryParts.add('$before image${before > 1 ? 's' : ''} Before');
+    }
+
+    if (current > 0) {
+      summaryParts.add('$current image${current > 1 ? 's' : ''} Current');
+    }
+
+    if (after > 0) {
+      summaryParts.add('$after image${after > 1 ? 's' : ''} After');
+    }
+
+    // return summaryParts.join(', ');
+    return '$totalImages images added';
   }
 
-  // Save condition snapshots to your data model
   void _saveConditionSnapshots() {
-    // Example: Save to your report creation data
-    // You'll need to adapt this based on your actual data structure
+    final snapshotsData = <String, List<Map<String, dynamic>>>{};
 
-    final beforePaths =
-        _conditionSnapshotImages['before']?.map((e) => e.path).toList() ?? [];
-    final currentPaths =
-        _conditionSnapshotImages['current']?.map((e) => e.path).toList() ?? [];
-    final afterPaths =
-        _conditionSnapshotImages['after']?.map((e) => e.path).toList() ?? [];
+    _conditionSnapshotImages.forEach((tab, images) {
+      snapshotsData[tab] = images.map((img) => img.toJson()).toList();
+    });
 
-    // TODO: Update your report_creation_data or wherever you store draft data
+    _reportCreationBloc.add(UpdateConditionSnapshots(snapshotsData));
+  }
+
+  void _saveWorkerImages() {
+    // Convert GalleryImage to Map format for storage (single image or null)
+    final imageData = _workerImage?.toJson();
+
+    // Dispatch event to BLoC to save in ReportSelections
+    _reportCreationBloc.add(
+      UpdateWorkerImages(imageData != null ? [imageData] : []),
+    );
+  }
+
+  Future<void> _handleNotesSelection() async {
+    final result = await showNotesBottomSheet(
+      context: context,
+      initialNotes: _notes,
+    );
+
+    if (result != null) {
+      setState(() {
+        _notes = result;
+      });
+      _saveNotes();
+    }
+  }
+
+  Future<void> _handleAdditionalImagesSelection() async {
+    final result = await Navigator.push<GalleryResult>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => GalleryWidget(
+          title: 'Additional Images',
+          workerPicture: false,
+          inputProgress: false,
+          pinPointFirst: true,
+          maxImages: 10,
+          pictures: _additionalImages.map((e) => e.path).toList(),
+          onImagesChanged: (result) {},
+        ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        _additionalImages = result.images;
+      });
+      _saveAdditionalImages();
+    }
+  }
+
+  void _saveNotes() {
+    // TODO: Update your report_creation_data
     // Example:
     // context.read<ReportCreationBloc>().add(
-    //   UpdateConditionSnapshots(
-    //     before: beforePaths,
-    //     current: currentPaths,
-    //     after: afterPaths,
-    //   ),
+    //   UpdateNotes(_notes ?? ''),
     // );
 
-    print('Before images: ${beforePaths.length}');
-    print('Current images: ${currentPaths.length}');
-    print('After images: ${afterPaths.length}');
+    print('Notes saved: $_notes');
+  }
 
-    // If you want to access GPS coordinates:
-    _conditionSnapshotImages.forEach((tab, images) {
-      for (var img in images) {
-        if (img.latitude != null && img.longitude != null) {
-          print('$tab - Image at: ${img.latitude}, ${img.longitude}');
-        }
+  void _saveAdditionalImages() {
+    final imagePaths = _additionalImages.map((e) => e.path).toList();
+
+    // TODO: Update your report_creation_data
+    // Example:
+    // context.read<ReportCreationBloc>().add(
+    //   UpdateAdditionalImages(imagePaths),
+    // );
+
+    print('Additional images saved: ${imagePaths.length} images');
+  }
+
+  String? _getNotesDisplayText() {
+    if (_notes != null && _notes!.isNotEmpty) {
+      if (_additionalImages.isNotEmpty) {
+        return 'Notes added | ${_additionalImages.length} image(s)';
       }
-    });
+      return 'Notes added';
+    } else if (_additionalImages.isNotEmpty) {
+      return '${_additionalImages.length} image(s) added';
+    }
+    return null;
+  }
+
+  Future<void> _handleRemoveData() async {
+    // Show confirmation dialog
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remove Draft Data'),
+        content: const Text(
+          'Are you sure you want to remove all draft data? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Remove'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      // Clear local state
+      setState(() {
+        _workerImage = null;
+        _notes = null;
+        _additionalImages.clear();
+        addedQuantities.clear();
+        addedEquipments.clear();
+        _conditionSnapshotImages = {'before': [], 'current': [], 'after': []};
+      });
+
+      // Clear BLoC state - Reset selections and formData
+      _reportCreationBloc.add(const ResetForm());
+
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Draft data has been removed'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      print('✅ All draft data cleared');
+    }
   }
 }

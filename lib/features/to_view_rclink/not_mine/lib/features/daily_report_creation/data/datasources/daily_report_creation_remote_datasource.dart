@@ -230,7 +230,6 @@ class DailyReportCreationRemoteDataSourceImpl
       );
 
       if (response.isSuccess && response.data != null) {
-        // Extract workEquipment from each junction object
         final equipments = response.data!
             .map((junction) => junction.workEquipment)
             .toList();

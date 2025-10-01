@@ -117,7 +117,6 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
 
               child: BlocBuilder<ReportCreationBloc, ReportCreationState>(
                 builder: (context, state) {
-                  // Extract section error from selections (Page 1 validation)
                   final sectionError = state.maybeWhen(
                     page1Ready: (apiData, selections) =>
                         selections.sectionError,
@@ -133,6 +132,10 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
                     bottom: false,
                     child: Column(
                       children: [
+                        SizedBox(
+                          height: ResponsiveHelper.getHeight(context, 0.02),
+                        ),
+
                         // Header section
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 30),

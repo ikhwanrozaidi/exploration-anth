@@ -30,7 +30,6 @@ class WorkScopesRepositoryImpl
     bool forceRefresh = false,
     Duration? cacheTimeout = const Duration(hours: 1),
   }) async {
-    // Get selected company from CompanyBloc
     final currentState = _companyBloc.state;
     if (currentState is! CompanyLoaded ||
         currentState.selectedCompany == null) {

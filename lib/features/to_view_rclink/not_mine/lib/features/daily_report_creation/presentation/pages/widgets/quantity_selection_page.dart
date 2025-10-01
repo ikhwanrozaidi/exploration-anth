@@ -89,7 +89,6 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
         currentQuantities.add({
           'id': selectedQuantity.uid,
           'name': selectedQuantity.name,
-          // Remove unit since WorkQuantityType doesn't have it
           'data': result,
         });
       });
@@ -244,14 +243,12 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
     );
   }
 
-  // Render Summary UI for quantities
   Widget _buildQuantityCard(Map<String, dynamic> quantity, int index) {
     final data = quantity['data'] as Map<String, dynamic>?;
     final fieldValues = data?['fieldValues'] as Map<String, dynamic>? ?? {};
     final imageFields =
         data?['imageFields'] as Map<String, List<String>>? ?? {};
 
-    // Find the original WorkQuantityType for this quantity
     final workQuantityType = widget.quantityLists.firstWhere(
       (wqt) => wqt.uid == quantity['id'],
     );
@@ -260,7 +257,6 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
       margin: EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: () async {
-          // Navigate to edit existing quantity
           _navigateToQuantityFields(workQuantityType, quantity['data']);
         },
         borderRadius: BorderRadius.circular(12),
@@ -294,7 +290,7 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
 
                     dividerConfig(),
 
-                    // Display all fields with their values
+                    // Display all fields
                     ...fieldValues.entries.map((entry) {
                       final fieldKey = entry.key;
                       final fieldValue = entry.value;
@@ -303,7 +299,6 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
                         return const SizedBox.shrink();
                       }
 
-                      // Try to find the field info from the WorkQuantityType
                       final fieldInfo = workQuantityType.quantityFields
                           ?.cast<QuantityField?>()
                           .firstWhere(
@@ -432,7 +427,6 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
     dynamic fieldValue,
     List<String>? images,
   ) {
-    // Handle image fields
     if (images != null && images.isNotEmpty) {
       return Wrap(
         spacing: 4,
@@ -452,7 +446,6 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
       );
     }
 
-    // Handle regular field values
     if (fieldValue == null || fieldValue.toString().isEmpty) {
       return Text(
         'No data',
@@ -460,7 +453,6 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
       );
     }
 
-    // Check if field has units
     final unit = fieldInfo?.unit;
     if (unit != null && unit.isNotEmpty) {
       return Row(
@@ -510,17 +502,14 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
       onTap: (selectedName) {
         Navigator.pop(context);
         Future.delayed(Duration(milliseconds: 100), () async {
-          // Find the selected quantity
           final selectedQuantity = widget.quantityLists.firstWhere(
             (quantity) => quantity.name == selectedName,
           );
 
-          // Check if this quantity is already added
           final existingQuantity = currentQuantities
               .where((q) => q['id'] == selectedQuantity.uid)
               .firstOrNull;
 
-          // Call the navigation method HERE
           _navigateToQuantityFields(
             selectedQuantity,
             existingQuantity?['data'],

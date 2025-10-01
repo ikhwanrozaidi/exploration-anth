@@ -199,20 +199,16 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
               title: field.title,
               attributes: field.dropdownOptions ?? [],
               isRadio: true,
-              // Use the field's isTips property (default to false if null)
               isTips: field.isTips ?? false,
               onSelectionChanged: (selectedValue) {
                 setState(() {
                   fieldValues[fieldId] = selectedValue;
                 });
               },
-              // Handle Tips button press if pageNavigate is provided
               onPressTips: (field.isTips == true && field.pageNavigate != null)
                   ? () {
-                      // Close the current bottomsheet first
                       Navigator.pop(context);
 
-                      // Navigate to the specified page
                       Navigator.push(
                         context,
                         MaterialPageRoute(

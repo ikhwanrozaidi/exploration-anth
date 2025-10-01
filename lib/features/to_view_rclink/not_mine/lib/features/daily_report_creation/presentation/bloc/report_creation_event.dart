@@ -68,7 +68,16 @@ class ReportCreationEvent with _$ReportCreationEvent {
   const factory ReportCreationEvent.toggleEquipment(String equipmentUid) =
       ToggleEquipment;
 
+  const factory ReportCreationEvent.updateConditionSnapshots(
+    Map<String, List<Map<String, dynamic>>> snapshots,
+  ) = UpdateConditionSnapshots;
+
+  const factory ReportCreationEvent.updateWorkerImages(
+    List<Map<String, dynamic>> images,
+  ) = UpdateWorkerImages;
+
   // Basics Clear
+
   const factory ReportCreationEvent.clearCache() = ClearCache;
   const factory ReportCreationEvent.resetForm() = ResetForm;
   const factory ReportCreationEvent.startOver() = StartOver;
