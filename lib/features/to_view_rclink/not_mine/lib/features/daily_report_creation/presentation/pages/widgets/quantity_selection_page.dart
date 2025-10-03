@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rclink_app/features/daily_report_creation/presentation/bloc/report_creation_state.dart';
 
 import 'package:rclink_app/shared/widgets/divider_config.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
@@ -8,17 +10,20 @@ import '../../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../data/mapper/hybrid_field_mapper.dart';
 import '../../../domain/entities/scope_of_work/quantity_field.dart';
 import '../../../domain/entities/scope_of_work/work_quantity_type.dart';
+import '../../bloc/report_creation_bloc.dart';
 import '../../constant/report_model.dart';
 import 'quantity_fields_page.dart';
 
 class QuantitySelectionPage extends StatefulWidget {
   final List<Map<String, dynamic>> addedQuantities;
   final List<WorkQuantityType> quantityLists;
+  final String? selectedScopeUid;
 
   const QuantitySelectionPage({
     super.key,
     required this.addedQuantities,
     required this.quantityLists,
+    this.selectedScopeUid,
   });
 
   @override
@@ -80,6 +85,7 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
           scopeConfig: scopeConfig,
           existingData: existingData,
           hasSegmentBreakdown: selectedQuantity.hasSegmentBreakdown,
+          selectedScopeUid: widget.selectedScopeUid,
         ),
       ),
     );

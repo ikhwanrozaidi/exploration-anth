@@ -20,6 +20,7 @@ class QuantityFieldsPage extends StatefulWidget {
   final Map<String, dynamic>? existingData;
 
   final bool hasSegmentBreakdown;
+  final String? selectedScopeUid;
 
   const QuantityFieldsPage({
     Key? key,
@@ -31,6 +32,7 @@ class QuantityFieldsPage extends StatefulWidget {
     required this.scopeConfig,
     this.existingData,
     this.hasSegmentBreakdown = false,
+    this.selectedScopeUid,
   }) : super(key: key);
 
   @override
@@ -273,32 +275,11 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
   void _saveData() {
     final data = {'fieldValues': fieldValues, 'imageFields': imageFields};
 
-    // Get the current report state from BLoC
-    final reportState = context.read<ReportCreationBloc>().state;
-
-    // Extract selectedScopeUid from the state
-    String? selectedScopeUid;
-    reportState.maybeWhen(
-      page1Ready: (apiData, selections) {
-        selectedScopeUid = selections.selectedScopeUid;
-      },
-      page1Error: (apiData, selections, errorMessage) {
-        selectedScopeUid = selections.selectedScopeUid;
-      },
-      page2Ready: (apiData, selections, formData) {
-        selectedScopeUid = selections.selectedScopeUid;
-      },
-      page2Error: (apiData, selections, formData, errorMessage) {
-        selectedScopeUid = selections.selectedScopeUid;
-      },
-      orElse: () {},
-    );
-
     // Check BOTH conditions:
     // 1. selectedScopeUid == Road Shoulder (R02)
     // 2. hasSegmentBreakdown == true
     final shouldShowSegmentBreakdown =
-        selectedScopeUid == '81094b15-03b7-4648-bc35-1fd214c90031' &&
+        widget.selectedScopeUid == '81094b15-03b7-4648-bc35-1fd214c90031' &&
         widget.hasSegmentBreakdown;
 
     if (shouldShowSegmentBreakdown) {

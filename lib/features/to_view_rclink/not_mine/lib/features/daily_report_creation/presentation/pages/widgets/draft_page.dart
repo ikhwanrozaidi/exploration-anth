@@ -776,12 +776,25 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
     );
 
     if (availableQuantities.isNotEmpty) {
+      // Get selectedScopeUid from current state
+      final selectedScopeUid = reportState.maybeWhen(
+        page1Ready: (apiData, selections) => selections.selectedScopeUid,
+        page2Ready: (apiData, selections, formData) =>
+            selections.selectedScopeUid,
+        page1Error: (apiData, selections, errorMessage) =>
+            selections.selectedScopeUid,
+        page2Error: (apiData, selections, formData, errorMessage) =>
+            selections.selectedScopeUid,
+        orElse: () => null,
+      );
+
       final result = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => QuantitySelectionPage(
             addedQuantities: addedQuantities,
             quantityLists: availableQuantities,
+            selectedScopeUid: selectedScopeUid,
           ),
         ),
       );
