@@ -50,6 +50,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
   GalleryImage? _workerImage;
   String? _notes;
   List<GalleryImage> _additionalImages = [];
+  int? _workerCount;
 
   @override
   void initState() {
@@ -466,7 +467,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                               title: 'Worker',
                               titleDetails: _workerImage == null
                                   ? 'Take picture of worker'
-                                  : '1 image added',
+                                  : '$_workerCount workers added',
                               isFilled: _workerImage != null,
                               controller: worker,
                               onTap: () async {
@@ -482,10 +483,18 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                           : null,
                                       onImagesChanged: (result) {},
                                       onDialogConfirm: () async {
-                                        await WorkerNumberBottomsheet.showWithInfoBottomsheet(
-                                          context,
-                                          'Worker Number',
-                                        );
+                                        final workerCount =
+                                            await WorkerNumberBottomsheet.showWithInfoBottomsheet(
+                                              context,
+                                              initialWorkerCount: _workerCount,
+                                            );
+
+                                        if (workerCount != null) {
+                                          setState(() {
+                                            _workerCount = workerCount;
+                                          });
+                                          _saveWorkerData();
+                                        }
                                       },
                                     ),
                                   ),
@@ -496,12 +505,12 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                     setState(() {
                                       _workerImage = result.images.first;
                                     });
-                                    _saveWorkerImages();
+                                    _saveWorkerData();
                                   } else {
                                     setState(() {
                                       _workerImage = null;
                                     });
-                                    _saveWorkerImages();
+                                    _saveWorkerData();
                                   }
                                 } else {
                                   print('⚠️ Result is null - user cancelled');
@@ -588,7 +597,21 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                     _conditionSnapshotImages =
                                         result.tabImages!;
                                   });
-                                  _saveConditionSnapshots();
+                                  final snapshotsData =
+                                      <String, List<Map<String, dynamic>>>{};
+
+                                  _conditionSnapshotImages.forEach((
+                                    tab,
+                                    images,
+                                  ) {
+                                    snapshotsData[tab] = images
+                                        .map((img) => img.toJson())
+                                        .toList();
+                                  });
+
+                                  _reportCreationBloc.add(
+                                    UpdateConditionSnapshots(snapshotsData),
+                                  );
                                 } else {
                                   print('⚠️ No result or tabImages is null');
                                 }
@@ -637,10 +660,55 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                     );
 
                                     if (selectedOption == 'Notes') {
-                                      _handleNotesSelection();
+                                      final result = await showNotesBottomSheet(
+                                        context: context,
+                                        initialNotes: _notes,
+                                      );
+
+                                      if (result != null) {
+                                        setState(() {
+                                          _notes = result;
+                                        });
+                                        print('Notes saved: $_notes');
+                                      }
                                     } else if (selectedOption ==
                                         'Additional Images') {
-                                      _handleAdditionalImagesSelection();
+                                      final result =
+                                          await Navigator.push<GalleryResult>(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  GalleryWidget(
+                                                    title: 'Additional Images',
+
+                                                    maxImages: 1,
+                                                    pictures: _additionalImages
+                                                        .map((e) => e.path)
+                                                        .toList(),
+                                                    onImagesChanged:
+                                                        (result) {},
+                                                  ),
+                                            ),
+                                          );
+
+                                      if (result != null) {
+                                        setState(() {
+                                          _additionalImages = result.images;
+                                        });
+                                        final imagePaths = _additionalImages
+                                            .map((e) => e.path)
+                                            .toList();
+
+                                        // TODO: Update your report_creation_data
+                                        // Example:
+                                        // context.read<ReportCreationBloc>().add(
+                                        //   UpdateAdditionalImages(imagePaths),
+                                        // );
+
+                                        print(
+                                          'Additional images saved: ${imagePaths.length} images',
+                                        );
+                                      }
                                     }
                                   },
                                 );
@@ -789,84 +857,21 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
     return '$totalImages images added';
   }
 
-  void _saveConditionSnapshots() {
-    final snapshotsData = <String, List<Map<String, dynamic>>>{};
-
-    _conditionSnapshotImages.forEach((tab, images) {
-      snapshotsData[tab] = images.map((img) => img.toJson()).toList();
-    });
-
-    _reportCreationBloc.add(UpdateConditionSnapshots(snapshotsData));
-  }
-
-  void _saveWorkerImages() {
-    // Convert GalleryImage to Map format for storage (single image or null)
-    final imageData = _workerImage?.toJson();
-
-    // Dispatch event to BLoC to save in ReportSelections
-    _reportCreationBloc.add(
-      UpdateWorkerImages(imageData != null ? [imageData] : []),
-    );
-  }
-
-  Future<void> _handleNotesSelection() async {
-    final result = await showNotesBottomSheet(
-      context: context,
-      initialNotes: _notes,
-    );
-
-    if (result != null) {
-      setState(() {
-        _notes = result;
-      });
-      _saveNotes();
-    }
-  }
-
-  Future<void> _handleAdditionalImagesSelection() async {
-    final result = await Navigator.push<GalleryResult>(
-      context,
-      MaterialPageRoute(
-        builder: (context) => GalleryWidget(
-          title: 'Additional Images',
-          workerPicture: false,
-          inputProgress: false,
-          pinPointFirst: true,
-          maxImages: 10,
-          pictures: _additionalImages.map((e) => e.path).toList(),
-          onImagesChanged: (result) {},
-        ),
-      ),
-    );
-
-    if (result != null) {
-      setState(() {
-        _additionalImages = result.images;
-      });
-      _saveAdditionalImages();
-    }
-  }
-
-  void _saveNotes() {
-    // TODO: Update your report_creation_data
-    // Example:
-    // context.read<ReportCreationBloc>().add(
-    //   UpdateNotes(_notes ?? ''),
-    // );
-
-    print('Notes saved: $_notes');
-  }
-
-  void _saveAdditionalImages() {
-    final imagePaths = _additionalImages.map((e) => e.path).toList();
+  void _saveWorkerData() {
+    final workerImagePath = _workerImage?.path;
 
     // TODO: Update your report_creation_data
     // Example:
     // context.read<ReportCreationBloc>().add(
-    //   UpdateAdditionalImages(imagePaths),
+    //   UpdateWorkerData(
+    //     imagePath: workerImagePath,
+    //     workerCount: _workerCount,
+    //   ),
     // );
 
-    print('Additional images saved: ${imagePaths.length} images');
+    print('Worker data saved:');
+    print('  Image: $workerImagePath');
+    print('  Worker count: $_workerCount');
   }
 
   String? _getNotesDisplayText() {
@@ -908,6 +913,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
       // Clear local state
       setState(() {
         _workerImage = null;
+        _workerCount = null;
         _notes = null;
         _additionalImages.clear();
         addedQuantities.clear();

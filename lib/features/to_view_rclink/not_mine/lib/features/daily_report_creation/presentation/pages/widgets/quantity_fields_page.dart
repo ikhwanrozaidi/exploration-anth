@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rclink_app/features/daily_report_creation/presentation/bloc/report_creation_state.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
+import '../../bloc/report_creation_bloc.dart';
 import '../../constant/report_model.dart';
+import 'quantity_segments_breakdown_page.dart';
 import 'shared/creation_fields_widget.dart';
 
 class QuantityFieldsPage extends StatefulWidget {
@@ -15,6 +19,8 @@ class QuantityFieldsPage extends StatefulWidget {
   final QuantityOption quantityOption;
   final Map<String, dynamic>? existingData;
 
+  final bool hasSegmentBreakdown;
+
   const QuantityFieldsPage({
     Key? key,
     required this.scopeOfWork,
@@ -24,6 +30,7 @@ class QuantityFieldsPage extends StatefulWidget {
     required this.quantityOption,
     required this.scopeConfig,
     this.existingData,
+    this.hasSegmentBreakdown = false,
   }) : super(key: key);
 
   @override
@@ -103,19 +110,20 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
       ),
 
       body: Padding(
-        padding: const EdgeInsets.all(25.0),
+        padding: ResponsiveHelper.padding(
+          context,
+          vertical: 25,
+          horizontal: 20,
+        ),
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Fields
-                    ...widget.quantityOption.fields.map(
-                      (field) => _buildField(field),
-                    ),
-                  ],
+                  children: widget.quantityOption.fields
+                      .map((field) => _buildField(field))
+                      .toList(),
                 ),
               ),
             ),
@@ -265,6 +273,48 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
   void _saveData() {
     final data = {'fieldValues': fieldValues, 'imageFields': imageFields};
 
-    Navigator.pop(context, data);
+    // Get the current report state from BLoC
+    final reportState = context.read<ReportCreationBloc>().state;
+
+    // Extract selectedScopeUid from the state
+    String? selectedScopeUid;
+    reportState.maybeWhen(
+      page1Ready: (apiData, selections) {
+        selectedScopeUid = selections.selectedScopeUid;
+      },
+      page1Error: (apiData, selections, errorMessage) {
+        selectedScopeUid = selections.selectedScopeUid;
+      },
+      page2Ready: (apiData, selections, formData) {
+        selectedScopeUid = selections.selectedScopeUid;
+      },
+      page2Error: (apiData, selections, formData, errorMessage) {
+        selectedScopeUid = selections.selectedScopeUid;
+      },
+      orElse: () {},
+    );
+
+    // Check BOTH conditions:
+    // 1. selectedScopeUid == Road Shoulder (R02)
+    // 2. hasSegmentBreakdown == true
+    final shouldShowSegmentBreakdown =
+        selectedScopeUid == '81094b15-03b7-4648-bc35-1fd214c90031' &&
+        widget.hasSegmentBreakdown;
+
+    if (shouldShowSegmentBreakdown) {
+      // Navigate to Segment Breakdown Page instead of popping
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => QuantitySegmentBreakdownPage(
+            quantityName: widget.quantityOption.name,
+            existingData: data,
+          ),
+        ),
+      );
+    } else {
+      // Normal flow: pop back with data
+      Navigator.pop(context, data);
+    }
   }
 }

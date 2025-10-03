@@ -79,6 +79,7 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
           quantityOption: quantityOption,
           scopeConfig: scopeConfig,
           existingData: existingData,
+          hasSegmentBreakdown: selectedQuantity.hasSegmentBreakdown,
         ),
       ),
     );
@@ -148,71 +149,45 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Current added quantities
-            if (currentQuantities.isNotEmpty) ...[
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Text(
-              //       'Added Quantities',
-              //       style: TextStyle(
-              //         fontSize: 16,
-              //         fontWeight: FontWeight.w500,
-              //         color: primaryColor,
-              //       ),
-              //     ),
-              //     Text(
-              //       '${currentQuantities.length} item(s)',
-              //       style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-              //     ),
-              //   ],
-              // ),
-              // SizedBox(height: 10),
-
-              // Quantities View
-              Expanded(
-                child: ListView.builder(
-                  itemCount: currentQuantities.length,
-                  itemBuilder: (context, index) {
-                    final quantity = currentQuantities[index];
-                    return _buildQuantityCard(quantity, index);
-                  },
-                ),
-              ),
-            ] else ...[
-              // Empty state
-              Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.category_outlined,
-                        size: 80,
-                        color: Colors.grey.shade300,
+            Expanded(
+              child: currentQuantities.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: currentQuantities.length,
+                      itemBuilder: (context, index) {
+                        final quantity = currentQuantities[index];
+                        return _buildQuantityCard(quantity, index);
+                      },
+                    )
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.category_outlined,
+                            size: 80,
+                            color: Colors.grey.shade300,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            'Empty Quantity',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Add quantity to display',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey.shade500,
+                            ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 16),
-                      Text(
-                        'Empty Quantity',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Add quantity to display',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey.shade500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+                    ),
+            ),
 
             // Add Quantity Button
             Container(

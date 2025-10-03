@@ -4,9 +4,18 @@ import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/info_bottomsheet.dart';
 
-class WorkerNumberBottomsheet {
-  static Future<bool?> show(BuildContext context, String nextTab) {
-    return showModalBottomSheet<bool>(
+class WorkerNumberBottomsheet extends StatefulWidget {
+  final int? initialWorkerCount;
+
+  const WorkerNumberBottomsheet({Key? key, this.initialWorkerCount})
+    : super(key: key);
+
+  @override
+  State<WorkerNumberBottomsheet> createState() =>
+      _WorkerNumberBottomsheetState();
+
+  static Future<int?> show(BuildContext context, {int? initialWorkerCount}) {
+    return showModalBottomSheet<int>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
@@ -16,138 +25,194 @@ class WorkerNumberBottomsheet {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: InfoBottomsheet(
-          title: "Worker",
-          blurry: true,
-          widgetUI: _buildContent(context, nextTab),
-        ),
+        child: WorkerNumberBottomsheet(initialWorkerCount: initialWorkerCount),
       ),
     );
   }
 
-  static Future<bool?> showWithInfoBottomsheet(
-    BuildContext context,
-    String nextTab,
-  ) {
-    return show(context, nextTab);
+  static Future<int?> showWithInfoBottomsheet(
+    BuildContext context, {
+    int? initialWorkerCount,
+  }) {
+    return show(context, initialWorkerCount: initialWorkerCount);
+  }
+}
+
+class _WorkerNumberBottomsheetState extends State<WorkerNumberBottomsheet> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(
+      text: widget.initialWorkerCount?.toString() ?? '',
+    );
   }
 
-  static Widget _buildContent(BuildContext context, String nextTab) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Worker",
-          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onContinue() {
+    final text = _controller.text.trim();
+    if (text.isEmpty) {
+      // Show error if empty
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter number of workers'),
+          backgroundColor: Colors.red,
         ),
+      );
+      return;
+    }
 
-        const SizedBox(height: 20),
-
-        Text(
-          "Number of Workers",
-          style: const TextStyle(fontWeight: FontWeight.w500),
+    final number = int.tryParse(text);
+    if (number == null || number <= 0) {
+      // Show error if invalid
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid number'),
+          backgroundColor: Colors.red,
         ),
+      );
+      return;
+    }
 
-        SizedBox(height: 5),
+    // Return the number
+    Navigator.of(context).pop(number);
+  }
 
-        TextField(
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            isDense: true,
-            hintText: "Enter number of workers",
-            hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
-            contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey, width: 0.8),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey, width: 0.8),
+  @override
+  Widget build(BuildContext context) {
+    return InfoBottomsheet(
+      title: "Worker",
+      blurry: true,
+      widgetUI: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Worker",
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+
+          const SizedBox(height: 20),
+
+          Text(
+            "Number of Workers",
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          ),
+
+          SizedBox(height: 5),
+
+          TextField(
+            controller: _controller,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              isDense: true,
+              hintText: "Enter number of workers",
+              hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+              contentPadding: EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 10,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey, width: 0.8),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: Colors.grey, width: 0.8),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: BorderSide(color: primaryColor, width: 1.2),
+              ),
             ),
           ),
-        ),
 
-        SizedBox(height: 30),
+          SizedBox(height: 30),
 
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                style: OutlinedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  disabledBackgroundColor: Colors.grey[300],
-                  padding: ResponsiveHelper.padding(
-                    context,
-                    vertical: 10,
-                    horizontal: 20,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: ResponsiveHelper.borderRadius(
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  onPressed: () => Navigator.of(context).pop(null),
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    disabledBackgroundColor: Colors.grey[300],
+                    padding: ResponsiveHelper.padding(
                       context,
-                      all: 10,
+                      vertical: 10,
+                      horizontal: 20,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: ResponsiveHelper.borderRadius(
+                        context,
+                        all: 10,
+                      ),
+                    ),
+                    side: BorderSide(color: primaryColor, width: 1),
+                    elevation: ResponsiveHelper.adaptive(
+                      context,
+                      mobile: 1,
+                      tablet: 2,
+                      desktop: 3,
                     ),
                   ),
-                  side: BorderSide(color: primaryColor, width: 1),
-                  elevation: ResponsiveHelper.adaptive(
-                    context,
-                    mobile: 1,
-                    tablet: 2,
-                    desktop: 3,
-                  ),
-                ),
-                child: Text(
-                  'Cancel',
-                  style: TextStyle(
-                    fontSize: ResponsiveHelper.spacing(context, 14),
-                    fontWeight: FontWeight.w600,
-                    color: primaryColor,
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      fontSize: ResponsiveHelper.spacing(context, 14),
+                      fontWeight: FontWeight.w600,
+                      color: primaryColor,
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            const SizedBox(width: 10),
+              const SizedBox(width: 10),
 
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  disabledBackgroundColor: Colors.grey[300],
-                  padding: ResponsiveHelper.padding(
-                    context,
-                    vertical: 10,
-                    horizontal: 20,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: ResponsiveHelper.borderRadius(
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: _onContinue,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    disabledBackgroundColor: Colors.grey[300],
+                    padding: ResponsiveHelper.padding(
                       context,
-                      all: 10,
+                      vertical: 10,
+                      horizontal: 20,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: ResponsiveHelper.borderRadius(
+                        context,
+                        all: 10,
+                      ),
+                    ),
+                    elevation: ResponsiveHelper.adaptive(
+                      context,
+                      mobile: 1,
+                      tablet: 2,
+                      desktop: 3,
                     ),
                   ),
-                  elevation: ResponsiveHelper.adaptive(
-                    context,
-                    mobile: 1,
-                    tablet: 2,
-                    desktop: 3,
-                  ),
-                ),
-                child: Text(
-                  'Continue',
-                  style: TextStyle(
-                    fontSize: ResponsiveHelper.spacing(context, 14),
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
+                  child: Text(
+                    'Continue',
+                    style: TextStyle(
+                      fontSize: ResponsiveHelper.spacing(context, 14),
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

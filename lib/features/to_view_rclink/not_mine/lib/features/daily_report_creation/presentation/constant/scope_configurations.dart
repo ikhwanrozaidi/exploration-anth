@@ -397,7 +397,7 @@ class ScopeConfigurations {
             FieldConfig(
               id: 'length',
               title: 'Length',
-              description: 'Enter length',
+              description: 'Enter lengthsss',
               hintText: 'Type total length',
               units: 'meter',
               icon: Icons.straighten,
