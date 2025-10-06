@@ -13353,6 +13353,17 @@ class $DailyReportsTable extends DailyReports
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _equipmentsJsonMeta = const VerificationMeta(
+    'equipmentsJson',
+  );
+  @override
+  late final GeneratedColumn<String> equipmentsJson = GeneratedColumn<String>(
+    'equipments_json',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     isSynced,
@@ -13383,6 +13394,7 @@ class $DailyReportsTable extends DailyReports
     createdByID,
     createdAt,
     updatedAt,
+    equipmentsJson,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -13612,6 +13624,15 @@ class $DailyReportsTable extends DailyReports
     } else if (isInserting) {
       context.missing(_updatedAtMeta);
     }
+    if (data.containsKey('equipments_json')) {
+      context.handle(
+        _equipmentsJsonMeta,
+        equipmentsJson.isAcceptableOrUnknown(
+          data['equipments_json']!,
+          _equipmentsJsonMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -13737,6 +13758,10 @@ class $DailyReportsTable extends DailyReports
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
+      equipmentsJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}equipments_json'],
+      ),
     );
   }
 
@@ -13776,6 +13801,7 @@ class DailyReportRecord extends DataClass
   final int createdByID;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final String? equipmentsJson;
   const DailyReportRecord({
     required this.isSynced,
     this.deletedAt,
@@ -13805,6 +13831,7 @@ class DailyReportRecord extends DataClass
     required this.createdByID,
     required this.createdAt,
     required this.updatedAt,
+    this.equipmentsJson,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -13865,6 +13892,9 @@ class DailyReportRecord extends DataClass
     map['created_by_i_d'] = Variable<int>(createdByID);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || equipmentsJson != null) {
+      map['equipments_json'] = Variable<String>(equipmentsJson);
+    }
     return map;
   }
 
@@ -13926,6 +13956,9 @@ class DailyReportRecord extends DataClass
       createdByID: Value(createdByID),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
+      equipmentsJson: equipmentsJson == null && nullToAbsent
+          ? const Value.absent()
+          : Value(equipmentsJson),
     );
   }
 
@@ -13963,6 +13996,7 @@ class DailyReportRecord extends DataClass
       createdByID: serializer.fromJson<int>(json['createdByID']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      equipmentsJson: serializer.fromJson<String?>(json['equipmentsJson']),
     );
   }
   @override
@@ -13997,6 +14031,7 @@ class DailyReportRecord extends DataClass
       'createdByID': serializer.toJson<int>(createdByID),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'equipmentsJson': serializer.toJson<String?>(equipmentsJson),
     };
   }
 
@@ -14029,6 +14064,7 @@ class DailyReportRecord extends DataClass
     int? createdByID,
     DateTime? createdAt,
     DateTime? updatedAt,
+    Value<String?> equipmentsJson = const Value.absent(),
   }) => DailyReportRecord(
     isSynced: isSynced ?? this.isSynced,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
@@ -14064,6 +14100,9 @@ class DailyReportRecord extends DataClass
     createdByID: createdByID ?? this.createdByID,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
+    equipmentsJson: equipmentsJson.present
+        ? equipmentsJson.value
+        : this.equipmentsJson,
   );
   DailyReportRecord copyWithCompanion(DailyReportsCompanion data) {
     return DailyReportRecord(
@@ -14121,6 +14160,9 @@ class DailyReportRecord extends DataClass
           : this.createdByID,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      equipmentsJson: data.equipmentsJson.present
+          ? data.equipmentsJson.value
+          : this.equipmentsJson,
     );
   }
 
@@ -14154,7 +14196,8 @@ class DailyReportRecord extends DataClass
           ..write('toSection: $toSection, ')
           ..write('createdByID: $createdByID, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('equipmentsJson: $equipmentsJson')
           ..write(')'))
         .toString();
   }
@@ -14189,6 +14232,7 @@ class DailyReportRecord extends DataClass
     createdByID,
     createdAt,
     updatedAt,
+    equipmentsJson,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -14221,7 +14265,8 @@ class DailyReportRecord extends DataClass
           other.toSection == this.toSection &&
           other.createdByID == this.createdByID &&
           other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt);
+          other.updatedAt == this.updatedAt &&
+          other.equipmentsJson == this.equipmentsJson);
 }
 
 class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
@@ -14253,6 +14298,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
   final Value<int> createdByID;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
+  final Value<String?> equipmentsJson;
   const DailyReportsCompanion({
     this.isSynced = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -14282,6 +14328,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     this.createdByID = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
+    this.equipmentsJson = const Value.absent(),
   });
   DailyReportsCompanion.insert({
     this.isSynced = const Value.absent(),
@@ -14312,6 +14359,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     required int createdByID,
     required DateTime createdAt,
     required DateTime updatedAt,
+    this.equipmentsJson = const Value.absent(),
   }) : uid = Value(uid),
        name = Value(name),
        weatherCondition = Value(weatherCondition),
@@ -14350,6 +14398,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     Expression<int>? createdByID,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
+    Expression<String>? equipmentsJson,
   }) {
     return RawValuesInsertable({
       if (isSynced != null) 'is_synced': isSynced,
@@ -14381,6 +14430,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
       if (createdByID != null) 'created_by_i_d': createdByID,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
+      if (equipmentsJson != null) 'equipments_json': equipmentsJson,
     });
   }
 
@@ -14413,6 +14463,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     Value<int>? createdByID,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
+    Value<String?>? equipmentsJson,
   }) {
     return DailyReportsCompanion(
       isSynced: isSynced ?? this.isSynced,
@@ -14443,6 +14494,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
       createdByID: createdByID ?? this.createdByID,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      equipmentsJson: equipmentsJson ?? this.equipmentsJson,
     );
   }
 
@@ -14533,6 +14585,9 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
+    if (equipmentsJson.present) {
+      map['equipments_json'] = Variable<String>(equipmentsJson.value);
+    }
     return map;
   }
 
@@ -14566,7 +14621,8 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
           ..write('toSection: $toSection, ')
           ..write('createdByID: $createdByID, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('equipmentsJson: $equipmentsJson')
           ..write(')'))
         .toString();
   }
@@ -23873,6 +23929,7 @@ typedef $$DailyReportsTableCreateCompanionBuilder =
       required int createdByID,
       required DateTime createdAt,
       required DateTime updatedAt,
+      Value<String?> equipmentsJson,
     });
 typedef $$DailyReportsTableUpdateCompanionBuilder =
     DailyReportsCompanion Function({
@@ -23904,6 +23961,7 @@ typedef $$DailyReportsTableUpdateCompanionBuilder =
       Value<int> createdByID,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
+      Value<String?> equipmentsJson,
     });
 
 class $$DailyReportsTableFilterComposer
@@ -24052,6 +24110,11 @@ class $$DailyReportsTableFilterComposer
 
   ColumnFilters<DateTime> get updatedAt => $composableBuilder(
     column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get equipmentsJson => $composableBuilder(
+    column: $table.equipmentsJson,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -24204,6 +24267,11 @@ class $$DailyReportsTableOrderingComposer
     column: $table.updatedAt,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get equipmentsJson => $composableBuilder(
+    column: $table.equipmentsJson,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$DailyReportsTableAnnotationComposer
@@ -24324,6 +24392,11 @@ class $$DailyReportsTableAnnotationComposer
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get equipmentsJson => $composableBuilder(
+    column: $table.equipmentsJson,
+    builder: (column) => column,
+  );
 }
 
 class $$DailyReportsTableTableManager
@@ -24389,6 +24462,7 @@ class $$DailyReportsTableTableManager
                 Value<int> createdByID = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
+                Value<String?> equipmentsJson = const Value.absent(),
               }) => DailyReportsCompanion(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -24418,6 +24492,7 @@ class $$DailyReportsTableTableManager
                 createdByID: createdByID,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                equipmentsJson: equipmentsJson,
               ),
           createCompanionCallback:
               ({
@@ -24449,6 +24524,7 @@ class $$DailyReportsTableTableManager
                 required int createdByID,
                 required DateTime createdAt,
                 required DateTime updatedAt,
+                Value<String?> equipmentsJson = const Value.absent(),
               }) => DailyReportsCompanion.insert(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -24478,6 +24554,7 @@ class $$DailyReportsTableTableManager
                 createdByID: createdByID,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
+                equipmentsJson: equipmentsJson,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
