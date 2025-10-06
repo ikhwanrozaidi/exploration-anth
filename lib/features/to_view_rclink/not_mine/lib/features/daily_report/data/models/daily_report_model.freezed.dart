@@ -23,7 +23,8 @@ mixin _$DailyReportModel {
  int? get approvedByID; DateTime? get approvedAt; String? get rejectionReason;// Work scope from the company
  int get workScopeID; int get roadID; int? get totalWorkers; String? get fromSection; String? get toSection;// Admin who created this report
  int get createdByID; DateTime get createdAt; DateTime get updatedAt;// Equipments stored as JSON
- List<DailyReportEquipmentModel>? get equipments;// Sync fields
+// Equipments stored as JSON
+@JsonKey(name: 'equipments') List<DailyReportEquipmentModel>? get equipments;// Sync fields
  bool get isSynced; DateTime? get deletedAt; String? get syncAction; int get syncRetryCount; String? get syncError; DateTime? get lastSyncAttempt;
 /// Create a copy of DailyReportModel
 /// with the given fields replaced by the non-null parameter values.
@@ -57,7 +58,7 @@ abstract mixin class $DailyReportModelCopyWith<$Res>  {
   factory $DailyReportModelCopyWith(DailyReportModel value, $Res Function(DailyReportModel) _then) = _$DailyReportModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String uid, String name, String? notes, String weatherCondition, bool workPerformed, String? longitude, String? latitude, int companyID, int? contractRelationID, String status, int? approvedByID, DateTime? approvedAt, String? rejectionReason, int workScopeID, int roadID, int? totalWorkers, String? fromSection, String? toSection, int createdByID, DateTime createdAt, DateTime updatedAt, List<DailyReportEquipmentModel>? equipments, bool isSynced, DateTime? deletedAt, String? syncAction, int syncRetryCount, String? syncError, DateTime? lastSyncAttempt
+ int id, String uid, String name, String? notes, String weatherCondition, bool workPerformed, String? longitude, String? latitude, int companyID, int? contractRelationID, String status, int? approvedByID, DateTime? approvedAt, String? rejectionReason, int workScopeID, int roadID, int? totalWorkers, String? fromSection, String? toSection, int createdByID, DateTime createdAt, DateTime updatedAt,@JsonKey(name: 'equipments') List<DailyReportEquipmentModel>? equipments, bool isSynced, DateTime? deletedAt, String? syncAction, int syncRetryCount, String? syncError, DateTime? lastSyncAttempt
 });
 
 
@@ -190,7 +191,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String? notes,  String weatherCondition,  bool workPerformed,  String? longitude,  String? latitude,  int companyID,  int? contractRelationID,  String status,  int? approvedByID,  DateTime? approvedAt,  String? rejectionReason,  int workScopeID,  int roadID,  int? totalWorkers,  String? fromSection,  String? toSection,  int createdByID,  DateTime createdAt,  DateTime updatedAt,  List<DailyReportEquipmentModel>? equipments,  bool isSynced,  DateTime? deletedAt,  String? syncAction,  int syncRetryCount,  String? syncError,  DateTime? lastSyncAttempt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String? notes,  String weatherCondition,  bool workPerformed,  String? longitude,  String? latitude,  int companyID,  int? contractRelationID,  String status,  int? approvedByID,  DateTime? approvedAt,  String? rejectionReason,  int workScopeID,  int roadID,  int? totalWorkers,  String? fromSection,  String? toSection,  int createdByID,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: 'equipments')  List<DailyReportEquipmentModel>? equipments,  bool isSynced,  DateTime? deletedAt,  String? syncAction,  int syncRetryCount,  String? syncError,  DateTime? lastSyncAttempt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DailyReportModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.longitude,_that.latitude,_that.companyID,_that.contractRelationID,_that.status,_that.approvedByID,_that.approvedAt,_that.rejectionReason,_that.workScopeID,_that.roadID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.createdByID,_that.createdAt,_that.updatedAt,_that.equipments,_that.isSynced,_that.deletedAt,_that.syncAction,_that.syncRetryCount,_that.syncError,_that.lastSyncAttempt);case _:
@@ -211,7 +212,7 @@ return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String? notes,  String weatherCondition,  bool workPerformed,  String? longitude,  String? latitude,  int companyID,  int? contractRelationID,  String status,  int? approvedByID,  DateTime? approvedAt,  String? rejectionReason,  int workScopeID,  int roadID,  int? totalWorkers,  String? fromSection,  String? toSection,  int createdByID,  DateTime createdAt,  DateTime updatedAt,  List<DailyReportEquipmentModel>? equipments,  bool isSynced,  DateTime? deletedAt,  String? syncAction,  int syncRetryCount,  String? syncError,  DateTime? lastSyncAttempt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String? notes,  String weatherCondition,  bool workPerformed,  String? longitude,  String? latitude,  int companyID,  int? contractRelationID,  String status,  int? approvedByID,  DateTime? approvedAt,  String? rejectionReason,  int workScopeID,  int roadID,  int? totalWorkers,  String? fromSection,  String? toSection,  int createdByID,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: 'equipments')  List<DailyReportEquipmentModel>? equipments,  bool isSynced,  DateTime? deletedAt,  String? syncAction,  int syncRetryCount,  String? syncError,  DateTime? lastSyncAttempt)  $default,) {final _that = this;
 switch (_that) {
 case _DailyReportModel():
 return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.longitude,_that.latitude,_that.companyID,_that.contractRelationID,_that.status,_that.approvedByID,_that.approvedAt,_that.rejectionReason,_that.workScopeID,_that.roadID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.createdByID,_that.createdAt,_that.updatedAt,_that.equipments,_that.isSynced,_that.deletedAt,_that.syncAction,_that.syncRetryCount,_that.syncError,_that.lastSyncAttempt);case _:
@@ -231,7 +232,7 @@ return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uid,  String name,  String? notes,  String weatherCondition,  bool workPerformed,  String? longitude,  String? latitude,  int companyID,  int? contractRelationID,  String status,  int? approvedByID,  DateTime? approvedAt,  String? rejectionReason,  int workScopeID,  int roadID,  int? totalWorkers,  String? fromSection,  String? toSection,  int createdByID,  DateTime createdAt,  DateTime updatedAt,  List<DailyReportEquipmentModel>? equipments,  bool isSynced,  DateTime? deletedAt,  String? syncAction,  int syncRetryCount,  String? syncError,  DateTime? lastSyncAttempt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uid,  String name,  String? notes,  String weatherCondition,  bool workPerformed,  String? longitude,  String? latitude,  int companyID,  int? contractRelationID,  String status,  int? approvedByID,  DateTime? approvedAt,  String? rejectionReason,  int workScopeID,  int roadID,  int? totalWorkers,  String? fromSection,  String? toSection,  int createdByID,  DateTime createdAt,  DateTime updatedAt, @JsonKey(name: 'equipments')  List<DailyReportEquipmentModel>? equipments,  bool isSynced,  DateTime? deletedAt,  String? syncAction,  int syncRetryCount,  String? syncError,  DateTime? lastSyncAttempt)?  $default,) {final _that = this;
 switch (_that) {
 case _DailyReportModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.longitude,_that.latitude,_that.companyID,_that.contractRelationID,_that.status,_that.approvedByID,_that.approvedAt,_that.rejectionReason,_that.workScopeID,_that.roadID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.createdByID,_that.createdAt,_that.updatedAt,_that.equipments,_that.isSynced,_that.deletedAt,_that.syncAction,_that.syncRetryCount,_that.syncError,_that.lastSyncAttempt);case _:
@@ -246,7 +247,7 @@ return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition
 @JsonSerializable()
 
 class _DailyReportModel extends DailyReportModel {
-  const _DailyReportModel({required this.id, required this.uid, required this.name, this.notes, required this.weatherCondition, this.workPerformed = false, this.longitude, this.latitude, required this.companyID, this.contractRelationID, this.status = 'SUBMITTED', this.approvedByID, this.approvedAt, this.rejectionReason, required this.workScopeID, required this.roadID, this.totalWorkers, this.fromSection, this.toSection, required this.createdByID, required this.createdAt, required this.updatedAt, final  List<DailyReportEquipmentModel>? equipments, this.isSynced = false, this.deletedAt, this.syncAction, this.syncRetryCount = 0, this.syncError, this.lastSyncAttempt}): _equipments = equipments,super._();
+  const _DailyReportModel({required this.id, required this.uid, required this.name, this.notes, required this.weatherCondition, this.workPerformed = false, this.longitude, this.latitude, required this.companyID, this.contractRelationID, this.status = 'SUBMITTED', this.approvedByID, this.approvedAt, this.rejectionReason, required this.workScopeID, required this.roadID, this.totalWorkers, this.fromSection, this.toSection, required this.createdByID, required this.createdAt, required this.updatedAt, @JsonKey(name: 'equipments') final  List<DailyReportEquipmentModel>? equipments, this.isSynced = false, this.deletedAt, this.syncAction, this.syncRetryCount = 0, this.syncError, this.lastSyncAttempt}): _equipments = equipments,super._();
   factory _DailyReportModel.fromJson(Map<String, dynamic> json) => _$DailyReportModelFromJson(json);
 
 @override final  int id;
@@ -279,9 +280,11 @@ class _DailyReportModel extends DailyReportModel {
 @override final  DateTime createdAt;
 @override final  DateTime updatedAt;
 // Equipments stored as JSON
+// Equipments stored as JSON
  final  List<DailyReportEquipmentModel>? _equipments;
 // Equipments stored as JSON
-@override List<DailyReportEquipmentModel>? get equipments {
+// Equipments stored as JSON
+@override@JsonKey(name: 'equipments') List<DailyReportEquipmentModel>? get equipments {
   final value = _equipments;
   if (value == null) return null;
   if (_equipments is EqualUnmodifiableListView) return _equipments;
@@ -330,7 +333,7 @@ abstract mixin class _$DailyReportModelCopyWith<$Res> implements $DailyReportMod
   factory _$DailyReportModelCopyWith(_DailyReportModel value, $Res Function(_DailyReportModel) _then) = __$DailyReportModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String uid, String name, String? notes, String weatherCondition, bool workPerformed, String? longitude, String? latitude, int companyID, int? contractRelationID, String status, int? approvedByID, DateTime? approvedAt, String? rejectionReason, int workScopeID, int roadID, int? totalWorkers, String? fromSection, String? toSection, int createdByID, DateTime createdAt, DateTime updatedAt, List<DailyReportEquipmentModel>? equipments, bool isSynced, DateTime? deletedAt, String? syncAction, int syncRetryCount, String? syncError, DateTime? lastSyncAttempt
+ int id, String uid, String name, String? notes, String weatherCondition, bool workPerformed, String? longitude, String? latitude, int companyID, int? contractRelationID, String status, int? approvedByID, DateTime? approvedAt, String? rejectionReason, int workScopeID, int roadID, int? totalWorkers, String? fromSection, String? toSection, int createdByID, DateTime createdAt, DateTime updatedAt,@JsonKey(name: 'equipments') List<DailyReportEquipmentModel>? equipments, bool isSynced, DateTime? deletedAt, String? syncAction, int syncRetryCount, String? syncError, DateTime? lastSyncAttempt
 });
 
 

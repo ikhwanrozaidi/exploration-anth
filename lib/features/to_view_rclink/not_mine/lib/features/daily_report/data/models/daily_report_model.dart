@@ -8,7 +8,7 @@ part 'daily_report_model.g.dart';
 
 @freezed
 abstract class DailyReportModel with _$DailyReportModel {
-  const DailyReportModel._(); // Add this line
+  const DailyReportModel._();
 
   const factory DailyReportModel({
     required int id,
@@ -51,7 +51,8 @@ abstract class DailyReportModel with _$DailyReportModel {
     required DateTime updatedAt,
 
     // Equipments stored as JSON
-    List<DailyReportEquipmentModel>? equipments,
+    // Equipments stored as JSON
+    @JsonKey(name: 'equipments') List<DailyReportEquipmentModel>? equipments,
 
     // Sync fields
     @Default(false) bool isSynced,
@@ -67,6 +68,9 @@ abstract class DailyReportModel with _$DailyReportModel {
 
   // Convert model to entity
   DailyReport toEntity() {
+    final convertedEquipments =
+        equipments?.map((e) => e.toEntity()).toList() ?? [];
+
     return DailyReport(
       id: id,
       uid: uid,
@@ -90,7 +94,7 @@ abstract class DailyReportModel with _$DailyReportModel {
       createdByID: createdByID,
       createdAt: createdAt,
       updatedAt: updatedAt,
-      equipments: equipments?.map((e) => e.toEntity()).toList() ?? [],
+      equipments: convertedEquipments,
     );
   }
 }

@@ -4,10 +4,6 @@ import 'daily_report_model.dart';
 part 'daily_report_response_model.freezed.dart';
 part 'daily_report_response_model.g.dart';
 
-/// Custom wrapper for the daily report API response
-/// The API returns: { statusCode, message, data: [...], meta: {...} }
-/// But ApiResponse only handles: { statusCode, message, data }
-/// So we create this wrapper to include both data array and meta
 @freezed
 abstract class DailyReportResponseModel with _$DailyReportResponseModel {
   const factory DailyReportResponseModel({

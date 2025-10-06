@@ -29,12 +29,6 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
     String sortOrder = 'asc',
   }) async {
     try {
-      print('🌐 RemoteDataSource: Fetching daily reports');
-      print('🌐 RemoteDataSource: companyUID = $companyUID');
-      print(
-        '🌐 RemoteDataSource: page = $page, limit = $limit, sortOrder = $sortOrder',
-      );
-
       final filter = DailyReportFilterModel(
         page: page,
         limit: limit,
@@ -42,20 +36,12 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
         expand: ['workScope', 'road', 'quantities'],
       );
 
-      print('🌐 RemoteDataSource: Calling API...');
       final response = await _apiService.getCompanyDailyReports(
         companyUID,
         filter,
       );
 
-      print('🌐 RemoteDataSource: Response received');
-      print('🌐 RemoteDataSource: statusCode = ${response.statusCode}');
-      print('🌐 RemoteDataSource: data length = ${response.data.length}');
-
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        print(
-          '✅ RemoteDataSource: Success - ${response.data.length} reports found',
-        );
         return Right(response.data);
       } else {
         print('❌ RemoteDataSource: API returned error - ${response.message}');
@@ -64,11 +50,6 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
         );
       }
     } on DioException catch (e) {
-      print('❌ RemoteDataSource: DioException caught');
-      print('❌ RemoteDataSource: Type = ${e.type}');
-      print('❌ RemoteDataSource: Message = ${e.message}');
-      print('❌ RemoteDataSource: StatusCode = ${e.response?.statusCode}');
-
       if (e.response?.statusCode == 404) {
         return const Left(NotFoundFailure());
       }

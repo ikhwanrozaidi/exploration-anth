@@ -32,12 +32,6 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('🔍 DailyReportDetailPage: Report UID = ${widget.report.uid}');
-    print(
-      '🔍 DailyReportDetailPage: Equipments count = ${widget.report.equipments.length}',
-    );
-    print('🔍 DailyReportDetailPage: Equipments = ${widget.report.equipments}');
-
     Widget buildPageContent(Map<String, dynamic> data) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -751,7 +745,6 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                                           color: Colors.red.shade400,
                                         ),
                                       ),
-                                      // Title Detail - red color if focus is true
                                       Text(
                                         'Delete work program',
                                         style: TextStyle(

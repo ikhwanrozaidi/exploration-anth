@@ -73,6 +73,15 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.read<DailyReportBloc>().add(
+            const DailyReportEvent.clearCache(),
+          );
+          _loadDailyReports();
+        },
+        child: const Icon(Icons.refresh),
+      ),
 
       body: BlocBuilder<DailyReportBloc, DailyReportState>(
         builder: (context, state) {

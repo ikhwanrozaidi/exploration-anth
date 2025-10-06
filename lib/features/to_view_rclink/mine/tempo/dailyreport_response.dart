@@ -8,24 +8,30 @@
       "name": "Road Furniture Cleaning - MRR2 Gombak",
       "notes": "Regular maintenance cleaning of guardrails, signboards, and kilometer posts along MRR2",
       "weatherCondition": "SUNNY",
+
       "workPerformed": true,
       "companyID": 1,
       "status": "SUBMITTED",
       "contractRelationID": null,
+
       "approvedByID": null,
       "approvedAt": null,
       "rejectionReason": null,
+
       "workScopeID": 4,
       "roadID": 97,
       "totalWorkers": 8,
+
       "fromSection": "5.2",
       "toSection": "8.5",
       "longitude": "101.7414991",
       "latitude": "3.1307736",
+
       "createdByID": 1,
       "createdAt": "2025-09-22T20:01:55.752Z",
       "updatedAt": "2025-09-22T20:01:55.752Z",
       "deletedAt": null,
+      
       "equipments": [
         {
           "name": "Lorry 3 Ton",
@@ -47,24 +53,30 @@
       "name": "Road Furniture Cleaning - MRR2 Gombak",
       "notes": "Regular maintenance cleaning of guardrails, signboards, and kilometer posts along MRR2",
       "weatherCondition": "SUNNY",
+
       "workPerformed": true,
       "companyID": 1,
       "status": "SUBMITTED",
       "contractRelationID": null,
+
       "approvedByID": null,
       "approvedAt": null,
       "rejectionReason": null,
+
       "workScopeID": 4,
       "roadID": 97,
       "totalWorkers": 8,
+
       "fromSection": "5.2",
       "toSection": "8.5",
       "longitude": "101.7414991",
       "latitude": "3.1307736",
+
       "createdByID": 1,
       "createdAt": "2025-10-05T12:18:20.864Z",
       "updatedAt": "2025-10-05T12:18:20.864Z",
       "deletedAt": null,
+
       "equipments": [
         {
           "name": "Papan Tanda",
