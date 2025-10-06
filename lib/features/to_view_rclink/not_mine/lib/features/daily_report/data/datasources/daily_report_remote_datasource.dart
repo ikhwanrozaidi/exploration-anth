@@ -2,8 +2,10 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../daily_report_creation/data/datasources/daily_report_creation_api_service.dart';
 import '../models/daily_report_model.dart';
 import '../models/daily_report_filter_model.dart';
+import '../models/road_edit_model.dart';
 import 'daily_report_api_service.dart';
 
 abstract class DailyReportRemoteDataSource {
@@ -13,13 +15,21 @@ abstract class DailyReportRemoteDataSource {
     int limit = 10,
     String sortOrder = 'asc',
   });
+
+  Future<Either<Failure, List<RoadEditModel>>> getRoadsByDistrictName(
+    String districtName,
+  );
 }
 
 @LazySingleton(as: DailyReportRemoteDataSource)
 class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
   final DailyReportApiService _apiService;
+  final DailyReportCreationApiService _dailyCreationapiService;
 
-  DailyReportRemoteDataSourceImpl(this._apiService);
+  DailyReportRemoteDataSourceImpl(
+    this._apiService,
+    this._dailyCreationapiService,
+  );
 
   @override
   Future<Either<Failure, List<DailyReportModel>>> getDailyReports({
@@ -60,6 +70,33 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
     } catch (e) {
       print('❌ RemoteDataSource: Unexpected error - $e');
       return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<RoadEditModel>>> getRoadsByDistrictName(
+    String districtName,
+  ) async {
+    try {
+      final response = await _dailyCreationapiService.getRoads(
+        search: districtName,
+        limit: 0, // Get all roads
+      );
+
+      if (response.isSuccess && response.data != null) {
+        // Convert RoadModel (from daily_report_creation) to RoadEditModel
+        final roadEditModels = response.data!
+            .map((roadModel) => RoadEditModel.fromCreationRoadModel(roadModel))
+            .toList();
+
+        return Right(roadEditModels);
+      } else {
+        return Left(
+          ServerFailure(response.message, statusCode: response.statusCode),
+        );
+      }
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }
 }

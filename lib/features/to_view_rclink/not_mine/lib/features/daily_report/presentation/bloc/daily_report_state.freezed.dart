@@ -55,14 +55,17 @@ extension DailyReportStatePatterns on DailyReportState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DailyReportInitial value)?  initial,TResult Function( DailyReportLoading value)?  loading,TResult Function( DailyReportLoaded value)?  loaded,TResult Function( DailyReportFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DailyReportInitial value)?  initial,TResult Function( DailyReportLoading value)?  loading,TResult Function( DailyReportLoaded value)?  loaded,TResult Function( DailyReportFailure value)?  failure,TResult Function( RoadsLoading value)?  roadsLoading,TResult Function( RoadsLoaded value)?  roadsLoaded,TResult Function( RoadsFailure value)?  roadsFailure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case DailyReportInitial() when initial != null:
 return initial(_that);case DailyReportLoading() when loading != null:
 return loading(_that);case DailyReportLoaded() when loaded != null:
 return loaded(_that);case DailyReportFailure() when failure != null:
-return failure(_that);case _:
+return failure(_that);case RoadsLoading() when roadsLoading != null:
+return roadsLoading(_that);case RoadsLoaded() when roadsLoaded != null:
+return roadsLoaded(_that);case RoadsFailure() when roadsFailure != null:
+return roadsFailure(_that);case _:
   return orElse();
 
 }
@@ -80,14 +83,17 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DailyReportInitial value)  initial,required TResult Function( DailyReportLoading value)  loading,required TResult Function( DailyReportLoaded value)  loaded,required TResult Function( DailyReportFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DailyReportInitial value)  initial,required TResult Function( DailyReportLoading value)  loading,required TResult Function( DailyReportLoaded value)  loaded,required TResult Function( DailyReportFailure value)  failure,required TResult Function( RoadsLoading value)  roadsLoading,required TResult Function( RoadsLoaded value)  roadsLoaded,required TResult Function( RoadsFailure value)  roadsFailure,}){
 final _that = this;
 switch (_that) {
 case DailyReportInitial():
 return initial(_that);case DailyReportLoading():
 return loading(_that);case DailyReportLoaded():
 return loaded(_that);case DailyReportFailure():
-return failure(_that);case _:
+return failure(_that);case RoadsLoading():
+return roadsLoading(_that);case RoadsLoaded():
+return roadsLoaded(_that);case RoadsFailure():
+return roadsFailure(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -104,14 +110,17 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DailyReportInitial value)?  initial,TResult? Function( DailyReportLoading value)?  loading,TResult? Function( DailyReportLoaded value)?  loaded,TResult? Function( DailyReportFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DailyReportInitial value)?  initial,TResult? Function( DailyReportLoading value)?  loading,TResult? Function( DailyReportLoaded value)?  loaded,TResult? Function( DailyReportFailure value)?  failure,TResult? Function( RoadsLoading value)?  roadsLoading,TResult? Function( RoadsLoaded value)?  roadsLoaded,TResult? Function( RoadsFailure value)?  roadsFailure,}){
 final _that = this;
 switch (_that) {
 case DailyReportInitial() when initial != null:
 return initial(_that);case DailyReportLoading() when loading != null:
 return loading(_that);case DailyReportLoaded() when loaded != null:
 return loaded(_that);case DailyReportFailure() when failure != null:
-return failure(_that);case _:
+return failure(_that);case RoadsLoading() when roadsLoading != null:
+return roadsLoading(_that);case RoadsLoaded() when roadsLoaded != null:
+return roadsLoaded(_that);case RoadsFailure() when roadsFailure != null:
+return roadsFailure(_that);case _:
   return null;
 
 }
@@ -128,13 +137,16 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<DailyReportResponse> reports)?  loaded,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<DailyReportResponse> reports)?  loaded,TResult Function( String message)?  failure,TResult Function()?  roadsLoading,TResult Function( List<RoadEdit> roads,  RoadEdit? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult Function( String message)?  roadsFailure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case DailyReportInitial() when initial != null:
 return initial();case DailyReportLoading() when loading != null:
 return loading();case DailyReportLoaded() when loaded != null:
 return loaded(_that.reports);case DailyReportFailure() when failure != null:
-return failure(_that.message);case _:
+return failure(_that.message);case RoadsLoading() when roadsLoading != null:
+return roadsLoading();case RoadsLoaded() when roadsLoaded != null:
+return roadsLoaded(_that.roads,_that.selectedRoad,_that.currentSection,_that.sectionError);case RoadsFailure() when roadsFailure != null:
+return roadsFailure(_that.message);case _:
   return orElse();
 
 }
@@ -152,13 +164,16 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<DailyReportResponse> reports)  loaded,required TResult Function( String message)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<DailyReportResponse> reports)  loaded,required TResult Function( String message)  failure,required TResult Function()  roadsLoading,required TResult Function( List<RoadEdit> roads,  RoadEdit? selectedRoad,  String? currentSection,  String? sectionError)  roadsLoaded,required TResult Function( String message)  roadsFailure,}) {final _that = this;
 switch (_that) {
 case DailyReportInitial():
 return initial();case DailyReportLoading():
 return loading();case DailyReportLoaded():
 return loaded(_that.reports);case DailyReportFailure():
-return failure(_that.message);case _:
+return failure(_that.message);case RoadsLoading():
+return roadsLoading();case RoadsLoaded():
+return roadsLoaded(_that.roads,_that.selectedRoad,_that.currentSection,_that.sectionError);case RoadsFailure():
+return roadsFailure(_that.message);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -175,13 +190,16 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<DailyReportResponse> reports)?  loaded,TResult? Function( String message)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<DailyReportResponse> reports)?  loaded,TResult? Function( String message)?  failure,TResult? Function()?  roadsLoading,TResult? Function( List<RoadEdit> roads,  RoadEdit? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult? Function( String message)?  roadsFailure,}) {final _that = this;
 switch (_that) {
 case DailyReportInitial() when initial != null:
 return initial();case DailyReportLoading() when loading != null:
 return loading();case DailyReportLoaded() when loaded != null:
 return loaded(_that.reports);case DailyReportFailure() when failure != null:
-return failure(_that.message);case _:
+return failure(_that.message);case RoadsLoading() when roadsLoading != null:
+return roadsLoading();case RoadsLoaded() when roadsLoaded != null:
+return roadsLoaded(_that.roads,_that.selectedRoad,_that.currentSection,_that.sectionError);case RoadsFailure() when roadsFailure != null:
+return roadsFailure(_that.message);case _:
   return null;
 
 }
@@ -383,6 +401,182 @@ class _$DailyReportFailureCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(DailyReportFailure(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class RoadsLoading implements DailyReportState {
+  const RoadsLoading();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoadsLoading);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'DailyReportState.roadsLoading()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class RoadsLoaded implements DailyReportState {
+  const RoadsLoaded({required final  List<RoadEdit> roads, this.selectedRoad, this.currentSection, this.sectionError}): _roads = roads;
+  
+
+ final  List<RoadEdit> _roads;
+ List<RoadEdit> get roads {
+  if (_roads is EqualUnmodifiableListView) return _roads;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_roads);
+}
+
+ final  RoadEdit? selectedRoad;
+ final  String? currentSection;
+ final  String? sectionError;
+
+/// Create a copy of DailyReportState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RoadsLoadedCopyWith<RoadsLoaded> get copyWith => _$RoadsLoadedCopyWithImpl<RoadsLoaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoadsLoaded&&const DeepCollectionEquality().equals(other._roads, _roads)&&(identical(other.selectedRoad, selectedRoad) || other.selectedRoad == selectedRoad)&&(identical(other.currentSection, currentSection) || other.currentSection == currentSection)&&(identical(other.sectionError, sectionError) || other.sectionError == sectionError));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_roads),selectedRoad,currentSection,sectionError);
+
+@override
+String toString() {
+  return 'DailyReportState.roadsLoaded(roads: $roads, selectedRoad: $selectedRoad, currentSection: $currentSection, sectionError: $sectionError)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RoadsLoadedCopyWith<$Res> implements $DailyReportStateCopyWith<$Res> {
+  factory $RoadsLoadedCopyWith(RoadsLoaded value, $Res Function(RoadsLoaded) _then) = _$RoadsLoadedCopyWithImpl;
+@useResult
+$Res call({
+ List<RoadEdit> roads, RoadEdit? selectedRoad, String? currentSection, String? sectionError
+});
+
+
+
+
+}
+/// @nodoc
+class _$RoadsLoadedCopyWithImpl<$Res>
+    implements $RoadsLoadedCopyWith<$Res> {
+  _$RoadsLoadedCopyWithImpl(this._self, this._then);
+
+  final RoadsLoaded _self;
+  final $Res Function(RoadsLoaded) _then;
+
+/// Create a copy of DailyReportState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? roads = null,Object? selectedRoad = freezed,Object? currentSection = freezed,Object? sectionError = freezed,}) {
+  return _then(RoadsLoaded(
+roads: null == roads ? _self._roads : roads // ignore: cast_nullable_to_non_nullable
+as List<RoadEdit>,selectedRoad: freezed == selectedRoad ? _self.selectedRoad : selectedRoad // ignore: cast_nullable_to_non_nullable
+as RoadEdit?,currentSection: freezed == currentSection ? _self.currentSection : currentSection // ignore: cast_nullable_to_non_nullable
+as String?,sectionError: freezed == sectionError ? _self.sectionError : sectionError // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class RoadsFailure implements DailyReportState {
+  const RoadsFailure(this.message);
+  
+
+ final  String message;
+
+/// Create a copy of DailyReportState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RoadsFailureCopyWith<RoadsFailure> get copyWith => _$RoadsFailureCopyWithImpl<RoadsFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoadsFailure&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'DailyReportState.roadsFailure(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RoadsFailureCopyWith<$Res> implements $DailyReportStateCopyWith<$Res> {
+  factory $RoadsFailureCopyWith(RoadsFailure value, $Res Function(RoadsFailure) _then) = _$RoadsFailureCopyWithImpl;
+@useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$RoadsFailureCopyWithImpl<$Res>
+    implements $RoadsFailureCopyWith<$Res> {
+  _$RoadsFailureCopyWithImpl(this._self, this._then);
+
+  final RoadsFailure _self;
+  final $Res Function(RoadsFailure) _then;
+
+/// Create a copy of DailyReportState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(RoadsFailure(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));

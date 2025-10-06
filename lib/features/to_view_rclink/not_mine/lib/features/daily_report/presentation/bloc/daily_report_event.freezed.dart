@@ -55,12 +55,16 @@ extension DailyReportEventPatterns on DailyReportEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadDailyReports value)?  loadDailyReports,TResult Function( ClearDailyReportCache value)?  clearCache,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadDailyReports value)?  loadDailyReports,TResult Function( ClearDailyReportCache value)?  clearCache,TResult Function( LoadRoadsForEdit value)?  loadRoadsForEdit,TResult Function( SelectRoadForEdit value)?  selectRoadForEdit,TResult Function( UpdateSectionForEdit value)?  updateSectionForEdit,TResult Function( ClearRoadEditData value)?  clearRoadEditData,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadDailyReports() when loadDailyReports != null:
 return loadDailyReports(_that);case ClearDailyReportCache() when clearCache != null:
-return clearCache(_that);case _:
+return clearCache(_that);case LoadRoadsForEdit() when loadRoadsForEdit != null:
+return loadRoadsForEdit(_that);case SelectRoadForEdit() when selectRoadForEdit != null:
+return selectRoadForEdit(_that);case UpdateSectionForEdit() when updateSectionForEdit != null:
+return updateSectionForEdit(_that);case ClearRoadEditData() when clearRoadEditData != null:
+return clearRoadEditData(_that);case _:
   return orElse();
 
 }
@@ -78,12 +82,16 @@ return clearCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadDailyReports value)  loadDailyReports,required TResult Function( ClearDailyReportCache value)  clearCache,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadDailyReports value)  loadDailyReports,required TResult Function( ClearDailyReportCache value)  clearCache,required TResult Function( LoadRoadsForEdit value)  loadRoadsForEdit,required TResult Function( SelectRoadForEdit value)  selectRoadForEdit,required TResult Function( UpdateSectionForEdit value)  updateSectionForEdit,required TResult Function( ClearRoadEditData value)  clearRoadEditData,}){
 final _that = this;
 switch (_that) {
 case LoadDailyReports():
 return loadDailyReports(_that);case ClearDailyReportCache():
-return clearCache(_that);case _:
+return clearCache(_that);case LoadRoadsForEdit():
+return loadRoadsForEdit(_that);case SelectRoadForEdit():
+return selectRoadForEdit(_that);case UpdateSectionForEdit():
+return updateSectionForEdit(_that);case ClearRoadEditData():
+return clearRoadEditData(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +108,16 @@ return clearCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadDailyReports value)?  loadDailyReports,TResult? Function( ClearDailyReportCache value)?  clearCache,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadDailyReports value)?  loadDailyReports,TResult? Function( ClearDailyReportCache value)?  clearCache,TResult? Function( LoadRoadsForEdit value)?  loadRoadsForEdit,TResult? Function( SelectRoadForEdit value)?  selectRoadForEdit,TResult? Function( UpdateSectionForEdit value)?  updateSectionForEdit,TResult? Function( ClearRoadEditData value)?  clearRoadEditData,}){
 final _that = this;
 switch (_that) {
 case LoadDailyReports() when loadDailyReports != null:
 return loadDailyReports(_that);case ClearDailyReportCache() when clearCache != null:
-return clearCache(_that);case _:
+return clearCache(_that);case LoadRoadsForEdit() when loadRoadsForEdit != null:
+return loadRoadsForEdit(_that);case SelectRoadForEdit() when selectRoadForEdit != null:
+return selectRoadForEdit(_that);case UpdateSectionForEdit() when updateSectionForEdit != null:
+return updateSectionForEdit(_that);case ClearRoadEditData() when clearRoadEditData != null:
+return clearRoadEditData(_that);case _:
   return null;
 
 }
@@ -122,11 +134,15 @@ return clearCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh)?  loadDailyReports,TResult Function()?  clearCache,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh)?  loadDailyReports,TResult Function()?  clearCache,TResult Function( String districtName,  bool forceRefresh)?  loadRoadsForEdit,TResult Function( RoadEdit selectedRoad)?  selectRoadForEdit,TResult Function( String section)?  updateSectionForEdit,TResult Function()?  clearRoadEditData,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadDailyReports() when loadDailyReports != null:
 return loadDailyReports(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.forceRefresh);case ClearDailyReportCache() when clearCache != null:
-return clearCache();case _:
+return clearCache();case LoadRoadsForEdit() when loadRoadsForEdit != null:
+return loadRoadsForEdit(_that.districtName,_that.forceRefresh);case SelectRoadForEdit() when selectRoadForEdit != null:
+return selectRoadForEdit(_that.selectedRoad);case UpdateSectionForEdit() when updateSectionForEdit != null:
+return updateSectionForEdit(_that.section);case ClearRoadEditData() when clearRoadEditData != null:
+return clearRoadEditData();case _:
   return orElse();
 
 }
@@ -144,11 +160,15 @@ return clearCache();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh)  loadDailyReports,required TResult Function()  clearCache,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh)  loadDailyReports,required TResult Function()  clearCache,required TResult Function( String districtName,  bool forceRefresh)  loadRoadsForEdit,required TResult Function( RoadEdit selectedRoad)  selectRoadForEdit,required TResult Function( String section)  updateSectionForEdit,required TResult Function()  clearRoadEditData,}) {final _that = this;
 switch (_that) {
 case LoadDailyReports():
 return loadDailyReports(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.forceRefresh);case ClearDailyReportCache():
-return clearCache();case _:
+return clearCache();case LoadRoadsForEdit():
+return loadRoadsForEdit(_that.districtName,_that.forceRefresh);case SelectRoadForEdit():
+return selectRoadForEdit(_that.selectedRoad);case UpdateSectionForEdit():
+return updateSectionForEdit(_that.section);case ClearRoadEditData():
+return clearRoadEditData();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +185,15 @@ return clearCache();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh)?  loadDailyReports,TResult? Function()?  clearCache,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh)?  loadDailyReports,TResult? Function()?  clearCache,TResult? Function( String districtName,  bool forceRefresh)?  loadRoadsForEdit,TResult? Function( RoadEdit selectedRoad)?  selectRoadForEdit,TResult? Function( String section)?  updateSectionForEdit,TResult? Function()?  clearRoadEditData,}) {final _that = this;
 switch (_that) {
 case LoadDailyReports() when loadDailyReports != null:
 return loadDailyReports(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.forceRefresh);case ClearDailyReportCache() when clearCache != null:
-return clearCache();case _:
+return clearCache();case LoadRoadsForEdit() when loadRoadsForEdit != null:
+return loadRoadsForEdit(_that.districtName,_that.forceRefresh);case SelectRoadForEdit() when selectRoadForEdit != null:
+return selectRoadForEdit(_that.selectedRoad);case UpdateSectionForEdit() when updateSectionForEdit != null:
+return updateSectionForEdit(_that.section);case ClearRoadEditData() when clearRoadEditData != null:
+return clearRoadEditData();case _:
   return null;
 
 }
@@ -275,6 +299,238 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'DailyReportEvent.clearCache()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class LoadRoadsForEdit implements DailyReportEvent {
+  const LoadRoadsForEdit({required this.districtName, this.forceRefresh = false});
+  
+
+ final  String districtName;
+@JsonKey() final  bool forceRefresh;
+
+/// Create a copy of DailyReportEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LoadRoadsForEditCopyWith<LoadRoadsForEdit> get copyWith => _$LoadRoadsForEditCopyWithImpl<LoadRoadsForEdit>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadRoadsForEdit&&(identical(other.districtName, districtName) || other.districtName == districtName)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,districtName,forceRefresh);
+
+@override
+String toString() {
+  return 'DailyReportEvent.loadRoadsForEdit(districtName: $districtName, forceRefresh: $forceRefresh)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LoadRoadsForEditCopyWith<$Res> implements $DailyReportEventCopyWith<$Res> {
+  factory $LoadRoadsForEditCopyWith(LoadRoadsForEdit value, $Res Function(LoadRoadsForEdit) _then) = _$LoadRoadsForEditCopyWithImpl;
+@useResult
+$Res call({
+ String districtName, bool forceRefresh
+});
+
+
+
+
+}
+/// @nodoc
+class _$LoadRoadsForEditCopyWithImpl<$Res>
+    implements $LoadRoadsForEditCopyWith<$Res> {
+  _$LoadRoadsForEditCopyWithImpl(this._self, this._then);
+
+  final LoadRoadsForEdit _self;
+  final $Res Function(LoadRoadsForEdit) _then;
+
+/// Create a copy of DailyReportEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? districtName = null,Object? forceRefresh = null,}) {
+  return _then(LoadRoadsForEdit(
+districtName: null == districtName ? _self.districtName : districtName // ignore: cast_nullable_to_non_nullable
+as String,forceRefresh: null == forceRefresh ? _self.forceRefresh : forceRefresh // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class SelectRoadForEdit implements DailyReportEvent {
+  const SelectRoadForEdit({required this.selectedRoad});
+  
+
+ final  RoadEdit selectedRoad;
+
+/// Create a copy of DailyReportEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SelectRoadForEditCopyWith<SelectRoadForEdit> get copyWith => _$SelectRoadForEditCopyWithImpl<SelectRoadForEdit>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SelectRoadForEdit&&(identical(other.selectedRoad, selectedRoad) || other.selectedRoad == selectedRoad));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,selectedRoad);
+
+@override
+String toString() {
+  return 'DailyReportEvent.selectRoadForEdit(selectedRoad: $selectedRoad)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SelectRoadForEditCopyWith<$Res> implements $DailyReportEventCopyWith<$Res> {
+  factory $SelectRoadForEditCopyWith(SelectRoadForEdit value, $Res Function(SelectRoadForEdit) _then) = _$SelectRoadForEditCopyWithImpl;
+@useResult
+$Res call({
+ RoadEdit selectedRoad
+});
+
+
+
+
+}
+/// @nodoc
+class _$SelectRoadForEditCopyWithImpl<$Res>
+    implements $SelectRoadForEditCopyWith<$Res> {
+  _$SelectRoadForEditCopyWithImpl(this._self, this._then);
+
+  final SelectRoadForEdit _self;
+  final $Res Function(SelectRoadForEdit) _then;
+
+/// Create a copy of DailyReportEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? selectedRoad = null,}) {
+  return _then(SelectRoadForEdit(
+selectedRoad: null == selectedRoad ? _self.selectedRoad : selectedRoad // ignore: cast_nullable_to_non_nullable
+as RoadEdit,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class UpdateSectionForEdit implements DailyReportEvent {
+  const UpdateSectionForEdit({required this.section});
+  
+
+ final  String section;
+
+/// Create a copy of DailyReportEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UpdateSectionForEditCopyWith<UpdateSectionForEdit> get copyWith => _$UpdateSectionForEditCopyWithImpl<UpdateSectionForEdit>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateSectionForEdit&&(identical(other.section, section) || other.section == section));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,section);
+
+@override
+String toString() {
+  return 'DailyReportEvent.updateSectionForEdit(section: $section)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UpdateSectionForEditCopyWith<$Res> implements $DailyReportEventCopyWith<$Res> {
+  factory $UpdateSectionForEditCopyWith(UpdateSectionForEdit value, $Res Function(UpdateSectionForEdit) _then) = _$UpdateSectionForEditCopyWithImpl;
+@useResult
+$Res call({
+ String section
+});
+
+
+
+
+}
+/// @nodoc
+class _$UpdateSectionForEditCopyWithImpl<$Res>
+    implements $UpdateSectionForEditCopyWith<$Res> {
+  _$UpdateSectionForEditCopyWithImpl(this._self, this._then);
+
+  final UpdateSectionForEdit _self;
+  final $Res Function(UpdateSectionForEdit) _then;
+
+/// Create a copy of DailyReportEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? section = null,}) {
+  return _then(UpdateSectionForEdit(
+section: null == section ? _self.section : section // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ClearRoadEditData implements DailyReportEvent {
+  const ClearRoadEditData();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClearRoadEditData);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'DailyReportEvent.clearRoadEditData()';
 }
 
 

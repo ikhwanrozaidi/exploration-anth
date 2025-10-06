@@ -88,6 +88,12 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
           return state.when(
             initial: () => const Center(child: Text('No daily reports loaded')),
             loading: () => const Center(child: CircularProgressIndicator()),
+            roadsLoading: () => const Center(child: CircularProgressIndicator()),
+            roadsLoaded: (roads, selectedRoad, currentSection, sectionError) =>
+                const Center(child: Text('Roads loaded')),
+            roadsFailure: (message) => Center(
+              child: Text(message, style: const TextStyle(color: Colors.red)),
+            ),
 
             // Loaded
             loaded: (reports) {

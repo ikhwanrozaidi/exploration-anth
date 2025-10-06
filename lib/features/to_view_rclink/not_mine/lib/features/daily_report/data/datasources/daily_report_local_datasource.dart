@@ -6,6 +6,7 @@ import '../../domain/entities/daily_report_response.dart';
 import '../../domain/entities/daily_report_equipment_response.dart';
 import '../../domain/entities/quantity_value_response.dart';
 import '../../domain/entities/report_quantity_response.dart';
+import '../../domain/entities/road_edit_entity.dart';
 import '../../domain/entities/work_scope_response.dart';
 import '../../domain/entities/road_response.dart';
 
@@ -13,6 +14,10 @@ abstract class DailyReportLocalDataSource {
   Future<List<DailyReportResponse>?> getCachedDailyReports(String companyUID);
   Future<void> cacheDailyReports(List<DailyReportResponse> reports);
   Future<void> clearCache();
+
+  Future<List<RoadEdit>?> getCachedRoadsByDistrictName(String districtName);
+  Future<void> cacheRoads(List<RoadEdit> roads, String districtName);
+  Future<void> clearRoadEditCache();
 }
 
 @LazySingleton(as: DailyReportLocalDataSource)
@@ -282,6 +287,100 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
       await _database.delete(_database.dailyReports).go();
     } catch (e) {
       print('Error clearing daily reports cache: $e');
+    }
+  }
+
+  @override
+  Future<List<RoadEdit>?> getCachedRoadsByDistrictName(
+    String districtName,
+  ) async {
+    try {
+      // Query roads from database joined with districts to filter by name
+      final query = _database.select(_database.roads).join([
+        leftOuterJoin(
+          _database.districts,
+          _database.districts.id.equalsExp(_database.roads.districtId),
+        ),
+      ])..where(_database.districts.name.equals(districtName));
+
+      final results = await query.get();
+
+      if (results.isEmpty) {
+        print('💾 No cached roads found for district: $districtName');
+        return null;
+      }
+
+      final roadEntities = results.map((row) {
+        final road = row.readTable(_database.roads);
+        final district = row.readTableOrNull(_database.districts);
+
+        return RoadEdit(
+          id: road.id,
+          uid: road.uid,
+          name: road.name,
+          roadNo: road.roadNo,
+          sectionStart: road.sectionStart?.toString(),
+          sectionFinish: road.sectionFinish?.toString(),
+          districtId: road.districtId,
+          districtName: district?.name,
+        );
+      }).toList();
+
+      print(
+        '✅ Retrieved ${roadEntities.length} cached roads for district: $districtName',
+      );
+      return roadEntities;
+    } catch (e) {
+      print('❌ Error getting cached roads: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<void> cacheRoads(List<RoadEdit> roads, String districtName) async {
+    try {
+      await _database.transaction(() async {
+        for (final road in roads) {
+          if (road.id != null && road.uid != null) {
+            await _database
+                .into(_database.roads)
+                .insertOnConflictUpdate(
+                  RoadsCompanion(
+                    id: Value(road.id!),
+                    uid: Value(road.uid!),
+                    name: Value(road.name ?? ''),
+                    roadNo: Value(road.roadNo ?? ''),
+                    sectionStart: road.sectionStart != null
+                        ? Value(road.sectionStart!)
+                        : const Value.absent(),
+                    sectionFinish: road.sectionFinish != null
+                        ? Value(road.sectionFinish!)
+                        : const Value.absent(),
+                    districtId: road.districtId != null
+                        ? Value(road.districtId!)
+                        : const Value.absent(),
+                    createdAt: Value(DateTime.now()),
+                    updatedAt: Value(DateTime.now()),
+                    isSynced: const Value(true),
+                  ),
+                );
+          }
+        }
+      });
+
+      print('💾 Cached ${roads.length} roads for district: $districtName');
+    } catch (e) {
+      print('❌ Error caching roads: $e');
+    }
+  }
+
+  @override
+  Future<void> clearRoadEditCache() async {
+    try {
+      await _database.delete(_database.roads).go();
+      print('✅ Road edit cache cleared from database');
+    } catch (e) {
+      print('❌ Error clearing road edit cache: $e');
     }
   }
 }
