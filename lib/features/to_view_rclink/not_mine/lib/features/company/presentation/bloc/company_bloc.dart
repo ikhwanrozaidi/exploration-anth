@@ -80,9 +80,9 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
             // Load role and permissions for the selected company
             final rbacBloc = getIt<RbacBloc>();
             rbacBloc.add(LoadPermissions(selectedCompany.adminRole!.uid));
-            print(
-              '📋 Loading permissions for role: ${selectedCompany.adminRole!.uid}',
-            );
+            // print(
+            //   '📋 Loading permissions for role: ${selectedCompany.adminRole!.uid}',
+            // );
           } else {
             print('⚠️ Warning: Selected company has no adminRole or empty UID');
             // You might want to handle this case differently:

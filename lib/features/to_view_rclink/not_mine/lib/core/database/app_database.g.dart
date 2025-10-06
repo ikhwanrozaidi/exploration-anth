@@ -13037,6 +13037,4723 @@ class RoadsCompanion extends UpdateCompanion<RoadRecord> {
   }
 }
 
+class $DailyReportsTable extends DailyReports
+    with TableInfo<$DailyReportsTable, DailyReportRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DailyReportsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _weatherConditionMeta = const VerificationMeta(
+    'weatherCondition',
+  );
+  @override
+  late final GeneratedColumn<String> weatherCondition = GeneratedColumn<String>(
+    'weather_condition',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workPerformedMeta = const VerificationMeta(
+    'workPerformed',
+  );
+  @override
+  late final GeneratedColumn<bool> workPerformed = GeneratedColumn<bool>(
+    'work_performed',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("work_performed" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _companyIDMeta = const VerificationMeta(
+    'companyID',
+  );
+  @override
+  late final GeneratedColumn<int> companyID = GeneratedColumn<int>(
+    'company_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contractRelationIDMeta =
+      const VerificationMeta('contractRelationID');
+  @override
+  late final GeneratedColumn<int> contractRelationID = GeneratedColumn<int>(
+    'contract_relation_i_d',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('SUBMITTED'),
+  );
+  static const VerificationMeta _approvedByIDMeta = const VerificationMeta(
+    'approvedByID',
+  );
+  @override
+  late final GeneratedColumn<int> approvedByID = GeneratedColumn<int>(
+    'approved_by_i_d',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _approvedAtMeta = const VerificationMeta(
+    'approvedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> approvedAt = GeneratedColumn<DateTime>(
+    'approved_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rejectionReasonMeta = const VerificationMeta(
+    'rejectionReason',
+  );
+  @override
+  late final GeneratedColumn<String> rejectionReason = GeneratedColumn<String>(
+    'rejection_reason',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _workScopeIDMeta = const VerificationMeta(
+    'workScopeID',
+  );
+  @override
+  late final GeneratedColumn<int> workScopeID = GeneratedColumn<int>(
+    'work_scope_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roadIDMeta = const VerificationMeta('roadID');
+  @override
+  late final GeneratedColumn<int> roadID = GeneratedColumn<int>(
+    'road_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _totalWorkersMeta = const VerificationMeta(
+    'totalWorkers',
+  );
+  @override
+  late final GeneratedColumn<int> totalWorkers = GeneratedColumn<int>(
+    'total_workers',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _fromSectionMeta = const VerificationMeta(
+    'fromSection',
+  );
+  @override
+  late final GeneratedColumn<double> fromSection = GeneratedColumn<double>(
+    'from_section',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _toSectionMeta = const VerificationMeta(
+    'toSection',
+  );
+  @override
+  late final GeneratedColumn<double> toSection = GeneratedColumn<double>(
+    'to_section',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdByIDMeta = const VerificationMeta(
+    'createdByID',
+  );
+  @override
+  late final GeneratedColumn<int> createdByID = GeneratedColumn<int>(
+    'created_by_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    notes,
+    weatherCondition,
+    workPerformed,
+    longitude,
+    latitude,
+    companyID,
+    contractRelationID,
+    status,
+    approvedByID,
+    approvedAt,
+    rejectionReason,
+    workScopeID,
+    roadID,
+    totalWorkers,
+    fromSection,
+    toSection,
+    createdByID,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'daily_reports';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DailyReportRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('weather_condition')) {
+      context.handle(
+        _weatherConditionMeta,
+        weatherCondition.isAcceptableOrUnknown(
+          data['weather_condition']!,
+          _weatherConditionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_weatherConditionMeta);
+    }
+    if (data.containsKey('work_performed')) {
+      context.handle(
+        _workPerformedMeta,
+        workPerformed.isAcceptableOrUnknown(
+          data['work_performed']!,
+          _workPerformedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    }
+    if (data.containsKey('company_i_d')) {
+      context.handle(
+        _companyIDMeta,
+        companyID.isAcceptableOrUnknown(data['company_i_d']!, _companyIDMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_companyIDMeta);
+    }
+    if (data.containsKey('contract_relation_i_d')) {
+      context.handle(
+        _contractRelationIDMeta,
+        contractRelationID.isAcceptableOrUnknown(
+          data['contract_relation_i_d']!,
+          _contractRelationIDMeta,
+        ),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('approved_by_i_d')) {
+      context.handle(
+        _approvedByIDMeta,
+        approvedByID.isAcceptableOrUnknown(
+          data['approved_by_i_d']!,
+          _approvedByIDMeta,
+        ),
+      );
+    }
+    if (data.containsKey('approved_at')) {
+      context.handle(
+        _approvedAtMeta,
+        approvedAt.isAcceptableOrUnknown(data['approved_at']!, _approvedAtMeta),
+      );
+    }
+    if (data.containsKey('rejection_reason')) {
+      context.handle(
+        _rejectionReasonMeta,
+        rejectionReason.isAcceptableOrUnknown(
+          data['rejection_reason']!,
+          _rejectionReasonMeta,
+        ),
+      );
+    }
+    if (data.containsKey('work_scope_i_d')) {
+      context.handle(
+        _workScopeIDMeta,
+        workScopeID.isAcceptableOrUnknown(
+          data['work_scope_i_d']!,
+          _workScopeIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workScopeIDMeta);
+    }
+    if (data.containsKey('road_i_d')) {
+      context.handle(
+        _roadIDMeta,
+        roadID.isAcceptableOrUnknown(data['road_i_d']!, _roadIDMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_roadIDMeta);
+    }
+    if (data.containsKey('total_workers')) {
+      context.handle(
+        _totalWorkersMeta,
+        totalWorkers.isAcceptableOrUnknown(
+          data['total_workers']!,
+          _totalWorkersMeta,
+        ),
+      );
+    }
+    if (data.containsKey('from_section')) {
+      context.handle(
+        _fromSectionMeta,
+        fromSection.isAcceptableOrUnknown(
+          data['from_section']!,
+          _fromSectionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('to_section')) {
+      context.handle(
+        _toSectionMeta,
+        toSection.isAcceptableOrUnknown(data['to_section']!, _toSectionMeta),
+      );
+    }
+    if (data.containsKey('created_by_i_d')) {
+      context.handle(
+        _createdByIDMeta,
+        createdByID.isAcceptableOrUnknown(
+          data['created_by_i_d']!,
+          _createdByIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_createdByIDMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  DailyReportRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DailyReportRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      weatherCondition: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}weather_condition'],
+      )!,
+      workPerformed: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}work_performed'],
+      )!,
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      ),
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      ),
+      companyID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}company_i_d'],
+      )!,
+      contractRelationID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}contract_relation_i_d'],
+      ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      approvedByID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}approved_by_i_d'],
+      ),
+      approvedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}approved_at'],
+      ),
+      rejectionReason: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}rejection_reason'],
+      ),
+      workScopeID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}work_scope_i_d'],
+      )!,
+      roadID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}road_i_d'],
+      )!,
+      totalWorkers: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_workers'],
+      ),
+      fromSection: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}from_section'],
+      ),
+      toSection: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}to_section'],
+      ),
+      createdByID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by_i_d'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $DailyReportsTable createAlias(String alias) {
+    return $DailyReportsTable(attachedDatabase, alias);
+  }
+}
+
+class DailyReportRecord extends DataClass
+    implements Insertable<DailyReportRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String name;
+  final String? notes;
+  final String weatherCondition;
+  final bool workPerformed;
+  final double? longitude;
+  final double? latitude;
+  final int companyID;
+  final int? contractRelationID;
+  final String status;
+  final int? approvedByID;
+  final DateTime? approvedAt;
+  final String? rejectionReason;
+  final int workScopeID;
+  final int roadID;
+  final int? totalWorkers;
+  final double? fromSection;
+  final double? toSection;
+  final int createdByID;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const DailyReportRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.name,
+    this.notes,
+    required this.weatherCondition,
+    required this.workPerformed,
+    this.longitude,
+    this.latitude,
+    required this.companyID,
+    this.contractRelationID,
+    required this.status,
+    this.approvedByID,
+    this.approvedAt,
+    this.rejectionReason,
+    required this.workScopeID,
+    required this.roadID,
+    this.totalWorkers,
+    this.fromSection,
+    this.toSection,
+    required this.createdByID,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['weather_condition'] = Variable<String>(weatherCondition);
+    map['work_performed'] = Variable<bool>(workPerformed);
+    if (!nullToAbsent || longitude != null) {
+      map['longitude'] = Variable<double>(longitude);
+    }
+    if (!nullToAbsent || latitude != null) {
+      map['latitude'] = Variable<double>(latitude);
+    }
+    map['company_i_d'] = Variable<int>(companyID);
+    if (!nullToAbsent || contractRelationID != null) {
+      map['contract_relation_i_d'] = Variable<int>(contractRelationID);
+    }
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || approvedByID != null) {
+      map['approved_by_i_d'] = Variable<int>(approvedByID);
+    }
+    if (!nullToAbsent || approvedAt != null) {
+      map['approved_at'] = Variable<DateTime>(approvedAt);
+    }
+    if (!nullToAbsent || rejectionReason != null) {
+      map['rejection_reason'] = Variable<String>(rejectionReason);
+    }
+    map['work_scope_i_d'] = Variable<int>(workScopeID);
+    map['road_i_d'] = Variable<int>(roadID);
+    if (!nullToAbsent || totalWorkers != null) {
+      map['total_workers'] = Variable<int>(totalWorkers);
+    }
+    if (!nullToAbsent || fromSection != null) {
+      map['from_section'] = Variable<double>(fromSection);
+    }
+    if (!nullToAbsent || toSection != null) {
+      map['to_section'] = Variable<double>(toSection);
+    }
+    map['created_by_i_d'] = Variable<int>(createdByID);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  DailyReportsCompanion toCompanion(bool nullToAbsent) {
+    return DailyReportsCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      name: Value(name),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      weatherCondition: Value(weatherCondition),
+      workPerformed: Value(workPerformed),
+      longitude: longitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(longitude),
+      latitude: latitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(latitude),
+      companyID: Value(companyID),
+      contractRelationID: contractRelationID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contractRelationID),
+      status: Value(status),
+      approvedByID: approvedByID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(approvedByID),
+      approvedAt: approvedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(approvedAt),
+      rejectionReason: rejectionReason == null && nullToAbsent
+          ? const Value.absent()
+          : Value(rejectionReason),
+      workScopeID: Value(workScopeID),
+      roadID: Value(roadID),
+      totalWorkers: totalWorkers == null && nullToAbsent
+          ? const Value.absent()
+          : Value(totalWorkers),
+      fromSection: fromSection == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fromSection),
+      toSection: toSection == null && nullToAbsent
+          ? const Value.absent()
+          : Value(toSection),
+      createdByID: Value(createdByID),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory DailyReportRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DailyReportRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      name: serializer.fromJson<String>(json['name']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      weatherCondition: serializer.fromJson<String>(json['weatherCondition']),
+      workPerformed: serializer.fromJson<bool>(json['workPerformed']),
+      longitude: serializer.fromJson<double?>(json['longitude']),
+      latitude: serializer.fromJson<double?>(json['latitude']),
+      companyID: serializer.fromJson<int>(json['companyID']),
+      contractRelationID: serializer.fromJson<int?>(json['contractRelationID']),
+      status: serializer.fromJson<String>(json['status']),
+      approvedByID: serializer.fromJson<int?>(json['approvedByID']),
+      approvedAt: serializer.fromJson<DateTime?>(json['approvedAt']),
+      rejectionReason: serializer.fromJson<String?>(json['rejectionReason']),
+      workScopeID: serializer.fromJson<int>(json['workScopeID']),
+      roadID: serializer.fromJson<int>(json['roadID']),
+      totalWorkers: serializer.fromJson<int?>(json['totalWorkers']),
+      fromSection: serializer.fromJson<double?>(json['fromSection']),
+      toSection: serializer.fromJson<double?>(json['toSection']),
+      createdByID: serializer.fromJson<int>(json['createdByID']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'name': serializer.toJson<String>(name),
+      'notes': serializer.toJson<String?>(notes),
+      'weatherCondition': serializer.toJson<String>(weatherCondition),
+      'workPerformed': serializer.toJson<bool>(workPerformed),
+      'longitude': serializer.toJson<double?>(longitude),
+      'latitude': serializer.toJson<double?>(latitude),
+      'companyID': serializer.toJson<int>(companyID),
+      'contractRelationID': serializer.toJson<int?>(contractRelationID),
+      'status': serializer.toJson<String>(status),
+      'approvedByID': serializer.toJson<int?>(approvedByID),
+      'approvedAt': serializer.toJson<DateTime?>(approvedAt),
+      'rejectionReason': serializer.toJson<String?>(rejectionReason),
+      'workScopeID': serializer.toJson<int>(workScopeID),
+      'roadID': serializer.toJson<int>(roadID),
+      'totalWorkers': serializer.toJson<int?>(totalWorkers),
+      'fromSection': serializer.toJson<double?>(fromSection),
+      'toSection': serializer.toJson<double?>(toSection),
+      'createdByID': serializer.toJson<int>(createdByID),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  DailyReportRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? name,
+    Value<String?> notes = const Value.absent(),
+    String? weatherCondition,
+    bool? workPerformed,
+    Value<double?> longitude = const Value.absent(),
+    Value<double?> latitude = const Value.absent(),
+    int? companyID,
+    Value<int?> contractRelationID = const Value.absent(),
+    String? status,
+    Value<int?> approvedByID = const Value.absent(),
+    Value<DateTime?> approvedAt = const Value.absent(),
+    Value<String?> rejectionReason = const Value.absent(),
+    int? workScopeID,
+    int? roadID,
+    Value<int?> totalWorkers = const Value.absent(),
+    Value<double?> fromSection = const Value.absent(),
+    Value<double?> toSection = const Value.absent(),
+    int? createdByID,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => DailyReportRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    notes: notes.present ? notes.value : this.notes,
+    weatherCondition: weatherCondition ?? this.weatherCondition,
+    workPerformed: workPerformed ?? this.workPerformed,
+    longitude: longitude.present ? longitude.value : this.longitude,
+    latitude: latitude.present ? latitude.value : this.latitude,
+    companyID: companyID ?? this.companyID,
+    contractRelationID: contractRelationID.present
+        ? contractRelationID.value
+        : this.contractRelationID,
+    status: status ?? this.status,
+    approvedByID: approvedByID.present ? approvedByID.value : this.approvedByID,
+    approvedAt: approvedAt.present ? approvedAt.value : this.approvedAt,
+    rejectionReason: rejectionReason.present
+        ? rejectionReason.value
+        : this.rejectionReason,
+    workScopeID: workScopeID ?? this.workScopeID,
+    roadID: roadID ?? this.roadID,
+    totalWorkers: totalWorkers.present ? totalWorkers.value : this.totalWorkers,
+    fromSection: fromSection.present ? fromSection.value : this.fromSection,
+    toSection: toSection.present ? toSection.value : this.toSection,
+    createdByID: createdByID ?? this.createdByID,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  DailyReportRecord copyWithCompanion(DailyReportsCompanion data) {
+    return DailyReportRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      name: data.name.present ? data.name.value : this.name,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      weatherCondition: data.weatherCondition.present
+          ? data.weatherCondition.value
+          : this.weatherCondition,
+      workPerformed: data.workPerformed.present
+          ? data.workPerformed.value
+          : this.workPerformed,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      companyID: data.companyID.present ? data.companyID.value : this.companyID,
+      contractRelationID: data.contractRelationID.present
+          ? data.contractRelationID.value
+          : this.contractRelationID,
+      status: data.status.present ? data.status.value : this.status,
+      approvedByID: data.approvedByID.present
+          ? data.approvedByID.value
+          : this.approvedByID,
+      approvedAt: data.approvedAt.present
+          ? data.approvedAt.value
+          : this.approvedAt,
+      rejectionReason: data.rejectionReason.present
+          ? data.rejectionReason.value
+          : this.rejectionReason,
+      workScopeID: data.workScopeID.present
+          ? data.workScopeID.value
+          : this.workScopeID,
+      roadID: data.roadID.present ? data.roadID.value : this.roadID,
+      totalWorkers: data.totalWorkers.present
+          ? data.totalWorkers.value
+          : this.totalWorkers,
+      fromSection: data.fromSection.present
+          ? data.fromSection.value
+          : this.fromSection,
+      toSection: data.toSection.present ? data.toSection.value : this.toSection,
+      createdByID: data.createdByID.present
+          ? data.createdByID.value
+          : this.createdByID,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyReportRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('notes: $notes, ')
+          ..write('weatherCondition: $weatherCondition, ')
+          ..write('workPerformed: $workPerformed, ')
+          ..write('longitude: $longitude, ')
+          ..write('latitude: $latitude, ')
+          ..write('companyID: $companyID, ')
+          ..write('contractRelationID: $contractRelationID, ')
+          ..write('status: $status, ')
+          ..write('approvedByID: $approvedByID, ')
+          ..write('approvedAt: $approvedAt, ')
+          ..write('rejectionReason: $rejectionReason, ')
+          ..write('workScopeID: $workScopeID, ')
+          ..write('roadID: $roadID, ')
+          ..write('totalWorkers: $totalWorkers, ')
+          ..write('fromSection: $fromSection, ')
+          ..write('toSection: $toSection, ')
+          ..write('createdByID: $createdByID, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    notes,
+    weatherCondition,
+    workPerformed,
+    longitude,
+    latitude,
+    companyID,
+    contractRelationID,
+    status,
+    approvedByID,
+    approvedAt,
+    rejectionReason,
+    workScopeID,
+    roadID,
+    totalWorkers,
+    fromSection,
+    toSection,
+    createdByID,
+    createdAt,
+    updatedAt,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DailyReportRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.name == this.name &&
+          other.notes == this.notes &&
+          other.weatherCondition == this.weatherCondition &&
+          other.workPerformed == this.workPerformed &&
+          other.longitude == this.longitude &&
+          other.latitude == this.latitude &&
+          other.companyID == this.companyID &&
+          other.contractRelationID == this.contractRelationID &&
+          other.status == this.status &&
+          other.approvedByID == this.approvedByID &&
+          other.approvedAt == this.approvedAt &&
+          other.rejectionReason == this.rejectionReason &&
+          other.workScopeID == this.workScopeID &&
+          other.roadID == this.roadID &&
+          other.totalWorkers == this.totalWorkers &&
+          other.fromSection == this.fromSection &&
+          other.toSection == this.toSection &&
+          other.createdByID == this.createdByID &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> name;
+  final Value<String?> notes;
+  final Value<String> weatherCondition;
+  final Value<bool> workPerformed;
+  final Value<double?> longitude;
+  final Value<double?> latitude;
+  final Value<int> companyID;
+  final Value<int?> contractRelationID;
+  final Value<String> status;
+  final Value<int?> approvedByID;
+  final Value<DateTime?> approvedAt;
+  final Value<String?> rejectionReason;
+  final Value<int> workScopeID;
+  final Value<int> roadID;
+  final Value<int?> totalWorkers;
+  final Value<double?> fromSection;
+  final Value<double?> toSection;
+  final Value<int> createdByID;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const DailyReportsCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.weatherCondition = const Value.absent(),
+    this.workPerformed = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.companyID = const Value.absent(),
+    this.contractRelationID = const Value.absent(),
+    this.status = const Value.absent(),
+    this.approvedByID = const Value.absent(),
+    this.approvedAt = const Value.absent(),
+    this.rejectionReason = const Value.absent(),
+    this.workScopeID = const Value.absent(),
+    this.roadID = const Value.absent(),
+    this.totalWorkers = const Value.absent(),
+    this.fromSection = const Value.absent(),
+    this.toSection = const Value.absent(),
+    this.createdByID = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  DailyReportsCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String name,
+    this.notes = const Value.absent(),
+    required String weatherCondition,
+    this.workPerformed = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.latitude = const Value.absent(),
+    required int companyID,
+    this.contractRelationID = const Value.absent(),
+    this.status = const Value.absent(),
+    this.approvedByID = const Value.absent(),
+    this.approvedAt = const Value.absent(),
+    this.rejectionReason = const Value.absent(),
+    required int workScopeID,
+    required int roadID,
+    this.totalWorkers = const Value.absent(),
+    this.fromSection = const Value.absent(),
+    this.toSection = const Value.absent(),
+    required int createdByID,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : uid = Value(uid),
+       name = Value(name),
+       weatherCondition = Value(weatherCondition),
+       companyID = Value(companyID),
+       workScopeID = Value(workScopeID),
+       roadID = Value(roadID),
+       createdByID = Value(createdByID),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<DailyReportRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? name,
+    Expression<String>? notes,
+    Expression<String>? weatherCondition,
+    Expression<bool>? workPerformed,
+    Expression<double>? longitude,
+    Expression<double>? latitude,
+    Expression<int>? companyID,
+    Expression<int>? contractRelationID,
+    Expression<String>? status,
+    Expression<int>? approvedByID,
+    Expression<DateTime>? approvedAt,
+    Expression<String>? rejectionReason,
+    Expression<int>? workScopeID,
+    Expression<int>? roadID,
+    Expression<int>? totalWorkers,
+    Expression<double>? fromSection,
+    Expression<double>? toSection,
+    Expression<int>? createdByID,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (name != null) 'name': name,
+      if (notes != null) 'notes': notes,
+      if (weatherCondition != null) 'weather_condition': weatherCondition,
+      if (workPerformed != null) 'work_performed': workPerformed,
+      if (longitude != null) 'longitude': longitude,
+      if (latitude != null) 'latitude': latitude,
+      if (companyID != null) 'company_i_d': companyID,
+      if (contractRelationID != null)
+        'contract_relation_i_d': contractRelationID,
+      if (status != null) 'status': status,
+      if (approvedByID != null) 'approved_by_i_d': approvedByID,
+      if (approvedAt != null) 'approved_at': approvedAt,
+      if (rejectionReason != null) 'rejection_reason': rejectionReason,
+      if (workScopeID != null) 'work_scope_i_d': workScopeID,
+      if (roadID != null) 'road_i_d': roadID,
+      if (totalWorkers != null) 'total_workers': totalWorkers,
+      if (fromSection != null) 'from_section': fromSection,
+      if (toSection != null) 'to_section': toSection,
+      if (createdByID != null) 'created_by_i_d': createdByID,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  DailyReportsCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? name,
+    Value<String?>? notes,
+    Value<String>? weatherCondition,
+    Value<bool>? workPerformed,
+    Value<double?>? longitude,
+    Value<double?>? latitude,
+    Value<int>? companyID,
+    Value<int?>? contractRelationID,
+    Value<String>? status,
+    Value<int?>? approvedByID,
+    Value<DateTime?>? approvedAt,
+    Value<String?>? rejectionReason,
+    Value<int>? workScopeID,
+    Value<int>? roadID,
+    Value<int?>? totalWorkers,
+    Value<double?>? fromSection,
+    Value<double?>? toSection,
+    Value<int>? createdByID,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return DailyReportsCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      notes: notes ?? this.notes,
+      weatherCondition: weatherCondition ?? this.weatherCondition,
+      workPerformed: workPerformed ?? this.workPerformed,
+      longitude: longitude ?? this.longitude,
+      latitude: latitude ?? this.latitude,
+      companyID: companyID ?? this.companyID,
+      contractRelationID: contractRelationID ?? this.contractRelationID,
+      status: status ?? this.status,
+      approvedByID: approvedByID ?? this.approvedByID,
+      approvedAt: approvedAt ?? this.approvedAt,
+      rejectionReason: rejectionReason ?? this.rejectionReason,
+      workScopeID: workScopeID ?? this.workScopeID,
+      roadID: roadID ?? this.roadID,
+      totalWorkers: totalWorkers ?? this.totalWorkers,
+      fromSection: fromSection ?? this.fromSection,
+      toSection: toSection ?? this.toSection,
+      createdByID: createdByID ?? this.createdByID,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (weatherCondition.present) {
+      map['weather_condition'] = Variable<String>(weatherCondition.value);
+    }
+    if (workPerformed.present) {
+      map['work_performed'] = Variable<bool>(workPerformed.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (companyID.present) {
+      map['company_i_d'] = Variable<int>(companyID.value);
+    }
+    if (contractRelationID.present) {
+      map['contract_relation_i_d'] = Variable<int>(contractRelationID.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (approvedByID.present) {
+      map['approved_by_i_d'] = Variable<int>(approvedByID.value);
+    }
+    if (approvedAt.present) {
+      map['approved_at'] = Variable<DateTime>(approvedAt.value);
+    }
+    if (rejectionReason.present) {
+      map['rejection_reason'] = Variable<String>(rejectionReason.value);
+    }
+    if (workScopeID.present) {
+      map['work_scope_i_d'] = Variable<int>(workScopeID.value);
+    }
+    if (roadID.present) {
+      map['road_i_d'] = Variable<int>(roadID.value);
+    }
+    if (totalWorkers.present) {
+      map['total_workers'] = Variable<int>(totalWorkers.value);
+    }
+    if (fromSection.present) {
+      map['from_section'] = Variable<double>(fromSection.value);
+    }
+    if (toSection.present) {
+      map['to_section'] = Variable<double>(toSection.value);
+    }
+    if (createdByID.present) {
+      map['created_by_i_d'] = Variable<int>(createdByID.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyReportsCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('notes: $notes, ')
+          ..write('weatherCondition: $weatherCondition, ')
+          ..write('workPerformed: $workPerformed, ')
+          ..write('longitude: $longitude, ')
+          ..write('latitude: $latitude, ')
+          ..write('companyID: $companyID, ')
+          ..write('contractRelationID: $contractRelationID, ')
+          ..write('status: $status, ')
+          ..write('approvedByID: $approvedByID, ')
+          ..write('approvedAt: $approvedAt, ')
+          ..write('rejectionReason: $rejectionReason, ')
+          ..write('workScopeID: $workScopeID, ')
+          ..write('roadID: $roadID, ')
+          ..write('totalWorkers: $totalWorkers, ')
+          ..write('fromSection: $fromSection, ')
+          ..write('toSection: $toSection, ')
+          ..write('createdByID: $createdByID, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ReportEquipmentsTable extends ReportEquipments
+    with TableInfo<$ReportEquipmentsTable, ReportEquipmentRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ReportEquipmentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _reportTypeMeta = const VerificationMeta(
+    'reportType',
+  );
+  @override
+  late final GeneratedColumn<String> reportType = GeneratedColumn<String>(
+    'report_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dailyReportIDMeta = const VerificationMeta(
+    'dailyReportID',
+  );
+  @override
+  late final GeneratedColumn<int> dailyReportID = GeneratedColumn<int>(
+    'daily_report_i_d',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _workEquipmentIDMeta = const VerificationMeta(
+    'workEquipmentID',
+  );
+  @override
+  late final GeneratedColumn<int> workEquipmentID = GeneratedColumn<int>(
+    'work_equipment_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _addedByIDMeta = const VerificationMeta(
+    'addedByID',
+  );
+  @override
+  late final GeneratedColumn<int> addedByID = GeneratedColumn<int>(
+    'added_by_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    reportType,
+    dailyReportID,
+    workEquipmentID,
+    addedByID,
+    createdAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'report_equipments';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ReportEquipmentRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('report_type')) {
+      context.handle(
+        _reportTypeMeta,
+        reportType.isAcceptableOrUnknown(data['report_type']!, _reportTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_reportTypeMeta);
+    }
+    if (data.containsKey('daily_report_i_d')) {
+      context.handle(
+        _dailyReportIDMeta,
+        dailyReportID.isAcceptableOrUnknown(
+          data['daily_report_i_d']!,
+          _dailyReportIDMeta,
+        ),
+      );
+    }
+    if (data.containsKey('work_equipment_i_d')) {
+      context.handle(
+        _workEquipmentIDMeta,
+        workEquipmentID.isAcceptableOrUnknown(
+          data['work_equipment_i_d']!,
+          _workEquipmentIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workEquipmentIDMeta);
+    }
+    if (data.containsKey('added_by_i_d')) {
+      context.handle(
+        _addedByIDMeta,
+        addedByID.isAcceptableOrUnknown(data['added_by_i_d']!, _addedByIDMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_addedByIDMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {dailyReportID, workEquipmentID},
+  ];
+  @override
+  ReportEquipmentRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ReportEquipmentRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      reportType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}report_type'],
+      )!,
+      dailyReportID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}daily_report_i_d'],
+      ),
+      workEquipmentID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}work_equipment_i_d'],
+      )!,
+      addedByID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}added_by_i_d'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ReportEquipmentsTable createAlias(String alias) {
+    return $ReportEquipmentsTable(attachedDatabase, alias);
+  }
+}
+
+class ReportEquipmentRecord extends DataClass
+    implements Insertable<ReportEquipmentRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String reportType;
+  final int? dailyReportID;
+  final int workEquipmentID;
+  final int addedByID;
+  final DateTime createdAt;
+  const ReportEquipmentRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.reportType,
+    this.dailyReportID,
+    required this.workEquipmentID,
+    required this.addedByID,
+    required this.createdAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['report_type'] = Variable<String>(reportType);
+    if (!nullToAbsent || dailyReportID != null) {
+      map['daily_report_i_d'] = Variable<int>(dailyReportID);
+    }
+    map['work_equipment_i_d'] = Variable<int>(workEquipmentID);
+    map['added_by_i_d'] = Variable<int>(addedByID);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    return map;
+  }
+
+  ReportEquipmentsCompanion toCompanion(bool nullToAbsent) {
+    return ReportEquipmentsCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      reportType: Value(reportType),
+      dailyReportID: dailyReportID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dailyReportID),
+      workEquipmentID: Value(workEquipmentID),
+      addedByID: Value(addedByID),
+      createdAt: Value(createdAt),
+    );
+  }
+
+  factory ReportEquipmentRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ReportEquipmentRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      reportType: serializer.fromJson<String>(json['reportType']),
+      dailyReportID: serializer.fromJson<int?>(json['dailyReportID']),
+      workEquipmentID: serializer.fromJson<int>(json['workEquipmentID']),
+      addedByID: serializer.fromJson<int>(json['addedByID']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'reportType': serializer.toJson<String>(reportType),
+      'dailyReportID': serializer.toJson<int?>(dailyReportID),
+      'workEquipmentID': serializer.toJson<int>(workEquipmentID),
+      'addedByID': serializer.toJson<int>(addedByID),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+    };
+  }
+
+  ReportEquipmentRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? reportType,
+    Value<int?> dailyReportID = const Value.absent(),
+    int? workEquipmentID,
+    int? addedByID,
+    DateTime? createdAt,
+  }) => ReportEquipmentRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    reportType: reportType ?? this.reportType,
+    dailyReportID: dailyReportID.present
+        ? dailyReportID.value
+        : this.dailyReportID,
+    workEquipmentID: workEquipmentID ?? this.workEquipmentID,
+    addedByID: addedByID ?? this.addedByID,
+    createdAt: createdAt ?? this.createdAt,
+  );
+  ReportEquipmentRecord copyWithCompanion(ReportEquipmentsCompanion data) {
+    return ReportEquipmentRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      reportType: data.reportType.present
+          ? data.reportType.value
+          : this.reportType,
+      dailyReportID: data.dailyReportID.present
+          ? data.dailyReportID.value
+          : this.dailyReportID,
+      workEquipmentID: data.workEquipmentID.present
+          ? data.workEquipmentID.value
+          : this.workEquipmentID,
+      addedByID: data.addedByID.present ? data.addedByID.value : this.addedByID,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReportEquipmentRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('reportType: $reportType, ')
+          ..write('dailyReportID: $dailyReportID, ')
+          ..write('workEquipmentID: $workEquipmentID, ')
+          ..write('addedByID: $addedByID, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    reportType,
+    dailyReportID,
+    workEquipmentID,
+    addedByID,
+    createdAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ReportEquipmentRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.reportType == this.reportType &&
+          other.dailyReportID == this.dailyReportID &&
+          other.workEquipmentID == this.workEquipmentID &&
+          other.addedByID == this.addedByID &&
+          other.createdAt == this.createdAt);
+}
+
+class ReportEquipmentsCompanion extends UpdateCompanion<ReportEquipmentRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> reportType;
+  final Value<int?> dailyReportID;
+  final Value<int> workEquipmentID;
+  final Value<int> addedByID;
+  final Value<DateTime> createdAt;
+  const ReportEquipmentsCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.reportType = const Value.absent(),
+    this.dailyReportID = const Value.absent(),
+    this.workEquipmentID = const Value.absent(),
+    this.addedByID = const Value.absent(),
+    this.createdAt = const Value.absent(),
+  });
+  ReportEquipmentsCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String reportType,
+    this.dailyReportID = const Value.absent(),
+    required int workEquipmentID,
+    required int addedByID,
+    required DateTime createdAt,
+  }) : reportType = Value(reportType),
+       workEquipmentID = Value(workEquipmentID),
+       addedByID = Value(addedByID),
+       createdAt = Value(createdAt);
+  static Insertable<ReportEquipmentRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? reportType,
+    Expression<int>? dailyReportID,
+    Expression<int>? workEquipmentID,
+    Expression<int>? addedByID,
+    Expression<DateTime>? createdAt,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (reportType != null) 'report_type': reportType,
+      if (dailyReportID != null) 'daily_report_i_d': dailyReportID,
+      if (workEquipmentID != null) 'work_equipment_i_d': workEquipmentID,
+      if (addedByID != null) 'added_by_i_d': addedByID,
+      if (createdAt != null) 'created_at': createdAt,
+    });
+  }
+
+  ReportEquipmentsCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? reportType,
+    Value<int?>? dailyReportID,
+    Value<int>? workEquipmentID,
+    Value<int>? addedByID,
+    Value<DateTime>? createdAt,
+  }) {
+    return ReportEquipmentsCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      reportType: reportType ?? this.reportType,
+      dailyReportID: dailyReportID ?? this.dailyReportID,
+      workEquipmentID: workEquipmentID ?? this.workEquipmentID,
+      addedByID: addedByID ?? this.addedByID,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (reportType.present) {
+      map['report_type'] = Variable<String>(reportType.value);
+    }
+    if (dailyReportID.present) {
+      map['daily_report_i_d'] = Variable<int>(dailyReportID.value);
+    }
+    if (workEquipmentID.present) {
+      map['work_equipment_i_d'] = Variable<int>(workEquipmentID.value);
+    }
+    if (addedByID.present) {
+      map['added_by_i_d'] = Variable<int>(addedByID.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReportEquipmentsCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('reportType: $reportType, ')
+          ..write('dailyReportID: $dailyReportID, ')
+          ..write('workEquipmentID: $workEquipmentID, ')
+          ..write('addedByID: $addedByID, ')
+          ..write('createdAt: $createdAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ReportQuantitiesTable extends ReportQuantities
+    with TableInfo<$ReportQuantitiesTable, ReportQuantityRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ReportQuantitiesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _reportTypeMeta = const VerificationMeta(
+    'reportType',
+  );
+  @override
+  late final GeneratedColumn<String> reportType = GeneratedColumn<String>(
+    'report_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _dailyReportIDMeta = const VerificationMeta(
+    'dailyReportID',
+  );
+  @override
+  late final GeneratedColumn<int> dailyReportID = GeneratedColumn<int>(
+    'daily_report_i_d',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _quantityTypeIDMeta = const VerificationMeta(
+    'quantityTypeID',
+  );
+  @override
+  late final GeneratedColumn<int> quantityTypeID = GeneratedColumn<int>(
+    'quantity_type_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sequenceNoMeta = const VerificationMeta(
+    'sequenceNo',
+  );
+  @override
+  late final GeneratedColumn<int> sequenceNo = GeneratedColumn<int>(
+    'sequence_no',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _totalLengthMeta = const VerificationMeta(
+    'totalLength',
+  );
+  @override
+  late final GeneratedColumn<double> totalLength = GeneratedColumn<double>(
+    'total_length',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
+  @override
+  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
+    'notes',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    reportType,
+    dailyReportID,
+    quantityTypeID,
+    sequenceNo,
+    totalLength,
+    notes,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'report_quantities';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ReportQuantityRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('report_type')) {
+      context.handle(
+        _reportTypeMeta,
+        reportType.isAcceptableOrUnknown(data['report_type']!, _reportTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_reportTypeMeta);
+    }
+    if (data.containsKey('daily_report_i_d')) {
+      context.handle(
+        _dailyReportIDMeta,
+        dailyReportID.isAcceptableOrUnknown(
+          data['daily_report_i_d']!,
+          _dailyReportIDMeta,
+        ),
+      );
+    }
+    if (data.containsKey('quantity_type_i_d')) {
+      context.handle(
+        _quantityTypeIDMeta,
+        quantityTypeID.isAcceptableOrUnknown(
+          data['quantity_type_i_d']!,
+          _quantityTypeIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_quantityTypeIDMeta);
+    }
+    if (data.containsKey('sequence_no')) {
+      context.handle(
+        _sequenceNoMeta,
+        sequenceNo.isAcceptableOrUnknown(data['sequence_no']!, _sequenceNoMeta),
+      );
+    }
+    if (data.containsKey('total_length')) {
+      context.handle(
+        _totalLengthMeta,
+        totalLength.isAcceptableOrUnknown(
+          data['total_length']!,
+          _totalLengthMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notes')) {
+      context.handle(
+        _notesMeta,
+        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {dailyReportID, quantityTypeID, sequenceNo},
+  ];
+  @override
+  ReportQuantityRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ReportQuantityRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      reportType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}report_type'],
+      )!,
+      dailyReportID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}daily_report_i_d'],
+      ),
+      quantityTypeID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}quantity_type_i_d'],
+      )!,
+      sequenceNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sequence_no'],
+      )!,
+      totalLength: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}total_length'],
+      ),
+      notes: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}notes'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ReportQuantitiesTable createAlias(String alias) {
+    return $ReportQuantitiesTable(attachedDatabase, alias);
+  }
+}
+
+class ReportQuantityRecord extends DataClass
+    implements Insertable<ReportQuantityRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String reportType;
+  final int? dailyReportID;
+  final int quantityTypeID;
+  final int sequenceNo;
+  final double? totalLength;
+  final String? notes;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ReportQuantityRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.reportType,
+    this.dailyReportID,
+    required this.quantityTypeID,
+    required this.sequenceNo,
+    this.totalLength,
+    this.notes,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['report_type'] = Variable<String>(reportType);
+    if (!nullToAbsent || dailyReportID != null) {
+      map['daily_report_i_d'] = Variable<int>(dailyReportID);
+    }
+    map['quantity_type_i_d'] = Variable<int>(quantityTypeID);
+    map['sequence_no'] = Variable<int>(sequenceNo);
+    if (!nullToAbsent || totalLength != null) {
+      map['total_length'] = Variable<double>(totalLength);
+    }
+    if (!nullToAbsent || notes != null) {
+      map['notes'] = Variable<String>(notes);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ReportQuantitiesCompanion toCompanion(bool nullToAbsent) {
+    return ReportQuantitiesCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      reportType: Value(reportType),
+      dailyReportID: dailyReportID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dailyReportID),
+      quantityTypeID: Value(quantityTypeID),
+      sequenceNo: Value(sequenceNo),
+      totalLength: totalLength == null && nullToAbsent
+          ? const Value.absent()
+          : Value(totalLength),
+      notes: notes == null && nullToAbsent
+          ? const Value.absent()
+          : Value(notes),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ReportQuantityRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ReportQuantityRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      reportType: serializer.fromJson<String>(json['reportType']),
+      dailyReportID: serializer.fromJson<int?>(json['dailyReportID']),
+      quantityTypeID: serializer.fromJson<int>(json['quantityTypeID']),
+      sequenceNo: serializer.fromJson<int>(json['sequenceNo']),
+      totalLength: serializer.fromJson<double?>(json['totalLength']),
+      notes: serializer.fromJson<String?>(json['notes']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'reportType': serializer.toJson<String>(reportType),
+      'dailyReportID': serializer.toJson<int?>(dailyReportID),
+      'quantityTypeID': serializer.toJson<int>(quantityTypeID),
+      'sequenceNo': serializer.toJson<int>(sequenceNo),
+      'totalLength': serializer.toJson<double?>(totalLength),
+      'notes': serializer.toJson<String?>(notes),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ReportQuantityRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? reportType,
+    Value<int?> dailyReportID = const Value.absent(),
+    int? quantityTypeID,
+    int? sequenceNo,
+    Value<double?> totalLength = const Value.absent(),
+    Value<String?> notes = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ReportQuantityRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    reportType: reportType ?? this.reportType,
+    dailyReportID: dailyReportID.present
+        ? dailyReportID.value
+        : this.dailyReportID,
+    quantityTypeID: quantityTypeID ?? this.quantityTypeID,
+    sequenceNo: sequenceNo ?? this.sequenceNo,
+    totalLength: totalLength.present ? totalLength.value : this.totalLength,
+    notes: notes.present ? notes.value : this.notes,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ReportQuantityRecord copyWithCompanion(ReportQuantitiesCompanion data) {
+    return ReportQuantityRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      reportType: data.reportType.present
+          ? data.reportType.value
+          : this.reportType,
+      dailyReportID: data.dailyReportID.present
+          ? data.dailyReportID.value
+          : this.dailyReportID,
+      quantityTypeID: data.quantityTypeID.present
+          ? data.quantityTypeID.value
+          : this.quantityTypeID,
+      sequenceNo: data.sequenceNo.present
+          ? data.sequenceNo.value
+          : this.sequenceNo,
+      totalLength: data.totalLength.present
+          ? data.totalLength.value
+          : this.totalLength,
+      notes: data.notes.present ? data.notes.value : this.notes,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReportQuantityRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('reportType: $reportType, ')
+          ..write('dailyReportID: $dailyReportID, ')
+          ..write('quantityTypeID: $quantityTypeID, ')
+          ..write('sequenceNo: $sequenceNo, ')
+          ..write('totalLength: $totalLength, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    reportType,
+    dailyReportID,
+    quantityTypeID,
+    sequenceNo,
+    totalLength,
+    notes,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ReportQuantityRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.reportType == this.reportType &&
+          other.dailyReportID == this.dailyReportID &&
+          other.quantityTypeID == this.quantityTypeID &&
+          other.sequenceNo == this.sequenceNo &&
+          other.totalLength == this.totalLength &&
+          other.notes == this.notes &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ReportQuantitiesCompanion extends UpdateCompanion<ReportQuantityRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> reportType;
+  final Value<int?> dailyReportID;
+  final Value<int> quantityTypeID;
+  final Value<int> sequenceNo;
+  final Value<double?> totalLength;
+  final Value<String?> notes;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const ReportQuantitiesCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.reportType = const Value.absent(),
+    this.dailyReportID = const Value.absent(),
+    this.quantityTypeID = const Value.absent(),
+    this.sequenceNo = const Value.absent(),
+    this.totalLength = const Value.absent(),
+    this.notes = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  ReportQuantitiesCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String reportType,
+    this.dailyReportID = const Value.absent(),
+    required int quantityTypeID,
+    this.sequenceNo = const Value.absent(),
+    this.totalLength = const Value.absent(),
+    this.notes = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : reportType = Value(reportType),
+       quantityTypeID = Value(quantityTypeID),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ReportQuantityRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? reportType,
+    Expression<int>? dailyReportID,
+    Expression<int>? quantityTypeID,
+    Expression<int>? sequenceNo,
+    Expression<double>? totalLength,
+    Expression<String>? notes,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (reportType != null) 'report_type': reportType,
+      if (dailyReportID != null) 'daily_report_i_d': dailyReportID,
+      if (quantityTypeID != null) 'quantity_type_i_d': quantityTypeID,
+      if (sequenceNo != null) 'sequence_no': sequenceNo,
+      if (totalLength != null) 'total_length': totalLength,
+      if (notes != null) 'notes': notes,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  ReportQuantitiesCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? reportType,
+    Value<int?>? dailyReportID,
+    Value<int>? quantityTypeID,
+    Value<int>? sequenceNo,
+    Value<double?>? totalLength,
+    Value<String?>? notes,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return ReportQuantitiesCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      reportType: reportType ?? this.reportType,
+      dailyReportID: dailyReportID ?? this.dailyReportID,
+      quantityTypeID: quantityTypeID ?? this.quantityTypeID,
+      sequenceNo: sequenceNo ?? this.sequenceNo,
+      totalLength: totalLength ?? this.totalLength,
+      notes: notes ?? this.notes,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (reportType.present) {
+      map['report_type'] = Variable<String>(reportType.value);
+    }
+    if (dailyReportID.present) {
+      map['daily_report_i_d'] = Variable<int>(dailyReportID.value);
+    }
+    if (quantityTypeID.present) {
+      map['quantity_type_i_d'] = Variable<int>(quantityTypeID.value);
+    }
+    if (sequenceNo.present) {
+      map['sequence_no'] = Variable<int>(sequenceNo.value);
+    }
+    if (totalLength.present) {
+      map['total_length'] = Variable<double>(totalLength.value);
+    }
+    if (notes.present) {
+      map['notes'] = Variable<String>(notes.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReportQuantitiesCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('reportType: $reportType, ')
+          ..write('dailyReportID: $dailyReportID, ')
+          ..write('quantityTypeID: $quantityTypeID, ')
+          ..write('sequenceNo: $sequenceNo, ')
+          ..write('totalLength: $totalLength, ')
+          ..write('notes: $notes, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ReportQuantityValuesTable extends ReportQuantityValues
+    with TableInfo<$ReportQuantityValuesTable, ReportQuantityValueRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ReportQuantityValuesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _reportQuantityIDMeta = const VerificationMeta(
+    'reportQuantityID',
+  );
+  @override
+  late final GeneratedColumn<int> reportQuantityID = GeneratedColumn<int>(
+    'report_quantity_i_d',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _segmentIDMeta = const VerificationMeta(
+    'segmentID',
+  );
+  @override
+  late final GeneratedColumn<int> segmentID = GeneratedColumn<int>(
+    'segment_i_d',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _quantityFieldIDMeta = const VerificationMeta(
+    'quantityFieldID',
+  );
+  @override
+  late final GeneratedColumn<int> quantityFieldID = GeneratedColumn<int>(
+    'quantity_field_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
+    'value',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    reportQuantityID,
+    segmentID,
+    quantityFieldID,
+    value,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'report_quantity_values';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ReportQuantityValueRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('report_quantity_i_d')) {
+      context.handle(
+        _reportQuantityIDMeta,
+        reportQuantityID.isAcceptableOrUnknown(
+          data['report_quantity_i_d']!,
+          _reportQuantityIDMeta,
+        ),
+      );
+    }
+    if (data.containsKey('segment_i_d')) {
+      context.handle(
+        _segmentIDMeta,
+        segmentID.isAcceptableOrUnknown(data['segment_i_d']!, _segmentIDMeta),
+      );
+    }
+    if (data.containsKey('quantity_field_i_d')) {
+      context.handle(
+        _quantityFieldIDMeta,
+        quantityFieldID.isAcceptableOrUnknown(
+          data['quantity_field_i_d']!,
+          _quantityFieldIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_quantityFieldIDMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+        _valueMeta,
+        value.isAcceptableOrUnknown(data['value']!, _valueMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_valueMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {reportQuantityID, quantityFieldID},
+    {segmentID, quantityFieldID},
+  ];
+  @override
+  ReportQuantityValueRecord map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ReportQuantityValueRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      reportQuantityID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}report_quantity_i_d'],
+      ),
+      segmentID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}segment_i_d'],
+      ),
+      quantityFieldID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}quantity_field_i_d'],
+      )!,
+      value: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}value'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ReportQuantityValuesTable createAlias(String alias) {
+    return $ReportQuantityValuesTable(attachedDatabase, alias);
+  }
+}
+
+class ReportQuantityValueRecord extends DataClass
+    implements Insertable<ReportQuantityValueRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final int? reportQuantityID;
+  final int? segmentID;
+  final int quantityFieldID;
+  final String value;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ReportQuantityValueRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    this.reportQuantityID,
+    this.segmentID,
+    required this.quantityFieldID,
+    required this.value,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    if (!nullToAbsent || reportQuantityID != null) {
+      map['report_quantity_i_d'] = Variable<int>(reportQuantityID);
+    }
+    if (!nullToAbsent || segmentID != null) {
+      map['segment_i_d'] = Variable<int>(segmentID);
+    }
+    map['quantity_field_i_d'] = Variable<int>(quantityFieldID);
+    map['value'] = Variable<String>(value);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ReportQuantityValuesCompanion toCompanion(bool nullToAbsent) {
+    return ReportQuantityValuesCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      reportQuantityID: reportQuantityID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reportQuantityID),
+      segmentID: segmentID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(segmentID),
+      quantityFieldID: Value(quantityFieldID),
+      value: Value(value),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ReportQuantityValueRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ReportQuantityValueRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      reportQuantityID: serializer.fromJson<int?>(json['reportQuantityID']),
+      segmentID: serializer.fromJson<int?>(json['segmentID']),
+      quantityFieldID: serializer.fromJson<int>(json['quantityFieldID']),
+      value: serializer.fromJson<String>(json['value']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'reportQuantityID': serializer.toJson<int?>(reportQuantityID),
+      'segmentID': serializer.toJson<int?>(segmentID),
+      'quantityFieldID': serializer.toJson<int>(quantityFieldID),
+      'value': serializer.toJson<String>(value),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ReportQuantityValueRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    Value<int?> reportQuantityID = const Value.absent(),
+    Value<int?> segmentID = const Value.absent(),
+    int? quantityFieldID,
+    String? value,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ReportQuantityValueRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    reportQuantityID: reportQuantityID.present
+        ? reportQuantityID.value
+        : this.reportQuantityID,
+    segmentID: segmentID.present ? segmentID.value : this.segmentID,
+    quantityFieldID: quantityFieldID ?? this.quantityFieldID,
+    value: value ?? this.value,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ReportQuantityValueRecord copyWithCompanion(
+    ReportQuantityValuesCompanion data,
+  ) {
+    return ReportQuantityValueRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      reportQuantityID: data.reportQuantityID.present
+          ? data.reportQuantityID.value
+          : this.reportQuantityID,
+      segmentID: data.segmentID.present ? data.segmentID.value : this.segmentID,
+      quantityFieldID: data.quantityFieldID.present
+          ? data.quantityFieldID.value
+          : this.quantityFieldID,
+      value: data.value.present ? data.value.value : this.value,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReportQuantityValueRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('reportQuantityID: $reportQuantityID, ')
+          ..write('segmentID: $segmentID, ')
+          ..write('quantityFieldID: $quantityFieldID, ')
+          ..write('value: $value, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    reportQuantityID,
+    segmentID,
+    quantityFieldID,
+    value,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ReportQuantityValueRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.reportQuantityID == this.reportQuantityID &&
+          other.segmentID == this.segmentID &&
+          other.quantityFieldID == this.quantityFieldID &&
+          other.value == this.value &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ReportQuantityValuesCompanion
+    extends UpdateCompanion<ReportQuantityValueRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<int?> reportQuantityID;
+  final Value<int?> segmentID;
+  final Value<int> quantityFieldID;
+  final Value<String> value;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const ReportQuantityValuesCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.reportQuantityID = const Value.absent(),
+    this.segmentID = const Value.absent(),
+    this.quantityFieldID = const Value.absent(),
+    this.value = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  ReportQuantityValuesCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.reportQuantityID = const Value.absent(),
+    this.segmentID = const Value.absent(),
+    required int quantityFieldID,
+    required String value,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : quantityFieldID = Value(quantityFieldID),
+       value = Value(value),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ReportQuantityValueRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<int>? reportQuantityID,
+    Expression<int>? segmentID,
+    Expression<int>? quantityFieldID,
+    Expression<String>? value,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (reportQuantityID != null) 'report_quantity_i_d': reportQuantityID,
+      if (segmentID != null) 'segment_i_d': segmentID,
+      if (quantityFieldID != null) 'quantity_field_i_d': quantityFieldID,
+      if (value != null) 'value': value,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  ReportQuantityValuesCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<int?>? reportQuantityID,
+    Value<int?>? segmentID,
+    Value<int>? quantityFieldID,
+    Value<String>? value,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return ReportQuantityValuesCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      reportQuantityID: reportQuantityID ?? this.reportQuantityID,
+      segmentID: segmentID ?? this.segmentID,
+      quantityFieldID: quantityFieldID ?? this.quantityFieldID,
+      value: value ?? this.value,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (reportQuantityID.present) {
+      map['report_quantity_i_d'] = Variable<int>(reportQuantityID.value);
+    }
+    if (segmentID.present) {
+      map['segment_i_d'] = Variable<int>(segmentID.value);
+    }
+    if (quantityFieldID.present) {
+      map['quantity_field_i_d'] = Variable<int>(quantityFieldID.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReportQuantityValuesCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('reportQuantityID: $reportQuantityID, ')
+          ..write('segmentID: $segmentID, ')
+          ..write('quantityFieldID: $quantityFieldID, ')
+          ..write('value: $value, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ReportSegmentsTable extends ReportSegments
+    with TableInfo<$ReportSegmentsTable, ReportSegmentRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ReportSegmentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _reportQuantityIDMeta = const VerificationMeta(
+    'reportQuantityID',
+  );
+  @override
+  late final GeneratedColumn<int> reportQuantityID = GeneratedColumn<int>(
+    'report_quantity_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _segmentNumberMeta = const VerificationMeta(
+    'segmentNumber',
+  );
+  @override
+  late final GeneratedColumn<int> segmentNumber = GeneratedColumn<int>(
+    'segment_number',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startDistanceMeta = const VerificationMeta(
+    'startDistance',
+  );
+  @override
+  late final GeneratedColumn<double> startDistance = GeneratedColumn<double>(
+    'start_distance',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endDistanceMeta = const VerificationMeta(
+    'endDistance',
+  );
+  @override
+  late final GeneratedColumn<double> endDistance = GeneratedColumn<double>(
+    'end_distance',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    reportQuantityID,
+    segmentNumber,
+    startDistance,
+    endDistance,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'report_segments';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ReportSegmentRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('report_quantity_i_d')) {
+      context.handle(
+        _reportQuantityIDMeta,
+        reportQuantityID.isAcceptableOrUnknown(
+          data['report_quantity_i_d']!,
+          _reportQuantityIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_reportQuantityIDMeta);
+    }
+    if (data.containsKey('segment_number')) {
+      context.handle(
+        _segmentNumberMeta,
+        segmentNumber.isAcceptableOrUnknown(
+          data['segment_number']!,
+          _segmentNumberMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_segmentNumberMeta);
+    }
+    if (data.containsKey('start_distance')) {
+      context.handle(
+        _startDistanceMeta,
+        startDistance.isAcceptableOrUnknown(
+          data['start_distance']!,
+          _startDistanceMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_startDistanceMeta);
+    }
+    if (data.containsKey('end_distance')) {
+      context.handle(
+        _endDistanceMeta,
+        endDistance.isAcceptableOrUnknown(
+          data['end_distance']!,
+          _endDistanceMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_endDistanceMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {reportQuantityID, segmentNumber},
+  ];
+  @override
+  ReportSegmentRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ReportSegmentRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      reportQuantityID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}report_quantity_i_d'],
+      )!,
+      segmentNumber: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}segment_number'],
+      )!,
+      startDistance: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}start_distance'],
+      )!,
+      endDistance: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}end_distance'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ReportSegmentsTable createAlias(String alias) {
+    return $ReportSegmentsTable(attachedDatabase, alias);
+  }
+}
+
+class ReportSegmentRecord extends DataClass
+    implements Insertable<ReportSegmentRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final int reportQuantityID;
+  final int segmentNumber;
+  final double startDistance;
+  final double endDistance;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ReportSegmentRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.reportQuantityID,
+    required this.segmentNumber,
+    required this.startDistance,
+    required this.endDistance,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['report_quantity_i_d'] = Variable<int>(reportQuantityID);
+    map['segment_number'] = Variable<int>(segmentNumber);
+    map['start_distance'] = Variable<double>(startDistance);
+    map['end_distance'] = Variable<double>(endDistance);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ReportSegmentsCompanion toCompanion(bool nullToAbsent) {
+    return ReportSegmentsCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      reportQuantityID: Value(reportQuantityID),
+      segmentNumber: Value(segmentNumber),
+      startDistance: Value(startDistance),
+      endDistance: Value(endDistance),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ReportSegmentRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ReportSegmentRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      reportQuantityID: serializer.fromJson<int>(json['reportQuantityID']),
+      segmentNumber: serializer.fromJson<int>(json['segmentNumber']),
+      startDistance: serializer.fromJson<double>(json['startDistance']),
+      endDistance: serializer.fromJson<double>(json['endDistance']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'reportQuantityID': serializer.toJson<int>(reportQuantityID),
+      'segmentNumber': serializer.toJson<int>(segmentNumber),
+      'startDistance': serializer.toJson<double>(startDistance),
+      'endDistance': serializer.toJson<double>(endDistance),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ReportSegmentRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    int? reportQuantityID,
+    int? segmentNumber,
+    double? startDistance,
+    double? endDistance,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ReportSegmentRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    reportQuantityID: reportQuantityID ?? this.reportQuantityID,
+    segmentNumber: segmentNumber ?? this.segmentNumber,
+    startDistance: startDistance ?? this.startDistance,
+    endDistance: endDistance ?? this.endDistance,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ReportSegmentRecord copyWithCompanion(ReportSegmentsCompanion data) {
+    return ReportSegmentRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      reportQuantityID: data.reportQuantityID.present
+          ? data.reportQuantityID.value
+          : this.reportQuantityID,
+      segmentNumber: data.segmentNumber.present
+          ? data.segmentNumber.value
+          : this.segmentNumber,
+      startDistance: data.startDistance.present
+          ? data.startDistance.value
+          : this.startDistance,
+      endDistance: data.endDistance.present
+          ? data.endDistance.value
+          : this.endDistance,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReportSegmentRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('reportQuantityID: $reportQuantityID, ')
+          ..write('segmentNumber: $segmentNumber, ')
+          ..write('startDistance: $startDistance, ')
+          ..write('endDistance: $endDistance, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    reportQuantityID,
+    segmentNumber,
+    startDistance,
+    endDistance,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ReportSegmentRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.reportQuantityID == this.reportQuantityID &&
+          other.segmentNumber == this.segmentNumber &&
+          other.startDistance == this.startDistance &&
+          other.endDistance == this.endDistance &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ReportSegmentsCompanion extends UpdateCompanion<ReportSegmentRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<int> reportQuantityID;
+  final Value<int> segmentNumber;
+  final Value<double> startDistance;
+  final Value<double> endDistance;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const ReportSegmentsCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.reportQuantityID = const Value.absent(),
+    this.segmentNumber = const Value.absent(),
+    this.startDistance = const Value.absent(),
+    this.endDistance = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  ReportSegmentsCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required int reportQuantityID,
+    required int segmentNumber,
+    required double startDistance,
+    required double endDistance,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : reportQuantityID = Value(reportQuantityID),
+       segmentNumber = Value(segmentNumber),
+       startDistance = Value(startDistance),
+       endDistance = Value(endDistance),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ReportSegmentRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<int>? reportQuantityID,
+    Expression<int>? segmentNumber,
+    Expression<double>? startDistance,
+    Expression<double>? endDistance,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (reportQuantityID != null) 'report_quantity_i_d': reportQuantityID,
+      if (segmentNumber != null) 'segment_number': segmentNumber,
+      if (startDistance != null) 'start_distance': startDistance,
+      if (endDistance != null) 'end_distance': endDistance,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  ReportSegmentsCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<int>? reportQuantityID,
+    Value<int>? segmentNumber,
+    Value<double>? startDistance,
+    Value<double>? endDistance,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return ReportSegmentsCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      reportQuantityID: reportQuantityID ?? this.reportQuantityID,
+      segmentNumber: segmentNumber ?? this.segmentNumber,
+      startDistance: startDistance ?? this.startDistance,
+      endDistance: endDistance ?? this.endDistance,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (reportQuantityID.present) {
+      map['report_quantity_i_d'] = Variable<int>(reportQuantityID.value);
+    }
+    if (segmentNumber.present) {
+      map['segment_number'] = Variable<int>(segmentNumber.value);
+    }
+    if (startDistance.present) {
+      map['start_distance'] = Variable<double>(startDistance.value);
+    }
+    if (endDistance.present) {
+      map['end_distance'] = Variable<double>(endDistance.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReportSegmentsCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('reportQuantityID: $reportQuantityID, ')
+          ..write('segmentNumber: $segmentNumber, ')
+          ..write('startDistance: $startDistance, ')
+          ..write('endDistance: $endDistance, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   _$AppDatabase.connect(DatabaseConnection c) : super.connect(c);
@@ -13062,6 +17779,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $DistrictsTable districts = $DistrictsTable(this);
   late final $RoadCategoriesTable roadCategories = $RoadCategoriesTable(this);
   late final $RoadsTable roads = $RoadsTable(this);
+  late final $DailyReportsTable dailyReports = $DailyReportsTable(this);
+  late final $ReportEquipmentsTable reportEquipments = $ReportEquipmentsTable(
+    this,
+  );
+  late final $ReportQuantitiesTable reportQuantities = $ReportQuantitiesTable(
+    this,
+  );
+  late final $ReportQuantityValuesTable reportQuantityValues =
+      $ReportQuantityValuesTable(this);
+  late final $ReportSegmentsTable reportSegments = $ReportSegmentsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -13083,6 +17810,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     districts,
     roadCategories,
     roads,
+    dailyReports,
+    reportEquipments,
+    reportQuantities,
+    reportQuantityValues,
+    reportSegments,
   ];
 }
 
@@ -19111,6 +23843,2168 @@ typedef $$RoadsTableProcessedTableManager =
       RoadRecord,
       PrefetchHooks Function()
     >;
+typedef $$DailyReportsTableCreateCompanionBuilder =
+    DailyReportsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String name,
+      Value<String?> notes,
+      required String weatherCondition,
+      Value<bool> workPerformed,
+      Value<double?> longitude,
+      Value<double?> latitude,
+      required int companyID,
+      Value<int?> contractRelationID,
+      Value<String> status,
+      Value<int?> approvedByID,
+      Value<DateTime?> approvedAt,
+      Value<String?> rejectionReason,
+      required int workScopeID,
+      required int roadID,
+      Value<int?> totalWorkers,
+      Value<double?> fromSection,
+      Value<double?> toSection,
+      required int createdByID,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$DailyReportsTableUpdateCompanionBuilder =
+    DailyReportsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> name,
+      Value<String?> notes,
+      Value<String> weatherCondition,
+      Value<bool> workPerformed,
+      Value<double?> longitude,
+      Value<double?> latitude,
+      Value<int> companyID,
+      Value<int?> contractRelationID,
+      Value<String> status,
+      Value<int?> approvedByID,
+      Value<DateTime?> approvedAt,
+      Value<String?> rejectionReason,
+      Value<int> workScopeID,
+      Value<int> roadID,
+      Value<int?> totalWorkers,
+      Value<double?> fromSection,
+      Value<double?> toSection,
+      Value<int> createdByID,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$DailyReportsTableFilterComposer
+    extends Composer<_$AppDatabase, $DailyReportsTable> {
+  $$DailyReportsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get weatherCondition => $composableBuilder(
+    column: $table.weatherCondition,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get workPerformed => $composableBuilder(
+    column: $table.workPerformed,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get companyID => $composableBuilder(
+    column: $table.companyID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get contractRelationID => $composableBuilder(
+    column: $table.contractRelationID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get approvedByID => $composableBuilder(
+    column: $table.approvedByID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get approvedAt => $composableBuilder(
+    column: $table.approvedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get rejectionReason => $composableBuilder(
+    column: $table.rejectionReason,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get roadID => $composableBuilder(
+    column: $table.roadID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalWorkers => $composableBuilder(
+    column: $table.totalWorkers,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get fromSection => $composableBuilder(
+    column: $table.fromSection,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get toSection => $composableBuilder(
+    column: $table.toSection,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdByID => $composableBuilder(
+    column: $table.createdByID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$DailyReportsTableOrderingComposer
+    extends Composer<_$AppDatabase, $DailyReportsTable> {
+  $$DailyReportsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get weatherCondition => $composableBuilder(
+    column: $table.weatherCondition,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get workPerformed => $composableBuilder(
+    column: $table.workPerformed,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get companyID => $composableBuilder(
+    column: $table.companyID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get contractRelationID => $composableBuilder(
+    column: $table.contractRelationID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get approvedByID => $composableBuilder(
+    column: $table.approvedByID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get approvedAt => $composableBuilder(
+    column: $table.approvedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get rejectionReason => $composableBuilder(
+    column: $table.rejectionReason,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get roadID => $composableBuilder(
+    column: $table.roadID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalWorkers => $composableBuilder(
+    column: $table.totalWorkers,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get fromSection => $composableBuilder(
+    column: $table.fromSection,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get toSection => $composableBuilder(
+    column: $table.toSection,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdByID => $composableBuilder(
+    column: $table.createdByID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DailyReportsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DailyReportsTable> {
+  $$DailyReportsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get weatherCondition => $composableBuilder(
+    column: $table.weatherCondition,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get workPerformed => $composableBuilder(
+    column: $table.workPerformed,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<int> get companyID =>
+      $composableBuilder(column: $table.companyID, builder: (column) => column);
+
+  GeneratedColumn<int> get contractRelationID => $composableBuilder(
+    column: $table.contractRelationID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<int> get approvedByID => $composableBuilder(
+    column: $table.approvedByID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get approvedAt => $composableBuilder(
+    column: $table.approvedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get rejectionReason => $composableBuilder(
+    column: $table.rejectionReason,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get roadID =>
+      $composableBuilder(column: $table.roadID, builder: (column) => column);
+
+  GeneratedColumn<int> get totalWorkers => $composableBuilder(
+    column: $table.totalWorkers,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get fromSection => $composableBuilder(
+    column: $table.fromSection,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get toSection =>
+      $composableBuilder(column: $table.toSection, builder: (column) => column);
+
+  GeneratedColumn<int> get createdByID => $composableBuilder(
+    column: $table.createdByID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$DailyReportsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DailyReportsTable,
+          DailyReportRecord,
+          $$DailyReportsTableFilterComposer,
+          $$DailyReportsTableOrderingComposer,
+          $$DailyReportsTableAnnotationComposer,
+          $$DailyReportsTableCreateCompanionBuilder,
+          $$DailyReportsTableUpdateCompanionBuilder,
+          (
+            DailyReportRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $DailyReportsTable,
+              DailyReportRecord
+            >,
+          ),
+          DailyReportRecord,
+          PrefetchHooks Function()
+        > {
+  $$DailyReportsTableTableManager(_$AppDatabase db, $DailyReportsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DailyReportsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DailyReportsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DailyReportsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<String> weatherCondition = const Value.absent(),
+                Value<bool> workPerformed = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                Value<int> companyID = const Value.absent(),
+                Value<int?> contractRelationID = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int?> approvedByID = const Value.absent(),
+                Value<DateTime?> approvedAt = const Value.absent(),
+                Value<String?> rejectionReason = const Value.absent(),
+                Value<int> workScopeID = const Value.absent(),
+                Value<int> roadID = const Value.absent(),
+                Value<int?> totalWorkers = const Value.absent(),
+                Value<double?> fromSection = const Value.absent(),
+                Value<double?> toSection = const Value.absent(),
+                Value<int> createdByID = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => DailyReportsCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                notes: notes,
+                weatherCondition: weatherCondition,
+                workPerformed: workPerformed,
+                longitude: longitude,
+                latitude: latitude,
+                companyID: companyID,
+                contractRelationID: contractRelationID,
+                status: status,
+                approvedByID: approvedByID,
+                approvedAt: approvedAt,
+                rejectionReason: rejectionReason,
+                workScopeID: workScopeID,
+                roadID: roadID,
+                totalWorkers: totalWorkers,
+                fromSection: fromSection,
+                toSection: toSection,
+                createdByID: createdByID,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String name,
+                Value<String?> notes = const Value.absent(),
+                required String weatherCondition,
+                Value<bool> workPerformed = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                required int companyID,
+                Value<int?> contractRelationID = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<int?> approvedByID = const Value.absent(),
+                Value<DateTime?> approvedAt = const Value.absent(),
+                Value<String?> rejectionReason = const Value.absent(),
+                required int workScopeID,
+                required int roadID,
+                Value<int?> totalWorkers = const Value.absent(),
+                Value<double?> fromSection = const Value.absent(),
+                Value<double?> toSection = const Value.absent(),
+                required int createdByID,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => DailyReportsCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                notes: notes,
+                weatherCondition: weatherCondition,
+                workPerformed: workPerformed,
+                longitude: longitude,
+                latitude: latitude,
+                companyID: companyID,
+                contractRelationID: contractRelationID,
+                status: status,
+                approvedByID: approvedByID,
+                approvedAt: approvedAt,
+                rejectionReason: rejectionReason,
+                workScopeID: workScopeID,
+                roadID: roadID,
+                totalWorkers: totalWorkers,
+                fromSection: fromSection,
+                toSection: toSection,
+                createdByID: createdByID,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DailyReportsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DailyReportsTable,
+      DailyReportRecord,
+      $$DailyReportsTableFilterComposer,
+      $$DailyReportsTableOrderingComposer,
+      $$DailyReportsTableAnnotationComposer,
+      $$DailyReportsTableCreateCompanionBuilder,
+      $$DailyReportsTableUpdateCompanionBuilder,
+      (
+        DailyReportRecord,
+        BaseReferences<_$AppDatabase, $DailyReportsTable, DailyReportRecord>,
+      ),
+      DailyReportRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$ReportEquipmentsTableCreateCompanionBuilder =
+    ReportEquipmentsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String reportType,
+      Value<int?> dailyReportID,
+      required int workEquipmentID,
+      required int addedByID,
+      required DateTime createdAt,
+    });
+typedef $$ReportEquipmentsTableUpdateCompanionBuilder =
+    ReportEquipmentsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> reportType,
+      Value<int?> dailyReportID,
+      Value<int> workEquipmentID,
+      Value<int> addedByID,
+      Value<DateTime> createdAt,
+    });
+
+class $$ReportEquipmentsTableFilterComposer
+    extends Composer<_$AppDatabase, $ReportEquipmentsTable> {
+  $$ReportEquipmentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reportType => $composableBuilder(
+    column: $table.reportType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dailyReportID => $composableBuilder(
+    column: $table.dailyReportID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get workEquipmentID => $composableBuilder(
+    column: $table.workEquipmentID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get addedByID => $composableBuilder(
+    column: $table.addedByID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ReportEquipmentsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ReportEquipmentsTable> {
+  $$ReportEquipmentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reportType => $composableBuilder(
+    column: $table.reportType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get dailyReportID => $composableBuilder(
+    column: $table.dailyReportID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get workEquipmentID => $composableBuilder(
+    column: $table.workEquipmentID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get addedByID => $composableBuilder(
+    column: $table.addedByID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ReportEquipmentsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ReportEquipmentsTable> {
+  $$ReportEquipmentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get reportType => $composableBuilder(
+    column: $table.reportType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get dailyReportID => $composableBuilder(
+    column: $table.dailyReportID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get workEquipmentID => $composableBuilder(
+    column: $table.workEquipmentID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get addedByID =>
+      $composableBuilder(column: $table.addedByID, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+}
+
+class $$ReportEquipmentsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ReportEquipmentsTable,
+          ReportEquipmentRecord,
+          $$ReportEquipmentsTableFilterComposer,
+          $$ReportEquipmentsTableOrderingComposer,
+          $$ReportEquipmentsTableAnnotationComposer,
+          $$ReportEquipmentsTableCreateCompanionBuilder,
+          $$ReportEquipmentsTableUpdateCompanionBuilder,
+          (
+            ReportEquipmentRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $ReportEquipmentsTable,
+              ReportEquipmentRecord
+            >,
+          ),
+          ReportEquipmentRecord,
+          PrefetchHooks Function()
+        > {
+  $$ReportEquipmentsTableTableManager(
+    _$AppDatabase db,
+    $ReportEquipmentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ReportEquipmentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ReportEquipmentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ReportEquipmentsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> reportType = const Value.absent(),
+                Value<int?> dailyReportID = const Value.absent(),
+                Value<int> workEquipmentID = const Value.absent(),
+                Value<int> addedByID = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+              }) => ReportEquipmentsCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                reportType: reportType,
+                dailyReportID: dailyReportID,
+                workEquipmentID: workEquipmentID,
+                addedByID: addedByID,
+                createdAt: createdAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String reportType,
+                Value<int?> dailyReportID = const Value.absent(),
+                required int workEquipmentID,
+                required int addedByID,
+                required DateTime createdAt,
+              }) => ReportEquipmentsCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                reportType: reportType,
+                dailyReportID: dailyReportID,
+                workEquipmentID: workEquipmentID,
+                addedByID: addedByID,
+                createdAt: createdAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ReportEquipmentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ReportEquipmentsTable,
+      ReportEquipmentRecord,
+      $$ReportEquipmentsTableFilterComposer,
+      $$ReportEquipmentsTableOrderingComposer,
+      $$ReportEquipmentsTableAnnotationComposer,
+      $$ReportEquipmentsTableCreateCompanionBuilder,
+      $$ReportEquipmentsTableUpdateCompanionBuilder,
+      (
+        ReportEquipmentRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $ReportEquipmentsTable,
+          ReportEquipmentRecord
+        >,
+      ),
+      ReportEquipmentRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$ReportQuantitiesTableCreateCompanionBuilder =
+    ReportQuantitiesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String reportType,
+      Value<int?> dailyReportID,
+      required int quantityTypeID,
+      Value<int> sequenceNo,
+      Value<double?> totalLength,
+      Value<String?> notes,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$ReportQuantitiesTableUpdateCompanionBuilder =
+    ReportQuantitiesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> reportType,
+      Value<int?> dailyReportID,
+      Value<int> quantityTypeID,
+      Value<int> sequenceNo,
+      Value<double?> totalLength,
+      Value<String?> notes,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$ReportQuantitiesTableFilterComposer
+    extends Composer<_$AppDatabase, $ReportQuantitiesTable> {
+  $$ReportQuantitiesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reportType => $composableBuilder(
+    column: $table.reportType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dailyReportID => $composableBuilder(
+    column: $table.dailyReportID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get quantityTypeID => $composableBuilder(
+    column: $table.quantityTypeID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sequenceNo => $composableBuilder(
+    column: $table.sequenceNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get totalLength => $composableBuilder(
+    column: $table.totalLength,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ReportQuantitiesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ReportQuantitiesTable> {
+  $$ReportQuantitiesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reportType => $composableBuilder(
+    column: $table.reportType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get dailyReportID => $composableBuilder(
+    column: $table.dailyReportID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get quantityTypeID => $composableBuilder(
+    column: $table.quantityTypeID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sequenceNo => $composableBuilder(
+    column: $table.sequenceNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get totalLength => $composableBuilder(
+    column: $table.totalLength,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get notes => $composableBuilder(
+    column: $table.notes,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ReportQuantitiesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ReportQuantitiesTable> {
+  $$ReportQuantitiesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get reportType => $composableBuilder(
+    column: $table.reportType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get dailyReportID => $composableBuilder(
+    column: $table.dailyReportID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get quantityTypeID => $composableBuilder(
+    column: $table.quantityTypeID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sequenceNo => $composableBuilder(
+    column: $table.sequenceNo,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get totalLength => $composableBuilder(
+    column: $table.totalLength,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get notes =>
+      $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ReportQuantitiesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ReportQuantitiesTable,
+          ReportQuantityRecord,
+          $$ReportQuantitiesTableFilterComposer,
+          $$ReportQuantitiesTableOrderingComposer,
+          $$ReportQuantitiesTableAnnotationComposer,
+          $$ReportQuantitiesTableCreateCompanionBuilder,
+          $$ReportQuantitiesTableUpdateCompanionBuilder,
+          (
+            ReportQuantityRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $ReportQuantitiesTable,
+              ReportQuantityRecord
+            >,
+          ),
+          ReportQuantityRecord,
+          PrefetchHooks Function()
+        > {
+  $$ReportQuantitiesTableTableManager(
+    _$AppDatabase db,
+    $ReportQuantitiesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ReportQuantitiesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ReportQuantitiesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ReportQuantitiesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> reportType = const Value.absent(),
+                Value<int?> dailyReportID = const Value.absent(),
+                Value<int> quantityTypeID = const Value.absent(),
+                Value<int> sequenceNo = const Value.absent(),
+                Value<double?> totalLength = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => ReportQuantitiesCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                reportType: reportType,
+                dailyReportID: dailyReportID,
+                quantityTypeID: quantityTypeID,
+                sequenceNo: sequenceNo,
+                totalLength: totalLength,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String reportType,
+                Value<int?> dailyReportID = const Value.absent(),
+                required int quantityTypeID,
+                Value<int> sequenceNo = const Value.absent(),
+                Value<double?> totalLength = const Value.absent(),
+                Value<String?> notes = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => ReportQuantitiesCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                reportType: reportType,
+                dailyReportID: dailyReportID,
+                quantityTypeID: quantityTypeID,
+                sequenceNo: sequenceNo,
+                totalLength: totalLength,
+                notes: notes,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ReportQuantitiesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ReportQuantitiesTable,
+      ReportQuantityRecord,
+      $$ReportQuantitiesTableFilterComposer,
+      $$ReportQuantitiesTableOrderingComposer,
+      $$ReportQuantitiesTableAnnotationComposer,
+      $$ReportQuantitiesTableCreateCompanionBuilder,
+      $$ReportQuantitiesTableUpdateCompanionBuilder,
+      (
+        ReportQuantityRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $ReportQuantitiesTable,
+          ReportQuantityRecord
+        >,
+      ),
+      ReportQuantityRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$ReportQuantityValuesTableCreateCompanionBuilder =
+    ReportQuantityValuesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<int?> reportQuantityID,
+      Value<int?> segmentID,
+      required int quantityFieldID,
+      required String value,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$ReportQuantityValuesTableUpdateCompanionBuilder =
+    ReportQuantityValuesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<int?> reportQuantityID,
+      Value<int?> segmentID,
+      Value<int> quantityFieldID,
+      Value<String> value,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$ReportQuantityValuesTableFilterComposer
+    extends Composer<_$AppDatabase, $ReportQuantityValuesTable> {
+  $$ReportQuantityValuesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get reportQuantityID => $composableBuilder(
+    column: $table.reportQuantityID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get segmentID => $composableBuilder(
+    column: $table.segmentID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get quantityFieldID => $composableBuilder(
+    column: $table.quantityFieldID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ReportQuantityValuesTableOrderingComposer
+    extends Composer<_$AppDatabase, $ReportQuantityValuesTable> {
+  $$ReportQuantityValuesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get reportQuantityID => $composableBuilder(
+    column: $table.reportQuantityID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get segmentID => $composableBuilder(
+    column: $table.segmentID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get quantityFieldID => $composableBuilder(
+    column: $table.quantityFieldID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get value => $composableBuilder(
+    column: $table.value,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ReportQuantityValuesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ReportQuantityValuesTable> {
+  $$ReportQuantityValuesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get reportQuantityID => $composableBuilder(
+    column: $table.reportQuantityID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get segmentID =>
+      $composableBuilder(column: $table.segmentID, builder: (column) => column);
+
+  GeneratedColumn<int> get quantityFieldID => $composableBuilder(
+    column: $table.quantityFieldID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get value =>
+      $composableBuilder(column: $table.value, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ReportQuantityValuesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ReportQuantityValuesTable,
+          ReportQuantityValueRecord,
+          $$ReportQuantityValuesTableFilterComposer,
+          $$ReportQuantityValuesTableOrderingComposer,
+          $$ReportQuantityValuesTableAnnotationComposer,
+          $$ReportQuantityValuesTableCreateCompanionBuilder,
+          $$ReportQuantityValuesTableUpdateCompanionBuilder,
+          (
+            ReportQuantityValueRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $ReportQuantityValuesTable,
+              ReportQuantityValueRecord
+            >,
+          ),
+          ReportQuantityValueRecord,
+          PrefetchHooks Function()
+        > {
+  $$ReportQuantityValuesTableTableManager(
+    _$AppDatabase db,
+    $ReportQuantityValuesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ReportQuantityValuesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ReportQuantityValuesTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ReportQuantityValuesTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<int?> reportQuantityID = const Value.absent(),
+                Value<int?> segmentID = const Value.absent(),
+                Value<int> quantityFieldID = const Value.absent(),
+                Value<String> value = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => ReportQuantityValuesCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                reportQuantityID: reportQuantityID,
+                segmentID: segmentID,
+                quantityFieldID: quantityFieldID,
+                value: value,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<int?> reportQuantityID = const Value.absent(),
+                Value<int?> segmentID = const Value.absent(),
+                required int quantityFieldID,
+                required String value,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => ReportQuantityValuesCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                reportQuantityID: reportQuantityID,
+                segmentID: segmentID,
+                quantityFieldID: quantityFieldID,
+                value: value,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ReportQuantityValuesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ReportQuantityValuesTable,
+      ReportQuantityValueRecord,
+      $$ReportQuantityValuesTableFilterComposer,
+      $$ReportQuantityValuesTableOrderingComposer,
+      $$ReportQuantityValuesTableAnnotationComposer,
+      $$ReportQuantityValuesTableCreateCompanionBuilder,
+      $$ReportQuantityValuesTableUpdateCompanionBuilder,
+      (
+        ReportQuantityValueRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $ReportQuantityValuesTable,
+          ReportQuantityValueRecord
+        >,
+      ),
+      ReportQuantityValueRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$ReportSegmentsTableCreateCompanionBuilder =
+    ReportSegmentsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required int reportQuantityID,
+      required int segmentNumber,
+      required double startDistance,
+      required double endDistance,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$ReportSegmentsTableUpdateCompanionBuilder =
+    ReportSegmentsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<int> reportQuantityID,
+      Value<int> segmentNumber,
+      Value<double> startDistance,
+      Value<double> endDistance,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$ReportSegmentsTableFilterComposer
+    extends Composer<_$AppDatabase, $ReportSegmentsTable> {
+  $$ReportSegmentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get reportQuantityID => $composableBuilder(
+    column: $table.reportQuantityID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get segmentNumber => $composableBuilder(
+    column: $table.segmentNumber,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get startDistance => $composableBuilder(
+    column: $table.startDistance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get endDistance => $composableBuilder(
+    column: $table.endDistance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ReportSegmentsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ReportSegmentsTable> {
+  $$ReportSegmentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get reportQuantityID => $composableBuilder(
+    column: $table.reportQuantityID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get segmentNumber => $composableBuilder(
+    column: $table.segmentNumber,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get startDistance => $composableBuilder(
+    column: $table.startDistance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get endDistance => $composableBuilder(
+    column: $table.endDistance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ReportSegmentsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ReportSegmentsTable> {
+  $$ReportSegmentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get reportQuantityID => $composableBuilder(
+    column: $table.reportQuantityID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get segmentNumber => $composableBuilder(
+    column: $table.segmentNumber,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get startDistance => $composableBuilder(
+    column: $table.startDistance,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get endDistance => $composableBuilder(
+    column: $table.endDistance,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ReportSegmentsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ReportSegmentsTable,
+          ReportSegmentRecord,
+          $$ReportSegmentsTableFilterComposer,
+          $$ReportSegmentsTableOrderingComposer,
+          $$ReportSegmentsTableAnnotationComposer,
+          $$ReportSegmentsTableCreateCompanionBuilder,
+          $$ReportSegmentsTableUpdateCompanionBuilder,
+          (
+            ReportSegmentRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $ReportSegmentsTable,
+              ReportSegmentRecord
+            >,
+          ),
+          ReportSegmentRecord,
+          PrefetchHooks Function()
+        > {
+  $$ReportSegmentsTableTableManager(
+    _$AppDatabase db,
+    $ReportSegmentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ReportSegmentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ReportSegmentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ReportSegmentsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<int> reportQuantityID = const Value.absent(),
+                Value<int> segmentNumber = const Value.absent(),
+                Value<double> startDistance = const Value.absent(),
+                Value<double> endDistance = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => ReportSegmentsCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                reportQuantityID: reportQuantityID,
+                segmentNumber: segmentNumber,
+                startDistance: startDistance,
+                endDistance: endDistance,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required int reportQuantityID,
+                required int segmentNumber,
+                required double startDistance,
+                required double endDistance,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => ReportSegmentsCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                reportQuantityID: reportQuantityID,
+                segmentNumber: segmentNumber,
+                startDistance: startDistance,
+                endDistance: endDistance,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ReportSegmentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ReportSegmentsTable,
+      ReportSegmentRecord,
+      $$ReportSegmentsTableFilterComposer,
+      $$ReportSegmentsTableOrderingComposer,
+      $$ReportSegmentsTableAnnotationComposer,
+      $$ReportSegmentsTableCreateCompanionBuilder,
+      $$ReportSegmentsTableUpdateCompanionBuilder,
+      (
+        ReportSegmentRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $ReportSegmentsTable,
+          ReportSegmentRecord
+        >,
+      ),
+      ReportSegmentRecord,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -19150,4 +26044,14 @@ class $AppDatabaseManager {
       $$RoadCategoriesTableTableManager(_db, _db.roadCategories);
   $$RoadsTableTableManager get roads =>
       $$RoadsTableTableManager(_db, _db.roads);
+  $$DailyReportsTableTableManager get dailyReports =>
+      $$DailyReportsTableTableManager(_db, _db.dailyReports);
+  $$ReportEquipmentsTableTableManager get reportEquipments =>
+      $$ReportEquipmentsTableTableManager(_db, _db.reportEquipments);
+  $$ReportQuantitiesTableTableManager get reportQuantities =>
+      $$ReportQuantitiesTableTableManager(_db, _db.reportQuantities);
+  $$ReportQuantityValuesTableTableManager get reportQuantityValues =>
+      $$ReportQuantityValuesTableTableManager(_db, _db.reportQuantityValues);
+  $$ReportSegmentsTableTableManager get reportSegments =>
+      $$ReportSegmentsTableTableManager(_db, _db.reportSegments);
 }

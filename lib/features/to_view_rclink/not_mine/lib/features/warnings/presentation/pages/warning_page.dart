@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../shared/utils/theme.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../dashboard/presentation/pages/widgets/listingitem_widget.dart';
 import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
 
@@ -114,7 +115,13 @@ class _WarningPageState extends State<WarningPage> {
                               ),
                               backgroundColor: Colors.grey.shade200,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              CustomSnackBar.show(
+                                context,
+                                'This feature is coming soon...',
+                                type: SnackBarType.comingsoon,
+                              );
+                            },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 vertical: 11,

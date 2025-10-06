@@ -70,11 +70,7 @@ class _GalleryWidgetState extends State<GalleryWidget>
   @override
   void initState() {
     super.initState();
-    _initializeMode();
-    _initializeImages();
-  }
 
-  void _initializeMode() {
     if (widget.inputProgress) {
       _tabController = TabController(length: 3, vsync: this);
       _tabController!.addListener(() {
@@ -82,6 +78,47 @@ class _GalleryWidgetState extends State<GalleryWidget>
           _handleTabChange(_tabController!.index);
         }
       });
+    }
+    if (widget.inputProgress && widget.initialTabImages != null) {
+      widget.initialTabImages!.forEach((tab, images) {
+        _tabImages[tab] = List<GalleryImage>.from(images);
+      });
+
+      if (widget.minimumImage != null) {
+        final beforeCount = _tabImages['before']?.length ?? 0;
+        if (beforeCount >= widget.minimumImage!) {
+          _beforeTabConfirmed = true;
+          print('✅ Before tab confirmed (has $beforeCount images)');
+        }
+      }
+      return;
+    }
+
+    if (widget.pictures != null && widget.pictures!.isNotEmpty) {
+      if (widget.workerPicture) {
+        _workerImage = GalleryImage(
+          path: widget.pictures!.first,
+          capturedAt: DateTime.now(),
+        );
+      } else if (widget.inputProgress) {
+        _tabImages[_currentTab]!.addAll(
+          widget.pictures!.map((path) {
+            return GalleryImage(
+              path: path,
+              capturedAt: DateTime.now(),
+              type: _currentTab,
+            );
+          }),
+        );
+      } else {
+        _images.addAll(
+          widget.pictures!.map((path) {
+            return GalleryImage(path: path, capturedAt: DateTime.now());
+          }),
+        );
+      }
+    } else {
+      print('⚠️ No images to initialize');
     }
   }
 
@@ -138,55 +175,23 @@ class _GalleryWidgetState extends State<GalleryWidget>
     }
   }
 
-  void _initializeImages() {
-    if (widget.inputProgress && widget.initialTabImages != null) {
-      widget.initialTabImages!.forEach((tab, images) {
-        _tabImages[tab] = List<GalleryImage>.from(images);
-      });
-
-      if (widget.minimumImage != null) {
-        final beforeCount = _tabImages['before']?.length ?? 0;
-        if (beforeCount >= widget.minimumImage!) {
-          _beforeTabConfirmed = true;
-          print('✅ Before tab confirmed (has $beforeCount images)');
-        }
-      }
-      return;
-    }
-
-    if (widget.pictures != null && widget.pictures!.isNotEmpty) {
-      if (widget.workerPicture) {
-        _workerImage = GalleryImage(
-          path: widget.pictures!.first,
-          capturedAt: DateTime.now(),
-        );
-      } else if (widget.inputProgress) {
-        _tabImages[_currentTab]!.addAll(
-          widget.pictures!.map((path) {
-            return GalleryImage(
-              path: path,
-              capturedAt: DateTime.now(),
-              type: _currentTab,
-            );
-          }),
-        );
-      } else {
-        _images.addAll(
-          widget.pictures!.map((path) {
-            return GalleryImage(path: path, capturedAt: DateTime.now());
-          }),
-        );
-      }
-    } else {
-      print('⚠️ No images to initialize');
-    }
-  }
-
   Future<void> _captureNormalImage() async {
     if (_isCameraLoading) return;
 
     if (_images.length >= widget.maxImages) {
-      _showMaxImagesDialog();
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Maximum Images Reached'),
+          content: Text('You can only add up to ${widget.maxImages} images.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
       return;
     }
 
@@ -228,7 +233,19 @@ class _GalleryWidgetState extends State<GalleryWidget>
 
     final currentImages = _tabImages[_currentTab]!;
     if (currentImages.length >= widget.maxImages) {
-      _showMaxImagesDialog();
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Maximum Images Reached'),
+          content: Text('You can only add up to ${widget.maxImages} images.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
       return;
     }
 
@@ -371,33 +388,6 @@ class _GalleryWidgetState extends State<GalleryWidget>
     }
   }
 
-  Future<void> _deleteWorkerImage() async {
-    final confirmed = await _showDeleteConfirmation();
-    if (confirmed == true && _workerImage != null) {
-      await _cameraService.deleteImage(_workerImage!.path);
-      setState(() {
-        _workerImage = null;
-      });
-      _notifyParent();
-    }
-  }
-
-  void _notifyParent() {
-    if (widget.onImagesChanged != null) {
-      if (widget.inputProgress) {
-        widget.onImagesChanged!(
-          GalleryResult(images: [], tabImages: Map.from(_tabImages)),
-        );
-      } else if (widget.workerPicture) {
-        widget.onImagesChanged!(
-          GalleryResult(images: _workerImage != null ? [_workerImage!] : []),
-        );
-      } else {
-        widget.onImagesChanged!(GalleryResult(images: List.from(_images)));
-      }
-    }
-  }
-
   Future<bool?> _showDeleteConfirmation() {
     return showDialog<bool>(
       context: context,
@@ -419,20 +409,20 @@ class _GalleryWidgetState extends State<GalleryWidget>
     );
   }
 
-  void _showMaxImagesDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Maximum Images Reached'),
-        content: Text('You can only add up to ${widget.maxImages} images.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
+  void _notifyParent() {
+    if (widget.onImagesChanged != null) {
+      if (widget.inputProgress) {
+        widget.onImagesChanged!(
+          GalleryResult(images: [], tabImages: Map.from(_tabImages)),
+        );
+      } else if (widget.workerPicture) {
+        widget.onImagesChanged!(
+          GalleryResult(images: _workerImage != null ? [_workerImage!] : []),
+        );
+      } else {
+        widget.onImagesChanged!(GalleryResult(images: List.from(_images)));
+      }
+    }
   }
 
   void _showErrorDialog(String message) {
@@ -486,6 +476,7 @@ class _GalleryWidgetState extends State<GalleryWidget>
   @override
   Widget build(BuildContext context) {
     int currentImageCount = 0;
+    final bool showEmptyState = !widget.isGallery && _images.isEmpty;
 
     if (widget.inputProgress) {
       currentImageCount = _tabImages[_currentTab]?.length ?? 0;
@@ -551,8 +542,55 @@ class _GalleryWidgetState extends State<GalleryWidget>
               child: widget.workerPicture
                   ? _buildWorkerPictureView()
                   : widget.inputProgress
-                  ? _buildTabView()
-                  : _buildNormalView(),
+                  ? Column(
+                      children: [
+                        Container(
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF5F5F5),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TabBar(
+                            controller: _tabController,
+                            dividerColor: Colors.transparent,
+                            labelColor: Colors.black,
+                            indicator: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            labelStyle: TextStyle(
+                              fontSize: ResponsiveHelper.spacing(context, 14),
+                              fontWeight: FontWeight.w600,
+                            ),
+                            unselectedLabelColor: Colors.grey[600],
+                            unselectedLabelStyle: TextStyle(
+                              fontSize: ResponsiveHelper.spacing(context, 14),
+                              fontWeight: FontWeight.normal,
+                            ),
+                            tabs: const [
+                              Tab(text: 'Before'),
+                              Tab(text: 'Current'),
+                              Tab(text: 'After'),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: TabBarView(
+                            controller: _tabController,
+                            physics: const NeverScrollableScrollPhysics(),
+                            children: [
+                              _buildTabContent('before'),
+                              _buildTabContent('current'),
+                              _buildTabContent('after'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  : showEmptyState
+                  ? Center(child: EmptyGalleryState())
+                  : ImageGridView(images: _images, onDeleteImage: _deleteImage),
             ),
           ],
         ),
@@ -577,269 +615,197 @@ class _GalleryWidgetState extends State<GalleryWidget>
     );
   }
 
+  // If Worker
   Widget _buildWorkerPictureView() {
-    if (_workerImage == null) {
-      return Center(
-        child: Column(
-          children: [
-            DottedBorder(
-              borderType: BorderType.RRect,
-              radius: const Radius.circular(10),
-              dashPattern: const [6, 3],
-              color: Colors.grey,
-              strokeWidth: 1.5,
-              child: GestureDetector(
-                onTap: () {
-                  _captureWorkerImage();
-                },
-                child: Container(
-                  height: ResponsiveHelper.getHeight(context, 0.25),
-                  padding: const EdgeInsets.all(16),
-                  alignment: Alignment.center,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage(
-                              'assets/images/icons/capture_workers.png',
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: 10),
-
-                      const Text(
-                        "Click here to take photo of worker",
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-
     return Column(
       children: [
-        Center(
-          child: DottedBorder(
-            borderType: BorderType.RRect,
-            radius: const Radius.circular(10),
-            dashPattern: const [6, 3],
-            color: Colors.grey,
-            strokeWidth: 1.5,
-            child: GestureDetector(
-              onTap: () {
-                _captureWorkerImage();
-              },
-              child: SizedBox(
-                width: double.infinity,
-                child: Stack(
-                  children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.file(
-                        File(_workerImage!.path),
-                        fit: BoxFit.contain,
-                      ),
-                    ),
-
-                    // Left
-                    Positioned(
-                      top: 10,
-                      left: 10,
-                      child: GestureDetector(
-                        onTap: _deleteWorkerImage,
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          decoration: const BoxDecoration(
-                            color: Colors.red,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.delete,
-                            size: 20,
-                            color: Colors.white,
+        DottedBorder(
+          borderType: BorderType.RRect,
+          radius: const Radius.circular(10),
+          dashPattern: const [6, 3],
+          color: Colors.grey,
+          strokeWidth: 1.5,
+          child: GestureDetector(
+            onTap: _captureWorkerImage,
+            child: Container(
+              width: double.infinity,
+              height: _workerImage == null
+                  ? ResponsiveHelper.getHeight(context, 0.25)
+                  : null,
+              padding: _workerImage == null ? const EdgeInsets.all(16) : null,
+              alignment: _workerImage == null ? Alignment.center : null,
+              child: _workerImage == null
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: AssetImage(
+                                'assets/images/icons/capture_workers.png',
+                              ),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-
-                    // Right
-                    Positioned(
-                      top: 15,
-                      right: 10,
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 5,
+                        SizedBox(height: 10),
+                        const Text(
+                          "Click here to take photo of worker",
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(100),
-                          border: Border.all(color: primaryColor, width: 1),
+                      ],
+                    )
+                  : Stack(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(10),
+                          child: Image.file(
+                            File(_workerImage!.path),
+                            fit: BoxFit.contain,
+                            width: double.infinity,
+                          ),
                         ),
-                        child: Text(
-                          'No Workers',
-                          style: TextStyle(color: primaryColor, fontSize: 12),
-                        ),
-                      ),
-                    ),
-
-                    // Bottom
-                    Positioned(
-                      bottom: 10,
-                      left: 0,
-                      right: 0,
-                      child: Center(
-                        child: ElevatedButton(
-                          onPressed: _captureWorkerImage,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            side: BorderSide(
-                              color: primaryColor,
-                              width: ResponsiveHelper.adaptive(
-                                context,
-                                mobile: 1.0,
-                                tablet: 1.5,
-                                desktop: 2.0,
+                        // Delete button - Left
+                        Positioned(
+                          top: 10,
+                          left: 10,
+                          child: GestureDetector(
+                            onTap: () async {
+                              final confirmed = await _showDeleteConfirmation();
+                              if (confirmed == true && _workerImage != null) {
+                                await _cameraService.deleteImage(
+                                  _workerImage!.path,
+                                );
+                                setState(() {
+                                  _workerImage = null;
+                                });
+                                _notifyParent();
+                              }
+                            },
+                            child: Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: const BoxDecoration(
+                                color: Colors.red,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.delete,
+                                size: 20,
+                                color: Colors.white,
                               ),
                             ),
-                            padding: ResponsiveHelper.padding(
-                              context,
+                          ),
+                        ),
+                        // Workers badge - Right
+                        Positioned(
+                          top: 15,
+                          right: 10,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 20,
                               vertical: 5,
-                              horizontal: 25,
                             ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: ResponsiveHelper.borderRadius(
-                                context,
-                                all: 10,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(100),
+                              border: Border.all(color: primaryColor, width: 1),
+                            ),
+                            child: Text(
+                              'Workers',
+                              style: TextStyle(
+                                color: primaryColor,
+                                fontSize: 12,
                               ),
                             ),
                           ),
-                          child: Text('Retake', style: TextStyle(fontSize: 12)),
                         ),
-                      ),
+                        // Retake button - Bottom
+                        Positioned(
+                          bottom: 10,
+                          left: 0,
+                          right: 0,
+                          child: Center(
+                            child: ElevatedButton(
+                              onPressed: _captureWorkerImage,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                side: BorderSide(
+                                  color: primaryColor,
+                                  width: ResponsiveHelper.adaptive(
+                                    context,
+                                    mobile: 1.0,
+                                    tablet: 1.5,
+                                    desktop: 2.0,
+                                  ),
+                                ),
+                                padding: ResponsiveHelper.padding(
+                                  context,
+                                  vertical: 5,
+                                  horizontal: 25,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: ResponsiveHelper.borderRadius(
+                                    context,
+                                    all: 10,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                'Retake',
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
             ),
           ),
         ),
         Spacer(),
-
-        _workerImage == null
-            ? SizedBox()
-            : SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    _returnImagesAndPop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    disabledBackgroundColor: Colors.grey[300],
-                    padding: ResponsiveHelper.padding(
-                      context,
-                      vertical: 10,
-                      horizontal: 20,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: ResponsiveHelper.borderRadius(
-                        context,
-                        all: 14,
-                      ),
-                    ),
-                    elevation: ResponsiveHelper.adaptive(
-                      context,
-                      mobile: 1,
-                      tablet: 2,
-                      desktop: 3,
-                    ),
-                  ),
-                  child: Text('Add', style: TextStyle(color: Colors.white)),
+        // Add button - only show when image exists
+        if (_workerImage != null)
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _returnImagesAndPop,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: primaryColor,
+                disabledBackgroundColor: Colors.grey[300],
+                padding: ResponsiveHelper.padding(
+                  context,
+                  vertical: 10,
+                  horizontal: 20,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: ResponsiveHelper.borderRadius(context, all: 14),
+                ),
+                elevation: ResponsiveHelper.adaptive(
+                  context,
+                  mobile: 1,
+                  tablet: 2,
+                  desktop: 3,
                 ),
               ),
+              child: Text('Add', style: TextStyle(color: Colors.white)),
+            ),
+          ),
         SizedBox(height: 20),
       ],
     );
   }
 
-  Widget _buildNormalView() {
-    final bool showEmptyState = !widget.isGallery && _images.isEmpty;
-
-    return showEmptyState
-        ? Center(child: const EmptyGalleryState())
-        : ImageGridView(images: _images, onDeleteImage: _deleteImage);
-  }
-
-  Widget _buildTabView() {
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.all(5),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF5F5F5),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: TabBar(
-            controller: _tabController,
-            dividerColor: Colors.transparent,
-            labelColor: Colors.black,
-            indicator: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            indicatorSize: TabBarIndicatorSize.tab,
-            labelStyle: TextStyle(
-              fontSize: ResponsiveHelper.spacing(context, 14),
-              fontWeight: FontWeight.w600,
-            ),
-            unselectedLabelColor: Colors.grey[600],
-            unselectedLabelStyle: TextStyle(
-              fontSize: ResponsiveHelper.spacing(context, 14),
-              fontWeight: FontWeight.normal,
-            ),
-            tabs: const [
-              Tab(text: 'Before'),
-              Tab(text: 'Current'),
-              Tab(text: 'After'),
-            ],
-          ),
-        ),
-        Expanded(
-          child: TabBarView(
-            controller: _tabController,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              _buildTabContent('before'),
-              _buildTabContent('current'),
-              _buildTabContent('after'),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
+  // Tab Content [Before, Current, After]
   Widget _buildTabContent(String tabType) {
     final images = _tabImages[tabType]!;
 
     if (images.isEmpty) {
-      return const EmptyGalleryState();
+      return const EmptyGalleryState(imageCount: 4);
     }
 
     final shouldShowAddButton =

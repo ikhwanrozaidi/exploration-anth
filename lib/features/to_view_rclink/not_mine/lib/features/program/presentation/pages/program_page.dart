@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../shared/utils/theme.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 import 'widgets/month_filter_widget.dart';
 
 class ProgramPage extends StatefulWidget {
@@ -76,6 +77,11 @@ class _ProgramPageState extends State<ProgramPage> {
                               ),
                               onPressed: () {
                                 print("Add button clicked");
+                                CustomSnackBar.show(
+                                  context,
+                                  'This feature is coming soon...',
+                                  type: SnackBarType.comingsoon,
+                                );
                               },
                               icon: const Icon(
                                 Icons.add,
@@ -92,6 +98,11 @@ class _ProgramPageState extends State<ProgramPage> {
                               ),
                               onPressed: () {
                                 print("Delete button clicked");
+                                CustomSnackBar.show(
+                                  context,
+                                  'This feature is coming soon...',
+                                  type: SnackBarType.comingsoon,
+                                );
                               },
                               icon: const Icon(
                                 Icons.delete,
@@ -186,7 +197,13 @@ class _ProgramPageState extends State<ProgramPage> {
                               ),
                               backgroundColor: Colors.grey.shade200,
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              CustomSnackBar.show(
+                                context,
+                                'This feature is coming soon...',
+                                type: SnackBarType.comingsoon,
+                              );
+                            },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 vertical: 11,
@@ -249,7 +266,13 @@ class _ProgramPageState extends State<ProgramPage> {
                                     ),
                                     backgroundColor: Colors.white,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    CustomSnackBar.show(
+                                      context,
+                                      'This feature is coming soon...',
+                                      type: SnackBarType.comingsoon,
+                                    );
+                                  },
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -300,7 +323,13 @@ class _ProgramPageState extends State<ProgramPage> {
                                     ),
                                     backgroundColor: Colors.white,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    CustomSnackBar.show(
+                                      context,
+                                      'This feature is coming soon...',
+                                      type: SnackBarType.comingsoon,
+                                    );
+                                  },
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -356,7 +385,13 @@ class _ProgramPageState extends State<ProgramPage> {
                                     ),
                                     backgroundColor: Colors.white,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    CustomSnackBar.show(
+                                      context,
+                                      'This feature is coming soon...',
+                                      type: SnackBarType.comingsoon,
+                                    );
+                                  },
                                   child: Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
@@ -392,190 +427,203 @@ class _ProgramPageState extends State<ProgramPage> {
 
                           SizedBox(height: 20),
 
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 25,
-                              horizontal: 15,
-                            ),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.white,
-                                  Color.fromARGB(255, 238, 242, 254),
-                                ],
-                                begin: Alignment.centerLeft,
-                                end: Alignment.centerRight,
+                          GestureDetector(
+                            onTap: () {
+                              CustomSnackBar.show(
+                                context,
+                                'This feature is coming soon...',
+                                type: SnackBarType.comingsoon,
+                              );
+                            },
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 25,
+                                horizontal: 15,
                               ),
-                              border: Border.all(color: Colors.grey.shade300),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(15),
-                                      decoration: BoxDecoration(
-                                        color: primaryColor,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          '007',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-
-                                    SizedBox(width: 15),
-
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'WHOCARE(M) SDN BHD',
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.swap_calls,
-                                              size: 18,
-                                              color: Colors.black,
-                                            ),
-                                            SizedBox(width: 5),
-                                            Text(
-                                              '402.70 - 412.80',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.black,
-                                                fontSize: 12,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.white,
+                                    Color.fromARGB(255, 238, 242, 254),
                                   ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
                                 ),
-
-                                Divider(
-                                  height: 40,
-                                  color: Colors.grey.shade300,
-                                  thickness: 1,
-                                ),
-
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 8.0,
-                                  ),
-                                  child: Row(
+                                border: Border.all(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                children: [
+                                  Row(
                                     children: [
-                                      Icon(
-                                        Icons.location_on_sharp,
-                                        size: 20,
-                                        color: Colors.black,
+                                      Container(
+                                        padding: EdgeInsets.all(15),
+                                        decoration: BoxDecoration(
+                                          color: primaryColor,
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            '007',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
                                       ),
 
                                       SizedBox(width: 15),
 
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              'PEKAN',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w400,
-                                                color: Colors.grey,
-                                                fontSize: 12,
-                                              ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'ROADCARE(M) SDN BHD',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.black,
                                             ),
-                                            SizedBox(height: 2),
-                                            Text(
-                                              'FT2485 - JALAN MASUK KE BANDAR PALOH NILAI',
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
+                                          ),
+                                          SizedBox(height: 2),
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.swap_calls,
+                                                size: 18,
                                                 color: Colors.black,
-                                                fontSize: 12,
                                               ),
-                                            ),
-                                          ],
-                                        ),
+                                              SizedBox(width: 5),
+                                              Text(
+                                                '402.70 - 412.80',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                ),
 
-                                Divider(
-                                  height: 40,
-                                  color: Colors.grey.shade300,
-                                  thickness: 1,
-                                ),
+                                  Divider(
+                                    height: 40,
+                                    color: Colors.grey.shade300,
+                                    thickness: 1,
+                                  ),
 
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0,
+                                    ),
+                                    child: Row(
                                       children: [
-                                        Text(
-                                          'Progress',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.black,
-                                          ),
+                                        Icon(
+                                          Icons.location_on_sharp,
+                                          size: 20,
+                                          color: Colors.black,
                                         ),
-                                        Text(
-                                          '10/50',
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                            color: primaryColor,
+
+                                        SizedBox(width: 15),
+
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'PEKAN',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.grey,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                              SizedBox(height: 2),
+                                              Text(
+                                                'FT2485 - JALAN MASUK KE BANDAR PALOH NILAI',
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ],
                                     ),
+                                  ),
 
-                                    SizedBox(height: 8),
+                                  Divider(
+                                    height: 40,
+                                    color: Colors.grey.shade300,
+                                    thickness: 1,
+                                  ),
 
-                                    Container(
-                                      height: 12,
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(10),
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Progress',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Text(
+                                            '10/50',
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                              color: primaryColor,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      child: FractionallySizedBox(
-                                        alignment: Alignment.centerLeft,
-                                        widthFactor: 0.2, // 10/50 = 0.2 (20%)
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: primaryColor,
-                                            borderRadius: BorderRadius.circular(
-                                              12,
+
+                                      SizedBox(height: 8),
+
+                                      Container(
+                                        height: 12,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                        child: FractionallySizedBox(
+                                          alignment: Alignment.centerLeft,
+                                          widthFactor: 0.2, // 10/50 = 0.2 (20%)
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: primaryColor,
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],

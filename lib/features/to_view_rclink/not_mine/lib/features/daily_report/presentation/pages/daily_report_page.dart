@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:rclink_app/features/daily_report_creation/presentation/pages/report_creation_page.dart';
 
@@ -42,6 +41,8 @@ class _DailyReportPageState extends State<DailyReportPage> {
           bottom: false,
           child: Column(
             children: [
+              SizedBox(height: ResponsiveHelper.getHeight(context, 0.02)),
+
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
@@ -259,27 +260,33 @@ class _DailyReportPageState extends State<DailyReportPage> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Row(
-                                            children: [
-                                              Icon(
-                                                Icons.person,
-                                                size: 10,
-                                                color: Colors.black,
-                                              ),
-                                              SizedBox(width: 5),
-                                              Text(
-                                                'Contractor',
-                                                style: TextStyle(
+                                          Expanded(
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.person,
+                                                  size: 10,
                                                   color: Colors.black,
-                                                  fontSize:
-                                                      ResponsiveHelper.fontSize(
-                                                        context,
-                                                        base: 10,
-                                                      ),
-                                                  // fontWeight: FontWeight.w400,
                                                 ),
-                                              ),
-                                            ],
+                                                SizedBox(width: 5),
+                                                Expanded(
+                                                  child: Text(
+                                                    'Contractor',
+                                                    style: TextStyle(
+                                                      color: Colors.black,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      fontSize:
+                                                          ResponsiveHelper.fontSize(
+                                                            context,
+                                                            base: 10,
+                                                          ),
+                                                      // fontWeight: FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                           Icon(
                                             Icons.expand_more,
@@ -413,268 +420,8 @@ class _DailyReportPageState extends State<DailyReportPage> {
 
                               SizedBox(height: 20),
 
-                              // Daily report
+                              // UNCOMMENT
                               //
-                              //
-                              // Container(
-                              //   padding: EdgeInsets.symmetric(
-                              //     vertical: 25,
-                              //     horizontal: 15,
-                              //   ),
-                              //   decoration: BoxDecoration(
-                              //     border: Border.all(color: Colors.grey.shade300),
-                              //     borderRadius: BorderRadius.circular(10),
-                              //   ),
-                              //   child: Column(
-                              //     crossAxisAlignment: CrossAxisAlignment.start,
-                              //     children: [
-                              //       // Carousel Slider
-                              //       SizedBox(
-                              //         height: 200,
-                              //         child: Stack(
-                              //           children: [
-                              //             PageView.builder(
-                              //               controller: _pageController,
-                              //               onPageChanged: (index) {
-                              //                 setState(() {
-                              //                   _currentIndex = index;
-                              //                 });
-                              //               },
-                              //               itemCount: carouselItems.length,
-                              //               itemBuilder: (context, index) {
-                              //                 final item = carouselItems[index];
-                              //                 return Container(
-                              //                   margin: EdgeInsets.symmetric(
-                              //                     horizontal: 5,
-                              //                   ),
-                              //                   decoration: BoxDecoration(
-                              //                     borderRadius:
-                              //                         BorderRadius.circular(10),
-                              //                   ),
-                              //                   child: ClipRRect(
-                              //                     borderRadius:
-                              //                         BorderRadius.circular(10),
-                              //
-                              //                     // Dark gradient overlay
-                              //                     child: Container(
-                              //                       width: double.infinity,
-                              //                       height: double.infinity,
-                              //                       decoration: BoxDecoration(
-                              //                         gradient: LinearGradient(
-                              //                           begin:
-                              //                               Alignment.topCenter,
-                              //                           end: Alignment
-                              //                               .bottomCenter,
-                              //                           colors: [
-                              //                             Colors.transparent,
-                              //                             Colors.black
-                              //                                 .withOpacity(0.7),
-                              //                           ],
-                              //                         ),
-                              //                       ),
-                              //                       child: Image.asset(
-                              //                         item['image']!,
-                              //                         fit: BoxFit.cover,
-                              //                         errorBuilder:
-                              //                             (
-                              //                               context,
-                              //                               error,
-                              //                               stackTrace,
-                              //                             ) {
-                              //                               return Container(
-                              //                                 color: Colors
-                              //                                     .grey
-                              //                                     .shade300,
-                              //                                 child: Icon(
-                              //                                   Icons
-                              //                                       .image_not_supported,
-                              //                                   size: 50,
-                              //                                   color: Colors
-                              //                                       .grey
-                              //                                       .shade600,
-                              //                                 ),
-                              //                               );
-                              //                             },
-                              //                       ),
-                              //                     ),
-                              //                   ),
-                              //                 );
-                              //               },
-                              //             ),
-                              //
-                              //             Padding(
-                              //               padding: const EdgeInsets.all(15.0),
-                              //               child: Column(
-                              //                 mainAxisAlignment:
-                              //                     MainAxisAlignment.spaceBetween,
-                              //                 children: [
-                              //                   Row(
-                              //                     mainAxisAlignment:
-                              //                         MainAxisAlignment
-                              //                             .spaceBetween,
-                              //                     children: [
-                              //                       Container(
-                              //                         margin: EdgeInsets.only(
-                              //                           left: 5,
-                              //                         ),
-                              //                         padding:
-                              //                             EdgeInsets.symmetric(
-                              //                               horizontal: 10,
-                              //                               vertical: 5,
-                              //                             ),
-                              //                         decoration: BoxDecoration(
-                              //                           color: Colors.white,
-                              //                           borderRadius:
-                              //                               BorderRadius.circular(
-                              //                                 8,
-                              //                               ),
-                              //                         ),
-                              //                         child: Text(
-                              //                           'R04',
-                              //                           style: TextStyle(
-                              //                             fontSize: 12,
-                              //                             fontWeight:
-                              //                                 FontWeight.bold,
-                              //                             color: Colors.black,
-                              //                           ),
-                              //                         ),
-                              //                       ),
-
-                              //                       Container(
-                              //                         margin: EdgeInsets.only(
-                              //                           right: 5,
-                              //                         ),
-                              //                         padding:
-                              //                             EdgeInsets.symmetric(
-                              //                               horizontal: 10,
-                              //                               vertical: 5,
-                              //                             ),
-                              //                         decoration: BoxDecoration(
-                              //                           color: Colors.white,
-                              //                           borderRadius:
-                              //                               BorderRadius.circular(
-                              //                                 100,
-                              //                               ),
-                              //                         ),
-                              //                         child: Text(
-                              //                           '31 Mar',
-                              //                           style: TextStyle(
-                              //                             fontSize: 12,
-                              //                             fontWeight:
-                              //                                 FontWeight.bold,
-                              //                             color: Colors.black,
-                              //                           ),
-                              //                         ),
-                              //                       ),
-                              //                     ],
-                              //                   ),
-
-                              //                   // Page indicators
-                              //                   Row(
-                              //                     mainAxisAlignment:
-                              //                         MainAxisAlignment.center,
-                              //                     children: List.generate(
-                              //                       carouselItems.length,
-                              //                       (index) => Container(
-                              //                         margin:
-                              //                             EdgeInsets.symmetric(
-                              //                               horizontal: 2,
-                              //                             ),
-                              //                         width:
-                              //                             _currentIndex == index
-                              //                             ? 8
-                              //                             : 8,
-                              //                         height: 8,
-                              //                         decoration: BoxDecoration(
-                              //                           color:
-                              //                               _currentIndex == index
-                              //                               ? Colors.white
-                              //                               : Colors
-                              //                                     .grey
-                              //                                     .shade400,
-                              //                           borderRadius:
-                              //                               BorderRadius.circular(
-                              //                                 4,
-                              //                               ),
-                              //                         ),
-                              //                       ),
-                              //                     ),
-                              //                   ),
-                              //                 ],
-                              //               ),
-                              //             ),
-                              //           ],
-                              //         ),
-                              //       ),
-
-                              //       SizedBox(height: 15),
-
-                              //       Text(
-                              //         'ROADCARE (M) SDN BHD',
-                              //         style: TextStyle(
-                              //           fontWeight: FontWeight.w600,
-                              //           fontSize: ResponsiveHelper.fontSize(
-                              //             context,
-                              //             base: 15,
-                              //           ),
-                              //         ),
-                              //       ),
-
-                              //       SizedBox(height: 10),
-
-                              //       Row(
-                              //         children: [
-                              //           Icon(
-                              //             Icons.location_on,
-                              //             color: Colors.black,
-                              //           ),
-
-                              //           SizedBox(width: 12),
-
-                              //           Expanded(
-                              //             child: Column(
-                              //               crossAxisAlignment:
-                              //                   CrossAxisAlignment.start,
-                              //               children: [
-                              //                 Text(
-                              //                   'PEKAN',
-                              //                   style: TextStyle(
-                              //                     color: Colors.black.withOpacity(
-                              //                       0.6,
-                              //                     ),
-                              //                     fontSize:
-                              //                         ResponsiveHelper.fontSize(
-                              //                           context,
-                              //                           base: 14,
-                              //                         ),
-                              //                   ),
-                              //                 ),
-                              //                 Text(
-                              //                   'FT2485 - JALAN MASUK KE BANDAR PALOH NILAI',
-                              //                   overflow: TextOverflow.ellipsis,
-                              //                 ),
-                              //               ],
-                              //             ),
-                              //           ),
-                              //         ],
-                              //       ),
-
-                              //       SizedBox(height: 10),
-
-                              //       Row(
-                              //         children: [
-                              //           Icon(
-                              //             Icons.swap_calls,
-                              //             color: Colors.black,
-                              //           ),
-
-                              //           SizedBox(width: 12),
-                              //           Text('1.20'),
-                              //         ],
-                              //       ),
-                              //     ],
-                              //   ),
-                              // ),
                               DailyReportOverviewListWidget(
                                 scopeOfWork: 'R04',
                                 date: '31 Mar',
@@ -685,17 +432,16 @@ class _DailyReportPageState extends State<DailyReportPage> {
                                 roadSection: 1.5,
                                 images: ['1', '2', '3'],
                               ),
-
-                              DailyReportOverviewListWidget(
-                                scopeOfWork: 'R10',
-                                date: '31 Mar',
-                                company: 'WHOCARE (M) SDN BHD',
-                                city: 'PEKAN',
-                                roadName:
-                                    'FT1234 - JALAN MASUK KE BANDAR PALOH',
-                                roadSection: 1.5,
-                                images: ['1', '2', '3'],
-                              ),
+                              // DailyReportOverviewListWidget(
+                              //   scopeOfWork: 'R10',
+                              //   date: '31 Mar',
+                              //   company: 'WHOCARE (M) SDN BHD',
+                              //   city: 'PEKAN',
+                              //   roadName:
+                              //       'FT1234 - JALAN MASUK KE BANDAR PALOH',
+                              //   roadSection: 1.5,
+                              //   images: ['1', '2', '3'],
+                              // ),
                             ],
                           ),
                         ),

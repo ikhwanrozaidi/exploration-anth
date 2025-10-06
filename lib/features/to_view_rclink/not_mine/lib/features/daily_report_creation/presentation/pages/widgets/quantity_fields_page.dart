@@ -4,6 +4,7 @@ import 'package:rclink_app/features/daily_report_creation/presentation/bloc/repo
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
+import '../../../domain/entities/scope_of_work/quantity_field.dart';
 import '../../bloc/report_creation_bloc.dart';
 import '../../constant/report_model.dart';
 import 'quantity_segments_breakdown_page.dart';
@@ -21,6 +22,10 @@ class QuantityFieldsPage extends StatefulWidget {
 
   final bool hasSegmentBreakdown;
   final String? selectedScopeUid;
+  final int? segmentSize;
+  final int? maxSegmentLength;
+  final List<QuantityField>? segmentFields;
+  final List<QuantityField>? allQuantityFields;
 
   const QuantityFieldsPage({
     Key? key,
@@ -28,11 +33,17 @@ class QuantityFieldsPage extends StatefulWidget {
     required this.weather,
     required this.location,
     required this.section,
-    required this.quantityOption,
     required this.scopeConfig,
+
+    required this.quantityOption,
     this.existingData,
+
     this.hasSegmentBreakdown = false,
     this.selectedScopeUid,
+    this.segmentSize,
+    this.maxSegmentLength,
+    this.segmentFields,
+    this.allQuantityFields,
   }) : super(key: key);
 
   @override
@@ -290,6 +301,10 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
           builder: (context) => QuantitySegmentBreakdownPage(
             quantityName: widget.quantityOption.name,
             existingData: data,
+            segmentSize: widget.segmentSize ?? 25,
+            maxSegmentLength: widget.maxSegmentLength ?? 1000,
+            segmentFields: widget.segmentFields ?? [],
+            allQuantityFields: widget.allQuantityFields ?? [],
           ),
         ),
       );

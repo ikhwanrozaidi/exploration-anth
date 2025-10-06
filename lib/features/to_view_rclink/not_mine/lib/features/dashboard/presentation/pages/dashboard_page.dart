@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
-import '../../../auth/presentation/bloc/auth_bloc.dart';
-import '../../../auth/presentation/bloc/auth_event.dart';
-import '../../../company/presentation/bloc/company_bloc.dart';
-import '../../../company/presentation/bloc/company_event.dart';
+
+import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../daily_report/presentation/pages/daily_report_page.dart';
 import 'widgets/listingitem_widget.dart';
-import 'widgets/reportitem_widget.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -19,7 +15,7 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  bool showActionRequired = true;
+  bool showActionRequired = false;
   int actionCount = 108;
 
   void toggleActionRequired() {
@@ -82,7 +78,13 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                         backgroundColor: Colors.white.withOpacity(0.6),
                       ),
-                      onPressed: () {},
+                      onPressed: () {
+                        CustomSnackBar.show(
+                          context,
+                          'This feature is coming soon...',
+                          type: SnackBarType.comingsoon,
+                        );
+                      },
                       // context.read<AuthBloc>().add(const LogoutRequested()),
                       // context.read<CompanyBloc>().add(
                       //   const ClearCompanyCache(),
@@ -175,6 +177,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                       builder: (context) => DailyReportPage(),
                                     ),
                                   );
+                                  // CustomSnackBar.show(
+                                  //   context,
+                                  //   'This feature is in update...',
+                                  //   type: SnackBarType.comingsoon,
+                                  // );
                                 },
                               ),
                             ),
@@ -185,6 +192,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 label: 'Inspection',
                                 onTap: () {
                                   print('Inspection tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
                                 },
                               ),
                             ),
@@ -195,6 +207,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 label: 'Site\nWarning',
                                 onTap: () {
                                   print('Site Warning tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
                                 },
                               ),
                             ),
@@ -205,6 +222,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 label: 'Program',
                                 onTap: () {
                                   print('Program tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
                                 },
                               ),
                             ),
@@ -223,6 +245,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 label: 'Toolbox',
                                 onTap: () {
                                   print('Toolbox tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
                                 },
                               ),
                             ),
@@ -233,6 +260,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 label: 'Disaster',
                                 onTap: () {
                                   print('Disaster tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
                                 },
                               ),
                             ),
@@ -243,6 +275,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 label: 'Periodic',
                                 onTap: () {
                                   print('Periodic tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
                                 },
                               ),
                             ),
@@ -253,6 +290,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 label: 'Others',
                                 onTap: () {
                                   print('Others tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
                                 },
                               ),
                             ),
@@ -271,114 +313,125 @@ class _DashboardPageState extends State<DashboardPage> {
                       child: AnimatedOpacity(
                         duration: Duration(milliseconds: 300),
                         opacity: showActionRequired ? 1.0 : 0.0,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            bottom: showActionRequired
-                                ? ResponsiveHelper.spacing(context, 10)
-                                : 0,
-                          ),
-                          padding: ResponsiveHelper.padding(
-                            context,
-                            vertical: 15,
-                            horizontal: 20,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: ResponsiveHelper.borderRadius(
+                        child: GestureDetector(
+                          onTap: () {
+                            CustomSnackBar.show(
                               context,
-                              all: 15,
+                              'This feature is coming soon...',
+                              type: SnackBarType.comingsoon,
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              bottom: showActionRequired
+                                  ? ResponsiveHelper.spacing(context, 10)
+                                  : 0,
                             ),
-                            color: Colors.white.withOpacity(0.5),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      padding: ResponsiveHelper.padding(
-                                        context,
-                                        vertical: 10,
-                                        horizontal: 15,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            ResponsiveHelper.borderRadius(
-                                              context,
-                                              all: 15,
+                            padding: ResponsiveHelper.padding(
+                              context,
+                              vertical: 15,
+                              horizontal: 20,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: ResponsiveHelper.borderRadius(
+                                context,
+                                all: 15,
+                              ),
+                              color: Colors.white.withOpacity(0.5),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        padding: ResponsiveHelper.padding(
+                                          context,
+                                          vertical: 10,
+                                          horizontal: 15,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              ResponsiveHelper.borderRadius(
+                                                context,
+                                                all: 15,
+                                              ),
+                                        ),
+                                        child: Center(
+                                          child: AnimatedSwitcher(
+                                            duration: Duration(
+                                              milliseconds: 300,
                                             ),
-                                      ),
-                                      child: Center(
-                                        child: AnimatedSwitcher(
-                                          duration: Duration(milliseconds: 300),
-                                          child: Text(
-                                            '$actionCount',
-                                            key: ValueKey(actionCount),
-                                            style: TextStyle(
-                                              fontSize:
-                                                  ResponsiveHelper.fontSize(
-                                                    context,
-                                                    base: 20,
-                                                  ),
-                                              color: Colors.red,
-                                              fontWeight: FontWeight.bold,
+                                            child: Text(
+                                              '$actionCount',
+                                              key: ValueKey(actionCount),
+                                              style: TextStyle(
+                                                fontSize:
+                                                    ResponsiveHelper.fontSize(
+                                                      context,
+                                                      base: 20,
+                                                    ),
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: ResponsiveHelper.spacing(
-                                        context,
-                                        15,
+                                      SizedBox(
+                                        width: ResponsiveHelper.spacing(
+                                          context,
+                                          15,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Action Required',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize:
-                                                  ResponsiveHelper.fontSize(
-                                                    context,
-                                                    base: 16,
-                                                  ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Action Required',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize:
+                                                    ResponsiveHelper.fontSize(
+                                                      context,
+                                                      base: 16,
+                                                    ),
+                                              ),
                                             ),
-                                          ),
-                                          Text(
-                                            'Please complete it promptly',
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize:
-                                                  ResponsiveHelper.fontSize(
-                                                    context,
-                                                    base: 12,
-                                                  ),
+                                            Text(
+                                              'Please complete it promptly',
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize:
+                                                    ResponsiveHelper.fontSize(
+                                                      context,
+                                                      base: 12,
+                                                    ),
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Icon(
-                                Icons.keyboard_arrow_right,
-                                color: Colors.white,
-                                size: ResponsiveHelper.iconSize(
-                                  context,
-                                  base: 24,
+                                Icon(
+                                  Icons.keyboard_arrow_right,
+                                  color: Colors.white,
+                                  size: ResponsiveHelper.iconSize(
+                                    context,
+                                    base: 24,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -460,6 +513,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 label: 'JKR Report',
                                 onTap: () {
                                   print('JKR Report tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
                                 },
                               ),
                               ListingItem(
@@ -468,6 +526,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 label: 'Monthly Report',
                                 onTap: () {
                                   print('Monthly Report tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
                                 },
                               ),
                               ListingItem(
@@ -476,6 +539,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 label: 'Statistic',
                                 onTap: () {
                                   print('Statistic tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
                                 },
                               ),
                               ListingItem(
@@ -484,6 +552,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 label: 'Hotmix Request',
                                 onTap: () {
                                   print('Hotmix Request tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
                                 },
                               ),
                             ],

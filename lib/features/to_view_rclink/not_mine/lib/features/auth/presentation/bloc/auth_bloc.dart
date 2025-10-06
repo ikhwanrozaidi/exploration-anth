@@ -110,7 +110,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (event.roleUID != null) {
       final rbacBloc = getIt<RbacBloc>();
       rbacBloc.add(LoadPermissions(event.roleUID!));
-      print('📋 Loading permissions for role: ${event.roleUID}');
+      // print('📋 Loading permissions for role: ${event.roleUID}');
     }
   }
 

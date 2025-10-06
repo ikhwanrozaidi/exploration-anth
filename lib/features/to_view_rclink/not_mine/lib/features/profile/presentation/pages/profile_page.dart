@@ -5,6 +5,7 @@ import 'package:rclink_app/features/rbac/presentation/widgets/permission_gate.da
 
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../shared/widgets/divider_config.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
@@ -83,6 +84,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           onPressed: () {
                             print("Add button clicked");
+
+                            CustomSnackBar.show(
+                              context,
+                              'This feature is coming soon...',
+                              type: SnackBarType.comingsoon,
+                            );
                           },
                           icon: const Icon(
                             Icons.qr_code_2,
@@ -277,71 +284,85 @@ class _ProfilePageState extends State<ProfilePage> {
                               color: Colors.grey,
                             ),
 
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10.0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          color: primaryColor,
-                                          borderRadius: BorderRadius.circular(
-                                            8,
+                            GestureDetector(
+                              onTap: () {
+                                CustomSnackBar.show(
+                                  context,
+                                  'This feature is coming soon...',
+                                  type: SnackBarType.comingsoon,
+                                );
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 10.0,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: primaryColor,
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
                                           ),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            'RC',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
+                                          child: Center(
+                                            child: Text(
+                                              'RC',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
                                             ),
                                           ),
                                         ),
-                                      ),
 
-                                      SizedBox(width: 20),
+                                        SizedBox(width: 20),
 
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text('Company'),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text('Company'),
 
-                                          Text(
-                                            'ROADCARE (M) SDN BHD',
-                                            style: TextStyle(
-                                              fontSize:
-                                                  ResponsiveHelper.fontSize(
-                                                    context,
-                                                    base: 14,
-                                                  ),
-                                              fontWeight: FontWeight.w600,
+                                            Text(
+                                              'ROADCARE (M) SDN BHD',
+                                              style: TextStyle(
+                                                fontSize:
+                                                    ResponsiveHelper.fontSize(
+                                                      context,
+                                                      base: 14,
+                                                    ),
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.all(2),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(7),
+                                        color: Color.fromARGB(
+                                          255,
+                                          214,
+                                          226,
+                                          255,
+                                        ),
                                       ),
-                                    ],
-                                  ),
-                                  Container(
-                                    padding: EdgeInsets.all(2),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(7),
-                                      color: Color.fromARGB(255, 214, 226, 255),
+                                      child: Icon(
+                                        Icons.chevron_right_rounded,
+                                        color: primaryColor,
+                                      ),
                                     ),
-                                    child: Icon(
-                                      Icons.chevron_right_rounded,
-                                      color: primaryColor,
-                                    ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ],
@@ -390,6 +411,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: 'Name',
                                     titleDetails: 'Lorem Ipsum',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                   ),
 
                                   dividerConfig(),
@@ -398,6 +426,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: 'Phone',
                                     titleDetails: '+6012435678',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                   ),
 
                                   dividerConfig(),
@@ -406,6 +441,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: 'Email',
                                     titleDetails: 'name@contractor.com',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                   ),
 
                                   dividerConfig(),
@@ -414,6 +456,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: 'Signature',
                                     titleDetails: 'Updated',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                   ),
 
                                   dividerConfig(),
@@ -422,6 +471,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: 'Branch',
                                     titleDetails: 'RS HEADQUATER',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                   ),
 
                                   dividerConfig(),
@@ -430,6 +486,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: 'Position',
                                     titleDetails: 'Contract Assistant',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                   ),
 
                                   dividerConfig(),
@@ -438,6 +501,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: 'CIDB',
                                     titleDetails: 'Not updated yet',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                     focus: true,
                                   ),
                                 ],
@@ -489,6 +559,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: 'Support',
                                     titleDetails: 'Get help on WhatsApp',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                   ),
 
                                   dividerConfig(),
@@ -497,6 +574,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: 'Language',
                                     titleDetails: 'English',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                   ),
 
                                   dividerConfig(),
@@ -505,6 +589,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: 'Application version',
                                     titleDetails: '3.8',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                   ),
 
                                   dividerConfig(),
@@ -513,6 +604,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: '',
                                     titleDetails: 'App Settings',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                   ),
 
                                   dividerConfig(),
@@ -521,6 +619,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: '',
                                     titleDetails: 'Manage Companies',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                   ),
 
                                   dividerConfig(),
@@ -529,6 +634,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: '',
                                     titleDetails: 'Delete Account',
                                     icon: Icons.abc,
+                                    onTap: () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
                                     focus: true,
                                   ),
 
@@ -538,6 +650,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     title: '',
                                     titleDetails: 'Logout',
                                     icon: Icons.abc,
+
                                     onTap: () {
                                       context.read<AuthBloc>().add(
                                         const LogoutRequested(),

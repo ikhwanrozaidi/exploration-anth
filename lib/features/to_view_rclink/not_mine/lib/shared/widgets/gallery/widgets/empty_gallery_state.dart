@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../../utils/responsive_helper.dart';
 
 class EmptyGalleryState extends StatelessWidget {
-  final int imageCount;
+  final int? imageCount;
 
-  const EmptyGalleryState({super.key, this.imageCount = 4});
+  const EmptyGalleryState({super.key, this.imageCount});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,9 @@ class EmptyGalleryState extends StatelessWidget {
         SizedBox(height: 20),
 
         Text(
-          'You need to take $imageCount Photos',
+          imageCount == null
+              ? 'Upload your Photos'
+              : 'You need to take $imageCount Photos',
           style: TextStyle(
             fontSize: ResponsiveHelper.adaptive<double>(
               context,

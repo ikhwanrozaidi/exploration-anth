@@ -73,6 +73,12 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
       quantityOptions: [quantityOption],
     );
 
+    // Get segment-specific fields
+    // Get segment-specific fields
+    final segmentFields = selectedQuantity.quantityFields
+        .where((field) => field.isForSegment == true)
+        .toList();
+
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -86,6 +92,10 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
           existingData: existingData,
           hasSegmentBreakdown: selectedQuantity.hasSegmentBreakdown,
           selectedScopeUid: widget.selectedScopeUid,
+          segmentSize: selectedQuantity.segmentSize,
+          maxSegmentLength: selectedQuantity.maxSegmentLength,
+          segmentFields: segmentFields,
+          allQuantityFields: selectedQuantity.quantityFields, // ADD THIS
         ),
       ),
     );

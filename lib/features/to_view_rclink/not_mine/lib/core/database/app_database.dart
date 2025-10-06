@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import '../config/flavor_config.dart';
+import 'app_database.steps.dart';
 
 part 'app_database.g.dart';
 
@@ -338,6 +339,154 @@ class Roads extends Table with SyncableTable {
   ];
 }
 
+// Daily Reports table
+@DataClassName('DailyReportRecord')
+class DailyReports extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  TextColumn get notes => text().nullable()();
+  TextColumn get weatherCondition =>
+      text()(); // 'SUNNY', 'RAINY', 'CLOUDY', etc.
+  BoolColumn get workPerformed =>
+      boolean().withDefault(const Constant(false))();
+
+  // Location coordinates
+  RealColumn get longitude =>
+      real().nullable()(); // Using REAL for decimal precision
+  RealColumn get latitude => real().nullable()();
+
+  // Primary ownership - the company this report belongs to
+  IntColumn get companyID => integer()(); // Foreign key to Companies
+
+  // Optional contract relationship (null for in-house work)
+  IntColumn get contractRelationID => integer().nullable()();
+
+  // Report status for workflow management
+  TextColumn get status => text().withDefault(
+    const Constant('SUBMITTED'),
+  )(); // 'SUBMITTED', 'APPROVED', 'REJECTED', 'REVISION_REQUESTED'
+
+  // Optional approval tracking
+  IntColumn get approvedByID => integer().nullable()(); // Foreign key to Admins
+  DateTimeColumn get approvedAt => dateTime().nullable()();
+  TextColumn get rejectionReason =>
+      text().nullable()(); // Reason if rejected or revision requested
+
+  // Work scope from the company
+  IntColumn get workScopeID => integer()(); // Foreign key to WorkScopes
+
+  IntColumn get roadID => integer()(); // Foreign key to Roads
+  IntColumn get totalWorkers => integer().nullable()();
+  RealColumn get fromSection =>
+      real().nullable()(); // Using REAL for decimal precision
+  RealColumn get toSection => real().nullable()();
+
+  // Admin who created this report
+  IntColumn get createdByID => integer()(); // Foreign key to Admins
+
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Generic report equipment table (used by daily reports, future: inspections)
+@DataClassName('ReportEquipmentRecord')
+class ReportEquipments extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get reportType =>
+      text()(); // 'DAILY_REPORT' (future: 'INSPECTION')
+  IntColumn get dailyReportID => integer()
+      .nullable()(); // Reference to DailyReports if reportType is DAILY_REPORT
+  // Future: inspectionID for inspection module
+  IntColumn get workEquipmentID =>
+      integer()(); // Foreign key to WorkScopeEquipments
+  IntColumn get addedByID => integer()(); // Admin who added this equipment
+  DateTimeColumn get createdAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {dailyReportID, workEquipmentID}, // Prevent duplicate equipment per report
+  ];
+}
+
+// Generic report quantity entries (used by daily reports, future: inspections)
+@DataClassName('ReportQuantityRecord')
+class ReportQuantities extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get reportType =>
+      text()(); // 'DAILY_REPORT' (future: 'INSPECTION')
+  IntColumn get dailyReportID => integer()
+      .nullable()(); // Reference to DailyReports if reportType is DAILY_REPORT
+  // Future: inspectionID for inspection module
+  IntColumn get quantityTypeID =>
+      integer()(); // Foreign key to WorkQuantityTypes
+  IntColumn get sequenceNo => integer().withDefault(
+    const Constant(1),
+  )(); // For multiple entries of same type
+  RealColumn get totalLength =>
+      real().nullable()(); // For R02: total measurement entered by user
+  TextColumn get notes => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {
+      dailyReportID,
+      quantityTypeID,
+      sequenceNo,
+    }, // Prevent duplicate quantity entries
+  ];
+}
+
+// Generic field values for quantity entries or segments
+@DataClassName('ReportQuantityValueRecord')
+class ReportQuantityValues extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  IntColumn get reportQuantityID =>
+      integer().nullable()(); // For regular quantity entries
+  IntColumn get segmentID =>
+      integer().nullable()(); // For segment entries (R02)
+  IntColumn get quantityFieldID =>
+      integer()(); // Foreign key to WorkQuantityFields
+  TextColumn get value =>
+      text()(); // Store all values as string, parse based on fieldType
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {
+      reportQuantityID,
+      quantityFieldID,
+    }, // One value per field per quantity entry
+    {segmentID, quantityFieldID}, // One value per field per segment
+  ];
+}
+
+// Generic segment breakdowns (for R02 road shoulder)
+@DataClassName('ReportSegmentRecord')
+class ReportSegments extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  IntColumn get reportQuantityID =>
+      integer()(); // Foreign key to ReportQuantities
+  IntColumn get segmentNumber => integer()(); // 1, 2, 3... (segment sequence)
+  RealColumn get startDistance => real()(); // 0, 25, 50...
+  RealColumn get endDistance => real()(); // 25, 50, 75...
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {reportQuantityID, segmentNumber}, // One segment per number per quantity
+  ];
+}
+
 @DriftDatabase(
   tables: [
     Admins,
@@ -356,13 +505,18 @@ class Roads extends Table with SyncableTable {
     Districts,
     RoadCategories,
     Roads,
+    DailyReports,
+    ReportEquipments,
+    ReportQuantities,
+    ReportQuantityValues,
+    ReportSegments,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 9; // Renamed tables in version 8
+  int get schemaVersion => 10; // Added daily report tables in version 10
 
   @override
   MigrationStrategy get migration {
@@ -371,8 +525,12 @@ class AppDatabase extends _$AppDatabase {
         // Called when installing the app for the first time
         await m.createAll();
       },
-      onUpgrade: (Migrator m, int from, int to) async {
-        if (from < 3) {
+      onUpgrade: stepByStep(
+        from1To2: (m, schema) async {
+          // Migration from version 1 to 2: Initial migration
+          // This would be handled by the generated schema
+        },
+        from2To3: (m, schema) async {
           // Migration from version 2 to 3: Drop avatarUrl column
           // SQLite doesn't support DROP COLUMN, so we need to recreate the table
 
@@ -383,7 +541,7 @@ class AppDatabase extends _$AppDatabase {
           await customStatement('ALTER TABLE admins RENAME TO admins_old');
 
           // Create new table with new schema (without avatarUrl)
-          await m.createTable(admins);
+          await m.createTable(schema.admins);
 
           // Copy data from old table to new table (excluding avatarUrl)
           await customStatement('''
@@ -401,20 +559,17 @@ class AppDatabase extends _$AppDatabase {
 
           // Re-enable foreign keys
           await customStatement('PRAGMA foreign_keys = ON');
-        }
-
-        if (from < 4) {
+        },
+        from3To4: (m, schema) async {
           // Migration from version 3 to 4: Add Roles and Permissions tables
-          await m.createTable(roles);
-          await m.createTable(permissions);
-        }
-
-        if (from < 5) {
+          await m.createTable(schema.roles);
+          await m.createTable(schema.permissions);
+        },
+        from4To5: (m, schema) async {
           // Migration from version 4 to 5: Add Companies tables
-          await m.createTable(companies);
-        }
-
-        if (from < 6) {
+          await m.createTable(schema.companies);
+        },
+        from5To6: (m, schema) async {
           // Migration from version 5 to 6: Add new columns to Companies table
           // Check which columns exist before adding them
           final result = await customSelect(
@@ -426,23 +581,25 @@ class AppDatabase extends _$AppDatabase {
               .toSet();
 
           if (!existingColumns.contains('bumiputera')) {
-            await m.addColumn(companies, companies.bumiputera);
+            await m.addColumn(schema.companies, schema.companies.bumiputera);
           }
           if (!existingColumns.contains('einvoice_tin_no')) {
-            await m.addColumn(companies, companies.einvoiceTinNo);
+            await m.addColumn(schema.companies, schema.companies.einvoiceTinNo);
           }
           if (!existingColumns.contains('registration_date')) {
-            await m.addColumn(companies, companies.registrationDate);
+            await m.addColumn(
+              schema.companies,
+              schema.companies.registrationDate,
+            );
           }
           if (!existingColumns.contains('admin_role_uid')) {
-            await m.addColumn(companies, companies.adminRoleUid);
+            await m.addColumn(schema.companies, schema.companies.adminRoleUid);
           }
           if (!existingColumns.contains('admin_role_name')) {
-            await m.addColumn(companies, companies.adminRoleName);
+            await m.addColumn(schema.companies, schema.companies.adminRoleName);
           }
-        }
-
-        if (from < 7) {
+        },
+        from6To7: (m, schema) async {
           // Migration from version 6 to 7: Add Scope of Work related tables (original names)
           // These tables were created with old names in version 7
           // They will be renamed in version 8
@@ -561,9 +718,8 @@ class AppDatabase extends _$AppDatabase {
               UNIQUE(scope_of_work_id, work_equipment_id)
             )
           ''');
-        }
-
-        if (from < 8) {
+        },
+        from7To8: (m, schema) async {
           // Migration from version 7 to 8: Rename tables and columns
           // Note: SQLite doesn't support direct column renaming, but table renaming works
 
@@ -586,17 +742,24 @@ class AppDatabase extends _$AppDatabase {
 
           // For column renames in SQLite, we need to recreate tables with new column names
           // This is handled automatically by Drift when we regenerate the migration helpers
-        }
-
-        if (from < 9) {
+        },
+        from8To9: (m, schema) async {
           // Migration from version 8 to 9: Add Countries and Provinces tables
-          await m.createTable(countries);
-          await m.createTable(provinces);
-          await m.createTable(districts);
-          await m.createTable(roadCategories);
-          await m.createTable(roads);
-        }
-      },
+          await m.createTable(schema.countries);
+          await m.createTable(schema.provinces);
+          await m.createTable(schema.districts);
+          await m.createTable(schema.roadCategories);
+          await m.createTable(schema.roads);
+        },
+        from9To10: (m, schema) async {
+          // Migration from version 9 to 10: Add Daily Report tables
+          await m.createTable(schema.dailyReports);
+          await m.createTable(schema.reportEquipments);
+          await m.createTable(schema.reportQuantities);
+          await m.createTable(schema.reportQuantityValues);
+          await m.createTable(schema.reportSegments);
+        },
+      ),
       beforeOpen: (details) async {
         // Enable foreign keys
         await customStatement('PRAGMA foreign_keys = ON');
