@@ -8,6 +8,7 @@ import '../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../../shared/widgets/theme_listtile_widget.dart';
 import '../../domain/entities/daily_report_response.dart';
 import '../../domain/entities/quantity_value_response.dart';
+import 'widget/edit_page/equipment_edit_page.dart';
 import 'widget/edit_page/quantity_edit_page.dart';
 import 'widget/edit_page/route_edit_page.dart';
 import 'widget/edit_page/worker_remark_edit_page.dart';
@@ -754,8 +755,9 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const QuantityEditPage(),
+                                        builder: (context) => QuantityEditPage(
+                                          report: widget.report,
+                                        ),
                                       ),
                                     );
                                     break;
@@ -764,7 +766,9 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            const WorkerRemarkPage(),
+                                            WorkerRemarkEditPage(
+                                              report: widget.report,
+                                            ),
                                       ),
                                     );
                                     break;
@@ -772,8 +776,9 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) =>
-                                            const QuantityEditPage(),
+                                        builder: (context) => EquipmentEditPage(
+                                          report: widget.report,
+                                        ),
                                       ),
                                     );
                                     break;
@@ -787,7 +792,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                         ThemeListTileWidget(
                           title: 'Monthly Summary',
                           titleDetails: 'List of overall report',
-                          icon: Icons.calendar_today_rounded,
+                          icon: Icons.calendar_month_sharp,
                           isInverseBold: true,
                         ),
 

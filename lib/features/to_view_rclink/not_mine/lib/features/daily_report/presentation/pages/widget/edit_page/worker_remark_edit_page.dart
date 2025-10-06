@@ -1,50 +1,147 @@
 import 'package:flutter/material.dart';
-
 import '../../../../../../shared/utils/responsive_helper.dart';
+import '../../../../../../shared/utils/theme.dart';
+import '../../../../domain/entities/daily_report_response.dart';
 
-class WorkerRemarkPage extends StatelessWidget {
-  const WorkerRemarkPage({super.key});
+class WorkerRemarkEditPage extends StatefulWidget {
+  final DailyReportResponse report;
+
+  const WorkerRemarkEditPage({Key? key, required this.report})
+    : super(key: key);
+
+  @override
+  State<WorkerRemarkEditPage> createState() => _WorkerRemarkEditPageState();
+}
+
+class _WorkerRemarkEditPageState extends State<WorkerRemarkEditPage> {
+  final TextEditingController _sectionController = TextEditingController();
+  final TextEditingController _notesController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Worker & Remark',
-          style: TextStyle(
-            fontSize: ResponsiveHelper.fontSize(context, base: 18),
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
-      body: Center(
+      backgroundColor: Colors.white,
+      body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 30.0),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.people,
-                size: ResponsiveHelper.fontSize(context, base: 64),
-                color: Colors.grey,
-              ),
-              SizedBox(height: ResponsiveHelper.fontSize(context, base: 16)),
-              Text(
-                'Worker & Remark',
-                style: TextStyle(
-                  fontSize: ResponsiveHelper.fontSize(context, base: 24),
-                  fontWeight: FontWeight.w600,
+              SizedBox(height: ResponsiveHelper.getHeight(context, 0.03)),
+
+              IconButton(
+                style: IconButton.styleFrom(
+                  elevation: 2,
+                  shadowColor: Colors.black,
+                  shape: const CircleBorder(),
+                  backgroundColor: Colors.white,
+                  padding: const EdgeInsets.all(10),
+                ),
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(
+                  Icons.arrow_back_rounded,
+                  color: Colors.black,
+                  size: 25,
                 ),
               ),
-              SizedBox(height: ResponsiveHelper.fontSize(context, base: 8)),
+              SizedBox(height: 13),
               Text(
-                'This page is under development',
-                style: TextStyle(
-                  fontSize: ResponsiveHelper.fontSize(context, base: 14),
-                  color: Colors.grey,
+                'Worker & Remark',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+              ),
+              Text(
+                'Update the information below if required.',
+                style: TextStyle(fontSize: 13),
+              ),
+
+              SizedBox(height: 30),
+
+              Text('Worker'),
+
+              SizedBox(height: 5),
+
+              SizedBox(
+                child: TextField(
+                  controller: _sectionController,
+
+                  onChanged: (value) {
+                    // context.read<ReportCreationBloc>().add(
+                    //   UpdateSection(value),
+                    // );
+                  },
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    hintText: widget.report.totalWorkers.toString(),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade300,
+                        width: 1,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade300,
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: primaryColor, width: 2),
+                    ),
+                    // focusedBorder: OutlineInputBorder(
+                    //   borderRadius: BorderRadius.circular(
+                    //     8.0,
+                    //   ),
+                    //   borderSide: BorderSide(
+                    //     color:
+                    //         hasError && errorMessage != null
+                    //         ? Colors.red
+                    //         : primaryColor,
+                    //     width: 1.5,
+                    //   ),
+                    // ),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+              Text('Additonal Note'),
+
+              SizedBox(height: 5),
+
+              SizedBox(
+                child: TextField(
+                  controller: _notesController,
+                  maxLines: 5,
+                  decoration: InputDecoration(
+                    hintText: widget.report.notes,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade300,
+                        width: 1,
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                        color: Colors.grey.shade300,
+                        width: 1,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                      borderSide: BorderSide(color: primaryColor, width: 2),
+                    ),
+                  ),
                 ),
               ),
             ],

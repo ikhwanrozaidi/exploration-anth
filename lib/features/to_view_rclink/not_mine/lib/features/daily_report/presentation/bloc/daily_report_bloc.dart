@@ -100,7 +100,7 @@ class DailyReportBloc extends Bloc<DailyReportEvent, DailyReportState> {
           roads: currentState.roads,
           selectedRoad: event.selectedRoad,
           currentSection: currentState.currentSection,
-          sectionError: null, // Clear error when road changes
+          sectionError: null,
         ),
       );
     }
