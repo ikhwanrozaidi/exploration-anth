@@ -5,10 +5,10 @@ import 'package:intl/intl.dart';
 import 'package:rclink_app/features/daily_report/presentation/pages/daily_report_detail_page.dart';
 
 import '../../../../../shared/utils/responsive_helper.dart';
-import '../../../domain/entities/daily_report.dart';
+import '../../../domain/entities/daily_report_response.dart';
 
 class DailyReportOverviewListWidget extends StatefulWidget {
-  final DailyReport report;
+  final DailyReportResponse report;
 
   const DailyReportOverviewListWidget({Key? key, required this.report})
     : super(key: key);

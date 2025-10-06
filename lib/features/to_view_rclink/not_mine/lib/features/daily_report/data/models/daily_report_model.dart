@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/entities/daily_report.dart';
+import '../../domain/entities/daily_report_response.dart';
 import 'daily_report_equipment_model.dart';
 import 'report_quantities_model.dart';
 import 'work_scope_model.dart';
@@ -70,8 +70,8 @@ abstract class DailyReportModel with _$DailyReportModel {
   factory DailyReportModel.fromJson(Map<String, dynamic> json) =>
       _$DailyReportModelFromJson(json);
 
-  DailyReport toEntity() {
-    return DailyReport(
+  DailyReportResponse toEntity() {
+    return DailyReportResponse(
       id: id,
       uid: uid,
       name: name,

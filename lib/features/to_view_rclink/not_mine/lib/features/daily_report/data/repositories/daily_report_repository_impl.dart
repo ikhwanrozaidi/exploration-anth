@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/repositories/base_sync_repository.dart';
-import '../../domain/entities/daily_report.dart';
+import '../../domain/entities/daily_report_response.dart';
 import '../../domain/repository/daily_report_repository.dart';
 import '../datasources/daily_report_local_datasource.dart';
 import '../datasources/daily_report_remote_datasource.dart';
@@ -10,7 +10,11 @@ import '../models/daily_report_model.dart';
 
 @Injectable(as: DailyReportRepository)
 class DailyReportRepositoryImpl
-    extends BaseOfflineSyncRepository<List<DailyReport>, List<DailyReportModel>>
+    extends
+        BaseOfflineSyncRepository<
+          List<DailyReportResponse>,
+          List<DailyReportModel>
+        >
     implements DailyReportRepository {
   final DailyReportRemoteDataSource _remoteDataSource;
   final DailyReportLocalDataSource _localDataSource;
@@ -18,7 +22,7 @@ class DailyReportRepositoryImpl
   DailyReportRepositoryImpl(this._remoteDataSource, this._localDataSource);
 
   @override
-  Future<Either<Failure, List<DailyReport>>> getDailyReports({
+  Future<Either<Failure, List<DailyReportResponse>>> getDailyReports({
     required String companyUID,
     int page = 1,
     int limit = 10,

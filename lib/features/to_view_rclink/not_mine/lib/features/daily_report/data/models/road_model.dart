@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/entities/road.dart';
+import '../../domain/entities/road_response.dart';
 import 'district_model.dart';
 
 part 'road_model.freezed.dart';
@@ -19,8 +19,8 @@ abstract class RoadModel with _$RoadModel {
   factory RoadModel.fromJson(Map<String, dynamic> json) =>
       _$RoadModelFromJson(json);
 
-  Road toEntity() {
-    return Road(
+  RoadResponse toEntity() {
+    return RoadResponse(
       name: name,
       roadNo: roadNo,
       uid: uid,

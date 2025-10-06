@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
-import 'daily_report_equipment.dart';
-import 'report_quantity.dart';
-import 'work_scope.dart';
-import 'road.dart';
+import 'daily_report_equipment_response.dart';
+import 'report_quantity_response.dart';
+import 'work_scope_response.dart';
+import 'road_response.dart';
 
-class DailyReport extends Equatable {
+class DailyReportResponse extends Equatable {
   final int id;
   final String uid;
   final String name;
@@ -28,12 +28,12 @@ class DailyReport extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  final WorkScope? workScope;
-  final Road? road;
-  final List<DailyReportEquipment>? equipments;
-  final List<ReportQuantity>? reportQuantities;
+  final WorkScopeResponse? workScope;
+  final RoadResponse? road;
+  final List<DailyReportEquipmentResponse>? equipments;
+  final List<ReportQuantityResponse>? reportQuantities;
 
-  const DailyReport({
+  const DailyReportResponse({
     required this.id,
     required this.uid,
     required this.name,

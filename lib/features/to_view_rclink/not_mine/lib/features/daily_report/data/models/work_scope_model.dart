@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/entities/work_scope.dart';
+import '../../domain/entities/work_scope_response.dart';
 
 part 'work_scope_model.freezed.dart';
 part 'work_scope_model.g.dart';
@@ -17,7 +17,7 @@ abstract class WorkScopeModel with _$WorkScopeModel {
   factory WorkScopeModel.fromJson(Map<String, dynamic> json) =>
       _$WorkScopeModelFromJson(json);
 
-  WorkScope toEntity() {
-    return WorkScope(name: name, code: code, uid: uid);
+  WorkScopeResponse toEntity() {
+    return WorkScopeResponse(name: name, code: code, uid: uid);
   }
 }

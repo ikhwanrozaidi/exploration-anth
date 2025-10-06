@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class Road extends Equatable {
+class RoadResponse extends Equatable {
   final String name;
   final String roadNo;
   final String uid;
@@ -8,7 +8,7 @@ class Road extends Equatable {
   final String? stateName;
   final String? countryName;
 
-  const Road({
+  const RoadResponse({
     required this.name,
     required this.roadNo,
     required this.uid,

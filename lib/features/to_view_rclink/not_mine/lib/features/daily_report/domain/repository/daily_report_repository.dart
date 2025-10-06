@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
-import '../entities/daily_report.dart';
+import '../entities/daily_report_response.dart';
 
 abstract class DailyReportRepository {
-  Future<Either<Failure, List<DailyReport>>> getDailyReports({
+  Future<Either<Failure, List<DailyReportResponse>>> getDailyReports({
     required String companyUID,
     int page = 1,
     int limit = 10,

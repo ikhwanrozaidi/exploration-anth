@@ -4,12 +4,16 @@ import 'package:intl/intl.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/divider_config.dart';
+import '../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../../shared/widgets/theme_listtile_widget.dart';
-import '../../domain/entities/daily_report.dart';
-import '../../domain/entities/quantity_value.dart';
+import '../../domain/entities/daily_report_response.dart';
+import '../../domain/entities/quantity_value_response.dart';
+import 'widget/edit_page/quantity_edit_page.dart';
+import 'widget/edit_page/route_edit_page.dart';
+import 'widget/edit_page/worker_remark_edit_page.dart';
 
 class DailyReportDetailPage extends StatefulWidget {
-  final DailyReport report;
+  final DailyReportResponse report;
 
   const DailyReportDetailPage({Key? key, required this.report})
     : super(key: key);
@@ -27,13 +31,15 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> _buildQuantityPages(
-      List<QuantityValue> quantityValues,
+      List<QuantityValueResponse> quantityValues,
     ) {
       List<Map<String, dynamic>> pages = [];
 
+      // Split quantityValues into pages of 3 items each
       for (int i = 0; i < quantityValues.length; i += 3) {
         Map<String, dynamic> pageData = {};
 
+        // Add up to 3 items per page
         for (int j = 0; j < 3 && (i + j) < quantityValues.length; j++) {
           final qv = quantityValues[i + j];
           pageData[qv.quantityField.name] = {
@@ -60,7 +66,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    entry.key,
+                    entry.key, // Field name
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[600],
@@ -415,98 +421,98 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                           isChevron: false,
                         ),
 
-                        if (widget.report.latitude != null &&
-                            widget.report.longitude != null)
-                          Column(
-                            children: [
-                              dividerConfig(),
+                        // if (widget.report.latitude != null &&
+                        //     widget.report.longitude != null)
+                        //   Column(
+                        //     children: [
+                        //       dividerConfig(),
 
-                              Stack(
-                                children: [
-                                  Container(
-                                    height: 200,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                        color: Colors.grey.shade300,
-                                      ),
-                                    ),
-                                    clipBehavior: Clip.antiAlias,
-                                    child: GoogleMap(
-                                      initialCameraPosition: CameraPosition(
-                                        target: LatLng(
-                                          double.parse(widget.report.latitude!),
-                                          double.parse(
-                                            widget.report.longitude!,
-                                          ),
-                                        ),
-                                        zoom: 14,
-                                      ),
-                                      markers: {
-                                        Marker(
-                                          markerId: MarkerId('report_location'),
-                                          position: LatLng(
-                                            double.parse(
-                                              widget.report.latitude!,
-                                            ),
-                                            double.parse(
-                                              widget.report.longitude!,
-                                            ),
-                                          ),
-                                          infoWindow: InfoWindow(
-                                            title: widget.report.name,
-                                          ),
-                                        ),
-                                      },
-                                      zoomControlsEnabled: false,
-                                      myLocationButtonEnabled: false,
-                                    ),
-                                  ),
+                        //       Stack(
+                        //         children: [
+                        //           Container(
+                        //             height: 200,
+                        //             decoration: BoxDecoration(
+                        //               borderRadius: BorderRadius.circular(10),
+                        //               border: Border.all(
+                        //                 color: Colors.grey.shade300,
+                        //               ),
+                        //             ),
+                        //             clipBehavior: Clip.antiAlias,
+                        //             child: GoogleMap(
+                        //               initialCameraPosition: CameraPosition(
+                        //                 target: LatLng(
+                        //                   double.parse(widget.report.latitude!),
+                        //                   double.parse(
+                        //                     widget.report.longitude!,
+                        //                   ),
+                        //                 ),
+                        //                 zoom: 14,
+                        //               ),
+                        //               markers: {
+                        //                 Marker(
+                        //                   markerId: MarkerId('report_location'),
+                        //                   position: LatLng(
+                        //                     double.parse(
+                        //                       widget.report.latitude!,
+                        //                     ),
+                        //                     double.parse(
+                        //                       widget.report.longitude!,
+                        //                     ),
+                        //                   ),
+                        //                   infoWindow: InfoWindow(
+                        //                     title: widget.report.name,
+                        //                   ),
+                        //                 ),
+                        //               },
+                        //               zoomControlsEnabled: false,
+                        //               myLocationButtonEnabled: false,
+                        //             ),
+                        //           ),
 
-                                  Positioned.fill(
-                                    bottom: 10,
-                                    child: Align(
-                                      alignment: Alignment.bottomCenter,
-                                      child: ElevatedButton(
-                                        onPressed: () {
-                                          final lat = widget.report.latitude!;
-                                          final lng = widget.report.longitude!;
-                                          final url =
-                                              'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
-                                        },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.white,
-                                          side: BorderSide(
-                                            color: primaryColor,
-                                            width: ResponsiveHelper.adaptive(
-                                              context,
-                                              mobile: 1.0,
-                                              tablet: 1.5,
-                                              desktop: 2.0,
-                                            ),
-                                          ),
-                                          padding: ResponsiveHelper.padding(
-                                            context,
-                                            vertical: 10,
-                                            horizontal: 20,
-                                          ),
+                        //           Positioned.fill(
+                        //             bottom: 10,
+                        //             child: Align(
+                        //               alignment: Alignment.bottomCenter,
+                        //               child: ElevatedButton(
+                        //                 onPressed: () {
+                        //                   final lat = widget.report.latitude!;
+                        //                   final lng = widget.report.longitude!;
+                        //                   final url =
+                        //                       'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+                        //                 },
+                        //                 style: ElevatedButton.styleFrom(
+                        //                   backgroundColor: Colors.white,
+                        //                   side: BorderSide(
+                        //                     color: primaryColor,
+                        //                     width: ResponsiveHelper.adaptive(
+                        //                       context,
+                        //                       mobile: 1.0,
+                        //                       tablet: 1.5,
+                        //                       desktop: 2.0,
+                        //                     ),
+                        //                   ),
+                        //                   padding: ResponsiveHelper.padding(
+                        //                     context,
+                        //                     vertical: 10,
+                        //                     horizontal: 20,
+                        //                   ),
 
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                ResponsiveHelper.borderRadius(
-                                                  context,
-                                                  all: 14,
-                                                ),
-                                          ),
-                                        ),
-                                        child: Text('View location'),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                        //                   shape: RoundedRectangleBorder(
+                        //                     borderRadius:
+                        //                         ResponsiveHelper.borderRadius(
+                        //                           context,
+                        //                           all: 14,
+                        //                         ),
+                        //                   ),
+                        //                 ),
+                        //                 child: Text('View location'),
+                        //               ),
+                        //             ),
+                        //           ),
+                        //         ],
+                        //       ),
+                        //     ],
+                        //   ),
                       ],
                     ),
                   ),
@@ -719,9 +725,63 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                           titleDetails: 'Quantity, section and others',
                           icon: Icons.edit_square,
                           isInverseBold: true,
-                          onTap: () {},
+                          onTap: () {
+                            showFlexibleBottomsheet(
+                              context: context,
+                              title: 'Edit Report',
+                              attributes: [
+                                'Route & Selection',
+                                'Quantity',
+                                'Worker & Remark',
+                                'Equipment',
+                              ],
+                              isRadio: false,
+                              isNavigate: true,
+                              onTap: (selectedOption) {
+                                // Navigate to respective pages based on selection
+                                switch (selectedOption) {
+                                  case 'Route & Selection':
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => RouteEditPage(
+                                          report: widget.report,
+                                        ),
+                                      ),
+                                    );
+                                    break;
+                                  case 'Quantity':
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const QuantityEditPage(),
+                                      ),
+                                    );
+                                    break;
+                                  case 'Worker & Remark':
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const WorkerRemarkPage(),
+                                      ),
+                                    );
+                                    break;
+                                  case 'Equipment':
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const QuantityEditPage(),
+                                      ),
+                                    );
+                                    break;
+                                }
+                              },
+                            );
+                          },
                         ),
-
                         dividerConfig(),
 
                         ThemeListTileWidget(

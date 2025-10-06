@@ -2,16 +2,16 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/database/app_database.dart';
-import '../../domain/entities/daily_report.dart';
-import '../../domain/entities/daily_report_equipment.dart';
-import '../../domain/entities/quantity_value.dart';
-import '../../domain/entities/report_quantity.dart';
-import '../../domain/entities/work_scope.dart';
-import '../../domain/entities/road.dart';
+import '../../domain/entities/daily_report_response.dart';
+import '../../domain/entities/daily_report_equipment_response.dart';
+import '../../domain/entities/quantity_value_response.dart';
+import '../../domain/entities/report_quantity_response.dart';
+import '../../domain/entities/work_scope_response.dart';
+import '../../domain/entities/road_response.dart';
 
 abstract class DailyReportLocalDataSource {
-  Future<List<DailyReport>?> getCachedDailyReports(String companyUID);
-  Future<void> cacheDailyReports(List<DailyReport> reports);
+  Future<List<DailyReportResponse>?> getCachedDailyReports(String companyUID);
+  Future<void> cacheDailyReports(List<DailyReportResponse> reports);
   Future<void> clearCache();
 }
 
@@ -24,7 +24,9 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
   AppDatabase get _database => _databaseService.database;
 
   @override
-  Future<List<DailyReport>?> getCachedDailyReports(String companyUID) async {
+  Future<List<DailyReportResponse>?> getCachedDailyReports(
+    String companyUID,
+  ) async {
     try {
       final records = await (_database.select(
         _database.dailyReports,
@@ -36,11 +38,11 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
 
       final reports = records.map((record) {
         // Parse workScope JSON
-        WorkScope? workScope;
+        WorkScopeResponse? workScope;
         if (record.workScopeData != null && record.workScopeData!.isNotEmpty) {
           try {
             final data = jsonDecode(record.workScopeData!);
-            workScope = WorkScope(
+            workScope = WorkScopeResponse(
               name: data['name'] as String,
               code: data['code'] as String,
               uid: data['uid'] as String,
@@ -51,11 +53,11 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
         }
 
         // Parse road JSON
-        Road? road;
+        RoadResponse? road;
         if (record.roadData != null && record.roadData!.isNotEmpty) {
           try {
             final data = jsonDecode(record.roadData!);
-            road = Road(
+            road = RoadResponse(
               name: data['name'] as String,
               roadNo: data['roadNo'] as String,
               uid: data['uid'] as String,
@@ -66,7 +68,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
         }
 
         // Parse equipments JSON
-        List<DailyReportEquipment> equipments = [];
+        List<DailyReportEquipmentResponse> equipments = [];
         if (record.equipmentsData != null &&
             record.equipmentsData!.isNotEmpty) {
           try {
@@ -75,7 +77,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
             );
             equipments = equipmentsData
                 .map(
-                  (e) => DailyReportEquipment(
+                  (e) => DailyReportEquipmentResponse(
                     name: e['name'] as String,
                     uid: e['uid'] as String,
                   ),
@@ -87,7 +89,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
         }
 
         // Parse reportQuantities JSON
-        List<ReportQuantity> reportQuantities = [];
+        List<ReportQuantityResponse> reportQuantities = [];
         if (record.reportQuantitiesData != null &&
             record.reportQuantitiesData!.isNotEmpty) {
           try {
@@ -95,27 +97,27 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
               record.reportQuantitiesData!,
             );
             reportQuantities = quantitiesData.map((q) {
-              final quantityType = QuantityType(
+              final quantityType = QuantityTypeResponse(
                 name: q['quantityType']['name'] as String,
                 code: q['quantityType']['code'] as String,
                 uid: q['quantityType']['uid'] as String,
               );
 
               final quantityValues = (q['quantityValues'] as List).map((v) {
-                final quantityField = QuantityField(
+                final quantityField = QuantityFieldResponse(
                   name: v['quantityField']['name'] as String,
                   fieldType: v['quantityField']['fieldType'] as String,
                   unit: v['quantityField']['unit'] as String?,
                   uid: v['quantityField']['uid'] as String,
                 );
 
-                return QuantityValue(
+                return QuantityValueResponse(
                   value: v['value'] as String,
                   quantityField: quantityField,
                 );
               }).toList();
 
-              return ReportQuantity(
+              return ReportQuantityResponse(
                 quantityType: quantityType,
                 quantityValues: quantityValues,
               );
@@ -125,7 +127,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
           }
         }
 
-        return DailyReport(
+        return DailyReportResponse(
           id: record.id,
           uid: record.uid,
           name: record.name,
@@ -163,7 +165,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
   }
 
   @override
-  Future<void> cacheDailyReports(List<DailyReport> reports) async {
+  Future<void> cacheDailyReports(List<DailyReportResponse> reports) async {
     try {
       await _database.delete(_database.dailyReports).go();
 

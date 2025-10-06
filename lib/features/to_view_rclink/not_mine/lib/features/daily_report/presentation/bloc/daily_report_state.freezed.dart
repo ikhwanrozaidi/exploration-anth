@@ -128,7 +128,7 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<DailyReport> reports)?  loaded,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<DailyReportResponse> reports)?  loaded,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case DailyReportInitial() when initial != null:
 return initial();case DailyReportLoading() when loading != null:
@@ -152,7 +152,7 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<DailyReport> reports)  loaded,required TResult Function( String message)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<DailyReportResponse> reports)  loaded,required TResult Function( String message)  failure,}) {final _that = this;
 switch (_that) {
 case DailyReportInitial():
 return initial();case DailyReportLoading():
@@ -175,7 +175,7 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<DailyReport> reports)?  loaded,TResult? Function( String message)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<DailyReportResponse> reports)?  loaded,TResult? Function( String message)?  failure,}) {final _that = this;
 switch (_that) {
 case DailyReportInitial() when initial != null:
 return initial();case DailyReportLoading() when loading != null:
@@ -257,11 +257,11 @@ String toString() {
 
 
 class DailyReportLoaded implements DailyReportState {
-  const DailyReportLoaded(final  List<DailyReport> reports): _reports = reports;
+  const DailyReportLoaded(final  List<DailyReportResponse> reports): _reports = reports;
   
 
- final  List<DailyReport> _reports;
- List<DailyReport> get reports {
+ final  List<DailyReportResponse> _reports;
+ List<DailyReportResponse> get reports {
   if (_reports is EqualUnmodifiableListView) return _reports;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_reports);
@@ -298,7 +298,7 @@ abstract mixin class $DailyReportLoadedCopyWith<$Res> implements $DailyReportSta
   factory $DailyReportLoadedCopyWith(DailyReportLoaded value, $Res Function(DailyReportLoaded) _then) = _$DailyReportLoadedCopyWithImpl;
 @useResult
 $Res call({
- List<DailyReport> reports
+ List<DailyReportResponse> reports
 });
 
 
@@ -318,7 +318,7 @@ class _$DailyReportLoadedCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? reports = null,}) {
   return _then(DailyReportLoaded(
 null == reports ? _self._reports : reports // ignore: cast_nullable_to_non_nullable
-as List<DailyReport>,
+as List<DailyReportResponse>,
   ));
 }
 

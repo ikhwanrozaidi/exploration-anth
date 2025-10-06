@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/entities/quantity_value.dart';
+import '../../domain/entities/quantity_value_response.dart';
 import 'quantity_field_model.dart';
 
 part 'quantity_value_model.freezed.dart';
@@ -17,7 +17,10 @@ abstract class QuantityValueModel with _$QuantityValueModel {
   factory QuantityValueModel.fromJson(Map<String, dynamic> json) =>
       _$QuantityValueModelFromJson(json);
 
-  QuantityValue toEntity() {
-    return QuantityValue(value: value, quantityField: quantityField.toEntity());
+  QuantityValueResponse toEntity() {
+    return QuantityValueResponse(
+      value: value,
+      quantityField: quantityField.toEntity(),
+    );
   }
 }
