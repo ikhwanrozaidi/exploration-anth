@@ -16,13 +16,14 @@ T _$identity<T>(T value) => value;
 mixin _$DailyReportModel {
 
  int get id; String get uid; String get name; String? get notes; String get weatherCondition; bool get workPerformed;// Location coordinates
- double? get longitude; double? get latitude;// Primary ownership - the company this report belongs to
+ String? get longitude; String? get latitude;// Primary ownership - the company this report belongs to
  int get companyID;// Optional contract relationship (null for in-house work)
  int? get contractRelationID;// Report status for workflow management
  String get status;// Optional approval tracking
  int? get approvedByID; DateTime? get approvedAt; String? get rejectionReason;// Work scope from the company
- int get workScopeID; int get roadID; int? get totalWorkers; double? get fromSection; double? get toSection;// Admin who created this report
- int get createdByID; DateTime get createdAt; DateTime get updatedAt;// Sync fields
+ int get workScopeID; int get roadID; int? get totalWorkers; String? get fromSection; String? get toSection;// Admin who created this report
+ int get createdByID; DateTime get createdAt; DateTime get updatedAt;// Equipments stored as JSON
+ List<DailyReportEquipmentModel>? get equipments;// Sync fields
  bool get isSynced; DateTime? get deletedAt; String? get syncAction; int get syncRetryCount; String? get syncError; DateTime? get lastSyncAttempt;
 /// Create a copy of DailyReportModel
 /// with the given fields replaced by the non-null parameter values.
@@ -36,16 +37,16 @@ $DailyReportModelCopyWith<DailyReportModel> get copyWith => _$DailyReportModelCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyReportModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.weatherCondition, weatherCondition) || other.weatherCondition == weatherCondition)&&(identical(other.workPerformed, workPerformed) || other.workPerformed == workPerformed)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.companyID, companyID) || other.companyID == companyID)&&(identical(other.contractRelationID, contractRelationID) || other.contractRelationID == contractRelationID)&&(identical(other.status, status) || other.status == status)&&(identical(other.approvedByID, approvedByID) || other.approvedByID == approvedByID)&&(identical(other.approvedAt, approvedAt) || other.approvedAt == approvedAt)&&(identical(other.rejectionReason, rejectionReason) || other.rejectionReason == rejectionReason)&&(identical(other.workScopeID, workScopeID) || other.workScopeID == workScopeID)&&(identical(other.roadID, roadID) || other.roadID == roadID)&&(identical(other.totalWorkers, totalWorkers) || other.totalWorkers == totalWorkers)&&(identical(other.fromSection, fromSection) || other.fromSection == fromSection)&&(identical(other.toSection, toSection) || other.toSection == toSection)&&(identical(other.createdByID, createdByID) || other.createdByID == createdByID)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.isSynced, isSynced) || other.isSynced == isSynced)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.syncAction, syncAction) || other.syncAction == syncAction)&&(identical(other.syncRetryCount, syncRetryCount) || other.syncRetryCount == syncRetryCount)&&(identical(other.syncError, syncError) || other.syncError == syncError)&&(identical(other.lastSyncAttempt, lastSyncAttempt) || other.lastSyncAttempt == lastSyncAttempt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyReportModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.weatherCondition, weatherCondition) || other.weatherCondition == weatherCondition)&&(identical(other.workPerformed, workPerformed) || other.workPerformed == workPerformed)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.companyID, companyID) || other.companyID == companyID)&&(identical(other.contractRelationID, contractRelationID) || other.contractRelationID == contractRelationID)&&(identical(other.status, status) || other.status == status)&&(identical(other.approvedByID, approvedByID) || other.approvedByID == approvedByID)&&(identical(other.approvedAt, approvedAt) || other.approvedAt == approvedAt)&&(identical(other.rejectionReason, rejectionReason) || other.rejectionReason == rejectionReason)&&(identical(other.workScopeID, workScopeID) || other.workScopeID == workScopeID)&&(identical(other.roadID, roadID) || other.roadID == roadID)&&(identical(other.totalWorkers, totalWorkers) || other.totalWorkers == totalWorkers)&&(identical(other.fromSection, fromSection) || other.fromSection == fromSection)&&(identical(other.toSection, toSection) || other.toSection == toSection)&&(identical(other.createdByID, createdByID) || other.createdByID == createdByID)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.equipments, equipments)&&(identical(other.isSynced, isSynced) || other.isSynced == isSynced)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.syncAction, syncAction) || other.syncAction == syncAction)&&(identical(other.syncRetryCount, syncRetryCount) || other.syncRetryCount == syncRetryCount)&&(identical(other.syncError, syncError) || other.syncError == syncError)&&(identical(other.lastSyncAttempt, lastSyncAttempt) || other.lastSyncAttempt == lastSyncAttempt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,uid,name,notes,weatherCondition,workPerformed,longitude,latitude,companyID,contractRelationID,status,approvedByID,approvedAt,rejectionReason,workScopeID,roadID,totalWorkers,fromSection,toSection,createdByID,createdAt,updatedAt,isSynced,deletedAt,syncAction,syncRetryCount,syncError,lastSyncAttempt]);
+int get hashCode => Object.hashAll([runtimeType,id,uid,name,notes,weatherCondition,workPerformed,longitude,latitude,companyID,contractRelationID,status,approvedByID,approvedAt,rejectionReason,workScopeID,roadID,totalWorkers,fromSection,toSection,createdByID,createdAt,updatedAt,const DeepCollectionEquality().hash(equipments),isSynced,deletedAt,syncAction,syncRetryCount,syncError,lastSyncAttempt]);
 
 @override
 String toString() {
-  return 'DailyReportModel(id: $id, uid: $uid, name: $name, notes: $notes, weatherCondition: $weatherCondition, workPerformed: $workPerformed, longitude: $longitude, latitude: $latitude, companyID: $companyID, contractRelationID: $contractRelationID, status: $status, approvedByID: $approvedByID, approvedAt: $approvedAt, rejectionReason: $rejectionReason, workScopeID: $workScopeID, roadID: $roadID, totalWorkers: $totalWorkers, fromSection: $fromSection, toSection: $toSection, createdByID: $createdByID, createdAt: $createdAt, updatedAt: $updatedAt, isSynced: $isSynced, deletedAt: $deletedAt, syncAction: $syncAction, syncRetryCount: $syncRetryCount, syncError: $syncError, lastSyncAttempt: $lastSyncAttempt)';
+  return 'DailyReportModel(id: $id, uid: $uid, name: $name, notes: $notes, weatherCondition: $weatherCondition, workPerformed: $workPerformed, longitude: $longitude, latitude: $latitude, companyID: $companyID, contractRelationID: $contractRelationID, status: $status, approvedByID: $approvedByID, approvedAt: $approvedAt, rejectionReason: $rejectionReason, workScopeID: $workScopeID, roadID: $roadID, totalWorkers: $totalWorkers, fromSection: $fromSection, toSection: $toSection, createdByID: $createdByID, createdAt: $createdAt, updatedAt: $updatedAt, equipments: $equipments, isSynced: $isSynced, deletedAt: $deletedAt, syncAction: $syncAction, syncRetryCount: $syncRetryCount, syncError: $syncError, lastSyncAttempt: $lastSyncAttempt)';
 }
 
 
@@ -56,7 +57,7 @@ abstract mixin class $DailyReportModelCopyWith<$Res>  {
   factory $DailyReportModelCopyWith(DailyReportModel value, $Res Function(DailyReportModel) _then) = _$DailyReportModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String uid, String name, String? notes, String weatherCondition, bool workPerformed, double? longitude, double? latitude, int companyID, int? contractRelationID, String status, int? approvedByID, DateTime? approvedAt, String? rejectionReason, int workScopeID, int roadID, int? totalWorkers, double? fromSection, double? toSection, int createdByID, DateTime createdAt, DateTime updatedAt, bool isSynced, DateTime? deletedAt, String? syncAction, int syncRetryCount, String? syncError, DateTime? lastSyncAttempt
+ int id, String uid, String name, String? notes, String weatherCondition, bool workPerformed, String? longitude, String? latitude, int companyID, int? contractRelationID, String status, int? approvedByID, DateTime? approvedAt, String? rejectionReason, int workScopeID, int roadID, int? totalWorkers, String? fromSection, String? toSection, int createdByID, DateTime createdAt, DateTime updatedAt, List<DailyReportEquipmentModel>? equipments, bool isSynced, DateTime? deletedAt, String? syncAction, int syncRetryCount, String? syncError, DateTime? lastSyncAttempt
 });
 
 
@@ -73,7 +74,7 @@ class _$DailyReportModelCopyWithImpl<$Res>
 
 /// Create a copy of DailyReportModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? notes = freezed,Object? weatherCondition = null,Object? workPerformed = null,Object? longitude = freezed,Object? latitude = freezed,Object? companyID = null,Object? contractRelationID = freezed,Object? status = null,Object? approvedByID = freezed,Object? approvedAt = freezed,Object? rejectionReason = freezed,Object? workScopeID = null,Object? roadID = null,Object? totalWorkers = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? createdByID = null,Object? createdAt = null,Object? updatedAt = null,Object? isSynced = null,Object? deletedAt = freezed,Object? syncAction = freezed,Object? syncRetryCount = null,Object? syncError = freezed,Object? lastSyncAttempt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? notes = freezed,Object? weatherCondition = null,Object? workPerformed = null,Object? longitude = freezed,Object? latitude = freezed,Object? companyID = null,Object? contractRelationID = freezed,Object? status = null,Object? approvedByID = freezed,Object? approvedAt = freezed,Object? rejectionReason = freezed,Object? workScopeID = null,Object? roadID = null,Object? totalWorkers = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? createdByID = null,Object? createdAt = null,Object? updatedAt = null,Object? equipments = freezed,Object? isSynced = null,Object? deletedAt = freezed,Object? syncAction = freezed,Object? syncRetryCount = null,Object? syncError = freezed,Object? lastSyncAttempt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -82,8 +83,8 @@ as String,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable
 as String?,weatherCondition: null == weatherCondition ? _self.weatherCondition : weatherCondition // ignore: cast_nullable_to_non_nullable
 as String,workPerformed: null == workPerformed ? _self.workPerformed : workPerformed // ignore: cast_nullable_to_non_nullable
 as bool,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
-as double?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
-as double?,companyID: null == companyID ? _self.companyID : companyID // ignore: cast_nullable_to_non_nullable
+as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as String?,companyID: null == companyID ? _self.companyID : companyID // ignore: cast_nullable_to_non_nullable
 as int,contractRelationID: freezed == contractRelationID ? _self.contractRelationID : contractRelationID // ignore: cast_nullable_to_non_nullable
 as int?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,approvedByID: freezed == approvedByID ? _self.approvedByID : approvedByID // ignore: cast_nullable_to_non_nullable
@@ -93,11 +94,12 @@ as String?,workScopeID: null == workScopeID ? _self.workScopeID : workScopeID //
 as int,roadID: null == roadID ? _self.roadID : roadID // ignore: cast_nullable_to_non_nullable
 as int,totalWorkers: freezed == totalWorkers ? _self.totalWorkers : totalWorkers // ignore: cast_nullable_to_non_nullable
 as int?,fromSection: freezed == fromSection ? _self.fromSection : fromSection // ignore: cast_nullable_to_non_nullable
-as double?,toSection: freezed == toSection ? _self.toSection : toSection // ignore: cast_nullable_to_non_nullable
-as double?,createdByID: null == createdByID ? _self.createdByID : createdByID // ignore: cast_nullable_to_non_nullable
+as String?,toSection: freezed == toSection ? _self.toSection : toSection // ignore: cast_nullable_to_non_nullable
+as String?,createdByID: null == createdByID ? _self.createdByID : createdByID // ignore: cast_nullable_to_non_nullable
 as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,isSynced: null == isSynced ? _self.isSynced : isSynced // ignore: cast_nullable_to_non_nullable
+as DateTime,equipments: freezed == equipments ? _self.equipments : equipments // ignore: cast_nullable_to_non_nullable
+as List<DailyReportEquipmentModel>?,isSynced: null == isSynced ? _self.isSynced : isSynced // ignore: cast_nullable_to_non_nullable
 as bool,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,syncAction: freezed == syncAction ? _self.syncAction : syncAction // ignore: cast_nullable_to_non_nullable
 as String?,syncRetryCount: null == syncRetryCount ? _self.syncRetryCount : syncRetryCount // ignore: cast_nullable_to_non_nullable
@@ -188,10 +190,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String? notes,  String weatherCondition,  bool workPerformed,  double? longitude,  double? latitude,  int companyID,  int? contractRelationID,  String status,  int? approvedByID,  DateTime? approvedAt,  String? rejectionReason,  int workScopeID,  int roadID,  int? totalWorkers,  double? fromSection,  double? toSection,  int createdByID,  DateTime createdAt,  DateTime updatedAt,  bool isSynced,  DateTime? deletedAt,  String? syncAction,  int syncRetryCount,  String? syncError,  DateTime? lastSyncAttempt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String? notes,  String weatherCondition,  bool workPerformed,  String? longitude,  String? latitude,  int companyID,  int? contractRelationID,  String status,  int? approvedByID,  DateTime? approvedAt,  String? rejectionReason,  int workScopeID,  int roadID,  int? totalWorkers,  String? fromSection,  String? toSection,  int createdByID,  DateTime createdAt,  DateTime updatedAt,  List<DailyReportEquipmentModel>? equipments,  bool isSynced,  DateTime? deletedAt,  String? syncAction,  int syncRetryCount,  String? syncError,  DateTime? lastSyncAttempt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DailyReportModel() when $default != null:
-return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.longitude,_that.latitude,_that.companyID,_that.contractRelationID,_that.status,_that.approvedByID,_that.approvedAt,_that.rejectionReason,_that.workScopeID,_that.roadID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.createdByID,_that.createdAt,_that.updatedAt,_that.isSynced,_that.deletedAt,_that.syncAction,_that.syncRetryCount,_that.syncError,_that.lastSyncAttempt);case _:
+return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.longitude,_that.latitude,_that.companyID,_that.contractRelationID,_that.status,_that.approvedByID,_that.approvedAt,_that.rejectionReason,_that.workScopeID,_that.roadID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.createdByID,_that.createdAt,_that.updatedAt,_that.equipments,_that.isSynced,_that.deletedAt,_that.syncAction,_that.syncRetryCount,_that.syncError,_that.lastSyncAttempt);case _:
   return orElse();
 
 }
@@ -209,10 +211,10 @@ return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String? notes,  String weatherCondition,  bool workPerformed,  double? longitude,  double? latitude,  int companyID,  int? contractRelationID,  String status,  int? approvedByID,  DateTime? approvedAt,  String? rejectionReason,  int workScopeID,  int roadID,  int? totalWorkers,  double? fromSection,  double? toSection,  int createdByID,  DateTime createdAt,  DateTime updatedAt,  bool isSynced,  DateTime? deletedAt,  String? syncAction,  int syncRetryCount,  String? syncError,  DateTime? lastSyncAttempt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String? notes,  String weatherCondition,  bool workPerformed,  String? longitude,  String? latitude,  int companyID,  int? contractRelationID,  String status,  int? approvedByID,  DateTime? approvedAt,  String? rejectionReason,  int workScopeID,  int roadID,  int? totalWorkers,  String? fromSection,  String? toSection,  int createdByID,  DateTime createdAt,  DateTime updatedAt,  List<DailyReportEquipmentModel>? equipments,  bool isSynced,  DateTime? deletedAt,  String? syncAction,  int syncRetryCount,  String? syncError,  DateTime? lastSyncAttempt)  $default,) {final _that = this;
 switch (_that) {
 case _DailyReportModel():
-return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.longitude,_that.latitude,_that.companyID,_that.contractRelationID,_that.status,_that.approvedByID,_that.approvedAt,_that.rejectionReason,_that.workScopeID,_that.roadID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.createdByID,_that.createdAt,_that.updatedAt,_that.isSynced,_that.deletedAt,_that.syncAction,_that.syncRetryCount,_that.syncError,_that.lastSyncAttempt);case _:
+return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.longitude,_that.latitude,_that.companyID,_that.contractRelationID,_that.status,_that.approvedByID,_that.approvedAt,_that.rejectionReason,_that.workScopeID,_that.roadID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.createdByID,_that.createdAt,_that.updatedAt,_that.equipments,_that.isSynced,_that.deletedAt,_that.syncAction,_that.syncRetryCount,_that.syncError,_that.lastSyncAttempt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -229,10 +231,10 @@ return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uid,  String name,  String? notes,  String weatherCondition,  bool workPerformed,  double? longitude,  double? latitude,  int companyID,  int? contractRelationID,  String status,  int? approvedByID,  DateTime? approvedAt,  String? rejectionReason,  int workScopeID,  int roadID,  int? totalWorkers,  double? fromSection,  double? toSection,  int createdByID,  DateTime createdAt,  DateTime updatedAt,  bool isSynced,  DateTime? deletedAt,  String? syncAction,  int syncRetryCount,  String? syncError,  DateTime? lastSyncAttempt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uid,  String name,  String? notes,  String weatherCondition,  bool workPerformed,  String? longitude,  String? latitude,  int companyID,  int? contractRelationID,  String status,  int? approvedByID,  DateTime? approvedAt,  String? rejectionReason,  int workScopeID,  int roadID,  int? totalWorkers,  String? fromSection,  String? toSection,  int createdByID,  DateTime createdAt,  DateTime updatedAt,  List<DailyReportEquipmentModel>? equipments,  bool isSynced,  DateTime? deletedAt,  String? syncAction,  int syncRetryCount,  String? syncError,  DateTime? lastSyncAttempt)?  $default,) {final _that = this;
 switch (_that) {
 case _DailyReportModel() when $default != null:
-return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.longitude,_that.latitude,_that.companyID,_that.contractRelationID,_that.status,_that.approvedByID,_that.approvedAt,_that.rejectionReason,_that.workScopeID,_that.roadID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.createdByID,_that.createdAt,_that.updatedAt,_that.isSynced,_that.deletedAt,_that.syncAction,_that.syncRetryCount,_that.syncError,_that.lastSyncAttempt);case _:
+return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.longitude,_that.latitude,_that.companyID,_that.contractRelationID,_that.status,_that.approvedByID,_that.approvedAt,_that.rejectionReason,_that.workScopeID,_that.roadID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.createdByID,_that.createdAt,_that.updatedAt,_that.equipments,_that.isSynced,_that.deletedAt,_that.syncAction,_that.syncRetryCount,_that.syncError,_that.lastSyncAttempt);case _:
   return null;
 
 }
@@ -243,8 +245,8 @@ return $default(_that.id,_that.uid,_that.name,_that.notes,_that.weatherCondition
 /// @nodoc
 @JsonSerializable()
 
-class _DailyReportModel implements DailyReportModel {
-  const _DailyReportModel({required this.id, required this.uid, required this.name, this.notes, required this.weatherCondition, this.workPerformed = false, this.longitude, this.latitude, required this.companyID, this.contractRelationID, this.status = 'SUBMITTED', this.approvedByID, this.approvedAt, this.rejectionReason, required this.workScopeID, required this.roadID, this.totalWorkers, this.fromSection, this.toSection, required this.createdByID, required this.createdAt, required this.updatedAt, this.isSynced = false, this.deletedAt, this.syncAction, this.syncRetryCount = 0, this.syncError, this.lastSyncAttempt});
+class _DailyReportModel extends DailyReportModel {
+  const _DailyReportModel({required this.id, required this.uid, required this.name, this.notes, required this.weatherCondition, this.workPerformed = false, this.longitude, this.latitude, required this.companyID, this.contractRelationID, this.status = 'SUBMITTED', this.approvedByID, this.approvedAt, this.rejectionReason, required this.workScopeID, required this.roadID, this.totalWorkers, this.fromSection, this.toSection, required this.createdByID, required this.createdAt, required this.updatedAt, final  List<DailyReportEquipmentModel>? equipments, this.isSynced = false, this.deletedAt, this.syncAction, this.syncRetryCount = 0, this.syncError, this.lastSyncAttempt}): _equipments = equipments,super._();
   factory _DailyReportModel.fromJson(Map<String, dynamic> json) => _$DailyReportModelFromJson(json);
 
 @override final  int id;
@@ -254,8 +256,8 @@ class _DailyReportModel implements DailyReportModel {
 @override final  String weatherCondition;
 @override@JsonKey() final  bool workPerformed;
 // Location coordinates
-@override final  double? longitude;
-@override final  double? latitude;
+@override final  String? longitude;
+@override final  String? latitude;
 // Primary ownership - the company this report belongs to
 @override final  int companyID;
 // Optional contract relationship (null for in-house work)
@@ -270,12 +272,23 @@ class _DailyReportModel implements DailyReportModel {
 @override final  int workScopeID;
 @override final  int roadID;
 @override final  int? totalWorkers;
-@override final  double? fromSection;
-@override final  double? toSection;
+@override final  String? fromSection;
+@override final  String? toSection;
 // Admin who created this report
 @override final  int createdByID;
 @override final  DateTime createdAt;
 @override final  DateTime updatedAt;
+// Equipments stored as JSON
+ final  List<DailyReportEquipmentModel>? _equipments;
+// Equipments stored as JSON
+@override List<DailyReportEquipmentModel>? get equipments {
+  final value = _equipments;
+  if (value == null) return null;
+  if (_equipments is EqualUnmodifiableListView) return _equipments;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 // Sync fields
 @override@JsonKey() final  bool isSynced;
 @override final  DateTime? deletedAt;
@@ -297,16 +310,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyReportModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.weatherCondition, weatherCondition) || other.weatherCondition == weatherCondition)&&(identical(other.workPerformed, workPerformed) || other.workPerformed == workPerformed)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.companyID, companyID) || other.companyID == companyID)&&(identical(other.contractRelationID, contractRelationID) || other.contractRelationID == contractRelationID)&&(identical(other.status, status) || other.status == status)&&(identical(other.approvedByID, approvedByID) || other.approvedByID == approvedByID)&&(identical(other.approvedAt, approvedAt) || other.approvedAt == approvedAt)&&(identical(other.rejectionReason, rejectionReason) || other.rejectionReason == rejectionReason)&&(identical(other.workScopeID, workScopeID) || other.workScopeID == workScopeID)&&(identical(other.roadID, roadID) || other.roadID == roadID)&&(identical(other.totalWorkers, totalWorkers) || other.totalWorkers == totalWorkers)&&(identical(other.fromSection, fromSection) || other.fromSection == fromSection)&&(identical(other.toSection, toSection) || other.toSection == toSection)&&(identical(other.createdByID, createdByID) || other.createdByID == createdByID)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.isSynced, isSynced) || other.isSynced == isSynced)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.syncAction, syncAction) || other.syncAction == syncAction)&&(identical(other.syncRetryCount, syncRetryCount) || other.syncRetryCount == syncRetryCount)&&(identical(other.syncError, syncError) || other.syncError == syncError)&&(identical(other.lastSyncAttempt, lastSyncAttempt) || other.lastSyncAttempt == lastSyncAttempt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyReportModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.weatherCondition, weatherCondition) || other.weatherCondition == weatherCondition)&&(identical(other.workPerformed, workPerformed) || other.workPerformed == workPerformed)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.companyID, companyID) || other.companyID == companyID)&&(identical(other.contractRelationID, contractRelationID) || other.contractRelationID == contractRelationID)&&(identical(other.status, status) || other.status == status)&&(identical(other.approvedByID, approvedByID) || other.approvedByID == approvedByID)&&(identical(other.approvedAt, approvedAt) || other.approvedAt == approvedAt)&&(identical(other.rejectionReason, rejectionReason) || other.rejectionReason == rejectionReason)&&(identical(other.workScopeID, workScopeID) || other.workScopeID == workScopeID)&&(identical(other.roadID, roadID) || other.roadID == roadID)&&(identical(other.totalWorkers, totalWorkers) || other.totalWorkers == totalWorkers)&&(identical(other.fromSection, fromSection) || other.fromSection == fromSection)&&(identical(other.toSection, toSection) || other.toSection == toSection)&&(identical(other.createdByID, createdByID) || other.createdByID == createdByID)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other._equipments, _equipments)&&(identical(other.isSynced, isSynced) || other.isSynced == isSynced)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.syncAction, syncAction) || other.syncAction == syncAction)&&(identical(other.syncRetryCount, syncRetryCount) || other.syncRetryCount == syncRetryCount)&&(identical(other.syncError, syncError) || other.syncError == syncError)&&(identical(other.lastSyncAttempt, lastSyncAttempt) || other.lastSyncAttempt == lastSyncAttempt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,uid,name,notes,weatherCondition,workPerformed,longitude,latitude,companyID,contractRelationID,status,approvedByID,approvedAt,rejectionReason,workScopeID,roadID,totalWorkers,fromSection,toSection,createdByID,createdAt,updatedAt,isSynced,deletedAt,syncAction,syncRetryCount,syncError,lastSyncAttempt]);
+int get hashCode => Object.hashAll([runtimeType,id,uid,name,notes,weatherCondition,workPerformed,longitude,latitude,companyID,contractRelationID,status,approvedByID,approvedAt,rejectionReason,workScopeID,roadID,totalWorkers,fromSection,toSection,createdByID,createdAt,updatedAt,const DeepCollectionEquality().hash(_equipments),isSynced,deletedAt,syncAction,syncRetryCount,syncError,lastSyncAttempt]);
 
 @override
 String toString() {
-  return 'DailyReportModel(id: $id, uid: $uid, name: $name, notes: $notes, weatherCondition: $weatherCondition, workPerformed: $workPerformed, longitude: $longitude, latitude: $latitude, companyID: $companyID, contractRelationID: $contractRelationID, status: $status, approvedByID: $approvedByID, approvedAt: $approvedAt, rejectionReason: $rejectionReason, workScopeID: $workScopeID, roadID: $roadID, totalWorkers: $totalWorkers, fromSection: $fromSection, toSection: $toSection, createdByID: $createdByID, createdAt: $createdAt, updatedAt: $updatedAt, isSynced: $isSynced, deletedAt: $deletedAt, syncAction: $syncAction, syncRetryCount: $syncRetryCount, syncError: $syncError, lastSyncAttempt: $lastSyncAttempt)';
+  return 'DailyReportModel(id: $id, uid: $uid, name: $name, notes: $notes, weatherCondition: $weatherCondition, workPerformed: $workPerformed, longitude: $longitude, latitude: $latitude, companyID: $companyID, contractRelationID: $contractRelationID, status: $status, approvedByID: $approvedByID, approvedAt: $approvedAt, rejectionReason: $rejectionReason, workScopeID: $workScopeID, roadID: $roadID, totalWorkers: $totalWorkers, fromSection: $fromSection, toSection: $toSection, createdByID: $createdByID, createdAt: $createdAt, updatedAt: $updatedAt, equipments: $equipments, isSynced: $isSynced, deletedAt: $deletedAt, syncAction: $syncAction, syncRetryCount: $syncRetryCount, syncError: $syncError, lastSyncAttempt: $lastSyncAttempt)';
 }
 
 
@@ -317,7 +330,7 @@ abstract mixin class _$DailyReportModelCopyWith<$Res> implements $DailyReportMod
   factory _$DailyReportModelCopyWith(_DailyReportModel value, $Res Function(_DailyReportModel) _then) = __$DailyReportModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String uid, String name, String? notes, String weatherCondition, bool workPerformed, double? longitude, double? latitude, int companyID, int? contractRelationID, String status, int? approvedByID, DateTime? approvedAt, String? rejectionReason, int workScopeID, int roadID, int? totalWorkers, double? fromSection, double? toSection, int createdByID, DateTime createdAt, DateTime updatedAt, bool isSynced, DateTime? deletedAt, String? syncAction, int syncRetryCount, String? syncError, DateTime? lastSyncAttempt
+ int id, String uid, String name, String? notes, String weatherCondition, bool workPerformed, String? longitude, String? latitude, int companyID, int? contractRelationID, String status, int? approvedByID, DateTime? approvedAt, String? rejectionReason, int workScopeID, int roadID, int? totalWorkers, String? fromSection, String? toSection, int createdByID, DateTime createdAt, DateTime updatedAt, List<DailyReportEquipmentModel>? equipments, bool isSynced, DateTime? deletedAt, String? syncAction, int syncRetryCount, String? syncError, DateTime? lastSyncAttempt
 });
 
 
@@ -334,7 +347,7 @@ class __$DailyReportModelCopyWithImpl<$Res>
 
 /// Create a copy of DailyReportModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? notes = freezed,Object? weatherCondition = null,Object? workPerformed = null,Object? longitude = freezed,Object? latitude = freezed,Object? companyID = null,Object? contractRelationID = freezed,Object? status = null,Object? approvedByID = freezed,Object? approvedAt = freezed,Object? rejectionReason = freezed,Object? workScopeID = null,Object? roadID = null,Object? totalWorkers = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? createdByID = null,Object? createdAt = null,Object? updatedAt = null,Object? isSynced = null,Object? deletedAt = freezed,Object? syncAction = freezed,Object? syncRetryCount = null,Object? syncError = freezed,Object? lastSyncAttempt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? notes = freezed,Object? weatherCondition = null,Object? workPerformed = null,Object? longitude = freezed,Object? latitude = freezed,Object? companyID = null,Object? contractRelationID = freezed,Object? status = null,Object? approvedByID = freezed,Object? approvedAt = freezed,Object? rejectionReason = freezed,Object? workScopeID = null,Object? roadID = null,Object? totalWorkers = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? createdByID = null,Object? createdAt = null,Object? updatedAt = null,Object? equipments = freezed,Object? isSynced = null,Object? deletedAt = freezed,Object? syncAction = freezed,Object? syncRetryCount = null,Object? syncError = freezed,Object? lastSyncAttempt = freezed,}) {
   return _then(_DailyReportModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -343,8 +356,8 @@ as String,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable
 as String?,weatherCondition: null == weatherCondition ? _self.weatherCondition : weatherCondition // ignore: cast_nullable_to_non_nullable
 as String,workPerformed: null == workPerformed ? _self.workPerformed : workPerformed // ignore: cast_nullable_to_non_nullable
 as bool,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
-as double?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
-as double?,companyID: null == companyID ? _self.companyID : companyID // ignore: cast_nullable_to_non_nullable
+as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
+as String?,companyID: null == companyID ? _self.companyID : companyID // ignore: cast_nullable_to_non_nullable
 as int,contractRelationID: freezed == contractRelationID ? _self.contractRelationID : contractRelationID // ignore: cast_nullable_to_non_nullable
 as int?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String,approvedByID: freezed == approvedByID ? _self.approvedByID : approvedByID // ignore: cast_nullable_to_non_nullable
@@ -354,11 +367,12 @@ as String?,workScopeID: null == workScopeID ? _self.workScopeID : workScopeID //
 as int,roadID: null == roadID ? _self.roadID : roadID // ignore: cast_nullable_to_non_nullable
 as int,totalWorkers: freezed == totalWorkers ? _self.totalWorkers : totalWorkers // ignore: cast_nullable_to_non_nullable
 as int?,fromSection: freezed == fromSection ? _self.fromSection : fromSection // ignore: cast_nullable_to_non_nullable
-as double?,toSection: freezed == toSection ? _self.toSection : toSection // ignore: cast_nullable_to_non_nullable
-as double?,createdByID: null == createdByID ? _self.createdByID : createdByID // ignore: cast_nullable_to_non_nullable
+as String?,toSection: freezed == toSection ? _self.toSection : toSection // ignore: cast_nullable_to_non_nullable
+as String?,createdByID: null == createdByID ? _self.createdByID : createdByID // ignore: cast_nullable_to_non_nullable
 as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,isSynced: null == isSynced ? _self.isSynced : isSynced // ignore: cast_nullable_to_non_nullable
+as DateTime,equipments: freezed == equipments ? _self._equipments : equipments // ignore: cast_nullable_to_non_nullable
+as List<DailyReportEquipmentModel>?,isSynced: null == isSynced ? _self.isSynced : isSynced // ignore: cast_nullable_to_non_nullable
 as bool,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,syncAction: freezed == syncAction ? _self.syncAction : syncAction // ignore: cast_nullable_to_non_nullable
 as String?,syncRetryCount: null == syncRetryCount ? _self.syncRetryCount : syncRetryCount // ignore: cast_nullable_to_non_nullable

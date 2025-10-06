@@ -14,8 +14,8 @@ _DailyReportModel _$DailyReportModelFromJson(Map<String, dynamic> json) =>
       notes: json['notes'] as String?,
       weatherCondition: json['weatherCondition'] as String,
       workPerformed: json['workPerformed'] as bool? ?? false,
-      longitude: (json['longitude'] as num?)?.toDouble(),
-      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: json['longitude'] as String?,
+      latitude: json['latitude'] as String?,
       companyID: (json['companyID'] as num).toInt(),
       contractRelationID: (json['contractRelationID'] as num?)?.toInt(),
       status: json['status'] as String? ?? 'SUBMITTED',
@@ -27,11 +27,17 @@ _DailyReportModel _$DailyReportModelFromJson(Map<String, dynamic> json) =>
       workScopeID: (json['workScopeID'] as num).toInt(),
       roadID: (json['roadID'] as num).toInt(),
       totalWorkers: (json['totalWorkers'] as num?)?.toInt(),
-      fromSection: (json['fromSection'] as num?)?.toDouble(),
-      toSection: (json['toSection'] as num?)?.toDouble(),
+      fromSection: json['fromSection'] as String?,
+      toSection: json['toSection'] as String?,
       createdByID: (json['createdByID'] as num).toInt(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
+      equipments: (json['equipments'] as List<dynamic>?)
+          ?.map(
+            (e) =>
+                DailyReportEquipmentModel.fromJson(e as Map<String, dynamic>),
+          )
+          .toList(),
       isSynced: json['isSynced'] as bool? ?? false,
       deletedAt: json['deletedAt'] == null
           ? null
@@ -68,6 +74,7 @@ Map<String, dynamic> _$DailyReportModelToJson(_DailyReportModel instance) =>
       'createdByID': instance.createdByID,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
+      'equipments': instance.equipments,
       'isSynced': instance.isSynced,
       'deletedAt': instance.deletedAt?.toIso8601String(),
       'syncAction': instance.syncAction,

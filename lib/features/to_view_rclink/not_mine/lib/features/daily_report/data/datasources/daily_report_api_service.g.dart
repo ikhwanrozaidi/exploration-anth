@@ -18,7 +18,7 @@ class _DailyReportApiService implements DailyReportApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ApiResponse<PaginatedResult<DailyReportModel>>> getCompanyDailyReports(
+  Future<DailyReportResponseModel> getCompanyDailyReports(
     String companyUID,
     DailyReportFilterModel filter,
   ) async {
@@ -27,29 +27,20 @@ class _DailyReportApiService implements DailyReportApiService {
     queryParameters.addAll(filter.toJson());
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options =
-        _setStreamType<ApiResponse<PaginatedResult<DailyReportModel>>>(
-          Options(method: 'GET', headers: _headers, extra: _extra)
-              .compose(
-                _dio.options,
-                '/companies/${companyUID}/daily-reports',
-                queryParameters: queryParameters,
-                data: _data,
-              )
-              .copyWith(
-                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
-              ),
-        );
+    final _options = _setStreamType<DailyReportResponseModel>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/companies/${companyUID}/daily-reports',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<PaginatedResult<DailyReportModel>> _value;
+    late DailyReportResponseModel _value;
     try {
-      _value = ApiResponse<PaginatedResult<DailyReportModel>>.fromJson(
-        _result.data!,
-        (json) => PaginatedResult<DailyReportModel>.fromJson(
-          json as Map<String, dynamic>,
-          (json) => DailyReportModel.fromJson(json as Map<String, dynamic>),
-        ),
-      );
+      _value = DailyReportResponseModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

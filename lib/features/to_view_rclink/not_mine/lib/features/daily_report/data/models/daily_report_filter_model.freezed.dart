@@ -18,16 +18,16 @@ mixin _$DailyReportFilterModel {
 /// Page number for pagination
  int get page;/// Number of items per page
  int get limit;/// Filter by report status
- String? get status;/// Filter by work scope UID
- String? get workScopeUID;/// Filter by road UID
- String? get roadUID;/// Filter by created by admin ID
- int? get createdByID;/// Filter by date range - start date
- DateTime? get startDate;/// Filter by date range - end date
- DateTime? get endDate;/// Search term for report name
- String? get search;/// Sort field
- String? get sortBy;/// Sort order (asc/desc)
- String? get sortOrder;/// Expand relations
- List<String>? get expand;
+@JsonKey(includeIfNull: false) String? get status;/// Filter by work scope UID
+@JsonKey(includeIfNull: false) String? get workScopeUID;/// Filter by road UID
+@JsonKey(includeIfNull: false) String? get roadUID;/// Filter by created by admin ID
+@JsonKey(includeIfNull: false) int? get createdByID;/// Filter by date range - start date
+@JsonKey(includeIfNull: false) DateTime? get startDate;/// Filter by date range - end date
+@JsonKey(includeIfNull: false) DateTime? get endDate;/// Search term for report name
+@JsonKey(includeIfNull: false) String? get search;/// Sort field
+@JsonKey(includeIfNull: false) String? get sortBy;/// Sort order (asc/desc)
+@JsonKey(includeIfNull: false) String? get sortOrder;/// Expand relations
+@JsonKey(includeIfNull: false) List<String>? get expand;
 /// Create a copy of DailyReportFilterModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -60,7 +60,7 @@ abstract mixin class $DailyReportFilterModelCopyWith<$Res>  {
   factory $DailyReportFilterModelCopyWith(DailyReportFilterModel value, $Res Function(DailyReportFilterModel) _then) = _$DailyReportFilterModelCopyWithImpl;
 @useResult
 $Res call({
- int page, int limit, String? status, String? workScopeUID, String? roadUID, int? createdByID, DateTime? startDate, DateTime? endDate, String? search, String? sortBy, String? sortOrder, List<String>? expand
+ int page, int limit,@JsonKey(includeIfNull: false) String? status,@JsonKey(includeIfNull: false) String? workScopeUID,@JsonKey(includeIfNull: false) String? roadUID,@JsonKey(includeIfNull: false) int? createdByID,@JsonKey(includeIfNull: false) DateTime? startDate,@JsonKey(includeIfNull: false) DateTime? endDate,@JsonKey(includeIfNull: false) String? search,@JsonKey(includeIfNull: false) String? sortBy,@JsonKey(includeIfNull: false) String? sortOrder,@JsonKey(includeIfNull: false) List<String>? expand
 });
 
 
@@ -176,7 +176,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int page,  int limit,  String? status,  String? workScopeUID,  String? roadUID,  int? createdByID,  DateTime? startDate,  DateTime? endDate,  String? search,  String? sortBy,  String? sortOrder,  List<String>? expand)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int page,  int limit, @JsonKey(includeIfNull: false)  String? status, @JsonKey(includeIfNull: false)  String? workScopeUID, @JsonKey(includeIfNull: false)  String? roadUID, @JsonKey(includeIfNull: false)  int? createdByID, @JsonKey(includeIfNull: false)  DateTime? startDate, @JsonKey(includeIfNull: false)  DateTime? endDate, @JsonKey(includeIfNull: false)  String? search, @JsonKey(includeIfNull: false)  String? sortBy, @JsonKey(includeIfNull: false)  String? sortOrder, @JsonKey(includeIfNull: false)  List<String>? expand)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DailyReportFilterModel() when $default != null:
 return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roadUID,_that.createdByID,_that.startDate,_that.endDate,_that.search,_that.sortBy,_that.sortOrder,_that.expand);case _:
@@ -197,7 +197,7 @@ return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roa
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int page,  int limit,  String? status,  String? workScopeUID,  String? roadUID,  int? createdByID,  DateTime? startDate,  DateTime? endDate,  String? search,  String? sortBy,  String? sortOrder,  List<String>? expand)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int page,  int limit, @JsonKey(includeIfNull: false)  String? status, @JsonKey(includeIfNull: false)  String? workScopeUID, @JsonKey(includeIfNull: false)  String? roadUID, @JsonKey(includeIfNull: false)  int? createdByID, @JsonKey(includeIfNull: false)  DateTime? startDate, @JsonKey(includeIfNull: false)  DateTime? endDate, @JsonKey(includeIfNull: false)  String? search, @JsonKey(includeIfNull: false)  String? sortBy, @JsonKey(includeIfNull: false)  String? sortOrder, @JsonKey(includeIfNull: false)  List<String>? expand)  $default,) {final _that = this;
 switch (_that) {
 case _DailyReportFilterModel():
 return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roadUID,_that.createdByID,_that.startDate,_that.endDate,_that.search,_that.sortBy,_that.sortOrder,_that.expand);case _:
@@ -217,7 +217,7 @@ return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roa
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int page,  int limit,  String? status,  String? workScopeUID,  String? roadUID,  int? createdByID,  DateTime? startDate,  DateTime? endDate,  String? search,  String? sortBy,  String? sortOrder,  List<String>? expand)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int page,  int limit, @JsonKey(includeIfNull: false)  String? status, @JsonKey(includeIfNull: false)  String? workScopeUID, @JsonKey(includeIfNull: false)  String? roadUID, @JsonKey(includeIfNull: false)  int? createdByID, @JsonKey(includeIfNull: false)  DateTime? startDate, @JsonKey(includeIfNull: false)  DateTime? endDate, @JsonKey(includeIfNull: false)  String? search, @JsonKey(includeIfNull: false)  String? sortBy, @JsonKey(includeIfNull: false)  String? sortOrder, @JsonKey(includeIfNull: false)  List<String>? expand)?  $default,) {final _that = this;
 switch (_that) {
 case _DailyReportFilterModel() when $default != null:
 return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roadUID,_that.createdByID,_that.startDate,_that.endDate,_that.search,_that.sortBy,_that.sortOrder,_that.expand);case _:
@@ -232,7 +232,7 @@ return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roa
 @JsonSerializable()
 
 class _DailyReportFilterModel implements DailyReportFilterModel {
-  const _DailyReportFilterModel({this.page = 1, this.limit = 10, this.status, this.workScopeUID, this.roadUID, this.createdByID, this.startDate, this.endDate, this.search, this.sortBy, this.sortOrder, final  List<String>? expand}): _expand = expand;
+  const _DailyReportFilterModel({this.page = 1, this.limit = 10, @JsonKey(includeIfNull: false) this.status, @JsonKey(includeIfNull: false) this.workScopeUID, @JsonKey(includeIfNull: false) this.roadUID, @JsonKey(includeIfNull: false) this.createdByID, @JsonKey(includeIfNull: false) this.startDate, @JsonKey(includeIfNull: false) this.endDate, @JsonKey(includeIfNull: false) this.search, @JsonKey(includeIfNull: false) this.sortBy, @JsonKey(includeIfNull: false) this.sortOrder, @JsonKey(includeIfNull: false) final  List<String>? expand}): _expand = expand;
   factory _DailyReportFilterModel.fromJson(Map<String, dynamic> json) => _$DailyReportFilterModelFromJson(json);
 
 /// Page number for pagination
@@ -240,27 +240,27 @@ class _DailyReportFilterModel implements DailyReportFilterModel {
 /// Number of items per page
 @override@JsonKey() final  int limit;
 /// Filter by report status
-@override final  String? status;
+@override@JsonKey(includeIfNull: false) final  String? status;
 /// Filter by work scope UID
-@override final  String? workScopeUID;
+@override@JsonKey(includeIfNull: false) final  String? workScopeUID;
 /// Filter by road UID
-@override final  String? roadUID;
+@override@JsonKey(includeIfNull: false) final  String? roadUID;
 /// Filter by created by admin ID
-@override final  int? createdByID;
+@override@JsonKey(includeIfNull: false) final  int? createdByID;
 /// Filter by date range - start date
-@override final  DateTime? startDate;
+@override@JsonKey(includeIfNull: false) final  DateTime? startDate;
 /// Filter by date range - end date
-@override final  DateTime? endDate;
+@override@JsonKey(includeIfNull: false) final  DateTime? endDate;
 /// Search term for report name
-@override final  String? search;
+@override@JsonKey(includeIfNull: false) final  String? search;
 /// Sort field
-@override final  String? sortBy;
+@override@JsonKey(includeIfNull: false) final  String? sortBy;
 /// Sort order (asc/desc)
-@override final  String? sortOrder;
+@override@JsonKey(includeIfNull: false) final  String? sortOrder;
 /// Expand relations
  final  List<String>? _expand;
 /// Expand relations
-@override List<String>? get expand {
+@override@JsonKey(includeIfNull: false) List<String>? get expand {
   final value = _expand;
   if (value == null) return null;
   if (_expand is EqualUnmodifiableListView) return _expand;
@@ -302,7 +302,7 @@ abstract mixin class _$DailyReportFilterModelCopyWith<$Res> implements $DailyRep
   factory _$DailyReportFilterModelCopyWith(_DailyReportFilterModel value, $Res Function(_DailyReportFilterModel) _then) = __$DailyReportFilterModelCopyWithImpl;
 @override @useResult
 $Res call({
- int page, int limit, String? status, String? workScopeUID, String? roadUID, int? createdByID, DateTime? startDate, DateTime? endDate, String? search, String? sortBy, String? sortOrder, List<String>? expand
+ int page, int limit,@JsonKey(includeIfNull: false) String? status,@JsonKey(includeIfNull: false) String? workScopeUID,@JsonKey(includeIfNull: false) String? roadUID,@JsonKey(includeIfNull: false) int? createdByID,@JsonKey(includeIfNull: false) DateTime? startDate,@JsonKey(includeIfNull: false) DateTime? endDate,@JsonKey(includeIfNull: false) String? search,@JsonKey(includeIfNull: false) String? sortBy,@JsonKey(includeIfNull: false) String? sortOrder,@JsonKey(includeIfNull: false) List<String>? expand
 });
 
 

@@ -4,26 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:rclink_app/features/daily_report/presentation/pages/daily_report_detail_page.dart';
 
 import '../../../../../shared/utils/responsive_helper.dart';
+import '../../../domain/entities/daily_report.dart';
 
 class DailyReportOverviewListWidget extends StatefulWidget {
-  final String scopeOfWork;
-  final String date;
-  final String company;
-  final String city;
-  final String roadName;
-  final double roadSection;
-  final List<String> images;
+  final DailyReport report;
 
-  const DailyReportOverviewListWidget({
-    Key? key,
-    required this.scopeOfWork,
-    required this.date,
-    required this.company,
-    required this.city,
-    required this.roadName,
-    required this.roadSection,
-    required this.images,
-  }) : super(key: key);
+  const DailyReportOverviewListWidget({Key? key, required this.report})
+    : super(key: key);
 
   @override
   State<DailyReportOverviewListWidget> createState() =>
@@ -74,7 +61,9 @@ class _DailyReportOverviewListWidgetState
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => DailyReportDetailPage()),
+          MaterialPageRoute(
+            builder: (context) => DailyReportDetailPage(report: widget.report),
+          ),
         );
       },
       child: Container(
@@ -92,58 +81,59 @@ class _DailyReportOverviewListWidgetState
               height: 200,
               child: Stack(
                 children: [
-                  PageView.builder(
-                    controller: _pageController,
-                    onPageChanged: (index) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
-                    itemCount: widget.images.length,
-                    itemBuilder: (context, index) {
-                      final item = widget.images[index];
-                      return Container(
-                        margin: EdgeInsets.symmetric(horizontal: 5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
+                  // Image
+                  //
+                  // PageView.builder(
+                  //   controller: _pageController,
+                  //   onPageChanged: (index) {
+                  //     setState(() {
+                  //       _currentIndex = index;
+                  //     });
+                  //   },
+                  //   itemCount: widget.images.length,
+                  //   itemBuilder: (context, index) {
+                  //     final item = widget.images[index];
+                  //     return Container(
+                  //       margin: EdgeInsets.symmetric(horizontal: 5),
+                  //       decoration: BoxDecoration(
+                  //         borderRadius: BorderRadius.circular(10),
+                  //       ),
+                  //       child: ClipRRect(
+                  //         borderRadius: BorderRadius.circular(10),
 
-                          // Dark gradient overlay
-                          child: Container(
-                            width: double.infinity,
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.transparent,
-                                  Colors.black.withOpacity(0.7),
-                                ],
-                              ),
-                            ),
-                            child: Image.asset(
-                              widget.images[index],
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  color: Colors.grey.shade300,
-                                  child: Icon(
-                                    Icons.image_not_supported,
-                                    size: 50,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-
+                  //         // Dark gradient overlay
+                  //         child: Container(
+                  //           width: double.infinity,
+                  //           height: double.infinity,
+                  //           decoration: BoxDecoration(
+                  //             gradient: LinearGradient(
+                  //               begin: Alignment.topCenter,
+                  //               end: Alignment.bottomCenter,
+                  //               colors: [
+                  //                 Colors.transparent,
+                  //                 Colors.black.withOpacity(0.7),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //           child: Image.asset(
+                  //             widget.images[index],
+                  //             fit: BoxFit.cover,
+                  //             errorBuilder: (context, error, stackTrace) {
+                  //               return Container(
+                  //                 color: Colors.grey.shade300,
+                  //                 child: Icon(
+                  //                   Icons.image_not_supported,
+                  //                   size: 50,
+                  //                   color: Colors.grey.shade600,
+                  //                 ),
+                  //               );
+                  //             },
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Column(
@@ -163,7 +153,7 @@ class _DailyReportOverviewListWidgetState
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(
-                                widget.scopeOfWork,
+                                widget.report.name,
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -183,7 +173,7 @@ class _DailyReportOverviewListWidgetState
                                 borderRadius: BorderRadius.circular(100),
                               ),
                               child: Text(
-                                widget.date,
+                                widget.report.createdAt.toString(),
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -195,23 +185,24 @@ class _DailyReportOverviewListWidgetState
                         ),
 
                         // Page indicators
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                            widget.images.length,
-                            (index) => Container(
-                              margin: EdgeInsets.symmetric(horizontal: 2),
-                              width: _currentIndex == index ? 8 : 8,
-                              height: 8,
-                              decoration: BoxDecoration(
-                                color: _currentIndex == index
-                                    ? Colors.white
-                                    : Colors.grey.shade400,
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                          ),
-                        ),
+                        //
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.center,
+                        //   children: List.generate(
+                        //     widget.images.length,
+                        //     (index) => Container(
+                        //       margin: EdgeInsets.symmetric(horizontal: 2),
+                        //       width: _currentIndex == index ? 8 : 8,
+                        //       height: 8,
+                        //       decoration: BoxDecoration(
+                        //         color: _currentIndex == index
+                        //             ? Colors.white
+                        //             : Colors.grey.shade400,
+                        //         borderRadius: BorderRadius.circular(4),
+                        //       ),
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),
@@ -222,7 +213,7 @@ class _DailyReportOverviewListWidgetState
             SizedBox(height: 15),
 
             Text(
-              widget.company,
+              '${widget.report.companyID.toString()} --> Company Name',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: ResponsiveHelper.fontSize(context, base: 15),
@@ -242,7 +233,7 @@ class _DailyReportOverviewListWidgetState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.city,
+                        widget.report.latitude.toString(),
                         style: TextStyle(
                           color: Colors.black.withOpacity(0.6),
                           fontSize: ResponsiveHelper.fontSize(
@@ -251,7 +242,10 @@ class _DailyReportOverviewListWidgetState
                           ),
                         ),
                       ),
-                      Text(widget.roadName, overflow: TextOverflow.ellipsis),
+                      Text(
+                        widget.report.longitude.toString(),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ],
                   ),
                 ),
@@ -265,7 +259,7 @@ class _DailyReportOverviewListWidgetState
                 Icon(Icons.swap_calls, color: Colors.black),
 
                 SizedBox(width: 12),
-                Text(widget.roadSection.toString()),
+                Text(widget.report.toSection.toString()),
               ],
             ),
           ],

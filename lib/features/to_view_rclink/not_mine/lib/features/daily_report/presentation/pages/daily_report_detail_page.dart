@@ -3,9 +3,13 @@ import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/divider_config.dart';
 import '../../../../shared/widgets/theme_listtile_widget.dart';
+import '../../domain/entities/daily_report.dart';
 
 class DailyReportDetailPage extends StatefulWidget {
-  const DailyReportDetailPage({Key? key}) : super(key: key);
+  final DailyReport report;
+
+  const DailyReportDetailPage({Key? key, required this.report})
+    : super(key: key);
 
   @override
   State<DailyReportDetailPage> createState() => _DailyReportDetailPageState();
@@ -28,6 +32,12 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('🔍 DailyReportDetailPage: Report UID = ${widget.report.uid}');
+    print(
+      '🔍 DailyReportDetailPage: Equipments count = ${widget.report.equipments.length}',
+    );
+    print('🔍 DailyReportDetailPage: Equipments = ${widget.report.equipments}');
+
     Widget buildPageContent(Map<String, dynamic> data) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -241,7 +251,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                 ),
               ),
               child: Image.asset(
-                'wushu',
+                'imagelink',
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
@@ -371,7 +381,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
 
                               Expanded(
                                 child: Text(
-                                  'CLEANING ROAD FURNITURES',
+                                  widget.report.name,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: ResponsiveHelper.fontSize(
@@ -397,7 +407,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                       children: [
                         ThemeListTileWidget(
                           title: 'Date',
-                          titleDetails: 'Lorem Ipsum',
+                          titleDetails: widget.report.createdAt.toString(),
                           icon: Icons.abc,
                         ),
 
@@ -405,7 +415,8 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
 
                         ThemeListTileWidget(
                           title: 'Contractor',
-                          titleDetails: 'CONTRACTOR ENTERPRISE',
+                          titleDetails: widget.report.contractRelationID
+                              .toString(),
                           icon: Icons.abc,
                           isChevron: false,
                         ),
@@ -414,7 +425,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
 
                         ThemeListTileWidget(
                           title: 'Reporter',
-                          titleDetails: 'LOREM IPSUM',
+                          titleDetails: widget.report.createdByID.toString(),
                           icon: Icons.abc,
                         ),
                       ],
@@ -456,8 +467,8 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                     child: Column(
                       children: [
                         ThemeListTileWidget(
-                          title: 'GOMBAK',
-                          titleDetails: 'Lorem Ipsum',
+                          title: widget.report.name,
+                          titleDetails: widget.report.name,
                           icon: Icons.abc,
                           isChevron: false,
                         ),
@@ -466,7 +477,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
 
                         ThemeListTileWidget(
                           title: 'Section',
-                          titleDetails: '402',
+                          titleDetails: widget.report.fromSection.toString(),
                           icon: Icons.abc,
                           isChevron: false,
                         ),
@@ -582,40 +593,68 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
             SizedBox(height: 20),
 
             // Equipment
-            Container(
-              padding: EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 0.5),
-                borderRadius: BorderRadius.circular(10),
-                gradient: LinearGradient(
-                  colors: [Colors.white, Color.fromARGB(255, 238, 242, 254)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
+            if (widget.report.equipments.isNotEmpty)
+              Container(
+                padding: EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey, width: 0.5),
+                  borderRadius: BorderRadius.circular(10),
+                  gradient: LinearGradient(
+                    colors: [Colors.white, Color.fromARGB(255, 238, 242, 254)],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Equipment',
+                      style: TextStyle(
+                        fontSize: ResponsiveHelper.fontSize(context, base: 14),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+
+                    dividerConfig(),
+
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 10,
+                        children: widget.report.equipments.map((equipment) {
+                          return Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 5,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.blue.shade300,
+                                width: 1,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              equipment.name,
+                              style: TextStyle(
+                                fontSize: ResponsiveHelper.fontSize(
+                                  context,
+                                  base: 13,
+                                ),
+                                color: Colors.blue.shade700,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Equipment',
-                    style: TextStyle(
-                      fontSize: ResponsiveHelper.fontSize(context, base: 14),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-
-                  dividerConfig(),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: Column(children: [
-                       
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
 
             SizedBox(height: 20),
 

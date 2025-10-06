@@ -1,10 +1,15 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../../domain/entities/daily_report.dart';
+import 'daily_report_equipment_model.dart';
+
 part 'daily_report_model.freezed.dart';
 part 'daily_report_model.g.dart';
 
 @freezed
 abstract class DailyReportModel with _$DailyReportModel {
+  const DailyReportModel._(); // Add this line
+
   const factory DailyReportModel({
     required int id,
     required String uid,
@@ -14,8 +19,8 @@ abstract class DailyReportModel with _$DailyReportModel {
     @Default(false) bool workPerformed,
 
     // Location coordinates
-    double? longitude,
-    double? latitude,
+    String? longitude,
+    String? latitude,
 
     // Primary ownership - the company this report belongs to
     required int companyID,
@@ -36,14 +41,17 @@ abstract class DailyReportModel with _$DailyReportModel {
 
     required int roadID,
     int? totalWorkers,
-    double? fromSection,
-    double? toSection,
+    String? fromSection,
+    String? toSection,
 
     // Admin who created this report
     required int createdByID,
 
     required DateTime createdAt,
     required DateTime updatedAt,
+
+    // Equipments stored as JSON
+    List<DailyReportEquipmentModel>? equipments,
 
     // Sync fields
     @Default(false) bool isSynced,
@@ -56,4 +64,33 @@ abstract class DailyReportModel with _$DailyReportModel {
 
   factory DailyReportModel.fromJson(Map<String, dynamic> json) =>
       _$DailyReportModelFromJson(json);
+
+  // Convert model to entity
+  DailyReport toEntity() {
+    return DailyReport(
+      id: id,
+      uid: uid,
+      name: name,
+      notes: notes,
+      weatherCondition: weatherCondition,
+      workPerformed: workPerformed,
+      companyID: companyID,
+      status: status,
+      contractRelationID: contractRelationID,
+      approvedByID: approvedByID,
+      approvedAt: approvedAt,
+      rejectionReason: rejectionReason,
+      workScopeID: workScopeID,
+      roadID: roadID,
+      totalWorkers: totalWorkers,
+      fromSection: fromSection?.toString(),
+      toSection: toSection?.toString(),
+      longitude: longitude?.toString(),
+      latitude: latitude?.toString(),
+      createdByID: createdByID,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      equipments: equipments?.map((e) => e.toEntity()).toList() ?? [],
+    );
+  }
 }

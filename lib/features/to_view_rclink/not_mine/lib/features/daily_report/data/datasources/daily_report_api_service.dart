@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../shared/models/api_response.dart';
-import '../../../../shared/models/paginated_result.dart';
 import '../models/daily_report_model.dart';
 import '../models/create_daily_report_model.dart';
 import '../models/daily_report_filter_model.dart';
+import '../models/daily_report_response_model.dart';
+import '../../../../shared/models/api_response.dart';
 
 part 'daily_report_api_service.g.dart';
 
@@ -17,7 +17,7 @@ abstract class DailyReportApiService {
 
   /// Get all daily reports for a company
   @GET('/companies/{companyUID}/daily-reports')
-  Future<ApiResponse<PaginatedResult<DailyReportModel>>> getCompanyDailyReports(
+  Future<DailyReportResponseModel> getCompanyDailyReports(
     @Path('companyUID') String companyUID,
     @Queries() DailyReportFilterModel filter,
   );
