@@ -148,9 +148,8 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-
-      // Appbar
       appBar: AppBar(
+        elevation: 0,
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         titleSpacing: 20,
@@ -347,39 +346,44 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: primaryColor,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'R04',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: primaryColor,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    'R04',
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
 
-                            SizedBox(width: 10),
+                              SizedBox(width: 10),
 
-                            Text(
-                              'CLEANING ROAD FURNITURES',
-                              style: TextStyle(
-                                fontSize: ResponsiveHelper.fontSize(
-                                  context,
-                                  base: 14,
+                              Expanded(
+                                child: Text(
+                                  'CLEANING ROAD FURNITURES',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: ResponsiveHelper.fontSize(
+                                      context,
+                                      base: 14,
+                                    ),
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
-                                fontWeight: FontWeight.w600,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -468,6 +472,8 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                         ),
 
                         dividerConfig(),
+
+                        // Maps will be here
                       ],
                     ),
                   ),
@@ -645,7 +651,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                         ThemeListTileWidget(
                           title: 'Edit Report',
                           titleDetails: 'Quantity, section and others',
-                          icon: Icons.abc,
+                          icon: Icons.edit_square,
                           isInverseBold: true,
                         ),
 
@@ -654,7 +660,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                         ThemeListTileWidget(
                           title: 'Monthly Summary',
                           titleDetails: 'List of overall report',
-                          icon: Icons.abc,
+                          icon: Icons.calendar_today_rounded,
                           isInverseBold: true,
                         ),
 
@@ -663,7 +669,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                         ThemeListTileWidget(
                           title: 'Update History',
                           titleDetails: 'List of overall report',
-                          icon: Icons.abc,
+                          icon: Icons.history,
                           isInverseBold: true,
                         ),
 
