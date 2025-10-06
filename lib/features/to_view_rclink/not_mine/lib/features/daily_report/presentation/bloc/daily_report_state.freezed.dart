@@ -55,7 +55,7 @@ extension DailyReportStatePatterns on DailyReportState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DailyReportInitial value)?  initial,TResult Function( DailyReportLoading value)?  loading,TResult Function( DailyReportLoaded value)?  loaded,TResult Function( DailyReportFailure value)?  failure,TResult Function( RoadsLoading value)?  roadsLoading,TResult Function( RoadsLoaded value)?  roadsLoaded,TResult Function( RoadsFailure value)?  roadsFailure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DailyReportInitial value)?  initial,TResult Function( DailyReportLoading value)?  loading,TResult Function( DailyReportLoaded value)?  loaded,TResult Function( DailyReportFailure value)?  failure,TResult Function( RoadsLoading value)?  roadsLoading,TResult Function( RoadsLoaded value)?  roadsLoaded,TResult Function( RoadsFailure value)?  roadsFailure,TResult Function( EquipmentsLoading value)?  equipmentsLoading,TResult Function( EquipmentsLoaded value)?  equipmentsLoaded,TResult Function( EquipmentsFailure value)?  equipmentsFailure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case DailyReportInitial() when initial != null:
@@ -65,7 +65,10 @@ return loaded(_that);case DailyReportFailure() when failure != null:
 return failure(_that);case RoadsLoading() when roadsLoading != null:
 return roadsLoading(_that);case RoadsLoaded() when roadsLoaded != null:
 return roadsLoaded(_that);case RoadsFailure() when roadsFailure != null:
-return roadsFailure(_that);case _:
+return roadsFailure(_that);case EquipmentsLoading() when equipmentsLoading != null:
+return equipmentsLoading(_that);case EquipmentsLoaded() when equipmentsLoaded != null:
+return equipmentsLoaded(_that);case EquipmentsFailure() when equipmentsFailure != null:
+return equipmentsFailure(_that);case _:
   return orElse();
 
 }
@@ -83,7 +86,7 @@ return roadsFailure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DailyReportInitial value)  initial,required TResult Function( DailyReportLoading value)  loading,required TResult Function( DailyReportLoaded value)  loaded,required TResult Function( DailyReportFailure value)  failure,required TResult Function( RoadsLoading value)  roadsLoading,required TResult Function( RoadsLoaded value)  roadsLoaded,required TResult Function( RoadsFailure value)  roadsFailure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DailyReportInitial value)  initial,required TResult Function( DailyReportLoading value)  loading,required TResult Function( DailyReportLoaded value)  loaded,required TResult Function( DailyReportFailure value)  failure,required TResult Function( RoadsLoading value)  roadsLoading,required TResult Function( RoadsLoaded value)  roadsLoaded,required TResult Function( RoadsFailure value)  roadsFailure,required TResult Function( EquipmentsLoading value)  equipmentsLoading,required TResult Function( EquipmentsLoaded value)  equipmentsLoaded,required TResult Function( EquipmentsFailure value)  equipmentsFailure,}){
 final _that = this;
 switch (_that) {
 case DailyReportInitial():
@@ -93,7 +96,10 @@ return loaded(_that);case DailyReportFailure():
 return failure(_that);case RoadsLoading():
 return roadsLoading(_that);case RoadsLoaded():
 return roadsLoaded(_that);case RoadsFailure():
-return roadsFailure(_that);case _:
+return roadsFailure(_that);case EquipmentsLoading():
+return equipmentsLoading(_that);case EquipmentsLoaded():
+return equipmentsLoaded(_that);case EquipmentsFailure():
+return equipmentsFailure(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -110,7 +116,7 @@ return roadsFailure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DailyReportInitial value)?  initial,TResult? Function( DailyReportLoading value)?  loading,TResult? Function( DailyReportLoaded value)?  loaded,TResult? Function( DailyReportFailure value)?  failure,TResult? Function( RoadsLoading value)?  roadsLoading,TResult? Function( RoadsLoaded value)?  roadsLoaded,TResult? Function( RoadsFailure value)?  roadsFailure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DailyReportInitial value)?  initial,TResult? Function( DailyReportLoading value)?  loading,TResult? Function( DailyReportLoaded value)?  loaded,TResult? Function( DailyReportFailure value)?  failure,TResult? Function( RoadsLoading value)?  roadsLoading,TResult? Function( RoadsLoaded value)?  roadsLoaded,TResult? Function( RoadsFailure value)?  roadsFailure,TResult? Function( EquipmentsLoading value)?  equipmentsLoading,TResult? Function( EquipmentsLoaded value)?  equipmentsLoaded,TResult? Function( EquipmentsFailure value)?  equipmentsFailure,}){
 final _that = this;
 switch (_that) {
 case DailyReportInitial() when initial != null:
@@ -120,7 +126,10 @@ return loaded(_that);case DailyReportFailure() when failure != null:
 return failure(_that);case RoadsLoading() when roadsLoading != null:
 return roadsLoading(_that);case RoadsLoaded() when roadsLoaded != null:
 return roadsLoaded(_that);case RoadsFailure() when roadsFailure != null:
-return roadsFailure(_that);case _:
+return roadsFailure(_that);case EquipmentsLoading() when equipmentsLoading != null:
+return equipmentsLoading(_that);case EquipmentsLoaded() when equipmentsLoaded != null:
+return equipmentsLoaded(_that);case EquipmentsFailure() when equipmentsFailure != null:
+return equipmentsFailure(_that);case _:
   return null;
 
 }
@@ -137,7 +146,7 @@ return roadsFailure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<DailyReportResponse> reports)?  loaded,TResult Function( String message)?  failure,TResult Function()?  roadsLoading,TResult Function( List<RoadEdit> roads,  RoadEdit? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult Function( String message)?  roadsFailure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<DailyReportResponse> reports)?  loaded,TResult Function( String message)?  failure,TResult Function()?  roadsLoading,TResult Function( List<RoadEdit> roads,  RoadEdit? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult Function( String message)?  roadsFailure,TResult Function()?  equipmentsLoading,TResult Function( List<WorkEquipment> equipments,  List<String> selectedEquipmentUids)?  equipmentsLoaded,TResult Function( String message)?  equipmentsFailure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case DailyReportInitial() when initial != null:
 return initial();case DailyReportLoading() when loading != null:
@@ -146,7 +155,10 @@ return loaded(_that.reports);case DailyReportFailure() when failure != null:
 return failure(_that.message);case RoadsLoading() when roadsLoading != null:
 return roadsLoading();case RoadsLoaded() when roadsLoaded != null:
 return roadsLoaded(_that.roads,_that.selectedRoad,_that.currentSection,_that.sectionError);case RoadsFailure() when roadsFailure != null:
-return roadsFailure(_that.message);case _:
+return roadsFailure(_that.message);case EquipmentsLoading() when equipmentsLoading != null:
+return equipmentsLoading();case EquipmentsLoaded() when equipmentsLoaded != null:
+return equipmentsLoaded(_that.equipments,_that.selectedEquipmentUids);case EquipmentsFailure() when equipmentsFailure != null:
+return equipmentsFailure(_that.message);case _:
   return orElse();
 
 }
@@ -164,7 +176,7 @@ return roadsFailure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<DailyReportResponse> reports)  loaded,required TResult Function( String message)  failure,required TResult Function()  roadsLoading,required TResult Function( List<RoadEdit> roads,  RoadEdit? selectedRoad,  String? currentSection,  String? sectionError)  roadsLoaded,required TResult Function( String message)  roadsFailure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<DailyReportResponse> reports)  loaded,required TResult Function( String message)  failure,required TResult Function()  roadsLoading,required TResult Function( List<RoadEdit> roads,  RoadEdit? selectedRoad,  String? currentSection,  String? sectionError)  roadsLoaded,required TResult Function( String message)  roadsFailure,required TResult Function()  equipmentsLoading,required TResult Function( List<WorkEquipment> equipments,  List<String> selectedEquipmentUids)  equipmentsLoaded,required TResult Function( String message)  equipmentsFailure,}) {final _that = this;
 switch (_that) {
 case DailyReportInitial():
 return initial();case DailyReportLoading():
@@ -173,7 +185,10 @@ return loaded(_that.reports);case DailyReportFailure():
 return failure(_that.message);case RoadsLoading():
 return roadsLoading();case RoadsLoaded():
 return roadsLoaded(_that.roads,_that.selectedRoad,_that.currentSection,_that.sectionError);case RoadsFailure():
-return roadsFailure(_that.message);case _:
+return roadsFailure(_that.message);case EquipmentsLoading():
+return equipmentsLoading();case EquipmentsLoaded():
+return equipmentsLoaded(_that.equipments,_that.selectedEquipmentUids);case EquipmentsFailure():
+return equipmentsFailure(_that.message);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -190,7 +205,7 @@ return roadsFailure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<DailyReportResponse> reports)?  loaded,TResult? Function( String message)?  failure,TResult? Function()?  roadsLoading,TResult? Function( List<RoadEdit> roads,  RoadEdit? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult? Function( String message)?  roadsFailure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<DailyReportResponse> reports)?  loaded,TResult? Function( String message)?  failure,TResult? Function()?  roadsLoading,TResult? Function( List<RoadEdit> roads,  RoadEdit? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult? Function( String message)?  roadsFailure,TResult? Function()?  equipmentsLoading,TResult? Function( List<WorkEquipment> equipments,  List<String> selectedEquipmentUids)?  equipmentsLoaded,TResult? Function( String message)?  equipmentsFailure,}) {final _that = this;
 switch (_that) {
 case DailyReportInitial() when initial != null:
 return initial();case DailyReportLoading() when loading != null:
@@ -199,7 +214,10 @@ return loaded(_that.reports);case DailyReportFailure() when failure != null:
 return failure(_that.message);case RoadsLoading() when roadsLoading != null:
 return roadsLoading();case RoadsLoaded() when roadsLoaded != null:
 return roadsLoaded(_that.roads,_that.selectedRoad,_that.currentSection,_that.sectionError);case RoadsFailure() when roadsFailure != null:
-return roadsFailure(_that.message);case _:
+return roadsFailure(_that.message);case EquipmentsLoading() when equipmentsLoading != null:
+return equipmentsLoading();case EquipmentsLoaded() when equipmentsLoaded != null:
+return equipmentsLoaded(_that.equipments,_that.selectedEquipmentUids);case EquipmentsFailure() when equipmentsFailure != null:
+return equipmentsFailure(_that.message);case _:
   return null;
 
 }
@@ -577,6 +595,184 @@ class _$RoadsFailureCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(RoadsFailure(
+null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class EquipmentsLoading implements DailyReportState {
+  const EquipmentsLoading();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EquipmentsLoading);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'DailyReportState.equipmentsLoading()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class EquipmentsLoaded implements DailyReportState {
+  const EquipmentsLoaded({required final  List<WorkEquipment> equipments, required final  List<String> selectedEquipmentUids}): _equipments = equipments,_selectedEquipmentUids = selectedEquipmentUids;
+  
+
+ final  List<WorkEquipment> _equipments;
+ List<WorkEquipment> get equipments {
+  if (_equipments is EqualUnmodifiableListView) return _equipments;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_equipments);
+}
+
+ final  List<String> _selectedEquipmentUids;
+ List<String> get selectedEquipmentUids {
+  if (_selectedEquipmentUids is EqualUnmodifiableListView) return _selectedEquipmentUids;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_selectedEquipmentUids);
+}
+
+
+/// Create a copy of DailyReportState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EquipmentsLoadedCopyWith<EquipmentsLoaded> get copyWith => _$EquipmentsLoadedCopyWithImpl<EquipmentsLoaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EquipmentsLoaded&&const DeepCollectionEquality().equals(other._equipments, _equipments)&&const DeepCollectionEquality().equals(other._selectedEquipmentUids, _selectedEquipmentUids));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_equipments),const DeepCollectionEquality().hash(_selectedEquipmentUids));
+
+@override
+String toString() {
+  return 'DailyReportState.equipmentsLoaded(equipments: $equipments, selectedEquipmentUids: $selectedEquipmentUids)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $EquipmentsLoadedCopyWith<$Res> implements $DailyReportStateCopyWith<$Res> {
+  factory $EquipmentsLoadedCopyWith(EquipmentsLoaded value, $Res Function(EquipmentsLoaded) _then) = _$EquipmentsLoadedCopyWithImpl;
+@useResult
+$Res call({
+ List<WorkEquipment> equipments, List<String> selectedEquipmentUids
+});
+
+
+
+
+}
+/// @nodoc
+class _$EquipmentsLoadedCopyWithImpl<$Res>
+    implements $EquipmentsLoadedCopyWith<$Res> {
+  _$EquipmentsLoadedCopyWithImpl(this._self, this._then);
+
+  final EquipmentsLoaded _self;
+  final $Res Function(EquipmentsLoaded) _then;
+
+/// Create a copy of DailyReportState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? equipments = null,Object? selectedEquipmentUids = null,}) {
+  return _then(EquipmentsLoaded(
+equipments: null == equipments ? _self._equipments : equipments // ignore: cast_nullable_to_non_nullable
+as List<WorkEquipment>,selectedEquipmentUids: null == selectedEquipmentUids ? _self._selectedEquipmentUids : selectedEquipmentUids // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class EquipmentsFailure implements DailyReportState {
+  const EquipmentsFailure(this.message);
+  
+
+ final  String message;
+
+/// Create a copy of DailyReportState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$EquipmentsFailureCopyWith<EquipmentsFailure> get copyWith => _$EquipmentsFailureCopyWithImpl<EquipmentsFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EquipmentsFailure&&(identical(other.message, message) || other.message == message));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message);
+
+@override
+String toString() {
+  return 'DailyReportState.equipmentsFailure(message: $message)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $EquipmentsFailureCopyWith<$Res> implements $DailyReportStateCopyWith<$Res> {
+  factory $EquipmentsFailureCopyWith(EquipmentsFailure value, $Res Function(EquipmentsFailure) _then) = _$EquipmentsFailureCopyWithImpl;
+@useResult
+$Res call({
+ String message
+});
+
+
+
+
+}
+/// @nodoc
+class _$EquipmentsFailureCopyWithImpl<$Res>
+    implements $EquipmentsFailureCopyWith<$Res> {
+  _$EquipmentsFailureCopyWithImpl(this._self, this._then);
+
+  final EquipmentsFailure _self;
+  final $Res Function(EquipmentsFailure) _then;
+
+/// Create a copy of DailyReportState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
+  return _then(EquipmentsFailure(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));

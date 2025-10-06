@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../../daily_report_creation/domain/entities/scope_of_work/work_equipment.dart';
 import '../../domain/entities/daily_report_response.dart';
 import '../../domain/entities/road_edit_entity.dart';
 
@@ -23,4 +24,15 @@ class DailyReportState with _$DailyReportState {
   }) = RoadsLoaded;
 
   const factory DailyReportState.roadsFailure(String message) = RoadsFailure;
+
+  // Equipment Edit States
+  const factory DailyReportState.equipmentsLoading() = EquipmentsLoading;
+
+  const factory DailyReportState.equipmentsLoaded({
+    required List<WorkEquipment> equipments,
+    required List<String> selectedEquipmentUids,
+  }) = EquipmentsLoaded;
+
+  const factory DailyReportState.equipmentsFailure(String message) =
+      EquipmentsFailure;
 }

@@ -55,7 +55,7 @@ extension DailyReportEventPatterns on DailyReportEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadDailyReports value)?  loadDailyReports,TResult Function( ClearDailyReportCache value)?  clearCache,TResult Function( LoadRoadsForEdit value)?  loadRoadsForEdit,TResult Function( SelectRoadForEdit value)?  selectRoadForEdit,TResult Function( UpdateSectionForEdit value)?  updateSectionForEdit,TResult Function( ClearRoadEditData value)?  clearRoadEditData,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadDailyReports value)?  loadDailyReports,TResult Function( ClearDailyReportCache value)?  clearCache,TResult Function( LoadRoadsForEdit value)?  loadRoadsForEdit,TResult Function( SelectRoadForEdit value)?  selectRoadForEdit,TResult Function( UpdateSectionForEdit value)?  updateSectionForEdit,TResult Function( ClearRoadEditData value)?  clearRoadEditData,TResult Function( LoadEquipmentsForEdit value)?  loadEquipmentsForEdit,TResult Function( ToggleEquipmentForEdit value)?  toggleEquipmentForEdit,TResult Function( ClearEquipmentEditData value)?  clearEquipmentEditData,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadDailyReports() when loadDailyReports != null:
@@ -64,7 +64,10 @@ return clearCache(_that);case LoadRoadsForEdit() when loadRoadsForEdit != null:
 return loadRoadsForEdit(_that);case SelectRoadForEdit() when selectRoadForEdit != null:
 return selectRoadForEdit(_that);case UpdateSectionForEdit() when updateSectionForEdit != null:
 return updateSectionForEdit(_that);case ClearRoadEditData() when clearRoadEditData != null:
-return clearRoadEditData(_that);case _:
+return clearRoadEditData(_that);case LoadEquipmentsForEdit() when loadEquipmentsForEdit != null:
+return loadEquipmentsForEdit(_that);case ToggleEquipmentForEdit() when toggleEquipmentForEdit != null:
+return toggleEquipmentForEdit(_that);case ClearEquipmentEditData() when clearEquipmentEditData != null:
+return clearEquipmentEditData(_that);case _:
   return orElse();
 
 }
@@ -82,7 +85,7 @@ return clearRoadEditData(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadDailyReports value)  loadDailyReports,required TResult Function( ClearDailyReportCache value)  clearCache,required TResult Function( LoadRoadsForEdit value)  loadRoadsForEdit,required TResult Function( SelectRoadForEdit value)  selectRoadForEdit,required TResult Function( UpdateSectionForEdit value)  updateSectionForEdit,required TResult Function( ClearRoadEditData value)  clearRoadEditData,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadDailyReports value)  loadDailyReports,required TResult Function( ClearDailyReportCache value)  clearCache,required TResult Function( LoadRoadsForEdit value)  loadRoadsForEdit,required TResult Function( SelectRoadForEdit value)  selectRoadForEdit,required TResult Function( UpdateSectionForEdit value)  updateSectionForEdit,required TResult Function( ClearRoadEditData value)  clearRoadEditData,required TResult Function( LoadEquipmentsForEdit value)  loadEquipmentsForEdit,required TResult Function( ToggleEquipmentForEdit value)  toggleEquipmentForEdit,required TResult Function( ClearEquipmentEditData value)  clearEquipmentEditData,}){
 final _that = this;
 switch (_that) {
 case LoadDailyReports():
@@ -91,7 +94,10 @@ return clearCache(_that);case LoadRoadsForEdit():
 return loadRoadsForEdit(_that);case SelectRoadForEdit():
 return selectRoadForEdit(_that);case UpdateSectionForEdit():
 return updateSectionForEdit(_that);case ClearRoadEditData():
-return clearRoadEditData(_that);case _:
+return clearRoadEditData(_that);case LoadEquipmentsForEdit():
+return loadEquipmentsForEdit(_that);case ToggleEquipmentForEdit():
+return toggleEquipmentForEdit(_that);case ClearEquipmentEditData():
+return clearEquipmentEditData(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -108,7 +114,7 @@ return clearRoadEditData(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadDailyReports value)?  loadDailyReports,TResult? Function( ClearDailyReportCache value)?  clearCache,TResult? Function( LoadRoadsForEdit value)?  loadRoadsForEdit,TResult? Function( SelectRoadForEdit value)?  selectRoadForEdit,TResult? Function( UpdateSectionForEdit value)?  updateSectionForEdit,TResult? Function( ClearRoadEditData value)?  clearRoadEditData,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadDailyReports value)?  loadDailyReports,TResult? Function( ClearDailyReportCache value)?  clearCache,TResult? Function( LoadRoadsForEdit value)?  loadRoadsForEdit,TResult? Function( SelectRoadForEdit value)?  selectRoadForEdit,TResult? Function( UpdateSectionForEdit value)?  updateSectionForEdit,TResult? Function( ClearRoadEditData value)?  clearRoadEditData,TResult? Function( LoadEquipmentsForEdit value)?  loadEquipmentsForEdit,TResult? Function( ToggleEquipmentForEdit value)?  toggleEquipmentForEdit,TResult? Function( ClearEquipmentEditData value)?  clearEquipmentEditData,}){
 final _that = this;
 switch (_that) {
 case LoadDailyReports() when loadDailyReports != null:
@@ -117,7 +123,10 @@ return clearCache(_that);case LoadRoadsForEdit() when loadRoadsForEdit != null:
 return loadRoadsForEdit(_that);case SelectRoadForEdit() when selectRoadForEdit != null:
 return selectRoadForEdit(_that);case UpdateSectionForEdit() when updateSectionForEdit != null:
 return updateSectionForEdit(_that);case ClearRoadEditData() when clearRoadEditData != null:
-return clearRoadEditData(_that);case _:
+return clearRoadEditData(_that);case LoadEquipmentsForEdit() when loadEquipmentsForEdit != null:
+return loadEquipmentsForEdit(_that);case ToggleEquipmentForEdit() when toggleEquipmentForEdit != null:
+return toggleEquipmentForEdit(_that);case ClearEquipmentEditData() when clearEquipmentEditData != null:
+return clearEquipmentEditData(_that);case _:
   return null;
 
 }
@@ -134,7 +143,7 @@ return clearRoadEditData(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh)?  loadDailyReports,TResult Function()?  clearCache,TResult Function( String districtName,  bool forceRefresh)?  loadRoadsForEdit,TResult Function( RoadEdit selectedRoad)?  selectRoadForEdit,TResult Function( String section)?  updateSectionForEdit,TResult Function()?  clearRoadEditData,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh)?  loadDailyReports,TResult Function()?  clearCache,TResult Function( String districtName,  bool forceRefresh)?  loadRoadsForEdit,TResult Function( RoadEdit selectedRoad)?  selectRoadForEdit,TResult Function( String section)?  updateSectionForEdit,TResult Function()?  clearRoadEditData,TResult Function( String companyUID,  String workScopeUID,  List<String>? currentEquipmentUids,  bool forceRefresh)?  loadEquipmentsForEdit,TResult Function( String equipmentUid)?  toggleEquipmentForEdit,TResult Function()?  clearEquipmentEditData,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadDailyReports() when loadDailyReports != null:
 return loadDailyReports(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.forceRefresh);case ClearDailyReportCache() when clearCache != null:
@@ -142,7 +151,10 @@ return clearCache();case LoadRoadsForEdit() when loadRoadsForEdit != null:
 return loadRoadsForEdit(_that.districtName,_that.forceRefresh);case SelectRoadForEdit() when selectRoadForEdit != null:
 return selectRoadForEdit(_that.selectedRoad);case UpdateSectionForEdit() when updateSectionForEdit != null:
 return updateSectionForEdit(_that.section);case ClearRoadEditData() when clearRoadEditData != null:
-return clearRoadEditData();case _:
+return clearRoadEditData();case LoadEquipmentsForEdit() when loadEquipmentsForEdit != null:
+return loadEquipmentsForEdit(_that.companyUID,_that.workScopeUID,_that.currentEquipmentUids,_that.forceRefresh);case ToggleEquipmentForEdit() when toggleEquipmentForEdit != null:
+return toggleEquipmentForEdit(_that.equipmentUid);case ClearEquipmentEditData() when clearEquipmentEditData != null:
+return clearEquipmentEditData();case _:
   return orElse();
 
 }
@@ -160,7 +172,7 @@ return clearRoadEditData();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh)  loadDailyReports,required TResult Function()  clearCache,required TResult Function( String districtName,  bool forceRefresh)  loadRoadsForEdit,required TResult Function( RoadEdit selectedRoad)  selectRoadForEdit,required TResult Function( String section)  updateSectionForEdit,required TResult Function()  clearRoadEditData,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh)  loadDailyReports,required TResult Function()  clearCache,required TResult Function( String districtName,  bool forceRefresh)  loadRoadsForEdit,required TResult Function( RoadEdit selectedRoad)  selectRoadForEdit,required TResult Function( String section)  updateSectionForEdit,required TResult Function()  clearRoadEditData,required TResult Function( String companyUID,  String workScopeUID,  List<String>? currentEquipmentUids,  bool forceRefresh)  loadEquipmentsForEdit,required TResult Function( String equipmentUid)  toggleEquipmentForEdit,required TResult Function()  clearEquipmentEditData,}) {final _that = this;
 switch (_that) {
 case LoadDailyReports():
 return loadDailyReports(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.forceRefresh);case ClearDailyReportCache():
@@ -168,7 +180,10 @@ return clearCache();case LoadRoadsForEdit():
 return loadRoadsForEdit(_that.districtName,_that.forceRefresh);case SelectRoadForEdit():
 return selectRoadForEdit(_that.selectedRoad);case UpdateSectionForEdit():
 return updateSectionForEdit(_that.section);case ClearRoadEditData():
-return clearRoadEditData();case _:
+return clearRoadEditData();case LoadEquipmentsForEdit():
+return loadEquipmentsForEdit(_that.companyUID,_that.workScopeUID,_that.currentEquipmentUids,_that.forceRefresh);case ToggleEquipmentForEdit():
+return toggleEquipmentForEdit(_that.equipmentUid);case ClearEquipmentEditData():
+return clearEquipmentEditData();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -185,7 +200,7 @@ return clearRoadEditData();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh)?  loadDailyReports,TResult? Function()?  clearCache,TResult? Function( String districtName,  bool forceRefresh)?  loadRoadsForEdit,TResult? Function( RoadEdit selectedRoad)?  selectRoadForEdit,TResult? Function( String section)?  updateSectionForEdit,TResult? Function()?  clearRoadEditData,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh)?  loadDailyReports,TResult? Function()?  clearCache,TResult? Function( String districtName,  bool forceRefresh)?  loadRoadsForEdit,TResult? Function( RoadEdit selectedRoad)?  selectRoadForEdit,TResult? Function( String section)?  updateSectionForEdit,TResult? Function()?  clearRoadEditData,TResult? Function( String companyUID,  String workScopeUID,  List<String>? currentEquipmentUids,  bool forceRefresh)?  loadEquipmentsForEdit,TResult? Function( String equipmentUid)?  toggleEquipmentForEdit,TResult? Function()?  clearEquipmentEditData,}) {final _that = this;
 switch (_that) {
 case LoadDailyReports() when loadDailyReports != null:
 return loadDailyReports(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.forceRefresh);case ClearDailyReportCache() when clearCache != null:
@@ -193,7 +208,10 @@ return clearCache();case LoadRoadsForEdit() when loadRoadsForEdit != null:
 return loadRoadsForEdit(_that.districtName,_that.forceRefresh);case SelectRoadForEdit() when selectRoadForEdit != null:
 return selectRoadForEdit(_that.selectedRoad);case UpdateSectionForEdit() when updateSectionForEdit != null:
 return updateSectionForEdit(_that.section);case ClearRoadEditData() when clearRoadEditData != null:
-return clearRoadEditData();case _:
+return clearRoadEditData();case LoadEquipmentsForEdit() when loadEquipmentsForEdit != null:
+return loadEquipmentsForEdit(_that.companyUID,_that.workScopeUID,_that.currentEquipmentUids,_that.forceRefresh);case ToggleEquipmentForEdit() when toggleEquipmentForEdit != null:
+return toggleEquipmentForEdit(_that.equipmentUid);case ClearEquipmentEditData() when clearEquipmentEditData != null:
+return clearEquipmentEditData();case _:
   return null;
 
 }
@@ -531,6 +549,184 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'DailyReportEvent.clearRoadEditData()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class LoadEquipmentsForEdit implements DailyReportEvent {
+  const LoadEquipmentsForEdit({required this.companyUID, required this.workScopeUID, final  List<String>? currentEquipmentUids, this.forceRefresh = false}): _currentEquipmentUids = currentEquipmentUids;
+  
+
+ final  String companyUID;
+ final  String workScopeUID;
+ final  List<String>? _currentEquipmentUids;
+ List<String>? get currentEquipmentUids {
+  final value = _currentEquipmentUids;
+  if (value == null) return null;
+  if (_currentEquipmentUids is EqualUnmodifiableListView) return _currentEquipmentUids;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+@JsonKey() final  bool forceRefresh;
+
+/// Create a copy of DailyReportEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LoadEquipmentsForEditCopyWith<LoadEquipmentsForEdit> get copyWith => _$LoadEquipmentsForEditCopyWithImpl<LoadEquipmentsForEdit>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadEquipmentsForEdit&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID)&&(identical(other.workScopeUID, workScopeUID) || other.workScopeUID == workScopeUID)&&const DeepCollectionEquality().equals(other._currentEquipmentUids, _currentEquipmentUids)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,companyUID,workScopeUID,const DeepCollectionEquality().hash(_currentEquipmentUids),forceRefresh);
+
+@override
+String toString() {
+  return 'DailyReportEvent.loadEquipmentsForEdit(companyUID: $companyUID, workScopeUID: $workScopeUID, currentEquipmentUids: $currentEquipmentUids, forceRefresh: $forceRefresh)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LoadEquipmentsForEditCopyWith<$Res> implements $DailyReportEventCopyWith<$Res> {
+  factory $LoadEquipmentsForEditCopyWith(LoadEquipmentsForEdit value, $Res Function(LoadEquipmentsForEdit) _then) = _$LoadEquipmentsForEditCopyWithImpl;
+@useResult
+$Res call({
+ String companyUID, String workScopeUID, List<String>? currentEquipmentUids, bool forceRefresh
+});
+
+
+
+
+}
+/// @nodoc
+class _$LoadEquipmentsForEditCopyWithImpl<$Res>
+    implements $LoadEquipmentsForEditCopyWith<$Res> {
+  _$LoadEquipmentsForEditCopyWithImpl(this._self, this._then);
+
+  final LoadEquipmentsForEdit _self;
+  final $Res Function(LoadEquipmentsForEdit) _then;
+
+/// Create a copy of DailyReportEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? companyUID = null,Object? workScopeUID = null,Object? currentEquipmentUids = freezed,Object? forceRefresh = null,}) {
+  return _then(LoadEquipmentsForEdit(
+companyUID: null == companyUID ? _self.companyUID : companyUID // ignore: cast_nullable_to_non_nullable
+as String,workScopeUID: null == workScopeUID ? _self.workScopeUID : workScopeUID // ignore: cast_nullable_to_non_nullable
+as String,currentEquipmentUids: freezed == currentEquipmentUids ? _self._currentEquipmentUids : currentEquipmentUids // ignore: cast_nullable_to_non_nullable
+as List<String>?,forceRefresh: null == forceRefresh ? _self.forceRefresh : forceRefresh // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ToggleEquipmentForEdit implements DailyReportEvent {
+  const ToggleEquipmentForEdit({required this.equipmentUid});
+  
+
+ final  String equipmentUid;
+
+/// Create a copy of DailyReportEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ToggleEquipmentForEditCopyWith<ToggleEquipmentForEdit> get copyWith => _$ToggleEquipmentForEditCopyWithImpl<ToggleEquipmentForEdit>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ToggleEquipmentForEdit&&(identical(other.equipmentUid, equipmentUid) || other.equipmentUid == equipmentUid));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,equipmentUid);
+
+@override
+String toString() {
+  return 'DailyReportEvent.toggleEquipmentForEdit(equipmentUid: $equipmentUid)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ToggleEquipmentForEditCopyWith<$Res> implements $DailyReportEventCopyWith<$Res> {
+  factory $ToggleEquipmentForEditCopyWith(ToggleEquipmentForEdit value, $Res Function(ToggleEquipmentForEdit) _then) = _$ToggleEquipmentForEditCopyWithImpl;
+@useResult
+$Res call({
+ String equipmentUid
+});
+
+
+
+
+}
+/// @nodoc
+class _$ToggleEquipmentForEditCopyWithImpl<$Res>
+    implements $ToggleEquipmentForEditCopyWith<$Res> {
+  _$ToggleEquipmentForEditCopyWithImpl(this._self, this._then);
+
+  final ToggleEquipmentForEdit _self;
+  final $Res Function(ToggleEquipmentForEdit) _then;
+
+/// Create a copy of DailyReportEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? equipmentUid = null,}) {
+  return _then(ToggleEquipmentForEdit(
+equipmentUid: null == equipmentUid ? _self.equipmentUid : equipmentUid // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ClearEquipmentEditData implements DailyReportEvent {
+  const ClearEquipmentEditData();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClearEquipmentEditData);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'DailyReportEvent.clearEquipmentEditData()';
 }
 
 

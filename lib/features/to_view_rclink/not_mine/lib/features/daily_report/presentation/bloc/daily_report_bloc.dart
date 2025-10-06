@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../daily_report_creation/domain/usecases/get_equipment_usecase.dart';
+import '../../domain/entities/road_edit_entity.dart';
 import '../../domain/usecases/get_daily_report_usecase.dart';
 import '../../domain/usecases/clear_daily_report_cache_usecase.dart';
 import '../../domain/usecases/get_roads_edit_usecase.dart';
@@ -12,11 +14,13 @@ class DailyReportBloc extends Bloc<DailyReportEvent, DailyReportState> {
   final GetDailyReportsUseCase _getDailyReportsUseCase;
   final ClearDailyReportCacheUseCase _clearDailyReportCacheUseCase;
   final GetRoadsForEditUseCase _getRoadsForEditUseCase;
+  final GetEquipmentUseCase _getEquipmentUseCase;
 
   DailyReportBloc(
     this._getDailyReportsUseCase,
     this._clearDailyReportCacheUseCase,
     this._getRoadsForEditUseCase,
+    this._getEquipmentUseCase,
   ) : super(const DailyReportInitial()) {
     on<LoadDailyReports>(_onLoadDailyReports);
     on<ClearDailyReportCache>(_onClearCache);
@@ -25,6 +29,10 @@ class DailyReportBloc extends Bloc<DailyReportEvent, DailyReportState> {
     on<SelectRoadForEdit>(_onSelectRoadForEdit);
     on<UpdateSectionForEdit>(_onUpdateSectionForEdit);
     on<ClearRoadEditData>(_onClearRoadEditData);
+
+    on<LoadEquipmentsForEdit>(_onLoadEquipmentsForEdit);
+    on<ToggleEquipmentForEdit>(_onToggleEquipmentForEdit);
+    on<ClearEquipmentEditData>(_onClearEquipmentEditData);
   }
 
   Future<void> _onLoadDailyReports(
@@ -77,14 +85,24 @@ class DailyReportBloc extends Bloc<DailyReportEvent, DailyReportState> {
 
     result.fold(
       (failure) => emit(RoadsFailure(_mapFailureToMessage(failure))),
-      (roads) => emit(
-        RoadsLoaded(
-          roads: roads,
-          selectedRoad: null,
-          currentSection: null,
-          sectionError: null,
-        ),
-      ),
+      (roads) {
+        RoadEdit? currentRoad;
+        if (roads.isNotEmpty) {
+          currentRoad = roads.firstWhere(
+            (road) => road.districtName == event.districtName,
+            orElse: () => roads.first,
+          );
+        }
+
+        emit(
+          RoadsLoaded(
+            roads: roads,
+            selectedRoad: currentRoad,
+            currentSection: null,
+            sectionError: null,
+          ),
+        );
+      },
     );
   }
 
@@ -144,6 +162,67 @@ class DailyReportBloc extends Bloc<DailyReportEvent, DailyReportState> {
         ),
       );
     }
+  }
+
+  Future<void> _onLoadEquipmentsForEdit(
+    LoadEquipmentsForEdit event,
+    Emitter<DailyReportState> emit,
+  ) async {
+    emit(const EquipmentsLoading());
+
+    final result = await _getEquipmentUseCase(
+      GetEquipmentParams(
+        companyUID: event.companyUID,
+        workScopeUID: event.workScopeUID,
+        forceRefresh: event.forceRefresh,
+      ),
+    );
+
+    result.fold(
+      (failure) => emit(EquipmentsFailure(_mapFailureToMessage(failure))),
+      (equipments) {
+        final preSelectedUids = event.currentEquipmentUids ?? [];
+
+        emit(
+          EquipmentsLoaded(
+            equipments: equipments,
+            selectedEquipmentUids: preSelectedUids,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onToggleEquipmentForEdit(
+    ToggleEquipmentForEdit event,
+    Emitter<DailyReportState> emit,
+  ) async {
+    if (state is EquipmentsLoaded) {
+      final currentState = state as EquipmentsLoaded;
+      final currentSelected = List<String>.from(
+        currentState.selectedEquipmentUids,
+      );
+
+      if (currentSelected.contains(event.equipmentUid)) {
+        currentSelected.remove(event.equipmentUid);
+      } else {
+        currentSelected.add(event.equipmentUid);
+      }
+
+      emit(
+        EquipmentsLoaded(
+          equipments: currentState.equipments,
+          selectedEquipmentUids: currentSelected,
+        ),
+      );
+    }
+  }
+
+  Future<void> _onClearEquipmentEditData(
+    ClearEquipmentEditData event,
+    Emitter<DailyReportState> emit,
+  ) async {
+    emit(const DailyReportInitial());
   }
 
   Future<void> _onClearRoadEditData(

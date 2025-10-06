@@ -31,4 +31,18 @@ class DailyReportEvent with _$DailyReportEvent {
   }) = UpdateSectionForEdit;
 
   const factory DailyReportEvent.clearRoadEditData() = ClearRoadEditData;
+
+  const factory DailyReportEvent.loadEquipmentsForEdit({
+    required String companyUID,
+    required String workScopeUID,
+    List<String>? currentEquipmentUids,
+    @Default(false) bool forceRefresh,
+  }) = LoadEquipmentsForEdit;
+
+  const factory DailyReportEvent.toggleEquipmentForEdit({
+    required String equipmentUid,
+  }) = ToggleEquipmentForEdit;
+
+  const factory DailyReportEvent.clearEquipmentEditData() =
+      ClearEquipmentEditData;
 }
