@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/divider_config.dart';
 import '../../../../shared/widgets/theme_listtile_widget.dart';
 import '../../domain/entities/daily_report.dart';
+import '../../domain/entities/quantity_value.dart';
 
 class DailyReportDetailPage extends StatefulWidget {
   final DailyReport report;
@@ -16,115 +19,48 @@ class DailyReportDetailPage extends StatefulWidget {
 }
 
 class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
-  PageController _pageController = PageController();
-  int _currentPage = 0;
-
-  final List<Map<String, dynamic>> pageData = [
-    {'width': '50', 'length': '100'},
-    {'type': 'CMP', 'size': '600', 'length': '30'},
-  ];
-
   @override
   void dispose() {
-    _pageController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    List<Map<String, dynamic>> _buildQuantityPages(
+      List<QuantityValue> quantityValues,
+    ) {
+      List<Map<String, dynamic>> pages = [];
+
+      for (int i = 0; i < quantityValues.length; i += 3) {
+        Map<String, dynamic> pageData = {};
+
+        for (int j = 0; j < 3 && (i + j) < quantityValues.length; j++) {
+          final qv = quantityValues[i + j];
+          pageData[qv.quantityField.name] = {
+            'value': qv.value,
+            'unit': qv.quantityField.unit,
+          };
+        }
+
+        pages.add(pageData);
+      }
+
+      return pages;
+    }
+
     Widget buildPageContent(Map<String, dynamic> data) {
       return Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (data.containsKey('width'))
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Width (m)',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      data['width'],
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-            if (data.containsKey('type'))
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Type',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      data['type'],
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-            if (data.containsKey('size'))
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Size (millimetre)',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey[600],
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    SizedBox(height: 2),
-                    Text(
-                      data['size'],
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            Padding(
+          children: data.entries.map((entry) {
+            return Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Length (m)',
+                    entry.key,
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.grey[600],
@@ -133,7 +69,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                   ),
                   SizedBox(height: 2),
                   Text(
-                    data['length'],
+                    '${entry.value['value']} ${entry.value['unit'] ?? ''}',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -142,10 +78,8 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                   ),
                 ],
               ),
-            ),
-
-            SizedBox(height: 15),
-          ],
+            );
+          }).toList(),
         ),
       );
     }
@@ -361,7 +295,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    'R04',
+                                    widget.report.workScope!.code,
                                     style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
@@ -375,7 +309,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
 
                               Expanded(
                                 child: Text(
-                                  widget.report.name,
+                                  widget.report.workScope!.name.toUpperCase(),
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                     fontSize: ResponsiveHelper.fontSize(
@@ -401,8 +335,12 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                       children: [
                         ThemeListTileWidget(
                           title: 'Date',
-                          titleDetails: widget.report.createdAt.toString(),
-                          icon: Icons.abc,
+                          titleDetails: DateFormat('d MMM yyyy hh:mma').format(
+                            DateTime.parse(
+                              widget.report.createdAt.toString(),
+                            ).toLocal(),
+                          ),
+                          icon: Icons.calendar_month,
                         ),
 
                         dividerConfig(),
@@ -411,7 +349,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                           title: 'Contractor',
                           titleDetails: widget.report.contractRelationID
                               .toString(),
-                          icon: Icons.abc,
+                          icon: Icons.person,
                           isChevron: false,
                         ),
 
@@ -420,7 +358,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                         ThemeListTileWidget(
                           title: 'Reporter',
                           titleDetails: widget.report.createdByID.toString(),
-                          icon: Icons.abc,
+                          icon: Icons.person_pin,
                         ),
                       ],
                     ),
@@ -461,9 +399,10 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                     child: Column(
                       children: [
                         ThemeListTileWidget(
-                          title: widget.report.name,
-                          titleDetails: widget.report.name,
-                          icon: Icons.abc,
+                          title: widget.report.road!.districtName.toString(),
+                          titleDetails:
+                              '${widget.report.road!.roadNo} - ${widget.report.road!.name}',
+                          icon: Icons.location_pin,
                           isChevron: false,
                         ),
 
@@ -472,13 +411,102 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                         ThemeListTileWidget(
                           title: 'Section',
                           titleDetails: widget.report.fromSection.toString(),
-                          icon: Icons.abc,
+                          icon: Icons.swap_calls,
                           isChevron: false,
                         ),
 
-                        dividerConfig(),
+                        if (widget.report.latitude != null &&
+                            widget.report.longitude != null)
+                          Column(
+                            children: [
+                              dividerConfig(),
 
-                        // Maps will be here
+                              Stack(
+                                children: [
+                                  Container(
+                                    height: 200,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: Colors.grey.shade300,
+                                      ),
+                                    ),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: GoogleMap(
+                                      initialCameraPosition: CameraPosition(
+                                        target: LatLng(
+                                          double.parse(widget.report.latitude!),
+                                          double.parse(
+                                            widget.report.longitude!,
+                                          ),
+                                        ),
+                                        zoom: 14,
+                                      ),
+                                      markers: {
+                                        Marker(
+                                          markerId: MarkerId('report_location'),
+                                          position: LatLng(
+                                            double.parse(
+                                              widget.report.latitude!,
+                                            ),
+                                            double.parse(
+                                              widget.report.longitude!,
+                                            ),
+                                          ),
+                                          infoWindow: InfoWindow(
+                                            title: widget.report.name,
+                                          ),
+                                        ),
+                                      },
+                                      zoomControlsEnabled: false,
+                                      myLocationButtonEnabled: false,
+                                    ),
+                                  ),
+
+                                  Positioned.fill(
+                                    bottom: 10,
+                                    child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          final lat = widget.report.latitude!;
+                                          final lng = widget.report.longitude!;
+                                          final url =
+                                              'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          side: BorderSide(
+                                            color: primaryColor,
+                                            width: ResponsiveHelper.adaptive(
+                                              context,
+                                              mobile: 1.0,
+                                              tablet: 1.5,
+                                              desktop: 2.0,
+                                            ),
+                                          ),
+                                          padding: ResponsiveHelper.padding(
+                                            context,
+                                            vertical: 10,
+                                            horizontal: 20,
+                                          ),
+
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                ResponsiveHelper.borderRadius(
+                                                  context,
+                                                  all: 14,
+                                                ),
+                                          ),
+                                        ),
+                                        child: Text('View location'),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                       ],
                     ),
                   ),
@@ -488,106 +516,114 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
 
             SizedBox(height: 20),
 
-            // Culvert Cleaning ---- Swipeable
-            Container(
-              padding: EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey, width: 0.5),
-                borderRadius: BorderRadius.circular(10),
-                gradient: LinearGradient(
-                  colors: [Colors.white, Color.fromARGB(255, 238, 242, 254)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Culvert Cleaning',
-                        style: TextStyle(
-                          fontSize: ResponsiveHelper.fontSize(
-                            context,
-                            base: 14,
+            // Scope of work ---- Swipeable
+            if (widget.report.reportQuantities!.isNotEmpty)
+              ...widget.report.reportQuantities!.map((reportQuantity) {
+                final quantityPages = _buildQuantityPages(
+                  reportQuantity.quantityValues,
+                );
+                int currentPage = 0;
+
+                return StatefulBuilder(
+                  builder: (context, setState) {
+                    return Container(
+                      margin: EdgeInsets.only(bottom: 20),
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 0.5),
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.white,
+                            Color.fromARGB(255, 238, 242, 254),
+                          ],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  reportQuantity.quantityType.name,
+                                  style: TextStyle(
+                                    fontSize: ResponsiveHelper.fontSize(
+                                      context,
+                                      base: 14,
+                                    ),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                              if (quantityPages.length > 1)
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 15,
+                                    vertical: 5,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    '${currentPage + 1}/${quantityPages.length}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                            ],
                           ),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 2,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.blue.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          '${_currentPage + 1}/2',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.blue,
-                            fontWeight: FontWeight.w500,
+                          dividerConfig(),
+                          SizedBox(
+                            width: double.infinity,
+                            height: 160,
+                            child: PageView.builder(
+                              onPageChanged: (index) {
+                                setState(() {
+                                  currentPage = index;
+                                });
+                              },
+                              itemCount: quantityPages.length,
+                              itemBuilder: (context, index) {
+                                return buildPageContent(quantityPages[index]);
+                              },
+                            ),
                           ),
-                        ),
+                          if (quantityPages.length > 1)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(
+                                quantityPages.length,
+                                (index) => Container(
+                                  margin: EdgeInsets.symmetric(horizontal: 3),
+                                  width: 6,
+                                  height: 6,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: currentPage == index
+                                        ? Colors.black87
+                                        : Colors.grey.withOpacity(0.4),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          SizedBox(height: 10),
+                        ],
                       ),
-                    ],
-                  ),
-
-                  dividerConfig(),
-
-                  SizedBox(
-                    width: double.infinity,
-                    height: 160,
-                    child: PageView.builder(
-                      controller: _pageController,
-                      onPageChanged: (index) {
-                        setState(() {
-                          _currentPage = index;
-                        });
-                      },
-                      itemCount: pageData.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          width: double.infinity,
-                          child: buildPageContent(pageData[index]),
-                        );
-                      },
-                    ),
-                  ),
-
-                  // Page indicator dots
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      pageData.length,
-                      (index) => Container(
-                        margin: EdgeInsets.symmetric(horizontal: 3),
-                        width: 6,
-                        height: 6,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: _currentPage == index
-                              ? Colors.black87
-                              : Colors.grey.withOpacity(0.4),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  SizedBox(height: 10),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 20),
+                    );
+                  },
+                );
+              }).toList(),
 
             // Equipment
-            if (widget.report.equipments.isNotEmpty)
+            if (widget.report.equipments!.isNotEmpty)
               Container(
                 padding: EdgeInsets.all(15),
                 decoration: BoxDecoration(
@@ -613,22 +649,19 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                     dividerConfig(),
 
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      padding: EdgeInsets.symmetric(horizontal: 5.0),
                       child: Wrap(
                         spacing: 8,
                         runSpacing: 10,
-                        children: widget.report.equipments.map((equipment) {
+                        children: widget.report.equipments!.map((equipment) {
                           return Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: 5,
-                              vertical: 2,
+                              horizontal: 15,
+                              vertical: 5,
                             ),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              border: Border.all(
-                                color: Colors.blue.shade300,
-                                width: 1,
-                              ),
+                              border: Border.all(color: primaryColor, width: 1),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Text(
@@ -638,7 +671,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                                   context,
                                   base: 13,
                                 ),
-                                color: Colors.blue.shade700,
+                                color: primaryColor,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -686,6 +719,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                           titleDetails: 'Quantity, section and others',
                           icon: Icons.edit_square,
                           isInverseBold: true,
+                          onTap: () {},
                         ),
 
                         dividerConfig(),

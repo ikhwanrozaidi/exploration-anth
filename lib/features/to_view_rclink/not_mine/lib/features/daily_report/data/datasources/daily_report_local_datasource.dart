@@ -4,6 +4,10 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/database/app_database.dart';
 import '../../domain/entities/daily_report.dart';
 import '../../domain/entities/daily_report_equipment.dart';
+import '../../domain/entities/quantity_value.dart';
+import '../../domain/entities/report_quantity.dart';
+import '../../domain/entities/work_scope.dart';
+import '../../domain/entities/road.dart';
 
 abstract class DailyReportLocalDataSource {
   Future<List<DailyReport>?> getCachedDailyReports(String companyUID);
@@ -30,15 +34,44 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
         return null;
       }
 
-      // Convert database records to domain entities
       final reports = records.map((record) {
+        // Parse workScope JSON
+        WorkScope? workScope;
+        if (record.workScopeData != null && record.workScopeData!.isNotEmpty) {
+          try {
+            final data = jsonDecode(record.workScopeData!);
+            workScope = WorkScope(
+              name: data['name'] as String,
+              code: data['code'] as String,
+              uid: data['uid'] as String,
+            );
+          } catch (e) {
+            print('Error parsing workScope JSON: $e');
+          }
+        }
+
+        // Parse road JSON
+        Road? road;
+        if (record.roadData != null && record.roadData!.isNotEmpty) {
+          try {
+            final data = jsonDecode(record.roadData!);
+            road = Road(
+              name: data['name'] as String,
+              roadNo: data['roadNo'] as String,
+              uid: data['uid'] as String,
+            );
+          } catch (e) {
+            print('Error parsing road JSON: $e');
+          }
+        }
+
         // Parse equipments JSON
         List<DailyReportEquipment> equipments = [];
-        if (record.equipmentsJson != null &&
-            record.equipmentsJson!.isNotEmpty) {
+        if (record.equipmentsData != null &&
+            record.equipmentsData!.isNotEmpty) {
           try {
             final List<dynamic> equipmentsData = jsonDecode(
-              record.equipmentsJson!,
+              record.equipmentsData!,
             );
             equipments = equipmentsData
                 .map(
@@ -50,6 +83,45 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
                 .toList();
           } catch (e) {
             print('Error parsing equipments JSON: $e');
+          }
+        }
+
+        // Parse reportQuantities JSON
+        List<ReportQuantity> reportQuantities = [];
+        if (record.reportQuantitiesData != null &&
+            record.reportQuantitiesData!.isNotEmpty) {
+          try {
+            final List<dynamic> quantitiesData = jsonDecode(
+              record.reportQuantitiesData!,
+            );
+            reportQuantities = quantitiesData.map((q) {
+              final quantityType = QuantityType(
+                name: q['quantityType']['name'] as String,
+                code: q['quantityType']['code'] as String,
+                uid: q['quantityType']['uid'] as String,
+              );
+
+              final quantityValues = (q['quantityValues'] as List).map((v) {
+                final quantityField = QuantityField(
+                  name: v['quantityField']['name'] as String,
+                  fieldType: v['quantityField']['fieldType'] as String,
+                  unit: v['quantityField']['unit'] as String?,
+                  uid: v['quantityField']['uid'] as String,
+                );
+
+                return QuantityValue(
+                  value: v['value'] as String,
+                  quantityField: quantityField,
+                );
+              }).toList();
+
+              return ReportQuantity(
+                quantityType: quantityType,
+                quantityValues: quantityValues,
+              );
+            }).toList();
+          } catch (e) {
+            print('Error parsing reportQuantities JSON: $e');
           }
         }
 
@@ -76,7 +148,10 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
           createdByID: record.createdByID,
           createdAt: record.createdAt,
           updatedAt: record.updatedAt,
+          workScope: workScope,
+          road: road,
           equipments: equipments,
+          reportQuantities: reportQuantities,
         );
       }).toList();
 
@@ -90,17 +165,66 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
   @override
   Future<void> cacheDailyReports(List<DailyReport> reports) async {
     try {
-      // Clear existing daily reports
       await _database.delete(_database.dailyReports).go();
 
-      // Insert new daily reports
       for (final report in reports) {
-        // Convert equipments to JSON string
+        // Convert workScope to JSON
+        String? workScopeData;
+        if (report.workScope != null) {
+          workScopeData = jsonEncode({
+            'name': report.workScope!.name,
+            'code': report.workScope!.code,
+            'uid': report.workScope!.uid,
+          });
+        }
+
+        // Convert road to JSON
+        String? roadData;
+        if (report.road != null) {
+          roadData = jsonEncode({
+            'name': report.road!.name,
+            'roadNo': report.road!.roadNo,
+            'uid': report.road!.uid,
+          });
+        }
+
+        // Convert equipments to JSON
         String? equipmentsJson;
-        if (report.equipments.isNotEmpty) {
+        if (report.equipments!.isNotEmpty) {
           equipmentsJson = jsonEncode(
-            report.equipments
+            report.equipments!
                 .map((e) => {'name': e.name, 'uid': e.uid})
+                .toList(),
+          );
+        }
+
+        // Convert reportQuantities to JSON
+        String? reportQuantitiesJson;
+        if (report.reportQuantities!.isNotEmpty) {
+          reportQuantitiesJson = jsonEncode(
+            report.reportQuantities!
+                .map(
+                  (q) => {
+                    'quantityType': {
+                      'name': q.quantityType.name,
+                      'code': q.quantityType.code,
+                      'uid': q.quantityType.uid,
+                    },
+                    'quantityValues': q.quantityValues
+                        .map(
+                          (v) => {
+                            'value': v.value,
+                            'quantityField': {
+                              'name': v.quantityField.name,
+                              'fieldType': v.quantityField.fieldType,
+                              'unit': v.quantityField.unit,
+                              'uid': v.quantityField.uid,
+                            },
+                          },
+                        )
+                        .toList(),
+                  },
+                )
                 .toList(),
           );
         }
@@ -139,7 +263,9 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
                 createdByID: Value(report.createdByID),
                 createdAt: Value(report.createdAt),
                 updatedAt: Value(report.updatedAt),
-                equipmentsJson: Value(equipmentsJson),
+                workScopeData: Value(workScopeData),
+                roadData: Value(roadData),
+                equipmentsData: Value(equipmentsJson),
               ),
             );
       }

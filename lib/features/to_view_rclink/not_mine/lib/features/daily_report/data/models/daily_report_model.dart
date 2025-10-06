@@ -1,7 +1,9 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
 import '../../domain/entities/daily_report.dart';
 import 'daily_report_equipment_model.dart';
+import 'report_quantities_model.dart';
+import 'work_scope_model.dart';
+import 'road_model.dart';
 
 part 'daily_report_model.freezed.dart';
 part 'daily_report_model.g.dart';
@@ -50,9 +52,11 @@ abstract class DailyReportModel with _$DailyReportModel {
     required DateTime createdAt,
     required DateTime updatedAt,
 
-    // Equipments stored as JSON
-    // Equipments stored as JSON
-    @JsonKey(name: 'equipments') List<DailyReportEquipmentModel>? equipments,
+    // Expanded fields from API
+    WorkScopeModel? workScope,
+    RoadModel? road,
+    List<DailyReportEquipmentModel>? equipments,
+    List<ReportQuantitiesModel>? reportQuantities,
 
     // Sync fields
     @Default(false) bool isSynced,
@@ -66,11 +70,7 @@ abstract class DailyReportModel with _$DailyReportModel {
   factory DailyReportModel.fromJson(Map<String, dynamic> json) =>
       _$DailyReportModelFromJson(json);
 
-  // Convert model to entity
   DailyReport toEntity() {
-    final convertedEquipments =
-        equipments?.map((e) => e.toEntity()).toList() ?? [];
-
     return DailyReport(
       id: id,
       uid: uid,
@@ -87,14 +87,18 @@ abstract class DailyReportModel with _$DailyReportModel {
       workScopeID: workScopeID,
       roadID: roadID,
       totalWorkers: totalWorkers,
-      fromSection: fromSection?.toString(),
-      toSection: toSection?.toString(),
-      longitude: longitude?.toString(),
-      latitude: latitude?.toString(),
+      fromSection: fromSection,
+      toSection: toSection,
+      longitude: longitude,
+      latitude: latitude,
       createdByID: createdByID,
       createdAt: createdAt,
       updatedAt: updatedAt,
-      equipments: convertedEquipments,
+      workScope: workScope?.toEntity(),
+      road: road?.toEntity(),
+      equipments: equipments?.map((e) => e.toEntity()).toList() ?? [],
+      reportQuantities:
+          reportQuantities?.map((q) => q.toEntity()).toList() ?? [],
     );
   }
 }

@@ -65,6 +65,20 @@ import '../../features/company/domain/usecases/update_company_usecase.dart'
 import '../../features/company/presentation/bloc/company_bloc.dart' as _i426;
 import '../../features/daily_report/data/datasources/daily_report_api_service.dart'
     as _i538;
+import '../../features/daily_report/data/datasources/daily_report_local_datasource.dart'
+    as _i464;
+import '../../features/daily_report/data/datasources/daily_report_remote_datasource.dart'
+    as _i328;
+import '../../features/daily_report/data/repositories/daily_report_repository_impl.dart'
+    as _i1017;
+import '../../features/daily_report/domain/repository/daily_report_repository.dart'
+    as _i819;
+import '../../features/daily_report/domain/usecases/clear_daily_report_cache_usecase.dart'
+    as _i771;
+import '../../features/daily_report/domain/usecases/get_daily_report_usecase.dart'
+    as _i908;
+import '../../features/daily_report/presentation/bloc/daily_report_bloc.dart'
+    as _i1033;
 import '../../features/daily_report_creation/data/datasources/daily_report_creation_api_service.dart'
     as _i691;
 import '../../features/daily_report_creation/data/datasources/daily_report_creation_local_datasource.dart'
@@ -216,6 +230,9 @@ extension GetItInjectableX on _i174.GetIt {
         sectionFinishMax: gh<double>(),
       ),
     );
+    gh.lazySingleton<_i464.DailyReportLocalDataSource>(
+      () => _i464.DailyReportLocalDataSourceImpl(gh<_i982.DatabaseService>()),
+    );
     gh.lazySingleton<_i517.AdminRemoteDataSource>(
       () => _i517.AdminRemoteDataSourceImpl(gh<_i472.AdminApiService>()),
     );
@@ -309,6 +326,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i517.AdminRemoteDataSource>(),
       ),
     );
+    gh.lazySingleton<_i328.DailyReportRemoteDataSource>(
+      () => _i328.DailyReportRemoteDataSourceImpl(
+        gh<_i538.DailyReportApiService>(),
+      ),
+    );
     gh.factory<_i752.CompanyRepository>(
       () => _i726.CompanyRepositoryImpl(
         gh<_i469.CompanyRemoteDataSource>(),
@@ -369,6 +391,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i987.DailyReportCreationLocalDatasource>(),
       ),
     );
+    gh.factory<_i819.DailyReportRepository>(
+      () => _i1017.DailyReportRepositoryImpl(
+        gh<_i328.DailyReportRemoteDataSource>(),
+        gh<_i464.DailyReportLocalDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i871.ClearAuthCacheUseCase>(
       () => _i871.ClearAuthCacheUseCase(gh<_i787.AuthRepository>()),
     );
@@ -416,11 +444,24 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i871.ClearAuthCacheUseCase>(),
       ),
     );
+    gh.lazySingleton<_i771.ClearDailyReportCacheUseCase>(
+      () =>
+          _i771.ClearDailyReportCacheUseCase(gh<_i819.DailyReportRepository>()),
+    );
+    gh.lazySingleton<_i908.GetDailyReportsUseCase>(
+      () => _i908.GetDailyReportsUseCase(gh<_i819.DailyReportRepository>()),
+    );
     gh.factory<_i836.WorkScopesRepository>(
       () => _i753.WorkScopesRepositoryImpl(
         gh<_i521.DailyReportCreationRemoteDataSource>(),
         gh<_i987.DailyReportCreationLocalDatasource>(),
         gh<_i426.CompanyBloc>(),
+      ),
+    );
+    gh.factory<_i1033.DailyReportBloc>(
+      () => _i1033.DailyReportBloc(
+        gh<_i908.GetDailyReportsUseCase>(),
+        gh<_i771.ClearDailyReportCacheUseCase>(),
       ),
     );
     gh.factory<_i464.EquipmentRepository>(

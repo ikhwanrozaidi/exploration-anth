@@ -16,7 +16,6 @@ abstract class DailyReportEquipmentModel with _$DailyReportEquipmentModel {
   factory DailyReportEquipmentModel.fromJson(Map<String, dynamic> json) =>
       _$DailyReportEquipmentModelFromJson(json);
 
-  // Convert model to entity
   DailyReportEquipment toEntity() {
     return DailyReportEquipment(name: name, uid: uid);
   }

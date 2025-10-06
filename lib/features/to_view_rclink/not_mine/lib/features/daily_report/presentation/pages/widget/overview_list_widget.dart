@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:rclink_app/features/daily_report/presentation/pages/daily_report_detail_page.dart';
 
 import '../../../../../shared/utils/responsive_helper.dart';
@@ -134,6 +135,40 @@ class _DailyReportOverviewListWidgetState
                   //     );
                   //   },
                   // ),
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+
+                      // Dark gradient overlay
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              Colors.black.withOpacity(0.7),
+                            ],
+                          ),
+                        ),
+                        child: Container(
+                          color: Colors.grey.shade300,
+                          child: Icon(
+                            Icons.image_not_supported,
+                            size: 50,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Column(
@@ -152,8 +187,10 @@ class _DailyReportOverviewListWidgetState
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(8),
                               ),
+
+                              //Scope Code
                               child: Text(
-                                widget.report.name,
+                                widget.report.workScope!.code.toString(),
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -173,7 +210,11 @@ class _DailyReportOverviewListWidgetState
                                 borderRadius: BorderRadius.circular(100),
                               ),
                               child: Text(
-                                widget.report.createdAt.toString(),
+                                DateFormat('d MMM').format(
+                                  DateTime.parse(
+                                    widget.report.createdAt.toString(),
+                                  ),
+                                ),
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -233,7 +274,7 @@ class _DailyReportOverviewListWidgetState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.report.latitude.toString(),
+                        'need revise models',
                         style: TextStyle(
                           color: Colors.black.withOpacity(0.6),
                           fontSize: ResponsiveHelper.fontSize(
@@ -243,7 +284,7 @@ class _DailyReportOverviewListWidgetState
                         ),
                       ),
                       Text(
-                        widget.report.longitude.toString(),
+                        '${widget.report.road!.roadNo.toString()} - ${widget.report.road!.name.toString()}',
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],

@@ -1,5 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'daily_report_equipment.dart';
+import 'report_quantity.dart';
+import 'work_scope.dart';
+import 'road.dart';
 
 class DailyReport extends Equatable {
   final int id;
@@ -24,7 +27,11 @@ class DailyReport extends Equatable {
   final int createdByID;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final List<DailyReportEquipment> equipments;
+
+  final WorkScope? workScope;
+  final Road? road;
+  final List<DailyReportEquipment>? equipments;
+  final List<ReportQuantity>? reportQuantities;
 
   const DailyReport({
     required this.id,
@@ -49,7 +56,10 @@ class DailyReport extends Equatable {
     required this.createdByID,
     required this.createdAt,
     required this.updatedAt,
-    required this.equipments,
+    this.workScope,
+    this.road,
+    this.equipments,
+    required this.reportQuantities,
   });
 
   @override
@@ -76,6 +86,9 @@ class DailyReport extends Equatable {
     createdByID,
     createdAt,
     updatedAt,
+    workScope,
+    road,
     equipments,
+    reportQuantities,
   ];
 }

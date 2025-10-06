@@ -32,10 +32,21 @@ _DailyReportModel _$DailyReportModelFromJson(Map<String, dynamic> json) =>
       createdByID: (json['createdByID'] as num).toInt(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
+      workScope: json['workScope'] == null
+          ? null
+          : WorkScopeModel.fromJson(json['workScope'] as Map<String, dynamic>),
+      road: json['road'] == null
+          ? null
+          : RoadModel.fromJson(json['road'] as Map<String, dynamic>),
       equipments: (json['equipments'] as List<dynamic>?)
           ?.map(
             (e) =>
                 DailyReportEquipmentModel.fromJson(e as Map<String, dynamic>),
+          )
+          .toList(),
+      reportQuantities: (json['reportQuantities'] as List<dynamic>?)
+          ?.map(
+            (e) => ReportQuantitiesModel.fromJson(e as Map<String, dynamic>),
           )
           .toList(),
       isSynced: json['isSynced'] as bool? ?? false,
@@ -74,7 +85,10 @@ Map<String, dynamic> _$DailyReportModelToJson(_DailyReportModel instance) =>
       'createdByID': instance.createdByID,
       'createdAt': instance.createdAt.toIso8601String(),
       'updatedAt': instance.updatedAt.toIso8601String(),
+      'workScope': instance.workScope,
+      'road': instance.road,
       'equipments': instance.equipments,
+      'reportQuantities': instance.reportQuantities,
       'isSynced': instance.isSynced,
       'deletedAt': instance.deletedAt?.toIso8601String(),
       'syncAction': instance.syncAction,

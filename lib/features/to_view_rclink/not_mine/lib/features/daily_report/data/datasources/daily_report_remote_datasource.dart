@@ -33,7 +33,7 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
         page: page,
         limit: limit,
         sortOrder: sortOrder,
-        expand: ['workScope', 'road', 'quantities'],
+        expand: ['workScope', 'road', 'quantities', 'equipments'],
       );
 
       final response = await _apiService.getCompanyDailyReports(
