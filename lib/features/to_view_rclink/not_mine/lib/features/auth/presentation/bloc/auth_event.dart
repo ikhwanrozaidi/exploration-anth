@@ -54,3 +54,16 @@ class LogoutRequested extends AuthEvent {
   @override
   List<Object> get props => [];
 }
+
+class AuthTokenExpired extends AuthEvent {
+  const AuthTokenExpired();
+}
+
+class AuthTokenExpiring extends AuthEvent {
+  final Duration timeLeft;
+
+  const AuthTokenExpiring(this.timeLeft);
+
+  @override
+  List<Object?> get props => [timeLeft];
+}

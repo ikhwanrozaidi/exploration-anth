@@ -11,9 +11,9 @@ import '../../domain/usecases/get_quantity_usecase.dart';
 import '../../domain/usecases/get_road_usecase.dart';
 import '../../domain/usecases/get_states_usecase.dart';
 import '../../domain/usecases/get_work_scopes_usecase.dart';
+import '../../domain/usecases/submit_daily_report_usecase.dart';
 import 'report_creation_event.dart';
 import 'report_creation_state.dart';
-import 'report_creation_data.dart';
 
 @lazySingleton
 class ReportCreationBloc
@@ -26,6 +26,7 @@ class ReportCreationBloc
   final GetQuantityUseCase _getQuantitiesUseCase;
   final GetEquipmentUseCase _getEquipmentUseCase;
   final ClearAllCacheUseCase _clearAllCacheUseCase;
+  final SubmitDailyReportUseCase _submitDailyReportUseCase;
 
   ReportCreationBloc(
     this._getWorkScopesUseCase,
@@ -36,6 +37,7 @@ class ReportCreationBloc
     this._getQuantitiesUseCase,
     this._getEquipmentUseCase,
     this._clearAllCacheUseCase,
+    this._submitDailyReportUseCase,
   ) : super(const ReportCreationState.initial()) {
     // Initial load events
     on<LoadWorkScopes>(_onLoadWorkScopes);
@@ -83,10 +85,10 @@ class ReportCreationBloc
   // ------------------------------------------------------- Helper, Fetch from API data
   ReportApiData _getCurrentApiData() {
     return state.maybeMap(
-      page1Ready: (state) => state.apiData,
-      page1Error: (state) => state.apiData,
-      page2Ready: (state) => state.apiData,
-      page2Error: (state) => state.apiData,
+      selectingBasicInfo: (state) => state.apiData,
+      basicInfoError: (state) => state.apiData,
+      editingDetails: (state) => state.apiData,
+      detailsError: (state) => state.apiData,
       submitting: (state) => state.reportData.apiData,
       submitted: (state) => state.reportData.apiData,
       submissionError: (state) => state.reportData.apiData,
@@ -98,10 +100,10 @@ class ReportCreationBloc
 
   ReportSelections _getCurrentSelections() {
     return state.maybeMap(
-      page1Ready: (state) => state.selections,
-      page1Error: (state) => state.selections,
-      page2Ready: (state) => state.selections,
-      page2Error: (state) => state.selections,
+      selectingBasicInfo: (state) => state.selections,
+      basicInfoError: (state) => state.selections,
+      editingDetails: (state) => state.selections,
+      detailsError: (state) => state.selections,
       submitting: (state) => state.reportData.selections,
       submitted: (state) => state.reportData.selections,
       submissionError: (state) => state.reportData.selections,
@@ -113,8 +115,8 @@ class ReportCreationBloc
 
   ReportFormData _getCurrentFormData() {
     return state.maybeMap(
-      page2Ready: (state) => state.formData,
-      page2Error: (state) => state.formData,
+      editingDetails: (state) => state.formData,
+      detailsError: (state) => state.formData,
       submitting: (state) => state.reportData.formData,
       submitted: (state) => state.reportData.formData,
       submissionError: (state) => state.reportData.formData,
@@ -138,7 +140,7 @@ class ReportCreationBloc
 
     result.fold(
       (failure) => emit(
-        ReportCreationState.page1Error(
+        ReportCreationState.basicInfoError(
           apiData: currentApiData,
           selections: currentSelections,
           errorMessage: failure.message,
@@ -157,7 +159,7 @@ class ReportCreationBloc
         );
 
         emit(
-          ReportCreationState.page1Ready(
+          ReportCreationState.selectingBasicInfo(
             apiData: updatedApiData,
             selections: currentSelections,
           ),
@@ -179,7 +181,7 @@ class ReportCreationBloc
 
     result.fold(
       (failure) => emit(
-        ReportCreationState.page1Error(
+        ReportCreationState.basicInfoError(
           apiData: currentApiData,
           selections: currentSelections,
           errorMessage: failure.message,
@@ -199,7 +201,7 @@ class ReportCreationBloc
         );
 
         emit(
-          ReportCreationState.page1Ready(
+          ReportCreationState.selectingBasicInfo(
             apiData: updatedApiData,
             selections: currentSelections,
           ),
@@ -218,7 +220,7 @@ class ReportCreationBloc
     final selectedState = currentSelections.selectedState;
     if (selectedState == null) {
       emit(
-        ReportCreationState.page1Error(
+        ReportCreationState.basicInfoError(
           apiData: currentApiData,
           selections: currentSelections,
           errorMessage: 'No state selected',
@@ -236,14 +238,14 @@ class ReportCreationBloc
 
     result.fold(
       (failure) => emit(
-        ReportCreationState.page1Error(
+        ReportCreationState.basicInfoError(
           apiData: currentApiData,
           selections: currentSelections,
           errorMessage: failure.message,
         ),
       ),
       (districts) => emit(
-        ReportCreationState.page1Ready(
+        ReportCreationState.selectingBasicInfo(
           apiData: currentApiData.copyWith(districts: districts),
           selections: currentSelections,
         ),
@@ -261,7 +263,7 @@ class ReportCreationBloc
     final selectedDistrict = currentSelections.selectedDistrict;
     if (selectedDistrict == null) {
       emit(
-        ReportCreationState.page1Error(
+        ReportCreationState.basicInfoError(
           apiData: currentApiData,
           selections: currentSelections,
           errorMessage: 'No district selected',
@@ -279,14 +281,14 @@ class ReportCreationBloc
 
     result.fold(
       (failure) => emit(
-        ReportCreationState.page1Error(
+        ReportCreationState.basicInfoError(
           apiData: currentApiData,
           selections: currentSelections,
           errorMessage: failure.message,
         ),
       ),
       (roads) => emit(
-        ReportCreationState.page1Ready(
+        ReportCreationState.selectingBasicInfo(
           apiData: currentApiData.copyWith(roads: roads),
           selections: currentSelections,
         ),
@@ -312,7 +314,7 @@ class ReportCreationBloc
 
     result.fold(
       (failure) => emit(
-        ReportCreationState.page2Error(
+        ReportCreationState.detailsError(
           apiData: currentApiData,
           selections: currentSelections,
           formData: currentFormData,
@@ -320,7 +322,7 @@ class ReportCreationBloc
         ),
       ),
       (quantities) => emit(
-        ReportCreationState.page2Ready(
+        ReportCreationState.editingDetails(
           apiData: currentApiData.copyWith(
             quantities: quantities,
             equipment: currentApiData.equipment,
@@ -350,7 +352,7 @@ class ReportCreationBloc
 
     result.fold(
       (failure) => emit(
-        ReportCreationState.page2Error(
+        ReportCreationState.detailsError(
           apiData: currentApiData,
           selections: currentSelections,
           formData: currentFormData,
@@ -358,7 +360,7 @@ class ReportCreationBloc
         ),
       ),
       (equipments) => emit(
-        ReportCreationState.page2Ready(
+        ReportCreationState.editingDetails(
           apiData: currentApiData.copyWith(
             equipment: equipments,
             quantities: currentApiData.quantities,
@@ -403,7 +405,7 @@ class ReportCreationBloc
 
     if (quantitiesFailure != null || equipmentsFailure != null) {
       emit(
-        ReportCreationState.page2Error(
+        ReportCreationState.detailsError(
           apiData: currentApiData,
           selections: currentSelections,
           formData: currentFormData,
@@ -424,7 +426,7 @@ class ReportCreationBloc
     );
 
     emit(
-      ReportCreationState.page2Ready(
+      ReportCreationState.editingDetails(
         apiData: currentApiData.copyWith(
           quantities: quantities,
           equipment: equipments,
@@ -435,7 +437,7 @@ class ReportCreationBloc
     );
 
     emit(
-      ReportCreationState.page2Ready(
+      ReportCreationState.editingDetails(
         apiData: currentApiData.copyWith(
           quantities: quantities,
           equipment: equipments,
@@ -456,15 +458,14 @@ class ReportCreationBloc
     final currentSelections = _getCurrentSelections();
 
     // Find the selected scope from available scopes
-    final selectedScope = currentApiData.workScopes?.firstWhere(
+    final selectedScope = currentApiData.workScopes.firstWhere(
       (scope) => scope.uid == event.scopeUid,
     );
 
     emit(
-      ReportCreationState.page1Ready(
+      ReportCreationState.selectingBasicInfo(
         apiData: currentApiData,
         selections: currentSelections.copyWith(
-          selectedScopeUid: event.scopeUid,
           selectedScope: selectedScope,
         ),
       ),
@@ -479,7 +480,7 @@ class ReportCreationBloc
     final currentSelections = _getCurrentSelections();
 
     emit(
-      ReportCreationState.page1Ready(
+      ReportCreationState.selectingBasicInfo(
         apiData: currentApiData,
         selections: currentSelections.copyWith(selectedWeather: event.weather),
       ),
@@ -494,20 +495,17 @@ class ReportCreationBloc
     final currentSelections = _getCurrentSelections();
 
     // Find the selected state from available states
-    final selectedState = currentApiData.states?.firstWhere(
+    final selectedState = currentApiData.states.firstWhere(
       (state) => state.uid == event.stateUid,
     );
 
     emit(
-      ReportCreationState.page1Ready(
-        apiData: currentApiData.copyWith(districts: null), // Clear districts
+      ReportCreationState.selectingBasicInfo(
+        apiData: currentApiData.copyWith(districts: []), // Clear districts
         selections: currentSelections.copyWith(
-          selectedStateUid: event.stateUid,
           selectedState: selectedState,
           // Clear dependent selections
-          selectedDistrictUid: null,
           selectedDistrict: null,
-          selectedRoadUid: null,
           selectedRoad: null,
         ),
       ),
@@ -522,18 +520,16 @@ class ReportCreationBloc
     final currentSelections = _getCurrentSelections();
 
     // Find the selected district from available districts
-    final selectedDistrict = currentApiData.districts?.firstWhere(
+    final selectedDistrict = currentApiData.districts.firstWhere(
       (district) => district.uid == event.districtUid,
     );
 
     emit(
-      ReportCreationState.page1Ready(
-        apiData: currentApiData.copyWith(roads: null), // Clear roads
+      ReportCreationState.selectingBasicInfo(
+        apiData: currentApiData.copyWith(roads: []), // Clear roads
         selections: currentSelections.copyWith(
-          selectedDistrictUid: event.districtUid,
           selectedDistrict: selectedDistrict,
           // Clear dependent selections
-          selectedRoadUid: null,
           selectedRoad: null,
         ),
       ),
@@ -548,15 +544,14 @@ class ReportCreationBloc
     final currentSelections = _getCurrentSelections();
 
     // Find the selected road from available roads
-    final selectedRoad = currentApiData.roads?.firstWhere(
+    final selectedRoad = currentApiData.roads.firstWhere(
       (road) => road.uid == event.roadUid,
     );
 
     emit(
-      ReportCreationState.page1Ready(
+      ReportCreationState.selectingBasicInfo(
         apiData: currentApiData,
         selections: currentSelections.copyWith(
-          selectedRoadUid: event.roadUid,
           selectedRoad: selectedRoad,
         ),
       ),
@@ -601,7 +596,7 @@ class ReportCreationBloc
     );
 
     emit(
-      ReportCreationState.page1Ready(
+      ReportCreationState.selectingBasicInfo(
         apiData: currentApiData,
         selections: updatedSelections,
       ),
@@ -617,7 +612,7 @@ class ReportCreationBloc
     final currentFormData = _getCurrentFormData();
 
     emit(
-      ReportCreationState.page2Ready(
+      ReportCreationState.editingDetails(
         apiData: currentApiData,
         selections: currentSelections.copyWith(
           conditionSnapshots: event.snapshots,
@@ -636,7 +631,7 @@ class ReportCreationBloc
     final currentFormData = _getCurrentFormData();
 
     emit(
-      ReportCreationState.page2Ready(
+      ReportCreationState.editingDetails(
         apiData: currentApiData,
         selections: currentSelections.copyWith(workerImages: event.images),
         formData: currentFormData,
@@ -655,17 +650,14 @@ class ReportCreationBloc
     final currentFormData = _getCurrentFormData();
 
     // Find selected quantity types from available quantities
-    final selectedQuantityTypes =
-        currentApiData.quantities
-            ?.where((qt) => event.quantityTypeUids.contains(qt.uid))
-            .toList() ??
-        [];
+    final selectedQuantityTypes = currentApiData.quantities
+        .where((qt) => event.quantityTypeUids.contains(qt.uid))
+        .toList();
 
     emit(
-      ReportCreationState.page2Ready(
+      ReportCreationState.editingDetails(
         apiData: currentApiData,
         selections: currentSelections.copyWith(
-          selectedQuantityTypeUids: event.quantityTypeUids,
           selectedQuantityTypes: selectedQuantityTypes,
         ),
         formData: currentFormData,
@@ -678,9 +670,9 @@ class ReportCreationBloc
     Emitter<ReportCreationState> emit,
   ) async {
     final currentSelections = _getCurrentSelections();
-    final currentUids = List<String>.from(
-      currentSelections.selectedQuantityTypeUids,
-    );
+    final currentUids = currentSelections.selectedQuantityTypes
+        .map((qt) => qt.uid)
+        .toList();
 
     if (currentUids.contains(event.quantityTypeUid)) {
       currentUids.remove(event.quantityTypeUid);
@@ -700,17 +692,14 @@ class ReportCreationBloc
     final currentFormData = _getCurrentFormData();
 
     // Find selected equipment from available equipment
-    final selectedEquipment =
-        currentApiData.equipment
-            ?.where((eq) => event.equipmentUids.contains(eq.uid))
-            .toList() ??
-        [];
+    final selectedEquipment = currentApiData.equipment
+        .where((eq) => event.equipmentUids.contains(eq.uid))
+        .toList();
 
     emit(
-      ReportCreationState.page2Ready(
+      ReportCreationState.editingDetails(
         apiData: currentApiData,
         selections: currentSelections.copyWith(
-          selectedEquipmentUids: event.equipmentUids,
           selectedEquipment: selectedEquipment,
         ),
         formData: currentFormData,
@@ -723,9 +712,9 @@ class ReportCreationBloc
     Emitter<ReportCreationState> emit,
   ) async {
     final currentSelections = _getCurrentSelections();
-    final currentUids = List<String>.from(
-      currentSelections.selectedEquipmentUids,
-    );
+    final currentUids = currentSelections.selectedEquipment
+        .map((eq) => eq.uid)
+        .toList();
 
     if (currentUids.contains(event.equipmentUid)) {
       currentUids.remove(event.equipmentUid);
@@ -752,7 +741,7 @@ class ReportCreationBloc
     updatedFieldValues[event.fieldKey] = event.value;
 
     emit(
-      ReportCreationState.page2Ready(
+      ReportCreationState.editingDetails(
         apiData: currentApiData,
         selections: currentSelections,
         formData: currentFormData.copyWith(fieldValues: updatedFieldValues),
@@ -778,7 +767,7 @@ class ReportCreationBloc
     ];
 
     emit(
-      ReportCreationState.page2Ready(
+      ReportCreationState.editingDetails(
         apiData: currentApiData,
         selections: currentSelections,
         formData: currentFormData.copyWith(imageFields: updatedImageFields),
@@ -802,7 +791,7 @@ class ReportCreationBloc
     updatedImageFields[event.fieldKey] = existingImages;
 
     emit(
-      ReportCreationState.page2Ready(
+      ReportCreationState.editingDetails(
         apiData: currentApiData,
         selections: currentSelections,
         formData: currentFormData.copyWith(imageFields: updatedImageFields),
@@ -823,13 +812,13 @@ class ReportCreationBloc
     final fieldErrors = <String, String?>{};
     final validationErrors = <String>[];
 
-    if (currentSelections.selectedScopeUid == null) {
+    if (currentSelections.selectedScope == null) {
       validationErrors.add('Please select a scope of work');
     }
     if (currentSelections.selectedWeather == null) {
       validationErrors.add('Please select weather condition');
     }
-    if (currentSelections.selectedRoadUid == null) {
+    if (currentSelections.selectedRoad == null) {
       validationErrors.add('Please select a road');
     }
     if (currentSelections.section == null ||
@@ -858,7 +847,7 @@ class ReportCreationBloc
     final isFormValid = validationErrors.isEmpty;
 
     emit(
-      ReportCreationState.page2Ready(
+      ReportCreationState.editingDetails(
         apiData: currentApiData,
         selections: currentSelections,
         formData: currentFormData.copyWith(
@@ -884,7 +873,7 @@ class ReportCreationBloc
     updatedFieldErrors.remove(event.fieldKey);
 
     emit(
-      ReportCreationState.page2Ready(
+      ReportCreationState.editingDetails(
         apiData: currentApiData,
         selections: currentSelections,
         formData: currentFormData.copyWith(fieldErrors: updatedFieldErrors),
@@ -896,29 +885,107 @@ class ReportCreationBloc
     SubmitReport event,
     Emitter<ReportCreationState> emit,
   ) async {
+    print('🚀 SubmitReport event received - companyUID: ${event.companyUID}');
+
+    // Run validation first
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    final fieldErrors = <String, String?>{};
+    final validationErrors = <String>[];
+
+    if (currentSelections.selectedScope == null) {
+      validationErrors.add('Please select a scope of work');
+    }
+    if (currentSelections.selectedWeather == null) {
+      validationErrors.add('Please select weather condition');
+    }
+    if (currentSelections.selectedRoad == null) {
+      validationErrors.add('Please select a road');
+    }
+    if (currentSelections.section == null ||
+        currentSelections.section!.isEmpty) {
+      validationErrors.add('Please enter section information');
+      fieldErrors['section'] = 'Section is required';
+    }
+
+    for (final quantityType in currentSelections.selectedQuantityTypes) {
+      for (final field in quantityType.quantityFields) {
+        final fieldKey = '${quantityType.uid}_${field.code}';
+
+        if (field.isRequired) {
+          final value = currentFormData.fieldValues[fieldKey];
+          final imageValue = currentFormData.imageFields[fieldKey] ?? [];
+
+          if ((value == null || value.toString().isEmpty) &&
+              imageValue.isEmpty) {
+            fieldErrors[fieldKey] = '${field.name} is required';
+            validationErrors.add('${field.name} is required');
+          }
+        }
+      }
+    }
+
+    final isFormValid = validationErrors.isEmpty;
+
+    print('📋 Validation results:');
+    print('  - Scope: ${currentSelections.selectedScope?.name}');
+    print('  - Weather: ${currentSelections.selectedWeather}');
+    print('  - Road: ${currentSelections.selectedRoad?.name}');
+    print('  - Section: ${currentSelections.section}');
+    print('  - Validation errors: $validationErrors');
+    print('  - Form valid: $isFormValid');
+
     final reportData = ReportData(
-      apiData: _getCurrentApiData(),
-      selections: _getCurrentSelections(),
-      formData: _getCurrentFormData(),
+      apiData: currentApiData,
+      selections: currentSelections,
+      formData: currentFormData.copyWith(
+        fieldErrors: fieldErrors,
+        validationErrors: validationErrors,
+        isFormValid: isFormValid,
+      ),
     );
 
-    if (!reportData.formData.isFormValid) {
+    if (!isFormValid) {
+      print('❌ Form validation failed');
       emit(
         ReportCreationState.submissionError(
           reportData: reportData,
-          errorMessage: 'Please fix validation errors before submitting',
+          errorMessage: validationErrors.first,
         ),
       );
       return;
     }
 
+    print('⏳ Emitting submitting state...');
     emit(ReportCreationState.submitting(reportData: reportData));
 
     try {
-      await Future.delayed(const Duration(seconds: 2));
+      print('📤 Calling submit use case...');
+      // Submit report using the use case
+      final result = await _submitDailyReportUseCase(
+        reportData: reportData,
+        companyUID: event.companyUID,
+      );
 
-      emit(ReportCreationState.submitted(reportData: reportData));
+      result.fold(
+        (failure) {
+          print('❌ Submission failed: ${failure.message}');
+          emit(
+            ReportCreationState.submissionError(
+              reportData: reportData,
+              errorMessage: failure.message,
+            ),
+          );
+        },
+        (response) {
+          print('✅ Submission successful: ${response.uid}');
+          emit(ReportCreationState.submitted(reportData: reportData));
+        },
+      );
     } catch (e) {
+      print('💥 Unexpected error during submission: $e');
       emit(
         ReportCreationState.submissionError(
           reportData: reportData,
@@ -970,14 +1037,12 @@ class ReportCreationBloc
     );
 
     final clearedSelections = currentSelections.copyWith(
-      selectedQuantityTypeUids: [],
       selectedQuantityTypes: [],
-      selectedEquipmentUids: [],
       selectedEquipment: [],
     );
 
     emit(
-      ReportCreationState.page2Ready(
+      ReportCreationState.editingDetails(
         apiData: currentApiData,
         selections: clearedSelections,
         formData: clearedFormData,

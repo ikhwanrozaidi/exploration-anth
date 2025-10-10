@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:rclink_app/features/auth/presentation/bloc/auth_event.dart';
 import 'package:rclink_app/features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
@@ -29,15 +30,14 @@ class _AuthWrapperState extends State<AuthWrapper> {
       builder: (context, authState) {
         return authState.when(
           initial: () {
-            // Trigger auth check on initial state
             context.read<AuthBloc>().add(CheckAuthStatus());
             return const _SplashScreen();
           },
           loading: () => _loginPage,
           otpSent: (_) => _loginPage,
-          // authenticated: (tokens, currentAdmin) => RootPage(),
           authenticated: (tokens, currentAdmin) => _buildAuthenticatedView(),
-          unauthenticated: () => _loginPage,
+          sessionExpiring: (timeLeft) => _buildAuthenticatedView(),
+          unauthenticated: (reason) => _loginPage,
           failure: (_) => _loginPage,
         );
       },
@@ -133,14 +133,19 @@ class _PermissionLoadingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CircularProgressIndicator(),
+            // CircularProgressIndicator(),
             SizedBox(height: 16),
-            Text('Loading permissions...'),
+            Lottie.asset(
+              'assets/lottie/road_repair_loading.json',
+              width: 200,
+              height: 200,
+              fit: BoxFit.contain,
+            ),
           ],
         ),
       ),

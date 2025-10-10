@@ -206,7 +206,7 @@ return clearAllCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool forceRefresh)?  loadWorkScopes,TResult Function( bool forceRefresh)?  loadStates,TResult Function( String stateUid,  bool forceRefresh)?  loadDistricts,TResult Function( String districtUid,  bool forceRefresh)?  loadRoads,TResult Function( String scopeUid)?  selectScope,TResult Function( String weather)?  selectWeather,TResult Function( String stateUid)?  selectState,TResult Function( String districtUid)?  selectDistrict,TResult Function( String roadUid)?  selectRoad,TResult Function( String section)?  updateSection,TResult Function( String companyUID,  String workScopeUID,  bool forceRefresh)?  loadQuantities,TResult Function( String companyUID,  String workScopeUID,  bool forceRefresh)?  loadEquipments,TResult Function( String companyUID,  String workScopeUID,  bool forceRefresh)?  loadQuantitiesAndEquipments,TResult Function( List<String> quantityTypeUids)?  selectQuantityTypes,TResult Function( String quantityTypeUid)?  toggleQuantityType,TResult Function( List<String> equipmentUids)?  selectEquipment,TResult Function( String equipmentUid)?  toggleEquipment,TResult Function( Map<String, List<Map<String, dynamic>>> snapshots)?  updateConditionSnapshots,TResult Function( List<Map<String, dynamic>> images)?  updateWorkerImages,TResult Function()?  clearCache,TResult Function()?  resetForm,TResult Function()?  startOver,TResult Function( String fieldKey,  dynamic value)?  updateFieldValue,TResult Function( String fieldKey,  List<String> imagePaths)?  addImages,TResult Function( String fieldKey,  String imagePath)?  removeImage,TResult Function()?  validateForm,TResult Function( String fieldKey)?  clearFieldError,TResult Function()?  submitReport,TResult Function()?  saveAsDraft,TResult Function()?  clearAllCache,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool forceRefresh)?  loadWorkScopes,TResult Function( bool forceRefresh)?  loadStates,TResult Function( String stateUid,  bool forceRefresh)?  loadDistricts,TResult Function( String districtUid,  bool forceRefresh)?  loadRoads,TResult Function( String scopeUid)?  selectScope,TResult Function( String weather)?  selectWeather,TResult Function( String stateUid)?  selectState,TResult Function( String districtUid)?  selectDistrict,TResult Function( String roadUid)?  selectRoad,TResult Function( String section)?  updateSection,TResult Function( String companyUID,  String workScopeUID,  bool forceRefresh)?  loadQuantities,TResult Function( String companyUID,  String workScopeUID,  bool forceRefresh)?  loadEquipments,TResult Function( String companyUID,  String workScopeUID,  bool forceRefresh)?  loadQuantitiesAndEquipments,TResult Function( List<String> quantityTypeUids)?  selectQuantityTypes,TResult Function( String quantityTypeUid)?  toggleQuantityType,TResult Function( List<String> equipmentUids)?  selectEquipment,TResult Function( String equipmentUid)?  toggleEquipment,TResult Function( Map<String, List<Map<String, dynamic>>> snapshots)?  updateConditionSnapshots,TResult Function( List<Map<String, dynamic>> images)?  updateWorkerImages,TResult Function()?  clearCache,TResult Function()?  resetForm,TResult Function()?  startOver,TResult Function( String fieldKey,  dynamic value)?  updateFieldValue,TResult Function( String fieldKey,  List<String> imagePaths)?  addImages,TResult Function( String fieldKey,  String imagePath)?  removeImage,TResult Function()?  validateForm,TResult Function( String fieldKey)?  clearFieldError,TResult Function( String companyUID)?  submitReport,TResult Function()?  saveAsDraft,TResult Function()?  clearAllCache,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadWorkScopes() when loadWorkScopes != null:
 return loadWorkScopes(_that.forceRefresh);case LoadStates() when loadStates != null:
@@ -236,7 +236,7 @@ return addImages(_that.fieldKey,_that.imagePaths);case RemoveImage() when remove
 return removeImage(_that.fieldKey,_that.imagePath);case ValidateForm() when validateForm != null:
 return validateForm();case ClearFieldError() when clearFieldError != null:
 return clearFieldError(_that.fieldKey);case SubmitReport() when submitReport != null:
-return submitReport();case SaveAsDraft() when saveAsDraft != null:
+return submitReport(_that.companyUID);case SaveAsDraft() when saveAsDraft != null:
 return saveAsDraft();case ClearAllCache() when clearAllCache != null:
 return clearAllCache();case _:
   return orElse();
@@ -256,7 +256,7 @@ return clearAllCache();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool forceRefresh)  loadWorkScopes,required TResult Function( bool forceRefresh)  loadStates,required TResult Function( String stateUid,  bool forceRefresh)  loadDistricts,required TResult Function( String districtUid,  bool forceRefresh)  loadRoads,required TResult Function( String scopeUid)  selectScope,required TResult Function( String weather)  selectWeather,required TResult Function( String stateUid)  selectState,required TResult Function( String districtUid)  selectDistrict,required TResult Function( String roadUid)  selectRoad,required TResult Function( String section)  updateSection,required TResult Function( String companyUID,  String workScopeUID,  bool forceRefresh)  loadQuantities,required TResult Function( String companyUID,  String workScopeUID,  bool forceRefresh)  loadEquipments,required TResult Function( String companyUID,  String workScopeUID,  bool forceRefresh)  loadQuantitiesAndEquipments,required TResult Function( List<String> quantityTypeUids)  selectQuantityTypes,required TResult Function( String quantityTypeUid)  toggleQuantityType,required TResult Function( List<String> equipmentUids)  selectEquipment,required TResult Function( String equipmentUid)  toggleEquipment,required TResult Function( Map<String, List<Map<String, dynamic>>> snapshots)  updateConditionSnapshots,required TResult Function( List<Map<String, dynamic>> images)  updateWorkerImages,required TResult Function()  clearCache,required TResult Function()  resetForm,required TResult Function()  startOver,required TResult Function( String fieldKey,  dynamic value)  updateFieldValue,required TResult Function( String fieldKey,  List<String> imagePaths)  addImages,required TResult Function( String fieldKey,  String imagePath)  removeImage,required TResult Function()  validateForm,required TResult Function( String fieldKey)  clearFieldError,required TResult Function()  submitReport,required TResult Function()  saveAsDraft,required TResult Function()  clearAllCache,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool forceRefresh)  loadWorkScopes,required TResult Function( bool forceRefresh)  loadStates,required TResult Function( String stateUid,  bool forceRefresh)  loadDistricts,required TResult Function( String districtUid,  bool forceRefresh)  loadRoads,required TResult Function( String scopeUid)  selectScope,required TResult Function( String weather)  selectWeather,required TResult Function( String stateUid)  selectState,required TResult Function( String districtUid)  selectDistrict,required TResult Function( String roadUid)  selectRoad,required TResult Function( String section)  updateSection,required TResult Function( String companyUID,  String workScopeUID,  bool forceRefresh)  loadQuantities,required TResult Function( String companyUID,  String workScopeUID,  bool forceRefresh)  loadEquipments,required TResult Function( String companyUID,  String workScopeUID,  bool forceRefresh)  loadQuantitiesAndEquipments,required TResult Function( List<String> quantityTypeUids)  selectQuantityTypes,required TResult Function( String quantityTypeUid)  toggleQuantityType,required TResult Function( List<String> equipmentUids)  selectEquipment,required TResult Function( String equipmentUid)  toggleEquipment,required TResult Function( Map<String, List<Map<String, dynamic>>> snapshots)  updateConditionSnapshots,required TResult Function( List<Map<String, dynamic>> images)  updateWorkerImages,required TResult Function()  clearCache,required TResult Function()  resetForm,required TResult Function()  startOver,required TResult Function( String fieldKey,  dynamic value)  updateFieldValue,required TResult Function( String fieldKey,  List<String> imagePaths)  addImages,required TResult Function( String fieldKey,  String imagePath)  removeImage,required TResult Function()  validateForm,required TResult Function( String fieldKey)  clearFieldError,required TResult Function( String companyUID)  submitReport,required TResult Function()  saveAsDraft,required TResult Function()  clearAllCache,}) {final _that = this;
 switch (_that) {
 case LoadWorkScopes():
 return loadWorkScopes(_that.forceRefresh);case LoadStates():
@@ -286,7 +286,7 @@ return addImages(_that.fieldKey,_that.imagePaths);case RemoveImage():
 return removeImage(_that.fieldKey,_that.imagePath);case ValidateForm():
 return validateForm();case ClearFieldError():
 return clearFieldError(_that.fieldKey);case SubmitReport():
-return submitReport();case SaveAsDraft():
+return submitReport(_that.companyUID);case SaveAsDraft():
 return saveAsDraft();case ClearAllCache():
 return clearAllCache();case _:
   throw StateError('Unexpected subclass');
@@ -305,7 +305,7 @@ return clearAllCache();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool forceRefresh)?  loadWorkScopes,TResult? Function( bool forceRefresh)?  loadStates,TResult? Function( String stateUid,  bool forceRefresh)?  loadDistricts,TResult? Function( String districtUid,  bool forceRefresh)?  loadRoads,TResult? Function( String scopeUid)?  selectScope,TResult? Function( String weather)?  selectWeather,TResult? Function( String stateUid)?  selectState,TResult? Function( String districtUid)?  selectDistrict,TResult? Function( String roadUid)?  selectRoad,TResult? Function( String section)?  updateSection,TResult? Function( String companyUID,  String workScopeUID,  bool forceRefresh)?  loadQuantities,TResult? Function( String companyUID,  String workScopeUID,  bool forceRefresh)?  loadEquipments,TResult? Function( String companyUID,  String workScopeUID,  bool forceRefresh)?  loadQuantitiesAndEquipments,TResult? Function( List<String> quantityTypeUids)?  selectQuantityTypes,TResult? Function( String quantityTypeUid)?  toggleQuantityType,TResult? Function( List<String> equipmentUids)?  selectEquipment,TResult? Function( String equipmentUid)?  toggleEquipment,TResult? Function( Map<String, List<Map<String, dynamic>>> snapshots)?  updateConditionSnapshots,TResult? Function( List<Map<String, dynamic>> images)?  updateWorkerImages,TResult? Function()?  clearCache,TResult? Function()?  resetForm,TResult? Function()?  startOver,TResult? Function( String fieldKey,  dynamic value)?  updateFieldValue,TResult? Function( String fieldKey,  List<String> imagePaths)?  addImages,TResult? Function( String fieldKey,  String imagePath)?  removeImage,TResult? Function()?  validateForm,TResult? Function( String fieldKey)?  clearFieldError,TResult? Function()?  submitReport,TResult? Function()?  saveAsDraft,TResult? Function()?  clearAllCache,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool forceRefresh)?  loadWorkScopes,TResult? Function( bool forceRefresh)?  loadStates,TResult? Function( String stateUid,  bool forceRefresh)?  loadDistricts,TResult? Function( String districtUid,  bool forceRefresh)?  loadRoads,TResult? Function( String scopeUid)?  selectScope,TResult? Function( String weather)?  selectWeather,TResult? Function( String stateUid)?  selectState,TResult? Function( String districtUid)?  selectDistrict,TResult? Function( String roadUid)?  selectRoad,TResult? Function( String section)?  updateSection,TResult? Function( String companyUID,  String workScopeUID,  bool forceRefresh)?  loadQuantities,TResult? Function( String companyUID,  String workScopeUID,  bool forceRefresh)?  loadEquipments,TResult? Function( String companyUID,  String workScopeUID,  bool forceRefresh)?  loadQuantitiesAndEquipments,TResult? Function( List<String> quantityTypeUids)?  selectQuantityTypes,TResult? Function( String quantityTypeUid)?  toggleQuantityType,TResult? Function( List<String> equipmentUids)?  selectEquipment,TResult? Function( String equipmentUid)?  toggleEquipment,TResult? Function( Map<String, List<Map<String, dynamic>>> snapshots)?  updateConditionSnapshots,TResult? Function( List<Map<String, dynamic>> images)?  updateWorkerImages,TResult? Function()?  clearCache,TResult? Function()?  resetForm,TResult? Function()?  startOver,TResult? Function( String fieldKey,  dynamic value)?  updateFieldValue,TResult? Function( String fieldKey,  List<String> imagePaths)?  addImages,TResult? Function( String fieldKey,  String imagePath)?  removeImage,TResult? Function()?  validateForm,TResult? Function( String fieldKey)?  clearFieldError,TResult? Function( String companyUID)?  submitReport,TResult? Function()?  saveAsDraft,TResult? Function()?  clearAllCache,}) {final _that = this;
 switch (_that) {
 case LoadWorkScopes() when loadWorkScopes != null:
 return loadWorkScopes(_that.forceRefresh);case LoadStates() when loadStates != null:
@@ -335,7 +335,7 @@ return addImages(_that.fieldKey,_that.imagePaths);case RemoveImage() when remove
 return removeImage(_that.fieldKey,_that.imagePath);case ValidateForm() when validateForm != null:
 return validateForm();case ClearFieldError() when clearFieldError != null:
 return clearFieldError(_that.fieldKey);case SubmitReport() when submitReport != null:
-return submitReport();case SaveAsDraft() when saveAsDraft != null:
+return submitReport(_that.companyUID);case SaveAsDraft() when saveAsDraft != null:
 return saveAsDraft();case ClearAllCache() when clearAllCache != null:
 return clearAllCache();case _:
   return null;
@@ -2047,33 +2047,67 @@ as String,
 
 
 class SubmitReport implements ReportCreationEvent {
-  const SubmitReport();
+  const SubmitReport({required this.companyUID});
   
 
+ final  String companyUID;
 
-
+/// Create a copy of ReportCreationEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SubmitReportCopyWith<SubmitReport> get copyWith => _$SubmitReportCopyWithImpl<SubmitReport>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitReport);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitReport&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,companyUID);
 
 @override
 String toString() {
-  return 'ReportCreationEvent.submitReport()';
+  return 'ReportCreationEvent.submitReport(companyUID: $companyUID)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $SubmitReportCopyWith<$Res> implements $ReportCreationEventCopyWith<$Res> {
+  factory $SubmitReportCopyWith(SubmitReport value, $Res Function(SubmitReport) _then) = _$SubmitReportCopyWithImpl;
+@useResult
+$Res call({
+ String companyUID
+});
 
 
+
+
+}
+/// @nodoc
+class _$SubmitReportCopyWithImpl<$Res>
+    implements $SubmitReportCopyWith<$Res> {
+  _$SubmitReportCopyWithImpl(this._self, this._then);
+
+  final SubmitReport _self;
+  final $Res Function(SubmitReport) _then;
+
+/// Create a copy of ReportCreationEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? companyUID = null,}) {
+  return _then(SubmitReport(
+companyUID: null == companyUID ? _self.companyUID : companyUID // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

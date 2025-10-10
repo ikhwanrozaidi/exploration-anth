@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constant/report_model.dart';
-import '../pages/widgets/tips_page.dart';
+import '../widgets/tips_page.dart';
 
 /// UI enhancement mappings for API fields
 class FieldEnhancements {

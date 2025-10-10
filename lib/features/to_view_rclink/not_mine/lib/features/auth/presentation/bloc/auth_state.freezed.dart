@@ -55,14 +55,15 @@ extension AuthStatePatterns on AuthState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthInitial value)?  initial,TResult Function( AuthLoading value)?  loading,TResult Function( AuthOtpSent value)?  otpSent,TResult Function( Authenticated value)?  authenticated,TResult Function( Unauthenticated value)?  unauthenticated,TResult Function( AuthFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthInitial value)?  initial,TResult Function( AuthLoading value)?  loading,TResult Function( AuthOtpSent value)?  otpSent,TResult Function( Authenticated value)?  authenticated,TResult Function( AuthSessionExpiring value)?  sessionExpiring,TResult Function( Unauthenticated value)?  unauthenticated,TResult Function( AuthFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial(_that);case AuthLoading() when loading != null:
 return loading(_that);case AuthOtpSent() when otpSent != null:
 return otpSent(_that);case Authenticated() when authenticated != null:
-return authenticated(_that);case Unauthenticated() when unauthenticated != null:
+return authenticated(_that);case AuthSessionExpiring() when sessionExpiring != null:
+return sessionExpiring(_that);case Unauthenticated() when unauthenticated != null:
 return unauthenticated(_that);case AuthFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
@@ -82,14 +83,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthInitial value)  initial,required TResult Function( AuthLoading value)  loading,required TResult Function( AuthOtpSent value)  otpSent,required TResult Function( Authenticated value)  authenticated,required TResult Function( Unauthenticated value)  unauthenticated,required TResult Function( AuthFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthInitial value)  initial,required TResult Function( AuthLoading value)  loading,required TResult Function( AuthOtpSent value)  otpSent,required TResult Function( Authenticated value)  authenticated,required TResult Function( AuthSessionExpiring value)  sessionExpiring,required TResult Function( Unauthenticated value)  unauthenticated,required TResult Function( AuthFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial(_that);case AuthLoading():
 return loading(_that);case AuthOtpSent():
 return otpSent(_that);case Authenticated():
-return authenticated(_that);case Unauthenticated():
+return authenticated(_that);case AuthSessionExpiring():
+return sessionExpiring(_that);case Unauthenticated():
 return unauthenticated(_that);case AuthFailure():
 return failure(_that);case _:
   throw StateError('Unexpected subclass');
@@ -108,14 +110,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthInitial value)?  initial,TResult? Function( AuthLoading value)?  loading,TResult? Function( AuthOtpSent value)?  otpSent,TResult? Function( Authenticated value)?  authenticated,TResult? Function( Unauthenticated value)?  unauthenticated,TResult? Function( AuthFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthInitial value)?  initial,TResult? Function( AuthLoading value)?  loading,TResult? Function( AuthOtpSent value)?  otpSent,TResult? Function( Authenticated value)?  authenticated,TResult? Function( AuthSessionExpiring value)?  sessionExpiring,TResult? Function( Unauthenticated value)?  unauthenticated,TResult? Function( AuthFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial(_that);case AuthLoading() when loading != null:
 return loading(_that);case AuthOtpSent() when otpSent != null:
 return otpSent(_that);case Authenticated() when authenticated != null:
-return authenticated(_that);case Unauthenticated() when unauthenticated != null:
+return authenticated(_that);case AuthSessionExpiring() when sessionExpiring != null:
+return sessionExpiring(_that);case Unauthenticated() when unauthenticated != null:
 return unauthenticated(_that);case AuthFailure() when failure != null:
 return failure(_that);case _:
   return null;
@@ -134,14 +137,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( OtpResponse data)?  otpSent,TResult Function( Tokens tokens,  Admin? currentAdmin)?  authenticated,TResult Function()?  unauthenticated,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( OtpResponse data)?  otpSent,TResult Function( Tokens tokens,  Admin? currentAdmin)?  authenticated,TResult Function( Duration timeLeft)?  sessionExpiring,TResult Function( String? reason)?  unauthenticated,TResult Function( String message)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
 return loading();case AuthOtpSent() when otpSent != null:
 return otpSent(_that.data);case Authenticated() when authenticated != null:
-return authenticated(_that.tokens,_that.currentAdmin);case Unauthenticated() when unauthenticated != null:
-return unauthenticated();case AuthFailure() when failure != null:
+return authenticated(_that.tokens,_that.currentAdmin);case AuthSessionExpiring() when sessionExpiring != null:
+return sessionExpiring(_that.timeLeft);case Unauthenticated() when unauthenticated != null:
+return unauthenticated(_that.reason);case AuthFailure() when failure != null:
 return failure(_that.message);case _:
   return orElse();
 
@@ -160,14 +164,15 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( OtpResponse data)  otpSent,required TResult Function( Tokens tokens,  Admin? currentAdmin)  authenticated,required TResult Function()  unauthenticated,required TResult Function( String message)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( OtpResponse data)  otpSent,required TResult Function( Tokens tokens,  Admin? currentAdmin)  authenticated,required TResult Function( Duration timeLeft)  sessionExpiring,required TResult Function( String? reason)  unauthenticated,required TResult Function( String message)  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial();case AuthLoading():
 return loading();case AuthOtpSent():
 return otpSent(_that.data);case Authenticated():
-return authenticated(_that.tokens,_that.currentAdmin);case Unauthenticated():
-return unauthenticated();case AuthFailure():
+return authenticated(_that.tokens,_that.currentAdmin);case AuthSessionExpiring():
+return sessionExpiring(_that.timeLeft);case Unauthenticated():
+return unauthenticated(_that.reason);case AuthFailure():
 return failure(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -185,14 +190,15 @@ return failure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( OtpResponse data)?  otpSent,TResult? Function( Tokens tokens,  Admin? currentAdmin)?  authenticated,TResult? Function()?  unauthenticated,TResult? Function( String message)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( OtpResponse data)?  otpSent,TResult? Function( Tokens tokens,  Admin? currentAdmin)?  authenticated,TResult? Function( Duration timeLeft)?  sessionExpiring,TResult? Function( String? reason)?  unauthenticated,TResult? Function( String message)?  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthLoading() when loading != null:
 return loading();case AuthOtpSent() when otpSent != null:
 return otpSent(_that.data);case Authenticated() when authenticated != null:
-return authenticated(_that.tokens,_that.currentAdmin);case Unauthenticated() when unauthenticated != null:
-return unauthenticated();case AuthFailure() when failure != null:
+return authenticated(_that.tokens,_that.currentAdmin);case AuthSessionExpiring() when sessionExpiring != null:
+return sessionExpiring(_that.timeLeft);case Unauthenticated() when unauthenticated != null:
+return unauthenticated(_that.reason);case AuthFailure() when failure != null:
 return failure(_that.message);case _:
   return null;
 
@@ -402,34 +408,134 @@ as Admin?,
 /// @nodoc
 
 
-class Unauthenticated implements AuthState {
-  const Unauthenticated();
+class AuthSessionExpiring implements AuthState {
+  const AuthSessionExpiring(this.timeLeft);
   
 
+ final  Duration timeLeft;
 
-
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthSessionExpiringCopyWith<AuthSessionExpiring> get copyWith => _$AuthSessionExpiringCopyWithImpl<AuthSessionExpiring>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Unauthenticated);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthSessionExpiring&&(identical(other.timeLeft, timeLeft) || other.timeLeft == timeLeft));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,timeLeft);
 
 @override
 String toString() {
-  return 'AuthState.unauthenticated()';
+  return 'AuthState.sessionExpiring(timeLeft: $timeLeft)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $AuthSessionExpiringCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
+  factory $AuthSessionExpiringCopyWith(AuthSessionExpiring value, $Res Function(AuthSessionExpiring) _then) = _$AuthSessionExpiringCopyWithImpl;
+@useResult
+$Res call({
+ Duration timeLeft
+});
 
 
+
+
+}
+/// @nodoc
+class _$AuthSessionExpiringCopyWithImpl<$Res>
+    implements $AuthSessionExpiringCopyWith<$Res> {
+  _$AuthSessionExpiringCopyWithImpl(this._self, this._then);
+
+  final AuthSessionExpiring _self;
+  final $Res Function(AuthSessionExpiring) _then;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? timeLeft = null,}) {
+  return _then(AuthSessionExpiring(
+null == timeLeft ? _self.timeLeft : timeLeft // ignore: cast_nullable_to_non_nullable
+as Duration,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class Unauthenticated implements AuthState {
+  const Unauthenticated({this.reason});
+  
+
+ final  String? reason;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UnauthenticatedCopyWith<Unauthenticated> get copyWith => _$UnauthenticatedCopyWithImpl<Unauthenticated>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Unauthenticated&&(identical(other.reason, reason) || other.reason == reason));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,reason);
+
+@override
+String toString() {
+  return 'AuthState.unauthenticated(reason: $reason)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UnauthenticatedCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
+  factory $UnauthenticatedCopyWith(Unauthenticated value, $Res Function(Unauthenticated) _then) = _$UnauthenticatedCopyWithImpl;
+@useResult
+$Res call({
+ String? reason
+});
+
+
+
+
+}
+/// @nodoc
+class _$UnauthenticatedCopyWithImpl<$Res>
+    implements $UnauthenticatedCopyWith<$Res> {
+  _$UnauthenticatedCopyWithImpl(this._self, this._then);
+
+  final Unauthenticated _self;
+  final $Res Function(Unauthenticated) _then;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? reason = freezed,}) {
+  return _then(Unauthenticated(
+reason: freezed == reason ? _self.reason : reason // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

@@ -69,7 +69,7 @@
           "uid": "9fc390a2-522e-4f7f-a9be-4a2cdfd55e1e"
         }
       ],
-      
+
       "reportQuantities": [
         {
           "quantityType": {

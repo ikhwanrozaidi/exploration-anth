@@ -1,16 +1,17 @@
+// lib/features/auth/presentation/bloc/auth_bloc.dart
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rclink_app/core/errors/failures.dart';
 import 'package:rclink_app/features/auth/domain/entities/tokens.dart';
 import 'package:rclink_app/features/auth/domain/usecases/request_otp_usecase.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/services/token_expiry_monitor_service.dart';
 import '../../../admin/domain/usecases/get_current_admin_usecase.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_event.dart';
-import '../../../rbac/domain/entities/role.dart';
 import '../../../rbac/presentation/bloc/rbac_bloc.dart';
 import '../../../rbac/presentation/bloc/rbac_event.dart';
-import '../../../rbac/presentation/bloc/rbac_state.dart';
 import '../../domain/usecases/verify_otp_usecase.dart';
 import '../../domain/usecases/store_tokens_usecase.dart';
 import '../../domain/usecases/get_tokens_usecase.dart';
@@ -26,6 +27,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final StoreTokensUseCase _storeTokensUseCase;
   final GetTokensUseCase _getTokensUseCase;
   final ClearAuthCacheUseCase _clearAuthCacheUseCase;
+  final TokenExpiryMonitor _tokenExpiryMonitor;
+
+  StreamSubscription? _expirySubscription;
+  StreamSubscription? _warningSubscription;
 
   AuthBloc(
     this._requestOtpUseCase,
@@ -34,6 +39,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._storeTokensUseCase,
     this._getTokensUseCase,
     this._clearAuthCacheUseCase,
+    this._tokenExpiryMonitor,
   ) : super(const AuthInitial()) {
     on<RequestOtpRequested>(_onRequestOtpRequested);
     on<VerifyOtpRequested>(_onVerifyOtpRequested);
@@ -41,6 +47,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoadCurrentAdmin>(_onLoadCurrentAdmin);
     on<CompanySelected>(_onCompanySelected);
     on<LogoutRequested>(_onLogoutRequested);
+    on<AuthTokenExpired>(_onTokenExpired);
+    on<AuthTokenExpiring>(_onTokenExpiring);
+
+    _setupExpiryListeners();
+  }
+
+  void _setupExpiryListeners() {
+    // Listen for token expiry
+    _expirySubscription = _tokenExpiryMonitor.onTokenExpired.listen((_) {
+      add(const AuthTokenExpired());
+    });
+
+    // Listen for expiry warning
+    _warningSubscription = _tokenExpiryMonitor.onTokenExpiring.listen((
+      timeLeft,
+    ) {
+      add(AuthTokenExpiring(timeLeft));
+    });
   }
 
   Future<void> _onRequestOtpRequested(
@@ -87,13 +111,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           StoreTokensParams(tokens: tokens),
         );
 
-        storeResult.fold(
-          (failure) {
+        await storeResult.fold(
+          (failure) async {
+            // Make this async too
             print('❌ AuthBloc: Failed to store tokens: ${failure.message}');
             emit(AuthFailure('Failed to save authentication data'));
           },
-          (_) {
+          (_) async {
             print('✅ AuthBloc: Tokens stored successfully');
+            // AWAIT start monitoring before emitting
+            await _tokenExpiryMonitor.startMonitoring();
             emit(AuthState.authenticated(tokens));
           },
         );
@@ -110,7 +137,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     if (event.roleUID != null) {
       final rbacBloc = getIt<RbacBloc>();
       rbacBloc.add(LoadPermissions(event.roleUID!));
-      // print('📋 Loading permissions for role: ${event.roleUID}');
     }
   }
 
@@ -122,8 +148,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     final tokensResult = await _getTokensUseCase();
 
-    tokensResult.fold(
-      (failure) {
+    await tokensResult.fold(
+      (failure) async {
         print('❌ AuthBloc: Failed to get stored tokens: ${failure.message}');
         emit(const Unauthenticated());
       },
@@ -137,15 +163,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             print(
               '✅ AuthBloc: Valid tokens found, user is fully authenticated',
             );
-            // TODO: Check if company is already selected from storage
+            try {
+              await _tokenExpiryMonitor.startMonitoring();
+              print('✅ AuthBloc: Token monitoring started');
+            } catch (e) {
+              print('⚠️ AuthBloc: Failed to start token monitoring: $e');
+            }
             emit(AuthState.authenticated(tokens));
           } else if (tokens.refreshTokenExpiresAt.isAfter(now)) {
             print('🔄 AuthBloc: Access token expired but refresh token valid');
+            try {
+              await _tokenExpiryMonitor.startMonitoring();
+              print('✅ AuthBloc: Token monitoring started');
+            } catch (e) {
+              print('⚠️ AuthBloc: Failed to start token monitoring: $e');
+            }
             emit(AuthState.authenticated(tokens));
           } else {
             print('❌ AuthBloc: All tokens expired');
             await _clearAuthCacheUseCase();
-            emit(const Unauthenticated());
+            emit(const Unauthenticated(reason: 'Session expired'));
           }
         }
       },
@@ -175,17 +212,66 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
   }
 
+  Future<void> _onTokenExpired(
+    AuthTokenExpired event,
+    Emitter<AuthState> emit,
+  ) async {
+    print('🔴 AuthBloc: Token expired - logging out user');
+
+    // Clear permissions
+    final rbacBloc = getIt<RbacBloc>();
+    rbacBloc.add(const ClearPermissions());
+
+    // Clear company cache
+    final companyBloc = getIt<CompanyBloc>();
+    companyBloc.add(const ClearCompanyCache());
+
+    // Clear auth data
+    await _clearAuthCacheUseCase();
+
+    // Stop monitoring
+    await _tokenExpiryMonitor.stopMonitoring();
+
+    emit(const Unauthenticated());
+  }
+
+  Future<void> _onTokenExpiring(
+    AuthTokenExpiring event,
+    Emitter<AuthState> emit,
+  ) async {
+    print('⚠️ AuthBloc: Token expiring in ${event.timeLeft.inMinutes} minutes');
+
+    final currentState = state;
+    if (currentState is Authenticated) {
+      // Emit warning state while maintaining authentication
+      emit(AuthSessionExpiring(event.timeLeft));
+
+      // Optionally emit back to authenticated after showing warning
+      // This allows UI to show a snackbar/dialog while keeping user logged in
+      await Future.delayed(const Duration(milliseconds: 100));
+      emit(
+        AuthState.authenticated(
+          currentState.tokens,
+          currentAdmin: currentState.currentAdmin,
+        ),
+      );
+    }
+  }
+
   Future<void> _onLogoutRequested(
     LogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
     emit(const AuthLoading());
 
-    // Clear permissions when logging out using RbacBloc
+    // Stop monitoring
+    await _tokenExpiryMonitor.stopMonitoring();
+
+    // Clear permissions using RbacBloc
     final rbacBloc = getIt<RbacBloc>();
     rbacBloc.add(const ClearPermissions());
 
-    // Clear company cache when logging out using CompanyBloc
+    // Clear company cache using CompanyBloc
     final companyBloc = getIt<CompanyBloc>();
     companyBloc.add(const ClearCompanyCache());
 
@@ -219,5 +305,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             ? 'An unexpected error occurred. Please try again.'
             : failure.message;
     }
+  }
+
+  @override
+  Future<void> close() {
+    _expirySubscription?.cancel();
+    _warningSubscription?.cancel();
+    return super.close();
   }
 }

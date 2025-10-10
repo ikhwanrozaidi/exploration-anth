@@ -102,7 +102,9 @@ class ReportCreationEvent with _$ReportCreationEvent {
   const factory ReportCreationEvent.validateForm() = ValidateForm;
   const factory ReportCreationEvent.clearFieldError(String fieldKey) =
       ClearFieldError;
-  const factory ReportCreationEvent.submitReport() = SubmitReport;
+  const factory ReportCreationEvent.submitReport({
+    required String companyUID,
+  }) = SubmitReport;
   const factory ReportCreationEvent.saveAsDraft() = SaveAsDraft;
 
   const factory ReportCreationEvent.clearAllCache() = ClearAllCache;
