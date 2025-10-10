@@ -13353,17 +13353,50 @@ class $DailyReportsTable extends DailyReports
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _equipmentsJsonMeta = const VerificationMeta(
-    'equipmentsJson',
+  static const VerificationMeta _workScopeDataMeta = const VerificationMeta(
+    'workScopeData',
   );
   @override
-  late final GeneratedColumn<String> equipmentsJson = GeneratedColumn<String>(
-    'equipments_json',
+  late final GeneratedColumn<String> workScopeData = GeneratedColumn<String>(
+    'work_scope_data',
     aliasedName,
     true,
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _roadDataMeta = const VerificationMeta(
+    'roadData',
+  );
+  @override
+  late final GeneratedColumn<String> roadData = GeneratedColumn<String>(
+    'road_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _equipmentsDataMeta = const VerificationMeta(
+    'equipmentsData',
+  );
+  @override
+  late final GeneratedColumn<String> equipmentsData = GeneratedColumn<String>(
+    'equipments_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _reportQuantitiesDataMeta =
+      const VerificationMeta('reportQuantitiesData');
+  @override
+  late final GeneratedColumn<String> reportQuantitiesData =
+      GeneratedColumn<String>(
+        'report_quantities_data',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
   @override
   List<GeneratedColumn> get $columns => [
     isSynced,
@@ -13394,7 +13427,10 @@ class $DailyReportsTable extends DailyReports
     createdByID,
     createdAt,
     updatedAt,
-    equipmentsJson,
+    workScopeData,
+    roadData,
+    equipmentsData,
+    reportQuantitiesData,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -13624,12 +13660,36 @@ class $DailyReportsTable extends DailyReports
     } else if (isInserting) {
       context.missing(_updatedAtMeta);
     }
-    if (data.containsKey('equipments_json')) {
+    if (data.containsKey('work_scope_data')) {
       context.handle(
-        _equipmentsJsonMeta,
-        equipmentsJson.isAcceptableOrUnknown(
-          data['equipments_json']!,
-          _equipmentsJsonMeta,
+        _workScopeDataMeta,
+        workScopeData.isAcceptableOrUnknown(
+          data['work_scope_data']!,
+          _workScopeDataMeta,
+        ),
+      );
+    }
+    if (data.containsKey('road_data')) {
+      context.handle(
+        _roadDataMeta,
+        roadData.isAcceptableOrUnknown(data['road_data']!, _roadDataMeta),
+      );
+    }
+    if (data.containsKey('equipments_data')) {
+      context.handle(
+        _equipmentsDataMeta,
+        equipmentsData.isAcceptableOrUnknown(
+          data['equipments_data']!,
+          _equipmentsDataMeta,
+        ),
+      );
+    }
+    if (data.containsKey('report_quantities_data')) {
+      context.handle(
+        _reportQuantitiesDataMeta,
+        reportQuantitiesData.isAcceptableOrUnknown(
+          data['report_quantities_data']!,
+          _reportQuantitiesDataMeta,
         ),
       );
     }
@@ -13758,9 +13818,21 @@ class $DailyReportsTable extends DailyReports
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
       )!,
-      equipmentsJson: attachedDatabase.typeMapping.read(
+      workScopeData: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}equipments_json'],
+        data['${effectivePrefix}work_scope_data'],
+      ),
+      roadData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}road_data'],
+      ),
+      equipmentsData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}equipments_data'],
+      ),
+      reportQuantitiesData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}report_quantities_data'],
       ),
     );
   }
@@ -13801,7 +13873,10 @@ class DailyReportRecord extends DataClass
   final int createdByID;
   final DateTime createdAt;
   final DateTime updatedAt;
-  final String? equipmentsJson;
+  final String? workScopeData;
+  final String? roadData;
+  final String? equipmentsData;
+  final String? reportQuantitiesData;
   const DailyReportRecord({
     required this.isSynced,
     this.deletedAt,
@@ -13831,7 +13906,10 @@ class DailyReportRecord extends DataClass
     required this.createdByID,
     required this.createdAt,
     required this.updatedAt,
-    this.equipmentsJson,
+    this.workScopeData,
+    this.roadData,
+    this.equipmentsData,
+    this.reportQuantitiesData,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -13892,8 +13970,17 @@ class DailyReportRecord extends DataClass
     map['created_by_i_d'] = Variable<int>(createdByID);
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
-    if (!nullToAbsent || equipmentsJson != null) {
-      map['equipments_json'] = Variable<String>(equipmentsJson);
+    if (!nullToAbsent || workScopeData != null) {
+      map['work_scope_data'] = Variable<String>(workScopeData);
+    }
+    if (!nullToAbsent || roadData != null) {
+      map['road_data'] = Variable<String>(roadData);
+    }
+    if (!nullToAbsent || equipmentsData != null) {
+      map['equipments_data'] = Variable<String>(equipmentsData);
+    }
+    if (!nullToAbsent || reportQuantitiesData != null) {
+      map['report_quantities_data'] = Variable<String>(reportQuantitiesData);
     }
     return map;
   }
@@ -13956,9 +14043,18 @@ class DailyReportRecord extends DataClass
       createdByID: Value(createdByID),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
-      equipmentsJson: equipmentsJson == null && nullToAbsent
+      workScopeData: workScopeData == null && nullToAbsent
           ? const Value.absent()
-          : Value(equipmentsJson),
+          : Value(workScopeData),
+      roadData: roadData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(roadData),
+      equipmentsData: equipmentsData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(equipmentsData),
+      reportQuantitiesData: reportQuantitiesData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(reportQuantitiesData),
     );
   }
 
@@ -13996,7 +14092,12 @@ class DailyReportRecord extends DataClass
       createdByID: serializer.fromJson<int>(json['createdByID']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
-      equipmentsJson: serializer.fromJson<String?>(json['equipmentsJson']),
+      workScopeData: serializer.fromJson<String?>(json['workScopeData']),
+      roadData: serializer.fromJson<String?>(json['roadData']),
+      equipmentsData: serializer.fromJson<String?>(json['equipmentsData']),
+      reportQuantitiesData: serializer.fromJson<String?>(
+        json['reportQuantitiesData'],
+      ),
     );
   }
   @override
@@ -14031,7 +14132,10 @@ class DailyReportRecord extends DataClass
       'createdByID': serializer.toJson<int>(createdByID),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
-      'equipmentsJson': serializer.toJson<String?>(equipmentsJson),
+      'workScopeData': serializer.toJson<String?>(workScopeData),
+      'roadData': serializer.toJson<String?>(roadData),
+      'equipmentsData': serializer.toJson<String?>(equipmentsData),
+      'reportQuantitiesData': serializer.toJson<String?>(reportQuantitiesData),
     };
   }
 
@@ -14064,7 +14168,10 @@ class DailyReportRecord extends DataClass
     int? createdByID,
     DateTime? createdAt,
     DateTime? updatedAt,
-    Value<String?> equipmentsJson = const Value.absent(),
+    Value<String?> workScopeData = const Value.absent(),
+    Value<String?> roadData = const Value.absent(),
+    Value<String?> equipmentsData = const Value.absent(),
+    Value<String?> reportQuantitiesData = const Value.absent(),
   }) => DailyReportRecord(
     isSynced: isSynced ?? this.isSynced,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
@@ -14100,9 +14207,16 @@ class DailyReportRecord extends DataClass
     createdByID: createdByID ?? this.createdByID,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
-    equipmentsJson: equipmentsJson.present
-        ? equipmentsJson.value
-        : this.equipmentsJson,
+    workScopeData: workScopeData.present
+        ? workScopeData.value
+        : this.workScopeData,
+    roadData: roadData.present ? roadData.value : this.roadData,
+    equipmentsData: equipmentsData.present
+        ? equipmentsData.value
+        : this.equipmentsData,
+    reportQuantitiesData: reportQuantitiesData.present
+        ? reportQuantitiesData.value
+        : this.reportQuantitiesData,
   );
   DailyReportRecord copyWithCompanion(DailyReportsCompanion data) {
     return DailyReportRecord(
@@ -14160,9 +14274,16 @@ class DailyReportRecord extends DataClass
           : this.createdByID,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-      equipmentsJson: data.equipmentsJson.present
-          ? data.equipmentsJson.value
-          : this.equipmentsJson,
+      workScopeData: data.workScopeData.present
+          ? data.workScopeData.value
+          : this.workScopeData,
+      roadData: data.roadData.present ? data.roadData.value : this.roadData,
+      equipmentsData: data.equipmentsData.present
+          ? data.equipmentsData.value
+          : this.equipmentsData,
+      reportQuantitiesData: data.reportQuantitiesData.present
+          ? data.reportQuantitiesData.value
+          : this.reportQuantitiesData,
     );
   }
 
@@ -14197,7 +14318,10 @@ class DailyReportRecord extends DataClass
           ..write('createdByID: $createdByID, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('equipmentsJson: $equipmentsJson')
+          ..write('workScopeData: $workScopeData, ')
+          ..write('roadData: $roadData, ')
+          ..write('equipmentsData: $equipmentsData, ')
+          ..write('reportQuantitiesData: $reportQuantitiesData')
           ..write(')'))
         .toString();
   }
@@ -14232,7 +14356,10 @@ class DailyReportRecord extends DataClass
     createdByID,
     createdAt,
     updatedAt,
-    equipmentsJson,
+    workScopeData,
+    roadData,
+    equipmentsData,
+    reportQuantitiesData,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -14266,7 +14393,10 @@ class DailyReportRecord extends DataClass
           other.createdByID == this.createdByID &&
           other.createdAt == this.createdAt &&
           other.updatedAt == this.updatedAt &&
-          other.equipmentsJson == this.equipmentsJson);
+          other.workScopeData == this.workScopeData &&
+          other.roadData == this.roadData &&
+          other.equipmentsData == this.equipmentsData &&
+          other.reportQuantitiesData == this.reportQuantitiesData);
 }
 
 class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
@@ -14298,7 +14428,10 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
   final Value<int> createdByID;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
-  final Value<String?> equipmentsJson;
+  final Value<String?> workScopeData;
+  final Value<String?> roadData;
+  final Value<String?> equipmentsData;
+  final Value<String?> reportQuantitiesData;
   const DailyReportsCompanion({
     this.isSynced = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -14328,7 +14461,10 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     this.createdByID = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
-    this.equipmentsJson = const Value.absent(),
+    this.workScopeData = const Value.absent(),
+    this.roadData = const Value.absent(),
+    this.equipmentsData = const Value.absent(),
+    this.reportQuantitiesData = const Value.absent(),
   });
   DailyReportsCompanion.insert({
     this.isSynced = const Value.absent(),
@@ -14359,7 +14495,10 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     required int createdByID,
     required DateTime createdAt,
     required DateTime updatedAt,
-    this.equipmentsJson = const Value.absent(),
+    this.workScopeData = const Value.absent(),
+    this.roadData = const Value.absent(),
+    this.equipmentsData = const Value.absent(),
+    this.reportQuantitiesData = const Value.absent(),
   }) : uid = Value(uid),
        name = Value(name),
        weatherCondition = Value(weatherCondition),
@@ -14398,7 +14537,10 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     Expression<int>? createdByID,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
-    Expression<String>? equipmentsJson,
+    Expression<String>? workScopeData,
+    Expression<String>? roadData,
+    Expression<String>? equipmentsData,
+    Expression<String>? reportQuantitiesData,
   }) {
     return RawValuesInsertable({
       if (isSynced != null) 'is_synced': isSynced,
@@ -14430,7 +14572,11 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
       if (createdByID != null) 'created_by_i_d': createdByID,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
-      if (equipmentsJson != null) 'equipments_json': equipmentsJson,
+      if (workScopeData != null) 'work_scope_data': workScopeData,
+      if (roadData != null) 'road_data': roadData,
+      if (equipmentsData != null) 'equipments_data': equipmentsData,
+      if (reportQuantitiesData != null)
+        'report_quantities_data': reportQuantitiesData,
     });
   }
 
@@ -14463,7 +14609,10 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     Value<int>? createdByID,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
-    Value<String?>? equipmentsJson,
+    Value<String?>? workScopeData,
+    Value<String?>? roadData,
+    Value<String?>? equipmentsData,
+    Value<String?>? reportQuantitiesData,
   }) {
     return DailyReportsCompanion(
       isSynced: isSynced ?? this.isSynced,
@@ -14494,7 +14643,10 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
       createdByID: createdByID ?? this.createdByID,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      equipmentsJson: equipmentsJson ?? this.equipmentsJson,
+      workScopeData: workScopeData ?? this.workScopeData,
+      roadData: roadData ?? this.roadData,
+      equipmentsData: equipmentsData ?? this.equipmentsData,
+      reportQuantitiesData: reportQuantitiesData ?? this.reportQuantitiesData,
     );
   }
 
@@ -14585,8 +14737,19 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
-    if (equipmentsJson.present) {
-      map['equipments_json'] = Variable<String>(equipmentsJson.value);
+    if (workScopeData.present) {
+      map['work_scope_data'] = Variable<String>(workScopeData.value);
+    }
+    if (roadData.present) {
+      map['road_data'] = Variable<String>(roadData.value);
+    }
+    if (equipmentsData.present) {
+      map['equipments_data'] = Variable<String>(equipmentsData.value);
+    }
+    if (reportQuantitiesData.present) {
+      map['report_quantities_data'] = Variable<String>(
+        reportQuantitiesData.value,
+      );
     }
     return map;
   }
@@ -14622,7 +14785,10 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
           ..write('createdByID: $createdByID, ')
           ..write('createdAt: $createdAt, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('equipmentsJson: $equipmentsJson')
+          ..write('workScopeData: $workScopeData, ')
+          ..write('roadData: $roadData, ')
+          ..write('equipmentsData: $equipmentsData, ')
+          ..write('reportQuantitiesData: $reportQuantitiesData')
           ..write(')'))
         .toString();
   }
@@ -23929,7 +24095,10 @@ typedef $$DailyReportsTableCreateCompanionBuilder =
       required int createdByID,
       required DateTime createdAt,
       required DateTime updatedAt,
-      Value<String?> equipmentsJson,
+      Value<String?> workScopeData,
+      Value<String?> roadData,
+      Value<String?> equipmentsData,
+      Value<String?> reportQuantitiesData,
     });
 typedef $$DailyReportsTableUpdateCompanionBuilder =
     DailyReportsCompanion Function({
@@ -23961,7 +24130,10 @@ typedef $$DailyReportsTableUpdateCompanionBuilder =
       Value<int> createdByID,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
-      Value<String?> equipmentsJson,
+      Value<String?> workScopeData,
+      Value<String?> roadData,
+      Value<String?> equipmentsData,
+      Value<String?> reportQuantitiesData,
     });
 
 class $$DailyReportsTableFilterComposer
@@ -24113,8 +24285,23 @@ class $$DailyReportsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get equipmentsJson => $composableBuilder(
-    column: $table.equipmentsJson,
+  ColumnFilters<String> get workScopeData => $composableBuilder(
+    column: $table.workScopeData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get roadData => $composableBuilder(
+    column: $table.roadData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get equipmentsData => $composableBuilder(
+    column: $table.equipmentsData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get reportQuantitiesData => $composableBuilder(
+    column: $table.reportQuantitiesData,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -24268,8 +24455,23 @@ class $$DailyReportsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get equipmentsJson => $composableBuilder(
-    column: $table.equipmentsJson,
+  ColumnOrderings<String> get workScopeData => $composableBuilder(
+    column: $table.workScopeData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get roadData => $composableBuilder(
+    column: $table.roadData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get equipmentsData => $composableBuilder(
+    column: $table.equipmentsData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get reportQuantitiesData => $composableBuilder(
+    column: $table.reportQuantitiesData,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -24393,8 +24595,21 @@ class $$DailyReportsTableAnnotationComposer
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 
-  GeneratedColumn<String> get equipmentsJson => $composableBuilder(
-    column: $table.equipmentsJson,
+  GeneratedColumn<String> get workScopeData => $composableBuilder(
+    column: $table.workScopeData,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get roadData =>
+      $composableBuilder(column: $table.roadData, builder: (column) => column);
+
+  GeneratedColumn<String> get equipmentsData => $composableBuilder(
+    column: $table.equipmentsData,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get reportQuantitiesData => $composableBuilder(
+    column: $table.reportQuantitiesData,
     builder: (column) => column,
   );
 }
@@ -24462,7 +24677,10 @@ class $$DailyReportsTableTableManager
                 Value<int> createdByID = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
-                Value<String?> equipmentsJson = const Value.absent(),
+                Value<String?> workScopeData = const Value.absent(),
+                Value<String?> roadData = const Value.absent(),
+                Value<String?> equipmentsData = const Value.absent(),
+                Value<String?> reportQuantitiesData = const Value.absent(),
               }) => DailyReportsCompanion(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -24492,7 +24710,10 @@ class $$DailyReportsTableTableManager
                 createdByID: createdByID,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
-                equipmentsJson: equipmentsJson,
+                workScopeData: workScopeData,
+                roadData: roadData,
+                equipmentsData: equipmentsData,
+                reportQuantitiesData: reportQuantitiesData,
               ),
           createCompanionCallback:
               ({
@@ -24524,7 +24745,10 @@ class $$DailyReportsTableTableManager
                 required int createdByID,
                 required DateTime createdAt,
                 required DateTime updatedAt,
-                Value<String?> equipmentsJson = const Value.absent(),
+                Value<String?> workScopeData = const Value.absent(),
+                Value<String?> roadData = const Value.absent(),
+                Value<String?> equipmentsData = const Value.absent(),
+                Value<String?> reportQuantitiesData = const Value.absent(),
               }) => DailyReportsCompanion.insert(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -24554,7 +24778,10 @@ class $$DailyReportsTableTableManager
                 createdByID: createdByID,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
-                equipmentsJson: equipmentsJson,
+                workScopeData: workScopeData,
+                roadData: roadData,
+                equipmentsData: equipmentsData,
+                reportQuantitiesData: reportQuantitiesData,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

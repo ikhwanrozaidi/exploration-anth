@@ -4347,6 +4347,9 @@ final class Schema11 extends i0.VersionedSchema {
         _column_14,
         _column_13,
         _column_109,
+        _column_110,
+        _column_111,
+        _column_112,
       ],
       attachedDatabase: database,
     ),
@@ -4518,13 +4521,40 @@ class Shape26 extends i0.VersionedTable {
       columnsByName['created_at']! as i1.GeneratedColumn<DateTime>;
   i1.GeneratedColumn<DateTime> get updatedAt =>
       columnsByName['updated_at']! as i1.GeneratedColumn<DateTime>;
-  i1.GeneratedColumn<String> get equipmentsJson =>
-      columnsByName['equipments_json']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get workScopeData =>
+      columnsByName['work_scope_data']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get roadData =>
+      columnsByName['road_data']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get equipmentsData =>
+      columnsByName['equipments_data']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get reportQuantitiesData =>
+      columnsByName['report_quantities_data']! as i1.GeneratedColumn<String>;
 }
 
 i1.GeneratedColumn<String> _column_109(String aliasedName) =>
     i1.GeneratedColumn<String>(
-      'equipments_json',
+      'work_scope_data',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_110(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'road_data',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_111(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'equipments_data',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<String> _column_112(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'report_quantities_data',
       aliasedName,
       true,
       type: i1.DriftSqlType.string,

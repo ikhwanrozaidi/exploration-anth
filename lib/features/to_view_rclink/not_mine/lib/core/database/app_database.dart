@@ -387,7 +387,11 @@ class DailyReports extends Table with SyncableTable {
 
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
-  TextColumn get equipmentsJson => text().nullable()();
+
+  TextColumn get workScopeData => text().nullable()();
+  TextColumn get roadData => text().nullable()();
+  TextColumn get equipmentsData => text().nullable()();
+  TextColumn get reportQuantitiesData => text().nullable()();
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -517,7 +521,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 11; // Added daily report tables in version 11
+  int get schemaVersion => 11; // Added daily report tables in version 10
 
   @override
   MigrationStrategy get migration {
@@ -761,10 +765,19 @@ class AppDatabase extends _$AppDatabase {
           await m.createTable(schema.reportSegments);
         },
         from10To11: (m, schema) async {
-          // Migration from version 10 to 11: Add equipmentsJson column to DailyReports
+          // Migration from version 10 to 11: Add into Daily Report tables
           await m.addColumn(
             schema.dailyReports,
-            schema.dailyReports.equipmentsJson,
+            schema.dailyReports.workScopeData,
+          );
+          await m.addColumn(schema.dailyReports, schema.dailyReports.roadData);
+          await m.addColumn(
+            schema.dailyReports,
+            schema.dailyReports.equipmentsData,
+          );
+          await m.addColumn(
+            schema.dailyReports,
+            schema.dailyReports.reportQuantitiesData,
           );
         },
       ),

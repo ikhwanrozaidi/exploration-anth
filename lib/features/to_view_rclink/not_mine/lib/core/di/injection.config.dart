@@ -63,71 +63,11 @@ import '../../features/company/domain/usecases/select_company_usecase.dart'
 import '../../features/company/domain/usecases/update_company_usecase.dart'
     as _i8;
 import '../../features/company/presentation/bloc/company_bloc.dart' as _i426;
-import '../../features/daily_report/data/datasources/daily_report_api_service.dart'
-    as _i538;
-import '../../features/daily_report/data/datasources/daily_report_local_datasource.dart'
-    as _i464;
-import '../../features/daily_report/data/datasources/daily_report_remote_datasource.dart'
-    as _i328;
-import '../../features/daily_report/data/repositories/daily_report_repository_impl.dart'
-    as _i1017;
-import '../../features/daily_report/domain/repository/daily_report_repository.dart'
-    as _i819;
-import '../../features/daily_report/domain/usecases/clear_daily_report_cache_usecase.dart'
-    as _i771;
-import '../../features/daily_report/domain/usecases/get_daily_report_usecase.dart'
-    as _i908;
-import '../../features/daily_report/presentation/bloc/daily_report_bloc.dart'
-    as _i1033;
-import '../../features/daily_report_creation/data/datasources/daily_report_creation_api_service.dart'
-    as _i691;
-import '../../features/daily_report_creation/data/datasources/daily_report_creation_local_datasource.dart'
-    as _i987;
-import '../../features/daily_report_creation/data/datasources/daily_report_creation_remote_datasource.dart'
-    as _i521;
-import '../../features/daily_report_creation/data/repositories/district_repository_impl.dart'
-    as _i896;
-import '../../features/daily_report_creation/data/repositories/equipment_repository_impl.dart'
-    as _i736;
-import '../../features/daily_report_creation/data/repositories/province_repository_impl.dart'
-    as _i1026;
-import '../../features/daily_report_creation/data/repositories/quantity_repository_impl.dart'
-    as _i695;
-import '../../features/daily_report_creation/data/repositories/road_repository_impl.dart'
-    as _i247;
-import '../../features/daily_report_creation/data/repositories/workscopes_repository_impl.dart'
-    as _i753;
-import '../../features/daily_report_creation/domain/repository/district_repository.dart'
-    as _i297;
-import '../../features/daily_report_creation/domain/repository/equipment_repository.dart'
-    as _i464;
-import '../../features/daily_report_creation/domain/repository/province_repository.dart'
-    as _i374;
-import '../../features/daily_report_creation/domain/repository/quantity_repository.dart'
-    as _i925;
-import '../../features/daily_report_creation/domain/repository/road_repository.dart'
-    as _i515;
-import '../../features/daily_report_creation/domain/repository/workscopes_repository.dart'
-    as _i836;
-import '../../features/daily_report_creation/domain/usecases/clear_all_cache_usecase.dart'
-    as _i96;
-import '../../features/daily_report_creation/domain/usecases/clear_work_scopes_cache_usecase.dart'
-    as _i389;
-import '../../features/daily_report_creation/domain/usecases/get_district_usecase.dart'
-    as _i762;
-import '../../features/daily_report_creation/domain/usecases/get_equipment_usecase.dart'
-    as _i547;
-import '../../features/daily_report_creation/domain/usecases/get_quantity_usecase.dart'
-    as _i580;
-import '../../features/daily_report_creation/domain/usecases/get_road_usecase.dart'
-    as _i383;
-import '../../features/daily_report_creation/domain/usecases/get_states_usecase.dart'
-    as _i681;
-import '../../features/daily_report_creation/domain/usecases/get_work_scopes_usecase.dart'
-    as _i169;
-import '../../features/daily_report_creation/presentation/bloc/report_creation_bloc.dart'
-    as _i1029;
 import '../../features/locale/presentation/bloc/locale_bloc.dart' as _i458;
+import '../../features/location/data/datasources/location_api_service.dart'
+    as _i903;
+import '../../features/location/data/datasources/location_remote_datasource.dart'
+    as _i700;
 import '../../features/rbac/data/datasources/permission_local_datasource.dart'
     as _i267;
 import '../../features/rbac/data/datasources/permission_remote_datasource.dart'
@@ -152,6 +92,7 @@ import '../network/connectivity_service.dart' as _i491;
 import '../network/error_interceptor.dart' as _i1004;
 import '../network/network_info.dart' as _i932;
 import '../services/sync_service.dart' as _i979;
+import '../services/token_expiry_monitor_service.dart' as _i334;
 import 'injection.dart' as _i464;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -168,11 +109,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i895.Connectivity>(() => registerModule.connectivity);
     gh.lazySingleton<_i1004.ErrorInterceptor>(() => _i1004.ErrorInterceptor());
     gh.lazySingleton<_i458.LocaleBloc>(() => _i458.LocaleBloc());
-    gh.lazySingleton<_i987.DailyReportCreationLocalDatasource>(
-      () => _i987.DailyReportCreationLocalDatasourceImpl(
-        gh<_i982.DatabaseService>(),
-      ),
-    );
     gh.lazySingleton<_i594.CompanyLocalDataSource>(
       () => _i594.CompanyLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
@@ -197,14 +133,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i472.AdminApiService>(
       () => _i472.AdminApiService.new(gh<_i361.Dio>()),
     );
-    gh.factory<_i691.DailyReportCreationApiService>(
-      () => _i691.DailyReportCreationApiService.new(gh<_i361.Dio>()),
-    );
     gh.factory<_i178.CompanyApiService>(
       () => _i178.CompanyApiService.new(gh<_i361.Dio>()),
     );
-    gh.factory<_i538.DailyReportApiService>(
-      () => _i538.DailyReportApiService.new(gh<_i361.Dio>()),
+    gh.factory<_i903.LocationApiService>(
+      () => _i903.LocationApiService.new(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i432.PermissionRemoteDataSource>(
       () => _i432.PermissionRemoteDataSourceImpl(gh<_i1020.RoleApiService>()),
@@ -215,26 +148,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i267.PermissionLocalDataSource>(),
       ),
     );
-    gh.factory<_i383.GetRoadsParams>(
-      () => _i383.GetRoadsParams(
-        forceRefresh: gh<bool>(),
-        districtID: gh<int>(),
-        page: gh<int>(),
-        limit: gh<int>(),
-        sortOrder: gh<String>(),
-        sortBy: gh<String>(),
-        mainCategoryID: gh<int>(),
-        secondaryCategoryID: gh<int>(),
-        search: gh<String>(),
-        sectionStartMin: gh<double>(),
-        sectionFinishMax: gh<double>(),
-      ),
-    );
-    gh.lazySingleton<_i464.DailyReportLocalDataSource>(
-      () => _i464.DailyReportLocalDataSourceImpl(gh<_i982.DatabaseService>()),
-    );
     gh.lazySingleton<_i517.AdminRemoteDataSource>(
       () => _i517.AdminRemoteDataSourceImpl(gh<_i472.AdminApiService>()),
+    );
+    gh.lazySingleton<_i700.LocationRemoteDataSource>(
+      () => _i700.LocationRemoteDataSourceImpl(gh<_i903.LocationApiService>()),
     );
     gh.factory<_i448.CheckPermissionUseCase>(
       () => _i448.CheckPermissionUseCase(gh<_i999.PermissionRepository>()),
@@ -254,62 +172,23 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i469.CompanyRemoteDataSource>(
       () => _i469.CompanyRemoteDataSourceImpl(gh<_i178.CompanyApiService>()),
     );
-    gh.factory<_i762.GetDistrictsParams>(
-      () => _i762.GetDistrictsParams(
-        forceRefresh: gh<bool>(),
-        stateID: gh<int>(),
-        page: gh<int>(),
-        limit: gh<int>(),
-        sortOrder: gh<String>(),
-        sortBy: gh<String>(),
-        search: gh<String>(),
-      ),
-    );
     gh.lazySingleton<_i979.SyncService>(
       () => _i979.SyncService(
         gh<_i982.DatabaseService>(),
         gh<_i517.AdminRemoteDataSource>(),
       ),
     );
-    gh.factory<_i547.GetEquipmentParams>(
-      () => _i547.GetEquipmentParams(
-        forceRefresh: gh<bool>(),
-        companyUID: gh<String>(),
-        workScopeUID: gh<String>(),
-      ),
-    );
-    gh.factory<_i580.GetQuantityParams>(
-      () => _i580.GetQuantityParams(
-        forceRefresh: gh<bool>(),
-        companyUID: gh<String>(),
-        workScopeUID: gh<String>(),
-      ),
-    );
     gh.lazySingleton<_i107.AuthRemoteDataSource>(
       () => _i107.AuthRemoteDataSourceImpl(gh<_i156.AuthApiService>()),
-    );
-    gh.factory<_i681.GetStatesParams>(
-      () => _i681.GetStatesParams(
-        forceRefresh: gh<bool>(),
-        page: gh<int>(),
-        limit: gh<int>(),
-        sortOrder: gh<String>(),
-        sortBy: gh<String>(),
-        countryID: gh<int>(),
-        search: gh<String>(),
-      ),
     );
     gh.lazySingleton<_i908.AuthInterceptor>(
       () => _i908.AuthInterceptor(gh<_i852.AuthLocalDataSource>()),
     );
+    gh.lazySingleton<_i334.TokenExpiryMonitor>(
+      () => _i334.TokenExpiryMonitor(gh<_i852.AuthLocalDataSource>()),
+    );
     gh.lazySingleton<_i491.NetworkInfo>(
       () => _i491.EnhancedNetworkInfo(gh<_i491.ConnectivityService>()),
-    );
-    gh.factory<_i169.GetWorkScopesParams>(
-      () => _i169.GetWorkScopesParams(
-        forceRefresh: gh<bool>(),
-        cacheTimeout: gh<Duration>(),
-      ),
     );
     gh.lazySingleton<_i167.RbacBloc>(
       () => _i167.RbacBloc(
@@ -326,33 +205,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i517.AdminRemoteDataSource>(),
       ),
     );
-    gh.lazySingleton<_i328.DailyReportRemoteDataSource>(
-      () => _i328.DailyReportRemoteDataSourceImpl(
-        gh<_i538.DailyReportApiService>(),
-      ),
-    );
     gh.factory<_i752.CompanyRepository>(
       () => _i726.CompanyRepositoryImpl(
         gh<_i469.CompanyRemoteDataSource>(),
         gh<_i594.CompanyLocalDataSource>(),
       ),
     );
-    gh.lazySingleton<_i521.DailyReportCreationRemoteDataSource>(
-      () => _i521.DailyReportCreationRemoteDataSourceImpl(
-        gh<_i691.DailyReportCreationApiService>(),
-      ),
-    );
     gh.lazySingleton<_i8.UpdateCompanyFieldUseCase>(
       () => _i8.UpdateCompanyFieldUseCase(gh<_i752.CompanyRepository>()),
-    );
-    gh.factory<_i374.ProvinceRepository>(
-      () => _i1026.ProvinceRepositoryImpl(
-        gh<_i521.DailyReportCreationRemoteDataSource>(),
-        gh<_i987.DailyReportCreationLocalDatasource>(),
-      ),
-    );
-    gh.factory<_i681.GetStatesUseCase>(
-      () => _i681.GetStatesUseCase(gh<_i374.ProvinceRepository>()),
     );
     gh.lazySingleton<_i257.GetCurrentAdminUseCase>(
       () => _i257.GetCurrentAdminUseCase(gh<_i583.AdminRepository>()),
@@ -374,27 +234,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i107.AuthRemoteDataSource>(),
         gh<_i852.AuthLocalDataSource>(),
         gh<_i932.NetworkInfo>(),
-      ),
-    );
-    gh.factory<_i515.RoadRepository>(
-      () => _i247.RoadRepositoryImpl(
-        gh<_i521.DailyReportCreationRemoteDataSource>(),
-        gh<_i987.DailyReportCreationLocalDatasource>(),
-      ),
-    );
-    gh.factory<_i383.GetRoadsUseCase>(
-      () => _i383.GetRoadsUseCase(gh<_i515.RoadRepository>()),
-    );
-    gh.factory<_i297.DistrictRepository>(
-      () => _i896.DistrictRepositoryImpl(
-        gh<_i521.DailyReportCreationRemoteDataSource>(),
-        gh<_i987.DailyReportCreationLocalDatasource>(),
-      ),
-    );
-    gh.factory<_i819.DailyReportRepository>(
-      () => _i1017.DailyReportRepositoryImpl(
-        gh<_i328.DailyReportRemoteDataSource>(),
-        gh<_i464.DailyReportLocalDataSource>(),
       ),
     );
     gh.lazySingleton<_i871.ClearAuthCacheUseCase>(
@@ -421,18 +260,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i8.UpdateCompanyFieldUseCase>(),
       ),
     );
-    gh.factory<_i925.QuantityRepository>(
-      () => _i695.QuantityRepositoryImpl(
-        gh<_i521.DailyReportCreationRemoteDataSource>(),
-        gh<_i987.DailyReportCreationLocalDatasource>(),
-        gh<_i426.CompanyBloc>(),
-      ),
-    );
     gh.lazySingleton<_i157.RefreshTokenUseCase>(
       () => _i157.RefreshTokenUseCase(gh<_i787.AuthRepository>()),
-    );
-    gh.factory<_i762.GetDistrictsUseCase>(
-      () => _i762.GetDistrictsUseCase(gh<_i297.DistrictRepository>()),
     );
     gh.lazySingleton<_i797.AuthBloc>(
       () => _i797.AuthBloc(
@@ -442,67 +271,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i388.StoreTokensUseCase>(),
         gh<_i625.GetTokensUseCase>(),
         gh<_i871.ClearAuthCacheUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i771.ClearDailyReportCacheUseCase>(
-      () =>
-          _i771.ClearDailyReportCacheUseCase(gh<_i819.DailyReportRepository>()),
-    );
-    gh.lazySingleton<_i908.GetDailyReportsUseCase>(
-      () => _i908.GetDailyReportsUseCase(gh<_i819.DailyReportRepository>()),
-    );
-    gh.factory<_i836.WorkScopesRepository>(
-      () => _i753.WorkScopesRepositoryImpl(
-        gh<_i521.DailyReportCreationRemoteDataSource>(),
-        gh<_i987.DailyReportCreationLocalDatasource>(),
-        gh<_i426.CompanyBloc>(),
-      ),
-    );
-    gh.factory<_i1033.DailyReportBloc>(
-      () => _i1033.DailyReportBloc(
-        gh<_i908.GetDailyReportsUseCase>(),
-        gh<_i771.ClearDailyReportCacheUseCase>(),
-      ),
-    );
-    gh.factory<_i464.EquipmentRepository>(
-      () => _i736.EquipmentRepositoryImpl(
-        gh<_i521.DailyReportCreationRemoteDataSource>(),
-        gh<_i987.DailyReportCreationLocalDatasource>(),
-        gh<_i426.CompanyBloc>(),
-      ),
-    );
-    gh.factory<_i96.ClearAllCacheUseCase>(
-      () => _i96.ClearAllCacheUseCase(
-        gh<_i836.WorkScopesRepository>(),
-        gh<_i374.ProvinceRepository>(),
-        gh<_i297.DistrictRepository>(),
-        gh<_i515.RoadRepository>(),
-        gh<_i925.QuantityRepository>(),
-        gh<_i464.EquipmentRepository>(),
-      ),
-    );
-    gh.factory<_i580.GetQuantityUseCase>(
-      () => _i580.GetQuantityUseCase(gh<_i925.QuantityRepository>()),
-    );
-    gh.factory<_i547.GetEquipmentUseCase>(
-      () => _i547.GetEquipmentUseCase(gh<_i464.EquipmentRepository>()),
-    );
-    gh.factory<_i169.GetWorkScopesUseCase>(
-      () => _i169.GetWorkScopesUseCase(gh<_i836.WorkScopesRepository>()),
-    );
-    gh.factory<_i389.ClearWorkScopesCacheUseCase>(
-      () => _i389.ClearWorkScopesCacheUseCase(gh<_i836.WorkScopesRepository>()),
-    );
-    gh.lazySingleton<_i1029.ReportCreationBloc>(
-      () => _i1029.ReportCreationBloc(
-        gh<_i169.GetWorkScopesUseCase>(),
-        gh<_i389.ClearWorkScopesCacheUseCase>(),
-        gh<_i681.GetStatesUseCase>(),
-        gh<_i762.GetDistrictsUseCase>(),
-        gh<_i383.GetRoadsUseCase>(),
-        gh<_i580.GetQuantityUseCase>(),
-        gh<_i547.GetEquipmentUseCase>(),
-        gh<_i96.ClearAllCacheUseCase>(),
+        gh<_i334.TokenExpiryMonitor>(),
       ),
     );
     return this;
