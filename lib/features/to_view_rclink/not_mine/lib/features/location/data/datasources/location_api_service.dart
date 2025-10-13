@@ -18,7 +18,7 @@ abstract class LocationApiService {
   Future<ApiResponse<List<ProvinceModel>>> getStates({
     @Queries() Map<String, dynamic>? baseParams,
 
-    @Query('countryID') int? countryID,
+    @Query('countryID') int? countryID = 1,
   });
 
   @GET('/districts')

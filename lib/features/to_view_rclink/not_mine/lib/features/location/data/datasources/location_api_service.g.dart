@@ -20,7 +20,7 @@ class _LocationApiService implements LocationApiService {
   @override
   Future<ApiResponse<List<ProvinceModel>>> getStates({
     Map<String, dynamic>? baseParams,
-    int? countryID,
+    int? countryID = 1,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'countryID': countryID};
