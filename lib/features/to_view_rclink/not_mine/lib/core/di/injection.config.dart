@@ -91,6 +91,8 @@ import '../network/auth_interceptor.dart' as _i908;
 import '../network/connectivity_service.dart' as _i491;
 import '../network/error_interceptor.dart' as _i1004;
 import '../network/network_info.dart' as _i932;
+import '../repositories/post_sync_helper.dart' as _i739;
+import '../services/post_sync_service.dart' as _i126;
 import '../services/sync_service.dart' as _i979;
 import '../services/token_expiry_monitor_service.dart' as _i334;
 import 'injection.dart' as _i464;
@@ -109,6 +111,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i895.Connectivity>(() => registerModule.connectivity);
     gh.lazySingleton<_i1004.ErrorInterceptor>(() => _i1004.ErrorInterceptor());
     gh.lazySingleton<_i458.LocaleBloc>(() => _i458.LocaleBloc());
+    gh.lazySingleton<_i739.PostSyncHelper>(
+      () => _i739.PostSyncHelper(gh<_i982.DatabaseService>()),
+    );
     gh.lazySingleton<_i594.CompanyLocalDataSource>(
       () => _i594.CompanyLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
@@ -124,20 +129,27 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i267.PermissionLocalDataSource>(
       () => _i267.PermissionLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
+    gh.lazySingleton<_i126.PostSyncService>(
+      () => _i126.PostSyncService(
+        gh<_i982.DatabaseService>(),
+        gh<_i491.ConnectivityService>(),
+        gh<_i361.Dio>(),
+      ),
+    );
     gh.factory<_i1020.RoleApiService>(
       () => _i1020.RoleApiService.new(gh<_i361.Dio>()),
     );
     gh.factory<_i156.AuthApiService>(
       () => _i156.AuthApiService.new(gh<_i361.Dio>()),
     );
+    gh.factory<_i903.LocationApiService>(
+      () => _i903.LocationApiService.new(gh<_i361.Dio>()),
+    );
     gh.factory<_i472.AdminApiService>(
       () => _i472.AdminApiService.new(gh<_i361.Dio>()),
     );
     gh.factory<_i178.CompanyApiService>(
       () => _i178.CompanyApiService.new(gh<_i361.Dio>()),
-    );
-    gh.factory<_i903.LocationApiService>(
-      () => _i903.LocationApiService.new(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i432.PermissionRemoteDataSource>(
       () => _i432.PermissionRemoteDataSourceImpl(gh<_i1020.RoleApiService>()),

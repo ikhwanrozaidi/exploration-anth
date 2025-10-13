@@ -265,3 +265,14 @@ abstract class BaseOfflineByIdSyncRepository<T, M> {
     return true;
   }
 }
+
+// getLocal : retrieves cached data from local database
+// getRemote: fetches fresh data from remote API
+// saveLocal: saves/updates data in local database
+// toEntity: converts API model to local entity
+// queryParams: parameters used for querying (for cache keys)
+// getCacheMetadata: retrieves cache metadata for a specific query key
+// saveCacheMetadata: saves cache metadata after successful fetch
+// forceRefresh: bypass cache and fetch fresh data
+// cacheTimeout: duration before cache
+// accumulatePagination: whether to accumulate paginated results
