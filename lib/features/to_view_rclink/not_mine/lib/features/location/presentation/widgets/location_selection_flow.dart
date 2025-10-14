@@ -6,10 +6,11 @@ import '../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../bloc/location_bloc.dart';
 import '../bloc/location_event.dart';
 import '../bloc/location_state.dart';
-import '../models/location_level.dart';
-import '../models/location_selection_result.dart';
+import '../helper/location_level.dart';
+import '../helper/location_selection_results.dart';
 
 class LocationSelectionFlow {
+  /// Show location selection flow with flexible level configuration
   /// Show location selection flow with flexible level configuration
   static Future<void> show({
     required BuildContext context,
@@ -35,7 +36,7 @@ class LocationSelectionFlow {
     // Pre-load first level data
     switch (startFrom) {
       case LocationLevel.countries:
-        locationBloc.add(const LocationEvent.loadCountries());
+        // locationBloc.add(const LocationEvent.loadCountries());
         break;
       case LocationLevel.provinces:
         locationBloc.add(
@@ -63,12 +64,19 @@ class LocationSelectionFlow {
       bloc: locationBloc,
       currentLevel: startFrom,
       endLevel: endAt,
-      onSelected: onSelected,
-    );
+      onSelected: (result) {
+        // Call the user's callback
+        onSelected(result);
 
-    // Clear selections and close bloc when flow completes
-    locationBloc.add(const LocationEvent.clearSelections());
-    locationBloc.close();
+        // Clear selections and close bloc after callback completes
+        locationBloc.add(const LocationEvent.clearSelections());
+
+        // Close bloc after a short delay to ensure all events are processed
+        Future.delayed(const Duration(milliseconds: 100), () {
+          locationBloc.close();
+        });
+      },
+    );
   }
 
   static Future<void> _showLevelSelection({
@@ -89,11 +97,11 @@ class LocationSelectionFlow {
       },
       loaded:
           (
-            countries,
+            // countries,
             provinces,
             districts,
             roads,
-            selectedCountry,
+            // selectedCountry,
             selectedProvince,
             selectedDistrict,
             selectedRoad,
@@ -101,7 +109,7 @@ class LocationSelectionFlow {
             // Get data for current level
             final items = _getItemsForLevel(
               currentLevel,
-              countries,
+              // countries,
               provinces,
               districts,
               roads,
@@ -189,14 +197,14 @@ class LocationSelectionFlow {
 
   static List<Map<String, dynamic>> _getItemsForLevel(
     LocationLevel level,
-    List countries,
+    // List countries,
     List provinces,
     List districts,
     List roads,
   ) {
     switch (level) {
       case LocationLevel.countries:
-        return countries.map((c) => {'uid': c.uid, 'name': c.name}).toList();
+      // return countries.map((c) => {'uid': c.uid, 'name': c.name}).toList();
       case LocationLevel.provinces:
         return provinces.map((p) => {'uid': p.uid, 'name': p.name}).toList();
       case LocationLevel.districts:
@@ -214,7 +222,7 @@ class LocationSelectionFlow {
   ) {
     switch (level) {
       case LocationLevel.countries:
-        return const LocationEvent.loadCountries();
+      // return const LocationEvent.loadCountries();
       case LocationLevel.provinces:
         return LocationEvent.loadProvinces(countryUid: parentUid);
       case LocationLevel.districts:
@@ -230,7 +238,7 @@ class LocationSelectionFlow {
   ) {
     switch (level) {
       case LocationLevel.countries:
-        return LocationEvent.selectCountry(uid);
+      // return LocationEvent.selectCountry(uid);
       case LocationLevel.provinces:
         return LocationEvent.selectProvince(uid);
       case LocationLevel.districts:
@@ -257,19 +265,19 @@ class LocationSelectionFlow {
     return state.maybeWhen(
       loaded:
           (
-            countries,
+            // countries,
             provinces,
             districts,
             roads,
-            selectedCountry,
+            // selectedCountry,
             selectedProvince,
             selectedDistrict,
             selectedRoad,
           ) {
             return LocationSelectionResult(
-              country: selectedCountry != null
-                  ? {'uid': selectedCountry.uid, 'name': selectedCountry.name}
-                  : null,
+              // country: selectedCountry != null
+              //     ? {'uid': selectedCountry.uid, 'name': selectedCountry.name}
+              //     : null,
               province: selectedProvince != null
                   ? {'uid': selectedProvince.uid, 'name': selectedProvince.name}
                   : null,

@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
+import '../../../location/presentation/helper/location_level.dart';
+import '../../../location/presentation/pages/location_field_tile.dart';
+import '../../../location/presentation/widgets/location_selection_flow.dart';
 import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
+import '../../../work_scope/presentation/bloc/work_scope_bloc.dart';
+import '../../../work_scope/presentation/bloc/work_scope_event.dart';
+import '../../../work_scope/presentation/bloc/work_scope_state.dart';
 import '../../../work_scope/presentation/pages/work_scope_field_tile.dart';
+import '../../../work_scope/presentation/widgets/work_scope_bottom_sheet.dart';
 import '../widgets/daily_report_view_loading.dart';
 
 class DailyReportView extends StatefulWidget {
@@ -18,6 +27,8 @@ class _DailyReportViewState extends State<DailyReportView> {
   bool isLoading = false;
   List<dynamic> reports = [];
   String? errorMessage;
+
+  Map<String, dynamic>? selectedWorkScope;
 
   @override
   void initState() {
@@ -49,7 +60,7 @@ class _DailyReportViewState extends State<DailyReportView> {
       //   sortOrder: 'asc',
       // );
 
-      await Future.delayed(Duration(seconds: 10)); // Simulate API call
+      await Future.delayed(Duration(seconds: 2)); // Simulate API call
 
       setState(() {
         reports = []; // Set your fetched reports here
@@ -318,7 +329,16 @@ class _DailyReportViewState extends State<DailyReportView> {
                             backgroundColor: Colors.white,
                           ),
                           onPressed: () {
-                            // TODO: Implement status filter
+                            LocationSelectionFlow.show(
+                              context: context,
+                              startFrom: LocationLevel.provinces,
+                              endAt: LocationLevel.districts,
+                              onSelected: (result) {
+                                print('Selected: ${result.fullPath}');
+                                print('Road UID: ${result.road?['uid']}');
+                                print('Road Name: ${result.road?['name']}');
+                              },
+                            );
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -409,58 +429,87 @@ class _DailyReportViewState extends State<DailyReportView> {
                           ),
                         ),
                       ),
+
                       SizedBox(width: 10),
+
                       // Scope Work
                       Expanded(
-                        child: TextButton(
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.symmetric(horizontal: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                              side: BorderSide(
-                                color: Colors.grey.shade300,
-                                width: 1,
-                              ),
-                            ),
-                            backgroundColor: Colors.white,
-                          ),
-                          onPressed: () {
-                            // TODO: Implement scope work filter
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.restaurant_menu,
-                                      size: 10,
-                                      color: Colors.black,
+                        child: BlocProvider(
+                          create: (context) =>
+                              getIt<WorkScopeBloc>()
+                                ..add(const WorkScopeEvent.loadWorkScopes()),
+                          child: BlocBuilder<WorkScopeBloc, WorkScopeState>(
+                            builder: (context, workScopeState) {
+                              return TextButton(
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                    side: BorderSide(
+                                      color: Colors.grey.shade300,
+                                      width: 1,
                                     ),
-                                    SizedBox(width: 5),
+                                  ),
+                                  backgroundColor: Colors.white,
+                                ),
+                                onPressed: () {
+                                  showWorkScopeSelection(
+                                    context: context,
+                                    state: workScopeState,
+                                    onScopeSelected: (selectedData) {
+                                      setState(() {
+                                        selectedWorkScope = selectedData;
+                                      });
+
+                                      print(
+                                        'Selected: ${selectedData['displayText']}',
+                                      );
+                                      print('UID: ${selectedData['uid']}');
+
+                                      // TODO: Filter reports by selected work scope
+                                      // _filterReportsByWorkScope(selectedData['uid']);
+                                    },
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
                                     Expanded(
-                                      child: Text(
-                                        'Scope Work',
-                                        style: TextStyle(
-                                          overflow: TextOverflow.ellipsis,
-                                          color: Colors.black,
-                                          fontSize: ResponsiveHelper.fontSize(
-                                            context,
-                                            base: 10,
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.restaurant_menu,
+                                            size: 10,
+                                            color: Colors.black,
                                           ),
-                                        ),
+                                          SizedBox(width: 5),
+                                          Expanded(
+                                            child: Text(
+                                              'Scope Work',
+                                              style: TextStyle(
+                                                overflow: TextOverflow.ellipsis,
+                                                color: Colors.black,
+                                                fontSize:
+                                                    ResponsiveHelper.fontSize(
+                                                      context,
+                                                      base: 10,
+                                                    ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
+                                    ),
+                                    Icon(
+                                      Icons.expand_more,
+                                      size: 15,
+                                      color: Colors.black,
                                     ),
                                   ],
                                 ),
-                              ),
-                              Icon(
-                                Icons.expand_more,
-                                size: 15,
-                                color: Colors.black,
-                              ),
-                            ],
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -480,7 +529,15 @@ class _DailyReportViewState extends State<DailyReportView> {
                   //     );
                   //   },
                   // ),
-                  WorkScopeFieldTile(),
+
+                  // Test WorkScope
+                  WorkScopeFieldTile(
+                    onScopeSelected: (selectedData) {
+                      setState(() {
+                        selectedWorkScope = selectedData;
+                      });
+                    },
+                  ),
                 ],
               ),
             ),

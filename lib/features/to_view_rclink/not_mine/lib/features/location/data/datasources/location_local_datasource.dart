@@ -30,9 +30,11 @@ abstract class LocationLocalDataSource {
 
 @LazySingleton(as: LocationLocalDataSource)
 class LocationLocalDataSourceImpl implements LocationLocalDataSource {
-  final AppDatabase _database;
+  final DatabaseService _databaseService;
 
-  LocationLocalDataSourceImpl(this._database);
+  LocationLocalDataSourceImpl(this._databaseService);
+
+  AppDatabase get _database => _databaseService.database;
 
   /* 
   // Provinces datasource

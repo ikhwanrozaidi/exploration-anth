@@ -5,11 +5,11 @@ import 'package:rclink_app/features/work_scope/presentation/bloc/work_scope_bloc
 import 'package:rclink_app/features/work_scope/presentation/bloc/work_scope_event.dart';
 import 'package:rclink_app/features/work_scope/presentation/bloc/work_scope_state.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
-import '../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../../shared/widgets/selection_field_card.dart';
+import '../widgets/work_scope_bottom_sheet.dart';
 
 class WorkScopeFieldTile extends StatefulWidget {
-  final Function(String workScopeUID, String displayText)? onScopeSelected;
+  final Function(Map<String, dynamic>)? onScopeSelected;
 
   const WorkScopeFieldTile({Key? key, this.onScopeSelected}) : super(key: key);
 
@@ -49,59 +49,25 @@ class _WorkScopeFieldTileState extends State<WorkScopeFieldTile> {
             label: 'Scope of Work',
             value: selectedScopeDisplay,
             placeholder: 'Choose scope of work',
-            onTap: () => _showScopeSelection(context, state),
+            onTap: () {
+              showWorkScopeSelection(
+                context: context,
+                state: state,
+                onScopeSelected: (selectedData) {
+                  // Update local state
+                  setState(() {
+                    selectedScopeDisplay = selectedData['displayText'];
+                    selectedScopeUID = selectedData['uid'];
+                  });
+
+                  // Callback to parent widget if provided
+                  widget.onScopeSelected?.call(selectedData);
+                },
+              );
+            },
           );
         },
       ),
-    );
-  }
-
-  void _showScopeSelection(BuildContext context, WorkScopeState state) {
-    // Check if work scopes are loaded
-    final workScopes = state.maybeWhen(
-      loaded: (workScopes) => workScopes,
-      orElse: () => null,
-    );
-
-    // Handle loading state
-    if (state is WorkScopeLoading) {
-      CustomSnackBar.show(context, 'Loading work scopes...');
-      return;
-    }
-
-    // Handle empty or null work scopes
-    if (workScopes == null || workScopes.isEmpty) {
-      CustomSnackBar.show(context, 'No work scopes available');
-      return;
-    }
-
-    // Show bottom sheet with work scopes
-    showFlexibleBottomsheet(
-      context: context,
-      title: 'Select Scope of Work',
-      attributes: workScopes
-          .where((scope) => scope.name.isNotEmpty)
-          .map((scope) => '${scope.code} - ${scope.name}')
-          .toList(),
-      isRadio: true,
-      onSelectionChanged: (selectedName) {
-        // Find the selected scope
-        final selectedScope = workScopes.firstWhere(
-          (scope) => '${scope.code} - ${scope.name}' == selectedName,
-        );
-
-        // Update local state
-        setState(() {
-          selectedScopeDisplay = selectedName;
-          selectedScopeUID = selectedScope.uid;
-        });
-
-        // Callback to parent widget if provided
-        widget.onScopeSelected?.call(selectedScope.uid, selectedName);
-
-        // Close bottom sheet
-        Navigator.of(context).pop();
-      },
     );
   }
 }

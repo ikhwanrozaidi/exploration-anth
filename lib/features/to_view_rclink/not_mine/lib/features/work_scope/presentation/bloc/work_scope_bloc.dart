@@ -10,7 +10,7 @@ import '../../../company/presentation/bloc/company_state.dart';
 import 'work_scope_event.dart';
 import 'work_scope_state.dart';
 
-@lazySingleton
+@injectable
 class WorkScopeBloc extends Bloc<WorkScopeEvent, WorkScopeState> {
   // Fetch companyUID
   final CompanyBloc _companyBloc;

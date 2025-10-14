@@ -13,9 +13,11 @@ abstract class WorkScopeLocalDataSource {
 
 @LazySingleton(as: WorkScopeLocalDataSource)
 class WorkScopeLocalDataSourceImpl implements WorkScopeLocalDataSource {
-  final AppDatabase _database;
+  final DatabaseService _databaseService;
 
-  WorkScopeLocalDataSourceImpl(this._database);
+  WorkScopeLocalDataSourceImpl(this._databaseService);
+
+  AppDatabase get _database => _databaseService.database;
 
   @override
   Future<List<WorkScope>?> getLocal() async {
