@@ -11,7 +11,6 @@ import '../helper/location_selection_results.dart';
 
 class LocationSelectionFlow {
   /// Show location selection flow with flexible level configuration
-  /// Show location selection flow with flexible level configuration
   static Future<void> show({
     required BuildContext context,
     required LocationLevel startFrom,
@@ -275,22 +274,10 @@ class LocationSelectionFlow {
             selectedRoad,
           ) {
             return LocationSelectionResult(
-              // country: selectedCountry != null
-              //     ? {'uid': selectedCountry.uid, 'name': selectedCountry.name}
-              //     : null,
-              province: selectedProvince != null
-                  ? {'uid': selectedProvince.uid, 'name': selectedProvince.name}
-                  : null,
-              district: selectedDistrict != null
-                  ? {'uid': selectedDistrict.uid, 'name': selectedDistrict.name}
-                  : null,
-              road: selectedRoad != null
-                  ? {
-                      'uid': selectedRoad.uid,
-                      'name': selectedRoad.name,
-                      'roadNo': selectedRoad.roadNo,
-                    }
-                  : null,
+              // country: selectedCountry,
+              province: selectedProvince,
+              district: selectedDistrict,
+              road: selectedRoad,
             );
           },
       orElse: () => LocationSelectionResult(),
