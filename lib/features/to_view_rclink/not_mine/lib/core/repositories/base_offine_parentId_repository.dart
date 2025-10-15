@@ -12,9 +12,9 @@ abstract class BaseOfflineByIdSyncRepository<T, M> {
   /// For LIST operations by parent ID (e.g., roads by districtId)
   ///
   /// Logic:
-  /// 1. Check if data for parentId exists locally
-  /// 2. If exists and fresh (< 1 hour old) → return it
-  /// 3. If stale or missing → fetch from API
+  /// 1. Check if data for SPECIFIC parentId exists locally and is fresh
+  /// 2. If exists and fresh → return it
+  /// 3. If missing, stale, or belongs to different parent → fetch from API
   Future<Either<Failure, List<T>>> getOfflineFirstByParentId({
     required String parentId,
     required Future<List<T>> Function() getLocal,
@@ -29,14 +29,31 @@ abstract class BaseOfflineByIdSyncRepository<T, M> {
       if (!forceRefresh) {
         final localData = await getLocal();
 
+        // CRITICAL: Check if data exists AND belongs to the requested parentId
+        // The getLocal() function already filters by parentId, so if it returns
+        // data, it's for the correct parent. If empty, either no data exists
+        // OR data exists but for a different parent.
         if (localData.isNotEmpty) {
           // Check if data is fresh
           final isFresh = _isDataFresh(localData, cacheDuration);
 
           if (isFresh) {
+            print(
+              '✅ Using fresh cached data for parent: $parentId (${localData.length} items)',
+            );
             return Right(localData);
+          } else {
+            print(
+              '⚠️ Cached data for parent $parentId is stale, fetching fresh data...',
+            );
           }
+        } else {
+          print(
+            '📭 No cached data found for parent: $parentId, fetching from remote...',
+          );
         }
+      } else {
+        print('🔄 Force refresh enabled, skipping cache for parent: $parentId');
       }
 
       // Fetch from remote (stale, missing, or force refresh)
@@ -46,22 +63,33 @@ abstract class BaseOfflineByIdSyncRepository<T, M> {
         return await remoteResult.fold(
           (failure) async {
             // If remote fails, return stale local data if available
+            print('❌ Remote fetch failed: ${failure.message}');
             final localData = await getLocal();
             if (localData.isNotEmpty) {
+              print(
+                '📦 Returning stale cached data as fallback (${localData.length} items)',
+              );
               return Right(localData);
             }
             return Left(failure);
           },
           (models) async {
             final entities = models.map(toEntity).toList();
+            print(
+              '✅ Fetched ${entities.length} items from remote for parent: $parentId',
+            );
             await saveLocal(entities);
             return Right(entities);
           },
         );
       } catch (e) {
         // Network error - return local data if available
+        print('❌ Network error: $e');
         final localData = await getLocal();
         if (localData.isNotEmpty) {
+          print(
+            '📦 Returning cached data due to network error (${localData.length} items)',
+          );
           return Right(localData);
         }
         return Left(NetworkFailure('No internet connection'));

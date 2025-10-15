@@ -488,8 +488,7 @@ class LocationLocalDataSourceImpl implements LocationLocalDataSource {
                     uid: district.uid,
                     name: district.name,
                     stateId: district.stateId,
-                    state:
-                        null, // Don't fetch nested state to avoid complex joins
+                    state: null,
                   )
                 : null,
             mainCategory: mainCategory != null

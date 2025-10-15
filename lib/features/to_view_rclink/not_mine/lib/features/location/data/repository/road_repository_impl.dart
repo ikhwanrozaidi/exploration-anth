@@ -23,14 +23,23 @@ class RoadRepositoryImpl extends BaseOfflineByIdSyncRepository<Road, RoadModel>
     bool forceRefresh = false,
     Duration? cacheTimeout = const Duration(hours: 1),
   }) async {
-    // If districtUid is provided, use getOfflineFirstByParentId
     if (districtUid != null) {
+      // First, get the district's integer ID from cache
+      final districts = await _localDataSource.getCachedDistricts();
+      final district = districts.firstWhere(
+        (d) => d.uid == districtUid,
+        orElse: () => throw Exception('District not found: $districtUid'),
+      );
+
+      final districtID = district.id;
+
       return await getOfflineFirstByParentId(
         parentId: districtUid,
         getLocal: () =>
             _localDataSource.getCachedRoadsByDistrictId(districtUid),
         getRemote: () => _remoteDataSource.getRoads(
           queryParams: const ApiQueryParams(limit: 0),
+          districtID: districtID, // ✅ Pass the integer ID
         ),
         saveLocal: (roads) => _localDataSource.cacheRoads(roads),
         toEntity: (model) => model.toEntity(),

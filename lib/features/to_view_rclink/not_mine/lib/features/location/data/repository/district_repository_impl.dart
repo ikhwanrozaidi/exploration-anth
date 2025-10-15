@@ -24,14 +24,23 @@ class DistrictRepositoryImpl
     bool forceRefresh = false,
     Duration? cacheTimeout = const Duration(hours: 1),
   }) async {
-    // If provinceUid is provided, use getOfflineFirstByParentId
     if (provinceUid != null) {
+      // First, get the province's integer ID from cache
+      final provinces = await _localDataSource.getCachedProvinces();
+      final province = provinces.firstWhere(
+        (p) => p.uid == provinceUid,
+        orElse: () => throw Exception('Province not found: $provinceUid'),
+      );
+
+      final stateID = province.id;
+
       return await getOfflineFirstByParentId(
         parentId: provinceUid,
         getLocal: () =>
             _localDataSource.getCachedDistrictsByProvinceId(provinceUid),
         getRemote: () => _remoteDataSource.getDistricts(
           queryParams: const ApiQueryParams(limit: 0),
+          stateID: stateID, // ✅ Pass the integer ID
         ),
         saveLocal: (districts) => _localDataSource.cacheDistricts(districts),
         toEntity: (model) => model.toEntity(),

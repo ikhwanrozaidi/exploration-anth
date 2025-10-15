@@ -29,8 +29,7 @@ class LocationSelectionFlow {
       return;
     }
 
-    // Create a new LocationBloc instance for this flow
-    final locationBloc = getIt<LocationBloc>();
+    final locationBloc = context.read<LocationBloc>();
 
     // Pre-load first level data
     switch (startFrom) {
@@ -64,16 +63,7 @@ class LocationSelectionFlow {
       currentLevel: startFrom,
       endLevel: endAt,
       onSelected: (result) {
-        // Call the user's callback
         onSelected(result);
-
-        // Clear selections and close bloc after callback completes
-        locationBloc.add(const LocationEvent.clearSelections());
-
-        // Close bloc after a short delay to ensure all events are processed
-        Future.delayed(const Duration(milliseconds: 100), () {
-          locationBloc.close();
-        });
       },
     );
   }
