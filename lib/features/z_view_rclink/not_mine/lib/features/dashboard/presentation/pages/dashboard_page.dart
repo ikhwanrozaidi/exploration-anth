@@ -1,15 +1,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/network/connectivity_service.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 
 import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../contractor_relation/presentation/bloc/contractor_relation_bloc.dart';
+import '../../../contractor_relation/presentation/bloc/contractor_relation_event.dart';
+import '../../../contractor_relation/presentation/bloc/contractor_relation_state.dart';
+import '../../../contractor_relation/presentation/widgets/show_contractor_relation_selection.dart';
 import '../../../daily_report/presentation/pages/daily_report_page.dart';
 import '../widgets/animated_connection_status_widget.dart';
-import '../widgets/listingitem_widget.dart';
 import '../widgets/listingitem_widget.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -174,85 +178,151 @@ class _DashboardPageState extends State<DashboardPage> {
                           ),
                         ),
 
-                        Expanded(
-                          child: TextButton(
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: ResponsiveHelper.borderRadius(
-                                  context,
-                                  topRight: 50,
-                                  bottomRight: 50,
+                        BlocBuilder<
+                          ContractorRelationBloc,
+                          ContractorRelationState
+                        >(
+                          builder: (context, contractorState) {
+                            final isLoading =
+                                contractorState is ContractorRelationLoading;
+                            final selectedContractor = contractorState
+                                .maybeWhen(
+                                  loaded: (contractors, selectedContractor) =>
+                                      selectedContractor,
+                                  orElse: () => null,
+                                );
+
+                            return Expanded(
+                              child: TextButton(
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: ResponsiveHelper.borderRadius(
+                                      context,
+                                      topRight: 50,
+                                      bottomRight: 50,
+                                    ),
+                                  ),
+                                  backgroundColor: Colors.white.withOpacity(
+                                    0.6,
+                                  ),
+                                ),
+                                onPressed: isLoading
+                                    ? null // Disable button while loading
+                                    : () {
+                                        showContractorRelationSelection(
+                                          context: context,
+                                          state: contractorState,
+                                          onContractorSelected: (selectedData) {
+                                            context
+                                                .read<ContractorRelationBloc>()
+                                                .add(
+                                                  SelectContractorRelation(
+                                                    selectedData['companyReportToUID'],
+                                                  ),
+                                                );
+                                          },
+                                        );
+                                      },
+                                child: Padding(
+                                  padding: ResponsiveHelper.padding(
+                                    context,
+                                    horizontal: 20,
+                                    vertical: 13,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      // Show loading indicator or icon
+                                      isLoading
+                                          ? SizedBox(
+                                              width: ResponsiveHelper.iconSize(
+                                                context,
+                                                base: 25,
+                                              ),
+                                              height: ResponsiveHelper.iconSize(
+                                                context,
+                                                base: 25,
+                                              ),
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                      Color
+                                                    >(
+                                                      Colors.black.withOpacity(
+                                                        0.6,
+                                                      ),
+                                                    ),
+                                              ),
+                                            )
+                                          : Icon(
+                                              Icons.note_alt_outlined,
+                                              size: ResponsiveHelper.iconSize(
+                                                context,
+                                                base: 25,
+                                              ),
+                                              color: Colors.black.withOpacity(
+                                                0.6,
+                                              ),
+                                            ),
+                                      SizedBox(
+                                        width: ResponsiveHelper.spacing(
+                                          context,
+                                          10,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              'Report to',
+                                              style: TextStyle(
+                                                overflow: TextOverflow.ellipsis,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500,
+                                                fontSize:
+                                                    ResponsiveHelper.fontSize(
+                                                      context,
+                                                      base: 14,
+                                                    ),
+                                              ),
+                                            ),
+                                            Text(
+                                              isLoading
+                                                  ? 'Loading...'
+                                                  : selectedContractor?.name ??
+                                                        'Company name',
+                                              style: TextStyle(
+                                                color: isLoading
+                                                    ? Colors.black.withOpacity(
+                                                        0.5,
+                                                      )
+                                                    : selectedContractor != null
+                                                    ? Colors.black.withOpacity(
+                                                        0.7,
+                                                      )
+                                                    : Colors.black.withOpacity(
+                                                        0.4,
+                                                      ),
+                                                overflow: TextOverflow.ellipsis,
+                                                fontSize:
+                                                    ResponsiveHelper.fontSize(
+                                                      context,
+                                                      base: 12,
+                                                    ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                              backgroundColor: Colors.white.withOpacity(0.6),
-                            ),
-                            onPressed: () {
-                              CustomSnackBar.show(
-                                context,
-                                'This feature is coming soon...',
-                                type: SnackBarType.comingsoon,
-                              );
-                            },
-                            child: Padding(
-                              padding: ResponsiveHelper.padding(
-                                context,
-                                horizontal: 20,
-                                vertical: 13,
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.note_alt_outlined,
-                                    size: ResponsiveHelper.iconSize(
-                                      context,
-                                      base: 25,
-                                    ),
-                                    color: Colors.black.withOpacity(0.6),
-                                  ),
-                                  SizedBox(
-                                    width: ResponsiveHelper.spacing(
-                                      context,
-                                      10,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'Report to',
-                                          style: TextStyle(
-                                            overflow: TextOverflow.ellipsis,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: ResponsiveHelper.fontSize(
-                                              context,
-                                              base: 14,
-                                            ),
-                                          ),
-                                        ),
-                                        Text(
-                                          'Company name',
-                                          style: TextStyle(
-                                            color: Colors.black.withOpacity(
-                                              0.7,
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                            fontSize: ResponsiveHelper.fontSize(
-                                              context,
-                                              base: 12,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
                       ],
                     ),
