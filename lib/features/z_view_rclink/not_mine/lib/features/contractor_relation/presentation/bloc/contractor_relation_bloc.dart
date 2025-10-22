@@ -37,7 +37,19 @@ class ContractorRelationBloc
     result.fold(
       (failure) =>
           emit(ContractorRelationFailure(_mapFailureToMessage(failure))),
-      (contractors) => emit(ContractorRelationLoaded(contractors)),
+      (contractors) {
+        final selfContractor = contractors.firstWhere(
+          (contractor) => contractor.isSelf == true,
+          orElse: () => contractors.first,
+        );
+
+        emit(
+          ContractorRelationLoaded(
+            contractors,
+            selectedContractor: selfContractor,
+          ),
+        );
+      },
     );
   }
 
