@@ -1,18 +1,17 @@
-import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/database/app_database.dart';
-import '../../domain/entities/company.dart';
 import '../models/company_model.dart';
+import '../models/company_model_extensions.dart';
 
 abstract class CompanyLocalDataSource {
-  Future<List<Company>?> getCachedCompanies();
-  Future<void> cacheCompanies(List<Company> companies);
+  Future<List<CompanyModel>?> getCachedCompanies();
+  Future<void> cacheCompanies(List<CompanyModel> companies);
   Future<void> cacheSelectedCompany(String companyId);
   Future<String?> getSelectedCompany();
   Future<void> clearCache();
-  Future<void> cacheCompany(Company company);
+  Future<void> cacheCompany(CompanyModel company);
 }
 
 @LazySingleton(as: CompanyLocalDataSource)
@@ -25,7 +24,7 @@ class CompanyLocalDataSourceImpl implements CompanyLocalDataSource {
   AppDatabase get _database => _databaseService.database;
 
   @override
-  Future<List<Company>?> getCachedCompanies() async {
+  Future<List<CompanyModel>?> getCachedCompanies() async {
     try {
       final companyRecords = await _database.select(_database.companies).get();
 
@@ -33,43 +32,9 @@ class CompanyLocalDataSourceImpl implements CompanyLocalDataSource {
         return null;
       }
 
-      // Convert database records to domain entities
+      // Convert database records to models
       final companies = companyRecords
-          .map(
-            (record) => Company(
-              id: record.id,
-              uid: record.uid,
-              name: record.name,
-              regNo: record.regNo ?? '',
-              cidbNo: record.cidbNo ?? '',
-              address: record.address ?? '',
-              postalCode: record.postalCode ?? '',
-              city: record.city ?? '',
-              state: record.state ?? '',
-              country: record.country ?? '',
-              phone: record.phone ?? '',
-              email: record.email ?? '',
-              website: record.website ?? '',
-              companyType: record.companyType,
-              bumiputera: record.bumiputera,
-              einvoiceTinNo: record.einvoiceTinNo,
-              registrationDate: record.registrationDate,
-              createdAt: record.createdAt,
-              updatedAt: record.updatedAt,
-              deletedAt: record.deletedAt,
-              ownerID: record.ownerID,
-              // Convert adminRole from stored fields
-              adminRole:
-                  (record.adminRoleUid != null && record.adminRoleName != null)
-                  ? AdminRole(
-                      uid: record.adminRoleUid!,
-                      name: record.adminRoleName!,
-                    )
-                  : null,
-              adminCount:
-                  0, // AdminCount is not stored, could be computed or fetched separately
-            ),
-          )
+          .map((record) => record.toModel())
           .toList();
 
       return companies.isEmpty ? null : companies;
@@ -80,51 +45,14 @@ class CompanyLocalDataSourceImpl implements CompanyLocalDataSource {
   }
 
   @override
-  Future<void> cacheCompanies(List<Company> companies) async {
+  Future<void> cacheCompanies(List<CompanyModel> companies) async {
     try {
       // Clear existing companies
       await _database.delete(_database.companies).go();
 
       // Insert new companies
       for (final company in companies) {
-        await _database
-            .into(_database.companies)
-            .insert(
-              CompaniesCompanion(
-                uid: Value(company.uid),
-                name: Value(company.name),
-                regNo: Value(company.regNo.isNotEmpty ? company.regNo : null),
-                cidbNo: Value(
-                  company.cidbNo.isNotEmpty ? company.cidbNo : null,
-                ),
-                address: Value(
-                  company.address.isNotEmpty ? company.address : null,
-                ),
-                postalCode: Value(
-                  company.postalCode.isNotEmpty ? company.postalCode : null,
-                ),
-                city: Value(company.city.isNotEmpty ? company.city : null),
-                state: Value(company.state.isNotEmpty ? company.state : null),
-                country: Value(
-                  company.country.isNotEmpty ? company.country : null,
-                ),
-                phone: Value(company.phone.isNotEmpty ? company.phone : null),
-                email: Value(company.email.isNotEmpty ? company.email : null),
-                website: Value(
-                  company.website!.isNotEmpty ? company.website : null,
-                ),
-                companyType: Value(company.companyType),
-                bumiputera: Value(company.bumiputera),
-                einvoiceTinNo: Value(company.einvoiceTinNo),
-                registrationDate: Value(company.registrationDate),
-                ownerID: Value(company.ownerID),
-                adminRoleUid: Value(company.adminRole?.uid),
-                adminRoleName: Value(company.adminRole?.name),
-                createdAt: Value(company.createdAt),
-                updatedAt: Value(company.updatedAt),
-                deletedAt: Value(company.deletedAt),
-              ),
-            );
+        await _database.into(_database.companies).insert(company.toCompanion());
       }
     } catch (e) {
       print('Error caching companies: $e');
@@ -166,45 +94,12 @@ class CompanyLocalDataSourceImpl implements CompanyLocalDataSource {
   }
 
   @override
-  Future<void> cacheCompany(Company company) async {
+  Future<void> cacheCompany(CompanyModel company) async {
     try {
       // Use insertOnConflictUpdate to update if exists, insert if not
       await _database
           .into(_database.companies)
-          .insertOnConflictUpdate(
-            CompaniesCompanion(
-              uid: Value(company.uid),
-              name: Value(company.name),
-              regNo: Value(company.regNo.isNotEmpty ? company.regNo : null),
-              cidbNo: Value(company.cidbNo.isNotEmpty ? company.cidbNo : null),
-              address: Value(
-                company.address.isNotEmpty ? company.address : null,
-              ),
-              postalCode: Value(
-                company.postalCode.isNotEmpty ? company.postalCode : null,
-              ),
-              city: Value(company.city.isNotEmpty ? company.city : null),
-              state: Value(company.state.isNotEmpty ? company.state : null),
-              country: Value(
-                company.country.isNotEmpty ? company.country : null,
-              ),
-              phone: Value(company.phone.isNotEmpty ? company.phone : null),
-              email: Value(company.email.isNotEmpty ? company.email : null),
-              website: Value(
-                company.website!.isNotEmpty ? company.website : null,
-              ),
-              companyType: Value(company.companyType),
-              bumiputera: Value(company.bumiputera),
-              einvoiceTinNo: Value(company.einvoiceTinNo),
-              registrationDate: Value(company.registrationDate),
-              ownerID: Value(company.ownerID),
-              adminRoleUid: Value(company.adminRole?.uid),
-              adminRoleName: Value(company.adminRole?.name),
-              createdAt: Value(company.createdAt),
-              updatedAt: Value(company.updatedAt),
-              deletedAt: Value(company.deletedAt),
-            ),
-          );
+          .insertOnConflictUpdate(company.toCompanion());
     } catch (e) {
       print('Error caching company: $e');
     }

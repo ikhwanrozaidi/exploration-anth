@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../../shared/utils/theme.dart';
-import '../../../../domain/entities/daily_report_response.dart';
+import '../../../../domain/entities/daily_report.dart';
 import '../quantity_card.dart';
 
 class QuantityEditPage extends StatefulWidget {
-  final DailyReportResponse report;
+  final DailyReport report;
 
   const QuantityEditPage({Key? key, required this.report}) : super(key: key);
 

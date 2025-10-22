@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:rclink_app/routes/app_router.dart';
 import 'core/config/flavor_config.dart';
 import 'core/di/injection.dart'; // Add dependency injection
+import 'core/network/connectivity_service.dart';
 import 'features/locale/presentation/bloc/locale_bloc.dart';
 import 'features/locale/presentation/bloc/locale_event.dart';
 import 'features/locale/presentation/bloc/locale_state.dart';
@@ -14,9 +15,13 @@ import 'features/company/presentation/bloc/company_bloc.dart';
 import 'features/rbac/presentation/bloc/rbac_bloc.dart';
 import 'shared/widgets/auth_wrapper.dart';
 
-void main() {
-  // Initialize dependency injection
-  configureDependencies();
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await configureDependencies();
+
+  final connectivityService = getIt<ConnectivityService>();
+  connectivityService.startMonitoring();
 
   runApp(
     MultiBlocProvider(

@@ -3,7 +3,9 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import '../../features/admin/data/datasources/admin_remote_data_source.dart';
 import '../../features/admin/data/models/admin_model.dart';
-import '../../features/admin/domain/entities/admin.dart';
+import '../../features/admin/data/models/admin_model_extensions.dart';
+import '../../features/daily_report/data/datasources/daily_report_local_datasource.dart';
+import '../../features/daily_report/data/datasources/daily_report_remote_datasource.dart';
 import '../database/app_database.dart';
 
 /// Service that handles background synchronization of offline data
@@ -11,10 +13,17 @@ import '../database/app_database.dart';
 class SyncService {
   final DatabaseService _databaseService;
   final AdminRemoteDataSource _adminRemoteDataSource;
+  final DailyReportLocalDataSource _dailyReportLocalDataSource;
+  final DailyReportRemoteDataSource _dailyReportRemoteDataSource;
   Timer? _syncTimer;
   bool _isSyncing = false;
-  
-  SyncService(this._databaseService, this._adminRemoteDataSource);
+
+  SyncService(
+    this._databaseService,
+    this._adminRemoteDataSource,
+    this._dailyReportLocalDataSource,
+    this._dailyReportRemoteDataSource,
+  );
   
   /// Start periodic sync
   void startPeriodicSync({Duration interval = const Duration(minutes: 5)}) {
@@ -72,6 +81,9 @@ class SyncService {
         case 'admin':
           success = await _syncAdmin(item);
           break;
+        case 'daily_report':
+          success = await _syncDailyReport(item);
+          break;
         // Add other entity types here
         default:
           print('Unknown entity type: ${item.entityType}');
@@ -118,10 +130,9 @@ class SyncService {
     
     switch (item.action) {
       case 'update':
-        // Convert admin record to entity then to model
-        final admin = adminRecord.toEntity();
-        final adminModel = AdminModel.fromEntity(admin);
-        
+        // Convert admin record to model
+        final adminModel = adminRecord.toModel();
+
         // Call the update API
         final result = await _adminRemoteDataSource.updateAdmin(adminModel.toJson());
         
@@ -166,8 +177,61 @@ class SyncService {
     }
   }
   
+  /// Sync daily report with temp UID replacement
+  Future<bool> _syncDailyReport(SyncQueueRecord item) async {
+    final db = _databaseService.database;
+
+    if (item.action != 'create') {
+      print('⚠️ Unsupported action for daily_report: ${item.action}');
+      return false;
+    }
+
+    try {
+      // Get unsynced report data with companyUID
+      final reportData =
+          await _dailyReportLocalDataSource.getUnsyncedReportData(
+        item.entityUid,
+      );
+
+      if (reportData == null) {
+        print('⚠️ Report not found or already synced: ${item.entityUid}');
+        return true; // Mark as processed
+      }
+
+      print('🔄 Retrying sync for daily report: ${item.entityUid}');
+
+      // Attempt remote creation
+      final result = await _dailyReportRemoteDataSource.createDailyReport(
+        data: reportData.model,
+        companyUID: reportData.companyUID,
+      );
+
+      return await result.fold(
+        (failure) async {
+          print('⚠️ Sync retry failed for ${item.entityUid}: ${failure.message}');
+          return false; // Will retry later
+        },
+        (serverModel) async {
+          print('✅ Sync retry successful for ${item.entityUid}');
+
+          // Update with server data + REPLACE TEMP UID
+          await _dailyReportLocalDataSource.updateReportWithServerData(
+            item.entityUid, // Old temp UID
+            serverModel.toJson(),
+          );
+
+          print('✅ Replaced temp UID ${item.entityUid} → ${serverModel.uid}');
+          return true; // Success
+        },
+      );
+    } catch (e) {
+      print('❌ Error syncing daily report ${item.entityUid}: $e');
+      return false;
+    }
+  }
+
   AppDatabase get db => _databaseService.database;
-  
+
   /// Get sync status
   Future<SyncStatus> getSyncStatus() async {
     final pendingCount = await (db.select(db.syncQueue)

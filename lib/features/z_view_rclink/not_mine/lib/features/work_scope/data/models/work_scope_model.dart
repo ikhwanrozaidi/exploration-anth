@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:rclink_app/features/work_scope/domain/entities/work_scope.dart';
 
-import '../../domain/entities/work_scope.dart';
+import 'work_equipment_model.dart';
+import 'work_quantity_type_model.dart';
 
 part 'work_scope_model.freezed.dart';
 part 'work_scope_model.g.dart';
@@ -20,6 +22,8 @@ abstract class WorkScopeModel with _$WorkScopeModel {
     required DateTime updatedAt,
     DateTime? deletedAt,
     required int companyID,
+    @Default([]) List<WorkQuantityTypeModel> workQuantityTypes,
+    @Default([]) List<WorkEquipmentModel> workEquipments,
   }) = _WorkScopeModel;
 
   factory WorkScopeModel.fromJson(Map<String, dynamic> json) =>
@@ -37,6 +41,8 @@ abstract class WorkScopeModel with _$WorkScopeModel {
       updatedAt: updatedAt,
       deletedAt: deletedAt,
       companyID: companyID,
+      workQuantityTypes: workQuantityTypes.map((e) => e.toEntity()).toList(),
+      workEquipments: workEquipments.map((e) => e.toEntity()).toList(),
     );
   }
 
@@ -52,6 +58,12 @@ abstract class WorkScopeModel with _$WorkScopeModel {
       updatedAt: entity.updatedAt,
       deletedAt: entity.deletedAt,
       companyID: entity.companyID,
+      workQuantityTypes: entity.workQuantityTypes
+          .map((e) => WorkQuantityTypeModel.fromEntity(e))
+          .toList(),
+      workEquipments: entity.workEquipments
+          .map((e) => WorkEquipmentModel.fromEntity(e))
+          .toList(),
     );
   }
 }

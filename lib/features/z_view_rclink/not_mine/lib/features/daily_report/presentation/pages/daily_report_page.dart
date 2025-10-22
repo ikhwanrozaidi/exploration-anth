@@ -5,11 +5,11 @@ import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_state.dart';
-import '../../../daily_report_creation/presentation/pages/report_creation_page.dart';
+import '../../presentation/pages/report_creation_page.dart';
 import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
-import '../bloc/daily_report_bloc.dart';
-import '../bloc/daily_report_event.dart';
-import '../bloc/daily_report_state.dart';
+import '../bloc/daily_report_view/daily_report_view_bloc.dart';
+import '../bloc/daily_report_view/daily_report_view_event.dart';
+import '../bloc/daily_report_view/daily_report_view_state.dart';
 import 'widget/overview_list_widget.dart';
 
 class DailyReportPage extends StatelessWidget {
@@ -18,7 +18,7 @@ class DailyReportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<DailyReportBloc>(),
+      create: (context) => getIt<DailyReportViewBloc>(),
       child: const _DailyReportPageContent(),
     );
   }
@@ -56,8 +56,8 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
     companyState.whenOrNull(
       loaded: (companies, selectedCompany) {
         if (selectedCompany != null) {
-          context.read<DailyReportBloc>().add(
-            DailyReportEvent.loadDailyReports(
+          context.read<DailyReportViewBloc>().add(
+            DailyReportViewEvent.loadDailyReports(
               companyUID: selectedCompany.uid,
               page: 1,
               limit: 10,
@@ -75,15 +75,15 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
       backgroundColor: Colors.white,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.read<DailyReportBloc>().add(
-            const DailyReportEvent.clearCache(),
+          context.read<DailyReportViewBloc>().add(
+            const DailyReportViewEvent.clearCache(),
           );
           _loadDailyReports();
         },
         child: const Icon(Icons.refresh),
       ),
 
-      body: BlocBuilder<DailyReportBloc, DailyReportState>(
+      body: BlocBuilder<DailyReportViewBloc, DailyReportViewState>(
         builder: (context, state) {
           return state.when(
             initial: () => const Center(child: Text('No daily reports loaded')),
@@ -93,13 +93,6 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
             roadsLoaded: (roads, selectedRoad, currentSection, sectionError) =>
                 const Center(child: Text('Roads loaded')),
             roadsFailure: (message) => Center(
-              child: Text(message, style: const TextStyle(color: Colors.red)),
-            ),
-            equipmentsLoading: () =>
-                const Center(child: CircularProgressIndicator()),
-            equipmentsLoaded: (equipments, selectedEquipmentUids) =>
-                const Center(child: Text('Equipments loaded')),
-            equipmentsFailure: (message) => Center(
               child: Text(message, style: const TextStyle(color: Colors.red)),
             ),
 

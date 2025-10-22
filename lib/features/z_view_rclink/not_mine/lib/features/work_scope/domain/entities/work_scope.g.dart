@@ -19,6 +19,12 @@ WorkScope _$WorkScopeFromJson(Map<String, dynamic> json) => WorkScope(
       ? null
       : DateTime.parse(json['deletedAt'] as String),
   companyID: (json['companyID'] as num).toInt(),
+  workQuantityTypes: (json['workQuantityTypes'] as List<dynamic>)
+      .map((e) => WorkQuantityType.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  workEquipments: (json['workEquipments'] as List<dynamic>)
+      .map((e) => WorkEquipment.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$WorkScopeToJson(WorkScope instance) => <String, dynamic>{
@@ -32,4 +38,6 @@ Map<String, dynamic> _$WorkScopeToJson(WorkScope instance) => <String, dynamic>{
   'updatedAt': instance.updatedAt.toIso8601String(),
   'deletedAt': instance.deletedAt?.toIso8601String(),
   'companyID': instance.companyID,
+  'workQuantityTypes': instance.workQuantityTypes,
+  'workEquipments': instance.workEquipments,
 };

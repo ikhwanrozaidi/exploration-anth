@@ -78,7 +78,7 @@ class CompanyRepositoryImpl
       );
 
       // Update local cache
-      await _localDataSource.cacheCompany(result.toEntity());
+      await _localDataSource.cacheCompany(result);
 
       return Right(result.toEntity());
     } on ServerFailure {

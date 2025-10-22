@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../../shared/utils/theme.dart';
-import '../../../../domain/entities/daily_report_response.dart';
+import '../../../../domain/entities/daily_report.dart';
 
 class WorkerRemarkEditPage extends StatefulWidget {
-  final DailyReportResponse report;
+  final DailyReport report;
 
   const WorkerRemarkEditPage({Key? key, required this.report})
     : super(key: key);

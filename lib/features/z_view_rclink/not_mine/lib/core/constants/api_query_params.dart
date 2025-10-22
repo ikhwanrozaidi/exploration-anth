@@ -1,4 +1,6 @@
 // Enums for common query parameters
+import 'package:injectable/injectable.dart';
+
 enum SortOrder {
   asc('asc'),
   desc('desc');

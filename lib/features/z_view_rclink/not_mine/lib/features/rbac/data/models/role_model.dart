@@ -33,6 +33,23 @@ class RoleModel {
     required this.permissions,
   });
 
+  // Helper methods
+  bool hasPermission(String permissionCode) {
+    return permissions?.any((p) => p.code == permissionCode) ?? false;
+  }
+
+  bool hasAnyPermission(List<String> codes) {
+    return codes.any((code) => hasPermission(code));
+  }
+
+  bool hasAllPermissions(List<String> codes) {
+    return codes.every((code) => hasPermission(code));
+  }
+
+  List<PermissionModel> getPermissionsByCategory(String category) {
+    return permissions?.where((p) => p.category == category).toList() ?? [];
+  }
+
   factory RoleModel.fromJson(Map<String, dynamic> json) =>
       _$RoleModelFromJson(json);
 

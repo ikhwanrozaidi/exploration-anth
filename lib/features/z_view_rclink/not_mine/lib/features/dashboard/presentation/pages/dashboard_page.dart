@@ -1,11 +1,16 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
 
+import 'package:flutter/material.dart';
+import '../../../../core/di/injection.dart';
+import '../../../../core/network/connectivity_service.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../daily_report/presentation/pages/daily_report_page.dart';
-import 'widgets/listingitem_widget.dart';
+import '../widgets/animated_connection_status_widget.dart';
+import '../widgets/listingitem_widget.dart';
+import '../widgets/listingitem_widget.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({Key? key}) : super(key: key);
@@ -15,17 +20,41 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  bool showActionRequired = false;
+  List<String> warningLists = ['1', '2', '3'];
   int actionCount = 108;
 
-  void toggleActionRequired() {
-    setState(() {
-      showActionRequired = !showActionRequired;
+  late final ConnectivityService _connectivityService;
+  bool _isConnected = false;
+  StreamSubscription<bool>? _connectivitySubscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _connectivityService = getIt<ConnectivityService>();
+    _isConnected = _connectivityService.isCurrentlyConnected;
+
+    print('🌐 Initial connectivity status: $_isConnected');
+
+    _connectivitySubscription = _connectivityService.connectivityStream.listen((
+      isConnected,
+    ) {
+      setState(() {
+        _isConnected = isConnected;
+      });
     });
   }
 
   @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    print('🌐 Current build - isConnected: $_isConnected');
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -51,15 +80,10 @@ class _DashboardPageState extends State<DashboardPage> {
                           height: ResponsiveHelper.getHeight(context, 0.04),
                           fit: BoxFit.contain,
                         ),
-                        IconButton(
-                          onPressed: toggleActionRequired,
-                          icon: Icon(
-                            showActionRequired
-                                ? Icons.toggle_on
-                                : Icons.toggle_off,
-                            color: Colors.white,
-                            size: ResponsiveHelper.iconSize(context, base: 30),
-                          ),
+
+                        AnimatedConnectionStatus(
+                          isConnected: _isConnected,
+                          greenAccent: greenAccent,
                         ),
                       ],
                     ),
@@ -67,76 +91,170 @@ class _DashboardPageState extends State<DashboardPage> {
                     SizedBox(height: ResponsiveHelper.spacing(context, 20)),
 
                     // Search Button
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: ResponsiveHelper.borderRadius(
-                            context,
-                            all: 50,
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: ResponsiveHelper.borderRadius(
+                                  context,
+                                  topLeft: 50,
+                                  bottomLeft: 50,
+                                ),
+                              ),
+                              backgroundColor: Colors.white.withOpacity(0.6),
+                            ),
+                            onPressed: () {
+                              CustomSnackBar.show(
+                                context,
+                                'This feature is coming soon...',
+                                type: SnackBarType.comingsoon,
+                              );
+                            },
+                            child: Padding(
+                              padding: ResponsiveHelper.padding(
+                                context,
+                                horizontal: 20,
+                                vertical: 13,
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.search,
+                                    size: ResponsiveHelper.iconSize(
+                                      context,
+                                      base: 25,
+                                    ),
+                                    color: Colors.black.withOpacity(0.6),
+                                  ),
+                                  SizedBox(
+                                    width: ResponsiveHelper.spacing(
+                                      context,
+                                      10,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Search Report',
+                                          style: TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: ResponsiveHelper.fontSize(
+                                              context,
+                                              base: 14,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          'By district or contractor',
+                                          style: TextStyle(
+                                            color: Colors.black.withOpacity(
+                                              0.7,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: ResponsiveHelper.fontSize(
+                                              context,
+                                              base: 12,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                        backgroundColor: Colors.white.withOpacity(0.6),
-                      ),
-                      onPressed: () {
-                        CustomSnackBar.show(
-                          context,
-                          'This feature is coming soon...',
-                          type: SnackBarType.comingsoon,
-                        );
-                      },
-                      // context.read<AuthBloc>().add(const LogoutRequested()),
-                      // context.read<CompanyBloc>().add(
-                      //   const ClearCompanyCache(),
-                      // ),
-                      child: Padding(
-                        padding: ResponsiveHelper.padding(
-                          context,
-                          horizontal: 20,
-                          vertical: 13,
-                        ),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.search,
-                              size: ResponsiveHelper.iconSize(
-                                context,
-                                base: 25,
+
+                        Expanded(
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: ResponsiveHelper.borderRadius(
+                                  context,
+                                  topRight: 50,
+                                  bottomRight: 50,
+                                ),
                               ),
-                              color: Colors.black.withOpacity(0.6),
+                              backgroundColor: Colors.white.withOpacity(0.6),
                             ),
-                            SizedBox(
-                              width: ResponsiveHelper.spacing(context, 15),
-                            ),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Search Report',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: ResponsiveHelper.fontSize(
+                            onPressed: () {
+                              CustomSnackBar.show(
+                                context,
+                                'This feature is coming soon...',
+                                type: SnackBarType.comingsoon,
+                              );
+                            },
+                            child: Padding(
+                              padding: ResponsiveHelper.padding(
+                                context,
+                                horizontal: 20,
+                                vertical: 13,
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.note_alt_outlined,
+                                    size: ResponsiveHelper.iconSize(
                                       context,
-                                      base: 14,
+                                      base: 25,
+                                    ),
+                                    color: Colors.black.withOpacity(0.6),
+                                  ),
+                                  SizedBox(
+                                    width: ResponsiveHelper.spacing(
+                                      context,
+                                      10,
                                     ),
                                   ),
-                                ),
-                                Text(
-                                  'By district or contractor',
-                                  style: TextStyle(
-                                    color: Colors.black.withOpacity(0.7),
-                                    fontSize: ResponsiveHelper.fontSize(
-                                      context,
-                                      base: 12,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Report to',
+                                          style: TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: ResponsiveHelper.fontSize(
+                                              context,
+                                              base: 14,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          'Company name',
+                                          style: TextStyle(
+                                            color: Colors.black.withOpacity(
+                                              0.7,
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: ResponsiveHelper.fontSize(
+                                              context,
+                                              base: 12,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
 
                     SizedBox(height: ResponsiveHelper.spacing(context, 10)),
@@ -177,6 +295,9 @@ class _DashboardPageState extends State<DashboardPage> {
                                       builder: (context) => DailyReportPage(),
                                     ),
                                   );
+
+                                  // context.push(AppRoutePath.dailyReport);
+
                                   // CustomSnackBar.show(
                                   //   context,
                                   //   'This feature is in update...',
@@ -309,10 +430,10 @@ class _DashboardPageState extends State<DashboardPage> {
                     AnimatedContainer(
                       duration: Duration(milliseconds: 400),
                       curve: Curves.easeInOut,
-                      height: showActionRequired ? null : 0,
+                      height: warningLists.isNotEmpty ? null : 0,
                       child: AnimatedOpacity(
                         duration: Duration(milliseconds: 300),
-                        opacity: showActionRequired ? 1.0 : 0.0,
+                        opacity: warningLists.isNotEmpty ? 1.0 : 0.0,
                         child: GestureDetector(
                           onTap: () {
                             CustomSnackBar.show(
@@ -323,7 +444,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           },
                           child: Container(
                             margin: EdgeInsets.only(
-                              bottom: showActionRequired
+                              bottom: warningLists.isNotEmpty
                                   ? ResponsiveHelper.spacing(context, 10)
                                   : 0,
                             ),

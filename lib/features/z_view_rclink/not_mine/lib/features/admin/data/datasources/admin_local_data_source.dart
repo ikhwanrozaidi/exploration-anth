@@ -1,17 +1,18 @@
 import 'package:injectable/injectable.dart';
 import 'package:drift/drift.dart';
 import '../../../../core/database/app_database.dart';
-import '../../domain/entities/admin.dart';
+import '../models/admin_model.dart';
+import '../models/admin_model_extensions.dart';
 
 abstract class AdminLocalDataSource {
-  Future<Admin?> getCurrentAdmin();
-  Future<List<Admin>> getAllAdmins();
-  Future<Admin?> getAdminByUid(String uid);
-  Future<Admin?> getAdminByPhone(String phone);
-  Future<Admin> updateAdmin(Admin admin);
-  Future<Admin> saveAdmin(Admin admin, {bool markForSync = true});
+  Future<AdminModel?> getCurrentAdmin();
+  Future<List<AdminModel>> getAllAdmins();
+  Future<AdminModel?> getAdminByUid(String uid);
+  Future<AdminModel?> getAdminByPhone(String phone);
+  Future<AdminModel> updateAdmin(AdminModel admin);
+  Future<AdminModel> saveAdmin(AdminModel admin, {bool markForSync = true});
   Future<void> deleteAdmin(String uid);
-  Future<List<Admin>> getUnsyncedAdmins();
+  Future<List<AdminModel>> getUnsyncedAdmins();
   Future<void> markAdminAsSynced(String uid);
   Future<void> addToSyncQueue({
     required String entityUid,
@@ -29,50 +30,50 @@ class AdminLocalDataSourceImpl implements AdminLocalDataSource {
   AppDatabase get _database => _databaseService.database;
 
   @override
-  Future<Admin?> getCurrentAdmin() async {
+  Future<AdminModel?> getCurrentAdmin() async {
     final query = _database.select(_database.admins)
       ..where((a) => a.deletedAt.isNull())
       ..limit(1);
 
     final result = await query.getSingleOrNull();
-    return result?.toEntity();
+    return result?.toModel();
   }
 
   @override
-  Future<List<Admin>> getAllAdmins() async {
+  Future<List<AdminModel>> getAllAdmins() async {
     final query = _database.select(_database.admins)
       ..where((a) => a.deletedAt.isNull());
 
     final results = await query.get();
-    return results.map((record) => record.toEntity()).toList();
+    return results.map((record) => record.toModel()).toList();
   }
 
   @override
-  Future<Admin?> getAdminByUid(String uid) async {
+  Future<AdminModel?> getAdminByUid(String uid) async {
     final query = _database.select(_database.admins)
       ..where((a) => a.uid.equals(uid) & a.deletedAt.isNull());
 
     final result = await query.getSingleOrNull();
-    return result?.toEntity();
+    return result?.toModel();
   }
 
   @override
-  Future<Admin?> getAdminByPhone(String phone) async {
+  Future<AdminModel?> getAdminByPhone(String phone) async {
     final query = _database.select(_database.admins)
       ..where((a) => a.phone.equals(phone) & a.deletedAt.isNull());
 
     final result = await query.getSingleOrNull();
-    return result?.toEntity();
+    return result?.toModel();
   }
 
   @override
-  Future<Admin> updateAdmin(Admin admin) async {
+  Future<AdminModel> updateAdmin(AdminModel admin) async {
     // Always marks for sync - use this for user-initiated updates
     return saveAdmin(admin, markForSync: true);
   }
 
   @override
-  Future<Admin> saveAdmin(Admin admin, {bool markForSync = true}) async {
+  Future<AdminModel> saveAdmin(AdminModel admin, {bool markForSync = true}) async {
     final companion = markForSync
         ? admin.toCompanion(isSynced: false, syncAction: 'update')
         : admin.toCompanion(isSynced: true);
@@ -111,12 +112,12 @@ class AdminLocalDataSourceImpl implements AdminLocalDataSource {
   }
 
   @override
-  Future<List<Admin>> getUnsyncedAdmins() async {
+  Future<List<AdminModel>> getUnsyncedAdmins() async {
     final query = _database.select(_database.admins)
       ..where((a) => a.isSynced.equals(false) & a.deletedAt.isNull());
 
     final results = await query.get();
-    return results.map((record) => record.toEntity()).toList();
+    return results.map((record) => record.toModel()).toList();
   }
 
   @override

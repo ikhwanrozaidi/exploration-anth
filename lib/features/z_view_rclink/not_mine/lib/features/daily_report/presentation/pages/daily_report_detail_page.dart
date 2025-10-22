@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import '../../../../../../../to_view_rclink/not_mine/shared/utils/responsive_helper.dart';
+import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/divider_config.dart';
 import '../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../../shared/widgets/theme_listtile_widget.dart';
-import '../../domain/entities/daily_report_response.dart';
+import '../../domain/entities/daily_report.dart';
 import '../../domain/entities/quantity_value_response.dart';
 import 'widget/edit_page/equipment_edit_page.dart';
 import 'widget/edit_page/quantity_edit_page.dart';
@@ -14,7 +14,7 @@ import 'widget/edit_page/route_edit_page.dart';
 import 'widget/edit_page/worker_remark_edit_page.dart';
 
 class DailyReportDetailPage extends StatefulWidget {
-  final DailyReportResponse report;
+  final DailyReport report;
 
   const DailyReportDetailPage({Key? key, required this.report})
     : super(key: key);
@@ -792,7 +792,7 @@ class _DailyReportDetailPageState extends State<DailyReportDetailPage> {
                         ThemeListTileWidget(
                           title: 'Monthly Summary',
                           titleDetails: 'List of overall report',
-                          icon: Icons.calendar_month_sharp,
+                          icon: Icons.calendar_today_rounded,
                           isInverseBold: true,
                         ),
 

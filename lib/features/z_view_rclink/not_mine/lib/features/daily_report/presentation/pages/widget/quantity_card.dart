@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../../../../../to_view_rclink/not_mine/shared/utils/theme.dart';
-import '../../../../../../../../to_view_rclink/not_mine/shared/widgets/divider_config.dart';
+import '../../../../../../shared/utils/theme.dart';
+import '../../../../../../shared/widgets/divider_config.dart';
 import '../../../domain/entities/report_quantity_response.dart';
 
 class QuantityCard extends StatefulWidget {
@@ -109,16 +109,13 @@ class _QuantityCardState extends State<QuantityCard> {
                         fontSize: 12,
                       ),
                     ),
-
                     const SizedBox(height: 6),
-
                     TextField(
                       controller: controller,
                       keyboardType: _getKeyboardType(field.fieldType),
                       onChanged: (value) =>
                           _handleChange(field.uid, field.fieldType, value),
                       decoration: InputDecoration(
-                        isDense: true,
                         hintText: qv.value ?? "Enter value...",
                         suffix: field.unit != null
                             ? Container(
@@ -144,22 +141,7 @@ class _QuantityCardState extends State<QuantityCard> {
                           vertical: 10,
                         ),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(
-                            color: Colors.grey.shade300,
-                            width: 1,
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(
-                            color: Colors.grey.shade300,
-                            width: 1,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(color: primaryColor, width: 2),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     ),

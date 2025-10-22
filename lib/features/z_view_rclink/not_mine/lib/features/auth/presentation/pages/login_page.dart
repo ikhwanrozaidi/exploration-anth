@@ -41,7 +41,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   String _completePhoneNumber = '';
   bool _isLoading = false;
   bool _isOtpLoading = false;
-  bool _isVerifying = false;
 
   // Screen state management
   AuthScreen _currentScreen = AuthScreen.signIn;
@@ -161,20 +160,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     }
   }
 
-  void _verifyOtp() async {
-    if (_isVerifying) {
-      print('⚠️ Verification already in progress, ignoring duplicate call');
-      return;
-    }
-
+  void _verifyOtp() {
     String otp = _otpControllers.map((controller) => controller.text).join();
 
     if (otp.length == 6) {
       setState(() {
         _isOtpLoading = true;
-        _isVerifying = true;
       });
-
       context.read<AuthBloc>().add(
         VerifyOtpRequested(phone: _completePhoneNumber, otp: otp),
       );
@@ -343,7 +335,6 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 _setLoading(false);
                 setState(() {
                   _isOtpLoading = false;
-                  _isVerifying = false;
                 });
                 CustomSnackBar.show(context, message, type: SnackBarType.error);
                 _backToSignIn();
@@ -360,36 +351,15 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               authenticated: (tokens, admin) {
                 setState(() {
                   _isOtpLoading = false;
-                  _isVerifying = false;
                 });
                 // Always show company screen when authenticated
                 _showCompanyScreen();
               },
-              sessionExpiring: (timeLeft) {
-                // Add this handler
-                CustomSnackBar.show(
-                  context,
-                  'Your session will expire in ${timeLeft.inMinutes} minutes',
-                  type: SnackBarType.warning,
-                  duration: const Duration(seconds: 5),
-                );
-              },
-              unauthenticated: (reason) {
-                // Fix parameter - add 'reason'
+              unauthenticated: () {
                 _setLoading(false);
                 setState(() {
                   _isOtpLoading = false;
                 });
-
-                // Show reason if provided
-                if (reason != null && reason.isNotEmpty) {
-                  CustomSnackBar.show(
-                    context,
-                    reason,
-                    type: SnackBarType.error,
-                  );
-                }
-
                 _backToSignIn();
               },
             );

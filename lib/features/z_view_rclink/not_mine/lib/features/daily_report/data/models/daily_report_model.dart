@@ -1,9 +1,10 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/entities/daily_report_response.dart';
+import 'package:rclink_app/features/daily_report/data/models/company_response_model.dart';
+import '../../domain/entities/daily_report.dart';
 import 'daily_report_equipment_model.dart';
 import 'report_quantities_model.dart';
-import 'work_scope_model.dart';
-import 'road_model.dart';
+import 'work_scope_response_model.dart';
+import 'road_response_model.dart';
 
 part 'daily_report_model.freezed.dart';
 part 'daily_report_model.g.dart';
@@ -53,8 +54,9 @@ abstract class DailyReportModel with _$DailyReportModel {
     required DateTime updatedAt,
 
     // Expanded fields from API
-    WorkScopeModel? workScope,
-    RoadModel? road,
+    CompanyResponseModel? company,
+    WorkScopeResponseModel? workScope,
+    RoadResponseModel? road,
     List<DailyReportEquipmentModel>? equipments,
     List<ReportQuantitiesModel>? reportQuantities,
 
@@ -70,8 +72,8 @@ abstract class DailyReportModel with _$DailyReportModel {
   factory DailyReportModel.fromJson(Map<String, dynamic> json) =>
       _$DailyReportModelFromJson(json);
 
-  DailyReportResponse toEntity() {
-    return DailyReportResponse(
+  DailyReport toEntity() {
+    return DailyReport(
       id: id,
       uid: uid,
       name: name,
@@ -94,6 +96,7 @@ abstract class DailyReportModel with _$DailyReportModel {
       createdByID: createdByID,
       createdAt: createdAt,
       updatedAt: updatedAt,
+      company: company?.toEntity(),
       workScope: workScope?.toEntity(),
       road: road?.toEntity(),
       equipments: equipments?.map((e) => e.toEntity()).toList() ?? [],

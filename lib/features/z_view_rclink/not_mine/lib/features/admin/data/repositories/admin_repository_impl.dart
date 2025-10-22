@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rclink_app/features/admin/data/models/admin_model.dart';
+import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/repositories/base_sync_repository.dart';
 import '../../domain/entities/admin.dart';
@@ -9,12 +10,16 @@ import '../datasources/admin_local_data_source.dart';
 import '../datasources/admin_remote_data_source.dart';
 
 @LazySingleton(as: AdminRepository)
-class AdminRepositoryImpl extends BaseOfflineSyncRepository<Admin, AdminModel> 
+class AdminRepositoryImpl extends BaseOfflineSyncRepository<Admin, AdminModel>
     implements AdminRepository {
   final AdminLocalDataSource _localDataSource;
   final AdminRemoteDataSource _remoteDataSource;
 
-  AdminRepositoryImpl(this._localDataSource, this._remoteDataSource);
+  AdminRepositoryImpl(
+    this._localDataSource,
+    this._remoteDataSource,
+    DatabaseService databaseService,
+  ) : super(databaseService: databaseService);
 
   @override
   Future<Either<Failure, Admin>> getCurrentAdmin({
@@ -34,24 +39,35 @@ class AdminRepositoryImpl extends BaseOfflineSyncRepository<Admin, AdminModel>
 
   @override
   Future<Either<Failure, Admin>> updateAdmin(Admin admin) async {
+    final adminModel = AdminModel.fromEntity(admin);
+
     return updateOptimistic(
       // Update locally (marks for sync automatically)
-      updateLocal: () => _localDataSource.updateAdmin(admin),
-      
+      updateLocal: () async {
+        final updated = await _localDataSource.updateAdmin(adminModel);
+        return updated.toEntity();
+      },
+
       // Remote update - will run in background
       updateRemote: () async {
         // TODO: When admin API update endpoint is ready, uncomment:
-        // return _remoteDataSource.updateAdmin(admin.toModel());
-        
+        // return _remoteDataSource.updateAdmin(adminModel);
+
         // For now, simulate success after delay
         await Future.delayed(const Duration(seconds: 2));
-        return Right(AdminModel.fromEntity(admin));
+        return Right(adminModel);
       },
-      
-      // Mark as synced after successful remote update
-      markAsSynced: (uid) => _localDataSource.markAdminAsSynced(uid),
-      
+
+      // Handle successful sync
+      onSyncSuccess: (adminModel) async {
+        await _localDataSource.markAdminAsSynced(admin.uid);
+      },
+
       entity: admin,
+      entityType: 'admin',
+      action: 'update',
+      payload: adminModel.toJson(),
+      priority: 5,
       attemptImmediateSync: true, // Try to sync immediately if online
     );
   }

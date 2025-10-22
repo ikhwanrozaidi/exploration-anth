@@ -1,12 +1,12 @@
-// lib/core/network/auth_interceptor.dart
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:synchronized/synchronized.dart';
 import '../../features/auth/data/datasources/auth_local_data_source.dart';
+import '../../features/auth/domain/repositories/auth_repository.dart';
 import '../../features/auth/domain/usecases/refresh_token_usecase.dart';
 import '../di/injection.dart';
-import '../services/token_expiry_monitor_service.dart';
+import '../errors/failures.dart';
 
 @lazySingleton
 class AuthInterceptor extends Interceptor {
@@ -159,8 +159,8 @@ class AuthInterceptor extends Interceptor {
               RefreshTokenParams(refreshToken),
             );
 
-            return await result.fold(
-              (failure) async {
+            return result.fold(
+              (failure) {
                 _refreshCompleter?.completeError(failure);
                 return false;
               },
@@ -168,24 +168,12 @@ class AuthInterceptor extends Interceptor {
                 // Store new tokens
                 await _localDataSource.storeTokens(tokens);
                 _refreshCompleter?.complete();
-
-                // Restart monitoring with new tokens
-                try {
-                  final tokenMonitor = getIt<TokenExpiryMonitor>();
-                  await tokenMonitor.startMonitoring();
-                  print(
-                    '✅ AuthInterceptor: Token monitoring restarted after refresh',
-                  );
-                } catch (e) {
-                  print(
-                    '⚠️ AuthInterceptor: Failed to restart token monitoring: $e',
-                  );
-                }
-
                 return true;
               },
             );
           } catch (e) {
+            // If refresh use case doesn't exist, try direct API call
+            // This is a fallback - you should implement the use case
             _refreshCompleter?.completeError(e);
             return false;
           }
@@ -254,15 +242,6 @@ class AuthInterceptor extends Interceptor {
 
   Future<void> _clearAuthData() async {
     await _localDataSource.clearCache();
-
-    // Stop monitoring when clearing auth data
-    try {
-      final tokenMonitor = getIt<TokenExpiryMonitor>();
-      await tokenMonitor.stopMonitoring();
-      print('✅ AuthInterceptor: Token monitoring stopped after clearing auth');
-    } catch (e) {
-      print('⚠️ AuthInterceptor: Failed to stop token monitoring: $e');
-    }
   }
 
   bool _shouldSkipAuth(String path) {

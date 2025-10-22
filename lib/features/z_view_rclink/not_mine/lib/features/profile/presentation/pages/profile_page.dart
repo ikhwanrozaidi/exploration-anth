@@ -10,7 +10,7 @@ import '../../../../shared/widgets/divider_config.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
 import '../../../company/presentation/pages/widgets/edit_company_page.dart';
-import '../../../dashboard/presentation/pages/widgets/listingitem_widget.dart';
+import '../../../dashboard/presentation/widgets/listingitem_widget.dart';
 import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
 import '../../../rbac/domain/constants/permission_codes.dart';
 

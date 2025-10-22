@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'work_equipment.dart';
+import 'work_quantity_type.dart';
+
 part 'work_scope.g.dart';
 
 @JsonSerializable()
@@ -15,6 +18,8 @@ class WorkScope extends Equatable {
   final DateTime updatedAt;
   final DateTime? deletedAt;
   final int companyID;
+  final List<WorkQuantityType> workQuantityTypes;
+  final List<WorkEquipment> workEquipments;
 
   const WorkScope({
     required this.id,
@@ -27,6 +32,8 @@ class WorkScope extends Equatable {
     required this.updatedAt,
     this.deletedAt,
     required this.companyID,
+    required this.workQuantityTypes,
+    required this.workEquipments,
   });
 
   @override
@@ -41,6 +48,8 @@ class WorkScope extends Equatable {
     updatedAt,
     deletedAt,
     companyID,
+    workQuantityTypes,
+    workEquipments,
   ];
 
   factory WorkScope.fromJson(Map<String, dynamic> json) =>

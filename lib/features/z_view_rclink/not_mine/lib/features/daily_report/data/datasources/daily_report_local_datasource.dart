@@ -1,19 +1,36 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
+import 'package:uuid/uuid.dart';
 import '../../../../core/database/app_database.dart';
-import '../../domain/entities/daily_report_response.dart';
+import '../../../road/domain/entities/road_edit_entity.dart';
+import '../../domain/entities/daily_report.dart';
 import '../../domain/entities/daily_report_equipment_response.dart';
 import '../../domain/entities/quantity_value_response.dart';
 import '../../domain/entities/report_quantity_response.dart';
-import '../../domain/entities/road_edit_entity.dart';
 import '../../domain/entities/work_scope_response.dart';
 import '../../domain/entities/road_response.dart';
+import '../models/create_daily_report_model.dart';
+import '../models/create_daily_report_equipment_model.dart';
+import '../models/create_daily_report_quantity_model.dart';
 
 abstract class DailyReportLocalDataSource {
-  Future<List<DailyReportResponse>?> getCachedDailyReports(String companyUID);
-  Future<void> cacheDailyReports(List<DailyReportResponse> reports);
+  Future<List<DailyReport>?> getCachedDailyReports(String companyUID);
+  Future<void> cacheDailyReports(List<DailyReport> reports);
   Future<void> clearCache();
+
+  Future<DailyReport> createDailyReportLocal(
+    CreateDailyReportModel data,
+    String companyUID,
+  );
+  Future<void> updateReportWithServerData(
+    String tempUID,
+    Map<String, dynamic> serverData,
+  );
+  Future<void> markReportAsSynced(String uid);
+
+  Future<({CreateDailyReportModel model, String companyUID})?>
+  getUnsyncedReportData(String uid);
 
   Future<List<RoadEdit>?> getCachedRoadsByDistrictName(String districtName);
   Future<void> cacheRoads(List<RoadEdit> roads, String districtName);
@@ -29,9 +46,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
   AppDatabase get _database => _databaseService.database;
 
   @override
-  Future<List<DailyReportResponse>?> getCachedDailyReports(
-    String companyUID,
-  ) async {
+  Future<List<DailyReport>?> getCachedDailyReports(String companyUID) async {
     try {
       final records = await (_database.select(
         _database.dailyReports,
@@ -132,7 +147,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
           }
         }
 
-        return DailyReportResponse(
+        return DailyReport(
           id: record.id,
           uid: record.uid,
           name: record.name,
@@ -155,6 +170,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
           createdByID: record.createdByID,
           createdAt: record.createdAt,
           updatedAt: record.updatedAt,
+          company: null,
           workScope: workScope,
           road: road,
           equipments: equipments,
@@ -170,7 +186,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
   }
 
   @override
-  Future<void> cacheDailyReports(List<DailyReportResponse> reports) async {
+  Future<void> cacheDailyReports(List<DailyReport> reports) async {
     try {
       await _database.delete(_database.dailyReports).go();
 
@@ -287,6 +303,249 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
       await _database.delete(_database.dailyReports).go();
     } catch (e) {
       print('Error clearing daily reports cache: $e');
+    }
+  }
+
+  @override
+  Future<DailyReport> createDailyReportLocal(
+    CreateDailyReportModel data,
+    String companyUID,
+  ) async {
+    try {
+      // Generate temp UID
+      final tempUID = const Uuid().v4();
+      final now = DateTime.now();
+
+      // Get actual company ID from companies table
+      final company = await (_database.select(
+        _database.companies,
+      )..where((tbl) => tbl.uid.equals(companyUID))).getSingleOrNull();
+
+      final actualCompanyID = company?.id ?? 0;
+
+      // Serialize data for future sync
+      final workScopeJson = jsonEncode({'uid': data.workScopeUID});
+      final roadJson = jsonEncode({'uid': data.roadUID});
+      final equipmentsJson = data.equipments != null
+          ? jsonEncode(data.equipments!.map((e) => e.toJson()).toList())
+          : null;
+      final quantitiesJson = data.quantities != null
+          ? jsonEncode(data.quantities!.map((q) => q.toJson()).toList())
+          : null;
+
+      // Insert into database with temp UID and sync flags
+      await _database
+          .into(_database.dailyReports)
+          .insert(
+            DailyReportsCompanion(
+              uid: Value(tempUID),
+              name: Value(data.name),
+              notes: Value(data.notes),
+              weatherCondition: Value(data.weatherCondition.name.toUpperCase()),
+              workPerformed: Value(data.workPerformed),
+              longitude: data.longitude != null
+                  ? Value(data.longitude)
+                  : const Value.absent(),
+              latitude: data.latitude != null
+                  ? Value(data.latitude)
+                  : const Value.absent(),
+              companyID: Value(actualCompanyID),
+              workScopeID: Value(0), // Will be updated from server
+              roadID: Value(0), // Will be updated from server
+              totalWorkers: Value(data.totalWorkers),
+              fromSection: data.fromSection != null
+                  ? Value(data.fromSection)
+                  : const Value.absent(),
+              toSection: data.toSection != null
+                  ? Value(data.toSection)
+                  : const Value.absent(),
+              createdByID: Value(0), // Will be updated from server
+              createdAt: Value(now),
+              updatedAt: Value(now),
+              isSynced: const Value(false),
+              syncAction: const Value('CREATE'),
+              workScopeData: Value(workScopeJson),
+              roadData: Value(roadJson),
+              equipmentsData: Value(equipmentsJson),
+              reportQuantitiesData: Value(quantitiesJson),
+            ),
+          );
+
+      print('✅ Created local report with temp UID: $tempUID');
+
+      // Return created entity
+      return DailyReport(
+        id: 0, // Temp ID
+        uid: tempUID,
+        name: data.name,
+        notes: data.notes,
+        weatherCondition: data.weatherCondition.name.toUpperCase(),
+        workPerformed: data.workPerformed,
+        companyID: actualCompanyID,
+        workScopeID: 0,
+        roadID: 0,
+        totalWorkers: data.totalWorkers,
+        fromSection: data.fromSection?.toString(),
+        toSection: data.toSection?.toString(),
+        longitude: data.longitude?.toString(),
+        latitude: data.latitude?.toString(),
+        createdByID: 0,
+        createdAt: now,
+        updatedAt: now,
+        status: 'DRAFT',
+        company: null,
+        reportQuantities: const [],
+      );
+    } catch (e) {
+      print('❌ Error creating local report: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateReportWithServerData(
+    String tempUID,
+    Map<String, dynamic> serverData,
+  ) async {
+    try {
+      await (_database.update(
+        _database.dailyReports,
+      )..where((tbl) => tbl.uid.equals(tempUID))).write(
+        DailyReportsCompanion(
+          id: Value(serverData['id'] as int),
+          uid: Value(
+            serverData['uid'] as String,
+          ), // Replace temp UID with server UID
+          name: Value(serverData['name'] as String),
+          notes: Value(serverData['notes'] as String?),
+          weatherCondition: Value(serverData['weatherCondition'] as String),
+          workPerformed: Value(serverData['workPerformed'] as bool? ?? true),
+          companyID: Value(serverData['companyID'] as int),
+          workScopeID: Value(serverData['workScopeID'] as int),
+          roadID: Value(serverData['roadID'] as int),
+          totalWorkers: Value(serverData['totalWorkers'] as int?),
+          createdByID: Value(serverData['createdByID'] as int),
+          updatedAt: Value(DateTime.now()),
+          isSynced: const Value(true),
+          syncAction: const Value.absent(), // Clear sync action
+        ),
+      );
+
+      print('✅ Updated report: $tempUID → ${serverData['uid']}');
+    } catch (e) {
+      print('❌ Error updating report with server data: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> markReportAsSynced(String uid) async {
+    try {
+      await (_database.update(
+        _database.dailyReports,
+      )..where((tbl) => tbl.uid.equals(uid))).write(
+        DailyReportsCompanion(
+          isSynced: const Value(true),
+          syncAction: const Value.absent(),
+          updatedAt: Value(DateTime.now()),
+        ),
+      );
+
+      print('✅ Marked report as synced: $uid');
+    } catch (e) {
+      print('❌ Error marking report as synced: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<({CreateDailyReportModel model, String companyUID})?>
+  getUnsyncedReportData(String uid) async {
+    try {
+      final record =
+          await (_database.select(_database.dailyReports)..where(
+                (tbl) => tbl.uid.equals(uid) & tbl.isSynced.equals(false),
+              ))
+              .getSingleOrNull();
+
+      if (record == null) {
+        return null;
+      }
+
+      // Get company UID from companies table
+      final company = await (_database.select(
+        _database.companies,
+      )..where((tbl) => tbl.id.equals(record.companyID))).getSingleOrNull();
+
+      if (company == null) {
+        print('⚠️ Company not found for ID ${record.companyID}');
+        return null;
+      }
+
+      // Reconstruct workScopeUID from JSON
+      String? workScopeUID;
+      if (record.workScopeData != null && record.workScopeData!.isNotEmpty) {
+        final data = jsonDecode(record.workScopeData!);
+        workScopeUID = data['uid'] as String?;
+      }
+
+      // Reconstruct roadUID from JSON
+      String? roadUID;
+      if (record.roadData != null && record.roadData!.isNotEmpty) {
+        final data = jsonDecode(record.roadData!);
+        roadUID = data['uid'] as String?;
+      }
+
+      if (workScopeUID == null || roadUID == null) {
+        print('⚠️ Missing required UIDs for report $uid');
+        return null;
+      }
+
+      // Reconstruct equipments
+      List<CreateDailyReportEquipmentModel>? equipments;
+      if (record.equipmentsData != null && record.equipmentsData!.isNotEmpty) {
+        final List<dynamic> data = jsonDecode(record.equipmentsData!);
+        equipments = data
+            .map((e) => CreateDailyReportEquipmentModel.fromJson(e))
+            .toList();
+      }
+
+      // Reconstruct quantities
+      List<CreateDailyReportQuantityModel>? quantities;
+      if (record.reportQuantitiesData != null &&
+          record.reportQuantitiesData!.isNotEmpty) {
+        final List<dynamic> data = jsonDecode(record.reportQuantitiesData!);
+        quantities = data
+            .map((q) => CreateDailyReportQuantityModel.fromJson(q))
+            .toList();
+      }
+
+      // Reconstruct weather enum
+      final weatherCondition = WeatherCondition.values.firstWhere(
+        (e) => e.name.toUpperCase() == record.weatherCondition,
+        orElse: () => WeatherCondition.sunny,
+      );
+
+      final createModel = CreateDailyReportModel(
+        name: record.name,
+        notes: record.notes,
+        weatherCondition: weatherCondition,
+        workPerformed: record.workPerformed,
+        workScopeUID: workScopeUID,
+        roadUID: roadUID,
+        totalWorkers: record.totalWorkers,
+        fromSection: record.fromSection,
+        toSection: record.toSection,
+        longitude: record.longitude,
+        latitude: record.latitude,
+        equipments: equipments,
+        quantities: quantities,
+      );
+
+      return (model: createModel, companyUID: company.uid);
+    } catch (e) {
+      print('❌ Error getting unsynced report data: $e');
+      return null;
     }
   }
 

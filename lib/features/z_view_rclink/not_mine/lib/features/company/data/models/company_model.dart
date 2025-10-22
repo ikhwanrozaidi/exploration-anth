@@ -31,7 +31,7 @@ abstract class CompanyModel with _$CompanyModel {
     DateTime? deletedAt,
     required int ownerID,
     AdminRoleModel? adminRole,
-    @JsonKey(defaultValue: 0) int? adminCount,
+    int? adminCount,
     String? defaultBankAcc,
     String? defaultBankAccType,
   }) = _CompanyModel;

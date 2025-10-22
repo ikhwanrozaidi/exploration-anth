@@ -35,7 +35,7 @@ class CustomSnackBar {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: _getBackgroundColor(type).withOpacity(0.4),
+        color: _getBackgroundColor(type).withOpacity(0.2),
         borderRadius: BorderRadius.circular(12),
         // boxShadow: [
         //   BoxShadow(

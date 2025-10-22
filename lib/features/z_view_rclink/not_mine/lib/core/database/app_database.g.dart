@@ -943,152 +943,6 @@ class $SyncQueueTable extends SyncQueue
     ),
     defaultValue: const Constant(false),
   );
-  static const VerificationMeta _endpointMeta = const VerificationMeta(
-    'endpoint',
-  );
-  @override
-  late final GeneratedColumn<String> endpoint = GeneratedColumn<String>(
-    'endpoint',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _methodMeta = const VerificationMeta('method');
-  @override
-  late final GeneratedColumn<String> method = GeneratedColumn<String>(
-    'method',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _jsonPayloadMeta = const VerificationMeta(
-    'jsonPayload',
-  );
-  @override
-  late final GeneratedColumn<String> jsonPayload = GeneratedColumn<String>(
-    'json_payload',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _idempotencyKeyMeta = const VerificationMeta(
-    'idempotencyKey',
-  );
-  @override
-  late final GeneratedColumn<String> idempotencyKey = GeneratedColumn<String>(
-    'idempotency_key',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _filePathsMeta = const VerificationMeta(
-    'filePaths',
-  );
-  @override
-  late final GeneratedColumn<String> filePaths = GeneratedColumn<String>(
-    'file_paths',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _fileFieldNameMeta = const VerificationMeta(
-    'fileFieldName',
-  );
-  @override
-  late final GeneratedColumn<String> fileFieldName = GeneratedColumn<String>(
-    'file_field_name',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _fileUploadEndpointMeta =
-      const VerificationMeta('fileUploadEndpoint');
-  @override
-  late final GeneratedColumn<String> fileUploadEndpoint =
-      GeneratedColumn<String>(
-        'file_upload_endpoint',
-        aliasedName,
-        true,
-        type: DriftSqlType.string,
-        requiredDuringInsert: false,
-      );
-  static const VerificationMeta _featureNameMeta = const VerificationMeta(
-    'featureName',
-  );
-  @override
-  late final GeneratedColumn<String> featureName = GeneratedColumn<String>(
-    'feature_name',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _localEntityIdMeta = const VerificationMeta(
-    'localEntityId',
-  );
-  @override
-  late final GeneratedColumn<String> localEntityId = GeneratedColumn<String>(
-    'local_entity_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
-    'isSynced',
-  );
-  @override
-  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
-    'is_synced',
-    aliasedName,
-    false,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_synced" IN (0, 1))',
-    ),
-    defaultValue: const Constant(false),
-  );
-  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
-    'syncError',
-  );
-  @override
-  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
-    'sync_error',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
-    'lastSyncAttempt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> lastSyncAttempt =
-      GeneratedColumn<DateTime>(
-        'last_sync_attempt',
-        aliasedName,
-        true,
-        type: DriftSqlType.dateTime,
-        requiredDuringInsert: false,
-      );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-    'updated_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -1102,19 +956,6 @@ class $SyncQueueTable extends SyncQueue
     createdAt,
     scheduledAt,
     isProcessed,
-    endpoint,
-    method,
-    jsonPayload,
-    idempotencyKey,
-    filePaths,
-    fileFieldName,
-    fileUploadEndpoint,
-    featureName,
-    localEntityId,
-    isSynced,
-    syncError,
-    lastSyncAttempt,
-    updatedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -1205,105 +1046,6 @@ class $SyncQueueTable extends SyncQueue
         ),
       );
     }
-    if (data.containsKey('endpoint')) {
-      context.handle(
-        _endpointMeta,
-        endpoint.isAcceptableOrUnknown(data['endpoint']!, _endpointMeta),
-      );
-    }
-    if (data.containsKey('method')) {
-      context.handle(
-        _methodMeta,
-        method.isAcceptableOrUnknown(data['method']!, _methodMeta),
-      );
-    }
-    if (data.containsKey('json_payload')) {
-      context.handle(
-        _jsonPayloadMeta,
-        jsonPayload.isAcceptableOrUnknown(
-          data['json_payload']!,
-          _jsonPayloadMeta,
-        ),
-      );
-    }
-    if (data.containsKey('idempotency_key')) {
-      context.handle(
-        _idempotencyKeyMeta,
-        idempotencyKey.isAcceptableOrUnknown(
-          data['idempotency_key']!,
-          _idempotencyKeyMeta,
-        ),
-      );
-    }
-    if (data.containsKey('file_paths')) {
-      context.handle(
-        _filePathsMeta,
-        filePaths.isAcceptableOrUnknown(data['file_paths']!, _filePathsMeta),
-      );
-    }
-    if (data.containsKey('file_field_name')) {
-      context.handle(
-        _fileFieldNameMeta,
-        fileFieldName.isAcceptableOrUnknown(
-          data['file_field_name']!,
-          _fileFieldNameMeta,
-        ),
-      );
-    }
-    if (data.containsKey('file_upload_endpoint')) {
-      context.handle(
-        _fileUploadEndpointMeta,
-        fileUploadEndpoint.isAcceptableOrUnknown(
-          data['file_upload_endpoint']!,
-          _fileUploadEndpointMeta,
-        ),
-      );
-    }
-    if (data.containsKey('feature_name')) {
-      context.handle(
-        _featureNameMeta,
-        featureName.isAcceptableOrUnknown(
-          data['feature_name']!,
-          _featureNameMeta,
-        ),
-      );
-    }
-    if (data.containsKey('local_entity_id')) {
-      context.handle(
-        _localEntityIdMeta,
-        localEntityId.isAcceptableOrUnknown(
-          data['local_entity_id']!,
-          _localEntityIdMeta,
-        ),
-      );
-    }
-    if (data.containsKey('is_synced')) {
-      context.handle(
-        _isSyncedMeta,
-        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
-      );
-    }
-    if (data.containsKey('sync_error')) {
-      context.handle(
-        _syncErrorMeta,
-        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
-      );
-    }
-    if (data.containsKey('last_sync_attempt')) {
-      context.handle(
-        _lastSyncAttemptMeta,
-        lastSyncAttempt.isAcceptableOrUnknown(
-          data['last_sync_attempt']!,
-          _lastSyncAttemptMeta,
-        ),
-      );
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    }
     return context;
   }
 
@@ -1357,58 +1099,6 @@ class $SyncQueueTable extends SyncQueue
         DriftSqlType.bool,
         data['${effectivePrefix}is_processed'],
       )!,
-      endpoint: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}endpoint'],
-      ),
-      method: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}method'],
-      ),
-      jsonPayload: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}json_payload'],
-      ),
-      idempotencyKey: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}idempotency_key'],
-      ),
-      filePaths: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}file_paths'],
-      ),
-      fileFieldName: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}file_field_name'],
-      ),
-      fileUploadEndpoint: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}file_upload_endpoint'],
-      ),
-      featureName: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}feature_name'],
-      ),
-      localEntityId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}local_entity_id'],
-      ),
-      isSynced: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_synced'],
-      )!,
-      syncError: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}sync_error'],
-      ),
-      lastSyncAttempt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}last_sync_attempt'],
-      ),
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}updated_at'],
-      ),
     );
   }
 
@@ -1430,19 +1120,6 @@ class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
   final DateTime createdAt;
   final DateTime? scheduledAt;
   final bool isProcessed;
-  final String? endpoint;
-  final String? method;
-  final String? jsonPayload;
-  final String? idempotencyKey;
-  final String? filePaths;
-  final String? fileFieldName;
-  final String? fileUploadEndpoint;
-  final String? featureName;
-  final String? localEntityId;
-  final bool isSynced;
-  final String? syncError;
-  final DateTime? lastSyncAttempt;
-  final DateTime? updatedAt;
   const SyncQueueRecord({
     required this.id,
     required this.entityType,
@@ -1455,19 +1132,6 @@ class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
     required this.createdAt,
     this.scheduledAt,
     required this.isProcessed,
-    this.endpoint,
-    this.method,
-    this.jsonPayload,
-    this.idempotencyKey,
-    this.filePaths,
-    this.fileFieldName,
-    this.fileUploadEndpoint,
-    this.featureName,
-    this.localEntityId,
-    required this.isSynced,
-    this.syncError,
-    this.lastSyncAttempt,
-    this.updatedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1489,43 +1153,6 @@ class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
       map['scheduled_at'] = Variable<DateTime>(scheduledAt);
     }
     map['is_processed'] = Variable<bool>(isProcessed);
-    if (!nullToAbsent || endpoint != null) {
-      map['endpoint'] = Variable<String>(endpoint);
-    }
-    if (!nullToAbsent || method != null) {
-      map['method'] = Variable<String>(method);
-    }
-    if (!nullToAbsent || jsonPayload != null) {
-      map['json_payload'] = Variable<String>(jsonPayload);
-    }
-    if (!nullToAbsent || idempotencyKey != null) {
-      map['idempotency_key'] = Variable<String>(idempotencyKey);
-    }
-    if (!nullToAbsent || filePaths != null) {
-      map['file_paths'] = Variable<String>(filePaths);
-    }
-    if (!nullToAbsent || fileFieldName != null) {
-      map['file_field_name'] = Variable<String>(fileFieldName);
-    }
-    if (!nullToAbsent || fileUploadEndpoint != null) {
-      map['file_upload_endpoint'] = Variable<String>(fileUploadEndpoint);
-    }
-    if (!nullToAbsent || featureName != null) {
-      map['feature_name'] = Variable<String>(featureName);
-    }
-    if (!nullToAbsent || localEntityId != null) {
-      map['local_entity_id'] = Variable<String>(localEntityId);
-    }
-    map['is_synced'] = Variable<bool>(isSynced);
-    if (!nullToAbsent || syncError != null) {
-      map['sync_error'] = Variable<String>(syncError);
-    }
-    if (!nullToAbsent || lastSyncAttempt != null) {
-      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
-    }
-    if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<DateTime>(updatedAt);
-    }
     return map;
   }
 
@@ -1548,43 +1175,6 @@ class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
           ? const Value.absent()
           : Value(scheduledAt),
       isProcessed: Value(isProcessed),
-      endpoint: endpoint == null && nullToAbsent
-          ? const Value.absent()
-          : Value(endpoint),
-      method: method == null && nullToAbsent
-          ? const Value.absent()
-          : Value(method),
-      jsonPayload: jsonPayload == null && nullToAbsent
-          ? const Value.absent()
-          : Value(jsonPayload),
-      idempotencyKey: idempotencyKey == null && nullToAbsent
-          ? const Value.absent()
-          : Value(idempotencyKey),
-      filePaths: filePaths == null && nullToAbsent
-          ? const Value.absent()
-          : Value(filePaths),
-      fileFieldName: fileFieldName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(fileFieldName),
-      fileUploadEndpoint: fileUploadEndpoint == null && nullToAbsent
-          ? const Value.absent()
-          : Value(fileUploadEndpoint),
-      featureName: featureName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(featureName),
-      localEntityId: localEntityId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(localEntityId),
-      isSynced: Value(isSynced),
-      syncError: syncError == null && nullToAbsent
-          ? const Value.absent()
-          : Value(syncError),
-      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastSyncAttempt),
-      updatedAt: updatedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(updatedAt),
     );
   }
 
@@ -1605,21 +1195,6 @@ class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       scheduledAt: serializer.fromJson<DateTime?>(json['scheduledAt']),
       isProcessed: serializer.fromJson<bool>(json['isProcessed']),
-      endpoint: serializer.fromJson<String?>(json['endpoint']),
-      method: serializer.fromJson<String?>(json['method']),
-      jsonPayload: serializer.fromJson<String?>(json['jsonPayload']),
-      idempotencyKey: serializer.fromJson<String?>(json['idempotencyKey']),
-      filePaths: serializer.fromJson<String?>(json['filePaths']),
-      fileFieldName: serializer.fromJson<String?>(json['fileFieldName']),
-      fileUploadEndpoint: serializer.fromJson<String?>(
-        json['fileUploadEndpoint'],
-      ),
-      featureName: serializer.fromJson<String?>(json['featureName']),
-      localEntityId: serializer.fromJson<String?>(json['localEntityId']),
-      isSynced: serializer.fromJson<bool>(json['isSynced']),
-      syncError: serializer.fromJson<String?>(json['syncError']),
-      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
-      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
     );
   }
   @override
@@ -1637,19 +1212,6 @@ class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'scheduledAt': serializer.toJson<DateTime?>(scheduledAt),
       'isProcessed': serializer.toJson<bool>(isProcessed),
-      'endpoint': serializer.toJson<String?>(endpoint),
-      'method': serializer.toJson<String?>(method),
-      'jsonPayload': serializer.toJson<String?>(jsonPayload),
-      'idempotencyKey': serializer.toJson<String?>(idempotencyKey),
-      'filePaths': serializer.toJson<String?>(filePaths),
-      'fileFieldName': serializer.toJson<String?>(fileFieldName),
-      'fileUploadEndpoint': serializer.toJson<String?>(fileUploadEndpoint),
-      'featureName': serializer.toJson<String?>(featureName),
-      'localEntityId': serializer.toJson<String?>(localEntityId),
-      'isSynced': serializer.toJson<bool>(isSynced),
-      'syncError': serializer.toJson<String?>(syncError),
-      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
-      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
     };
   }
 
@@ -1665,19 +1227,6 @@ class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
     DateTime? createdAt,
     Value<DateTime?> scheduledAt = const Value.absent(),
     bool? isProcessed,
-    Value<String?> endpoint = const Value.absent(),
-    Value<String?> method = const Value.absent(),
-    Value<String?> jsonPayload = const Value.absent(),
-    Value<String?> idempotencyKey = const Value.absent(),
-    Value<String?> filePaths = const Value.absent(),
-    Value<String?> fileFieldName = const Value.absent(),
-    Value<String?> fileUploadEndpoint = const Value.absent(),
-    Value<String?> featureName = const Value.absent(),
-    Value<String?> localEntityId = const Value.absent(),
-    bool? isSynced,
-    Value<String?> syncError = const Value.absent(),
-    Value<DateTime?> lastSyncAttempt = const Value.absent(),
-    Value<DateTime?> updatedAt = const Value.absent(),
   }) => SyncQueueRecord(
     id: id ?? this.id,
     entityType: entityType ?? this.entityType,
@@ -1690,29 +1239,6 @@ class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
     createdAt: createdAt ?? this.createdAt,
     scheduledAt: scheduledAt.present ? scheduledAt.value : this.scheduledAt,
     isProcessed: isProcessed ?? this.isProcessed,
-    endpoint: endpoint.present ? endpoint.value : this.endpoint,
-    method: method.present ? method.value : this.method,
-    jsonPayload: jsonPayload.present ? jsonPayload.value : this.jsonPayload,
-    idempotencyKey: idempotencyKey.present
-        ? idempotencyKey.value
-        : this.idempotencyKey,
-    filePaths: filePaths.present ? filePaths.value : this.filePaths,
-    fileFieldName: fileFieldName.present
-        ? fileFieldName.value
-        : this.fileFieldName,
-    fileUploadEndpoint: fileUploadEndpoint.present
-        ? fileUploadEndpoint.value
-        : this.fileUploadEndpoint,
-    featureName: featureName.present ? featureName.value : this.featureName,
-    localEntityId: localEntityId.present
-        ? localEntityId.value
-        : this.localEntityId,
-    isSynced: isSynced ?? this.isSynced,
-    syncError: syncError.present ? syncError.value : this.syncError,
-    lastSyncAttempt: lastSyncAttempt.present
-        ? lastSyncAttempt.value
-        : this.lastSyncAttempt,
-    updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
   );
   SyncQueueRecord copyWithCompanion(SyncQueueCompanion data) {
     return SyncQueueRecord(
@@ -1735,33 +1261,6 @@ class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
       isProcessed: data.isProcessed.present
           ? data.isProcessed.value
           : this.isProcessed,
-      endpoint: data.endpoint.present ? data.endpoint.value : this.endpoint,
-      method: data.method.present ? data.method.value : this.method,
-      jsonPayload: data.jsonPayload.present
-          ? data.jsonPayload.value
-          : this.jsonPayload,
-      idempotencyKey: data.idempotencyKey.present
-          ? data.idempotencyKey.value
-          : this.idempotencyKey,
-      filePaths: data.filePaths.present ? data.filePaths.value : this.filePaths,
-      fileFieldName: data.fileFieldName.present
-          ? data.fileFieldName.value
-          : this.fileFieldName,
-      fileUploadEndpoint: data.fileUploadEndpoint.present
-          ? data.fileUploadEndpoint.value
-          : this.fileUploadEndpoint,
-      featureName: data.featureName.present
-          ? data.featureName.value
-          : this.featureName,
-      localEntityId: data.localEntityId.present
-          ? data.localEntityId.value
-          : this.localEntityId,
-      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
-      syncError: data.syncError.present ? data.syncError.value : this.syncError,
-      lastSyncAttempt: data.lastSyncAttempt.present
-          ? data.lastSyncAttempt.value
-          : this.lastSyncAttempt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
     );
   }
 
@@ -1778,26 +1277,13 @@ class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
           ..write('error: $error, ')
           ..write('createdAt: $createdAt, ')
           ..write('scheduledAt: $scheduledAt, ')
-          ..write('isProcessed: $isProcessed, ')
-          ..write('endpoint: $endpoint, ')
-          ..write('method: $method, ')
-          ..write('jsonPayload: $jsonPayload, ')
-          ..write('idempotencyKey: $idempotencyKey, ')
-          ..write('filePaths: $filePaths, ')
-          ..write('fileFieldName: $fileFieldName, ')
-          ..write('fileUploadEndpoint: $fileUploadEndpoint, ')
-          ..write('featureName: $featureName, ')
-          ..write('localEntityId: $localEntityId, ')
-          ..write('isSynced: $isSynced, ')
-          ..write('syncError: $syncError, ')
-          ..write('lastSyncAttempt: $lastSyncAttempt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('isProcessed: $isProcessed')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hashAll([
+  int get hashCode => Object.hash(
     id,
     entityType,
     entityUid,
@@ -1809,20 +1295,7 @@ class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
     createdAt,
     scheduledAt,
     isProcessed,
-    endpoint,
-    method,
-    jsonPayload,
-    idempotencyKey,
-    filePaths,
-    fileFieldName,
-    fileUploadEndpoint,
-    featureName,
-    localEntityId,
-    isSynced,
-    syncError,
-    lastSyncAttempt,
-    updatedAt,
-  ]);
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1837,20 +1310,7 @@ class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
           other.error == this.error &&
           other.createdAt == this.createdAt &&
           other.scheduledAt == this.scheduledAt &&
-          other.isProcessed == this.isProcessed &&
-          other.endpoint == this.endpoint &&
-          other.method == this.method &&
-          other.jsonPayload == this.jsonPayload &&
-          other.idempotencyKey == this.idempotencyKey &&
-          other.filePaths == this.filePaths &&
-          other.fileFieldName == this.fileFieldName &&
-          other.fileUploadEndpoint == this.fileUploadEndpoint &&
-          other.featureName == this.featureName &&
-          other.localEntityId == this.localEntityId &&
-          other.isSynced == this.isSynced &&
-          other.syncError == this.syncError &&
-          other.lastSyncAttempt == this.lastSyncAttempt &&
-          other.updatedAt == this.updatedAt);
+          other.isProcessed == this.isProcessed);
 }
 
 class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
@@ -1865,19 +1325,6 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
   final Value<DateTime> createdAt;
   final Value<DateTime?> scheduledAt;
   final Value<bool> isProcessed;
-  final Value<String?> endpoint;
-  final Value<String?> method;
-  final Value<String?> jsonPayload;
-  final Value<String?> idempotencyKey;
-  final Value<String?> filePaths;
-  final Value<String?> fileFieldName;
-  final Value<String?> fileUploadEndpoint;
-  final Value<String?> featureName;
-  final Value<String?> localEntityId;
-  final Value<bool> isSynced;
-  final Value<String?> syncError;
-  final Value<DateTime?> lastSyncAttempt;
-  final Value<DateTime?> updatedAt;
   const SyncQueueCompanion({
     this.id = const Value.absent(),
     this.entityType = const Value.absent(),
@@ -1890,19 +1337,6 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
     this.createdAt = const Value.absent(),
     this.scheduledAt = const Value.absent(),
     this.isProcessed = const Value.absent(),
-    this.endpoint = const Value.absent(),
-    this.method = const Value.absent(),
-    this.jsonPayload = const Value.absent(),
-    this.idempotencyKey = const Value.absent(),
-    this.filePaths = const Value.absent(),
-    this.fileFieldName = const Value.absent(),
-    this.fileUploadEndpoint = const Value.absent(),
-    this.featureName = const Value.absent(),
-    this.localEntityId = const Value.absent(),
-    this.isSynced = const Value.absent(),
-    this.syncError = const Value.absent(),
-    this.lastSyncAttempt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
   });
   SyncQueueCompanion.insert({
     this.id = const Value.absent(),
@@ -1916,19 +1350,6 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
     required DateTime createdAt,
     this.scheduledAt = const Value.absent(),
     this.isProcessed = const Value.absent(),
-    this.endpoint = const Value.absent(),
-    this.method = const Value.absent(),
-    this.jsonPayload = const Value.absent(),
-    this.idempotencyKey = const Value.absent(),
-    this.filePaths = const Value.absent(),
-    this.fileFieldName = const Value.absent(),
-    this.fileUploadEndpoint = const Value.absent(),
-    this.featureName = const Value.absent(),
-    this.localEntityId = const Value.absent(),
-    this.isSynced = const Value.absent(),
-    this.syncError = const Value.absent(),
-    this.lastSyncAttempt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
   }) : entityType = Value(entityType),
        entityUid = Value(entityUid),
        action = Value(action),
@@ -1945,19 +1366,6 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
     Expression<DateTime>? createdAt,
     Expression<DateTime>? scheduledAt,
     Expression<bool>? isProcessed,
-    Expression<String>? endpoint,
-    Expression<String>? method,
-    Expression<String>? jsonPayload,
-    Expression<String>? idempotencyKey,
-    Expression<String>? filePaths,
-    Expression<String>? fileFieldName,
-    Expression<String>? fileUploadEndpoint,
-    Expression<String>? featureName,
-    Expression<String>? localEntityId,
-    Expression<bool>? isSynced,
-    Expression<String>? syncError,
-    Expression<DateTime>? lastSyncAttempt,
-    Expression<DateTime>? updatedAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1971,20 +1379,6 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
       if (createdAt != null) 'created_at': createdAt,
       if (scheduledAt != null) 'scheduled_at': scheduledAt,
       if (isProcessed != null) 'is_processed': isProcessed,
-      if (endpoint != null) 'endpoint': endpoint,
-      if (method != null) 'method': method,
-      if (jsonPayload != null) 'json_payload': jsonPayload,
-      if (idempotencyKey != null) 'idempotency_key': idempotencyKey,
-      if (filePaths != null) 'file_paths': filePaths,
-      if (fileFieldName != null) 'file_field_name': fileFieldName,
-      if (fileUploadEndpoint != null)
-        'file_upload_endpoint': fileUploadEndpoint,
-      if (featureName != null) 'feature_name': featureName,
-      if (localEntityId != null) 'local_entity_id': localEntityId,
-      if (isSynced != null) 'is_synced': isSynced,
-      if (syncError != null) 'sync_error': syncError,
-      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
-      if (updatedAt != null) 'updated_at': updatedAt,
     });
   }
 
@@ -2000,19 +1394,6 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
     Value<DateTime>? createdAt,
     Value<DateTime?>? scheduledAt,
     Value<bool>? isProcessed,
-    Value<String?>? endpoint,
-    Value<String?>? method,
-    Value<String?>? jsonPayload,
-    Value<String?>? idempotencyKey,
-    Value<String?>? filePaths,
-    Value<String?>? fileFieldName,
-    Value<String?>? fileUploadEndpoint,
-    Value<String?>? featureName,
-    Value<String?>? localEntityId,
-    Value<bool>? isSynced,
-    Value<String?>? syncError,
-    Value<DateTime?>? lastSyncAttempt,
-    Value<DateTime?>? updatedAt,
   }) {
     return SyncQueueCompanion(
       id: id ?? this.id,
@@ -2026,19 +1407,6 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
       createdAt: createdAt ?? this.createdAt,
       scheduledAt: scheduledAt ?? this.scheduledAt,
       isProcessed: isProcessed ?? this.isProcessed,
-      endpoint: endpoint ?? this.endpoint,
-      method: method ?? this.method,
-      jsonPayload: jsonPayload ?? this.jsonPayload,
-      idempotencyKey: idempotencyKey ?? this.idempotencyKey,
-      filePaths: filePaths ?? this.filePaths,
-      fileFieldName: fileFieldName ?? this.fileFieldName,
-      fileUploadEndpoint: fileUploadEndpoint ?? this.fileUploadEndpoint,
-      featureName: featureName ?? this.featureName,
-      localEntityId: localEntityId ?? this.localEntityId,
-      isSynced: isSynced ?? this.isSynced,
-      syncError: syncError ?? this.syncError,
-      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
-      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
@@ -2078,45 +1446,6 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
     if (isProcessed.present) {
       map['is_processed'] = Variable<bool>(isProcessed.value);
     }
-    if (endpoint.present) {
-      map['endpoint'] = Variable<String>(endpoint.value);
-    }
-    if (method.present) {
-      map['method'] = Variable<String>(method.value);
-    }
-    if (jsonPayload.present) {
-      map['json_payload'] = Variable<String>(jsonPayload.value);
-    }
-    if (idempotencyKey.present) {
-      map['idempotency_key'] = Variable<String>(idempotencyKey.value);
-    }
-    if (filePaths.present) {
-      map['file_paths'] = Variable<String>(filePaths.value);
-    }
-    if (fileFieldName.present) {
-      map['file_field_name'] = Variable<String>(fileFieldName.value);
-    }
-    if (fileUploadEndpoint.present) {
-      map['file_upload_endpoint'] = Variable<String>(fileUploadEndpoint.value);
-    }
-    if (featureName.present) {
-      map['feature_name'] = Variable<String>(featureName.value);
-    }
-    if (localEntityId.present) {
-      map['local_entity_id'] = Variable<String>(localEntityId.value);
-    }
-    if (isSynced.present) {
-      map['is_synced'] = Variable<bool>(isSynced.value);
-    }
-    if (syncError.present) {
-      map['sync_error'] = Variable<String>(syncError.value);
-    }
-    if (lastSyncAttempt.present) {
-      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
-    }
     return map;
   }
 
@@ -2133,20 +1462,7 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
           ..write('error: $error, ')
           ..write('createdAt: $createdAt, ')
           ..write('scheduledAt: $scheduledAt, ')
-          ..write('isProcessed: $isProcessed, ')
-          ..write('endpoint: $endpoint, ')
-          ..write('method: $method, ')
-          ..write('jsonPayload: $jsonPayload, ')
-          ..write('idempotencyKey: $idempotencyKey, ')
-          ..write('filePaths: $filePaths, ')
-          ..write('fileFieldName: $fileFieldName, ')
-          ..write('fileUploadEndpoint: $fileUploadEndpoint, ')
-          ..write('featureName: $featureName, ')
-          ..write('localEntityId: $localEntityId, ')
-          ..write('isSynced: $isSynced, ')
-          ..write('syncError: $syncError, ')
-          ..write('lastSyncAttempt: $lastSyncAttempt, ')
-          ..write('updatedAt: $updatedAt')
+          ..write('isProcessed: $isProcessed')
           ..write(')'))
         .toString();
   }
@@ -19105,19 +18421,6 @@ typedef $$SyncQueueTableCreateCompanionBuilder =
       required DateTime createdAt,
       Value<DateTime?> scheduledAt,
       Value<bool> isProcessed,
-      Value<String?> endpoint,
-      Value<String?> method,
-      Value<String?> jsonPayload,
-      Value<String?> idempotencyKey,
-      Value<String?> filePaths,
-      Value<String?> fileFieldName,
-      Value<String?> fileUploadEndpoint,
-      Value<String?> featureName,
-      Value<String?> localEntityId,
-      Value<bool> isSynced,
-      Value<String?> syncError,
-      Value<DateTime?> lastSyncAttempt,
-      Value<DateTime?> updatedAt,
     });
 typedef $$SyncQueueTableUpdateCompanionBuilder =
     SyncQueueCompanion Function({
@@ -19132,19 +18435,6 @@ typedef $$SyncQueueTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
       Value<DateTime?> scheduledAt,
       Value<bool> isProcessed,
-      Value<String?> endpoint,
-      Value<String?> method,
-      Value<String?> jsonPayload,
-      Value<String?> idempotencyKey,
-      Value<String?> filePaths,
-      Value<String?> fileFieldName,
-      Value<String?> fileUploadEndpoint,
-      Value<String?> featureName,
-      Value<String?> localEntityId,
-      Value<bool> isSynced,
-      Value<String?> syncError,
-      Value<DateTime?> lastSyncAttempt,
-      Value<DateTime?> updatedAt,
     });
 
 class $$SyncQueueTableFilterComposer
@@ -19208,71 +18498,6 @@ class $$SyncQueueTableFilterComposer
 
   ColumnFilters<bool> get isProcessed => $composableBuilder(
     column: $table.isProcessed,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get endpoint => $composableBuilder(
-    column: $table.endpoint,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get method => $composableBuilder(
-    column: $table.method,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get jsonPayload => $composableBuilder(
-    column: $table.jsonPayload,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get idempotencyKey => $composableBuilder(
-    column: $table.idempotencyKey,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get filePaths => $composableBuilder(
-    column: $table.filePaths,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get fileFieldName => $composableBuilder(
-    column: $table.fileFieldName,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get fileUploadEndpoint => $composableBuilder(
-    column: $table.fileUploadEndpoint,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get featureName => $composableBuilder(
-    column: $table.featureName,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get localEntityId => $composableBuilder(
-    column: $table.localEntityId,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<bool> get isSynced => $composableBuilder(
-    column: $table.isSynced,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get syncError => $composableBuilder(
-    column: $table.syncError,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
-    column: $table.lastSyncAttempt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -19340,71 +18565,6 @@ class $$SyncQueueTableOrderingComposer
     column: $table.isProcessed,
     builder: (column) => ColumnOrderings(column),
   );
-
-  ColumnOrderings<String> get endpoint => $composableBuilder(
-    column: $table.endpoint,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get method => $composableBuilder(
-    column: $table.method,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get jsonPayload => $composableBuilder(
-    column: $table.jsonPayload,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get idempotencyKey => $composableBuilder(
-    column: $table.idempotencyKey,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get filePaths => $composableBuilder(
-    column: $table.filePaths,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get fileFieldName => $composableBuilder(
-    column: $table.fileFieldName,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get fileUploadEndpoint => $composableBuilder(
-    column: $table.fileUploadEndpoint,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get featureName => $composableBuilder(
-    column: $table.featureName,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get localEntityId => $composableBuilder(
-    column: $table.localEntityId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<bool> get isSynced => $composableBuilder(
-    column: $table.isSynced,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get syncError => $composableBuilder(
-    column: $table.syncError,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
-    column: $table.lastSyncAttempt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
 }
 
 class $$SyncQueueTableAnnotationComposer
@@ -19456,59 +18616,6 @@ class $$SyncQueueTableAnnotationComposer
     column: $table.isProcessed,
     builder: (column) => column,
   );
-
-  GeneratedColumn<String> get endpoint =>
-      $composableBuilder(column: $table.endpoint, builder: (column) => column);
-
-  GeneratedColumn<String> get method =>
-      $composableBuilder(column: $table.method, builder: (column) => column);
-
-  GeneratedColumn<String> get jsonPayload => $composableBuilder(
-    column: $table.jsonPayload,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get idempotencyKey => $composableBuilder(
-    column: $table.idempotencyKey,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get filePaths =>
-      $composableBuilder(column: $table.filePaths, builder: (column) => column);
-
-  GeneratedColumn<String> get fileFieldName => $composableBuilder(
-    column: $table.fileFieldName,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get fileUploadEndpoint => $composableBuilder(
-    column: $table.fileUploadEndpoint,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get featureName => $composableBuilder(
-    column: $table.featureName,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get localEntityId => $composableBuilder(
-    column: $table.localEntityId,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<bool> get isSynced =>
-      $composableBuilder(column: $table.isSynced, builder: (column) => column);
-
-  GeneratedColumn<String> get syncError =>
-      $composableBuilder(column: $table.syncError, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
-    column: $table.lastSyncAttempt,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
 }
 
 class $$SyncQueueTableTableManager
@@ -19553,19 +18660,6 @@ class $$SyncQueueTableTableManager
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime?> scheduledAt = const Value.absent(),
                 Value<bool> isProcessed = const Value.absent(),
-                Value<String?> endpoint = const Value.absent(),
-                Value<String?> method = const Value.absent(),
-                Value<String?> jsonPayload = const Value.absent(),
-                Value<String?> idempotencyKey = const Value.absent(),
-                Value<String?> filePaths = const Value.absent(),
-                Value<String?> fileFieldName = const Value.absent(),
-                Value<String?> fileUploadEndpoint = const Value.absent(),
-                Value<String?> featureName = const Value.absent(),
-                Value<String?> localEntityId = const Value.absent(),
-                Value<bool> isSynced = const Value.absent(),
-                Value<String?> syncError = const Value.absent(),
-                Value<DateTime?> lastSyncAttempt = const Value.absent(),
-                Value<DateTime?> updatedAt = const Value.absent(),
               }) => SyncQueueCompanion(
                 id: id,
                 entityType: entityType,
@@ -19578,19 +18672,6 @@ class $$SyncQueueTableTableManager
                 createdAt: createdAt,
                 scheduledAt: scheduledAt,
                 isProcessed: isProcessed,
-                endpoint: endpoint,
-                method: method,
-                jsonPayload: jsonPayload,
-                idempotencyKey: idempotencyKey,
-                filePaths: filePaths,
-                fileFieldName: fileFieldName,
-                fileUploadEndpoint: fileUploadEndpoint,
-                featureName: featureName,
-                localEntityId: localEntityId,
-                isSynced: isSynced,
-                syncError: syncError,
-                lastSyncAttempt: lastSyncAttempt,
-                updatedAt: updatedAt,
               ),
           createCompanionCallback:
               ({
@@ -19605,19 +18686,6 @@ class $$SyncQueueTableTableManager
                 required DateTime createdAt,
                 Value<DateTime?> scheduledAt = const Value.absent(),
                 Value<bool> isProcessed = const Value.absent(),
-                Value<String?> endpoint = const Value.absent(),
-                Value<String?> method = const Value.absent(),
-                Value<String?> jsonPayload = const Value.absent(),
-                Value<String?> idempotencyKey = const Value.absent(),
-                Value<String?> filePaths = const Value.absent(),
-                Value<String?> fileFieldName = const Value.absent(),
-                Value<String?> fileUploadEndpoint = const Value.absent(),
-                Value<String?> featureName = const Value.absent(),
-                Value<String?> localEntityId = const Value.absent(),
-                Value<bool> isSynced = const Value.absent(),
-                Value<String?> syncError = const Value.absent(),
-                Value<DateTime?> lastSyncAttempt = const Value.absent(),
-                Value<DateTime?> updatedAt = const Value.absent(),
               }) => SyncQueueCompanion.insert(
                 id: id,
                 entityType: entityType,
@@ -19630,19 +18698,6 @@ class $$SyncQueueTableTableManager
                 createdAt: createdAt,
                 scheduledAt: scheduledAt,
                 isProcessed: isProcessed,
-                endpoint: endpoint,
-                method: method,
-                jsonPayload: jsonPayload,
-                idempotencyKey: idempotencyKey,
-                filePaths: filePaths,
-                fileFieldName: fileFieldName,
-                fileUploadEndpoint: fileUploadEndpoint,
-                featureName: featureName,
-                localEntityId: localEntityId,
-                isSynced: isSynced,
-                syncError: syncError,
-                lastSyncAttempt: lastSyncAttempt,
-                updatedAt: updatedAt,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

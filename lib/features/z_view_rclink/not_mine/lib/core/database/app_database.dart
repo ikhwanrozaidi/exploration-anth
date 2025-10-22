@@ -68,12 +68,9 @@ class Admins extends Table with SyncableTable {
 // }
 
 // Sync queue for offline operations
-// Sync queue for offline POST operations
 @DataClassName('SyncQueueRecord')
 class SyncQueue extends Table {
   IntColumn get id => integer().autoIncrement()();
-
-  // OLD COLUMNS (kept for backward compatibility)
   TextColumn get entityType => text()(); // 'admin', 'device', etc.
   TextColumn get entityUid => text()(); // UID of the entity
   TextColumn get action => text()(); // 'create', 'update', 'delete'
@@ -84,32 +81,6 @@ class SyncQueue extends Table {
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get scheduledAt => dateTime().nullable()();
   BoolColumn get isProcessed => boolean().withDefault(const Constant(false))();
-
-  TextColumn get endpoint =>
-      text().nullable()(); // e.g., '/companies/{uid}/daily-reports'
-  TextColumn get method => text().nullable()(); // 'POST', 'PUT', 'DELETE'
-  TextColumn get jsonPayload =>
-      text().nullable()(); // JSON string of request body
-  TextColumn get idempotencyKey =>
-      text().nullable()(); // For duplicate prevention
-
-  // File uploads (if any)
-  TextColumn get filePaths => text().nullable()(); // JSON array of file paths
-  TextColumn get fileFieldName =>
-      text().nullable()(); // e.g., 'images', 'documents'
-  TextColumn get fileUploadEndpoint =>
-      text().nullable()(); // e.g., '/upload/images'
-
-  // Metadata
-  TextColumn get featureName =>
-      text().nullable()(); // e.g., 'daily_report', 'road'
-  TextColumn get localEntityId => text().nullable()(); // For UI reference
-
-  // Sync status
-  BoolColumn get isSynced => boolean().withDefault(const Constant(false))();
-  TextColumn get syncError => text().nullable()();
-  DateTimeColumn get lastSyncAttempt => dateTime().nullable()();
-  DateTimeColumn get updatedAt => dateTime().nullable()();
 }
 
 // Companies table
@@ -550,7 +521,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 12; // Added daily report tables in version 10
+  int get schemaVersion => 11; // Added daily report tables in version 10
 
   @override
   MigrationStrategy get migration {
@@ -808,14 +779,6 @@ class AppDatabase extends _$AppDatabase {
             schema.dailyReports,
             schema.dailyReports.reportQuantitiesData,
           );
-        },
-        from11To12: (m, schema) async {
-          // Migration from version 11 to 12: Drop and recreate SyncQueue table
-
-          await customStatement('PRAGMA foreign_keys = OFF');
-          await customStatement('DROP TABLE IF EXISTS sync_queue');
-          await m.createTable(schema.syncQueue);
-          await customStatement('PRAGMA foreign_keys = ON');
         },
       ),
       beforeOpen: (details) async {

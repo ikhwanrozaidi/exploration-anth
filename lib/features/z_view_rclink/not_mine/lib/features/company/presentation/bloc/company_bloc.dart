@@ -45,9 +45,6 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
     await result.fold(
       (failure) async => emit(CompanyFailure(_mapFailureToMessage(failure))),
       (companies) async {
-        final selectedResult = await _getSelectedCompanyUseCase();
-        final selectedCompanyId = selectedResult.getOrElse(() => null);
-
         if (!emit.isDone) {
           emit(CompanyLoaded(companies, selectedCompany: null));
         }

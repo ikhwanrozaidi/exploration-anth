@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:drift/drift.dart';
-import '../../../../core/database/app_database.dart';
 
 class Admin extends Equatable {
   final int id;
@@ -66,78 +64,4 @@ class Admin extends Equatable {
   }
 
   String get displayName => fullName != 'Unknown' ? fullName : phone;
-}
-
-/// Extension to convert Admin domain entity to AdminRecord database entity
-extension AdminToRecord on Admin {
-  AdminRecord toRecord({
-    bool isSynced = true,
-    DateTime? deletedAt,
-    String? syncAction,
-    int syncRetryCount = 0,
-    String? syncError,
-    DateTime? lastSyncAttempt,
-  }) {
-    return AdminRecord(
-      // Sync fields
-      isSynced: isSynced,
-      deletedAt: deletedAt,
-      syncAction: syncAction,
-      syncRetryCount: syncRetryCount,
-      syncError: syncError,
-      lastSyncAttempt: lastSyncAttempt,
-      // Business fields
-      id: id,
-      uid: uid,
-      phone: phone,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      updatedAt: updatedAt,
-      createdAt: createdAt,
-    );
-  }
-
-  /// Create a database insertable for this admin
-  AdminsCompanion toCompanion({
-    bool isSynced = false,
-    String? syncAction = 'create',
-  }) {
-    return AdminsCompanion.insert(
-      uid: uid,
-      phone: phone,
-      firstName: firstName != null ? Value(firstName) : const Value.absent(),
-      lastName: lastName != null ? Value(lastName) : const Value.absent(),
-      email: email != null ? Value(email) : const Value.absent(),
-      updatedAt: updatedAt,
-      createdAt: createdAt,
-      isSynced: Value(isSynced),
-      syncAction: Value(syncAction),
-    );
-  }
-}
-
-/// Extension to convert AdminRecord database entity to Admin domain entity
-extension AdminRecordToDomain on AdminRecord {
-  Admin toEntity() {
-    return Admin(
-      id: id,
-      uid: uid,
-      phone: phone,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      updatedAt: updatedAt,
-      createdAt: createdAt,
-    );
-  }
-
-  /// Check if this record needs to be synced to server
-  bool get needsSync => !isSynced && deletedAt == null;
-
-  /// Check if this record is marked for deletion
-  bool get isDeleted => deletedAt != null;
-
-  /// Check if this record has sync errors
-  bool get hasSyncError => syncError != null;
 }

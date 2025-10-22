@@ -1,9 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
 
-part 'company.g.dart';
-
-@JsonSerializable()
 class Company extends Equatable {
   final int id;
   final String uid;
@@ -143,13 +139,8 @@ class Company extends Equatable {
       defaultBankAccType: defaultBankAccType ?? this.defaultBankAccType,
     );
   }
-
-  factory Company.fromJson(Map<String, dynamic> json) =>
-      _$CompanyFromJson(json);
-  Map<String, dynamic> toJson() => _$CompanyToJson(this);
 }
 
-@JsonSerializable()
 class AdminRole extends Equatable {
   final String uid;
   final String name;
@@ -162,8 +153,4 @@ class AdminRole extends Equatable {
   AdminRole copyWith({String? uid, String? name}) {
     return AdminRole(uid: uid ?? this.uid, name: name ?? this.name);
   }
-
-  factory AdminRole.fromJson(Map<String, dynamic> json) =>
-      _$AdminRoleFromJson(json);
-  Map<String, dynamic> toJson() => _$AdminRoleToJson(this);
 }

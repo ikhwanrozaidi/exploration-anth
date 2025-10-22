@@ -10,10 +10,10 @@ class AuthState with _$AuthState {
   const factory AuthState.initial() = AuthInitial;
   const factory AuthState.loading() = AuthLoading;
   const factory AuthState.otpSent(OtpResponse data) = AuthOtpSent;
-  const factory AuthState.authenticated(Tokens tokens, {Admin? currentAdmin}) =
-      Authenticated;
-  const factory AuthState.sessionExpiring(Duration timeLeft) =
-      AuthSessionExpiring;
-  const factory AuthState.unauthenticated({String? reason}) = Unauthenticated;
+  const factory AuthState.authenticated(
+    Tokens tokens, {
+    Admin? currentAdmin,
+  }) = Authenticated;
+  const factory AuthState.unauthenticated() = Unauthenticated;
   const factory AuthState.failure(String message) = AuthFailure;
 }
