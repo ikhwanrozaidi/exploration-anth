@@ -7,7 +7,7 @@ abstract class ContractorRelationRepository {
   Future<Either<Failure, List<ContractorRelation>>> getContractorRelation({
     ApiQueryParams? queryParams,
 
-    required String companyUID,
+    String? companyUID,
 
     bool forceRefresh = false,
     Duration? cacheTimeout = const Duration(hours: 1),
