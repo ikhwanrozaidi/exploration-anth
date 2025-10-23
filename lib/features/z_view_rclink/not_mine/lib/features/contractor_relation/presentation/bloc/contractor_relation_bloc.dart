@@ -59,7 +59,6 @@ class ContractorRelationBloc
   ) async {
     final currentState = state;
     if (currentState is ContractorRelationLoaded) {
-      // Find the selected contractor
       final selectedContractor = currentState.contractors.firstWhere(
         (contractor) => contractor.uid == event.contractorUID,
         orElse: () => currentState.contractors.first,

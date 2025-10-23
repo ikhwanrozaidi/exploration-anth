@@ -56,7 +56,6 @@ void showContractorRelationSelection({
     backgroundColor: Colors.transparent,
     builder: (context) => ContractorRelationBottomSheet(
       onContractorSelected: (selectedContractor) {
-        // Prepare data to pass back to caller
         final Map<String, dynamic> selectedData = {
           'companyReportToUID': selectedContractor.uid,
           'name': selectedContractor.name,
