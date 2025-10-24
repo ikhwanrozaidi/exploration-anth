@@ -28,7 +28,7 @@
     "phoneNumber": "Phone Number",
     "phoneRequired": "Phone number is required",
     "phoneInvalid": "Please enter a valid phone number",
-    "smsInfo": "You will receive a 4 digit code via SMS/ WhatsApp",
+    "smsInfo": "You will receive a 6 digit code via SMS/ WhatsApp",
 
     "logout": "Logout",
     "logoutConfirmation": "Are you sure you want to logout?",

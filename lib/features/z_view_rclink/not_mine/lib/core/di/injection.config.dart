@@ -73,6 +73,12 @@ import '../../features/contractor_relation/data/repository/contractor_relation_r
     as _i715;
 import '../../features/contractor_relation/domain/repository/contractor_relation_repository.dart'
     as _i337;
+import '../../features/contractor_relation/domain/usecases/clear_contractor_relation_usecase.dart'
+    as _i79;
+import '../../features/contractor_relation/domain/usecases/get_contractor_relation_usecase.dart'
+    as _i993;
+import '../../features/contractor_relation/presentation/bloc/contractor_relation_bloc.dart'
+    as _i224;
 import '../../features/daily_report/data/datasources/daily_report_api_service.dart'
     as _i538;
 import '../../features/daily_report/data/datasources/daily_report_local_datasource.dart'
@@ -342,6 +348,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i491.NetworkInfo>(
       () => _i491.EnhancedNetworkInfo(gh<_i491.ConnectivityService>()),
     );
+    gh.factory<_i993.GetContractorRelationParams>(
+      () => _i993.GetContractorRelationParams(
+        forceRefresh: gh<bool>(),
+        cacheTimeout: gh<Duration>(),
+      ),
+    );
     gh.factory<_i890.GetWorkScopesParams>(
       () => _i890.GetWorkScopesParams(
         forceRefresh: gh<bool>(),
@@ -551,6 +563,22 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i847.GetEquipmentUseCase>(),
         gh<_i398.ClearAllCacheUseCase>(),
         gh<_i330.SubmitDailyReportUseCase>(),
+      ),
+    );
+    gh.factory<_i79.ClearContractorRelationCacheUseCase>(
+      () => _i79.ClearContractorRelationCacheUseCase(
+        gh<_i337.ContractorRelationRepository>(),
+      ),
+    );
+    gh.factory<_i993.GetContractorRelationUseCase>(
+      () => _i993.GetContractorRelationUseCase(
+        gh<_i337.ContractorRelationRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i224.ContractorRelationBloc>(
+      () => _i224.ContractorRelationBloc(
+        gh<_i993.GetContractorRelationUseCase>(),
+        gh<_i79.ClearContractorRelationCacheUseCase>(),
       ),
     );
     return this;

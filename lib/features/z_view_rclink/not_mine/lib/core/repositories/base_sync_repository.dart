@@ -4,6 +4,7 @@ import 'package:drift/drift.dart';
 import 'package:flutter/foundation.dart';
 import '../database/app_database.dart';
 import '../errors/failures.dart';
+import '../sync/sync_constants.dart';
 
 /// Base repository class for operations that require sync
 /// Handles optimistic updates with background sync
@@ -131,32 +132,35 @@ abstract class BaseOfflineSyncRepository<T, M> {
     }
   }
 
-  /// Update operation - optimistic with sync and automatic SyncQueue fallback
+  /// Generic optimistic operation with sync and automatic SyncQueue fallback
+  /// Works with any entity type regardless of repository's type parameters
   ///
   /// Flow:
-  /// 1. Update locally immediately (optimistic)
+  /// 1. Execute local operation immediately (optimistic)
   /// 2. Try immediate sync in background
   /// 3. If sync fails → Automatically add to SyncQueue for retry
   /// 4. SyncService will retry periodically until success
-  Future<Either<Failure, T>> updateOptimistic({
-    required Future<T> Function() updateLocal,
-    required Future<Either<Failure, M>> Function()? updateRemote,
-    required Future<void> Function(M serverModel) onSyncSuccess,
-    required T entity,
-    required String entityType,
-    required String action,
+  ///
+  /// Use this for create/update/delete operations on single entities
+  Future<Either<Failure, EntityT>> executeOptimistic<EntityT, ModelT>({
+    required Future<EntityT> Function() local,
+    required Future<Either<Failure, ModelT>> Function()? remote,
+    required Future<void> Function(ModelT serverModel, String tempUID) onSyncSuccess,
+    EntityT? entity,
+    required SyncEntityType entityType,
+    required SyncAction action,
     Map<String, dynamic>? payload,
     int priority = 0,
     bool attemptImmediateSync = true,
   }) async {
     try {
-      // Step 1: Update locally (optimistic)
-      final updatedEntity = await updateLocal();
-      final entityUid = _extractUid(updatedEntity);
+      // Step 1: Execute local operation (optimistic)
+      final updatedEntity = await local();
+      final entityUid = _extractUidGeneric(updatedEntity);
 
       // Step 2: Attempt immediate sync if online
-      if (updateRemote != null && attemptImmediateSync) {
-        updateRemote()
+      if (remote != null && attemptImmediateSync) {
+        remote()
             .then((result) async {
               await result.fold(
                 (failure) async {
@@ -166,25 +170,25 @@ abstract class BaseOfflineSyncRepository<T, M> {
 
                   // Step 3: Add to SyncQueue for background retry
                   await addToSyncQueue(
-                    entityType: entityType,
+                    entityType: entityType.value,
                     entityUid: entityUid,
-                    action: action,
+                    action: action.value,
                     payload: payload,
                     priority: priority,
                   );
 
                   print(
-                    '📋 Added to SyncQueue for retry: $entityType/$entityUid',
+                    '📋 Added to SyncQueue for retry: ${entityType.value}/$entityUid',
                   );
                 },
                 (serverModel) async {
                   print('✅ Immediate sync successful for $entityUid');
 
                   // Step 4: Update with server data (including UID replacement)
-                  await onSyncSuccess(serverModel);
+                  await onSyncSuccess(serverModel, entityUid);
 
                   // Remove from SyncQueue if it was added before
-                  await removeFromSyncQueue(entityType, entityUid);
+                  await removeFromSyncQueue(entityType.value, entityUid);
                 },
               );
             })
@@ -193,9 +197,9 @@ abstract class BaseOfflineSyncRepository<T, M> {
 
               // Add to SyncQueue on exception
               await addToSyncQueue(
-                entityType: entityType,
+                entityType: entityType.value,
                 entityUid: entityUid,
-                action: action,
+                action: action.value,
                 payload: payload,
                 priority: priority,
               );
@@ -204,7 +208,7 @@ abstract class BaseOfflineSyncRepository<T, M> {
 
       return Right(updatedEntity);
     } catch (e) {
-      return Left(CacheFailure('Failed to update: ${e.toString()}'));
+      return Left(CacheFailure('Failed to execute operation: ${e.toString()}'));
     }
   }
 
@@ -288,7 +292,7 @@ abstract class BaseOfflineSyncRepository<T, M> {
   }
 
   /// Extract UID from entity
-  String _extractUid(T entity) {
+  String _extractUidGeneric<EntityT>(EntityT entity) {
     try {
       final dynamic e = entity;
       if (e.uid is String) return e.uid as String;
