@@ -12,6 +12,6 @@ class ClearRoadCacheUseCase implements UseCaseNoParams<void> {
 
   @override
   Future<Either<Failure, void>> call() async {
-    return await _repository.clearCache();
+    return await _repository.clearRoadCache();
   }
 }

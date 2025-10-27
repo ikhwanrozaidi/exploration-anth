@@ -1,14 +1,14 @@
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
-import 'package:rclink_app/features/road/data/models/country_model.dart';
-import 'package:rclink_app/features/road/data/models/district_model.dart';
-import 'package:rclink_app/features/road/data/models/province_model.dart';
-import 'package:rclink_app/features/road/data/models/road_category_model.dart';
-import 'package:rclink_app/features/road/data/models/road_model.dart';
 import '../../../../core/database/app_database.dart';
+import '../models/country_model.dart';
+import '../models/district_model.dart';
 import '../models/package_data_response_model.dart';
 import '../models/package_model.dart';
 import '../models/package_road_model.dart';
+import '../models/province_model.dart';
+import '../models/road_category_model.dart';
+import '../models/road_model.dart';
 
 abstract class RoadLocalDataSource {
   // Package data methods
@@ -27,7 +27,7 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
   AppDatabase get _database => _databaseService.database;
 
   @override
-  Future<void> clearCache() async {
+  Future<void> clearRoadCache() async {
     try {
       await _database.transaction(() async {
         // Clear in proper order due to foreign key constraints
@@ -73,8 +73,17 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
       final provinceResults = await provincesQuery.get();
 
       // Get all districts
-      final districtsQuery = _database.select(_database.districts);
-      final districtRecords = await districtsQuery.get();
+      final districtsQuery = _database.select(_database.districts).join([
+        leftOuterJoin(
+          _database.provinces,
+          _database.provinces.id.equalsExp(_database.districts.stateId),
+        ),
+        leftOuterJoin(
+          _database.countries,
+          _database.countries.id.equalsExp(_database.provinces.countryID),
+        ),
+      ]);
+      final districtResults = await districtsQuery.get();
 
       // Get all roads with categories and districts
       final roadsQuery = _database.select(_database.roads).join([
@@ -89,29 +98,36 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
       ]);
       final roadResults = await roadsQuery.get();
 
-      // Get all packageRoads
-      final packageRoadsQuery = _database.select(_database.packageRoads);
-      final packageRoadRecords = await packageRoadsQuery.get();
+      // Get all package roads
+      final packageRoadsQuery = _database.select(_database.packageRoads).join([
+        leftOuterJoin(
+          _database.roads,
+          _database.roads.id.equalsExp(_database.packageRoads.roadId),
+        ),
+      ]);
+      final packageRoadResults = await packageRoadsQuery.get();
 
       // Convert to models
       final packageModel = PackageModel(
         id: packageRecord.id,
         uid: packageRecord.uid,
         name: packageRecord.name,
-        description: packageRecord.description,
+        contractRelationUID: packageRecord.contractRelationUID,
         createdAt: packageRecord.createdAt.toIso8601String(),
         updatedAt: packageRecord.updatedAt.toIso8601String(),
       );
 
-      final countryModels = countryRecords.map((country) {
-        return CountryModel(
-          id: country.id,
-          uid: country.uid,
-          name: country.name,
-          createdAt: country.createdAt.toIso8601String(),
-          updatedAt: country.updatedAt.toIso8601String(),
-        );
-      }).toList();
+      final countryModels = countryRecords
+          .map(
+            (country) => CountryModel(
+              id: country.id,
+              uid: country.uid,
+              name: country.name,
+              createdAt: country.createdAt.toIso8601String(),
+              updatedAt: country.updatedAt.toIso8601String(),
+            ),
+          )
+          .toList();
 
       final provinceModels = provinceResults.map((row) {
         final province = row.readTable(_database.provinces);
@@ -136,13 +152,35 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
         );
       }).toList();
 
-      final districtModels = districtRecords.map((district) {
+      final districtModels = districtResults.map((row) {
+        final district = row.readTable(_database.districts);
+        final province = row.readTableOrNull(_database.provinces);
+        final country = row.readTableOrNull(_database.countries);
+
         return DistrictModel(
           id: district.id,
           uid: district.uid,
           name: district.name,
           stateID: district.stateId,
-          state: null, // Don't fetch nested to avoid complexity
+          state: province != null
+              ? ProvinceModel(
+                  id: province.id,
+                  uid: province.uid,
+                  name: province.name,
+                  countryID: province.countryID,
+                  createdAt: province.createdAt.toIso8601String(),
+                  updatedAt: province.updatedAt.toIso8601String(),
+                  country: country != null
+                      ? CountryModel(
+                          id: country.id,
+                          uid: country.uid,
+                          name: country.name,
+                          createdAt: country.createdAt.toIso8601String(),
+                          updatedAt: country.updatedAt.toIso8601String(),
+                        )
+                      : null,
+                )
+              : null,
         );
       }).toList();
 
@@ -152,15 +190,23 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
         final district = row.readTableOrNull(_database.districts);
         final mainCategory = row.readTableOrNull(_database.roadCategories);
 
-        // Get secondary category separately if exists
-        RoadCategoryRecord? secondaryCategory;
+        // Get secondary category separately if it exists
+        RoadCategoryModel? secondaryCategory;
         if (road.secondaryCategoryId != null) {
           final secondaryCategoryQuery = _database.select(
             _database.roadCategories,
           )..where((tbl) => tbl.id.equals(road.secondaryCategoryId!));
+
           final secondaryCategoryResults = await secondaryCategoryQuery.get();
           if (secondaryCategoryResults.isNotEmpty) {
-            secondaryCategory = secondaryCategoryResults.first;
+            final secCat = secondaryCategoryResults.first;
+            secondaryCategory = RoadCategoryModel(
+              id: secCat.id,
+              uid: secCat.uid,
+              name: secCat.name,
+              createdAt: secCat.createdAt.toIso8601String(),
+              updatedAt: secCat.updatedAt.toIso8601String(),
+            );
           }
         }
 
@@ -183,7 +229,6 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
                     uid: district.uid,
                     name: district.name,
                     stateID: district.stateId,
-                    state: null,
                   )
                 : null,
             mainCategory: mainCategory != null
@@ -195,39 +240,48 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
                     updatedAt: mainCategory.updatedAt.toIso8601String(),
                   )
                 : null,
-            secondaryCategory: secondaryCategory != null
-                ? RoadCategoryModel(
-                    id: secondaryCategory.id,
-                    uid: secondaryCategory.uid,
-                    name: secondaryCategory.name,
-                    createdAt: secondaryCategory.createdAt.toIso8601String(),
-                    updatedAt: secondaryCategory.updatedAt.toIso8601String(),
-                  )
-                : null,
+            secondaryCategory: secondaryCategory,
           ),
         );
       }
 
-      final packageRoadModels = packageRoadRecords.map((pr) {
+      final packageRoadModels = packageRoadResults.map((row) {
+        final packageRoad = row.readTable(_database.packageRoads);
+        final road = row.readTableOrNull(_database.roads);
+
         return PackageRoadModel(
-          uid: pr.uid,
-          roadUID: pr.roadUID,
-          sectionStart: pr.sectionStart,
-          sectionFinish: pr.sectionFinish,
+          id: packageRoad.id,
+          packageUID: packageRoad.packageUID,
+          roadUID: packageRoad.roadUID,
+          createdAt: packageRoad.createdAt.toIso8601String(),
+          updatedAt: packageRoad.updatedAt.toIso8601String(),
+          road: road != null
+              ? RoadModel(
+                  id: road.id,
+                  uid: road.uid,
+                  name: road.name,
+                  roadNo: road.roadNo,
+                  sectionStart: road.sectionStart,
+                  sectionFinish: road.sectionFinish,
+                  mainCategoryID: road.mainCategoryId,
+                  secondaryCategoryID: road.secondaryCategoryId,
+                  districtID: road.districtId,
+                  createdAt: road.createdAt.toIso8601String(),
+                  updatedAt: road.updatedAt.toIso8601String(),
+                )
+              : null,
         );
       }).toList();
 
-      final response = PackageDataResponseModel(
-        package: packageModel,
+      print('💾 Retrieved cached package data from database');
+      return PackageDataResponseModel(
+        packages: [packageModel],
         countries: countryModels,
         states: provinceModels,
         districts: districtModels,
         roads: roadModels,
         packageRoads: packageRoadModels,
       );
-
-      print('💾 Retrieved cached package data from database');
-      return response;
     } catch (e) {
       print('❌ Error loading cached package data: $e');
       return null;
@@ -235,29 +289,12 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
   }
 
   @override
-  Future<void> cachePackageData(PackageDataResponseModel data) async {
+  Future<void> cachePackageData(PackageDataResponseModel packageData) async {
     try {
       await _database.transaction(() async {
-        // 1. Cache package
-        if (data.package != null) {
-          await _database
-              .into(_database.packages)
-              .insertOnConflictUpdate(
-                PackagesCompanion(
-                  id: Value(data.package!.id!),
-                  uid: Value(data.package!.uid!),
-                  name: Value(data.package!.name!),
-                  description: Value(data.package!.description!),
-                  createdAt: Value(DateTime.parse(data.package!.createdAt!)),
-                  updatedAt: Value(DateTime.parse(data.package!.updatedAt!)),
-                  isSynced: const Value(true),
-                ),
-              );
-        }
-
-        // 2. Cache countries
-        if (data.countries != null) {
-          for (final country in data.countries!) {
+        // Cache countries
+        if (packageData.countries != null) {
+          for (final country in packageData.countries!) {
             await _database
                 .into(_database.countries)
                 .insertOnConflictUpdate(
@@ -273,28 +310,28 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
           }
         }
 
-        // 3. Cache states/provinces
-        if (data.states != null) {
-          for (final state in data.states!) {
+        // Cache provinces/states
+        if (packageData.states != null) {
+          for (final province in packageData.states!) {
             await _database
                 .into(_database.provinces)
                 .insertOnConflictUpdate(
                   ProvincesCompanion(
-                    id: Value(state.id!),
-                    uid: Value(state.uid!),
-                    name: Value(state.name!),
-                    countryID: Value(state.countryID!),
-                    createdAt: Value(DateTime.parse(state.createdAt!)),
-                    updatedAt: Value(DateTime.parse(state.updatedAt!)),
+                    id: Value(province.id!),
+                    uid: Value(province.uid!),
+                    name: Value(province.name!),
+                    countryID: Value(province.countryID!),
+                    createdAt: Value(DateTime.parse(province.createdAt!)),
+                    updatedAt: Value(DateTime.parse(province.updatedAt!)),
                     isSynced: const Value(true),
                   ),
                 );
           }
         }
 
-        // 4. Cache districts
-        if (data.districts != null) {
-          for (final district in data.districts!) {
+        // Cache districts
+        if (packageData.districts != null) {
+          for (final district in packageData.districts!) {
             await _database
                 .into(_database.districts)
                 .insertOnConflictUpdate(
@@ -311,28 +348,20 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
           }
         }
 
-        // 5. Cache road categories (from roads)
-        if (data.roads != null) {
-          final uniqueMainCategories = <int, RoadCategoryModel>{};
-          final uniqueSecondaryCategories = <int, RoadCategoryModel>{};
-
-          for (final road in data.roads!) {
+        // Cache road categories (extract from roads)
+        if (packageData.roads != null) {
+          final categories = <int, RoadCategoryModel>{};
+          for (final road in packageData.roads!) {
             if (road.mainCategory != null && road.mainCategory!.id != null) {
-              uniqueMainCategories[road.mainCategory!.id!] = road.mainCategory!;
+              categories[road.mainCategory!.id!] = road.mainCategory!;
             }
             if (road.secondaryCategory != null &&
                 road.secondaryCategory!.id != null) {
-              uniqueSecondaryCategories[road.secondaryCategory!.id!] =
-                  road.secondaryCategory!;
+              categories[road.secondaryCategory!.id!] = road.secondaryCategory!;
             }
           }
 
-          final allCategories = {
-            ...uniqueMainCategories.values,
-            ...uniqueSecondaryCategories.values,
-          };
-
-          for (final category in allCategories) {
+          for (final category in categories.values) {
             await _database
                 .into(_database.roadCategories)
                 .insertOnConflictUpdate(
@@ -348,9 +377,9 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
           }
         }
 
-        // 6. Cache roads
-        if (data.roads != null) {
-          for (final road in data.roads!) {
+        // Cache roads
+        if (packageData.roads != null) {
+          for (final road in packageData.roads!) {
             await _database
                 .into(_database.roads)
                 .insertOnConflictUpdate(
@@ -372,19 +401,37 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
           }
         }
 
-        // 7. Cache packageRoads
-        if (data.packageRoads != null) {
-          for (final packageRoad in data.packageRoads!) {
+        // Cache packages
+        if (packageData.packages != null) {
+          for (final package in packageData.packages!) {
+            await _database
+                .into(_database.packages)
+                .insertOnConflictUpdate(
+                  PackagesCompanion(
+                    id: Value(package.id!),
+                    uid: Value(package.uid!),
+                    name: Value(package.name!),
+                    contractRelationUID: Value(package.contractRelationUID),
+                    createdAt: Value(DateTime.parse(package.createdAt!)),
+                    updatedAt: Value(DateTime.parse(package.updatedAt!)),
+                    isSynced: const Value(true),
+                  ),
+                );
+          }
+        }
+
+        // Cache package roads
+        if (packageData.packageRoads != null) {
+          for (final packageRoad in packageData.packageRoads!) {
             await _database
                 .into(_database.packageRoads)
                 .insertOnConflictUpdate(
                   PackageRoadsCompanion(
-                    uid: Value(packageRoad.uid!),
+                    id: Value(packageRoad.id!),
+                    packageUID: Value(packageRoad.packageUID!),
                     roadUID: Value(packageRoad.roadUID!),
-                    sectionStart: Value(packageRoad.sectionStart),
-                    sectionFinish: Value(packageRoad.sectionFinish),
-                    createdAt: Value(DateTime.now()),
-                    updatedAt: Value(DateTime.now()),
+                    createdAt: Value(DateTime.parse(packageRoad.createdAt!)),
+                    updatedAt: Value(DateTime.parse(packageRoad.updatedAt!)),
                     isSynced: const Value(true),
                   ),
                 );
@@ -392,7 +439,7 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
         }
       });
 
-      print('💾 Cached package data in database');
+      print('💾 Cached complete package data');
     } catch (e) {
       print('❌ Error caching package data: $e');
     }

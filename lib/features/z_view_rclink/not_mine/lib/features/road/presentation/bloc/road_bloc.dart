@@ -68,9 +68,9 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
       packageData,
     ) {
       // Cache all data in memory
-      _allProvinces = packageData.states ?? [];
-      _allDistricts = packageData.districts ?? [];
-      _allRoads = packageData.roads ?? [];
+      _allProvinces = packageData.states!;
+      _allDistricts = packageData.districts!;
+      _allRoads = packageData.roads!;
 
       emit(
         RoadState.loaded(
@@ -96,9 +96,9 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
       packageData,
     ) {
       // Cache all data
-      _allProvinces = packageData.states ?? [];
-      _allDistricts = packageData.districts ?? [];
-      _allRoads = packageData.roads ?? [];
+      _allProvinces = packageData.states!;
+      _allDistricts = packageData.districts!;
+      _allRoads = packageData.roads!;
 
       // Filter provinces by countryUid if provided
       List<Province> filteredProvinces = _allProvinces;
@@ -149,9 +149,9 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     result.fold((failure) => emit(RoadState.error(failure.message)), (
       packageData,
     ) {
-      _allProvinces = packageData.states ?? [];
-      _allDistricts = packageData.districts ?? [];
-      _allRoads = packageData.roads ?? [];
+      _allProvinces = packageData.states!;
+      _allDistricts = packageData.districts!;
+      _allRoads = packageData.roads!;
 
       // Filter districts by provinceUid
       final filteredDistricts = _allDistricts
@@ -201,9 +201,9 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     result.fold((failure) => emit(RoadState.error(failure.message)), (
       packageData,
     ) {
-      _allProvinces = packageData.states ?? [];
-      _allDistricts = packageData.districts ?? [];
-      _allRoads = packageData.roads ?? [];
+      _allProvinces = packageData.states!;
+      _allDistricts = packageData.districts!;
+      _allRoads = packageData.roads!;
 
       // Filter roads by districtUid
       final filteredRoads = _allRoads
