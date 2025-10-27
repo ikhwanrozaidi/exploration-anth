@@ -20,9 +20,9 @@ class ContractorRelationLocalDataSourceImpl
 
   @override
   Future<List<ContractorRelationModel>?> getLocal() async {
-    // TODO: Implement database caching when table is ready
-    print('⚠️ ContractorRelation: Database caching not implemented yet');
-    return null;
+    // // TODO: Implement database caching when table is ready
+    // print('⚠️ ContractorRelation: Database caching not implemented yet');
+    // return null;
 
     /* 
     // UNCOMMENT WHEN DATABASE TABLE IS READY

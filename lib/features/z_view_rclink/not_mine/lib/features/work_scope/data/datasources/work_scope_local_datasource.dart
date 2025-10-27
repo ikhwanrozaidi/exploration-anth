@@ -27,11 +27,7 @@ abstract class WorkScopeLocalDataSource {
     required String companyUID,
     required String workScopeUID,
   });
-  Future<List<WorkQuantityTypeModel>> getCachedQuantityModels({
-    required String companyUID,
-    required String workScopeUID,
-  });
-  Future<void> cacheQuantityModels(
+  Future<void> cacheQuantities(
     List<WorkQuantityTypeModel> models, {
     required String companyUID,
     required String workScopeUID,
@@ -42,11 +38,7 @@ abstract class WorkScopeLocalDataSource {
     required String companyUID,
     required String workScopeUID,
   });
-  Future<List<WorkEquipmentModel>> getCachedEquipmentModels({
-    required String companyUID,
-    required String workScopeUID,
-  });
-  Future<void> cacheEquipmentModels(
+  Future<void> cacheEquipments(
     List<WorkEquipmentModel> models, {
     required String companyUID,
     required String workScopeUID,
@@ -507,7 +499,7 @@ class WorkScopeLocalDataSourceImpl implements WorkScopeLocalDataSource {
   }
 
   @override
-  Future<void> cacheQuantityModels(
+  Future<void> cacheQuantities(
     List<WorkQuantityTypeModel> quantities, {
     required String companyUID,
     required String workScopeUID,
@@ -597,19 +589,6 @@ class WorkScopeLocalDataSourceImpl implements WorkScopeLocalDataSource {
     }
   }
 
-  @override
-  Future<List<WorkQuantityTypeModel>> getCachedQuantityModels({
-    required String companyUID,
-    required String workScopeUID,
-  }) async {
-    final entities = await getCachedQuantities(
-      companyUID: companyUID,
-      workScopeUID: workScopeUID,
-    );
-
-    return entities ?? [];
-  }
-
   /* 
   // Equipment datasource
   */
@@ -666,7 +645,7 @@ class WorkScopeLocalDataSourceImpl implements WorkScopeLocalDataSource {
   }
 
   @override
-  Future<void> cacheEquipmentModels(
+  Future<void> cacheEquipments(
     List<WorkEquipmentModel> equipments, {
     required String companyUID,
     required String workScopeUID,
@@ -746,19 +725,6 @@ class WorkScopeLocalDataSourceImpl implements WorkScopeLocalDataSource {
       print('Error caching equipments: $e');
       throw e;
     }
-  }
-
-  @override
-  Future<List<WorkEquipmentModel>> getCachedEquipmentModels({
-    required String companyUID,
-    required String workScopeUID,
-  }) async {
-    final entities = await getCachedEquipments(
-      companyUID: companyUID,
-      workScopeUID: workScopeUID,
-    );
-
-    return entities ?? [];
   }
 
   @override

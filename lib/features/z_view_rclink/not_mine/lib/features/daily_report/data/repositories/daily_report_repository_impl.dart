@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/repositories/base_sync_repository.dart';
+import '../../../../core/sync/sync_constants.dart';
 import '../../domain/entities/daily_report.dart';
 import '../../domain/repository/daily_report_repository.dart';
 import '../datasources/daily_report_local_datasource.dart';
@@ -12,11 +13,7 @@ import '../models/daily_report_model.dart';
 
 @Injectable(as: DailyReportRepository)
 class DailyReportRepositoryImpl
-    extends
-        BaseOfflineSyncRepository<
-          List<DailyReport>,
-          List<DailyReportModel>
-        >
+    extends BaseOfflineSyncRepository<List<DailyReport>, List<DailyReportModel>>
     implements DailyReportRepository {
   final DailyReportRemoteDataSource _remoteDataSource;
   final DailyReportLocalDataSource _localDataSource;
@@ -48,12 +45,9 @@ class DailyReportRepositoryImpl
         return Left(failure);
       },
       (models) async {
-        final entities = models.map((model) {
-          return model.toEntity();
-        }).toList();
-        await _localDataSource.cacheDailyReports(entities);
+        await _localDataSource.cacheDailyReports(models);
 
-        return Right(entities);
+        return Right(models.map((model) => model.toEntity()).toList());
       },
     );
   }
@@ -74,84 +68,34 @@ class DailyReportRepositoryImpl
     required String companyUID,
   }) async {
     try {
-      // Step 1: Create locally first with temp UID (optimistic)
-      final localReport = await _localDataSource.createDailyReportLocal(
-        data,
-        companyUID,
-      );
-
-      final tempUID = localReport.uid;
-
-      // Step 2: Attempt immediate sync with SyncQueue fallback
-      _attemptSyncWithQueue(
-        tempUID: tempUID,
-        data: data,
-        companyUID: companyUID,
-      );
-
-      // Step 3: Return success immediately (optimistic)
-      return Right(localReport);
-    } catch (e) {
-      return Left(CacheFailure('Failed to create report locally: $e'));
-    }
-  }
-
-  /// Attempt sync with automatic SyncQueue fallback
-  /// Uses base repository SyncQueue methods
-  Future<void> _attemptSyncWithQueue({
-    required String tempUID,
-    required CreateDailyReportModel data,
-    required String companyUID,
-  }) async {
-    try {
-      // Attempt remote creation
-      final remoteResult = await _remoteDataSource.createDailyReport(
-        data: data,
-        companyUID: companyUID,
-      );
-
-      await remoteResult.fold(
-        (failure) async {
-          print('⚠️ Immediate sync failed for $tempUID: ${failure.message}');
-          // Add to SyncQueue for retry (using base repository method)
-          await addToSyncQueue(
-            entityType: 'daily_report',
-            entityUid: tempUID,
-            action: 'create',
-            payload: {
-              ...data.toJson(),
-              'companyUID': companyUID,
-              'tempUID': tempUID,
-            },
-            priority: 10,
+      // Use base class executeOptimistic with automatic SyncQueue fallback
+      return await executeOptimistic<DailyReport, DailyReportModel>(
+        local: () async {
+          // Step 1: Create locally with temp UID (inside callback)
+          final localReport = await _localDataSource.createDailyReportLocal(
+            data,
+            companyUID,
           );
-          print('📋 Added to SyncQueue for retry: daily_report/$tempUID');
+          return localReport.toEntity();
         },
-        (serverModel) async {
-          print('✅ Immediate sync successful for $tempUID → ${serverModel.uid}');
-          // Update local DB with server data
+        remote: () => _remoteDataSource.createDailyReport(
+          data: data,
+          companyUID: companyUID,
+        ),
+        onSyncSuccess: (serverModel, tempUID) async {
+          // Update local DB with server data (replaces temp UID with server UID)
           await _localDataSource.updateReportWithServerData(
-            tempUID,
-            serverModel.toJson(),
+            tempUID, // Temp UID automatically extracted and provided by base class
+            serverModel,
           );
-          // Remove from SyncQueue if it was added before (using base repository method)
-          await removeFromSyncQueue('daily_report', tempUID);
         },
-      );
-    } catch (e) {
-      print('❌ Sync error for $tempUID: $e');
-      // Add to SyncQueue on exception (using base repository method)
-      await addToSyncQueue(
-        entityType: 'daily_report',
-        entityUid: tempUID,
-        action: 'create',
-        payload: {
-          ...data.toJson(),
-          'companyUID': companyUID,
-          'tempUID': tempUID,
-        },
+        entityType: SyncEntityType.dailyReport,
+        action: SyncAction.create,
+        payload: {...data.toJson(), 'companyUID': companyUID},
         priority: 10,
       );
+    } catch (e) {
+      return Left(CacheFailure('Failed to create report locally: $e'));
     }
   }
 }

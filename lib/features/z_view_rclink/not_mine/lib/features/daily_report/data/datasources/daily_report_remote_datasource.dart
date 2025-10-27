@@ -22,9 +22,9 @@ abstract class DailyReportRemoteDataSource {
     required String companyUID,
   });
 
-  Future<Either<Failure, List<RoadModel>>> getRoadsByDistrictName(
-    String districtName,
-  );
+  // Future<Either<Failure, List<RoadModel>>> getRoadsByDistrictName(
+  //   String districtName,
+  // );
 }
 
 @LazySingleton(as: DailyReportRemoteDataSource)
@@ -111,30 +111,30 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
     }
   }
 
-  @override
-  Future<Either<Failure, List<RoadModel>>> getRoadsByDistrictName(
-    String districtName,
-  ) async {
-    try {
-      final response = await _roadApiService.getRoads(
-        search: districtName,
-        limit: 0, // Get all roads
-      );
+  // @override
+  // Future<Either<Failure, List<RoadModel>>> getRoadsByDistrictName(
+  //   String districtName,
+  // ) async {
+  //   try {
+  //     final response = await _roadApiService.getRoads(
+  //       search: districtName,
+  //       limit: 0, // Get all roads
+  //     );
 
-      if (response.isSuccess && response.data != null) {
-        // Convert RoadModel (from road feature) to RoadEditModel
-        final roadModels = response.data!
-            .map((roadModel) => roadModel)
-            .toList();
+  //     if (response.isSuccess && response.data != null) {
+  //       // Convert RoadModel (from road feature) to RoadEditModel
+  //       final roadModels = response.data!
+  //           .map((roadModel) => roadModel)
+  //           .toList();
 
-        return Right(roadModels);
-      } else {
-        return Left(
-          ServerFailure(response.message, statusCode: response.statusCode),
-        );
-      }
-    } catch (e) {
-      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
-    }
-  }
+  //       return Right(roadModels);
+  //     } else {
+  //       return Left(
+  //         ServerFailure(response.message, statusCode: response.statusCode),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+  //   }
+  // }
 }

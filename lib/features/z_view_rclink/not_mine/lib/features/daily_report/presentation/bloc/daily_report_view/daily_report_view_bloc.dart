@@ -21,7 +21,7 @@ class DailyReportViewBloc
 
     // on<LoadRoadsForEdit>(_onLoadRoadsForEdit);
     on<SelectRoadForEdit>(_onSelectRoadForEdit);
-    on<UpdateSectionForEdit>(_onUpdateSectionForEdit);
+    // on<UpdateSectionForEdit>(_onUpdateSectionForEdit);
     on<ClearRoadEditData>(_onClearRoadEditData);
   }
 
@@ -104,45 +104,45 @@ class DailyReportViewBloc
     }
   }
 
-  Future<void> _onUpdateSectionForEdit(
-    UpdateSectionForEdit event,
-    Emitter<DailyReportViewState> emit,
-  ) async {
-    if (state is RoadsLoaded) {
-      final currentState = state as RoadsLoaded;
-      String? sectionError;
+  // Future<void> _onUpdateSectionForEdit(
+  //   UpdateSectionForEdit event,
+  //   Emitter<DailyReportViewState> emit,
+  // ) async {
+  //   if (state is RoadsLoaded) {
+  //     final currentState = state as RoadsLoaded;
+  //     String? sectionError;
 
-      // Validate section if road is selected
-      if (currentState.selectedRoad != null) {
-        final selectedRoad = currentState.selectedRoad!;
-        final sectionValue = double.tryParse(event.section);
+  //     // Validate section if road is selected
+  //     if (currentState.selectedRoad != null) {
+  //       final selectedRoad = currentState.selectedRoad!;
+  //       final sectionValue = double.tryParse(event.section);
 
-        if (sectionValue == null && event.section.isNotEmpty) {
-          sectionError = 'Please enter a valid number';
-        } else if (sectionValue != null &&
-            selectedRoad.sectionStart != null &&
-            selectedRoad.sectionFinish != null) {
-          final start = double.tryParse(selectedRoad.sectionStart!);
-          final finish = double.tryParse(selectedRoad.sectionFinish!);
+  //       if (sectionValue == null && event.section.isNotEmpty) {
+  //         sectionError = 'Please enter a valid number';
+  //       } else if (sectionValue != null &&
+  //           selectedRoad.sectionStart != null &&
+  //           selectedRoad.sectionFinish != null) {
+  //         final start = double.tryParse(selectedRoad.sectionStart!);
+  //         final finish = double.tryParse(selectedRoad.sectionFinish!);
 
-          if (start != null && finish != null) {
-            if (sectionValue < start || sectionValue > finish) {
-              sectionError = 'Section must be between $start and $finish';
-            }
-          }
-        }
-      }
+  //         if (start != null && finish != null) {
+  //           if (sectionValue < start || sectionValue > finish) {
+  //             sectionError = 'Section must be between $start and $finish';
+  //           }
+  //         }
+  //       }
+  //     }
 
-      emit(
-        RoadsLoaded(
-          roads: currentState.roads,
-          selectedRoad: currentState.selectedRoad,
-          currentSection: event.section,
-          sectionError: sectionError,
-        ),
-      );
-    }
-  }
+  //     emit(
+  //       RoadsLoaded(
+  //         roads: currentState.roads,
+  //         selectedRoad: currentState.selectedRoad,
+  //         currentSection: event.section,
+  //         sectionError: sectionError,
+  //       ),
+  //     );
+  //   }
+  // }
 
   Future<void> _onClearRoadEditData(
     ClearRoadEditData event,

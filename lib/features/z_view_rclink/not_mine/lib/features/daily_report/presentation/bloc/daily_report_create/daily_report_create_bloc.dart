@@ -4,8 +4,8 @@ import 'package:rclink_app/features/work_scope/domain/usecases/get_equipment_use
 import 'package:rclink_app/features/work_scope/domain/usecases/get_work_scopes_usecase.dart';
 import 'package:rclink_app/features/work_scope/domain/usecases/clear_work_scopes_cache_usecase.dart';
 import 'package:rclink_app/features/work_scope/domain/usecases/get_quantity_usecase.dart';
-import 'package:rclink_app/features/road/domain/usecases/get_states_usecase.dart';
-import 'package:rclink_app/features/road/domain/usecases/get_district_usecase.dart';
+// import 'package:rclink_app/features/road/domain/usecases/get_states_usecase.dart';
+// import 'package:rclink_app/features/road/domain/usecases/get_district_usecase.dart';
 import 'package:rclink_app/features/road/domain/usecases/get_road_usecase.dart';
 import 'package:rclink_app/features/work_scope/domain/entities/work_equipment.dart';
 import 'package:rclink_app/features/work_scope/domain/entities/work_quantity_type.dart';
@@ -20,8 +20,8 @@ class DailyReportCreateBloc
     extends Bloc<DailyReportCreateEvent, DailyReportCreateState> {
   final GetWorkScopesUseCase _getWorkScopesUseCase;
   final ClearWorkScopesCacheUseCase _clearCacheUseCase;
-  final GetStatesUseCase _getStatesUseCase;
-  final GetDistrictsUseCase _getDistrictsUseCase;
+  // final GetStatesUseCase _getStatesUseCase;
+  // final GetDistrictsUseCase _getDistrictsUseCase;
   final GetRoadsUseCase _getRoadsUseCase;
   final GetQuantityUseCase _getQuantitiesUseCase;
   final GetEquipmentUseCase _getEquipmentUseCase;
@@ -31,19 +31,18 @@ class DailyReportCreateBloc
   DailyReportCreateBloc(
     this._getWorkScopesUseCase,
     this._clearCacheUseCase,
-    this._getStatesUseCase,
-    this._getDistrictsUseCase,
+    // this._getStatesUseCase,
+    // this._getDistrictsUseCase,
     this._getRoadsUseCase,
     this._getQuantitiesUseCase,
     this._getEquipmentUseCase,
     this._clearAllCacheUseCase,
     this._submitDailyReportUseCase,
   ) : super(const DailyReportCreateState.initial()) {
-    // Initial load events
     on<LoadWorkScopes>(_onLoadWorkScopes);
-    on<LoadStates>(_onLoadStates);
-    on<LoadDistricts>(_onLoadDistricts);
-    on<LoadRoads>(_onLoadRoads);
+    // on<LoadStates>(_onLoadStates);
+    // on<LoadDistricts>(_onLoadDistricts);
+    // on<LoadRoads>(_onLoadRoads);
     on<LoadQuantities>(_onLoadQuantities);
     on<LoadEquipments>(_onLoadEquipments);
     on<LoadQuantitiesAndEquipments>(_onLoadQuantitiesAndEquipments);
@@ -54,7 +53,7 @@ class DailyReportCreateBloc
     on<SelectState>(_onSelectState);
     on<SelectDistrict>(_onSelectDistrict);
     on<SelectRoad>(_onSelectRoad);
-    on<UpdateSection>(_onUpdateSection);
+    // on<UpdateSection>(_onUpdateSection);
     on<UpdateConditionSnapshots>(_onUpdateConditionSnapshots);
     on<UpdateWorkerImages>(_onUpdateWorkerImages);
 
@@ -168,133 +167,133 @@ class DailyReportCreateBloc
     );
   }
 
-  Future<void> _onLoadStates(
-    LoadStates event,
-    Emitter<DailyReportCreateState> emit,
-  ) async {
-    final currentApiData = _getCurrentApiData();
-    final currentSelections = _getCurrentSelections();
+  // Future<void> _onLoadStates(
+  //   LoadStates event,
+  //   Emitter<DailyReportCreateState> emit,
+  // ) async {
+  //   final currentApiData = _getCurrentApiData();
+  //   final currentSelections = _getCurrentSelections();
 
-    final result = await _getStatesUseCase(
-      GetStatesParams(forceRefresh: event.forceRefresh),
-    );
+  //   final result = await _getStatesUseCase(
+  //     GetStatesParams(forceRefresh: event.forceRefresh),
+  //   );
 
-    result.fold(
-      (failure) => emit(
-        DailyReportCreateState.basicInfoError(
-          apiData: currentApiData,
-          selections: currentSelections,
-          errorMessage: failure.message,
-        ),
-      ),
-      (states) {
-        // Get the LATEST state data to avoid overwriting concurrent loads
-        final latestApiData = _getCurrentApiData();
+  //   result.fold(
+  //     (failure) => emit(
+  //       DailyReportCreateState.basicInfoError(
+  //         apiData: currentApiData,
+  //         selections: currentSelections,
+  //         errorMessage: failure.message,
+  //       ),
+  //     ),
+  //     (states) {
+  //       // Get the LATEST state data to avoid overwriting concurrent loads
+  //       final latestApiData = _getCurrentApiData();
 
-        final updatedApiData = ReportApiData(
-          workScopes: latestApiData.workScopes, // Preserve existing
-          states: states, // New data
-          districts: latestApiData.districts, // Preserve existing
-          roads: latestApiData.roads, // Preserve existing
-          quantities: latestApiData.quantities, // Preserve existing
-          equipment: latestApiData.equipment, // Preserve existing
-        );
+  //       final updatedApiData = ReportApiData(
+  //         workScopes: latestApiData.workScopes, // Preserve existing
+  //         states: states, // New data
+  //         districts: latestApiData.districts, // Preserve existing
+  //         roads: latestApiData.roads, // Preserve existing
+  //         quantities: latestApiData.quantities, // Preserve existing
+  //         equipment: latestApiData.equipment, // Preserve existing
+  //       );
 
-        emit(
-          DailyReportCreateState.selectingBasicInfo(
-            apiData: updatedApiData,
-            selections: currentSelections,
-          ),
-        );
-      },
-    );
-  }
+  //       emit(
+  //         DailyReportCreateState.selectingBasicInfo(
+  //           apiData: updatedApiData,
+  //           selections: currentSelections,
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
-  Future<void> _onLoadDistricts(
-    LoadDistricts event,
-    Emitter<DailyReportCreateState> emit,
-  ) async {
-    final currentApiData = _getCurrentApiData();
-    final currentSelections = _getCurrentSelections();
+  // Future<void> _onLoadDistricts(
+  //   LoadDistricts event,
+  //   Emitter<DailyReportCreateState> emit,
+  // ) async {
+  //   final currentApiData = _getCurrentApiData();
+  //   final currentSelections = _getCurrentSelections();
 
-    final selectedState = currentSelections.selectedState;
-    if (selectedState == null) {
-      emit(
-        DailyReportCreateState.basicInfoError(
-          apiData: currentApiData,
-          selections: currentSelections,
-          errorMessage: 'No state selected',
-        ),
-      );
-      return;
-    }
+  //   final selectedState = currentSelections.selectedState;
+  //   if (selectedState == null) {
+  //     emit(
+  //       DailyReportCreateState.basicInfoError(
+  //         apiData: currentApiData,
+  //         selections: currentSelections,
+  //         errorMessage: 'No state selected',
+  //       ),
+  //     );
+  //     return;
+  //   }
 
-    final result = await _getDistrictsUseCase(
-      GetDistrictsParams(
-        stateID: selectedState.id,
-        forceRefresh: event.forceRefresh,
-      ),
-    );
+  //   final result = await _getDistrictsUseCase(
+  //     GetDistrictsParams(
+  //       stateID: selectedState.id,
+  //       forceRefresh: event.forceRefresh,
+  //     ),
+  //   );
 
-    result.fold(
-      (failure) => emit(
-        DailyReportCreateState.basicInfoError(
-          apiData: currentApiData,
-          selections: currentSelections,
-          errorMessage: failure.message,
-        ),
-      ),
-      (districts) => emit(
-        DailyReportCreateState.selectingBasicInfo(
-          apiData: currentApiData.copyWith(districts: districts),
-          selections: currentSelections,
-        ),
-      ),
-    );
-  }
+  //   result.fold(
+  //     (failure) => emit(
+  //       DailyReportCreateState.basicInfoError(
+  //         apiData: currentApiData,
+  //         selections: currentSelections,
+  //         errorMessage: failure.message,
+  //       ),
+  //     ),
+  //     (districts) => emit(
+  //       DailyReportCreateState.selectingBasicInfo(
+  //         apiData: currentApiData.copyWith(districts: districts),
+  //         selections: currentSelections,
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Future<void> _onLoadRoads(
-    LoadRoads event,
-    Emitter<DailyReportCreateState> emit,
-  ) async {
-    final currentApiData = _getCurrentApiData();
-    final currentSelections = _getCurrentSelections();
+  // Future<void> _onLoadRoads(
+  //   LoadRoads event,
+  //   Emitter<DailyReportCreateState> emit,
+  // ) async {
+  //   final currentApiData = _getCurrentApiData();
+  //   final currentSelections = _getCurrentSelections();
 
-    final selectedDistrict = currentSelections.selectedDistrict;
-    if (selectedDistrict == null) {
-      emit(
-        DailyReportCreateState.basicInfoError(
-          apiData: currentApiData,
-          selections: currentSelections,
-          errorMessage: 'No district selected',
-        ),
-      );
-      return;
-    }
+  //   final selectedDistrict = currentSelections.selectedDistrict;
+  //   if (selectedDistrict == null) {
+  //     emit(
+  //       DailyReportCreateState.basicInfoError(
+  //         apiData: currentApiData,
+  //         selections: currentSelections,
+  //         errorMessage: 'No district selected',
+  //       ),
+  //     );
+  //     return;
+  //   }
 
-    final result = await _getRoadsUseCase(
-      GetRoadsParams(
-        districtID: selectedDistrict.id,
-        forceRefresh: event.forceRefresh,
-      ),
-    );
+  //   final result = await _getRoadsUseCase(
+  //     GetRoadsParams(
+  //       districtID: selectedDistrict.id,
+  //       forceRefresh: event.forceRefresh,
+  //     ),
+  //   );
 
-    result.fold(
-      (failure) => emit(
-        DailyReportCreateState.basicInfoError(
-          apiData: currentApiData,
-          selections: currentSelections,
-          errorMessage: failure.message,
-        ),
-      ),
-      (roads) => emit(
-        DailyReportCreateState.selectingBasicInfo(
-          apiData: currentApiData.copyWith(roads: roads),
-          selections: currentSelections,
-        ),
-      ),
-    );
-  }
+  //   result.fold(
+  //     (failure) => emit(
+  //       DailyReportCreateState.basicInfoError(
+  //         apiData: currentApiData,
+  //         selections: currentSelections,
+  //         errorMessage: failure.message,
+  //       ),
+  //     ),
+  //     (roads) => emit(
+  //       DailyReportCreateState.selectingBasicInfo(
+  //         apiData: currentApiData.copyWith(roads: roads),
+  //         selections: currentSelections,
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Future<void> _onLoadQuantities(
     LoadQuantities event,
@@ -554,50 +553,50 @@ class DailyReportCreateBloc
     );
   }
 
-  Future<void> _onUpdateSection(
-    UpdateSection event,
-    Emitter<DailyReportCreateState> emit,
-  ) async {
-    final currentApiData = _getCurrentApiData();
-    final currentSelections = _getCurrentSelections();
+  // Future<void> _onUpdateSection(
+  //   UpdateSection event,
+  //   Emitter<DailyReportCreateState> emit,
+  // ) async {
+  //   final currentApiData = _getCurrentApiData();
+  //   final currentSelections = _getCurrentSelections();
 
-    // Validate section input
-    String? sectionError;
-    if (event.section.isEmpty) {
-      sectionError = 'Section is required';
-    } else {
-      // Validate section range if road is selected
-      final selectedRoad = currentSelections.selectedRoad;
-      if (selectedRoad != null) {
-        final sectionValue = double.tryParse(event.section);
-        if (sectionValue == null) {
-          sectionError = 'Please enter a valid number';
-        } else if (selectedRoad.sectionStart != null &&
-            selectedRoad.sectionFinish != null) {
-          final start = double.tryParse(selectedRoad.sectionStart!);
-          final finish = double.tryParse(selectedRoad.sectionFinish!);
+  //   // Validate section input
+  //   String? sectionError;
+  //   if (event.section.isEmpty) {
+  //     sectionError = 'Section is required';
+  //   } else {
+  //     // Validate section range if road is selected
+  //     final selectedRoad = currentSelections.selectedRoad;
+  //     if (selectedRoad != null) {
+  //       final sectionValue = double.tryParse(event.section);
+  //       if (sectionValue == null) {
+  //         sectionError = 'Please enter a valid number';
+  //       } else if (selectedRoad.sectionStart != null &&
+  //           selectedRoad.sectionFinish != null) {
+  //         final start = double.tryParse(selectedRoad.sectionStart!);
+  //         final finish = double.tryParse(selectedRoad.sectionFinish!);
 
-          if (start != null && finish != null) {
-            if (sectionValue < start || sectionValue > finish) {
-              sectionError = 'Section must be between $start and $finish';
-            }
-          }
-        }
-      }
-    }
+  //         if (start != null && finish != null) {
+  //           if (sectionValue < start || sectionValue > finish) {
+  //             sectionError = 'Section must be between $start and $finish';
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
 
-    final updatedSelections = currentSelections.copyWith(
-      section: event.section,
-      sectionError: sectionError,
-    );
+  //   final updatedSelections = currentSelections.copyWith(
+  //     section: event.section,
+  //     sectionError: sectionError,
+  //   );
 
-    emit(
-      DailyReportCreateState.selectingBasicInfo(
-        apiData: currentApiData,
-        selections: updatedSelections,
-      ),
-    );
-  }
+  //   emit(
+  //     DailyReportCreateState.selectingBasicInfo(
+  //       apiData: currentApiData,
+  //       selections: updatedSelections,
+  //     ),
+  //   );
+  // }
 
   Future<void> _onUpdateConditionSnapshots(
     UpdateConditionSnapshots event,

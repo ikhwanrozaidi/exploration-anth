@@ -1,7 +1,5 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:rclink_app/features/road/domain/repositories/province_repository.dart';
-import 'package:rclink_app/features/road/domain/repositories/district_repository.dart';
 import 'package:rclink_app/features/road/domain/repositories/road_repository.dart';
 import 'package:rclink_app/features/work_scope/domain/repository/workscopes_repository.dart';
 import 'package:rclink_app/features/work_scope/domain/repository/quantity_repository.dart';
@@ -12,16 +10,16 @@ import '../../../../core/usecases/usecase.dart';
 @injectable
 class ClearAllCacheUseCase implements UseCaseNoParams<void> {
   final WorkScopesRepository _workScopesRepository;
-  final ProvinceRepository _statesRepository;
-  final DistrictRepository _districtsRepository;
+  // final ProvinceRepository _statesRepository;
+  // final DistrictRepository _districtsRepository;
   final RoadRepository _roadsRepository;
   final QuantityRepository _quantityRepository;
   final EquipmentRepository _equipmentRepository;
 
   ClearAllCacheUseCase(
     this._workScopesRepository,
-    this._statesRepository,
-    this._districtsRepository,
+    // this._statesRepository,
+    // this._districtsRepository,
     this._roadsRepository,
     this._quantityRepository,
     this._equipmentRepository,
@@ -32,9 +30,9 @@ class ClearAllCacheUseCase implements UseCaseNoParams<void> {
     try {
       await Future.wait([
         _clearRepositoryCache(_workScopesRepository.clearCache()),
-        _clearRepositoryCache(_statesRepository.clearProvinceCache()),
-        _clearRepositoryCache(_districtsRepository.clearDistrictCache()),
-        _clearRepositoryCache(_roadsRepository.clearRoadCache()),
+        // _clearRepositoryCache(_statesRepository.clearProvinceCache()),
+        // _clearRepositoryCache(_districtsRepository.clearDistrictCache()),
+        // _clearRepositoryCache(_roadsRepository.clearRoadCache()),
         _clearRepositoryCache(_quantityRepository.clearQuantityCache()),
         _clearRepositoryCache(_equipmentRepository.clearEquipmentCache()),
       ]);

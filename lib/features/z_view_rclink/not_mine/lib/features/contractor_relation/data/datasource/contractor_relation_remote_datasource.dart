@@ -59,7 +59,7 @@ class ContractorRelationRemoteDataSourceImpl
       await Future.delayed(const Duration(milliseconds: 500));
 
       final String jsonString = await rootBundle.loadString(
-        'assets/dummy_response/dummy_get_contractorrelated_response.json',
+        'assets/dummy_response/get_contractorrelation_response.json',
       );
 
       final Map<String, dynamic> jsonData = json.decode(jsonString);

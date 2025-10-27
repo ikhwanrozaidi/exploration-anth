@@ -6,6 +6,7 @@ import 'package:rclink_app/routes/app_router.dart';
 import 'core/config/flavor_config.dart';
 import 'core/di/injection.dart'; // Add dependency injection
 import 'core/network/connectivity_service.dart';
+import 'features/contractor_relation/presentation/bloc/contractor_relation_bloc.dart';
 import 'features/locale/presentation/bloc/locale_bloc.dart';
 import 'features/locale/presentation/bloc/locale_event.dart';
 import 'features/locale/presentation/bloc/locale_state.dart';
@@ -32,6 +33,9 @@ Future<void> main() async {
         BlocProvider<AuthBloc>(create: (context) => getIt<AuthBloc>()),
         BlocProvider<CompanyBloc>(create: (context) => getIt<CompanyBloc>()),
         BlocProvider<RbacBloc>(create: (context) => getIt<RbacBloc>()),
+        BlocProvider<ContractorRelationBloc>(
+          create: (context) => getIt<ContractorRelationBloc>(),
+        ),
       ],
       child: const MyApp(),
     ),

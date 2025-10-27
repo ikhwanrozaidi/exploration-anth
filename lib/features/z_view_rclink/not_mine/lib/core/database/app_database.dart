@@ -323,48 +323,13 @@ class Roads extends Table with SyncableTable {
   TextColumn get uid => text()(); // Business UUID
   TextColumn get name => text()();
   TextColumn get roadNo => text().nullable()(); // Road number
-  RealColumn get sectionStart => real().nullable()(); // Section start point
-  RealColumn get sectionFinish => real().nullable()(); // Section finish point
+  TextColumn get sectionStart => text().nullable()(); // Section start point
+  TextColumn get sectionFinish => text().nullable()(); // Section finish point
   IntColumn get mainCategoryId =>
       integer().nullable()(); // FK to RoadCategories
   IntColumn get secondaryCategoryId =>
       integer().nullable()(); // FK to RoadCategories
   IntColumn get districtId => integer()(); // Foreign key to Districts
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
-
-  @override
-  List<Set<Column>> get uniqueKeys => [
-    {uid}, // UID must be unique for public lookup
-  ];
-}
-
-// Packages table
-@DataClassName('PackageRecord')
-class Packages extends Table with SyncableTable {
-  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
-  TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
-  TextColumn get description => text()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
-
-  @override
-  List<Set<Column>> get uniqueKeys => [
-    {uid}, // UID must be unique for public lookup
-  ];
-}
-
-// PackageRoads junction table
-@DataClassName('PackageRoadRecord')
-class PackageRoads extends Table with SyncableTable {
-  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
-  TextColumn get uid => text()(); // Business UUID
-  TextColumn get roadUID => text()(); // Reference to Roads.uid
-  RealColumn get sectionStart =>
-      real().nullable()(); // Override road's section start
-  RealColumn get sectionFinish =>
-      real().nullable()(); // Override road's section finish
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -545,8 +510,6 @@ class ReportSegments extends Table with SyncableTable {
     Districts,
     RoadCategories,
     Roads,
-    Packages,
-    PackageRoads,
     DailyReports,
     ReportEquipments,
     ReportQuantities,
@@ -558,7 +521,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 12; // Added package roads tables in version 12
+  int get schemaVersion => 11; // Added daily report tables in version 10
 
   @override
   MigrationStrategy get migration {
@@ -816,60 +779,6 @@ class AppDatabase extends _$AppDatabase {
             schema.dailyReports,
             schema.dailyReports.reportQuantitiesData,
           );
-        },
-        from11To12: (m, schema) async {
-          // Migration from version 11 to 12:
-          // 1. Add Packages and PackageRoads tables
-          // 2. Modify Roads table: Change sectionStart and sectionFinish from TEXT to REAL
-
-          // Step 1: Create new tables
-          await m.createTable(schema.packages);
-          await m.createTable(schema.packageRoads);
-
-          // Step 2: Migrate Roads table (TEXT to REAL for sections)
-          // SQLite doesn't support ALTER COLUMN, so we need to recreate the table
-
-          // Disable foreign keys temporarily
-          await customStatement('PRAGMA foreign_keys = OFF');
-
-          // Rename existing roads table
-          await customStatement('ALTER TABLE roads RENAME TO roads_old');
-
-          // Create new roads table with REAL columns
-          await m.createTable(schema.roads);
-
-          // Copy data from old table to new table, converting TEXT to REAL
-          // NULL values and empty strings will be converted to NULL in REAL
-          await customStatement('''
-            INSERT INTO roads (
-              id, uid, name, road_no, section_start, section_finish,
-              main_category_id, secondary_category_id, district_id,
-              created_at, updated_at,
-              is_synced, deleted_at, sync_action, sync_retry_count, 
-              sync_error, last_sync_attempt
-            )
-            SELECT 
-              id, uid, name, road_no,
-              CASE 
-                WHEN section_start IS NULL OR section_start = '' THEN NULL
-                ELSE CAST(section_start AS REAL)
-              END,
-              CASE 
-                WHEN section_finish IS NULL OR section_finish = '' THEN NULL
-                ELSE CAST(section_finish AS REAL)
-              END,
-              main_category_id, secondary_category_id, district_id,
-              created_at, updated_at,
-              is_synced, deleted_at, sync_action, sync_retry_count,
-              sync_error, last_sync_attempt
-            FROM roads_old
-          ''');
-
-          // Drop old table
-          await customStatement('DROP TABLE roads_old');
-
-          // Re-enable foreign keys
-          await customStatement('PRAGMA foreign_keys = ON');
         },
       ),
       beforeOpen: (details) async {

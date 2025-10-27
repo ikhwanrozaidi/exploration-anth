@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:rclink_app/features/company/presentation/pages/widgets/edit_company_page.dart';
+import 'package:rclink_app/features/company/presentation/pages/edit_company_page.dart';
 import 'report_model.dart';
 
 // Scope Configurations Data

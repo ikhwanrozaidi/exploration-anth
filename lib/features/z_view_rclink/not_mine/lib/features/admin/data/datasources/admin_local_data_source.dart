@@ -1,6 +1,7 @@
 import 'package:injectable/injectable.dart';
 import 'package:drift/drift.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../../core/sync/sync_constants.dart';
 import '../models/admin_model.dart';
 import '../models/admin_model_extensions.dart';
 
@@ -16,7 +17,7 @@ abstract class AdminLocalDataSource {
   Future<void> markAdminAsSynced(String uid);
   Future<void> addToSyncQueue({
     required String entityUid,
-    required String action,
+    required SyncAction action,
     int priority = 0,
   });
 }
@@ -82,7 +83,7 @@ class AdminLocalDataSourceImpl implements AdminLocalDataSource {
 
     // Only add to sync queue if marking for sync
     if (markForSync) {
-      await addToSyncQueue(entityUid: admin.uid, action: 'update');
+      await addToSyncQueue(entityUid: admin.uid, action: SyncAction.update);
     }
 
     return admin;
@@ -99,14 +100,14 @@ class AdminLocalDataSourceImpl implements AdminLocalDataSource {
       AdminsCompanion(
         deletedAt: Value(now),
         isSynced: const Value(false),
-        syncAction: const Value('delete'),
+        syncAction: Value(SyncAction.delete.value),
       ),
     );
 
     // Add to sync queue for deletion
     await addToSyncQueue(
       entityUid: uid,
-      action: 'delete',
+      action: SyncAction.delete,
       priority: 1, // Higher priority for deletions
     );
   }
@@ -138,16 +139,16 @@ class AdminLocalDataSourceImpl implements AdminLocalDataSource {
   @override
   Future<void> addToSyncQueue({
     required String entityUid,
-    required String action,
+    required SyncAction action,
     int priority = 0,
   }) async {
     await _database
         .into(_database.syncQueue)
         .insert(
           SyncQueueCompanion.insert(
-            entityType: 'admin',
+            entityType: SyncEntityType.admin.value,
             entityUid: entityUid,
-            action: action,
+            action: action.value,
             priority: Value(priority),
             createdAt: DateTime.now(),
           ),

@@ -36,45 +36,59 @@ class ThemeListTileWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 214, 226, 255),
-                  shape: BoxShape.circle,
-                ),
-                child: Center(child: Icon(icon, color: defaultPrimaryColor)),
-              ),
-              const SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Title - only show if not empty
-                  if (title.isNotEmpty)
-                    Text(
-                      title,
-                      style: TextStyle(
-                        fontSize: ResponsiveHelper.fontSize(context, base: 13),
-                        fontWeight: isInverseBold
-                            ? FontWeight.w600
-                            : FontWeight.normal,
-                      ),
-                    ),
-                  // Title Detail - red color if focus is true
-                  Text(
-                    titleDetails,
-                    style: TextStyle(
-                      fontSize: ResponsiveHelper.fontSize(context, base: 12),
-                      fontWeight: isInverseBold
-                          ? FontWeight.normal
-                          : FontWeight.w600,
-                      color: focus ? Colors.red : null,
-                    ),
+          Expanded(
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Color.fromARGB(255, 214, 226, 255),
+                    shape: BoxShape.circle,
                   ),
-                ],
-              ),
-            ],
+                  child: Center(child: Icon(icon, color: defaultPrimaryColor)),
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Title - only show if not empty
+                      if (title.isNotEmpty)
+                        Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: ResponsiveHelper.fontSize(
+                              context,
+                              base: 13,
+                            ),
+                            fontWeight: isInverseBold
+                                ? FontWeight.w600
+                                : FontWeight.normal,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                        ),
+                      // Title Detail - red color if focus is true
+                      Text(
+                        titleDetails,
+                        style: TextStyle(
+                          fontSize: ResponsiveHelper.fontSize(
+                            context,
+                            base: 12,
+                          ),
+                          fontWeight: isInverseBold
+                              ? FontWeight.normal
+                              : FontWeight.w600,
+                          color: focus ? Colors.red : null,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           if (isChevron)
             Container(

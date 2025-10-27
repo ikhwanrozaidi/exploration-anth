@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../../../../../shared/utils/theme.dart';
 import '../../../../../../shared/widgets/divider_config.dart';
-import '../../../domain/entities/report_quantity_response.dart';
+import '../../../domain/entities/report_quantity.dart';
 
 class QuantityCard extends StatefulWidget {
-  final ReportQuantityResponse reportQuantity;
+  final ReportQuantity reportQuantity;
   final void Function(String quantityTypeUID, String fieldUID, String value)
   onValueChanged;
 

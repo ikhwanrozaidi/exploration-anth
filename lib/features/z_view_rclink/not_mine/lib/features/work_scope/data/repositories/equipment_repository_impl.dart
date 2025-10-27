@@ -46,13 +46,13 @@ class EquipmentRepositoryImpl
 
     final result = await getOfflineFirst(
       getLocal: () => _localDataSource.getCachedEquipments(
-            companyUID: companyUID,
-            workScopeUID: workScopeUID,
-          ),
+        companyUID: companyUID,
+        workScopeUID: workScopeUID,
+      ),
       getRemote: () =>
           _remoteDataSource.getEquipments(companyUID, workScopeUID),
       saveLocal: (models, {bool markForSync = false}) =>
-          _localDataSource.cacheEquipmentModels(
+          _localDataSource.cacheEquipments(
             models,
             companyUID: companyUID,
             workScopeUID: workScopeUID,

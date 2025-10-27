@@ -4,6 +4,7 @@ import 'package:rclink_app/features/admin/data/models/admin_model.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/repositories/base_sync_repository.dart';
+import '../../../../core/sync/sync_constants.dart';
 import '../../domain/entities/admin.dart';
 import '../../domain/repositories/admin_repository.dart';
 import '../datasources/admin_local_data_source.dart';
@@ -41,15 +42,15 @@ class AdminRepositoryImpl extends BaseOfflineSyncRepository<Admin, AdminModel>
   Future<Either<Failure, Admin>> updateAdmin(Admin admin) async {
     final adminModel = AdminModel.fromEntity(admin);
 
-    return updateOptimistic(
+    return executeOptimistic<Admin, AdminModel>(
       // Update locally (marks for sync automatically)
-      updateLocal: () async {
+      local: () async {
         final updated = await _localDataSource.updateAdmin(adminModel);
         return updated.toEntity();
       },
 
       // Remote update - will run in background
-      updateRemote: () async {
+      remote: () async {
         // TODO: When admin API update endpoint is ready, uncomment:
         // return _remoteDataSource.updateAdmin(adminModel);
 
@@ -59,13 +60,13 @@ class AdminRepositoryImpl extends BaseOfflineSyncRepository<Admin, AdminModel>
       },
 
       // Handle successful sync
-      onSyncSuccess: (adminModel) async {
-        await _localDataSource.markAdminAsSynced(admin.uid);
+      onSyncSuccess: (adminModel, entityUID) async {
+        await _localDataSource.markAdminAsSynced(entityUID);
       },
 
       entity: admin,
-      entityType: 'admin',
-      action: 'update',
+      entityType: SyncEntityType.admin,
+      action: SyncAction.update,
       payload: adminModel.toJson(),
       priority: 5,
       attemptImmediateSync: true, // Try to sync immediately if online

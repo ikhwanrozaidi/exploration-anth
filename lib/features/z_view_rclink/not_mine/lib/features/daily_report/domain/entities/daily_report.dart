@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:rclink_app/features/daily_report/domain/entities/company_response.dart';
-import 'daily_report_equipment_response.dart';
-import 'report_quantity_response.dart';
+import 'daily_report_equipment.dart';
+import 'report_quantity.dart';
 import 'work_scope_response.dart';
 import 'road_response.dart';
 
@@ -32,8 +32,8 @@ class DailyReport extends Equatable {
   final CompanyResponse? company;
   final WorkScopeResponse? workScope;
   final RoadResponse? road;
-  final List<DailyReportEquipmentResponse>? equipments;
-  final List<ReportQuantityResponse>? reportQuantities;
+  final List<DailyReportEquipment>? equipments;
+  final List<ReportQuantity>? reportQuantities;
 
   const DailyReport({
     required this.id,

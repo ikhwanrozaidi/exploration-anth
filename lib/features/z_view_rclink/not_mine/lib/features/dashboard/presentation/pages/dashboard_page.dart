@@ -47,6 +47,8 @@ class _DashboardPageState extends State<DashboardPage> {
         _isConnected = isConnected;
       });
     });
+
+    context.read<ContractorRelationBloc>().add(const LoadContractorRelation());
   }
 
   @override
@@ -208,7 +210,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   ),
                                 ),
                                 onPressed: isLoading
-                                    ? null // Disable button while loading
+                                    ? null
                                     : () {
                                         showContractorRelationSelection(
                                           context: context,
@@ -232,7 +234,6 @@ class _DashboardPageState extends State<DashboardPage> {
                                   ),
                                   child: Row(
                                     children: [
-                                      // Show loading indicator or icon
                                       isLoading
                                           ? SizedBox(
                                               width: ResponsiveHelper.iconSize(

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/entities/report_quantity_response.dart';
+import '../../domain/entities/report_quantity.dart';
 import 'quantity_type_model.dart';
 import 'quantity_value_model.dart';
 
@@ -18,8 +18,8 @@ abstract class ReportQuantitiesModel with _$ReportQuantitiesModel {
   factory ReportQuantitiesModel.fromJson(Map<String, dynamic> json) =>
       _$ReportQuantitiesModelFromJson(json);
 
-  ReportQuantityResponse toEntity() {
-    return ReportQuantityResponse(
+  ReportQuantity toEntity() {
+    return ReportQuantity(
       quantityType: quantityType.toEntity(),
       quantityValues: quantityValues.map((v) => v.toEntity()).toList(),
     );

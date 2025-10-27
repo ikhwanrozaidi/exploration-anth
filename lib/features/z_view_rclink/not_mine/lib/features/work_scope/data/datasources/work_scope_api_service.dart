@@ -45,4 +45,14 @@ abstract class WorkScopeApiService {
     @Path('companyUID') required String companyUID,
     @Path('workScopeUID') required String workScopeUID,
   });
+
+  //   @GET(
+  //     '/companies/{companyUID}/contractors/{contractorRelationUID}/package-work-scopes',
+  //   )
+  //   Future<ApiResponse<List<...>>> getContractorsWorkScopes({
+  //     @Queries() Map<String, dynamic>? baseParams,
+
+  //     @Path('companyUID') required String companyUID,
+  //     @Path('contractorRelationUID') required String contractorRelationUID,
+  //   });
 }

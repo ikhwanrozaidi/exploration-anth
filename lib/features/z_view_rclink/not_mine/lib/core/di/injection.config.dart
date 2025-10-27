@@ -121,24 +121,13 @@ import '../../features/rbac/domain/usecases/clear_role_usecase.dart' as _i1056;
 import '../../features/rbac/domain/usecases/get_role_usecase.dart' as _i421;
 import '../../features/rbac/presentation/bloc/rbac_bloc.dart' as _i167;
 import '../../features/road/data/datasources/road_api_service.dart' as _i1060;
-import '../../features/road/data/datasources/road_local_datasource.dart'
-    as _i514;
 import '../../features/road/data/datasources/road_remote_datasource.dart'
     as _i1039;
-import '../../features/road/data/repositories/district_repository_impl.dart'
-    as _i458;
-import '../../features/road/data/repositories/province_repository_impl.dart'
-    as _i419;
-import '../../features/road/data/repositories/road_repository_impl.dart'
-    as _i934;
-import '../../features/road/domain/repositories/district_repository.dart'
-    as _i118;
-import '../../features/road/domain/repositories/province_repository.dart'
-    as _i130;
 import '../../features/road/domain/repositories/road_repository.dart' as _i581;
-import '../../features/road/domain/usecases/get_district_usecase.dart' as _i140;
+import '../../features/road/domain/usecases/clear_road_cache_usecase.dart'
+    as _i275;
 import '../../features/road/domain/usecases/get_road_usecase.dart' as _i971;
-import '../../features/road/domain/usecases/get_states_usecase.dart' as _i295;
+import '../../features/road/presentation/bloc/road_bloc.dart' as _i736;
 import '../../features/work_scope/data/datasources/work_scope_api_service.dart'
     as _i468;
 import '../../features/work_scope/data/datasources/work_scope_local_datasource.dart'
@@ -187,9 +176,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i895.Connectivity>(() => registerModule.connectivity);
     gh.lazySingleton<_i1004.ErrorInterceptor>(() => _i1004.ErrorInterceptor());
     gh.lazySingleton<_i458.LocaleBloc>(() => _i458.LocaleBloc());
-    gh.lazySingleton<_i514.RoadLocalDataSource>(
-      () => _i514.RoadLocalDataSourceImpl(gh<_i982.DatabaseService>()),
-    );
     gh.lazySingleton<_i594.CompanyLocalDataSource>(
       () => _i594.CompanyLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
@@ -241,21 +227,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i267.PermissionLocalDataSource>(),
       ),
     );
-    gh.factory<_i971.GetRoadsParams>(
-      () => _i971.GetRoadsParams(
-        forceRefresh: gh<bool>(),
-        districtID: gh<int>(),
-        page: gh<int>(),
-        limit: gh<int>(),
-        sortOrder: gh<String>(),
-        sortBy: gh<String>(),
-        mainCategoryID: gh<int>(),
-        secondaryCategoryID: gh<int>(),
-        search: gh<String>(),
-        sectionStartMin: gh<double>(),
-        sectionFinishMax: gh<double>(),
-      ),
-    );
     gh.lazySingleton<_i464.DailyReportLocalDataSource>(
       () => _i464.DailyReportLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
@@ -289,16 +260,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i469.CompanyRemoteDataSource>(
       () => _i469.CompanyRemoteDataSourceImpl(gh<_i178.CompanyApiService>()),
     );
-    gh.factory<_i140.GetDistrictsParams>(
-      () => _i140.GetDistrictsParams(
-        forceRefresh: gh<bool>(),
-        stateID: gh<int>(),
-        page: gh<int>(),
-        limit: gh<int>(),
-        sortOrder: gh<String>(),
-        sortBy: gh<String>(),
-        search: gh<String>(),
-      ),
+    gh.lazySingleton<_i971.GetRoadsUseCase>(
+      () => _i971.GetRoadsUseCase(gh<_i581.RoadRepository>()),
+    );
+    gh.lazySingleton<_i275.ClearRoadCacheUseCase>(
+      () => _i275.ClearRoadCacheUseCase(gh<_i581.RoadRepository>()),
     );
     gh.lazySingleton<_i816.ContractorRelationRemoteDataSource>(
       () => _i816.ContractorRelationRemoteDataSourceImpl(
@@ -321,20 +287,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i107.AuthRemoteDataSource>(
       () => _i107.AuthRemoteDataSourceImpl(gh<_i156.AuthApiService>()),
-    );
-    gh.factory<_i295.GetStatesParams>(
-      () => _i295.GetStatesParams(
-        forceRefresh: gh<bool>(),
-        page: gh<int>(),
-        limit: gh<int>(),
-        sortOrder: gh<String>(),
-        sortBy: gh<String>(),
-        countryID: gh<int>(),
-        search: gh<String>(),
-      ),
-    );
-    gh.lazySingleton<_i1039.RoadRemoteDataSource>(
-      () => _i1039.RoadRemoteDataSourceImpl(gh<_i1060.RoadApiService>()),
     );
     gh.lazySingleton<_i328.DailyReportRemoteDataSource>(
       () => _i328.DailyReportRemoteDataSourceImpl(
@@ -360,6 +312,12 @@ extension GetItInjectableX on _i174.GetIt {
         cacheTimeout: gh<Duration>(),
       ),
     );
+    gh.factory<_i971.GetRoadsParams>(
+      () => _i971.GetRoadsParams(
+        forceRefresh: gh<bool>(),
+        cacheTimeout: gh<Duration>(),
+      ),
+    );
     gh.lazySingleton<_i167.RbacBloc>(
       () => _i167.RbacBloc(
         gh<_i421.GetRoleUseCase>(),
@@ -367,12 +325,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i448.CheckPermissionUseCase>(),
         gh<_i644.CheckAnyPermissionUseCase>(),
         gh<_i976.CheckAllPermissionsUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i581.RoadRepository>(
-      () => _i934.RoadRepositoryImpl(
-        gh<_i1039.RoadRemoteDataSource>(),
-        gh<_i514.RoadLocalDataSource>(),
       ),
     );
     gh.factory<_i752.CompanyRepository>(
@@ -386,12 +338,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i691.AdminLocalDataSource>(),
         gh<_i517.AdminRemoteDataSource>(),
         gh<_i982.DatabaseService>(),
-      ),
-    );
-    gh.lazySingleton<_i118.DistrictRepository>(
-      () => _i458.DistrictRepositoryImpl(
-        gh<_i1039.RoadRemoteDataSource>(),
-        gh<_i514.RoadLocalDataSource>(),
       ),
     );
     gh.factory<_i819.DailyReportRepository>(
@@ -412,20 +358,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i328.DailyReportRemoteDataSource>(),
       ),
     );
-    gh.lazySingleton<_i130.ProvinceRepository>(
-      () => _i419.ProvinceRepositoryImpl(
-        gh<_i1039.RoadRemoteDataSource>(),
-        gh<_i514.RoadLocalDataSource>(),
+    gh.factory<_i736.RoadBloc>(
+      () => _i736.RoadBloc(
+        gh<_i971.GetRoadsUseCase>(),
+        gh<_i275.ClearRoadCacheUseCase>(),
       ),
-    );
-    gh.factory<_i295.GetStatesUseCase>(
-      () => _i295.GetStatesUseCase(gh<_i130.ProvinceRepository>()),
     );
     gh.lazySingleton<_i257.GetCurrentAdminUseCase>(
       () => _i257.GetCurrentAdminUseCase(gh<_i583.AdminRepository>()),
-    );
-    gh.factory<_i971.GetRoadsUseCase>(
-      () => _i971.GetRoadsUseCase(gh<_i581.RoadRepository>()),
     );
     gh.factory<_i876.SelectCompanyUseCase>(
       () => _i876.SelectCompanyUseCase(gh<_i752.CompanyRepository>()),
@@ -455,9 +395,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i908.GetDailyReportsUseCase>(
       () => _i908.GetDailyReportsUseCase(gh<_i819.DailyReportRepository>()),
-    );
-    gh.factory<_i140.GetDistrictsUseCase>(
-      () => _i140.GetDistrictsUseCase(gh<_i118.DistrictRepository>()),
     );
     gh.factory<_i266.DailyReportViewBloc>(
       () => _i266.DailyReportViewBloc(
@@ -536,33 +473,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i426.CompanyBloc>(),
       ),
     );
-    gh.factory<_i398.ClearAllCacheUseCase>(
-      () => _i398.ClearAllCacheUseCase(
-        gh<_i870.WorkScopesRepository>(),
-        gh<_i130.ProvinceRepository>(),
-        gh<_i118.DistrictRepository>(),
-        gh<_i581.RoadRepository>(),
-        gh<_i880.QuantityRepository>(),
-        gh<_i767.EquipmentRepository>(),
-      ),
-    );
     gh.factory<_i890.GetWorkScopesUseCase>(
       () => _i890.GetWorkScopesUseCase(gh<_i870.WorkScopesRepository>()),
     );
     gh.factory<_i584.ClearWorkScopesCacheUseCase>(
       () => _i584.ClearWorkScopesCacheUseCase(gh<_i870.WorkScopesRepository>()),
     );
-    gh.lazySingleton<_i1040.DailyReportCreateBloc>(
-      () => _i1040.DailyReportCreateBloc(
-        gh<_i890.GetWorkScopesUseCase>(),
-        gh<_i584.ClearWorkScopesCacheUseCase>(),
-        gh<_i295.GetStatesUseCase>(),
-        gh<_i140.GetDistrictsUseCase>(),
-        gh<_i971.GetRoadsUseCase>(),
-        gh<_i1005.GetQuantityUseCase>(),
-        gh<_i847.GetEquipmentUseCase>(),
-        gh<_i398.ClearAllCacheUseCase>(),
-        gh<_i330.SubmitDailyReportUseCase>(),
+    gh.factory<_i398.ClearAllCacheUseCase>(
+      () => _i398.ClearAllCacheUseCase(
+        gh<_i870.WorkScopesRepository>(),
+        gh<_i581.RoadRepository>(),
+        gh<_i880.QuantityRepository>(),
+        gh<_i767.EquipmentRepository>(),
       ),
     );
     gh.factory<_i79.ClearContractorRelationCacheUseCase>(
@@ -579,6 +501,24 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i224.ContractorRelationBloc(
         gh<_i993.GetContractorRelationUseCase>(),
         gh<_i79.ClearContractorRelationCacheUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i1039.RoadRemoteDataSource>(
+      () => _i1039.RoadRemoteDataSourceImpl(
+        gh<_i1060.RoadApiService>(),
+        gh<_i224.ContractorRelationBloc>(),
+        gh<_i426.CompanyBloc>(),
+      ),
+    );
+    gh.lazySingleton<_i1040.DailyReportCreateBloc>(
+      () => _i1040.DailyReportCreateBloc(
+        gh<_i890.GetWorkScopesUseCase>(),
+        gh<_i584.ClearWorkScopesCacheUseCase>(),
+        gh<_i971.GetRoadsUseCase>(),
+        gh<_i1005.GetQuantityUseCase>(),
+        gh<_i847.GetEquipmentUseCase>(),
+        gh<_i398.ClearAllCacheUseCase>(),
+        gh<_i330.SubmitDailyReportUseCase>(),
       ),
     );
     return this;

@@ -55,7 +55,7 @@ class QuantityRepositoryImpl
       getRemote: () =>
           _remoteDataSource.getQuantities(companyUID, workScopeUID),
       saveLocal: (models, {bool markForSync = false}) =>
-          _localDataSource.cacheQuantityModels(
+          _localDataSource.cacheQuantities(
             models,
             companyUID: companyUID,
             workScopeUID: workScopeUID,

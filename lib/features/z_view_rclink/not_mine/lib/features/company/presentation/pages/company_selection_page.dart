@@ -8,9 +8,9 @@ import '../../../rbac/presentation/bloc/rbac_state.dart';
 import '../../domain/entities/company.dart';
 import '../bloc/company_bloc.dart';
 import '../bloc/company_event.dart';
-import 'widgets/company_bottomsheet.dart';
-import 'widgets/company_confirmation_content.dart';
-import 'widgets/company_selection_page.dart';
+import '../widgets/company_bottomsheet.dart';
+import '../widgets/company_confirmation_content.dart';
+import '../widgets/company_selection_page.dart';
 
 enum CompanyScreen { selection, confirmation }
 
