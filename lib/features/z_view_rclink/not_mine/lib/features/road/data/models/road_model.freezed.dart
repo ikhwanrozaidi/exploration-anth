@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RoadModel {
 
- int? get id; String? get uid; String? get name; String? get roadNo; String? get sectionStart; String? get sectionFinish; int? get mainCategoryID; int? get secondaryCategoryID; int? get districtID; String? get createdAt; String? get updatedAt; DistrictModel? get district; RoadCategoryModel? get mainCategory; RoadCategoryModel? get secondaryCategory;
+ int? get id; String? get uid; String? get name; String? get roadNo; double? get sectionStart; double? get sectionFinish; int? get mainCategoryID; int? get secondaryCategoryID; int? get districtID; String? get createdAt; String? get updatedAt; DistrictModel? get district; RoadCategoryModel? get mainCategory; RoadCategoryModel? get secondaryCategory;
 /// Create a copy of RoadModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $RoadModelCopyWith<$Res>  {
   factory $RoadModelCopyWith(RoadModel value, $Res Function(RoadModel) _then) = _$RoadModelCopyWithImpl;
 @useResult
 $Res call({
- int? id, String? uid, String? name, String? roadNo, String? sectionStart, String? sectionFinish, int? mainCategoryID, int? secondaryCategoryID, int? districtID, String? createdAt, String? updatedAt, DistrictModel? district, RoadCategoryModel? mainCategory, RoadCategoryModel? secondaryCategory
+ int? id, String? uid, String? name, String? roadNo, double? sectionStart, double? sectionFinish, int? mainCategoryID, int? secondaryCategoryID, int? districtID, String? createdAt, String? updatedAt, DistrictModel? district, RoadCategoryModel? mainCategory, RoadCategoryModel? secondaryCategory
 });
 
 
@@ -72,8 +72,8 @@ as int?,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nu
 as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,roadNo: freezed == roadNo ? _self.roadNo : roadNo // ignore: cast_nullable_to_non_nullable
 as String?,sectionStart: freezed == sectionStart ? _self.sectionStart : sectionStart // ignore: cast_nullable_to_non_nullable
-as String?,sectionFinish: freezed == sectionFinish ? _self.sectionFinish : sectionFinish // ignore: cast_nullable_to_non_nullable
-as String?,mainCategoryID: freezed == mainCategoryID ? _self.mainCategoryID : mainCategoryID // ignore: cast_nullable_to_non_nullable
+as double?,sectionFinish: freezed == sectionFinish ? _self.sectionFinish : sectionFinish // ignore: cast_nullable_to_non_nullable
+as double?,mainCategoryID: freezed == mainCategoryID ? _self.mainCategoryID : mainCategoryID // ignore: cast_nullable_to_non_nullable
 as int?,secondaryCategoryID: freezed == secondaryCategoryID ? _self.secondaryCategoryID : secondaryCategoryID // ignore: cast_nullable_to_non_nullable
 as int?,districtID: freezed == districtID ? _self.districtID : districtID // ignore: cast_nullable_to_non_nullable
 as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -202,7 +202,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  String? roadNo,  String? sectionStart,  String? sectionFinish,  int? mainCategoryID,  int? secondaryCategoryID,  int? districtID,  String? createdAt,  String? updatedAt,  DistrictModel? district,  RoadCategoryModel? mainCategory,  RoadCategoryModel? secondaryCategory)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  String? roadNo,  double? sectionStart,  double? sectionFinish,  int? mainCategoryID,  int? secondaryCategoryID,  int? districtID,  String? createdAt,  String? updatedAt,  DistrictModel? district,  RoadCategoryModel? mainCategory,  RoadCategoryModel? secondaryCategory)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RoadModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_that.sectionFinish,_that.mainCategoryID,_that.secondaryCategoryID,_that.districtID,_that.createdAt,_that.updatedAt,_that.district,_that.mainCategory,_that.secondaryCategory);case _:
@@ -223,7 +223,7 @@ return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  String? roadNo,  String? sectionStart,  String? sectionFinish,  int? mainCategoryID,  int? secondaryCategoryID,  int? districtID,  String? createdAt,  String? updatedAt,  DistrictModel? district,  RoadCategoryModel? mainCategory,  RoadCategoryModel? secondaryCategory)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  String? roadNo,  double? sectionStart,  double? sectionFinish,  int? mainCategoryID,  int? secondaryCategoryID,  int? districtID,  String? createdAt,  String? updatedAt,  DistrictModel? district,  RoadCategoryModel? mainCategory,  RoadCategoryModel? secondaryCategory)  $default,) {final _that = this;
 switch (_that) {
 case _RoadModel():
 return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_that.sectionFinish,_that.mainCategoryID,_that.secondaryCategoryID,_that.districtID,_that.createdAt,_that.updatedAt,_that.district,_that.mainCategory,_that.secondaryCategory);case _:
@@ -243,7 +243,7 @@ return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? uid,  String? name,  String? roadNo,  String? sectionStart,  String? sectionFinish,  int? mainCategoryID,  int? secondaryCategoryID,  int? districtID,  String? createdAt,  String? updatedAt,  DistrictModel? district,  RoadCategoryModel? mainCategory,  RoadCategoryModel? secondaryCategory)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? uid,  String? name,  String? roadNo,  double? sectionStart,  double? sectionFinish,  int? mainCategoryID,  int? secondaryCategoryID,  int? districtID,  String? createdAt,  String? updatedAt,  DistrictModel? district,  RoadCategoryModel? mainCategory,  RoadCategoryModel? secondaryCategory)?  $default,) {final _that = this;
 switch (_that) {
 case _RoadModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_that.sectionFinish,_that.mainCategoryID,_that.secondaryCategoryID,_that.districtID,_that.createdAt,_that.updatedAt,_that.district,_that.mainCategory,_that.secondaryCategory);case _:
@@ -265,8 +265,8 @@ class _RoadModel extends RoadModel {
 @override final  String? uid;
 @override final  String? name;
 @override final  String? roadNo;
-@override final  String? sectionStart;
-@override final  String? sectionFinish;
+@override final  double? sectionStart;
+@override final  double? sectionFinish;
 @override final  int? mainCategoryID;
 @override final  int? secondaryCategoryID;
 @override final  int? districtID;
@@ -309,7 +309,7 @@ abstract mixin class _$RoadModelCopyWith<$Res> implements $RoadModelCopyWith<$Re
   factory _$RoadModelCopyWith(_RoadModel value, $Res Function(_RoadModel) _then) = __$RoadModelCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, String? uid, String? name, String? roadNo, String? sectionStart, String? sectionFinish, int? mainCategoryID, int? secondaryCategoryID, int? districtID, String? createdAt, String? updatedAt, DistrictModel? district, RoadCategoryModel? mainCategory, RoadCategoryModel? secondaryCategory
+ int? id, String? uid, String? name, String? roadNo, double? sectionStart, double? sectionFinish, int? mainCategoryID, int? secondaryCategoryID, int? districtID, String? createdAt, String? updatedAt, DistrictModel? district, RoadCategoryModel? mainCategory, RoadCategoryModel? secondaryCategory
 });
 
 
@@ -333,8 +333,8 @@ as int?,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nu
 as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,roadNo: freezed == roadNo ? _self.roadNo : roadNo // ignore: cast_nullable_to_non_nullable
 as String?,sectionStart: freezed == sectionStart ? _self.sectionStart : sectionStart // ignore: cast_nullable_to_non_nullable
-as String?,sectionFinish: freezed == sectionFinish ? _self.sectionFinish : sectionFinish // ignore: cast_nullable_to_non_nullable
-as String?,mainCategoryID: freezed == mainCategoryID ? _self.mainCategoryID : mainCategoryID // ignore: cast_nullable_to_non_nullable
+as double?,sectionFinish: freezed == sectionFinish ? _self.sectionFinish : sectionFinish // ignore: cast_nullable_to_non_nullable
+as double?,mainCategoryID: freezed == mainCategoryID ? _self.mainCategoryID : mainCategoryID // ignore: cast_nullable_to_non_nullable
 as int?,secondaryCategoryID: freezed == secondaryCategoryID ? _self.secondaryCategoryID : secondaryCategoryID // ignore: cast_nullable_to_non_nullable
 as int?,districtID: freezed == districtID ? _self.districtID : districtID // ignore: cast_nullable_to_non_nullable
 as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable

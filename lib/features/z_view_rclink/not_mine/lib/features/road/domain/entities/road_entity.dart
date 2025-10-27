@@ -12,8 +12,8 @@ class Road extends Equatable {
   final String? uid;
   final String? name;
   final String? roadNo;
-  final String? sectionStart;
-  final String? sectionFinish;
+  final double? sectionStart;
+  final double? sectionFinish;
   final int? mainCategoryID;
   final int? secondaryCategoryID;
   final int? districtID;

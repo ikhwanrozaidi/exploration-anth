@@ -18,48 +18,30 @@ class _RoadApiService implements RoadApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ApiResponse<List<ProvinceModel>>> getStates({
-    int? page = 1,
-    int? limit = 0,
-    String? sortOrder = 'asc',
-    String? sortBy = 'name',
-    int? countryID,
-    String? search,
+  Future<ApiResponse<PackageDataResponseModel>> getCompanyRoads({
+    required String companyUID,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'page': page,
-      r'limit': limit,
-      r'sortOrder': sortOrder,
-      r'sortBy': sortBy,
-      r'countryID': countryID,
-      r'search': search,
-    };
-    queryParameters.removeWhere((k, v) => v == null);
+    final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ApiResponse<List<ProvinceModel>>>(
+    final _options = _setStreamType<ApiResponse<PackageDataResponseModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/states',
+            '/companies/${companyUID}/roads',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<List<ProvinceModel>> _value;
+    late ApiResponse<PackageDataResponseModel> _value;
     try {
-      _value = ApiResponse<List<ProvinceModel>>.fromJson(
+      _value = ApiResponse<PackageDataResponseModel>.fromJson(
         _result.data!,
-        (json) => json is List<dynamic>
-            ? json
-                  .map<ProvinceModel>(
-                    (i) => ProvinceModel.fromJson(i as Map<String, dynamic>),
-                  )
-                  .toList()
-            : List.empty(),
+        (json) =>
+            PackageDataResponseModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
@@ -69,107 +51,31 @@ class _RoadApiService implements RoadApiService {
   }
 
   @override
-  Future<ApiResponse<List<DistrictModel>>> getDistricts({
-    int? page = 1,
-    int? limit = 0,
-    String? sortOrder = 'asc',
-    String? sortBy = 'name',
-    int? stateID,
-    String? search,
+  Future<ApiResponse<PackageDataResponseModel>> getPackageRoads({
+    required String companyUID,
+    required String contractRelationUID,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'page': page,
-      r'limit': limit,
-      r'sortOrder': sortOrder,
-      r'sortBy': sortBy,
-      r'stateID': stateID,
-      r'search': search,
-    };
-    queryParameters.removeWhere((k, v) => v == null);
+    final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ApiResponse<List<DistrictModel>>>(
+    final _options = _setStreamType<ApiResponse<PackageDataResponseModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/districts',
+            '/companies/${companyUID}/contractors/${contractRelationUID}/package-roads',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<List<DistrictModel>> _value;
+    late ApiResponse<PackageDataResponseModel> _value;
     try {
-      _value = ApiResponse<List<DistrictModel>>.fromJson(
+      _value = ApiResponse<PackageDataResponseModel>.fromJson(
         _result.data!,
-        (json) => json is List<dynamic>
-            ? json
-                  .map<DistrictModel>(
-                    (i) => DistrictModel.fromJson(i as Map<String, dynamic>),
-                  )
-                  .toList()
-            : List.empty(),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<ApiResponse<List<RoadModel>>> getRoads({
-    int? page = 1,
-    int? limit = 0,
-    String? sortOrder = 'asc',
-    String? sortBy = 'name',
-    int? districtID,
-    int? mainCategoryID,
-    int? secondaryCategoryID,
-    String? search,
-    double? sectionStartMin,
-    double? sectionFinishMax,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{
-      r'page': page,
-      r'limit': limit,
-      r'sortOrder': sortOrder,
-      r'sortBy': sortBy,
-      r'districtID': districtID,
-      r'mainCategoryID': mainCategoryID,
-      r'secondaryCategoryID': secondaryCategoryID,
-      r'search': search,
-      r'sectionStartMin': sectionStartMin,
-      r'sectionFinishMax': sectionFinishMax,
-    };
-    queryParameters.removeWhere((k, v) => v == null);
-    final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ApiResponse<List<RoadModel>>>(
-      Options(method: 'GET', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/roads',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<List<RoadModel>> _value;
-    try {
-      _value = ApiResponse<List<RoadModel>>.fromJson(
-        _result.data!,
-        (json) => json is List<dynamic>
-            ? json
-                  .map<RoadModel>(
-                    (i) => RoadModel.fromJson(i as Map<String, dynamic>),
-                  )
-                  .toList()
-            : List.empty(),
+        (json) =>
+            PackageDataResponseModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

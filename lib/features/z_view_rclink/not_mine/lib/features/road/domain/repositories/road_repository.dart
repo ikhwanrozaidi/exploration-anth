@@ -1,19 +1,9 @@
 import 'package:dartz/dartz.dart';
-import 'package:rclink_app/features/road/domain/entities/road_entity.dart';
 import '../../../../core/errors/failures.dart';
+import '../entities/package_data_response_entity.dart';
 
 abstract class RoadRepository {
-  Future<Either<Failure, List<Road>>> getRoads({
-    int? page = 1,
-    int? limit = 0,
-    String? sortOrder = 'asc',
-    String? sortBy = 'name',
-    int? districtID,
-    int? mainCategoryID,
-    int? secondaryCategoryID,
-    String? search,
-    double? sectionStartMin,
-    double? sectionFinishMax,
+  Future<Either<Failure, PackageDataResponse>> getRoads({
     bool forceRefresh = false,
     Duration? cacheTimeout = const Duration(hours: 1),
   });

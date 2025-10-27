@@ -1,17 +1,17 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-
 import '../../../../core/errors/failures.dart';
 import '../../../../core/repositories/base_sync_repository.dart';
-import '../../domain/entities/road_entity.dart';
+import '../../domain/entities/package_data_response_entity.dart';
 import '../../domain/repositories/road_repository.dart';
-import '../datasources/road_remote_datasource.dart';
 import '../datasources/road_local_datasource.dart';
-import '../models/road_model.dart';
+import '../datasources/road_remote_datasource.dart';
+import '../models/package_data_response_model.dart';
 
 @LazySingleton(as: RoadRepository)
 class RoadRepositoryImpl
-    extends BaseOfflineSyncRepository<List<Road>, List<RoadModel>>
+    extends
+        BaseOfflineSyncRepository<PackageDataResponse, PackageDataResponseModel>
     implements RoadRepository {
   final RoadRemoteDataSource _remoteDataSource;
   final RoadLocalDataSource _localDataSource;
@@ -19,37 +19,16 @@ class RoadRepositoryImpl
   RoadRepositoryImpl(this._remoteDataSource, this._localDataSource);
 
   @override
-  Future<Either<Failure, List<Road>>> getRoads({
-    int? page = 1,
-    int? limit = 0,
-    String? sortOrder = 'asc',
-    String? sortBy = 'name',
-    int? districtID,
-    int? mainCategoryID,
-    int? secondaryCategoryID,
-    String? search,
-    double? sectionStartMin,
-    double? sectionFinishMax,
+  Future<Either<Failure, PackageDataResponse>> getRoads({
     bool forceRefresh = false,
     Duration? cacheTimeout = const Duration(hours: 1),
   }) async {
     return await getOfflineFirst(
-      getLocal: () => _localDataSource.getCachedRoads(),
-      getRemote: () => _remoteDataSource.getRoads(
-        page: page,
-        limit: limit,
-        sortOrder: sortOrder,
-        sortBy: sortBy,
-        districtID: districtID,
-        mainCategoryID: mainCategoryID,
-        secondaryCategoryID: secondaryCategoryID,
-        search: search,
-        sectionStartMin: sectionStartMin,
-        sectionFinishMax: sectionFinishMax,
-      ),
-      saveLocal: (roads, {bool markForSync = false}) =>
-          _localDataSource.cacheRoads(roads),
-      toEntity: (models) => models.map((model) => model.toEntity()).toList(),
+      getLocal: () => _localDataSource.getCachedPackageData(),
+      getRemote: () => _remoteDataSource.getPackageData(),
+      saveLocal: (packageData, {bool markForSync = false}) =>
+          _localDataSource.cachePackageData(packageData),
+      toEntity: (model) => model.toEntity(),
       forceRefresh: forceRefresh,
       cacheTimeout: cacheTimeout,
     );
