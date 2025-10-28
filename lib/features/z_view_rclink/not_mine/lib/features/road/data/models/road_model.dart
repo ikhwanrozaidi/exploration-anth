@@ -20,6 +20,7 @@ abstract class RoadModel with _$RoadModel {
     int? mainCategoryID,
     int? secondaryCategoryID,
     int? districtID,
+    String? districtUID,
     String? createdAt,
     String? updatedAt,
     DistrictModel? district,

@@ -16,6 +16,7 @@ _RoadModel _$RoadModelFromJson(Map<String, dynamic> json) => _RoadModel(
   mainCategoryID: (json['mainCategoryID'] as num?)?.toInt(),
   secondaryCategoryID: (json['secondaryCategoryID'] as num?)?.toInt(),
   districtID: (json['districtID'] as num?)?.toInt(),
+  districtUID: json['districtUID'] as String?,
   createdAt: json['createdAt'] as String?,
   updatedAt: json['updatedAt'] as String?,
   district: json['district'] == null
@@ -44,6 +45,7 @@ Map<String, dynamic> _$RoadModelToJson(_RoadModel instance) =>
       'mainCategoryID': instance.mainCategoryID,
       'secondaryCategoryID': instance.secondaryCategoryID,
       'districtID': instance.districtID,
+      'districtUID': instance.districtUID,
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
       'district': instance.district,

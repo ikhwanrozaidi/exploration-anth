@@ -12,6 +12,7 @@ _ProvinceModel _$ProvinceModelFromJson(Map<String, dynamic> json) =>
       uid: json['uid'] as String?,
       name: json['name'] as String?,
       countryID: (json['countryID'] as num?)?.toInt(),
+      countryUID: json['countryUID'] as String?,
       createdAt: json['createdAt'] as String?,
       updatedAt: json['updatedAt'] as String?,
       country: json['country'] == null
@@ -25,6 +26,7 @@ Map<String, dynamic> _$ProvinceModelToJson(_ProvinceModel instance) =>
       'uid': instance.uid,
       'name': instance.name,
       'countryID': instance.countryID,
+      'countryUID': instance.countryUID,
       'createdAt': instance.createdAt,
       'updatedAt': instance.updatedAt,
       'country': instance.country,

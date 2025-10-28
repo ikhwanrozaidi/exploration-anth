@@ -17,6 +17,7 @@ class Road extends Equatable {
   final int? mainCategoryID;
   final int? secondaryCategoryID;
   final int? districtID;
+  final String? districtUID;
   final String? createdAt;
   final String? updatedAt;
   final District? district;
@@ -33,6 +34,7 @@ class Road extends Equatable {
     this.mainCategoryID,
     this.secondaryCategoryID,
     this.districtID,
+    this.districtUID,
     this.createdAt,
     this.updatedAt,
     this.district,
@@ -55,6 +57,7 @@ class Road extends Equatable {
     mainCategoryID,
     secondaryCategoryID,
     districtID,
+    districtUID,
     createdAt,
     updatedAt,
     district,

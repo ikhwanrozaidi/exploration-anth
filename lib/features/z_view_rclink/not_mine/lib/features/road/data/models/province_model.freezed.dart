@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProvinceModel {
 
- int? get id; String? get uid; String? get name; int? get countryID; String? get createdAt; String? get updatedAt; CountryModel? get country;
+ int? get id; String? get uid; String? get name; int? get countryID; String? get countryUID; String? get createdAt; String? get updatedAt; CountryModel? get country;
 /// Create a copy of ProvinceModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $ProvinceModelCopyWith<ProvinceModel> get copyWith => _$ProvinceModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProvinceModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.countryID, countryID) || other.countryID == countryID)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.country, country) || other.country == country));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProvinceModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.countryID, countryID) || other.countryID == countryID)&&(identical(other.countryUID, countryUID) || other.countryUID == countryUID)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.country, country) || other.country == country));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,uid,name,countryID,createdAt,updatedAt,country);
+int get hashCode => Object.hash(runtimeType,id,uid,name,countryID,countryUID,createdAt,updatedAt,country);
 
 @override
 String toString() {
-  return 'ProvinceModel(id: $id, uid: $uid, name: $name, countryID: $countryID, createdAt: $createdAt, updatedAt: $updatedAt, country: $country)';
+  return 'ProvinceModel(id: $id, uid: $uid, name: $name, countryID: $countryID, countryUID: $countryUID, createdAt: $createdAt, updatedAt: $updatedAt, country: $country)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $ProvinceModelCopyWith<$Res>  {
   factory $ProvinceModelCopyWith(ProvinceModel value, $Res Function(ProvinceModel) _then) = _$ProvinceModelCopyWithImpl;
 @useResult
 $Res call({
- int? id, String? uid, String? name, int? countryID, String? createdAt, String? updatedAt, CountryModel? country
+ int? id, String? uid, String? name, int? countryID, String? countryUID, String? createdAt, String? updatedAt, CountryModel? country
 });
 
 
@@ -65,13 +65,14 @@ class _$ProvinceModelCopyWithImpl<$Res>
 
 /// Create a copy of ProvinceModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? uid = freezed,Object? name = freezed,Object? countryID = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? country = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? uid = freezed,Object? name = freezed,Object? countryID = freezed,Object? countryUID = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? country = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,countryID: freezed == countryID ? _self.countryID : countryID // ignore: cast_nullable_to_non_nullable
-as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as int?,countryUID: freezed == countryUID ? _self.countryUID : countryUID // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,country: freezed == country ? _self.country : country // ignore: cast_nullable_to_non_nullable
 as CountryModel?,
@@ -171,10 +172,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  int? countryID,  String? createdAt,  String? updatedAt,  CountryModel? country)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  int? countryID,  String? countryUID,  String? createdAt,  String? updatedAt,  CountryModel? country)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProvinceModel() when $default != null:
-return $default(_that.id,_that.uid,_that.name,_that.countryID,_that.createdAt,_that.updatedAt,_that.country);case _:
+return $default(_that.id,_that.uid,_that.name,_that.countryID,_that.countryUID,_that.createdAt,_that.updatedAt,_that.country);case _:
   return orElse();
 
 }
@@ -192,10 +193,10 @@ return $default(_that.id,_that.uid,_that.name,_that.countryID,_that.createdAt,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  int? countryID,  String? createdAt,  String? updatedAt,  CountryModel? country)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  int? countryID,  String? countryUID,  String? createdAt,  String? updatedAt,  CountryModel? country)  $default,) {final _that = this;
 switch (_that) {
 case _ProvinceModel():
-return $default(_that.id,_that.uid,_that.name,_that.countryID,_that.createdAt,_that.updatedAt,_that.country);case _:
+return $default(_that.id,_that.uid,_that.name,_that.countryID,_that.countryUID,_that.createdAt,_that.updatedAt,_that.country);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -212,10 +213,10 @@ return $default(_that.id,_that.uid,_that.name,_that.countryID,_that.createdAt,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? uid,  String? name,  int? countryID,  String? createdAt,  String? updatedAt,  CountryModel? country)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? uid,  String? name,  int? countryID,  String? countryUID,  String? createdAt,  String? updatedAt,  CountryModel? country)?  $default,) {final _that = this;
 switch (_that) {
 case _ProvinceModel() when $default != null:
-return $default(_that.id,_that.uid,_that.name,_that.countryID,_that.createdAt,_that.updatedAt,_that.country);case _:
+return $default(_that.id,_that.uid,_that.name,_that.countryID,_that.countryUID,_that.createdAt,_that.updatedAt,_that.country);case _:
   return null;
 
 }
@@ -227,13 +228,14 @@ return $default(_that.id,_that.uid,_that.name,_that.countryID,_that.createdAt,_t
 @JsonSerializable()
 
 class _ProvinceModel extends ProvinceModel {
-  const _ProvinceModel({this.id, this.uid, this.name, this.countryID, this.createdAt, this.updatedAt, this.country}): super._();
+  const _ProvinceModel({this.id, this.uid, this.name, this.countryID, this.countryUID, this.createdAt, this.updatedAt, this.country}): super._();
   factory _ProvinceModel.fromJson(Map<String, dynamic> json) => _$ProvinceModelFromJson(json);
 
 @override final  int? id;
 @override final  String? uid;
 @override final  String? name;
 @override final  int? countryID;
+@override final  String? countryUID;
 @override final  String? createdAt;
 @override final  String? updatedAt;
 @override final  CountryModel? country;
@@ -251,16 +253,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProvinceModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.countryID, countryID) || other.countryID == countryID)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.country, country) || other.country == country));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProvinceModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.countryID, countryID) || other.countryID == countryID)&&(identical(other.countryUID, countryUID) || other.countryUID == countryUID)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.country, country) || other.country == country));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,uid,name,countryID,createdAt,updatedAt,country);
+int get hashCode => Object.hash(runtimeType,id,uid,name,countryID,countryUID,createdAt,updatedAt,country);
 
 @override
 String toString() {
-  return 'ProvinceModel(id: $id, uid: $uid, name: $name, countryID: $countryID, createdAt: $createdAt, updatedAt: $updatedAt, country: $country)';
+  return 'ProvinceModel(id: $id, uid: $uid, name: $name, countryID: $countryID, countryUID: $countryUID, createdAt: $createdAt, updatedAt: $updatedAt, country: $country)';
 }
 
 
@@ -271,7 +273,7 @@ abstract mixin class _$ProvinceModelCopyWith<$Res> implements $ProvinceModelCopy
   factory _$ProvinceModelCopyWith(_ProvinceModel value, $Res Function(_ProvinceModel) _then) = __$ProvinceModelCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, String? uid, String? name, int? countryID, String? createdAt, String? updatedAt, CountryModel? country
+ int? id, String? uid, String? name, int? countryID, String? countryUID, String? createdAt, String? updatedAt, CountryModel? country
 });
 
 
@@ -288,13 +290,14 @@ class __$ProvinceModelCopyWithImpl<$Res>
 
 /// Create a copy of ProvinceModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? uid = freezed,Object? name = freezed,Object? countryID = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? country = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? uid = freezed,Object? name = freezed,Object? countryID = freezed,Object? countryUID = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? country = freezed,}) {
   return _then(_ProvinceModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,countryID: freezed == countryID ? _self.countryID : countryID // ignore: cast_nullable_to_non_nullable
-as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as int?,countryUID: freezed == countryUID ? _self.countryUID : countryUID // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,country: freezed == country ? _self.country : country // ignore: cast_nullable_to_non_nullable
 as CountryModel?,

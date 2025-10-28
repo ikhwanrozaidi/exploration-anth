@@ -15,7 +15,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RoadModel {
 
- int? get id; String? get uid; String? get name; String? get roadNo; double? get sectionStart; double? get sectionFinish; int? get mainCategoryID; int? get secondaryCategoryID; int? get districtID; String? get createdAt; String? get updatedAt; DistrictModel? get district; RoadCategoryModel? get mainCategory; RoadCategoryModel? get secondaryCategory;
+ int? get id; String? get uid; String? get name; String? get roadNo; double? get sectionStart; double? get sectionFinish; int? get mainCategoryID; int? get secondaryCategoryID; int? get districtID;// For database foreign key
+ String? get districtUID;// From API
+ String? get createdAt; String? get updatedAt; DistrictModel? get district; RoadCategoryModel? get mainCategory; RoadCategoryModel? get secondaryCategory;
 /// Create a copy of RoadModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +30,16 @@ $RoadModelCopyWith<RoadModel> get copyWith => _$RoadModelCopyWithImpl<RoadModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoadModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.roadNo, roadNo) || other.roadNo == roadNo)&&(identical(other.sectionStart, sectionStart) || other.sectionStart == sectionStart)&&(identical(other.sectionFinish, sectionFinish) || other.sectionFinish == sectionFinish)&&(identical(other.mainCategoryID, mainCategoryID) || other.mainCategoryID == mainCategoryID)&&(identical(other.secondaryCategoryID, secondaryCategoryID) || other.secondaryCategoryID == secondaryCategoryID)&&(identical(other.districtID, districtID) || other.districtID == districtID)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.district, district) || other.district == district)&&(identical(other.mainCategory, mainCategory) || other.mainCategory == mainCategory)&&(identical(other.secondaryCategory, secondaryCategory) || other.secondaryCategory == secondaryCategory));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoadModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.roadNo, roadNo) || other.roadNo == roadNo)&&(identical(other.sectionStart, sectionStart) || other.sectionStart == sectionStart)&&(identical(other.sectionFinish, sectionFinish) || other.sectionFinish == sectionFinish)&&(identical(other.mainCategoryID, mainCategoryID) || other.mainCategoryID == mainCategoryID)&&(identical(other.secondaryCategoryID, secondaryCategoryID) || other.secondaryCategoryID == secondaryCategoryID)&&(identical(other.districtID, districtID) || other.districtID == districtID)&&(identical(other.districtUID, districtUID) || other.districtUID == districtUID)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.district, district) || other.district == district)&&(identical(other.mainCategory, mainCategory) || other.mainCategory == mainCategory)&&(identical(other.secondaryCategory, secondaryCategory) || other.secondaryCategory == secondaryCategory));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,uid,name,roadNo,sectionStart,sectionFinish,mainCategoryID,secondaryCategoryID,districtID,createdAt,updatedAt,district,mainCategory,secondaryCategory);
+int get hashCode => Object.hash(runtimeType,id,uid,name,roadNo,sectionStart,sectionFinish,mainCategoryID,secondaryCategoryID,districtID,districtUID,createdAt,updatedAt,district,mainCategory,secondaryCategory);
 
 @override
 String toString() {
-  return 'RoadModel(id: $id, uid: $uid, name: $name, roadNo: $roadNo, sectionStart: $sectionStart, sectionFinish: $sectionFinish, mainCategoryID: $mainCategoryID, secondaryCategoryID: $secondaryCategoryID, districtID: $districtID, createdAt: $createdAt, updatedAt: $updatedAt, district: $district, mainCategory: $mainCategory, secondaryCategory: $secondaryCategory)';
+  return 'RoadModel(id: $id, uid: $uid, name: $name, roadNo: $roadNo, sectionStart: $sectionStart, sectionFinish: $sectionFinish, mainCategoryID: $mainCategoryID, secondaryCategoryID: $secondaryCategoryID, districtID: $districtID, districtUID: $districtUID, createdAt: $createdAt, updatedAt: $updatedAt, district: $district, mainCategory: $mainCategory, secondaryCategory: $secondaryCategory)';
 }
 
 
@@ -48,7 +50,7 @@ abstract mixin class $RoadModelCopyWith<$Res>  {
   factory $RoadModelCopyWith(RoadModel value, $Res Function(RoadModel) _then) = _$RoadModelCopyWithImpl;
 @useResult
 $Res call({
- int? id, String? uid, String? name, String? roadNo, double? sectionStart, double? sectionFinish, int? mainCategoryID, int? secondaryCategoryID, int? districtID, String? createdAt, String? updatedAt, DistrictModel? district, RoadCategoryModel? mainCategory, RoadCategoryModel? secondaryCategory
+ int? id, String? uid, String? name, String? roadNo, double? sectionStart, double? sectionFinish, int? mainCategoryID, int? secondaryCategoryID, int? districtID, String? districtUID, String? createdAt, String? updatedAt, DistrictModel? district, RoadCategoryModel? mainCategory, RoadCategoryModel? secondaryCategory
 });
 
 
@@ -65,7 +67,7 @@ class _$RoadModelCopyWithImpl<$Res>
 
 /// Create a copy of RoadModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? uid = freezed,Object? name = freezed,Object? roadNo = freezed,Object? sectionStart = freezed,Object? sectionFinish = freezed,Object? mainCategoryID = freezed,Object? secondaryCategoryID = freezed,Object? districtID = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? district = freezed,Object? mainCategory = freezed,Object? secondaryCategory = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? uid = freezed,Object? name = freezed,Object? roadNo = freezed,Object? sectionStart = freezed,Object? sectionFinish = freezed,Object? mainCategoryID = freezed,Object? secondaryCategoryID = freezed,Object? districtID = freezed,Object? districtUID = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? district = freezed,Object? mainCategory = freezed,Object? secondaryCategory = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -76,7 +78,8 @@ as double?,sectionFinish: freezed == sectionFinish ? _self.sectionFinish : secti
 as double?,mainCategoryID: freezed == mainCategoryID ? _self.mainCategoryID : mainCategoryID // ignore: cast_nullable_to_non_nullable
 as int?,secondaryCategoryID: freezed == secondaryCategoryID ? _self.secondaryCategoryID : secondaryCategoryID // ignore: cast_nullable_to_non_nullable
 as int?,districtID: freezed == districtID ? _self.districtID : districtID // ignore: cast_nullable_to_non_nullable
-as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as int?,districtUID: freezed == districtUID ? _self.districtUID : districtUID // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,district: freezed == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
 as DistrictModel?,mainCategory: freezed == mainCategory ? _self.mainCategory : mainCategory // ignore: cast_nullable_to_non_nullable
@@ -202,10 +205,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  String? roadNo,  double? sectionStart,  double? sectionFinish,  int? mainCategoryID,  int? secondaryCategoryID,  int? districtID,  String? createdAt,  String? updatedAt,  DistrictModel? district,  RoadCategoryModel? mainCategory,  RoadCategoryModel? secondaryCategory)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  String? roadNo,  double? sectionStart,  double? sectionFinish,  int? mainCategoryID,  int? secondaryCategoryID,  int? districtID,  String? districtUID,  String? createdAt,  String? updatedAt,  DistrictModel? district,  RoadCategoryModel? mainCategory,  RoadCategoryModel? secondaryCategory)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RoadModel() when $default != null:
-return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_that.sectionFinish,_that.mainCategoryID,_that.secondaryCategoryID,_that.districtID,_that.createdAt,_that.updatedAt,_that.district,_that.mainCategory,_that.secondaryCategory);case _:
+return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_that.sectionFinish,_that.mainCategoryID,_that.secondaryCategoryID,_that.districtID,_that.districtUID,_that.createdAt,_that.updatedAt,_that.district,_that.mainCategory,_that.secondaryCategory);case _:
   return orElse();
 
 }
@@ -223,10 +226,10 @@ return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  String? roadNo,  double? sectionStart,  double? sectionFinish,  int? mainCategoryID,  int? secondaryCategoryID,  int? districtID,  String? createdAt,  String? updatedAt,  DistrictModel? district,  RoadCategoryModel? mainCategory,  RoadCategoryModel? secondaryCategory)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  String? roadNo,  double? sectionStart,  double? sectionFinish,  int? mainCategoryID,  int? secondaryCategoryID,  int? districtID,  String? districtUID,  String? createdAt,  String? updatedAt,  DistrictModel? district,  RoadCategoryModel? mainCategory,  RoadCategoryModel? secondaryCategory)  $default,) {final _that = this;
 switch (_that) {
 case _RoadModel():
-return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_that.sectionFinish,_that.mainCategoryID,_that.secondaryCategoryID,_that.districtID,_that.createdAt,_that.updatedAt,_that.district,_that.mainCategory,_that.secondaryCategory);case _:
+return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_that.sectionFinish,_that.mainCategoryID,_that.secondaryCategoryID,_that.districtID,_that.districtUID,_that.createdAt,_that.updatedAt,_that.district,_that.mainCategory,_that.secondaryCategory);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -243,10 +246,10 @@ return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? uid,  String? name,  String? roadNo,  double? sectionStart,  double? sectionFinish,  int? mainCategoryID,  int? secondaryCategoryID,  int? districtID,  String? createdAt,  String? updatedAt,  DistrictModel? district,  RoadCategoryModel? mainCategory,  RoadCategoryModel? secondaryCategory)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? uid,  String? name,  String? roadNo,  double? sectionStart,  double? sectionFinish,  int? mainCategoryID,  int? secondaryCategoryID,  int? districtID,  String? districtUID,  String? createdAt,  String? updatedAt,  DistrictModel? district,  RoadCategoryModel? mainCategory,  RoadCategoryModel? secondaryCategory)?  $default,) {final _that = this;
 switch (_that) {
 case _RoadModel() when $default != null:
-return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_that.sectionFinish,_that.mainCategoryID,_that.secondaryCategoryID,_that.districtID,_that.createdAt,_that.updatedAt,_that.district,_that.mainCategory,_that.secondaryCategory);case _:
+return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_that.sectionFinish,_that.mainCategoryID,_that.secondaryCategoryID,_that.districtID,_that.districtUID,_that.createdAt,_that.updatedAt,_that.district,_that.mainCategory,_that.secondaryCategory);case _:
   return null;
 
 }
@@ -258,7 +261,7 @@ return $default(_that.id,_that.uid,_that.name,_that.roadNo,_that.sectionStart,_t
 @JsonSerializable()
 
 class _RoadModel extends RoadModel {
-  const _RoadModel({this.id, this.uid, this.name, this.roadNo, this.sectionStart, this.sectionFinish, this.mainCategoryID, this.secondaryCategoryID, this.districtID, this.createdAt, this.updatedAt, this.district, this.mainCategory, this.secondaryCategory}): super._();
+  const _RoadModel({this.id, this.uid, this.name, this.roadNo, this.sectionStart, this.sectionFinish, this.mainCategoryID, this.secondaryCategoryID, this.districtID, this.districtUID, this.createdAt, this.updatedAt, this.district, this.mainCategory, this.secondaryCategory}): super._();
   factory _RoadModel.fromJson(Map<String, dynamic> json) => _$RoadModelFromJson(json);
 
 @override final  int? id;
@@ -270,6 +273,9 @@ class _RoadModel extends RoadModel {
 @override final  int? mainCategoryID;
 @override final  int? secondaryCategoryID;
 @override final  int? districtID;
+// For database foreign key
+@override final  String? districtUID;
+// From API
 @override final  String? createdAt;
 @override final  String? updatedAt;
 @override final  DistrictModel? district;
@@ -289,16 +295,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RoadModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.roadNo, roadNo) || other.roadNo == roadNo)&&(identical(other.sectionStart, sectionStart) || other.sectionStart == sectionStart)&&(identical(other.sectionFinish, sectionFinish) || other.sectionFinish == sectionFinish)&&(identical(other.mainCategoryID, mainCategoryID) || other.mainCategoryID == mainCategoryID)&&(identical(other.secondaryCategoryID, secondaryCategoryID) || other.secondaryCategoryID == secondaryCategoryID)&&(identical(other.districtID, districtID) || other.districtID == districtID)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.district, district) || other.district == district)&&(identical(other.mainCategory, mainCategory) || other.mainCategory == mainCategory)&&(identical(other.secondaryCategory, secondaryCategory) || other.secondaryCategory == secondaryCategory));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RoadModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.roadNo, roadNo) || other.roadNo == roadNo)&&(identical(other.sectionStart, sectionStart) || other.sectionStart == sectionStart)&&(identical(other.sectionFinish, sectionFinish) || other.sectionFinish == sectionFinish)&&(identical(other.mainCategoryID, mainCategoryID) || other.mainCategoryID == mainCategoryID)&&(identical(other.secondaryCategoryID, secondaryCategoryID) || other.secondaryCategoryID == secondaryCategoryID)&&(identical(other.districtID, districtID) || other.districtID == districtID)&&(identical(other.districtUID, districtUID) || other.districtUID == districtUID)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.district, district) || other.district == district)&&(identical(other.mainCategory, mainCategory) || other.mainCategory == mainCategory)&&(identical(other.secondaryCategory, secondaryCategory) || other.secondaryCategory == secondaryCategory));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,uid,name,roadNo,sectionStart,sectionFinish,mainCategoryID,secondaryCategoryID,districtID,createdAt,updatedAt,district,mainCategory,secondaryCategory);
+int get hashCode => Object.hash(runtimeType,id,uid,name,roadNo,sectionStart,sectionFinish,mainCategoryID,secondaryCategoryID,districtID,districtUID,createdAt,updatedAt,district,mainCategory,secondaryCategory);
 
 @override
 String toString() {
-  return 'RoadModel(id: $id, uid: $uid, name: $name, roadNo: $roadNo, sectionStart: $sectionStart, sectionFinish: $sectionFinish, mainCategoryID: $mainCategoryID, secondaryCategoryID: $secondaryCategoryID, districtID: $districtID, createdAt: $createdAt, updatedAt: $updatedAt, district: $district, mainCategory: $mainCategory, secondaryCategory: $secondaryCategory)';
+  return 'RoadModel(id: $id, uid: $uid, name: $name, roadNo: $roadNo, sectionStart: $sectionStart, sectionFinish: $sectionFinish, mainCategoryID: $mainCategoryID, secondaryCategoryID: $secondaryCategoryID, districtID: $districtID, districtUID: $districtUID, createdAt: $createdAt, updatedAt: $updatedAt, district: $district, mainCategory: $mainCategory, secondaryCategory: $secondaryCategory)';
 }
 
 
@@ -309,7 +315,7 @@ abstract mixin class _$RoadModelCopyWith<$Res> implements $RoadModelCopyWith<$Re
   factory _$RoadModelCopyWith(_RoadModel value, $Res Function(_RoadModel) _then) = __$RoadModelCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, String? uid, String? name, String? roadNo, double? sectionStart, double? sectionFinish, int? mainCategoryID, int? secondaryCategoryID, int? districtID, String? createdAt, String? updatedAt, DistrictModel? district, RoadCategoryModel? mainCategory, RoadCategoryModel? secondaryCategory
+ int? id, String? uid, String? name, String? roadNo, double? sectionStart, double? sectionFinish, int? mainCategoryID, int? secondaryCategoryID, int? districtID, String? districtUID, String? createdAt, String? updatedAt, DistrictModel? district, RoadCategoryModel? mainCategory, RoadCategoryModel? secondaryCategory
 });
 
 
@@ -326,7 +332,7 @@ class __$RoadModelCopyWithImpl<$Res>
 
 /// Create a copy of RoadModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? uid = freezed,Object? name = freezed,Object? roadNo = freezed,Object? sectionStart = freezed,Object? sectionFinish = freezed,Object? mainCategoryID = freezed,Object? secondaryCategoryID = freezed,Object? districtID = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? district = freezed,Object? mainCategory = freezed,Object? secondaryCategory = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? uid = freezed,Object? name = freezed,Object? roadNo = freezed,Object? sectionStart = freezed,Object? sectionFinish = freezed,Object? mainCategoryID = freezed,Object? secondaryCategoryID = freezed,Object? districtID = freezed,Object? districtUID = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? district = freezed,Object? mainCategory = freezed,Object? secondaryCategory = freezed,}) {
   return _then(_RoadModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -337,7 +343,8 @@ as double?,sectionFinish: freezed == sectionFinish ? _self.sectionFinish : secti
 as double?,mainCategoryID: freezed == mainCategoryID ? _self.mainCategoryID : mainCategoryID // ignore: cast_nullable_to_non_nullable
 as int?,secondaryCategoryID: freezed == secondaryCategoryID ? _self.secondaryCategoryID : secondaryCategoryID // ignore: cast_nullable_to_non_nullable
 as int?,districtID: freezed == districtID ? _self.districtID : districtID // ignore: cast_nullable_to_non_nullable
-as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as int?,districtUID: freezed == districtUID ? _self.districtUID : districtUID // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as String?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as String?,district: freezed == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
 as DistrictModel?,mainCategory: freezed == mainCategory ? _self.mainCategory : mainCategory // ignore: cast_nullable_to_non_nullable

@@ -11,6 +11,7 @@ class Province extends Equatable {
   final String? uid;
   final String? name;
   final int? countryID;
+  final String? countryUID;
   final String? createdAt;
   final String? updatedAt;
   final Country? country;
@@ -20,6 +21,7 @@ class Province extends Equatable {
     this.uid,
     this.name,
     this.countryID,
+    this.countryUID,
     this.createdAt,
     this.updatedAt,
     this.country,
@@ -36,6 +38,7 @@ class Province extends Equatable {
     uid,
     name,
     countryID,
+    countryUID,
     createdAt,
     updatedAt,
     country,

@@ -14,6 +14,9 @@ abstract class DistrictModel with _$DistrictModel {
     String? uid,
     String? name,
     int? stateID,
+    String? stateUID,
+    String? createdAt,
+    String? updatedAt,
     ProvinceModel? state,
   }) = _DistrictModel;
 

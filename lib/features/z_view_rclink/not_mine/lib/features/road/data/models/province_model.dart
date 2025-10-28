@@ -14,6 +14,7 @@ abstract class ProvinceModel with _$ProvinceModel {
     String? uid,
     String? name,
     int? countryID,
+    String? countryUID,
     String? createdAt,
     String? updatedAt,
     CountryModel? country,

@@ -10,9 +10,21 @@ class District extends Equatable {
   final String? uid;
   final String? name;
   final int? stateID;
+  final String? stateUID;
+  final String? createdAt;
+  final String? updatedAt;
   final Province? state;
 
-  const District({this.id, this.uid, this.name, this.stateID, this.state});
+  const District({
+    this.id,
+    this.uid,
+    this.name,
+    this.stateID,
+    this.stateUID,
+    this.createdAt,
+    this.updatedAt,
+    this.state,
+  });
 
   factory District.fromJson(Map<String, dynamic> json) =>
       _$DistrictFromJson(json);
@@ -20,5 +32,14 @@ class District extends Equatable {
   Map<String, dynamic> toJson() => _$DistrictToJson(this);
 
   @override
-  List<Object?> get props => [id, uid, name, stateID, state];
+  List<Object?> get props => [
+    id,
+    uid,
+    name,
+    stateID,
+    stateUID,
+    createdAt,
+    updatedAt,
+    state,
+  ];
 }
