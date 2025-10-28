@@ -1468,6 +1468,1114 @@ class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
   }
 }
 
+class $ImageSyncQueueTable extends ImageSyncQueue
+    with TableInfo<$ImageSyncQueueTable, ImageSyncQueueRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ImageSyncQueueTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _entityTypeMeta = const VerificationMeta(
+    'entityType',
+  );
+  @override
+  late final GeneratedColumn<String> entityType = GeneratedColumn<String>(
+    'entity_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _entityUIDMeta = const VerificationMeta(
+    'entityUID',
+  );
+  @override
+  late final GeneratedColumn<String> entityUID = GeneratedColumn<String>(
+    'entity_u_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contextFieldMeta = const VerificationMeta(
+    'contextField',
+  );
+  @override
+  late final GeneratedColumn<String> contextField = GeneratedColumn<String>(
+    'context_field',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sequenceMeta = const VerificationMeta(
+    'sequence',
+  );
+  @override
+  late final GeneratedColumn<int> sequence = GeneratedColumn<int>(
+    'sequence',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _localFilePathMeta = const VerificationMeta(
+    'localFilePath',
+  );
+  @override
+  late final GeneratedColumn<String> localFilePath = GeneratedColumn<String>(
+    'local_file_path',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fileNameMeta = const VerificationMeta(
+    'fileName',
+  );
+  @override
+  late final GeneratedColumn<String> fileName = GeneratedColumn<String>(
+    'file_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mimeTypeMeta = const VerificationMeta(
+    'mimeType',
+  );
+  @override
+  late final GeneratedColumn<String> mimeType = GeneratedColumn<String>(
+    'mime_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fileSizeMeta = const VerificationMeta(
+    'fileSize',
+  );
+  @override
+  late final GeneratedColumn<int> fileSize = GeneratedColumn<int>(
+    'file_size',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _companyUIDMeta = const VerificationMeta(
+    'companyUID',
+  );
+  @override
+  late final GeneratedColumn<String> companyUID = GeneratedColumn<String>(
+    'company_u_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _uploadedByUIDMeta = const VerificationMeta(
+    'uploadedByUID',
+  );
+  @override
+  late final GeneratedColumn<String> uploadedByUID = GeneratedColumn<String>(
+    'uploaded_by_u_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncStatusMeta = const VerificationMeta(
+    'syncStatus',
+  );
+  @override
+  late final GeneratedColumn<String> syncStatus = GeneratedColumn<String>(
+    'sync_status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _retryCountMeta = const VerificationMeta(
+    'retryCount',
+  );
+  @override
+  late final GeneratedColumn<int> retryCount = GeneratedColumn<int>(
+    'retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _maxRetriesMeta = const VerificationMeta(
+    'maxRetries',
+  );
+  @override
+  late final GeneratedColumn<int> maxRetries = GeneratedColumn<int>(
+    'max_retries',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(5),
+  );
+  static const VerificationMeta _fileUIDMeta = const VerificationMeta(
+    'fileUID',
+  );
+  @override
+  late final GeneratedColumn<String> fileUID = GeneratedColumn<String>(
+    'file_u_i_d',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _s3KeyMeta = const VerificationMeta('s3Key');
+  @override
+  late final GeneratedColumn<String> s3Key = GeneratedColumn<String>(
+    's3_key',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _s3UrlMeta = const VerificationMeta('s3Url');
+  @override
+  late final GeneratedColumn<String> s3Url = GeneratedColumn<String>(
+    's3_url',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _errorMeta = const VerificationMeta('error');
+  @override
+  late final GeneratedColumn<String> error = GeneratedColumn<String>(
+    'error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _lastAttemptAtMeta = const VerificationMeta(
+    'lastAttemptAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastAttemptAt =
+      GeneratedColumn<DateTime>(
+        'last_attempt_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    entityType,
+    entityUID,
+    contextField,
+    sequence,
+    localFilePath,
+    fileName,
+    mimeType,
+    fileSize,
+    companyUID,
+    uploadedByUID,
+    syncStatus,
+    retryCount,
+    maxRetries,
+    fileUID,
+    s3Key,
+    s3Url,
+    error,
+    createdAt,
+    lastAttemptAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'image_sync_queue';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ImageSyncQueueRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('entity_type')) {
+      context.handle(
+        _entityTypeMeta,
+        entityType.isAcceptableOrUnknown(data['entity_type']!, _entityTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityTypeMeta);
+    }
+    if (data.containsKey('entity_u_i_d')) {
+      context.handle(
+        _entityUIDMeta,
+        entityUID.isAcceptableOrUnknown(data['entity_u_i_d']!, _entityUIDMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_entityUIDMeta);
+    }
+    if (data.containsKey('context_field')) {
+      context.handle(
+        _contextFieldMeta,
+        contextField.isAcceptableOrUnknown(
+          data['context_field']!,
+          _contextFieldMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_contextFieldMeta);
+    }
+    if (data.containsKey('sequence')) {
+      context.handle(
+        _sequenceMeta,
+        sequence.isAcceptableOrUnknown(data['sequence']!, _sequenceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sequenceMeta);
+    }
+    if (data.containsKey('local_file_path')) {
+      context.handle(
+        _localFilePathMeta,
+        localFilePath.isAcceptableOrUnknown(
+          data['local_file_path']!,
+          _localFilePathMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_localFilePathMeta);
+    }
+    if (data.containsKey('file_name')) {
+      context.handle(
+        _fileNameMeta,
+        fileName.isAcceptableOrUnknown(data['file_name']!, _fileNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fileNameMeta);
+    }
+    if (data.containsKey('mime_type')) {
+      context.handle(
+        _mimeTypeMeta,
+        mimeType.isAcceptableOrUnknown(data['mime_type']!, _mimeTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mimeTypeMeta);
+    }
+    if (data.containsKey('file_size')) {
+      context.handle(
+        _fileSizeMeta,
+        fileSize.isAcceptableOrUnknown(data['file_size']!, _fileSizeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fileSizeMeta);
+    }
+    if (data.containsKey('company_u_i_d')) {
+      context.handle(
+        _companyUIDMeta,
+        companyUID.isAcceptableOrUnknown(
+          data['company_u_i_d']!,
+          _companyUIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_companyUIDMeta);
+    }
+    if (data.containsKey('uploaded_by_u_i_d')) {
+      context.handle(
+        _uploadedByUIDMeta,
+        uploadedByUID.isAcceptableOrUnknown(
+          data['uploaded_by_u_i_d']!,
+          _uploadedByUIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_uploadedByUIDMeta);
+    }
+    if (data.containsKey('sync_status')) {
+      context.handle(
+        _syncStatusMeta,
+        syncStatus.isAcceptableOrUnknown(data['sync_status']!, _syncStatusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_syncStatusMeta);
+    }
+    if (data.containsKey('retry_count')) {
+      context.handle(
+        _retryCountMeta,
+        retryCount.isAcceptableOrUnknown(data['retry_count']!, _retryCountMeta),
+      );
+    }
+    if (data.containsKey('max_retries')) {
+      context.handle(
+        _maxRetriesMeta,
+        maxRetries.isAcceptableOrUnknown(data['max_retries']!, _maxRetriesMeta),
+      );
+    }
+    if (data.containsKey('file_u_i_d')) {
+      context.handle(
+        _fileUIDMeta,
+        fileUID.isAcceptableOrUnknown(data['file_u_i_d']!, _fileUIDMeta),
+      );
+    }
+    if (data.containsKey('s3_key')) {
+      context.handle(
+        _s3KeyMeta,
+        s3Key.isAcceptableOrUnknown(data['s3_key']!, _s3KeyMeta),
+      );
+    }
+    if (data.containsKey('s3_url')) {
+      context.handle(
+        _s3UrlMeta,
+        s3Url.isAcceptableOrUnknown(data['s3_url']!, _s3UrlMeta),
+      );
+    }
+    if (data.containsKey('error')) {
+      context.handle(
+        _errorMeta,
+        error.isAcceptableOrUnknown(data['error']!, _errorMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('last_attempt_at')) {
+      context.handle(
+        _lastAttemptAtMeta,
+        lastAttemptAt.isAcceptableOrUnknown(
+          data['last_attempt_at']!,
+          _lastAttemptAtMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ImageSyncQueueRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ImageSyncQueueRecord(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      entityType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_type'],
+      )!,
+      entityUID: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}entity_u_i_d'],
+      )!,
+      contextField: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}context_field'],
+      )!,
+      sequence: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sequence'],
+      )!,
+      localFilePath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}local_file_path'],
+      )!,
+      fileName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_name'],
+      )!,
+      mimeType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mime_type'],
+      )!,
+      fileSize: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}file_size'],
+      )!,
+      companyUID: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}company_u_i_d'],
+      )!,
+      uploadedByUID: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uploaded_by_u_i_d'],
+      )!,
+      syncStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_status'],
+      )!,
+      retryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}retry_count'],
+      )!,
+      maxRetries: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_retries'],
+      )!,
+      fileUID: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_u_i_d'],
+      ),
+      s3Key: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}s3_key'],
+      ),
+      s3Url: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}s3_url'],
+      ),
+      error: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}error'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      lastAttemptAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_attempt_at'],
+      ),
+    );
+  }
+
+  @override
+  $ImageSyncQueueTable createAlias(String alias) {
+    return $ImageSyncQueueTable(attachedDatabase, alias);
+  }
+}
+
+class ImageSyncQueueRecord extends DataClass
+    implements Insertable<ImageSyncQueueRecord> {
+  final int id;
+  final String entityType;
+  final String entityUID;
+  final String contextField;
+  final int sequence;
+  final String localFilePath;
+  final String fileName;
+  final String mimeType;
+  final int fileSize;
+  final String companyUID;
+  final String uploadedByUID;
+  final String syncStatus;
+  final int retryCount;
+  final int maxRetries;
+  final String? fileUID;
+  final String? s3Key;
+  final String? s3Url;
+  final String? error;
+  final DateTime createdAt;
+  final DateTime? lastAttemptAt;
+  const ImageSyncQueueRecord({
+    required this.id,
+    required this.entityType,
+    required this.entityUID,
+    required this.contextField,
+    required this.sequence,
+    required this.localFilePath,
+    required this.fileName,
+    required this.mimeType,
+    required this.fileSize,
+    required this.companyUID,
+    required this.uploadedByUID,
+    required this.syncStatus,
+    required this.retryCount,
+    required this.maxRetries,
+    this.fileUID,
+    this.s3Key,
+    this.s3Url,
+    this.error,
+    required this.createdAt,
+    this.lastAttemptAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['entity_type'] = Variable<String>(entityType);
+    map['entity_u_i_d'] = Variable<String>(entityUID);
+    map['context_field'] = Variable<String>(contextField);
+    map['sequence'] = Variable<int>(sequence);
+    map['local_file_path'] = Variable<String>(localFilePath);
+    map['file_name'] = Variable<String>(fileName);
+    map['mime_type'] = Variable<String>(mimeType);
+    map['file_size'] = Variable<int>(fileSize);
+    map['company_u_i_d'] = Variable<String>(companyUID);
+    map['uploaded_by_u_i_d'] = Variable<String>(uploadedByUID);
+    map['sync_status'] = Variable<String>(syncStatus);
+    map['retry_count'] = Variable<int>(retryCount);
+    map['max_retries'] = Variable<int>(maxRetries);
+    if (!nullToAbsent || fileUID != null) {
+      map['file_u_i_d'] = Variable<String>(fileUID);
+    }
+    if (!nullToAbsent || s3Key != null) {
+      map['s3_key'] = Variable<String>(s3Key);
+    }
+    if (!nullToAbsent || s3Url != null) {
+      map['s3_url'] = Variable<String>(s3Url);
+    }
+    if (!nullToAbsent || error != null) {
+      map['error'] = Variable<String>(error);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || lastAttemptAt != null) {
+      map['last_attempt_at'] = Variable<DateTime>(lastAttemptAt);
+    }
+    return map;
+  }
+
+  ImageSyncQueueCompanion toCompanion(bool nullToAbsent) {
+    return ImageSyncQueueCompanion(
+      id: Value(id),
+      entityType: Value(entityType),
+      entityUID: Value(entityUID),
+      contextField: Value(contextField),
+      sequence: Value(sequence),
+      localFilePath: Value(localFilePath),
+      fileName: Value(fileName),
+      mimeType: Value(mimeType),
+      fileSize: Value(fileSize),
+      companyUID: Value(companyUID),
+      uploadedByUID: Value(uploadedByUID),
+      syncStatus: Value(syncStatus),
+      retryCount: Value(retryCount),
+      maxRetries: Value(maxRetries),
+      fileUID: fileUID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fileUID),
+      s3Key: s3Key == null && nullToAbsent
+          ? const Value.absent()
+          : Value(s3Key),
+      s3Url: s3Url == null && nullToAbsent
+          ? const Value.absent()
+          : Value(s3Url),
+      error: error == null && nullToAbsent
+          ? const Value.absent()
+          : Value(error),
+      createdAt: Value(createdAt),
+      lastAttemptAt: lastAttemptAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastAttemptAt),
+    );
+  }
+
+  factory ImageSyncQueueRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ImageSyncQueueRecord(
+      id: serializer.fromJson<int>(json['id']),
+      entityType: serializer.fromJson<String>(json['entityType']),
+      entityUID: serializer.fromJson<String>(json['entityUID']),
+      contextField: serializer.fromJson<String>(json['contextField']),
+      sequence: serializer.fromJson<int>(json['sequence']),
+      localFilePath: serializer.fromJson<String>(json['localFilePath']),
+      fileName: serializer.fromJson<String>(json['fileName']),
+      mimeType: serializer.fromJson<String>(json['mimeType']),
+      fileSize: serializer.fromJson<int>(json['fileSize']),
+      companyUID: serializer.fromJson<String>(json['companyUID']),
+      uploadedByUID: serializer.fromJson<String>(json['uploadedByUID']),
+      syncStatus: serializer.fromJson<String>(json['syncStatus']),
+      retryCount: serializer.fromJson<int>(json['retryCount']),
+      maxRetries: serializer.fromJson<int>(json['maxRetries']),
+      fileUID: serializer.fromJson<String?>(json['fileUID']),
+      s3Key: serializer.fromJson<String?>(json['s3Key']),
+      s3Url: serializer.fromJson<String?>(json['s3Url']),
+      error: serializer.fromJson<String?>(json['error']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      lastAttemptAt: serializer.fromJson<DateTime?>(json['lastAttemptAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'entityType': serializer.toJson<String>(entityType),
+      'entityUID': serializer.toJson<String>(entityUID),
+      'contextField': serializer.toJson<String>(contextField),
+      'sequence': serializer.toJson<int>(sequence),
+      'localFilePath': serializer.toJson<String>(localFilePath),
+      'fileName': serializer.toJson<String>(fileName),
+      'mimeType': serializer.toJson<String>(mimeType),
+      'fileSize': serializer.toJson<int>(fileSize),
+      'companyUID': serializer.toJson<String>(companyUID),
+      'uploadedByUID': serializer.toJson<String>(uploadedByUID),
+      'syncStatus': serializer.toJson<String>(syncStatus),
+      'retryCount': serializer.toJson<int>(retryCount),
+      'maxRetries': serializer.toJson<int>(maxRetries),
+      'fileUID': serializer.toJson<String?>(fileUID),
+      's3Key': serializer.toJson<String?>(s3Key),
+      's3Url': serializer.toJson<String?>(s3Url),
+      'error': serializer.toJson<String?>(error),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'lastAttemptAt': serializer.toJson<DateTime?>(lastAttemptAt),
+    };
+  }
+
+  ImageSyncQueueRecord copyWith({
+    int? id,
+    String? entityType,
+    String? entityUID,
+    String? contextField,
+    int? sequence,
+    String? localFilePath,
+    String? fileName,
+    String? mimeType,
+    int? fileSize,
+    String? companyUID,
+    String? uploadedByUID,
+    String? syncStatus,
+    int? retryCount,
+    int? maxRetries,
+    Value<String?> fileUID = const Value.absent(),
+    Value<String?> s3Key = const Value.absent(),
+    Value<String?> s3Url = const Value.absent(),
+    Value<String?> error = const Value.absent(),
+    DateTime? createdAt,
+    Value<DateTime?> lastAttemptAt = const Value.absent(),
+  }) => ImageSyncQueueRecord(
+    id: id ?? this.id,
+    entityType: entityType ?? this.entityType,
+    entityUID: entityUID ?? this.entityUID,
+    contextField: contextField ?? this.contextField,
+    sequence: sequence ?? this.sequence,
+    localFilePath: localFilePath ?? this.localFilePath,
+    fileName: fileName ?? this.fileName,
+    mimeType: mimeType ?? this.mimeType,
+    fileSize: fileSize ?? this.fileSize,
+    companyUID: companyUID ?? this.companyUID,
+    uploadedByUID: uploadedByUID ?? this.uploadedByUID,
+    syncStatus: syncStatus ?? this.syncStatus,
+    retryCount: retryCount ?? this.retryCount,
+    maxRetries: maxRetries ?? this.maxRetries,
+    fileUID: fileUID.present ? fileUID.value : this.fileUID,
+    s3Key: s3Key.present ? s3Key.value : this.s3Key,
+    s3Url: s3Url.present ? s3Url.value : this.s3Url,
+    error: error.present ? error.value : this.error,
+    createdAt: createdAt ?? this.createdAt,
+    lastAttemptAt: lastAttemptAt.present
+        ? lastAttemptAt.value
+        : this.lastAttemptAt,
+  );
+  ImageSyncQueueRecord copyWithCompanion(ImageSyncQueueCompanion data) {
+    return ImageSyncQueueRecord(
+      id: data.id.present ? data.id.value : this.id,
+      entityType: data.entityType.present
+          ? data.entityType.value
+          : this.entityType,
+      entityUID: data.entityUID.present ? data.entityUID.value : this.entityUID,
+      contextField: data.contextField.present
+          ? data.contextField.value
+          : this.contextField,
+      sequence: data.sequence.present ? data.sequence.value : this.sequence,
+      localFilePath: data.localFilePath.present
+          ? data.localFilePath.value
+          : this.localFilePath,
+      fileName: data.fileName.present ? data.fileName.value : this.fileName,
+      mimeType: data.mimeType.present ? data.mimeType.value : this.mimeType,
+      fileSize: data.fileSize.present ? data.fileSize.value : this.fileSize,
+      companyUID: data.companyUID.present
+          ? data.companyUID.value
+          : this.companyUID,
+      uploadedByUID: data.uploadedByUID.present
+          ? data.uploadedByUID.value
+          : this.uploadedByUID,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+      retryCount: data.retryCount.present
+          ? data.retryCount.value
+          : this.retryCount,
+      maxRetries: data.maxRetries.present
+          ? data.maxRetries.value
+          : this.maxRetries,
+      fileUID: data.fileUID.present ? data.fileUID.value : this.fileUID,
+      s3Key: data.s3Key.present ? data.s3Key.value : this.s3Key,
+      s3Url: data.s3Url.present ? data.s3Url.value : this.s3Url,
+      error: data.error.present ? data.error.value : this.error,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      lastAttemptAt: data.lastAttemptAt.present
+          ? data.lastAttemptAt.value
+          : this.lastAttemptAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ImageSyncQueueRecord(')
+          ..write('id: $id, ')
+          ..write('entityType: $entityType, ')
+          ..write('entityUID: $entityUID, ')
+          ..write('contextField: $contextField, ')
+          ..write('sequence: $sequence, ')
+          ..write('localFilePath: $localFilePath, ')
+          ..write('fileName: $fileName, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('fileSize: $fileSize, ')
+          ..write('companyUID: $companyUID, ')
+          ..write('uploadedByUID: $uploadedByUID, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('retryCount: $retryCount, ')
+          ..write('maxRetries: $maxRetries, ')
+          ..write('fileUID: $fileUID, ')
+          ..write('s3Key: $s3Key, ')
+          ..write('s3Url: $s3Url, ')
+          ..write('error: $error, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('lastAttemptAt: $lastAttemptAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    entityType,
+    entityUID,
+    contextField,
+    sequence,
+    localFilePath,
+    fileName,
+    mimeType,
+    fileSize,
+    companyUID,
+    uploadedByUID,
+    syncStatus,
+    retryCount,
+    maxRetries,
+    fileUID,
+    s3Key,
+    s3Url,
+    error,
+    createdAt,
+    lastAttemptAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ImageSyncQueueRecord &&
+          other.id == this.id &&
+          other.entityType == this.entityType &&
+          other.entityUID == this.entityUID &&
+          other.contextField == this.contextField &&
+          other.sequence == this.sequence &&
+          other.localFilePath == this.localFilePath &&
+          other.fileName == this.fileName &&
+          other.mimeType == this.mimeType &&
+          other.fileSize == this.fileSize &&
+          other.companyUID == this.companyUID &&
+          other.uploadedByUID == this.uploadedByUID &&
+          other.syncStatus == this.syncStatus &&
+          other.retryCount == this.retryCount &&
+          other.maxRetries == this.maxRetries &&
+          other.fileUID == this.fileUID &&
+          other.s3Key == this.s3Key &&
+          other.s3Url == this.s3Url &&
+          other.error == this.error &&
+          other.createdAt == this.createdAt &&
+          other.lastAttemptAt == this.lastAttemptAt);
+}
+
+class ImageSyncQueueCompanion extends UpdateCompanion<ImageSyncQueueRecord> {
+  final Value<int> id;
+  final Value<String> entityType;
+  final Value<String> entityUID;
+  final Value<String> contextField;
+  final Value<int> sequence;
+  final Value<String> localFilePath;
+  final Value<String> fileName;
+  final Value<String> mimeType;
+  final Value<int> fileSize;
+  final Value<String> companyUID;
+  final Value<String> uploadedByUID;
+  final Value<String> syncStatus;
+  final Value<int> retryCount;
+  final Value<int> maxRetries;
+  final Value<String?> fileUID;
+  final Value<String?> s3Key;
+  final Value<String?> s3Url;
+  final Value<String?> error;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> lastAttemptAt;
+  const ImageSyncQueueCompanion({
+    this.id = const Value.absent(),
+    this.entityType = const Value.absent(),
+    this.entityUID = const Value.absent(),
+    this.contextField = const Value.absent(),
+    this.sequence = const Value.absent(),
+    this.localFilePath = const Value.absent(),
+    this.fileName = const Value.absent(),
+    this.mimeType = const Value.absent(),
+    this.fileSize = const Value.absent(),
+    this.companyUID = const Value.absent(),
+    this.uploadedByUID = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.retryCount = const Value.absent(),
+    this.maxRetries = const Value.absent(),
+    this.fileUID = const Value.absent(),
+    this.s3Key = const Value.absent(),
+    this.s3Url = const Value.absent(),
+    this.error = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.lastAttemptAt = const Value.absent(),
+  });
+  ImageSyncQueueCompanion.insert({
+    this.id = const Value.absent(),
+    required String entityType,
+    required String entityUID,
+    required String contextField,
+    required int sequence,
+    required String localFilePath,
+    required String fileName,
+    required String mimeType,
+    required int fileSize,
+    required String companyUID,
+    required String uploadedByUID,
+    required String syncStatus,
+    this.retryCount = const Value.absent(),
+    this.maxRetries = const Value.absent(),
+    this.fileUID = const Value.absent(),
+    this.s3Key = const Value.absent(),
+    this.s3Url = const Value.absent(),
+    this.error = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.lastAttemptAt = const Value.absent(),
+  }) : entityType = Value(entityType),
+       entityUID = Value(entityUID),
+       contextField = Value(contextField),
+       sequence = Value(sequence),
+       localFilePath = Value(localFilePath),
+       fileName = Value(fileName),
+       mimeType = Value(mimeType),
+       fileSize = Value(fileSize),
+       companyUID = Value(companyUID),
+       uploadedByUID = Value(uploadedByUID),
+       syncStatus = Value(syncStatus);
+  static Insertable<ImageSyncQueueRecord> custom({
+    Expression<int>? id,
+    Expression<String>? entityType,
+    Expression<String>? entityUID,
+    Expression<String>? contextField,
+    Expression<int>? sequence,
+    Expression<String>? localFilePath,
+    Expression<String>? fileName,
+    Expression<String>? mimeType,
+    Expression<int>? fileSize,
+    Expression<String>? companyUID,
+    Expression<String>? uploadedByUID,
+    Expression<String>? syncStatus,
+    Expression<int>? retryCount,
+    Expression<int>? maxRetries,
+    Expression<String>? fileUID,
+    Expression<String>? s3Key,
+    Expression<String>? s3Url,
+    Expression<String>? error,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? lastAttemptAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (entityType != null) 'entity_type': entityType,
+      if (entityUID != null) 'entity_u_i_d': entityUID,
+      if (contextField != null) 'context_field': contextField,
+      if (sequence != null) 'sequence': sequence,
+      if (localFilePath != null) 'local_file_path': localFilePath,
+      if (fileName != null) 'file_name': fileName,
+      if (mimeType != null) 'mime_type': mimeType,
+      if (fileSize != null) 'file_size': fileSize,
+      if (companyUID != null) 'company_u_i_d': companyUID,
+      if (uploadedByUID != null) 'uploaded_by_u_i_d': uploadedByUID,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (retryCount != null) 'retry_count': retryCount,
+      if (maxRetries != null) 'max_retries': maxRetries,
+      if (fileUID != null) 'file_u_i_d': fileUID,
+      if (s3Key != null) 's3_key': s3Key,
+      if (s3Url != null) 's3_url': s3Url,
+      if (error != null) 'error': error,
+      if (createdAt != null) 'created_at': createdAt,
+      if (lastAttemptAt != null) 'last_attempt_at': lastAttemptAt,
+    });
+  }
+
+  ImageSyncQueueCompanion copyWith({
+    Value<int>? id,
+    Value<String>? entityType,
+    Value<String>? entityUID,
+    Value<String>? contextField,
+    Value<int>? sequence,
+    Value<String>? localFilePath,
+    Value<String>? fileName,
+    Value<String>? mimeType,
+    Value<int>? fileSize,
+    Value<String>? companyUID,
+    Value<String>? uploadedByUID,
+    Value<String>? syncStatus,
+    Value<int>? retryCount,
+    Value<int>? maxRetries,
+    Value<String?>? fileUID,
+    Value<String?>? s3Key,
+    Value<String?>? s3Url,
+    Value<String?>? error,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? lastAttemptAt,
+  }) {
+    return ImageSyncQueueCompanion(
+      id: id ?? this.id,
+      entityType: entityType ?? this.entityType,
+      entityUID: entityUID ?? this.entityUID,
+      contextField: contextField ?? this.contextField,
+      sequence: sequence ?? this.sequence,
+      localFilePath: localFilePath ?? this.localFilePath,
+      fileName: fileName ?? this.fileName,
+      mimeType: mimeType ?? this.mimeType,
+      fileSize: fileSize ?? this.fileSize,
+      companyUID: companyUID ?? this.companyUID,
+      uploadedByUID: uploadedByUID ?? this.uploadedByUID,
+      syncStatus: syncStatus ?? this.syncStatus,
+      retryCount: retryCount ?? this.retryCount,
+      maxRetries: maxRetries ?? this.maxRetries,
+      fileUID: fileUID ?? this.fileUID,
+      s3Key: s3Key ?? this.s3Key,
+      s3Url: s3Url ?? this.s3Url,
+      error: error ?? this.error,
+      createdAt: createdAt ?? this.createdAt,
+      lastAttemptAt: lastAttemptAt ?? this.lastAttemptAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (entityType.present) {
+      map['entity_type'] = Variable<String>(entityType.value);
+    }
+    if (entityUID.present) {
+      map['entity_u_i_d'] = Variable<String>(entityUID.value);
+    }
+    if (contextField.present) {
+      map['context_field'] = Variable<String>(contextField.value);
+    }
+    if (sequence.present) {
+      map['sequence'] = Variable<int>(sequence.value);
+    }
+    if (localFilePath.present) {
+      map['local_file_path'] = Variable<String>(localFilePath.value);
+    }
+    if (fileName.present) {
+      map['file_name'] = Variable<String>(fileName.value);
+    }
+    if (mimeType.present) {
+      map['mime_type'] = Variable<String>(mimeType.value);
+    }
+    if (fileSize.present) {
+      map['file_size'] = Variable<int>(fileSize.value);
+    }
+    if (companyUID.present) {
+      map['company_u_i_d'] = Variable<String>(companyUID.value);
+    }
+    if (uploadedByUID.present) {
+      map['uploaded_by_u_i_d'] = Variable<String>(uploadedByUID.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<String>(syncStatus.value);
+    }
+    if (retryCount.present) {
+      map['retry_count'] = Variable<int>(retryCount.value);
+    }
+    if (maxRetries.present) {
+      map['max_retries'] = Variable<int>(maxRetries.value);
+    }
+    if (fileUID.present) {
+      map['file_u_i_d'] = Variable<String>(fileUID.value);
+    }
+    if (s3Key.present) {
+      map['s3_key'] = Variable<String>(s3Key.value);
+    }
+    if (s3Url.present) {
+      map['s3_url'] = Variable<String>(s3Url.value);
+    }
+    if (error.present) {
+      map['error'] = Variable<String>(error.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (lastAttemptAt.present) {
+      map['last_attempt_at'] = Variable<DateTime>(lastAttemptAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ImageSyncQueueCompanion(')
+          ..write('id: $id, ')
+          ..write('entityType: $entityType, ')
+          ..write('entityUID: $entityUID, ')
+          ..write('contextField: $contextField, ')
+          ..write('sequence: $sequence, ')
+          ..write('localFilePath: $localFilePath, ')
+          ..write('fileName: $fileName, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('fileSize: $fileSize, ')
+          ..write('companyUID: $companyUID, ')
+          ..write('uploadedByUID: $uploadedByUID, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('retryCount: $retryCount, ')
+          ..write('maxRetries: $maxRetries, ')
+          ..write('fileUID: $fileUID, ')
+          ..write('s3Key: $s3Key, ')
+          ..write('s3Url: $s3Url, ')
+          ..write('error: $error, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('lastAttemptAt: $lastAttemptAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $RolesTable extends Roles with TableInfo<$RolesTable, RoleRecord> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -17982,6 +19090,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $AdminsTable admins = $AdminsTable(this);
   late final $SyncQueueTable syncQueue = $SyncQueueTable(this);
+  late final $ImageSyncQueueTable imageSyncQueue = $ImageSyncQueueTable(this);
   late final $RolesTable roles = $RolesTable(this);
   late final $PermissionsTable permissions = $PermissionsTable(this);
   late final $CompaniesTable companies = $CompaniesTable(this);
@@ -18018,6 +19127,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     admins,
     syncQueue,
+    imageSyncQueue,
     roles,
     permissions,
     companies,
@@ -18722,6 +19832,513 @@ typedef $$SyncQueueTableProcessedTableManager =
         BaseReferences<_$AppDatabase, $SyncQueueTable, SyncQueueRecord>,
       ),
       SyncQueueRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$ImageSyncQueueTableCreateCompanionBuilder =
+    ImageSyncQueueCompanion Function({
+      Value<int> id,
+      required String entityType,
+      required String entityUID,
+      required String contextField,
+      required int sequence,
+      required String localFilePath,
+      required String fileName,
+      required String mimeType,
+      required int fileSize,
+      required String companyUID,
+      required String uploadedByUID,
+      required String syncStatus,
+      Value<int> retryCount,
+      Value<int> maxRetries,
+      Value<String?> fileUID,
+      Value<String?> s3Key,
+      Value<String?> s3Url,
+      Value<String?> error,
+      Value<DateTime> createdAt,
+      Value<DateTime?> lastAttemptAt,
+    });
+typedef $$ImageSyncQueueTableUpdateCompanionBuilder =
+    ImageSyncQueueCompanion Function({
+      Value<int> id,
+      Value<String> entityType,
+      Value<String> entityUID,
+      Value<String> contextField,
+      Value<int> sequence,
+      Value<String> localFilePath,
+      Value<String> fileName,
+      Value<String> mimeType,
+      Value<int> fileSize,
+      Value<String> companyUID,
+      Value<String> uploadedByUID,
+      Value<String> syncStatus,
+      Value<int> retryCount,
+      Value<int> maxRetries,
+      Value<String?> fileUID,
+      Value<String?> s3Key,
+      Value<String?> s3Url,
+      Value<String?> error,
+      Value<DateTime> createdAt,
+      Value<DateTime?> lastAttemptAt,
+    });
+
+class $$ImageSyncQueueTableFilterComposer
+    extends Composer<_$AppDatabase, $ImageSyncQueueTable> {
+  $$ImageSyncQueueTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get entityUID => $composableBuilder(
+    column: $table.entityUID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contextField => $composableBuilder(
+    column: $table.contextField,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sequence => $composableBuilder(
+    column: $table.sequence,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get localFilePath => $composableBuilder(
+    column: $table.localFilePath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fileName => $composableBuilder(
+    column: $table.fileName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get fileSize => $composableBuilder(
+    column: $table.fileSize,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get companyUID => $composableBuilder(
+    column: $table.companyUID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uploadedByUID => $composableBuilder(
+    column: $table.uploadedByUID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get retryCount => $composableBuilder(
+    column: $table.retryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxRetries => $composableBuilder(
+    column: $table.maxRetries,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fileUID => $composableBuilder(
+    column: $table.fileUID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get s3Key => $composableBuilder(
+    column: $table.s3Key,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get s3Url => $composableBuilder(
+    column: $table.s3Url,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get error => $composableBuilder(
+    column: $table.error,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastAttemptAt => $composableBuilder(
+    column: $table.lastAttemptAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ImageSyncQueueTableOrderingComposer
+    extends Composer<_$AppDatabase, $ImageSyncQueueTable> {
+  $$ImageSyncQueueTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get entityUID => $composableBuilder(
+    column: $table.entityUID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contextField => $composableBuilder(
+    column: $table.contextField,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sequence => $composableBuilder(
+    column: $table.sequence,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get localFilePath => $composableBuilder(
+    column: $table.localFilePath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fileName => $composableBuilder(
+    column: $table.fileName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get fileSize => $composableBuilder(
+    column: $table.fileSize,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get companyUID => $composableBuilder(
+    column: $table.companyUID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uploadedByUID => $composableBuilder(
+    column: $table.uploadedByUID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get retryCount => $composableBuilder(
+    column: $table.retryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxRetries => $composableBuilder(
+    column: $table.maxRetries,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fileUID => $composableBuilder(
+    column: $table.fileUID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get s3Key => $composableBuilder(
+    column: $table.s3Key,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get s3Url => $composableBuilder(
+    column: $table.s3Url,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get error => $composableBuilder(
+    column: $table.error,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastAttemptAt => $composableBuilder(
+    column: $table.lastAttemptAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ImageSyncQueueTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ImageSyncQueueTable> {
+  $$ImageSyncQueueTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get entityType => $composableBuilder(
+    column: $table.entityType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get entityUID =>
+      $composableBuilder(column: $table.entityUID, builder: (column) => column);
+
+  GeneratedColumn<String> get contextField => $composableBuilder(
+    column: $table.contextField,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sequence =>
+      $composableBuilder(column: $table.sequence, builder: (column) => column);
+
+  GeneratedColumn<String> get localFilePath => $composableBuilder(
+    column: $table.localFilePath,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get fileName =>
+      $composableBuilder(column: $table.fileName, builder: (column) => column);
+
+  GeneratedColumn<String> get mimeType =>
+      $composableBuilder(column: $table.mimeType, builder: (column) => column);
+
+  GeneratedColumn<int> get fileSize =>
+      $composableBuilder(column: $table.fileSize, builder: (column) => column);
+
+  GeneratedColumn<String> get companyUID => $composableBuilder(
+    column: $table.companyUID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get uploadedByUID => $composableBuilder(
+    column: $table.uploadedByUID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get retryCount => $composableBuilder(
+    column: $table.retryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxRetries => $composableBuilder(
+    column: $table.maxRetries,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get fileUID =>
+      $composableBuilder(column: $table.fileUID, builder: (column) => column);
+
+  GeneratedColumn<String> get s3Key =>
+      $composableBuilder(column: $table.s3Key, builder: (column) => column);
+
+  GeneratedColumn<String> get s3Url =>
+      $composableBuilder(column: $table.s3Url, builder: (column) => column);
+
+  GeneratedColumn<String> get error =>
+      $composableBuilder(column: $table.error, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastAttemptAt => $composableBuilder(
+    column: $table.lastAttemptAt,
+    builder: (column) => column,
+  );
+}
+
+class $$ImageSyncQueueTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ImageSyncQueueTable,
+          ImageSyncQueueRecord,
+          $$ImageSyncQueueTableFilterComposer,
+          $$ImageSyncQueueTableOrderingComposer,
+          $$ImageSyncQueueTableAnnotationComposer,
+          $$ImageSyncQueueTableCreateCompanionBuilder,
+          $$ImageSyncQueueTableUpdateCompanionBuilder,
+          (
+            ImageSyncQueueRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $ImageSyncQueueTable,
+              ImageSyncQueueRecord
+            >,
+          ),
+          ImageSyncQueueRecord,
+          PrefetchHooks Function()
+        > {
+  $$ImageSyncQueueTableTableManager(
+    _$AppDatabase db,
+    $ImageSyncQueueTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ImageSyncQueueTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ImageSyncQueueTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ImageSyncQueueTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                Value<String> entityType = const Value.absent(),
+                Value<String> entityUID = const Value.absent(),
+                Value<String> contextField = const Value.absent(),
+                Value<int> sequence = const Value.absent(),
+                Value<String> localFilePath = const Value.absent(),
+                Value<String> fileName = const Value.absent(),
+                Value<String> mimeType = const Value.absent(),
+                Value<int> fileSize = const Value.absent(),
+                Value<String> companyUID = const Value.absent(),
+                Value<String> uploadedByUID = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<int> retryCount = const Value.absent(),
+                Value<int> maxRetries = const Value.absent(),
+                Value<String?> fileUID = const Value.absent(),
+                Value<String?> s3Key = const Value.absent(),
+                Value<String?> s3Url = const Value.absent(),
+                Value<String?> error = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> lastAttemptAt = const Value.absent(),
+              }) => ImageSyncQueueCompanion(
+                id: id,
+                entityType: entityType,
+                entityUID: entityUID,
+                contextField: contextField,
+                sequence: sequence,
+                localFilePath: localFilePath,
+                fileName: fileName,
+                mimeType: mimeType,
+                fileSize: fileSize,
+                companyUID: companyUID,
+                uploadedByUID: uploadedByUID,
+                syncStatus: syncStatus,
+                retryCount: retryCount,
+                maxRetries: maxRetries,
+                fileUID: fileUID,
+                s3Key: s3Key,
+                s3Url: s3Url,
+                error: error,
+                createdAt: createdAt,
+                lastAttemptAt: lastAttemptAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> id = const Value.absent(),
+                required String entityType,
+                required String entityUID,
+                required String contextField,
+                required int sequence,
+                required String localFilePath,
+                required String fileName,
+                required String mimeType,
+                required int fileSize,
+                required String companyUID,
+                required String uploadedByUID,
+                required String syncStatus,
+                Value<int> retryCount = const Value.absent(),
+                Value<int> maxRetries = const Value.absent(),
+                Value<String?> fileUID = const Value.absent(),
+                Value<String?> s3Key = const Value.absent(),
+                Value<String?> s3Url = const Value.absent(),
+                Value<String?> error = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> lastAttemptAt = const Value.absent(),
+              }) => ImageSyncQueueCompanion.insert(
+                id: id,
+                entityType: entityType,
+                entityUID: entityUID,
+                contextField: contextField,
+                sequence: sequence,
+                localFilePath: localFilePath,
+                fileName: fileName,
+                mimeType: mimeType,
+                fileSize: fileSize,
+                companyUID: companyUID,
+                uploadedByUID: uploadedByUID,
+                syncStatus: syncStatus,
+                retryCount: retryCount,
+                maxRetries: maxRetries,
+                fileUID: fileUID,
+                s3Key: s3Key,
+                s3Url: s3Url,
+                error: error,
+                createdAt: createdAt,
+                lastAttemptAt: lastAttemptAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ImageSyncQueueTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ImageSyncQueueTable,
+      ImageSyncQueueRecord,
+      $$ImageSyncQueueTableFilterComposer,
+      $$ImageSyncQueueTableOrderingComposer,
+      $$ImageSyncQueueTableAnnotationComposer,
+      $$ImageSyncQueueTableCreateCompanionBuilder,
+      $$ImageSyncQueueTableUpdateCompanionBuilder,
+      (
+        ImageSyncQueueRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $ImageSyncQueueTable,
+          ImageSyncQueueRecord
+        >,
+      ),
+      ImageSyncQueueRecord,
       PrefetchHooks Function()
     >;
 typedef $$RolesTableCreateCompanionBuilder =
@@ -26317,6 +27934,8 @@ class $AppDatabaseManager {
       $$AdminsTableTableManager(_db, _db.admins);
   $$SyncQueueTableTableManager get syncQueue =>
       $$SyncQueueTableTableManager(_db, _db.syncQueue);
+  $$ImageSyncQueueTableTableManager get imageSyncQueue =>
+      $$ImageSyncQueueTableTableManager(_db, _db.imageSyncQueue);
   $$RolesTableTableManager get roles =>
       $$RolesTableTableManager(_db, _db.roles);
   $$PermissionsTableTableManager get permissions =>

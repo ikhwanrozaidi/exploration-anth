@@ -81,6 +81,8 @@ import '../../features/contractor_relation/presentation/bloc/contractor_relation
     as _i224;
 import '../../features/daily_report/data/datasources/daily_report_api_service.dart'
     as _i538;
+import '../../features/daily_report/data/datasources/daily_report_image_remote_datasource.dart'
+    as _i626;
 import '../../features/daily_report/data/datasources/daily_report_local_datasource.dart'
     as _i464;
 import '../../features/daily_report/data/datasources/daily_report_remote_datasource.dart'
@@ -160,6 +162,8 @@ import '../network/connectivity_service.dart' as _i491;
 import '../network/error_interceptor.dart' as _i1004;
 import '../network/network_info.dart' as _i932;
 import '../services/sync_service.dart' as _i979;
+import '../sync/datasources/image_local_datasource.dart' as _i364;
+import '../sync/services/file_storage_service.dart' as _i525;
 import 'injection.dart' as _i464;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -176,11 +180,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i895.Connectivity>(() => registerModule.connectivity);
     gh.lazySingleton<_i1004.ErrorInterceptor>(() => _i1004.ErrorInterceptor());
     gh.lazySingleton<_i458.LocaleBloc>(() => _i458.LocaleBloc());
+    gh.lazySingleton<_i525.FileStorageService>(
+      () => _i525.FileStorageService(),
+    );
     gh.lazySingleton<_i594.CompanyLocalDataSource>(
       () => _i594.CompanyLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
     gh.lazySingleton<_i691.AdminLocalDataSource>(
       () => _i691.AdminLocalDataSourceImpl(gh<_i982.DatabaseService>()),
+    );
+    gh.lazySingleton<_i364.ImageLocalDataSource>(
+      () => _i364.ImageLocalDataSourceImpl(
+        gh<_i982.DatabaseService>(),
+        gh<_i525.FileStorageService>(),
+      ),
     );
     gh.lazySingleton<_i852.AuthLocalDataSource>(
       () => _i852.AuthLocalDataSourceImpl(gh<_i982.DatabaseService>()),
@@ -327,6 +340,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i976.CheckAllPermissionsUseCase>(),
       ),
     );
+    gh.lazySingleton<_i626.DailyReportImageRemoteDataSource>(
+      () => _i626.DailyReportImageRemoteDataSourceImpl(
+        gh<_i538.DailyReportApiService>(),
+      ),
+    );
     gh.factory<_i752.CompanyRepository>(
       () => _i726.CompanyRepositoryImpl(
         gh<_i469.CompanyRemoteDataSource>(),
@@ -340,23 +358,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i982.DatabaseService>(),
       ),
     );
-    gh.factory<_i819.DailyReportRepository>(
-      () => _i1017.DailyReportRepositoryImpl(
-        gh<_i328.DailyReportRemoteDataSource>(),
-        gh<_i464.DailyReportLocalDataSource>(),
-        gh<_i982.DatabaseService>(),
-      ),
-    );
     gh.lazySingleton<_i8.UpdateCompanyFieldUseCase>(
       () => _i8.UpdateCompanyFieldUseCase(gh<_i752.CompanyRepository>()),
-    );
-    gh.lazySingleton<_i979.SyncService>(
-      () => _i979.SyncService(
-        gh<_i982.DatabaseService>(),
-        gh<_i517.AdminRemoteDataSource>(),
-        gh<_i464.DailyReportLocalDataSource>(),
-        gh<_i328.DailyReportRemoteDataSource>(),
-      ),
     );
     gh.factory<_i736.RoadBloc>(
       () => _i736.RoadBloc(
@@ -386,20 +389,23 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i932.NetworkInfo>(),
       ),
     );
-    gh.factory<_i330.SubmitDailyReportUseCase>(
-      () => _i330.SubmitDailyReportUseCase(gh<_i819.DailyReportRepository>()),
+    gh.lazySingleton<_i979.SyncService>(
+      () => _i979.SyncService(
+        gh<_i982.DatabaseService>(),
+        gh<_i517.AdminRemoteDataSource>(),
+        gh<_i464.DailyReportLocalDataSource>(),
+        gh<_i328.DailyReportRemoteDataSource>(),
+        gh<_i626.DailyReportImageRemoteDataSource>(),
+        gh<_i364.ImageLocalDataSource>(),
+      ),
     );
-    gh.lazySingleton<_i771.ClearDailyReportCacheUseCase>(
-      () =>
-          _i771.ClearDailyReportCacheUseCase(gh<_i819.DailyReportRepository>()),
-    );
-    gh.lazySingleton<_i908.GetDailyReportsUseCase>(
-      () => _i908.GetDailyReportsUseCase(gh<_i819.DailyReportRepository>()),
-    );
-    gh.factory<_i266.DailyReportViewBloc>(
-      () => _i266.DailyReportViewBloc(
-        gh<_i908.GetDailyReportsUseCase>(),
-        gh<_i771.ClearDailyReportCacheUseCase>(),
+    gh.factory<_i819.DailyReportRepository>(
+      () => _i1017.DailyReportRepositoryImpl(
+        gh<_i328.DailyReportRemoteDataSource>(),
+        gh<_i464.DailyReportLocalDataSource>(),
+        gh<_i982.DatabaseService>(),
+        gh<_i364.ImageLocalDataSource>(),
+        gh<_i626.DailyReportImageRemoteDataSource>(),
       ),
     );
     gh.lazySingleton<_i871.ClearAuthCacheUseCase>(
@@ -461,6 +467,22 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i593.WorkScopeRemoteDataSource>(),
         gh<_i1028.WorkScopeLocalDataSource>(),
         gh<_i426.CompanyBloc>(),
+      ),
+    );
+    gh.factory<_i330.SubmitDailyReportUseCase>(
+      () => _i330.SubmitDailyReportUseCase(gh<_i819.DailyReportRepository>()),
+    );
+    gh.lazySingleton<_i771.ClearDailyReportCacheUseCase>(
+      () =>
+          _i771.ClearDailyReportCacheUseCase(gh<_i819.DailyReportRepository>()),
+    );
+    gh.lazySingleton<_i908.GetDailyReportsUseCase>(
+      () => _i908.GetDailyReportsUseCase(gh<_i819.DailyReportRepository>()),
+    );
+    gh.factory<_i266.DailyReportViewBloc>(
+      () => _i266.DailyReportViewBloc(
+        gh<_i908.GetDailyReportsUseCase>(),
+        gh<_i771.ClearDailyReportCacheUseCase>(),
       ),
     );
     gh.factory<_i1005.GetQuantityUseCase>(

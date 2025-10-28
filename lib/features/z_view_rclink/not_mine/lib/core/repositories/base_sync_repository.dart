@@ -76,9 +76,14 @@ abstract class BaseSyncRepository<T, M> {
 /// with automatic SyncQueue integration
 abstract class BaseOfflineSyncRepository<T, M> {
   final DatabaseService? _databaseService;
+  final dynamic
+  _imageLocalDataSource; // ImageLocalDataSource - dynamic to avoid circular imports
 
-  BaseOfflineSyncRepository({DatabaseService? databaseService})
-    : _databaseService = databaseService;
+  BaseOfflineSyncRepository({
+    DatabaseService? databaseService,
+    dynamic imageLocalDataSource,
+  }) : _databaseService = databaseService,
+       _imageLocalDataSource = imageLocalDataSource;
 
   /// Get operation - offline first
   Future<Either<Failure, T>> getOfflineFirst({
@@ -145,7 +150,8 @@ abstract class BaseOfflineSyncRepository<T, M> {
   Future<Either<Failure, EntityT>> executeOptimistic<EntityT, ModelT>({
     required Future<EntityT> Function() local,
     required Future<Either<Failure, ModelT>> Function()? remote,
-    required Future<void> Function(ModelT serverModel, String tempUID) onSyncSuccess,
+    required Future<void> Function(ModelT serverModel, String tempUID)
+    onSyncSuccess,
     EntityT? entity,
     required SyncEntityType entityType,
     required SyncAction action,
@@ -170,9 +176,9 @@ abstract class BaseOfflineSyncRepository<T, M> {
 
                   // Step 3: Add to SyncQueue for background retry
                   await addToSyncQueue(
-                    entityType: entityType.value,
+                    entityType: entityType,
                     entityUid: entityUid,
-                    action: action.value,
+                    action: action,
                     payload: payload,
                     priority: priority,
                   );
@@ -188,7 +194,7 @@ abstract class BaseOfflineSyncRepository<T, M> {
                   await onSyncSuccess(serverModel, entityUid);
 
                   // Remove from SyncQueue if it was added before
-                  await removeFromSyncQueue(entityType.value, entityUid);
+                  await removeFromSyncQueue(entityType, entityUid);
                 },
               );
             })
@@ -197,9 +203,9 @@ abstract class BaseOfflineSyncRepository<T, M> {
 
               // Add to SyncQueue on exception
               await addToSyncQueue(
-                entityType: entityType.value,
+                entityType: entityType,
                 entityUid: entityUid,
-                action: action.value,
+                action: action,
                 payload: payload,
                 priority: priority,
               );
@@ -215,9 +221,9 @@ abstract class BaseOfflineSyncRepository<T, M> {
   /// Add to SyncQueue for background retry
   @protected
   Future<void> addToSyncQueue({
-    required String entityType,
+    required SyncEntityType entityType,
     required String entityUid,
-    required String action,
+    required SyncAction action,
     Map<String, dynamic>? payload,
     int priority = 0,
   }) async {
@@ -233,14 +239,14 @@ abstract class BaseOfflineSyncRepository<T, M> {
       final existing =
           await (db.select(db.syncQueue)..where(
                 (tbl) =>
-                    tbl.entityType.equals(entityType) &
+                    tbl.entityType.equals(entityType.value) &
                     tbl.entityUid.equals(entityUid) &
                     tbl.isProcessed.equals(false),
               ))
               .getSingleOrNull();
 
       if (existing != null) {
-        print('📋 Already in SyncQueue: $entityType/$entityUid');
+        print('📋 Already in SyncQueue: ${entityType.value}/$entityUid');
         return;
       }
 
@@ -249,9 +255,9 @@ abstract class BaseOfflineSyncRepository<T, M> {
           .into(db.syncQueue)
           .insert(
             SyncQueueCompanion(
-              entityType: Value(entityType),
+              entityType: Value(entityType.value),
               entityUid: Value(entityUid),
-              action: Value(action),
+              action: Value(action.value),
               payload: payload != null
                   ? Value(jsonEncode(payload))
                   : const Value.absent(),
@@ -263,7 +269,7 @@ abstract class BaseOfflineSyncRepository<T, M> {
           );
 
       print(
-        '✅ Added to SyncQueue: $entityType/$entityUid (priority: $priority)',
+        '✅ Added to SyncQueue: ${entityType.value}/$entityUid (priority: $priority)',
       );
     } catch (e) {
       print('❌ Failed to add to sync queue: $e');
@@ -272,20 +278,23 @@ abstract class BaseOfflineSyncRepository<T, M> {
 
   /// Remove from SyncQueue after successful sync
   @protected
-  Future<void> removeFromSyncQueue(String entityType, String entityUid) async {
+  Future<void> removeFromSyncQueue(
+    SyncEntityType entityType,
+    String entityUid,
+  ) async {
     if (_databaseService == null) return;
 
     try {
-      final db = _databaseService!.database;
+      final db = _databaseService.database;
 
       await (db.delete(db.syncQueue)..where(
             (tbl) =>
-                tbl.entityType.equals(entityType) &
+                tbl.entityType.equals(entityType.value) &
                 tbl.entityUid.equals(entityUid),
           ))
           .go();
 
-      print('🗑️ Removed from SyncQueue: $entityType/$entityUid');
+      print('🗑️ Removed from SyncQueue: ${entityType.value}/$entityUid');
     } catch (e) {
       print('❌ Failed to remove from sync queue: $e');
     }
@@ -312,5 +321,101 @@ abstract class BaseOfflineSyncRepository<T, M> {
     } catch (_) {}
 
     return true;
+  }
+
+  // ==================== Image Sync Methods ====================
+
+  /// Save images for an entity to sync queue
+  /// Called during entity creation (e.g., createDailyReport)
+  @protected
+  Future<void> saveImagesForEntity({
+    required SyncEntityType entityType,
+    required String entityUID,
+    required String companyUID,
+    required String uploadedByUID,
+    required Map<dynamic, List<String>>
+    imagesByContextField, // dynamic for ImageContextField
+  }) async {
+    if (_imageLocalDataSource == null) {
+      print('⚠️ ImageLocalDataSource not available, cannot save images');
+      return;
+    }
+
+    try {
+      await _imageLocalDataSource.saveImagesToQueue(
+        entityType: entityType,
+        entityUID: entityUID,
+        companyUID: companyUID,
+        uploadedByUID: uploadedByUID,
+        imagesByContextField: imagesByContextField,
+      );
+    } catch (e) {
+      print('❌ Failed to save images to queue: $e');
+    }
+  }
+
+  /// Activate images for upload after entity sync
+  /// Replaces temp UID with server UID and marks status as pending_upload
+  /// Called from onSyncSuccess callback
+  @protected
+  Future<void> activateImageUpload(
+    SyncEntityType entityType,
+    String oldUID,
+    String newUID,
+  ) async {
+    if (_imageLocalDataSource == null) return;
+
+    try {
+      await _imageLocalDataSource.activateImagesForUpload(
+        entityType,
+        oldUID,
+        newUID,
+      );
+      print(
+        '✅ Images activated for upload: ${entityType.value} $oldUID → $newUID',
+      );
+    } catch (e) {
+      print('❌ Failed to activate images for upload: $e');
+    }
+  }
+
+  /// Get image sync status for an entity
+  /// Returns status indicating pending, synced, failed image counts
+  @protected
+  Future<dynamic> getImageSyncStatus(
+    SyncEntityType entityType,
+    String entityUID,
+  ) async {
+    if (_imageLocalDataSource == null) {
+      // Return empty status model
+      return _createEmptyImageSyncStatus(entityType, entityUID);
+    }
+
+    try {
+      return await _imageLocalDataSource.getImageSyncStatus(
+        entityType,
+        entityUID,
+      );
+    } catch (e) {
+      print('❌ Failed to get image sync status: $e');
+      return _createEmptyImageSyncStatus(entityType, entityUID);
+    }
+  }
+
+  /// Helper to create empty status when ImageLocalDataSource is not available
+  dynamic _createEmptyImageSyncStatus(
+    SyncEntityType entityType,
+    String entityUID,
+  ) {
+    // This will be ImageSyncStatusModel but we use dynamic to avoid imports
+    return {
+      'entityUID': entityUID,
+      'entityType': entityType.value,
+      'totalImages': 0,
+      'pendingCount': 0,
+      'syncedCount': 0,
+      'failedCount': 0,
+      'uploadingCount': 0,
+    };
   }
 }

@@ -13,11 +13,11 @@ abstract class AdminApiService {
   factory AdminApiService(Dio dio) = _AdminApiService;
 
   // Get current admin profile
-  @GET('/admins/me')
+  @GET('/admin/me')
   Future<ApiResponse<AdminModel>> getCurrentAdmin();
-  
+
   // Update admin profile
-  @PUT('/admins/me')
+  @PUT('/admin/me')
   Future<ApiResponse<AdminModel>> updateAdmin({
     @Body() required Map<String, dynamic> data,
   });

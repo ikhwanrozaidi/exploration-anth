@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
-import '../widgets/month_filter_widget.dart';
-import 'program_detail_page.dart';
+import 'widgets/month_filter_widget.dart';
 
 class ProgramPage extends StatefulWidget {
   const ProgramPage({Key? key}) : super(key: key);
@@ -430,12 +429,10 @@ class _ProgramPageState extends State<ProgramPage> {
 
                           GestureDetector(
                             onTap: () {
-                              Navigator.push(
+                              CustomSnackBar.show(
                                 context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ProgramDetailPage(),
-                                ),
+                                'This feature is coming soon...',
+                                type: SnackBarType.comingsoon,
                               );
                             },
                             child: Container(

@@ -72,3 +72,69 @@ enum SyncEntityType {
     );
   }
 }
+
+/// Image context field types matching backend FileContextField enum
+enum ImageContextField {
+  workersImage,
+  beforeImage,
+  inprogressImage,
+  afterImage,
+  general;
+
+  /// Convert to backend enum string (SCREAMING_SNAKE_CASE)
+  String get value {
+    switch (this) {
+      case ImageContextField.workersImage:
+        return 'WORKERS_IMAGE';
+      case ImageContextField.beforeImage:
+        return 'BEFORE_IMAGE';
+      case ImageContextField.inprogressImage:
+        return 'INPROGRESS_IMAGE';
+      case ImageContextField.afterImage:
+        return 'AFTER_IMAGE';
+      case ImageContextField.general:
+        return 'GENERAL';
+    }
+  }
+
+  /// Parse from backend string
+  static ImageContextField fromString(String value) {
+    return ImageContextField.values.firstWhere(
+      (field) => field.value == value,
+      orElse: () => throw ArgumentError('Unknown image context field: $value'),
+    );
+  }
+}
+
+/// Image sync status types
+enum ImageSyncStatus {
+  pendingEntitySync, // Waiting for entity (report/inspection/etc.) to sync first
+  pendingUpload, // Entity synced, ready to upload
+  uploading, // Currently uploading
+  synced, // Successfully uploaded
+  failed; // Failed after max retries
+
+  /// Convert to string for database storage
+  String get value {
+    switch (this) {
+      case ImageSyncStatus.pendingEntitySync:
+        return 'pending_entity_sync';
+      case ImageSyncStatus.pendingUpload:
+        return 'pending_upload';
+      case ImageSyncStatus.uploading:
+        return 'uploading';
+      case ImageSyncStatus.synced:
+        return 'synced';
+      case ImageSyncStatus.failed:
+        return 'failed';
+    }
+  }
+
+  /// Parse from database string
+  static ImageSyncStatus fromString(String value) {
+    return ImageSyncStatus.values.firstWhere(
+      (status) => status.value == value,
+      orElse: () => throw ArgumentError('Unknown image sync status: $value'),
+    );
+  }
+}

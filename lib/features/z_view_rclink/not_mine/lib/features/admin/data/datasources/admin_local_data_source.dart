@@ -79,7 +79,7 @@ class AdminLocalDataSourceImpl implements AdminLocalDataSource {
         ? admin.toCompanion(isSynced: false, syncAction: 'update')
         : admin.toCompanion(isSynced: true);
 
-    await _database.update(_database.admins).replace(companion);
+    await _database.into(_database.admins).insertOnConflictUpdate(companion);
 
     // Only add to sync queue if marking for sync
     if (markForSync) {

@@ -339,6 +339,49 @@ class Roads extends Table with SyncableTable {
   ];
 }
 
+// Image Sync Queue table - tracks image uploads for any module (daily reports, inspections, etc.)
+@DataClassName('ImageSyncQueueRecord')
+class ImageSyncQueue extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  // Generic entity reference (matches SyncQueue pattern)
+  TextColumn get entityType => text()(); // 'daily_report', 'inspection', 'disaster', etc.
+  TextColumn get entityUID => text()(); // UID of the entity (can be temp or server UID)
+
+  // Image metadata
+  TextColumn get contextField => text()(); // WORKERS_IMAGE, BEFORE_IMAGE, etc.
+  IntColumn get sequence => integer()(); // Order within context field
+  TextColumn get localFilePath => text()(); // Local storage path
+  TextColumn get fileName => text()(); // Original filename
+  TextColumn get mimeType => text()(); // image/jpeg, image/png
+  IntColumn get fileSize => integer()(); // Size in bytes
+
+  // Required context for API call
+  TextColumn get companyUID => text()(); // For looking up companyID
+  TextColumn get uploadedByUID => text()(); // Admin UID for uploadedByID
+
+  // Sync status
+  TextColumn get syncStatus =>
+      text()(); // pending_entity_sync, pending_upload, uploading, synced, failed
+  IntColumn get retryCount => integer().withDefault(const Constant(0))();
+  IntColumn get maxRetries => integer().withDefault(const Constant(5))();
+
+  // Backend response data (populated after successful upload)
+  TextColumn get fileUID => text().nullable()(); // Backend File.uid
+  TextColumn get s3Key => text().nullable()(); // Backend File.s3Key
+  TextColumn get s3Url => text().nullable()(); // Backend File.s3Url
+
+  // Error tracking
+  TextColumn get error => text().nullable()();
+
+  // Timestamps
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get lastAttemptAt => dateTime().nullable()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [];
+}
+
 // Daily Reports table
 @DataClassName('DailyReportRecord')
 class DailyReports extends Table with SyncableTable {
@@ -496,6 +539,7 @@ class ReportSegments extends Table with SyncableTable {
   tables: [
     Admins,
     SyncQueue,
+    ImageSyncQueue,
     Roles,
     Permissions,
     Companies,
@@ -521,7 +565,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 11; // Added daily report tables in version 10
+  int get schemaVersion => 12; // Added ImageSyncQueue table in version 12
 
   @override
   MigrationStrategy get migration {
@@ -779,6 +823,10 @@ class AppDatabase extends _$AppDatabase {
             schema.dailyReports,
             schema.dailyReports.reportQuantitiesData,
           );
+        },
+        from11To12: (m, schema) async {
+          // Migration from version 11 to 12: Add ImageSyncQueue table for image upload tracking
+          await m.createTable(schema.imageSyncQueue);
         },
       ),
       beforeOpen: (details) async {

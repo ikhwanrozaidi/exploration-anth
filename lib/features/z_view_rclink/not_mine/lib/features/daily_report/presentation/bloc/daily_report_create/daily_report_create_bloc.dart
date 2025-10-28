@@ -10,6 +10,9 @@ import 'package:rclink_app/features/road/domain/usecases/get_road_usecase.dart';
 import 'package:rclink_app/features/work_scope/domain/entities/work_equipment.dart';
 import 'package:rclink_app/features/work_scope/domain/entities/work_quantity_type.dart';
 
+import '../../../../../core/di/injection.dart';
+import '../../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../../auth/presentation/bloc/auth_state.dart';
 import '../../../domain/usecases/clear_all_cache_usecase.dart';
 import '../../../domain/usecases/submit_daily_report_usecase.dart';
 import 'daily_report_create_event.dart';
@@ -65,8 +68,6 @@ class DailyReportCreateBloc
 
     // Form data events
     on<UpdateFieldValue>(_onUpdateFieldValue);
-    on<AddImages>(_onAddImages);
-    on<RemoveImage>(_onRemoveImage);
 
     // Validation and submission events
     on<ValidateForm>(_onValidateForm);
@@ -744,56 +745,6 @@ class DailyReportCreateBloc
     );
   }
 
-  Future<void> _onAddImages(
-    AddImages event,
-    Emitter<DailyReportCreateState> emit,
-  ) async {
-    final currentApiData = _getCurrentApiData();
-    final currentSelections = _getCurrentSelections();
-    final currentFormData = _getCurrentFormData();
-
-    final updatedImageFields = Map<String, List<String>>.from(
-      currentFormData.imageFields,
-    );
-    final existingImages = updatedImageFields[event.fieldKey] ?? [];
-    updatedImageFields[event.fieldKey] = [
-      ...existingImages,
-      ...event.imagePaths,
-    ];
-
-    emit(
-      DailyReportCreateState.editingDetails(
-        apiData: currentApiData,
-        selections: currentSelections,
-        formData: currentFormData.copyWith(imageFields: updatedImageFields),
-      ),
-    );
-  }
-
-  Future<void> _onRemoveImage(
-    RemoveImage event,
-    Emitter<DailyReportCreateState> emit,
-  ) async {
-    final currentApiData = _getCurrentApiData();
-    final currentSelections = _getCurrentSelections();
-    final currentFormData = _getCurrentFormData();
-
-    final updatedImageFields = Map<String, List<String>>.from(
-      currentFormData.imageFields,
-    );
-    final existingImages = updatedImageFields[event.fieldKey] ?? [];
-    existingImages.remove(event.imagePath);
-    updatedImageFields[event.fieldKey] = existingImages;
-
-    emit(
-      DailyReportCreateState.editingDetails(
-        apiData: currentApiData,
-        selections: currentSelections,
-        formData: currentFormData.copyWith(imageFields: updatedImageFields),
-      ),
-    );
-  }
-
   // ------------------------------------------------------- Validation & Submission
 
   Future<void> _onValidateForm(
@@ -828,10 +779,8 @@ class DailyReportCreateBloc
 
         if (field.isRequired) {
           final value = currentFormData.fieldValues[fieldKey];
-          final imageValue = currentFormData.imageFields[fieldKey] ?? [];
 
-          if ((value == null || value.toString().isEmpty) &&
-              imageValue.isEmpty) {
+          if (value == null || value.toString().isEmpty) {
             fieldErrors[fieldKey] = '${field.name} is required';
             validationErrors.add('${field.name} is required');
           }
@@ -911,10 +860,8 @@ class DailyReportCreateBloc
 
         if (field.isRequired) {
           final value = currentFormData.fieldValues[fieldKey];
-          final imageValue = currentFormData.imageFields[fieldKey] ?? [];
 
-          if ((value == null || value.toString().isEmpty) &&
-              imageValue.isEmpty) {
+          if (value == null || value.toString().isEmpty) {
             fieldErrors[fieldKey] = '${field.name} is required';
             validationErrors.add('${field.name} is required');
           }
@@ -956,12 +903,25 @@ class DailyReportCreateBloc
     print('⏳ Emitting submitting state...');
     emit(DailyReportCreateState.submitting(reportData: reportData));
 
+    // Get admin UID from AuthBloc state
+    String? adminUID;
+    final authBloc = getIt<AuthBloc>();
+    final authState = authBloc.state;
+
+    if (authState is Authenticated && authState.currentAdmin != null) {
+      adminUID = authState.currentAdmin!.uid;
+      print('✅ Got admin UID from AuthBloc: $adminUID');
+    } else {
+      print('⚠️ No admin data available in AuthBloc state');
+    }
+
     try {
       print('📤 Calling submit use case...');
       // Submit report using the use case
       final result = await _submitDailyReportUseCase(
         reportData: reportData,
         companyUID: event.companyUID,
+        adminUID: adminUID,
       );
 
       result.fold(
@@ -1025,7 +985,6 @@ class DailyReportCreateBloc
 
     final clearedFormData = const ReportFormData(
       fieldValues: {},
-      imageFields: {},
       fieldErrors: {},
       validationErrors: [],
       isFormValid: false,

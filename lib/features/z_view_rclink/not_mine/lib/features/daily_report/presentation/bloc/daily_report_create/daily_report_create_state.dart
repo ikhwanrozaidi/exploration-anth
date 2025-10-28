@@ -124,7 +124,6 @@ abstract class ReportSelections with _$ReportSelections {
 abstract class ReportFormData with _$ReportFormData {
   const factory ReportFormData({
     @Default({}) Map<String, dynamic> fieldValues,
-    @Default({}) Map<String, List<String>> imageFields,
     @Default({}) Map<String, String?> fieldErrors,
     @Default([]) List<String> validationErrors,
     @Default(false) bool isFormValid,

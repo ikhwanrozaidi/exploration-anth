@@ -27,7 +27,7 @@ class _AdminApiService implements AdminApiService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/admins/me',
+            '/admin/me',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -60,7 +60,7 @@ class _AdminApiService implements AdminApiService {
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/admins/me',
+            '/admin/me',
             queryParameters: queryParameters,
             data: _data,
           )

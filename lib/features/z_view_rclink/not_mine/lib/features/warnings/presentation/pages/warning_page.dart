@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
-import '../../../program/presentation/widgets/month_filter_widget.dart';
+import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
 
 class WarningPage extends StatefulWidget {
   const WarningPage({Key? key}) : super(key: key);

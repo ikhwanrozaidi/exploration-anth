@@ -81,6 +81,71 @@ class _DailyReportApiService implements DailyReportApiService {
     return _value;
   }
 
+  @override
+  Future<ApiResponse<List<FileResponseDto>>> uploadDailyReportFiles(
+    String companyUID,
+    String dailyReportUID,
+    List<MultipartFile>? beforeImages,
+    List<MultipartFile>? inprogressImages,
+    List<MultipartFile>? afterImages,
+    List<MultipartFile>? workersImages,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    if (beforeImages != null) {
+      _data.files.addAll(beforeImages.map((i) => MapEntry('BEFORE_IMAGE', i)));
+    }
+    if (inprogressImages != null) {
+      _data.files.addAll(
+        inprogressImages.map((i) => MapEntry('INPROGRESS_IMAGE', i)),
+      );
+    }
+    if (afterImages != null) {
+      _data.files.addAll(afterImages.map((i) => MapEntry('AFTER_IMAGE', i)));
+    }
+    if (workersImages != null) {
+      _data.files.addAll(
+        workersImages.map((i) => MapEntry('WORKERS_IMAGE', i)),
+      );
+    }
+    final _options = _setStreamType<ApiResponse<List<FileResponseDto>>>(
+      Options(
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'multipart/form-data',
+          )
+          .compose(
+            _dio.options,
+            '/companies/${companyUID}/daily-reports/${dailyReportUID}/files',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<List<FileResponseDto>> _value;
+    try {
+      _value = ApiResponse<List<FileResponseDto>>.fromJson(
+        _result.data!,
+        (json) => json is List<dynamic>
+            ? json
+                  .map<FileResponseDto>(
+                    (i) => FileResponseDto.fromJson(i as Map<String, dynamic>),
+                  )
+                  .toList()
+            : List.empty(),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

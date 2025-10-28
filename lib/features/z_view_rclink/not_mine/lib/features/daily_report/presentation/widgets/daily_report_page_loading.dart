@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rclink_app/shared/widgets/shimmer_loading.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
-import '../../../program/presentation/widgets/month_filter_widget.dart';
+import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
 
 class DailyReportPageLoading extends StatefulWidget {
   const DailyReportPageLoading({Key? key}) : super(key: key);

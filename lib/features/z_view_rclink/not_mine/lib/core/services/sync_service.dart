@@ -4,9 +4,11 @@ import 'package:injectable/injectable.dart';
 import '../../features/admin/data/datasources/admin_remote_data_source.dart';
 import '../../features/admin/data/models/admin_model.dart';
 import '../../features/admin/data/models/admin_model_extensions.dart';
+import '../../features/daily_report/data/datasources/daily_report_image_remote_datasource.dart';
 import '../../features/daily_report/data/datasources/daily_report_local_datasource.dart';
 import '../../features/daily_report/data/datasources/daily_report_remote_datasource.dart';
 import '../database/app_database.dart';
+import '../sync/datasources/image_local_datasource.dart';
 import '../sync/sync_constants.dart';
 
 /// Service that handles background synchronization of offline data
@@ -16,6 +18,8 @@ class SyncService {
   final AdminRemoteDataSource _adminRemoteDataSource;
   final DailyReportLocalDataSource _dailyReportLocalDataSource;
   final DailyReportRemoteDataSource _dailyReportRemoteDataSource;
+  final DailyReportImageRemoteDataSource _dailyReportImageRemoteDataSource;
+  final ImageLocalDataSource _imageLocalDataSource;
   Timer? _syncTimer;
   bool _isSyncing = false;
 
@@ -24,6 +28,8 @@ class SyncService {
     this._adminRemoteDataSource,
     this._dailyReportLocalDataSource,
     this._dailyReportRemoteDataSource,
+    this._dailyReportImageRemoteDataSource,
+    this._imageLocalDataSource,
   );
   
   /// Start periodic sync
@@ -44,10 +50,14 @@ class SyncService {
   /// Manually trigger sync for all pending items
   Future<void> syncAll() async {
     if (_isSyncing) return;
-    
+
     _isSyncing = true;
     try {
+      // Sync entities first (reports, etc.)
       await _syncFromQueue();
+
+      // Then sync pending images
+      await _syncPendingImages();
     } finally {
       _isSyncing = false;
     }
@@ -255,12 +265,144 @@ class SyncService {
           );
 
           print('✅ Replaced temp UID ${item.entityUid} → ${serverModel.uid}');
+
+          // Activate and upload images for this report
+          await _imageLocalDataSource.activateImagesForUpload(
+            SyncEntityType.dailyReport,
+            item.entityUid, // Old temp UID
+            serverModel.uid, // New server UID
+          );
+
+          // Upload images immediately
+          await _syncImagesForReport(reportData.companyUID, serverModel.uid);
+
           return true; // Success
         },
       );
     } catch (e) {
       print('❌ Error syncing daily report ${item.entityUid}: $e');
       return false;
+    }
+  }
+
+  /// Upload images for a daily report
+  Future<void> _syncImagesForReport(String companyUID, String dailyReportUID) async {
+    try {
+      // Get pending images for this report
+      final images = await _imageLocalDataSource.getImagesByEntity(
+        entityType: SyncEntityType.dailyReport,
+        entityUID: dailyReportUID,
+      );
+
+      if (images.isEmpty) {
+        print('ℹ️ No images to upload for report $dailyReportUID');
+        return;
+      }
+
+      print('📤 Uploading ${images.length} images for report $dailyReportUID');
+
+      // Attempt upload
+      final result = await _dailyReportImageRemoteDataSource.uploadImagesForReport(
+        companyUID: companyUID,
+        dailyReportUID: dailyReportUID,
+        images: images,
+      );
+
+      await result.fold(
+        (failure) async {
+          print('❌ Image upload failed for $dailyReportUID: ${failure.message}');
+
+          // Increment retry count for all images
+          await _imageLocalDataSource.incrementRetryCount(
+            SyncEntityType.dailyReport,
+            dailyReportUID,
+            failure.message,
+          );
+        },
+        (uploadedFiles) async {
+          print('✅ Successfully uploaded ${uploadedFiles.length} images for $dailyReportUID');
+
+          // Mark images as synced with server metadata
+          await _imageLocalDataSource.markImagesAsSynced(
+            SyncEntityType.dailyReport,
+            dailyReportUID,
+            uploadedFiles,
+          );
+        },
+      );
+    } catch (e) {
+      print('❌ Error uploading images for $dailyReportUID: $e');
+
+      // Increment retry count on exception
+      await _imageLocalDataSource.incrementRetryCount(
+        SyncEntityType.dailyReport,
+        dailyReportUID,
+        e.toString(),
+      );
+    }
+  }
+
+  /// Sync all pending images (periodic retry for failed uploads)
+  Future<void> _syncPendingImages() async {
+    try {
+      // Get all images ready for upload (pending_upload status, retryCount < maxRetries)
+      final pendingImages = await _imageLocalDataSource.getImagesForUpload();
+
+      if (pendingImages.isEmpty) {
+        return;
+      }
+
+      print('🔄 Found ${pendingImages.length} pending images to sync');
+
+      // Group images by entity
+      final Map<String, List<ImageSyncQueueRecord>> imagesByEntity = {};
+      for (final image in pendingImages) {
+        final key = '${image.entityType}|${image.entityUID}|${image.companyUID}';
+        imagesByEntity.putIfAbsent(key, () => []).add(image);
+      }
+
+      // Upload images for each entity
+      for (final entry in imagesByEntity.entries) {
+        final parts = entry.key.split('|');
+        final entityType = parts[0];
+        final entityUID = parts[1];
+        final companyUID = parts[2];
+        final images = entry.value;
+
+        print('📤 Uploading ${images.length} images for $entityType/$entityUID');
+
+        // Currently only support daily_report
+        if (entityType == SyncEntityType.dailyReport.value) {
+          final result = await _dailyReportImageRemoteDataSource.uploadImagesForReport(
+            companyUID: companyUID,
+            dailyReportUID: entityUID,
+            images: images,
+          );
+
+          await result.fold(
+            (failure) async {
+              print('❌ Image upload failed for $entityType/$entityUID: ${failure.message}');
+              await _imageLocalDataSource.incrementRetryCount(
+                SyncEntityType.dailyReport,
+                entityUID,
+                failure.message,
+              );
+            },
+            (uploadedFiles) async {
+              print('✅ Uploaded ${uploadedFiles.length} images for $entityType/$entityUID');
+              await _imageLocalDataSource.markImagesAsSynced(
+                SyncEntityType.dailyReport,
+                entityUID,
+                uploadedFiles,
+              );
+            },
+          );
+        } else {
+          print('⚠️ Image upload not implemented for entity type: $entityType');
+        }
+      }
+    } catch (e) {
+      print('❌ Error syncing pending images: $e');
     }
   }
 

@@ -88,16 +88,6 @@ class DailyReportCreateEvent with _$DailyReportCreateEvent {
     required dynamic value,
   }) = UpdateFieldValue;
 
-  const factory DailyReportCreateEvent.addImages({
-    required String fieldKey,
-    required List<String> imagePaths,
-  }) = AddImages;
-
-  const factory DailyReportCreateEvent.removeImage({
-    required String fieldKey,
-    required String imagePath,
-  }) = RemoveImage;
-
   // Validation & Submission
   const factory DailyReportCreateEvent.validateForm() = ValidateForm;
   const factory DailyReportCreateEvent.clearFieldError(String fieldKey) =

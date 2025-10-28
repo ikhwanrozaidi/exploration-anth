@@ -92,9 +92,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             print('❌ AuthBloc: Failed to store tokens: ${failure.message}');
             emit(AuthFailure('Failed to save authentication data'));
           },
-          (_) {
+          (_) async {
             print('✅ AuthBloc: Tokens stored successfully');
             emit(AuthState.authenticated(tokens));
+
+            // Load admin data after successful authentication
+            print('📥 AuthBloc: Loading current admin data...');
+            final adminResult = await _getCurrentAdminUseCase(
+              const GetCurrentAdminParams(forceRefresh: true),
+            );
+
+            adminResult.fold(
+              (failure) {
+                print('⚠️ AuthBloc: Failed to load admin: ${failure.message}');
+                // User stays authenticated, just without admin data
+              },
+              (admin) {
+                print('✅ AuthBloc: Admin loaded successfully: ${admin.uid}');
+                if (!emit.isDone) {
+                  emit(AuthState.authenticated(tokens, currentAdmin: admin));
+                }
+              },
+            );
           },
         );
       },
@@ -122,8 +141,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     final tokensResult = await _getTokensUseCase();
 
-    tokensResult.fold(
-      (failure) {
+    await tokensResult.fold(
+      (failure) async {
         print('❌ AuthBloc: Failed to get stored tokens: ${failure.message}');
         emit(const Unauthenticated());
       },
@@ -139,9 +158,47 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             );
             // TODO: Check if company is already selected from storage
             emit(AuthState.authenticated(tokens));
+
+            // Load admin data after restoring authentication
+            print('📥 AuthBloc: Loading current admin data...');
+            final adminResult = await _getCurrentAdminUseCase(
+              const GetCurrentAdminParams(),
+            );
+
+            adminResult.fold(
+              (failure) {
+                print('⚠️ AuthBloc: Failed to load admin: ${failure.message}');
+                // User stays authenticated, just without admin data
+              },
+              (admin) {
+                print('✅ AuthBloc: Admin loaded successfully: ${admin.uid}');
+                if (!emit.isDone) {
+                  emit(AuthState.authenticated(tokens, currentAdmin: admin));
+                }
+              },
+            );
           } else if (tokens.refreshTokenExpiresAt.isAfter(now)) {
             print('🔄 AuthBloc: Access token expired but refresh token valid');
             emit(AuthState.authenticated(tokens));
+
+            // Load admin data after restoring authentication
+            print('📥 AuthBloc: Loading current admin data...');
+            final adminResult = await _getCurrentAdminUseCase(
+              const GetCurrentAdminParams(),
+            );
+
+            adminResult.fold(
+              (failure) {
+                print('⚠️ AuthBloc: Failed to load admin: ${failure.message}');
+                // User stays authenticated, just without admin data
+              },
+              (admin) {
+                print('✅ AuthBloc: Admin loaded successfully: ${admin.uid}');
+                if (!emit.isDone) {
+                  emit(AuthState.authenticated(tokens, currentAdmin: admin));
+                }
+              },
+            );
           } else {
             print('❌ AuthBloc: All tokens expired');
             await _clearAuthCacheUseCase();

@@ -1959,7 +1959,7 @@ as List<Map<String, dynamic>>,
 /// @nodoc
 mixin _$ReportFormData {
 
- Map<String, dynamic> get fieldValues; Map<String, List<String>> get imageFields; Map<String, String?> get fieldErrors; List<String> get validationErrors; bool get isFormValid;
+ Map<String, dynamic> get fieldValues; Map<String, String?> get fieldErrors; List<String> get validationErrors; bool get isFormValid;
 /// Create a copy of ReportFormData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1970,16 +1970,16 @@ $ReportFormDataCopyWith<ReportFormData> get copyWith => _$ReportFormDataCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportFormData&&const DeepCollectionEquality().equals(other.fieldValues, fieldValues)&&const DeepCollectionEquality().equals(other.imageFields, imageFields)&&const DeepCollectionEquality().equals(other.fieldErrors, fieldErrors)&&const DeepCollectionEquality().equals(other.validationErrors, validationErrors)&&(identical(other.isFormValid, isFormValid) || other.isFormValid == isFormValid));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportFormData&&const DeepCollectionEquality().equals(other.fieldValues, fieldValues)&&const DeepCollectionEquality().equals(other.fieldErrors, fieldErrors)&&const DeepCollectionEquality().equals(other.validationErrors, validationErrors)&&(identical(other.isFormValid, isFormValid) || other.isFormValid == isFormValid));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(fieldValues),const DeepCollectionEquality().hash(imageFields),const DeepCollectionEquality().hash(fieldErrors),const DeepCollectionEquality().hash(validationErrors),isFormValid);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(fieldValues),const DeepCollectionEquality().hash(fieldErrors),const DeepCollectionEquality().hash(validationErrors),isFormValid);
 
 @override
 String toString() {
-  return 'ReportFormData(fieldValues: $fieldValues, imageFields: $imageFields, fieldErrors: $fieldErrors, validationErrors: $validationErrors, isFormValid: $isFormValid)';
+  return 'ReportFormData(fieldValues: $fieldValues, fieldErrors: $fieldErrors, validationErrors: $validationErrors, isFormValid: $isFormValid)';
 }
 
 
@@ -1990,7 +1990,7 @@ abstract mixin class $ReportFormDataCopyWith<$Res>  {
   factory $ReportFormDataCopyWith(ReportFormData value, $Res Function(ReportFormData) _then) = _$ReportFormDataCopyWithImpl;
 @useResult
 $Res call({
- Map<String, dynamic> fieldValues, Map<String, List<String>> imageFields, Map<String, String?> fieldErrors, List<String> validationErrors, bool isFormValid
+ Map<String, dynamic> fieldValues, Map<String, String?> fieldErrors, List<String> validationErrors, bool isFormValid
 });
 
 
@@ -2007,11 +2007,10 @@ class _$ReportFormDataCopyWithImpl<$Res>
 
 /// Create a copy of ReportFormData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? fieldValues = null,Object? imageFields = null,Object? fieldErrors = null,Object? validationErrors = null,Object? isFormValid = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? fieldValues = null,Object? fieldErrors = null,Object? validationErrors = null,Object? isFormValid = null,}) {
   return _then(_self.copyWith(
 fieldValues: null == fieldValues ? _self.fieldValues : fieldValues // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,imageFields: null == imageFields ? _self.imageFields : imageFields // ignore: cast_nullable_to_non_nullable
-as Map<String, List<String>>,fieldErrors: null == fieldErrors ? _self.fieldErrors : fieldErrors // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,fieldErrors: null == fieldErrors ? _self.fieldErrors : fieldErrors // ignore: cast_nullable_to_non_nullable
 as Map<String, String?>,validationErrors: null == validationErrors ? _self.validationErrors : validationErrors // ignore: cast_nullable_to_non_nullable
 as List<String>,isFormValid: null == isFormValid ? _self.isFormValid : isFormValid // ignore: cast_nullable_to_non_nullable
 as bool,
@@ -2099,10 +2098,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, dynamic> fieldValues,  Map<String, List<String>> imageFields,  Map<String, String?> fieldErrors,  List<String> validationErrors,  bool isFormValid)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, dynamic> fieldValues,  Map<String, String?> fieldErrors,  List<String> validationErrors,  bool isFormValid)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ReportFormData() when $default != null:
-return $default(_that.fieldValues,_that.imageFields,_that.fieldErrors,_that.validationErrors,_that.isFormValid);case _:
+return $default(_that.fieldValues,_that.fieldErrors,_that.validationErrors,_that.isFormValid);case _:
   return orElse();
 
 }
@@ -2120,10 +2119,10 @@ return $default(_that.fieldValues,_that.imageFields,_that.fieldErrors,_that.vali
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, dynamic> fieldValues,  Map<String, List<String>> imageFields,  Map<String, String?> fieldErrors,  List<String> validationErrors,  bool isFormValid)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, dynamic> fieldValues,  Map<String, String?> fieldErrors,  List<String> validationErrors,  bool isFormValid)  $default,) {final _that = this;
 switch (_that) {
 case _ReportFormData():
-return $default(_that.fieldValues,_that.imageFields,_that.fieldErrors,_that.validationErrors,_that.isFormValid);case _:
+return $default(_that.fieldValues,_that.fieldErrors,_that.validationErrors,_that.isFormValid);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2140,10 +2139,10 @@ return $default(_that.fieldValues,_that.imageFields,_that.fieldErrors,_that.vali
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, dynamic> fieldValues,  Map<String, List<String>> imageFields,  Map<String, String?> fieldErrors,  List<String> validationErrors,  bool isFormValid)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, dynamic> fieldValues,  Map<String, String?> fieldErrors,  List<String> validationErrors,  bool isFormValid)?  $default,) {final _that = this;
 switch (_that) {
 case _ReportFormData() when $default != null:
-return $default(_that.fieldValues,_that.imageFields,_that.fieldErrors,_that.validationErrors,_that.isFormValid);case _:
+return $default(_that.fieldValues,_that.fieldErrors,_that.validationErrors,_that.isFormValid);case _:
   return null;
 
 }
@@ -2155,7 +2154,7 @@ return $default(_that.fieldValues,_that.imageFields,_that.fieldErrors,_that.vali
 
 
 class _ReportFormData implements ReportFormData {
-  const _ReportFormData({final  Map<String, dynamic> fieldValues = const {}, final  Map<String, List<String>> imageFields = const {}, final  Map<String, String?> fieldErrors = const {}, final  List<String> validationErrors = const [], this.isFormValid = false}): _fieldValues = fieldValues,_imageFields = imageFields,_fieldErrors = fieldErrors,_validationErrors = validationErrors;
+  const _ReportFormData({final  Map<String, dynamic> fieldValues = const {}, final  Map<String, String?> fieldErrors = const {}, final  List<String> validationErrors = const [], this.isFormValid = false}): _fieldValues = fieldValues,_fieldErrors = fieldErrors,_validationErrors = validationErrors;
   
 
  final  Map<String, dynamic> _fieldValues;
@@ -2163,13 +2162,6 @@ class _ReportFormData implements ReportFormData {
   if (_fieldValues is EqualUnmodifiableMapView) return _fieldValues;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_fieldValues);
-}
-
- final  Map<String, List<String>> _imageFields;
-@override@JsonKey() Map<String, List<String>> get imageFields {
-  if (_imageFields is EqualUnmodifiableMapView) return _imageFields;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_imageFields);
 }
 
  final  Map<String, String?> _fieldErrors;
@@ -2198,16 +2190,16 @@ _$ReportFormDataCopyWith<_ReportFormData> get copyWith => __$ReportFormDataCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportFormData&&const DeepCollectionEquality().equals(other._fieldValues, _fieldValues)&&const DeepCollectionEquality().equals(other._imageFields, _imageFields)&&const DeepCollectionEquality().equals(other._fieldErrors, _fieldErrors)&&const DeepCollectionEquality().equals(other._validationErrors, _validationErrors)&&(identical(other.isFormValid, isFormValid) || other.isFormValid == isFormValid));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportFormData&&const DeepCollectionEquality().equals(other._fieldValues, _fieldValues)&&const DeepCollectionEquality().equals(other._fieldErrors, _fieldErrors)&&const DeepCollectionEquality().equals(other._validationErrors, _validationErrors)&&(identical(other.isFormValid, isFormValid) || other.isFormValid == isFormValid));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_fieldValues),const DeepCollectionEquality().hash(_imageFields),const DeepCollectionEquality().hash(_fieldErrors),const DeepCollectionEquality().hash(_validationErrors),isFormValid);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_fieldValues),const DeepCollectionEquality().hash(_fieldErrors),const DeepCollectionEquality().hash(_validationErrors),isFormValid);
 
 @override
 String toString() {
-  return 'ReportFormData(fieldValues: $fieldValues, imageFields: $imageFields, fieldErrors: $fieldErrors, validationErrors: $validationErrors, isFormValid: $isFormValid)';
+  return 'ReportFormData(fieldValues: $fieldValues, fieldErrors: $fieldErrors, validationErrors: $validationErrors, isFormValid: $isFormValid)';
 }
 
 
@@ -2218,7 +2210,7 @@ abstract mixin class _$ReportFormDataCopyWith<$Res> implements $ReportFormDataCo
   factory _$ReportFormDataCopyWith(_ReportFormData value, $Res Function(_ReportFormData) _then) = __$ReportFormDataCopyWithImpl;
 @override @useResult
 $Res call({
- Map<String, dynamic> fieldValues, Map<String, List<String>> imageFields, Map<String, String?> fieldErrors, List<String> validationErrors, bool isFormValid
+ Map<String, dynamic> fieldValues, Map<String, String?> fieldErrors, List<String> validationErrors, bool isFormValid
 });
 
 
@@ -2235,11 +2227,10 @@ class __$ReportFormDataCopyWithImpl<$Res>
 
 /// Create a copy of ReportFormData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? fieldValues = null,Object? imageFields = null,Object? fieldErrors = null,Object? validationErrors = null,Object? isFormValid = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? fieldValues = null,Object? fieldErrors = null,Object? validationErrors = null,Object? isFormValid = null,}) {
   return _then(_ReportFormData(
 fieldValues: null == fieldValues ? _self._fieldValues : fieldValues // ignore: cast_nullable_to_non_nullable
-as Map<String, dynamic>,imageFields: null == imageFields ? _self._imageFields : imageFields // ignore: cast_nullable_to_non_nullable
-as Map<String, List<String>>,fieldErrors: null == fieldErrors ? _self._fieldErrors : fieldErrors // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,fieldErrors: null == fieldErrors ? _self._fieldErrors : fieldErrors // ignore: cast_nullable_to_non_nullable
 as Map<String, String?>,validationErrors: null == validationErrors ? _self._validationErrors : validationErrors // ignore: cast_nullable_to_non_nullable
 as List<String>,isFormValid: null == isFormValid ? _self.isFormValid : isFormValid // ignore: cast_nullable_to_non_nullable
 as bool,

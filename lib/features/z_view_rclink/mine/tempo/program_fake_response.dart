@@ -7,11 +7,13 @@
       "uid": "ljhsgsk-3468-49a6-9402-54cad06dea60",
       "name": "Cleaning Culverts & Bridge",
       "code": "R07",
+
       "workScope": {
         "name": "Cleaning Road Furnitures",
         "code": "R04",
         "uid": "d0819f60-5be7-4ae9-bccd-00f37f799491"
       },
+
       "reportTotal": "10",
       "createdAt": "2025-09-22T20:01:55.752Z",
       "contractor": "ECO CLEAN ENTERPRISE",
@@ -37,6 +39,7 @@
           }
         }
       },
+
       "workDescription": [
         {
           "name": "Culvert",
@@ -54,6 +57,7 @@
           "uid": "9fc390a2-522e-4f7f-a9be-4a2cdfd55e1e"
         }
       ],
+
       "reports": [
         {
           "equipments": [
@@ -70,6 +74,7 @@
               "uid": "9fc390a2-522e-4f7f-a9be-4a2cdfd55e1e"
             }
           ],
+          
           "reportQuantities": [
             {
               "quantityType": {
