@@ -205,15 +205,15 @@ class _ViewReportProgramPageState extends State<ViewReportProgramPage> {
                               //   ),
                               // );
 
-                              context.pushNamed(
-                                AppRouteName.warningDetail,
-                                pathParameters: {'warningId': '4567'},
-                                queryParameters: {
-                                  'from': 'program',
-                                  'programId': '1234',
-                                  'programName': 'Program Test GoRouter',
-                                },
-                              );
+                              // context.pushNamed(
+                              //   AppRouteName.warningDetail,
+                              //   pathParameters: {'warningId': '4567'},
+                              //   queryParameters: {
+                              //     'from': 'program',
+                              //     'programId': '1234',
+                              //     'programName': 'Program Test GoRouter',
+                              //   },
+                              // );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,

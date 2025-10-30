@@ -439,11 +439,11 @@ class _ProgramPageState extends State<ProgramPage> {
                               //   ),
                               // );
 
-                              context.pushNamed(
-                                AppRouteName.programDetail,
-                                pathParameters: {'programId': '101'},
-                                queryParameters: {'from': 'programs'},
-                              );
+                              // context.pushNamed(
+                              //   AppRouteName.programDetail,
+                              //   pathParameters: {'programId': '101'},
+                              //   queryParameters: {'from': 'programs'},
+                              // );
                             },
                             child: Container(
                               padding: EdgeInsets.symmetric(

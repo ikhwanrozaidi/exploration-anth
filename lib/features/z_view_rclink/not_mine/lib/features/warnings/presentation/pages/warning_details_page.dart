@@ -57,10 +57,7 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
               GestureDetector(
                 onTap: () {
                   // Navigator.pop(context);
-                  context.goNamed(
-                    AppRouteName.root,
-                    queryParameters: {'tab': 'warnings'},
-                  );
+                  context.go('/?tab=warnings');
                 },
                 child: Container(
                   padding: EdgeInsets.all(10),
