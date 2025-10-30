@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:rclink_app/features/program/presentation/pages/program_details_page.dart';
 
+import '../../../../routes/app_router.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import 'widgets/month_filter_widget.dart';
@@ -429,10 +432,17 @@ class _ProgramPageState extends State<ProgramPage> {
 
                           GestureDetector(
                             onTap: () {
-                              CustomSnackBar.show(
-                                context,
-                                'This feature is coming soon...',
-                                type: SnackBarType.comingsoon,
+                              // Navigator.push(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) => ProgramDetailsPage(),
+                              //   ),
+                              // );
+
+                              context.pushNamed(
+                                AppRouteName.programDetail,
+                                pathParameters: {'programId': '101'},
+                                queryParameters: {'from': 'programs'},
                               );
                             },
                             child: Container(

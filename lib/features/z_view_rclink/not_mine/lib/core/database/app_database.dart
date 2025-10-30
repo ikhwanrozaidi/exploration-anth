@@ -323,13 +323,46 @@ class Roads extends Table with SyncableTable {
   TextColumn get uid => text()(); // Business UUID
   TextColumn get name => text()();
   TextColumn get roadNo => text().nullable()(); // Road number
-  TextColumn get sectionStart => text().nullable()(); // Section start point
-  TextColumn get sectionFinish => text().nullable()(); // Section finish point
+  RealColumn get sectionStart => real().nullable()();
+  RealColumn get sectionFinish => real().nullable()();
   IntColumn get mainCategoryId =>
       integer().nullable()(); // FK to RoadCategories
   IntColumn get secondaryCategoryId =>
       integer().nullable()(); // FK to RoadCategories
   IntColumn get districtId => integer()(); // Foreign key to Districts
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Packages table
+@DataClassName('PackageRecord')
+class Packages extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  TextColumn get description => text().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+// Package Roads junction table
+@DataClassName('PackageRoadRecord')
+class PackageRoads extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get roadUID => text()(); // Foreign key to Roads (via UID)
+  RealColumn get sectionStart => real().nullable()();
+  RealColumn get sectionFinish => real().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -345,8 +378,10 @@ class ImageSyncQueue extends Table {
   IntColumn get id => integer().autoIncrement()();
 
   // Generic entity reference (matches SyncQueue pattern)
-  TextColumn get entityType => text()(); // 'daily_report', 'inspection', 'disaster', etc.
-  TextColumn get entityUID => text()(); // UID of the entity (can be temp or server UID)
+  TextColumn get entityType =>
+      text()(); // 'daily_report', 'inspection', 'disaster', etc.
+  TextColumn get entityUID =>
+      text()(); // UID of the entity (can be temp or server UID)
 
   // Image metadata
   TextColumn get contextField => text()(); // WORKERS_IMAGE, BEFORE_IMAGE, etc.
@@ -554,6 +589,8 @@ class ReportSegments extends Table with SyncableTable {
     Districts,
     RoadCategories,
     Roads,
+    Packages,
+    PackageRoads,
     DailyReports,
     ReportEquipments,
     ReportQuantities,
@@ -565,7 +602,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 12; // Added ImageSyncQueue table in version 12
+  int get schemaVersion => 13; // Added PackageRoads and revise Roads column
 
   @override
   MigrationStrategy get migration {
@@ -827,6 +864,59 @@ class AppDatabase extends _$AppDatabase {
         from11To12: (m, schema) async {
           // Migration from version 11 to 12: Add ImageSyncQueue table for image upload tracking
           await m.createTable(schema.imageSyncQueue);
+        },
+        from12To13: (m, schema) async {
+          // 1. Add Packages and PackageRoads tables
+          await m.createTable(schema.packages);
+          await m.createTable(schema.packageRoads);
+
+          // 2. Alter Roads table to change sectionStart and sectionFinish from TEXT to REAL
+          await customStatement('''
+            CREATE TABLE IF NOT EXISTS roads_new (
+              id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+              uid TEXT NOT NULL,
+              name TEXT NOT NULL,
+              road_no TEXT,
+              section_start REAL,
+              section_finish REAL,
+              main_category_id INTEGER,
+              secondary_category_id INTEGER,
+              district_id INTEGER NOT NULL,
+              created_at INTEGER NOT NULL,
+              updated_at INTEGER NOT NULL,
+              is_synced INTEGER NOT NULL DEFAULT 0,
+              deleted_at INTEGER,
+              sync_action TEXT,
+              sync_retry_count INTEGER NOT NULL DEFAULT 0,
+              sync_error TEXT,
+              last_sync_attempt INTEGER,
+              UNIQUE(uid)
+            )
+          ''');
+
+          // Copy data from old table to new table, converting TEXT to REAL
+          await customStatement('''
+              INSERT INTO roads_new (
+                id, uid, name, road_no, section_start, section_finish,
+                main_category_id, secondary_category_id, district_id,
+                created_at, updated_at, is_synced, deleted_at, sync_action,
+                sync_retry_count, sync_error, last_sync_attempt
+              )
+              SELECT 
+                id, uid, name, road_no,
+                CAST(section_start AS REAL),
+                CAST(section_finish AS REAL),
+                main_category_id, secondary_category_id, district_id,
+                created_at, updated_at, is_synced, deleted_at, sync_action,
+                sync_retry_count, sync_error, last_sync_attempt
+              FROM roads
+            ''');
+
+          // Drop old table
+          await customStatement('DROP TABLE roads');
+
+          // Rename new table to roads
+          await customStatement('ALTER TABLE roads_new RENAME TO roads');
         },
       ),
       beforeOpen: (details) async {

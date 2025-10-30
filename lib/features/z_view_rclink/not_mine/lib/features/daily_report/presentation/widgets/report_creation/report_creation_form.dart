@@ -3,6 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
+import '../../../../road/presentation/helper/road_level.dart';
+import '../../../../road/presentation/helper/road_selection_result.dart';
+import '../../../../road/presentation/pages/road_field_tile.dart';
 import '../../bloc/daily_report_create/daily_report_create_bloc.dart';
 import '../../bloc/daily_report_create/daily_report_create_event.dart';
 import '../../bloc/daily_report_create/daily_report_create_state.dart';
@@ -100,7 +103,7 @@ class _ReportCreationFormState extends State<ReportCreationForm> {
                   onTap: () => _showScopeSelection(context, state),
                 ),
 
-                SizedBox(height: ResponsiveHelper.spacing(context, 10)),
+                // SizedBox(height: ResponsiveHelper.spacing(context, 10)),
 
                 // Weather
                 SelectionFieldCard(
@@ -111,15 +114,24 @@ class _ReportCreationFormState extends State<ReportCreationForm> {
                   onTap: () => _showWeatherSelection(context, state),
                 ),
 
-                SizedBox(height: ResponsiveHelper.spacing(context, 10)),
+                // SizedBox(height: ResponsiveHelper.spacing(context, 10)),
+                RoadFieldTile(
+                  startFrom: RoadLevel.provinces,
+                  endAt: RoadLevel.roads,
+                  onRoadSelected: (RoadSelectionResult result) {
+                    context.read<DailyReportCreateBloc>().add(
+                      DailyReportCreateEvent.selectRoad(
+                        result.selectedRoad!.uid.toString(),
+                      ),
+                    );
 
-                // Location
-                SelectionFieldCard(
-                  icon: Icons.location_on,
-                  label: 'Location',
-                  value: selectedLocationDisplay,
-                  placeholder: 'Choose location',
-                  onTap: () => _showLocationSelection(context, state),
+                    setState(() {
+                      selectedLocationDisplay =
+                          result.selectedRoad?.roadNo != null
+                          ? '${result.selectedRoad!.name!} (${result.selectedRoad!.roadNo!})'
+                          : result.selectedRoad!.name!;
+                    });
+                  },
                 ),
 
                 // Section
@@ -330,16 +342,16 @@ class _ReportCreationFormState extends State<ReportCreationForm> {
     );
   }
 
-  void _showLocationSelection(
-    BuildContext context,
-    DailyReportCreateState state,
-  ) {
-    LocationSelectionFlow.showStateSelection(context, state, (
-      selectedLocation,
-    ) {
-      setState(() {
-        selectedLocationDisplay = selectedLocation;
-      });
-    });
-  }
+  // void _showLocationSelection(
+  //   BuildContext context,
+  //   DailyReportCreateState state,
+  // ) {
+  //   LocationSelectionFlow.showStateSelection(context, state, (
+  //     selectedLocation,
+  //   ) {
+  //     setState(() {
+  //       selectedLocationDisplay = selectedLocation;
+  //     });
+  //   });
+  // }
 }

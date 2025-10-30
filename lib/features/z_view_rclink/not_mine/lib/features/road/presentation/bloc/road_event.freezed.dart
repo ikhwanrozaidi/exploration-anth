@@ -55,11 +55,10 @@ extension RoadEventPatterns on RoadEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadAllData value)?  loadAllData,TResult Function( LoadRoadProvinces value)?  loadProvinces,TResult Function( LoadRoadDistricts value)?  loadDistricts,TResult Function( LoadRoadRoads value)?  loadRoads,TResult Function( SelectRoadProvince value)?  selectProvince,TResult Function( SelectRoadDistrict value)?  selectDistrict,TResult Function( SelectRoadRoad value)?  selectRoad,TResult Function( ClearRoadSelections value)?  clearSelections,TResult Function( ClearRoadCache value)?  clearCache,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRoadProvinces value)?  loadProvinces,TResult Function( LoadRoadDistricts value)?  loadDistricts,TResult Function( LoadRoadRoads value)?  loadRoads,TResult Function( SelectRoadProvince value)?  selectProvince,TResult Function( SelectRoadDistrict value)?  selectDistrict,TResult Function( SelectRoadRoad value)?  selectRoad,TResult Function( ClearRoadSelections value)?  clearSelections,TResult Function( ClearRoadCache value)?  clearCache,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case LoadAllData() when loadAllData != null:
-return loadAllData(_that);case LoadRoadProvinces() when loadProvinces != null:
+case LoadRoadProvinces() when loadProvinces != null:
 return loadProvinces(_that);case LoadRoadDistricts() when loadDistricts != null:
 return loadDistricts(_that);case LoadRoadRoads() when loadRoads != null:
 return loadRoads(_that);case SelectRoadProvince() when selectProvince != null:
@@ -85,11 +84,10 @@ return clearCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadAllData value)  loadAllData,required TResult Function( LoadRoadProvinces value)  loadProvinces,required TResult Function( LoadRoadDistricts value)  loadDistricts,required TResult Function( LoadRoadRoads value)  loadRoads,required TResult Function( SelectRoadProvince value)  selectProvince,required TResult Function( SelectRoadDistrict value)  selectDistrict,required TResult Function( SelectRoadRoad value)  selectRoad,required TResult Function( ClearRoadSelections value)  clearSelections,required TResult Function( ClearRoadCache value)  clearCache,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRoadProvinces value)  loadProvinces,required TResult Function( LoadRoadDistricts value)  loadDistricts,required TResult Function( LoadRoadRoads value)  loadRoads,required TResult Function( SelectRoadProvince value)  selectProvince,required TResult Function( SelectRoadDistrict value)  selectDistrict,required TResult Function( SelectRoadRoad value)  selectRoad,required TResult Function( ClearRoadSelections value)  clearSelections,required TResult Function( ClearRoadCache value)  clearCache,}){
 final _that = this;
 switch (_that) {
-case LoadAllData():
-return loadAllData(_that);case LoadRoadProvinces():
+case LoadRoadProvinces():
 return loadProvinces(_that);case LoadRoadDistricts():
 return loadDistricts(_that);case LoadRoadRoads():
 return loadRoads(_that);case SelectRoadProvince():
@@ -114,11 +112,10 @@ return clearCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadAllData value)?  loadAllData,TResult? Function( LoadRoadProvinces value)?  loadProvinces,TResult? Function( LoadRoadDistricts value)?  loadDistricts,TResult? Function( LoadRoadRoads value)?  loadRoads,TResult? Function( SelectRoadProvince value)?  selectProvince,TResult? Function( SelectRoadDistrict value)?  selectDistrict,TResult? Function( SelectRoadRoad value)?  selectRoad,TResult? Function( ClearRoadSelections value)?  clearSelections,TResult? Function( ClearRoadCache value)?  clearCache,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRoadProvinces value)?  loadProvinces,TResult? Function( LoadRoadDistricts value)?  loadDistricts,TResult? Function( LoadRoadRoads value)?  loadRoads,TResult? Function( SelectRoadProvince value)?  selectProvince,TResult? Function( SelectRoadDistrict value)?  selectDistrict,TResult? Function( SelectRoadRoad value)?  selectRoad,TResult? Function( ClearRoadSelections value)?  clearSelections,TResult? Function( ClearRoadCache value)?  clearCache,}){
 final _that = this;
 switch (_that) {
-case LoadAllData() when loadAllData != null:
-return loadAllData(_that);case LoadRoadProvinces() when loadProvinces != null:
+case LoadRoadProvinces() when loadProvinces != null:
 return loadProvinces(_that);case LoadRoadDistricts() when loadDistricts != null:
 return loadDistricts(_that);case LoadRoadRoads() when loadRoads != null:
 return loadRoads(_that);case SelectRoadProvince() when selectProvince != null:
@@ -143,10 +140,9 @@ return clearCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool forceRefresh)?  loadAllData,TResult Function( String? countryUid,  bool forceRefresh)?  loadProvinces,TResult Function( String provinceUid,  bool forceRefresh)?  loadDistricts,TResult Function( String districtUid,  bool forceRefresh)?  loadRoads,TResult Function( String uid)?  selectProvince,TResult Function( String uid)?  selectDistrict,TResult Function( String uid)?  selectRoad,TResult Function()?  clearSelections,TResult Function()?  clearCache,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? countryUid,  bool forceRefresh)?  loadProvinces,TResult Function( String provinceUid,  bool forceRefresh)?  loadDistricts,TResult Function( String districtUid,  bool forceRefresh)?  loadRoads,TResult Function( String uid)?  selectProvince,TResult Function( String uid)?  selectDistrict,TResult Function( String uid)?  selectRoad,TResult Function()?  clearSelections,TResult Function()?  clearCache,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case LoadAllData() when loadAllData != null:
-return loadAllData(_that.forceRefresh);case LoadRoadProvinces() when loadProvinces != null:
+case LoadRoadProvinces() when loadProvinces != null:
 return loadProvinces(_that.countryUid,_that.forceRefresh);case LoadRoadDistricts() when loadDistricts != null:
 return loadDistricts(_that.provinceUid,_that.forceRefresh);case LoadRoadRoads() when loadRoads != null:
 return loadRoads(_that.districtUid,_that.forceRefresh);case SelectRoadProvince() when selectProvince != null:
@@ -172,10 +168,9 @@ return clearCache();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool forceRefresh)  loadAllData,required TResult Function( String? countryUid,  bool forceRefresh)  loadProvinces,required TResult Function( String provinceUid,  bool forceRefresh)  loadDistricts,required TResult Function( String districtUid,  bool forceRefresh)  loadRoads,required TResult Function( String uid)  selectProvince,required TResult Function( String uid)  selectDistrict,required TResult Function( String uid)  selectRoad,required TResult Function()  clearSelections,required TResult Function()  clearCache,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? countryUid,  bool forceRefresh)  loadProvinces,required TResult Function( String provinceUid,  bool forceRefresh)  loadDistricts,required TResult Function( String districtUid,  bool forceRefresh)  loadRoads,required TResult Function( String uid)  selectProvince,required TResult Function( String uid)  selectDistrict,required TResult Function( String uid)  selectRoad,required TResult Function()  clearSelections,required TResult Function()  clearCache,}) {final _that = this;
 switch (_that) {
-case LoadAllData():
-return loadAllData(_that.forceRefresh);case LoadRoadProvinces():
+case LoadRoadProvinces():
 return loadProvinces(_that.countryUid,_that.forceRefresh);case LoadRoadDistricts():
 return loadDistricts(_that.provinceUid,_that.forceRefresh);case LoadRoadRoads():
 return loadRoads(_that.districtUid,_that.forceRefresh);case SelectRoadProvince():
@@ -200,10 +195,9 @@ return clearCache();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool forceRefresh)?  loadAllData,TResult? Function( String? countryUid,  bool forceRefresh)?  loadProvinces,TResult? Function( String provinceUid,  bool forceRefresh)?  loadDistricts,TResult? Function( String districtUid,  bool forceRefresh)?  loadRoads,TResult? Function( String uid)?  selectProvince,TResult? Function( String uid)?  selectDistrict,TResult? Function( String uid)?  selectRoad,TResult? Function()?  clearSelections,TResult? Function()?  clearCache,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? countryUid,  bool forceRefresh)?  loadProvinces,TResult? Function( String provinceUid,  bool forceRefresh)?  loadDistricts,TResult? Function( String districtUid,  bool forceRefresh)?  loadRoads,TResult? Function( String uid)?  selectProvince,TResult? Function( String uid)?  selectDistrict,TResult? Function( String uid)?  selectRoad,TResult? Function()?  clearSelections,TResult? Function()?  clearCache,}) {final _that = this;
 switch (_that) {
-case LoadAllData() when loadAllData != null:
-return loadAllData(_that.forceRefresh);case LoadRoadProvinces() when loadProvinces != null:
+case LoadRoadProvinces() when loadProvinces != null:
 return loadProvinces(_that.countryUid,_that.forceRefresh);case LoadRoadDistricts() when loadDistricts != null:
 return loadDistricts(_that.provinceUid,_that.forceRefresh);case LoadRoadRoads() when loadRoads != null:
 return loadRoads(_that.districtUid,_that.forceRefresh);case SelectRoadProvince() when selectProvince != null:
@@ -216,72 +210,6 @@ return clearCache();case _:
 
 }
 }
-
-}
-
-/// @nodoc
-
-
-class LoadAllData implements RoadEvent {
-  const LoadAllData({this.forceRefresh = false});
-  
-
-@JsonKey() final  bool forceRefresh;
-
-/// Create a copy of RoadEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$LoadAllDataCopyWith<LoadAllData> get copyWith => _$LoadAllDataCopyWithImpl<LoadAllData>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadAllData&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,forceRefresh);
-
-@override
-String toString() {
-  return 'RoadEvent.loadAllData(forceRefresh: $forceRefresh)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $LoadAllDataCopyWith<$Res> implements $RoadEventCopyWith<$Res> {
-  factory $LoadAllDataCopyWith(LoadAllData value, $Res Function(LoadAllData) _then) = _$LoadAllDataCopyWithImpl;
-@useResult
-$Res call({
- bool forceRefresh
-});
-
-
-
-
-}
-/// @nodoc
-class _$LoadAllDataCopyWithImpl<$Res>
-    implements $LoadAllDataCopyWith<$Res> {
-  _$LoadAllDataCopyWithImpl(this._self, this._then);
-
-  final LoadAllData _self;
-  final $Res Function(LoadAllData) _then;
-
-/// Create a copy of RoadEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? forceRefresh = null,}) {
-  return _then(LoadAllData(
-forceRefresh: null == forceRefresh ? _self.forceRefresh : forceRefresh // ignore: cast_nullable_to_non_nullable
-as bool,
-  ));
-}
-
 
 }
 

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import '../../domain/entities/country_entity.dart';
 import '../../domain/entities/district_entity.dart';
 import '../../domain/entities/province_entity.dart';
 import '../../domain/entities/road_entity.dart';
@@ -13,14 +14,14 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
   final GetRoadsUseCase _getRoadsUseCase;
   final ClearRoadCacheUseCase _clearRoadCacheUseCase;
 
-  // Cache full data in memory
+  // Cache full data in BLoC memory (persists across widget rebuilds)
+  List<Country> _allCountries = [];
   List<Province> _allProvinces = [];
   List<District> _allDistricts = [];
   List<Road> _allRoads = [];
 
   RoadBloc(this._getRoadsUseCase, this._clearRoadCacheUseCase)
     : super(const RoadState.initial()) {
-    on<LoadAllData>(_onLoadAllData);
     on<LoadRoadProvinces>(_onLoadProvinces);
     on<LoadRoadDistricts>(_onLoadDistricts);
     on<LoadRoadRoads>(_onLoadRoads);
@@ -31,11 +32,15 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     on<ClearRoadCache>(_onClearCache);
   }
 
-  // Helper to get current data
+  // Helper to get current loaded state
   RoadLoaded get _currentLoaded {
     return state.maybeWhen(
       loaded:
           (
+            allCountries,
+            allProvinces,
+            allDistricts,
+            allRoads,
             provinces,
             districts,
             roads,
@@ -43,6 +48,10 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
             selectedDistrict,
             selectedRoad,
           ) => RoadLoaded(
+            allCountries: allCountries,
+            allProvinces: allProvinces,
+            allDistricts: allDistricts,
+            allRoads: allRoads,
             provinces: provinces,
             districts: districts,
             roads: roads,
@@ -54,52 +63,12 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     );
   }
 
-  Future<void> _onLoadAllData(
-    LoadAllData event,
-    Emitter<RoadState> emit,
-  ) async {
-    emit(const RoadState.loading());
-
-    final result = await _getRoadsUseCase(
-      GetRoadsParams(forceRefresh: event.forceRefresh),
-    );
-
-    result.fold((failure) => emit(RoadState.error(failure.message)), (
-      packageData,
-    ) {
-      // Cache all data in memory
-      _allProvinces = packageData.states!;
-      _allDistricts = packageData.districts!;
-      _allRoads = packageData.roads!;
-
-      emit(
-        RoadState.loaded(
-          provinces: _allProvinces,
-          districts: _allDistricts,
-          roads: _allRoads,
-        ),
-      );
-    });
-  }
-
   Future<void> _onLoadProvinces(
     LoadRoadProvinces event,
     Emitter<RoadState> emit,
   ) async {
-    emit(const RoadState.loading());
-
-    final result = await _getRoadsUseCase(
-      GetRoadsParams(forceRefresh: event.forceRefresh),
-    );
-
-    result.fold((failure) => emit(RoadState.error(failure.message)), (
-      packageData,
-    ) {
-      // Cache all data
-      _allProvinces = packageData.states!;
-      _allDistricts = packageData.districts!;
-      _allRoads = packageData.roads!;
-
+    // If data already in memory and not forcing refresh, just filter and emit
+    if (_allProvinces.isNotEmpty && !event.forceRefresh) {
       // Filter provinces by countryUid if provided
       List<Province> filteredProvinces = _allProvinces;
       if (event.countryUid != null) {
@@ -111,9 +80,51 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
       final current = _currentLoaded;
       emit(
         RoadState.loaded(
+          allCountries: _allCountries,
+          allProvinces: _allProvinces,
+          allDistricts: _allDistricts,
+          allRoads: _allRoads,
           provinces: filteredProvinces,
           districts: current.districts,
           roads: current.roads,
+        ),
+      );
+      return;
+    }
+
+    // Otherwise, load from database/API
+    emit(const RoadState.loading());
+
+    final result = await _getRoadsUseCase(
+      GetRoadsParams(forceRefresh: event.forceRefresh),
+    );
+
+    result.fold((failure) => emit(RoadState.error(failure.message)), (
+      packageData,
+    ) {
+      // Cache all data in BLoC memory
+      _allCountries = packageData.countries ?? [];
+      _allProvinces = packageData.states ?? [];
+      _allDistricts = packageData.districts ?? [];
+      _allRoads = packageData.roads ?? [];
+
+      // Filter provinces by countryUid if provided
+      List<Province> filteredProvinces = _allProvinces;
+      if (event.countryUid != null) {
+        filteredProvinces = _allProvinces
+            .where((p) => p.country?.uid == event.countryUid)
+            .toList();
+      }
+
+      emit(
+        RoadState.loaded(
+          allCountries: _allCountries,
+          allProvinces: _allProvinces,
+          allDistricts: _allDistricts,
+          allRoads: _allRoads,
+          provinces: filteredProvinces,
+          districts: [],
+          roads: [],
         ),
       );
     });
@@ -123,104 +134,87 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     LoadRoadDistricts event,
     Emitter<RoadState> emit,
   ) async {
-    // If data already loaded, just filter from memory
-    if (_allDistricts.isNotEmpty) {
-      final filteredDistricts = _allDistricts
-          .where((d) => d.state?.uid == event.provinceUid)
-          .toList();
+    // If data not loaded yet, load all data first
+    if (_allDistricts.isEmpty) {
+      emit(const RoadState.loading());
 
-      final current = _currentLoaded;
-      emit(
-        RoadState.loaded(
-          provinces: current.provinces,
-          districts: filteredDistricts,
-          roads: current.roads,
-          selectedProvince: current.selectedProvince,
-        ),
+      final result = await _getRoadsUseCase(
+        GetRoadsParams(forceRefresh: false),
       );
-      return;
+
+      result.fold((failure) => emit(RoadState.error(failure.message)), (
+        packageData,
+      ) {
+        // Cache all data in BLoC memory
+        _allCountries = packageData.countries ?? [];
+        _allProvinces = packageData.states ?? [];
+        _allDistricts = packageData.districts ?? [];
+        _allRoads = packageData.roads ?? [];
+      });
     }
 
-    // Otherwise, load all data first
-    emit(const RoadState.loading());
+    // Filter districts by provinceUid
+    final filteredDistricts = _allDistricts
+        .where((d) => d.state?.uid == event.provinceUid)
+        .toList();
 
-    final result = await _getRoadsUseCase(GetRoadsParams(forceRefresh: false));
-
-    result.fold((failure) => emit(RoadState.error(failure.message)), (
-      packageData,
-    ) {
-      _allProvinces = packageData.states!;
-      _allDistricts = packageData.districts!;
-      _allRoads = packageData.roads!;
-
-      // Filter districts by provinceUid
-      final filteredDistricts = _allDistricts
-          .where((d) => d.state?.uid == event.provinceUid)
-          .toList();
-
-      final current = _currentLoaded;
-      emit(
-        RoadState.loaded(
-          provinces: current.provinces,
-          districts: filteredDistricts,
-          roads: current.roads,
-          selectedProvince: current.selectedProvince,
-        ),
-      );
-    });
+    final current = _currentLoaded;
+    emit(
+      RoadState.loaded(
+        allCountries: _allCountries,
+        allProvinces: _allProvinces,
+        allDistricts: _allDistricts,
+        allRoads: _allRoads,
+        provinces: current.provinces,
+        districts: filteredDistricts,
+        roads: current.roads,
+        selectedProvince: current.selectedProvince,
+      ),
+    );
   }
 
   Future<void> _onLoadRoads(
     LoadRoadRoads event,
     Emitter<RoadState> emit,
   ) async {
-    // If data already loaded, just filter from memory
-    if (_allRoads.isNotEmpty) {
-      final filteredRoads = _allRoads
-          .where((r) => r.district?.uid == event.districtUid)
-          .toList();
+    // If data not loaded yet, load all data first
+    if (_allRoads.isEmpty) {
+      emit(const RoadState.loading());
 
-      final current = _currentLoaded;
-      emit(
-        RoadState.loaded(
-          provinces: current.provinces,
-          districts: current.districts,
-          roads: filteredRoads,
-          selectedProvince: current.selectedProvince,
-          selectedDistrict: current.selectedDistrict,
-        ),
+      final result = await _getRoadsUseCase(
+        GetRoadsParams(forceRefresh: false),
       );
-      return;
+
+      result.fold((failure) => emit(RoadState.error(failure.message)), (
+        packageData,
+      ) {
+        // Cache all data in BLoC memory
+        _allCountries = packageData.countries ?? [];
+        _allProvinces = packageData.states ?? [];
+        _allDistricts = packageData.districts ?? [];
+        _allRoads = packageData.roads ?? [];
+      });
     }
 
-    // Otherwise, load all data first
-    emit(const RoadState.loading());
+    // Filter roads by districtUid
+    final filteredRoads = _allRoads
+        .where((r) => r.district?.uid == event.districtUid)
+        .toList();
 
-    final result = await _getRoadsUseCase(GetRoadsParams(forceRefresh: false));
-
-    result.fold((failure) => emit(RoadState.error(failure.message)), (
-      packageData,
-    ) {
-      _allProvinces = packageData.states!;
-      _allDistricts = packageData.districts!;
-      _allRoads = packageData.roads!;
-
-      // Filter roads by districtUid
-      final filteredRoads = _allRoads
-          .where((r) => r.district?.uid == event.districtUid)
-          .toList();
-
-      final current = _currentLoaded;
-      emit(
-        RoadState.loaded(
-          provinces: current.provinces,
-          districts: current.districts,
-          roads: filteredRoads,
-          selectedProvince: current.selectedProvince,
-          selectedDistrict: current.selectedDistrict,
-        ),
-      );
-    });
+    final current = _currentLoaded;
+    emit(
+      RoadState.loaded(
+        allCountries: _allCountries,
+        allProvinces: _allProvinces,
+        allDistricts: _allDistricts,
+        allRoads: _allRoads,
+        provinces: current.provinces,
+        districts: current.districts,
+        roads: filteredRoads,
+        selectedProvince: current.selectedProvince,
+        selectedDistrict: current.selectedDistrict,
+      ),
+    );
   }
 
   Future<void> _onSelectProvince(
@@ -234,10 +228,15 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
 
     emit(
       RoadState.loaded(
+        allCountries: _allCountries,
+        allProvinces: _allProvinces,
+        allDistricts: _allDistricts,
+        allRoads: _allRoads,
         provinces: current.provinces,
         districts: current.districts,
         roads: current.roads,
         selectedProvince: selectedProvince,
+        // Clear child selections
         selectedDistrict: null,
         selectedRoad: null,
       ),
@@ -255,11 +254,16 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
 
     emit(
       RoadState.loaded(
+        allCountries: _allCountries,
+        allProvinces: _allProvinces,
+        allDistricts: _allDistricts,
+        allRoads: _allRoads,
         provinces: current.provinces,
         districts: current.districts,
         roads: current.roads,
         selectedProvince: current.selectedProvince,
         selectedDistrict: selectedDistrict,
+        // Clear child selection
         selectedRoad: null,
       ),
     );
@@ -276,6 +280,10 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
 
     emit(
       RoadState.loaded(
+        allCountries: _allCountries,
+        allProvinces: _allProvinces,
+        allDistricts: _allDistricts,
+        allRoads: _allRoads,
         provinces: current.provinces,
         districts: current.districts,
         roads: current.roads,
@@ -293,9 +301,17 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     final current = _currentLoaded;
     emit(
       RoadState.loaded(
+        allCountries: _allCountries,
+        allProvinces: _allProvinces,
+        allDistricts: _allDistricts,
+        allRoads: _allRoads,
         provinces: current.provinces,
         districts: current.districts,
         roads: current.roads,
+        // Clear all selections
+        selectedProvince: null,
+        selectedDistrict: null,
+        selectedRoad: null,
       ),
     );
   }
@@ -309,6 +325,7 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     await _clearRoadCacheUseCase();
 
     // Clear in-memory cache
+    _allCountries = [];
     _allProvinces = [];
     _allDistricts = [];
     _allRoads = [];

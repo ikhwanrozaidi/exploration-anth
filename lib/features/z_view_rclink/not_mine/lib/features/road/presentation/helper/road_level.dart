@@ -1,10 +1,25 @@
 enum RoadLevel {
+  countries,
   provinces,
   districts,
   roads;
 
+  bool isBefore(RoadLevel other) {
+    return index < other.index;
+  }
+
+  bool isAfter(RoadLevel other) {
+    return index > other.index;
+  }
+
+  bool isBeforeOrEqual(RoadLevel other) {
+    return index <= other.index;
+  }
+
   String get displayName {
     switch (this) {
+      case RoadLevel.countries:
+        return 'Country';
       case RoadLevel.provinces:
         return 'Province/State';
       case RoadLevel.districts:
@@ -13,18 +28,4 @@ enum RoadLevel {
         return 'Road';
     }
   }
-
-  int get order {
-    switch (this) {
-      case RoadLevel.provinces:
-        return 0;
-      case RoadLevel.districts:
-        return 1;
-      case RoadLevel.roads:
-        return 2;
-    }
-  }
-
-  bool isBefore(RoadLevel other) => order < other.order;
-  bool isAfter(RoadLevel other) => order > other.order;
 }

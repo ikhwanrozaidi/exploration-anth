@@ -4,9 +4,6 @@ part 'road_event.freezed.dart';
 
 @freezed
 class RoadEvent with _$RoadEvent {
-  const factory RoadEvent.loadAllData({@Default(false) bool forceRefresh}) =
-      LoadAllData;
-
   const factory RoadEvent.loadProvinces({
     String? countryUid,
     @Default(false) bool forceRefresh,

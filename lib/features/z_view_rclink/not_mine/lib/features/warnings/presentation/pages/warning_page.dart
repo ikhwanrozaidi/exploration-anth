@@ -12,16 +12,8 @@ class WarningPage extends StatefulWidget {
 }
 
 class _WarningPageState extends State<WarningPage> {
-  bool showActionRequired =
-      true; //was in DashboardPage, but will use as AnimatedContainer later
   int selectedMonth = DateTime.now().month;
   int selectedYear = DateTime.now().year;
-
-  void toggleActionRequired() {
-    setState(() {
-      showActionRequired = !showActionRequired;
-    });
-  }
 
   void onMonthSelected(int month, int year) {
     setState(() {
@@ -33,10 +25,6 @@ class _WarningPageState extends State<WarningPage> {
 
   @override
   Widget build(BuildContext context) {
-    double bottomContainerHeight = showActionRequired
-        ? MediaQuery.of(context).size.height * 0.76
-        : MediaQuery.of(context).size.height * 0.70;
-
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -76,7 +64,7 @@ class _WarningPageState extends State<WarningPage> {
                 duration: Duration(milliseconds: 500),
                 curve: Curves.easeInOutCubic,
                 width: double.infinity,
-                height: bottomContainerHeight,
+                height: MediaQuery.of(context).size.height * 0.76,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -155,10 +143,10 @@ class _WarningPageState extends State<WarningPage> {
                       ),
                     ),
 
-                    Padding(
-                      padding: EdgeInsets.all(20),
-                      child: Column(children: [SizedBox(height: 20)]),
-                    ),
+                    // Padding(
+                    //   padding: EdgeInsets.all(20),
+                    //   child: Column(children: [SizedBox(height: 20)]),
+                    // ),
                   ],
                 ),
               ),

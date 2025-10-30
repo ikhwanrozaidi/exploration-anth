@@ -15,9 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RoadModel {
 
- int? get id; String? get uid; String? get name; String? get roadNo; double? get sectionStart; double? get sectionFinish; int? get mainCategoryID; int? get secondaryCategoryID; int? get districtID;// For database foreign key
- String? get districtUID;// From API
- String? get createdAt; String? get updatedAt; DistrictModel? get district; RoadCategoryModel? get mainCategory; RoadCategoryModel? get secondaryCategory;
+ int? get id; String? get uid; String? get name; String? get roadNo; double? get sectionStart; double? get sectionFinish; int? get mainCategoryID; int? get secondaryCategoryID; int? get districtID; String? get districtUID; String? get createdAt; String? get updatedAt; DistrictModel? get district; RoadCategoryModel? get mainCategory; RoadCategoryModel? get secondaryCategory;
 /// Create a copy of RoadModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -273,9 +271,7 @@ class _RoadModel extends RoadModel {
 @override final  int? mainCategoryID;
 @override final  int? secondaryCategoryID;
 @override final  int? districtID;
-// For database foreign key
 @override final  String? districtUID;
-// From API
 @override final  String? createdAt;
 @override final  String? updatedAt;
 @override final  DistrictModel? district;

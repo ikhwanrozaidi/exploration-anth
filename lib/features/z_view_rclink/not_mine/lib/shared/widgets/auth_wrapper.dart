@@ -13,7 +13,9 @@ import '../pages/root_page.dart';
 
 /// AuthWrapper decides what to show based on authentication state
 class AuthWrapper extends StatefulWidget {
-  const AuthWrapper({super.key});
+  final String? initialTab;
+
+  const AuthWrapper({Key? key, this.initialTab}) : super(key: key);
 
   @override
   State<AuthWrapper> createState() => _AuthWrapperState();

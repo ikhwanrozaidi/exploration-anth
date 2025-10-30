@@ -1,13 +1,19 @@
+import '../../domain/entities/country_entity.dart';
 import '../../domain/entities/district_entity.dart';
 import '../../domain/entities/province_entity.dart';
 import '../../domain/entities/road_entity.dart';
+import 'road_level.dart';
 
 class RoadSelectionResult {
+  final RoadLevel completedAt;
+  final Country? selectedCountry;
   final Province? selectedProvince;
   final District? selectedDistrict;
   final Road? selectedRoad;
 
   RoadSelectionResult({
+    required this.completedAt,
+    this.selectedCountry,
     this.selectedProvince,
     this.selectedDistrict,
     this.selectedRoad,
@@ -15,20 +21,21 @@ class RoadSelectionResult {
 
   @override
   String toString() {
-    final parts = <String>[];
-    if (selectedProvince != null) parts.add(selectedProvince!.name ?? '');
-    if (selectedDistrict != null) parts.add(selectedDistrict!.name ?? '');
-    if (selectedRoad != null) {
-      final roadDisplay = selectedRoad!.roadNo != null
-          ? '${selectedRoad!.name} (${selectedRoad!.roadNo})'
-          : selectedRoad!.name ?? '';
-      parts.add(roadDisplay);
+    final buffer = StringBuffer('RoadSelectionResult(');
+    buffer.write('completedAt: ${completedAt.displayName}');
+    if (selectedCountry != null) {
+      buffer.write(', country: ${selectedCountry!.name}');
     }
-    return parts.join(' > ');
+    if (selectedProvince != null) {
+      buffer.write(', province: ${selectedProvince!.name}');
+    }
+    if (selectedDistrict != null) {
+      buffer.write(', district: ${selectedDistrict!.name}');
+    }
+    if (selectedRoad != null) {
+      buffer.write(', road: ${selectedRoad!.name}');
+    }
+    buffer.write(')');
+    return buffer.toString();
   }
-
-  bool get isComplete =>
-      selectedProvince != null &&
-      selectedDistrict != null &&
-      selectedRoad != null;
 }

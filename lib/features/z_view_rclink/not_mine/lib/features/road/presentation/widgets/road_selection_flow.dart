@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../shared/widgets/flexible_bottomsheet.dart';
+import '../../domain/entities/country_entity.dart';
+import '../../domain/entities/district_entity.dart';
+import '../../domain/entities/province_entity.dart';
+import '../../domain/entities/road_entity.dart';
 import '../bloc/road_bloc.dart';
 import '../bloc/road_event.dart';
 import '../bloc/road_state.dart';
@@ -33,24 +37,24 @@ class RoadSelectionFlow {
 
     // Pre-load first level data
     switch (startFrom) {
+      case RoadLevel.countries:
+        // Load all data to show countries
+        roadBloc.add(const RoadEvent.loadProvinces());
+        break;
       case RoadLevel.provinces:
         roadBloc.add(
           RoadEvent.loadProvinces(countryUid: preSelectedCountryUid),
         );
         break;
       case RoadLevel.districts:
-        if (preSelectedProvinceUid != null) {
-          roadBloc.add(
-            RoadEvent.loadDistricts(provinceUid: preSelectedProvinceUid),
-          );
-        }
+        roadBloc.add(
+          RoadEvent.loadDistricts(provinceUid: preSelectedProvinceUid ?? ''),
+        );
         break;
       case RoadLevel.roads:
-        if (preSelectedDistrictUid != null) {
-          roadBloc.add(
-            RoadEvent.loadRoads(districtUid: preSelectedDistrictUid),
-          );
-        }
+        roadBloc.add(
+          RoadEvent.loadRoads(districtUid: preSelectedDistrictUid ?? ''),
+        );
         break;
     }
 
@@ -96,6 +100,10 @@ class RoadSelectionFlow {
       },
       loaded:
           (
+            allCountries,
+            allProvinces,
+            allDistricts,
+            allRoads,
             provinces,
             districts,
             roads,
@@ -103,9 +111,18 @@ class RoadSelectionFlow {
             selectedDistrict,
             selectedRoad,
           ) {
-            // Get data for current level
+            // If no data is loaded yet, show loading
+            if (allProvinces.isEmpty &&
+                allDistricts.isEmpty &&
+                allRoads.isEmpty) {
+              CustomSnackBar.show(context, 'Loading data, please wait...');
+              return;
+            }
+
+            // Get data for current level - now returns the actual entities
             final items = _getItemsForLevel(
               currentLevel,
+              allCountries,
               provinces,
               districts,
               roads,
@@ -119,16 +136,9 @@ class RoadSelectionFlow {
               return;
             }
 
-            // Get display names
+            // Get display names from entities
             final displayNames = items.map((item) {
-              if (currentLevel == RoadLevel.roads) {
-                final road = item as Map<String, dynamic>;
-                final roadNo = road['roadNo'] as String?;
-                return roadNo != null
-                    ? '${road['name']} ($roadNo)'
-                    : road['name'] as String;
-              }
-              return item['name'] as String;
+              return _getDisplayName(currentLevel, item);
             }).toList();
 
             // Show bottom sheet
@@ -138,20 +148,12 @@ class RoadSelectionFlow {
               attributes: displayNames,
               isRadio: true,
               onSelectionChanged: (selectedName) async {
-                // Find selected item
+                // Find selected item by matching display name
                 final selectedItem = items.firstWhere((item) {
-                  if (currentLevel == RoadLevel.roads) {
-                    final road = item as Map<String, dynamic>;
-                    final roadNo = road['roadNo'] as String?;
-                    final display = roadNo != null
-                        ? '${road['name']} ($roadNo)'
-                        : road['name'] as String;
-                    return display == selectedName;
-                  }
-                  return item['name'] == selectedName;
+                  return _getDisplayName(currentLevel, item) == selectedName;
                 });
 
-                final uid = selectedItem['uid'] as String;
+                final uid = _getUid(currentLevel, selectedItem);
 
                 // Update bloc with selection
                 bloc.add(_getSelectEventForLevel(currentLevel, uid));
@@ -191,37 +193,79 @@ class RoadSelectionFlow {
     );
   }
 
-  static List<Map<String, dynamic>> _getItemsForLevel(
+  /// Get items for the current level - returns actual entity objects
+  static List<dynamic> _getItemsForLevel(
     RoadLevel level,
-    List provinces,
-    List districts,
-    List roads,
+    List<Country> countries,
+    List<Province> provinces,
+    List<District> districts,
+    List<Road> roads,
   ) {
     switch (level) {
+      case RoadLevel.countries:
+        return countries;
       case RoadLevel.provinces:
-        return provinces.map((p) => {'uid': p.uid, 'name': p.name}).toList();
+        return provinces;
       case RoadLevel.districts:
-        return districts.map((d) => {'uid': d.uid, 'name': d.name}).toList();
+        return districts;
       case RoadLevel.roads:
-        return roads
-            .map((r) => {'uid': r.uid, 'name': r.name, 'roadNo': r.roadNo})
-            .toList();
+        return roads;
+    }
+  }
+
+  /// Get display name from entity
+  static String _getDisplayName(RoadLevel level, dynamic item) {
+    switch (level) {
+      case RoadLevel.countries:
+        final country = item as Country;
+        return country.name ?? 'Unknown';
+      case RoadLevel.provinces:
+        final province = item as Province;
+        return province.name ?? 'Unknown';
+      case RoadLevel.districts:
+        final district = item as District;
+        return district.name ?? 'Unknown';
+      case RoadLevel.roads:
+        final road = item as Road;
+        final roadNo = road.roadNo;
+        return roadNo != null
+            ? '${road.name} ($roadNo)'
+            : road.name ?? 'Unknown';
+    }
+  }
+
+  /// Get UID from entity
+  static String _getUid(RoadLevel level, dynamic item) {
+    switch (level) {
+      case RoadLevel.countries:
+        return (item as Country).uid ?? '';
+      case RoadLevel.provinces:
+        return (item as Province).uid ?? '';
+      case RoadLevel.districts:
+        return (item as District).uid ?? '';
+      case RoadLevel.roads:
+        return (item as Road).uid ?? '';
     }
   }
 
   static RoadEvent _getLoadEventForLevel(RoadLevel level, String? parentUid) {
     switch (level) {
+      case RoadLevel.countries:
+        return const RoadEvent.loadProvinces();
       case RoadLevel.provinces:
         return RoadEvent.loadProvinces(countryUid: parentUid);
       case RoadLevel.districts:
-        return RoadEvent.loadDistricts(provinceUid: parentUid!);
+        return RoadEvent.loadDistricts(provinceUid: parentUid ?? '');
       case RoadLevel.roads:
-        return RoadEvent.loadRoads(districtUid: parentUid!);
+        return RoadEvent.loadRoads(districtUid: parentUid ?? '');
     }
   }
 
   static RoadEvent _getSelectEventForLevel(RoadLevel level, String uid) {
     switch (level) {
+      case RoadLevel.countries:
+        // Countries don't have select event, just load provinces with country filter
+        return RoadEvent.loadProvinces(countryUid: uid);
       case RoadLevel.provinces:
         return RoadEvent.selectProvince(uid);
       case RoadLevel.districts:
@@ -233,6 +277,8 @@ class RoadSelectionFlow {
 
   static RoadLevel? _getNextLevel(RoadLevel current) {
     switch (current) {
+      case RoadLevel.countries:
+        return RoadLevel.provinces;
       case RoadLevel.provinces:
         return RoadLevel.districts;
       case RoadLevel.districts:
@@ -246,6 +292,10 @@ class RoadSelectionFlow {
     return state.maybeWhen(
       loaded:
           (
+            allCountries,
+            allProvinces,
+            allDistricts,
+            allRoads,
             provinces,
             districts,
             roads,
@@ -253,13 +303,24 @@ class RoadSelectionFlow {
             selectedDistrict,
             selectedRoad,
           ) {
+            // Determine which level was completed based on what's selected
+            RoadLevel completedAt = RoadLevel.provinces;
+            if (selectedRoad != null) {
+              completedAt = RoadLevel.roads;
+            } else if (selectedDistrict != null) {
+              completedAt = RoadLevel.districts;
+            } else if (selectedProvince != null) {
+              completedAt = RoadLevel.provinces;
+            }
+
             return RoadSelectionResult(
+              completedAt: completedAt,
               selectedProvince: selectedProvince,
               selectedDistrict: selectedDistrict,
               selectedRoad: selectedRoad,
             );
           },
-      orElse: () => RoadSelectionResult(),
+      orElse: () => RoadSelectionResult(completedAt: RoadLevel.provinces),
     );
   }
 }

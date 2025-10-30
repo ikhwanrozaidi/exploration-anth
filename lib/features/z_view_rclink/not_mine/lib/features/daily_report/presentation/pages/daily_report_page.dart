@@ -5,9 +5,6 @@ import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_state.dart';
-import '../../../road/presentation/helper/road_level.dart';
-import '../../../road/presentation/helper/road_selection_result.dart';
-import '../../../road/presentation/pages/road_field_tile.dart';
 import '../../presentation/pages/report_creation_page.dart';
 import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
 import '../bloc/daily_report_view/daily_report_view_bloc.dart';
@@ -526,40 +523,40 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                           },
                         ),
 
-                        // Test Roads
-                        RoadFieldTile(
-                          startFrom: RoadLevel.provinces,
-                          endAt: RoadLevel.roads,
-                          onRoadSelected: (RoadSelectionResult result) {
-                            print('Road UID: ${result.selectedRoad?.uid}');
-                            print('Road Name: ${result.selectedRoad?.name}');
-                            print('Road No: ${result.selectedRoad?.roadNo}');
-                            print(
-                              'Section Start: ${result.selectedRoad?.sectionStart}',
-                            );
-                            print(
-                              'Section Finish: ${result.selectedRoad?.sectionFinish}',
-                            );
-                            print(
-                              'Main Category ID: ${result.selectedRoad?.mainCategoryID}',
-                            );
-                            print(
-                              'Secondary Category ID: ${result.selectedRoad?.secondaryCategoryID}',
-                            );
-                            print(
-                              'District: ${result.selectedRoad?.district?.name}',
-                            );
-                            print(
-                              'District UID: ${result.selectedDistrict?.uid}',
-                            );
-                            print(
-                              'Province: ${result.selectedRoad?.district?.state?.name}',
-                            );
-                            print(
-                              'Province UID: ${result.selectedProvince?.uid}',
-                            );
-                          },
-                        ),
+                        // // Test Roads
+                        // RoadFieldTile(
+                        //   startFrom: RoadLevel.provinces,
+                        //   endAt: RoadLevel.roads,
+                        //   onRoadSelected: (RoadSelectionResult result) {
+                        //     print('Road UID: ${result.selectedRoad?.uid}');
+                        //     print('Road Name: ${result.selectedRoad?.name}');
+                        //     print('Road No: ${result.selectedRoad?.roadNo}');
+                        //     print(
+                        //       'Section Start: ${result.selectedRoad?.sectionStart}',
+                        //     );
+                        //     print(
+                        //       'Section Finish: ${result.selectedRoad?.sectionFinish}',
+                        //     );
+                        //     print(
+                        //       'Main Category ID: ${result.selectedRoad?.mainCategoryID}',
+                        //     );
+                        //     print(
+                        //       'Secondary Category ID: ${result.selectedRoad?.secondaryCategoryID}',
+                        //     );
+                        //     print(
+                        //       'District: ${result.selectedRoad?.district?.name}',
+                        //     );
+                        //     print(
+                        //       'District UID: ${result.selectedDistrict?.uid}',
+                        //     );
+                        //     print(
+                        //       'Province: ${result.selectedRoad?.district?.state?.name}',
+                        //     );
+                        //     print(
+                        //       'Province UID: ${result.selectedProvince?.uid}',
+                        //     );
+                        //   },
+                        // ),
                       ],
                     ),
                   ),

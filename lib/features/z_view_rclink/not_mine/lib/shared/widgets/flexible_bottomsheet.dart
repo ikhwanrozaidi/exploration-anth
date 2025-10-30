@@ -41,9 +41,20 @@ class _FlexibleBottomsheetState extends State<FlexibleBottomsheet> {
   // For checkbox - multiple selection
   List<String> selectedCheckboxValues = [];
 
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget bottomsheetContent = Container(
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.6,
+      ),
       padding: EdgeInsets.symmetric(vertical: 15, horizontal: 25),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -101,90 +112,107 @@ class _FlexibleBottomsheetState extends State<FlexibleBottomsheet> {
 
           // Options list
           Flexible(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: widget.attributes.length,
-              itemBuilder: (context, index) {
-                final attribute = widget.attributes[index];
+            child: Scrollbar(
+              controller: _scrollController,
+              thumbVisibility: true,
+              thickness: 6.0,
+              // interactive: true,
+              radius: const Radius.circular(10),
+              child: ListView.builder(
+                controller: _scrollController,
+                shrinkWrap: true,
+                itemCount: widget.attributes.length,
+                itemBuilder: (context, index) {
+                  final attribute = widget.attributes[index];
 
-                // Navigation mode - simple list items with onTap
-                if (widget.isNavigate) {
-                  return ListTile(
-                    dense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 4),
-                    title: Text(
-                      attribute,
-                      style: TextStyle(
-                        fontSize: ResponsiveHelper.fontSize(context, base: 16),
-                        fontWeight: FontWeight.w500,
+                  // Navigation mode - simple list items with onTap
+                  if (widget.isNavigate) {
+                    return ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.symmetric(vertical: 4),
+                      title: Text(
+                        attribute,
+                        style: TextStyle(
+                          fontSize: ResponsiveHelper.fontSize(
+                            context,
+                            base: 16,
+                          ),
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    trailing: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Colors.grey.shade400,
-                      size: 16,
-                    ),
-                    onTap: () {
-                      // Call the onTap callback
-                      widget.onTap?.call(attribute);
-                      // Don't manually close bottomsheet in navigation mode
-                      // Let the navigation handle the UI transitions
-                    },
-                  );
-                }
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.grey.shade400,
+                        size: 16,
+                      ),
+                      onTap: () {
+                        // Call the onTap callback
+                        widget.onTap?.call(attribute);
+                        // DO NOT manually close bottomsheet in navigation mode
+                        // Let the navigation handle the UI transitions
+                      },
+                    );
+                  }
 
-                // Original selection mode
-                if (widget.isRadio) {
-                  // Radio button implementation
-                  return RadioListTile<String>(
-                    dense: true,
-                    contentPadding: EdgeInsets.all(0),
-                    title: Text(
-                      attribute,
-                      style: TextStyle(
-                        fontSize: ResponsiveHelper.fontSize(context, base: 16),
-                        fontWeight: FontWeight.w500,
+                  // Original selection mode
+                  if (widget.isRadio) {
+                    // Radio button implementation
+                    return RadioListTile<String>(
+                      dense: true,
+                      contentPadding: EdgeInsets.all(0),
+                      title: Text(
+                        attribute,
+                        style: TextStyle(
+                          fontSize: ResponsiveHelper.fontSize(
+                            context,
+                            base: 16,
+                          ),
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    value: attribute,
-                    groupValue: selectedRadioValue,
-                    onChanged: (String? value) {
-                      setState(() {
-                        selectedRadioValue = value;
-                      });
-                      // Call the callback and close the bottomsheet
-                      widget.onSelectionChanged?.call(value);
-                      Navigator.pop(context);
-                    },
-                    activeColor: primaryColor,
-                    controlAffinity: ListTileControlAffinity.leading,
-                  );
-                } else {
-                  // Checkbox implementation
-                  return CheckboxListTile(
-                    dense: true,
-                    title: Text(
-                      attribute,
-                      style: TextStyle(
-                        fontSize: ResponsiveHelper.fontSize(context, base: 16),
-                        fontWeight: FontWeight.w500,
+                      value: attribute,
+                      groupValue: selectedRadioValue,
+                      onChanged: (String? value) {
+                        setState(() {
+                          selectedRadioValue = value;
+                        });
+                        // Call the callback and close the bottomsheet
+                        widget.onSelectionChanged?.call(value);
+                        Navigator.pop(context);
+                      },
+                      activeColor: primaryColor,
+                      controlAffinity: ListTileControlAffinity.leading,
+                    );
+                  } else {
+                    // Checkbox implementation
+                    return CheckboxListTile(
+                      dense: true,
+                      title: Text(
+                        attribute,
+                        style: TextStyle(
+                          fontSize: ResponsiveHelper.fontSize(
+                            context,
+                            base: 16,
+                          ),
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    value: selectedCheckboxValues.contains(attribute),
-                    onChanged: (bool? value) {
-                      setState(() {
-                        if (value == true) {
-                          selectedCheckboxValues.add(attribute);
-                        } else {
-                          selectedCheckboxValues.remove(attribute);
-                        }
-                      });
-                    },
-                    activeColor: primaryColor,
-                    controlAffinity: ListTileControlAffinity.leading,
-                  );
-                }
-              },
+                      value: selectedCheckboxValues.contains(attribute),
+                      onChanged: (bool? value) {
+                        setState(() {
+                          if (value == true) {
+                            selectedCheckboxValues.add(attribute);
+                          } else {
+                            selectedCheckboxValues.remove(attribute);
+                          }
+                        });
+                      },
+                      activeColor: primaryColor,
+                      controlAffinity: ListTileControlAffinity.leading,
+                    );
+                  }
+                },
+              ),
             ),
           ),
 

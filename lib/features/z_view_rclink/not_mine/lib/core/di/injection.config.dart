@@ -123,8 +123,12 @@ import '../../features/rbac/domain/usecases/clear_role_usecase.dart' as _i1056;
 import '../../features/rbac/domain/usecases/get_role_usecase.dart' as _i421;
 import '../../features/rbac/presentation/bloc/rbac_bloc.dart' as _i167;
 import '../../features/road/data/datasources/road_api_service.dart' as _i1060;
+import '../../features/road/data/datasources/road_local_datasource.dart'
+    as _i514;
 import '../../features/road/data/datasources/road_remote_datasource.dart'
     as _i1039;
+import '../../features/road/data/repositories/road_repository_impl.dart'
+    as _i934;
 import '../../features/road/domain/repositories/road_repository.dart' as _i581;
 import '../../features/road/domain/usecases/clear_road_cache_usecase.dart'
     as _i275;
@@ -179,9 +183,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
     gh.lazySingleton<_i895.Connectivity>(() => registerModule.connectivity);
     gh.lazySingleton<_i1004.ErrorInterceptor>(() => _i1004.ErrorInterceptor());
-    gh.lazySingleton<_i458.LocaleBloc>(() => _i458.LocaleBloc());
     gh.lazySingleton<_i525.FileStorageService>(
       () => _i525.FileStorageService(),
+    );
+    gh.lazySingleton<_i458.LocaleBloc>(() => _i458.LocaleBloc());
+    gh.lazySingleton<_i514.RoadLocalDataSource>(
+      () => _i514.RoadLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
     gh.lazySingleton<_i594.CompanyLocalDataSource>(
       () => _i594.CompanyLocalDataSourceImpl(gh<_i982.DatabaseService>()),
@@ -273,12 +280,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i469.CompanyRemoteDataSource>(
       () => _i469.CompanyRemoteDataSourceImpl(gh<_i178.CompanyApiService>()),
     );
-    gh.lazySingleton<_i971.GetRoadsUseCase>(
-      () => _i971.GetRoadsUseCase(gh<_i581.RoadRepository>()),
-    );
-    gh.lazySingleton<_i275.ClearRoadCacheUseCase>(
-      () => _i275.ClearRoadCacheUseCase(gh<_i581.RoadRepository>()),
-    );
     gh.lazySingleton<_i816.ContractorRelationRemoteDataSource>(
       () => _i816.ContractorRelationRemoteDataSourceImpl(
         gh<_i145.ContractorRelationApiService>(),
@@ -360,12 +361,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i8.UpdateCompanyFieldUseCase>(
       () => _i8.UpdateCompanyFieldUseCase(gh<_i752.CompanyRepository>()),
-    );
-    gh.factory<_i736.RoadBloc>(
-      () => _i736.RoadBloc(
-        gh<_i971.GetRoadsUseCase>(),
-        gh<_i275.ClearRoadCacheUseCase>(),
-      ),
     );
     gh.lazySingleton<_i257.GetCurrentAdminUseCase>(
       () => _i257.GetCurrentAdminUseCase(gh<_i583.AdminRepository>()),
@@ -501,14 +496,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i584.ClearWorkScopesCacheUseCase>(
       () => _i584.ClearWorkScopesCacheUseCase(gh<_i870.WorkScopesRepository>()),
     );
-    gh.factory<_i398.ClearAllCacheUseCase>(
-      () => _i398.ClearAllCacheUseCase(
-        gh<_i870.WorkScopesRepository>(),
-        gh<_i581.RoadRepository>(),
-        gh<_i880.QuantityRepository>(),
-        gh<_i767.EquipmentRepository>(),
-      ),
-    );
     gh.factory<_i79.ClearContractorRelationCacheUseCase>(
       () => _i79.ClearContractorRelationCacheUseCase(
         gh<_i337.ContractorRelationRepository>(),
@@ -530,6 +517,32 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1060.RoadApiService>(),
         gh<_i224.ContractorRelationBloc>(),
         gh<_i426.CompanyBloc>(),
+      ),
+    );
+    gh.lazySingleton<_i581.RoadRepository>(
+      () => _i934.RoadRepositoryImpl(
+        gh<_i1039.RoadRemoteDataSource>(),
+        gh<_i514.RoadLocalDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i275.ClearRoadCacheUseCase>(
+      () => _i275.ClearRoadCacheUseCase(gh<_i581.RoadRepository>()),
+    );
+    gh.lazySingleton<_i971.GetRoadsUseCase>(
+      () => _i971.GetRoadsUseCase(gh<_i581.RoadRepository>()),
+    );
+    gh.factory<_i398.ClearAllCacheUseCase>(
+      () => _i398.ClearAllCacheUseCase(
+        gh<_i870.WorkScopesRepository>(),
+        gh<_i581.RoadRepository>(),
+        gh<_i880.QuantityRepository>(),
+        gh<_i767.EquipmentRepository>(),
+      ),
+    );
+    gh.factory<_i736.RoadBloc>(
+      () => _i736.RoadBloc(
+        gh<_i971.GetRoadsUseCase>(),
+        gh<_i275.ClearRoadCacheUseCase>(),
       ),
     );
     gh.lazySingleton<_i1040.DailyReportCreateBloc>(

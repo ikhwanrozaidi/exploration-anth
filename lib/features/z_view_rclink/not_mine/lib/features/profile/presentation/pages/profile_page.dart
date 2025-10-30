@@ -35,6 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
             stops: [0.0, 0.2],
           ),
         ),
+
         child: SafeArea(
           child: Column(
             children: [
@@ -86,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
               Expanded(
                 child: Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(25),
+                  padding: EdgeInsets.symmetric(horizontal: 25),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.only(
@@ -131,6 +132,8 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildProfileContent(Company? selectedCompany) {
     return ListView(
       children: [
+        SizedBox(height: 25),
+
         Container(
           padding: EdgeInsets.all(15),
           decoration: BoxDecoration(
