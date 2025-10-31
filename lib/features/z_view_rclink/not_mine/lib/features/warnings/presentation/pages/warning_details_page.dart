@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../routes/app_router.dart';
+import '../../../../shared/helper/navigation_helper.dart';
+import '../../../../shared/pages/root_page.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/divider_config.dart';
 import '../../../../shared/widgets/theme_listtile_widget.dart';
@@ -56,8 +58,15 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
             children: [
               GestureDetector(
                 onTap: () {
-                  // Navigator.pop(context);
-                  context.go('/?tab=warnings');
+                  if (widget.from == 'program') {
+                    Navigator.of(context).popUntil((route) {
+                      return route.isFirst;
+                    });
+
+                    NavigationHelper().switchToTab(3);
+                  } else {
+                    Navigator.pop(context);
+                  }
                 },
                 child: Container(
                   padding: EdgeInsets.all(10),

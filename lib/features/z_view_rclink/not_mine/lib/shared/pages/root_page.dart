@@ -6,10 +6,14 @@ import 'package:rclink_app/features/warnings/presentation/pages/warning_page.dar
 import 'package:rclink_app/shared/utils/theme.dart';
 import '../../core/config/flavor_config.dart';
 import '../../features/locale/presentation/widgets/app_localization.dart';
+import '../helper/navigation_helper.dart';
 
 /// RootPage manages the main app navigation and pages for authenticated users
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
+
+  static final GlobalKey<_RootPageState> navigatorKey =
+      GlobalKey<_RootPageState>();
 
   @override
   State<RootPage> createState() => _RootPageState();
@@ -17,6 +21,25 @@ class RootPage extends StatefulWidget {
 
 class _RootPageState extends State<RootPage> {
   int _selectedIndex = 0;
+  final _navigationHelper = NavigationHelper();
+
+  @override
+  void initState() {
+    super.initState();
+    _navigationHelper.registerTabSwitcher((index) {
+      if (mounted) {
+        setState(() {
+          _selectedIndex = index;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _navigationHelper.unregisterTabSwitcher();
+    super.dispose();
+  }
 
   static const List<Widget> _pages = <Widget>[
     // HomePage(),

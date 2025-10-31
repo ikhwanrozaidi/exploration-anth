@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:rclink_app/features/daily_report/data/models/company_response_model.dart';
+import 'package:rclink_app/core/domain/models/file_model.dart';
 import '../../domain/entities/daily_report.dart';
 import 'daily_report_equipment_model.dart';
 import 'report_quantities_model.dart';
@@ -59,6 +60,7 @@ abstract class DailyReportModel with _$DailyReportModel {
     RoadResponseModel? road,
     List<DailyReportEquipmentModel>? equipments,
     List<ReportQuantitiesModel>? reportQuantities,
+    List<FileModel>? files,
 
     // Sync fields
     @Default(false) bool isSynced,
@@ -102,6 +104,7 @@ abstract class DailyReportModel with _$DailyReportModel {
       equipments: equipments?.map((e) => e.toEntity()).toList() ?? [],
       reportQuantities:
           reportQuantities?.map((q) => q.toEntity()).toList() ?? [],
+      files: files?.map((f) => f.toEntity()).toList(),
     );
   }
 }

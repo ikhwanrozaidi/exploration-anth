@@ -95,6 +95,8 @@ import '../../features/daily_report/domain/usecases/clear_all_cache_usecase.dart
     as _i398;
 import '../../features/daily_report/domain/usecases/clear_daily_report_cache_usecase.dart'
     as _i771;
+import '../../features/daily_report/domain/usecases/get_daily_report_by_id_usecase.dart'
+    as _i136;
 import '../../features/daily_report/domain/usecases/get_daily_report_usecase.dart'
     as _i908;
 import '../../features/daily_report/domain/usecases/submit_daily_report_usecase.dart'
@@ -467,18 +469,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i330.SubmitDailyReportUseCase>(
       () => _i330.SubmitDailyReportUseCase(gh<_i819.DailyReportRepository>()),
     );
+    gh.lazySingleton<_i136.GetDailyReportByIdUseCase>(
+      () => _i136.GetDailyReportByIdUseCase(gh<_i819.DailyReportRepository>()),
+    );
     gh.lazySingleton<_i771.ClearDailyReportCacheUseCase>(
       () =>
           _i771.ClearDailyReportCacheUseCase(gh<_i819.DailyReportRepository>()),
     );
     gh.lazySingleton<_i908.GetDailyReportsUseCase>(
       () => _i908.GetDailyReportsUseCase(gh<_i819.DailyReportRepository>()),
-    );
-    gh.factory<_i266.DailyReportViewBloc>(
-      () => _i266.DailyReportViewBloc(
-        gh<_i908.GetDailyReportsUseCase>(),
-        gh<_i771.ClearDailyReportCacheUseCase>(),
-      ),
     );
     gh.factory<_i1005.GetQuantityUseCase>(
       () => _i1005.GetQuantityUseCase(gh<_i880.QuantityRepository>()),
@@ -495,6 +494,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i584.ClearWorkScopesCacheUseCase>(
       () => _i584.ClearWorkScopesCacheUseCase(gh<_i870.WorkScopesRepository>()),
+    );
+    gh.factory<_i266.DailyReportViewBloc>(
+      () => _i266.DailyReportViewBloc(
+        gh<_i908.GetDailyReportsUseCase>(),
+        gh<_i136.GetDailyReportByIdUseCase>(),
+        gh<_i771.ClearDailyReportCacheUseCase>(),
+      ),
     );
     gh.factory<_i79.ClearContractorRelationCacheUseCase>(
       () => _i79.ClearContractorRelationCacheUseCase(
@@ -549,7 +555,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1040.DailyReportCreateBloc(
         gh<_i890.GetWorkScopesUseCase>(),
         gh<_i584.ClearWorkScopesCacheUseCase>(),
-        gh<_i971.GetRoadsUseCase>(),
         gh<_i1005.GetQuantityUseCase>(),
         gh<_i847.GetEquipmentUseCase>(),
         gh<_i398.ClearAllCacheUseCase>(),

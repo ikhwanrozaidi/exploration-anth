@@ -10,6 +10,13 @@ abstract class DailyReportRepository {
     int page = 1,
     int limit = 10,
     String sortOrder = 'asc',
+    String? search,
+  });
+
+  Future<Either<Failure, DailyReport>> getDailyReportById({
+    required String companyUID,
+    required String dailyReportUID,
+    bool forceRefresh = false,
   });
 
   Future<Either<Failure, DailyReport>> createDailyReport({

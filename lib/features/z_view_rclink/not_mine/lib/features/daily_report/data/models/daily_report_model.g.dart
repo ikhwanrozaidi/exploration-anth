@@ -52,6 +52,9 @@ _DailyReportModel _$DailyReportModelFromJson(
   reportQuantities: (json['reportQuantities'] as List<dynamic>?)
       ?.map((e) => ReportQuantitiesModel.fromJson(e as Map<String, dynamic>))
       .toList(),
+  files: (json['files'] as List<dynamic>?)
+      ?.map((e) => FileModel.fromJson(e as Map<String, dynamic>))
+      .toList(),
   isSynced: json['isSynced'] as bool? ?? false,
   deletedAt: json['deletedAt'] == null
       ? null
@@ -93,6 +96,7 @@ Map<String, dynamic> _$DailyReportModelToJson(_DailyReportModel instance) =>
       'road': instance.road,
       'equipments': instance.equipments,
       'reportQuantities': instance.reportQuantities,
+      'files': instance.files,
       'isSynced': instance.isSynced,
       'deletedAt': instance.deletedAt?.toIso8601String(),
       'syncAction': instance.syncAction,

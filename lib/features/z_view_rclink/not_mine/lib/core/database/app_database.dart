@@ -417,6 +417,39 @@ class ImageSyncQueue extends Table {
   List<Set<Column>> get uniqueKeys => [];
 }
 
+// Files table - stores file metadata from backend
+@DataClassName('FileRecord')
+class Files extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID - unique for public lookup
+
+  // File metadata
+  TextColumn get fileName => text()();
+  TextColumn get s3Url => text()();
+  TextColumn get mimeType => text()();
+  IntColumn get size => integer()();
+  IntColumn get sequence => integer().nullable()();
+
+  // Multi-tenant & context fields
+  IntColumn get companyID => integer()();
+  TextColumn get contextType => text()(); // 'daily_report', 'disaster', etc.
+  TextColumn get contextField => text().nullable()(); // 'before_image', 'after_image', etc.
+  IntColumn get dailyReportID => integer().nullable()(); // FK to DailyReports
+
+  // Metadata
+  IntColumn get uploadedByID => integer()();
+
+  // Timestamps
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  // Indexes for query performance
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // uid must be unique
+  ];
+}
+
 // Daily Reports table
 @DataClassName('DailyReportRecord')
 class DailyReports extends Table with SyncableTable {
@@ -575,6 +608,7 @@ class ReportSegments extends Table with SyncableTable {
     Admins,
     SyncQueue,
     ImageSyncQueue,
+    Files,
     Roles,
     Permissions,
     Companies,
@@ -602,7 +636,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 13; // Added PackageRoads and revise Roads column
+  int get schemaVersion => 15; // Added dailyReportID to Files table
 
   @override
   MigrationStrategy get migration {
@@ -917,6 +951,14 @@ class AppDatabase extends _$AppDatabase {
 
           // Rename new table to roads
           await customStatement('ALTER TABLE roads_new RENAME TO roads');
+        },
+        from13To14: (m, schema) async {
+          // Migration from version 13 to 14: Add Files table
+          await m.createTable(schema.files);
+        },
+        from14To15: (m, schema) async {
+          // Migration from version 14 to 15: Add dailyReportID to Files table
+          await m.addColumn(schema.files, schema.files.dailyReportID);
         },
       ),
       beforeOpen: (details) async {

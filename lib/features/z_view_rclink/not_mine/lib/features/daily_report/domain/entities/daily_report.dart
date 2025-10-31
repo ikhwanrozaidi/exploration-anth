@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:rclink_app/features/daily_report/domain/entities/company_response.dart';
+import 'package:rclink_app/core/domain/entities/file_entity.dart';
 import 'daily_report_equipment.dart';
 import 'report_quantity.dart';
 import 'work_scope_response.dart';
@@ -34,6 +35,7 @@ class DailyReport extends Equatable {
   final RoadResponse? road;
   final List<DailyReportEquipment>? equipments;
   final List<ReportQuantity>? reportQuantities;
+  final List<FileEntity>? files;
 
   const DailyReport({
     required this.id,
@@ -63,6 +65,7 @@ class DailyReport extends Equatable {
     this.road,
     this.equipments,
     required this.reportQuantities,
+    this.files,
   });
 
   @override
@@ -94,5 +97,6 @@ class DailyReport extends Equatable {
     road,
     equipments,
     reportQuantities,
+    files,
   ];
 }

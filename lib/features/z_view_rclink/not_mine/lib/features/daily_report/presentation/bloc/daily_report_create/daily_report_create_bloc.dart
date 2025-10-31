@@ -6,7 +6,7 @@ import 'package:rclink_app/features/work_scope/domain/usecases/clear_work_scopes
 import 'package:rclink_app/features/work_scope/domain/usecases/get_quantity_usecase.dart';
 // import 'package:rclink_app/features/road/domain/usecases/get_states_usecase.dart';
 // import 'package:rclink_app/features/road/domain/usecases/get_district_usecase.dart';
-import 'package:rclink_app/features/road/domain/usecases/get_road_usecase.dart';
+// import 'package:rclink_app/features/road/domain/usecases/get_road_usecase.dart';
 import 'package:rclink_app/features/work_scope/domain/entities/work_equipment.dart';
 import 'package:rclink_app/features/work_scope/domain/entities/work_quantity_type.dart';
 
@@ -25,7 +25,7 @@ class DailyReportCreateBloc
   final ClearWorkScopesCacheUseCase _clearCacheUseCase;
   // final GetStatesUseCase _getStatesUseCase;
   // final GetDistrictsUseCase _getDistrictsUseCase;
-  final GetRoadsUseCase _getRoadsUseCase;
+  // final GetRoadsUseCase _getRoadsUseCase;
   final GetQuantityUseCase _getQuantitiesUseCase;
   final GetEquipmentUseCase _getEquipmentUseCase;
   final ClearAllCacheUseCase _clearAllCacheUseCase;
@@ -36,7 +36,7 @@ class DailyReportCreateBloc
     this._clearCacheUseCase,
     // this._getStatesUseCase,
     // this._getDistrictsUseCase,
-    this._getRoadsUseCase,
+    // this._getRoadsUseCase,
     this._getQuantitiesUseCase,
     this._getEquipmentUseCase,
     this._clearAllCacheUseCase,

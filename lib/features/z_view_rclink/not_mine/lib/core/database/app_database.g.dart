@@ -2576,6 +2576,1124 @@ class ImageSyncQueueCompanion extends UpdateCompanion<ImageSyncQueueRecord> {
   }
 }
 
+class $FilesTable extends Files with TableInfo<$FilesTable, FileRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $FilesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fileNameMeta = const VerificationMeta(
+    'fileName',
+  );
+  @override
+  late final GeneratedColumn<String> fileName = GeneratedColumn<String>(
+    'file_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _s3UrlMeta = const VerificationMeta('s3Url');
+  @override
+  late final GeneratedColumn<String> s3Url = GeneratedColumn<String>(
+    's3_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _mimeTypeMeta = const VerificationMeta(
+    'mimeType',
+  );
+  @override
+  late final GeneratedColumn<String> mimeType = GeneratedColumn<String>(
+    'mime_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sizeMeta = const VerificationMeta('size');
+  @override
+  late final GeneratedColumn<int> size = GeneratedColumn<int>(
+    'size',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sequenceMeta = const VerificationMeta(
+    'sequence',
+  );
+  @override
+  late final GeneratedColumn<int> sequence = GeneratedColumn<int>(
+    'sequence',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _companyIDMeta = const VerificationMeta(
+    'companyID',
+  );
+  @override
+  late final GeneratedColumn<int> companyID = GeneratedColumn<int>(
+    'company_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contextTypeMeta = const VerificationMeta(
+    'contextType',
+  );
+  @override
+  late final GeneratedColumn<String> contextType = GeneratedColumn<String>(
+    'context_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contextFieldMeta = const VerificationMeta(
+    'contextField',
+  );
+  @override
+  late final GeneratedColumn<String> contextField = GeneratedColumn<String>(
+    'context_field',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dailyReportIDMeta = const VerificationMeta(
+    'dailyReportID',
+  );
+  @override
+  late final GeneratedColumn<int> dailyReportID = GeneratedColumn<int>(
+    'daily_report_i_d',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _uploadedByIDMeta = const VerificationMeta(
+    'uploadedByID',
+  );
+  @override
+  late final GeneratedColumn<int> uploadedByID = GeneratedColumn<int>(
+    'uploaded_by_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    fileName,
+    s3Url,
+    mimeType,
+    size,
+    sequence,
+    companyID,
+    contextType,
+    contextField,
+    dailyReportID,
+    uploadedByID,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'files';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<FileRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('file_name')) {
+      context.handle(
+        _fileNameMeta,
+        fileName.isAcceptableOrUnknown(data['file_name']!, _fileNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fileNameMeta);
+    }
+    if (data.containsKey('s3_url')) {
+      context.handle(
+        _s3UrlMeta,
+        s3Url.isAcceptableOrUnknown(data['s3_url']!, _s3UrlMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_s3UrlMeta);
+    }
+    if (data.containsKey('mime_type')) {
+      context.handle(
+        _mimeTypeMeta,
+        mimeType.isAcceptableOrUnknown(data['mime_type']!, _mimeTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_mimeTypeMeta);
+    }
+    if (data.containsKey('size')) {
+      context.handle(
+        _sizeMeta,
+        size.isAcceptableOrUnknown(data['size']!, _sizeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_sizeMeta);
+    }
+    if (data.containsKey('sequence')) {
+      context.handle(
+        _sequenceMeta,
+        sequence.isAcceptableOrUnknown(data['sequence']!, _sequenceMeta),
+      );
+    }
+    if (data.containsKey('company_i_d')) {
+      context.handle(
+        _companyIDMeta,
+        companyID.isAcceptableOrUnknown(data['company_i_d']!, _companyIDMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_companyIDMeta);
+    }
+    if (data.containsKey('context_type')) {
+      context.handle(
+        _contextTypeMeta,
+        contextType.isAcceptableOrUnknown(
+          data['context_type']!,
+          _contextTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_contextTypeMeta);
+    }
+    if (data.containsKey('context_field')) {
+      context.handle(
+        _contextFieldMeta,
+        contextField.isAcceptableOrUnknown(
+          data['context_field']!,
+          _contextFieldMeta,
+        ),
+      );
+    }
+    if (data.containsKey('daily_report_i_d')) {
+      context.handle(
+        _dailyReportIDMeta,
+        dailyReportID.isAcceptableOrUnknown(
+          data['daily_report_i_d']!,
+          _dailyReportIDMeta,
+        ),
+      );
+    }
+    if (data.containsKey('uploaded_by_i_d')) {
+      context.handle(
+        _uploadedByIDMeta,
+        uploadedByID.isAcceptableOrUnknown(
+          data['uploaded_by_i_d']!,
+          _uploadedByIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_uploadedByIDMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  FileRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return FileRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      fileName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}file_name'],
+      )!,
+      s3Url: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}s3_url'],
+      )!,
+      mimeType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}mime_type'],
+      )!,
+      size: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}size'],
+      )!,
+      sequence: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sequence'],
+      ),
+      companyID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}company_i_d'],
+      )!,
+      contextType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}context_type'],
+      )!,
+      contextField: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}context_field'],
+      ),
+      dailyReportID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}daily_report_i_d'],
+      ),
+      uploadedByID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}uploaded_by_i_d'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $FilesTable createAlias(String alias) {
+    return $FilesTable(attachedDatabase, alias);
+  }
+}
+
+class FileRecord extends DataClass implements Insertable<FileRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String fileName;
+  final String s3Url;
+  final String mimeType;
+  final int size;
+  final int? sequence;
+  final int companyID;
+  final String contextType;
+  final String? contextField;
+  final int? dailyReportID;
+  final int uploadedByID;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const FileRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.fileName,
+    required this.s3Url,
+    required this.mimeType,
+    required this.size,
+    this.sequence,
+    required this.companyID,
+    required this.contextType,
+    this.contextField,
+    this.dailyReportID,
+    required this.uploadedByID,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['file_name'] = Variable<String>(fileName);
+    map['s3_url'] = Variable<String>(s3Url);
+    map['mime_type'] = Variable<String>(mimeType);
+    map['size'] = Variable<int>(size);
+    if (!nullToAbsent || sequence != null) {
+      map['sequence'] = Variable<int>(sequence);
+    }
+    map['company_i_d'] = Variable<int>(companyID);
+    map['context_type'] = Variable<String>(contextType);
+    if (!nullToAbsent || contextField != null) {
+      map['context_field'] = Variable<String>(contextField);
+    }
+    if (!nullToAbsent || dailyReportID != null) {
+      map['daily_report_i_d'] = Variable<int>(dailyReportID);
+    }
+    map['uploaded_by_i_d'] = Variable<int>(uploadedByID);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  FilesCompanion toCompanion(bool nullToAbsent) {
+    return FilesCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      fileName: Value(fileName),
+      s3Url: Value(s3Url),
+      mimeType: Value(mimeType),
+      size: Value(size),
+      sequence: sequence == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sequence),
+      companyID: Value(companyID),
+      contextType: Value(contextType),
+      contextField: contextField == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contextField),
+      dailyReportID: dailyReportID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dailyReportID),
+      uploadedByID: Value(uploadedByID),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory FileRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return FileRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      fileName: serializer.fromJson<String>(json['fileName']),
+      s3Url: serializer.fromJson<String>(json['s3Url']),
+      mimeType: serializer.fromJson<String>(json['mimeType']),
+      size: serializer.fromJson<int>(json['size']),
+      sequence: serializer.fromJson<int?>(json['sequence']),
+      companyID: serializer.fromJson<int>(json['companyID']),
+      contextType: serializer.fromJson<String>(json['contextType']),
+      contextField: serializer.fromJson<String?>(json['contextField']),
+      dailyReportID: serializer.fromJson<int?>(json['dailyReportID']),
+      uploadedByID: serializer.fromJson<int>(json['uploadedByID']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'fileName': serializer.toJson<String>(fileName),
+      's3Url': serializer.toJson<String>(s3Url),
+      'mimeType': serializer.toJson<String>(mimeType),
+      'size': serializer.toJson<int>(size),
+      'sequence': serializer.toJson<int?>(sequence),
+      'companyID': serializer.toJson<int>(companyID),
+      'contextType': serializer.toJson<String>(contextType),
+      'contextField': serializer.toJson<String?>(contextField),
+      'dailyReportID': serializer.toJson<int?>(dailyReportID),
+      'uploadedByID': serializer.toJson<int>(uploadedByID),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  FileRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? fileName,
+    String? s3Url,
+    String? mimeType,
+    int? size,
+    Value<int?> sequence = const Value.absent(),
+    int? companyID,
+    String? contextType,
+    Value<String?> contextField = const Value.absent(),
+    Value<int?> dailyReportID = const Value.absent(),
+    int? uploadedByID,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => FileRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    fileName: fileName ?? this.fileName,
+    s3Url: s3Url ?? this.s3Url,
+    mimeType: mimeType ?? this.mimeType,
+    size: size ?? this.size,
+    sequence: sequence.present ? sequence.value : this.sequence,
+    companyID: companyID ?? this.companyID,
+    contextType: contextType ?? this.contextType,
+    contextField: contextField.present ? contextField.value : this.contextField,
+    dailyReportID: dailyReportID.present
+        ? dailyReportID.value
+        : this.dailyReportID,
+    uploadedByID: uploadedByID ?? this.uploadedByID,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  FileRecord copyWithCompanion(FilesCompanion data) {
+    return FileRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      fileName: data.fileName.present ? data.fileName.value : this.fileName,
+      s3Url: data.s3Url.present ? data.s3Url.value : this.s3Url,
+      mimeType: data.mimeType.present ? data.mimeType.value : this.mimeType,
+      size: data.size.present ? data.size.value : this.size,
+      sequence: data.sequence.present ? data.sequence.value : this.sequence,
+      companyID: data.companyID.present ? data.companyID.value : this.companyID,
+      contextType: data.contextType.present
+          ? data.contextType.value
+          : this.contextType,
+      contextField: data.contextField.present
+          ? data.contextField.value
+          : this.contextField,
+      dailyReportID: data.dailyReportID.present
+          ? data.dailyReportID.value
+          : this.dailyReportID,
+      uploadedByID: data.uploadedByID.present
+          ? data.uploadedByID.value
+          : this.uploadedByID,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FileRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('fileName: $fileName, ')
+          ..write('s3Url: $s3Url, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('size: $size, ')
+          ..write('sequence: $sequence, ')
+          ..write('companyID: $companyID, ')
+          ..write('contextType: $contextType, ')
+          ..write('contextField: $contextField, ')
+          ..write('dailyReportID: $dailyReportID, ')
+          ..write('uploadedByID: $uploadedByID, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    fileName,
+    s3Url,
+    mimeType,
+    size,
+    sequence,
+    companyID,
+    contextType,
+    contextField,
+    dailyReportID,
+    uploadedByID,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is FileRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.fileName == this.fileName &&
+          other.s3Url == this.s3Url &&
+          other.mimeType == this.mimeType &&
+          other.size == this.size &&
+          other.sequence == this.sequence &&
+          other.companyID == this.companyID &&
+          other.contextType == this.contextType &&
+          other.contextField == this.contextField &&
+          other.dailyReportID == this.dailyReportID &&
+          other.uploadedByID == this.uploadedByID &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class FilesCompanion extends UpdateCompanion<FileRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> fileName;
+  final Value<String> s3Url;
+  final Value<String> mimeType;
+  final Value<int> size;
+  final Value<int?> sequence;
+  final Value<int> companyID;
+  final Value<String> contextType;
+  final Value<String?> contextField;
+  final Value<int?> dailyReportID;
+  final Value<int> uploadedByID;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  const FilesCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.fileName = const Value.absent(),
+    this.s3Url = const Value.absent(),
+    this.mimeType = const Value.absent(),
+    this.size = const Value.absent(),
+    this.sequence = const Value.absent(),
+    this.companyID = const Value.absent(),
+    this.contextType = const Value.absent(),
+    this.contextField = const Value.absent(),
+    this.dailyReportID = const Value.absent(),
+    this.uploadedByID = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  FilesCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String fileName,
+    required String s3Url,
+    required String mimeType,
+    required int size,
+    this.sequence = const Value.absent(),
+    required int companyID,
+    required String contextType,
+    this.contextField = const Value.absent(),
+    this.dailyReportID = const Value.absent(),
+    required int uploadedByID,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+  }) : uid = Value(uid),
+       fileName = Value(fileName),
+       s3Url = Value(s3Url),
+       mimeType = Value(mimeType),
+       size = Value(size),
+       companyID = Value(companyID),
+       contextType = Value(contextType),
+       uploadedByID = Value(uploadedByID),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<FileRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? fileName,
+    Expression<String>? s3Url,
+    Expression<String>? mimeType,
+    Expression<int>? size,
+    Expression<int>? sequence,
+    Expression<int>? companyID,
+    Expression<String>? contextType,
+    Expression<String>? contextField,
+    Expression<int>? dailyReportID,
+    Expression<int>? uploadedByID,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (fileName != null) 'file_name': fileName,
+      if (s3Url != null) 's3_url': s3Url,
+      if (mimeType != null) 'mime_type': mimeType,
+      if (size != null) 'size': size,
+      if (sequence != null) 'sequence': sequence,
+      if (companyID != null) 'company_i_d': companyID,
+      if (contextType != null) 'context_type': contextType,
+      if (contextField != null) 'context_field': contextField,
+      if (dailyReportID != null) 'daily_report_i_d': dailyReportID,
+      if (uploadedByID != null) 'uploaded_by_i_d': uploadedByID,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  FilesCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? fileName,
+    Value<String>? s3Url,
+    Value<String>? mimeType,
+    Value<int>? size,
+    Value<int?>? sequence,
+    Value<int>? companyID,
+    Value<String>? contextType,
+    Value<String?>? contextField,
+    Value<int?>? dailyReportID,
+    Value<int>? uploadedByID,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+  }) {
+    return FilesCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      fileName: fileName ?? this.fileName,
+      s3Url: s3Url ?? this.s3Url,
+      mimeType: mimeType ?? this.mimeType,
+      size: size ?? this.size,
+      sequence: sequence ?? this.sequence,
+      companyID: companyID ?? this.companyID,
+      contextType: contextType ?? this.contextType,
+      contextField: contextField ?? this.contextField,
+      dailyReportID: dailyReportID ?? this.dailyReportID,
+      uploadedByID: uploadedByID ?? this.uploadedByID,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (fileName.present) {
+      map['file_name'] = Variable<String>(fileName.value);
+    }
+    if (s3Url.present) {
+      map['s3_url'] = Variable<String>(s3Url.value);
+    }
+    if (mimeType.present) {
+      map['mime_type'] = Variable<String>(mimeType.value);
+    }
+    if (size.present) {
+      map['size'] = Variable<int>(size.value);
+    }
+    if (sequence.present) {
+      map['sequence'] = Variable<int>(sequence.value);
+    }
+    if (companyID.present) {
+      map['company_i_d'] = Variable<int>(companyID.value);
+    }
+    if (contextType.present) {
+      map['context_type'] = Variable<String>(contextType.value);
+    }
+    if (contextField.present) {
+      map['context_field'] = Variable<String>(contextField.value);
+    }
+    if (dailyReportID.present) {
+      map['daily_report_i_d'] = Variable<int>(dailyReportID.value);
+    }
+    if (uploadedByID.present) {
+      map['uploaded_by_i_d'] = Variable<int>(uploadedByID.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('FilesCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('fileName: $fileName, ')
+          ..write('s3Url: $s3Url, ')
+          ..write('mimeType: $mimeType, ')
+          ..write('size: $size, ')
+          ..write('sequence: $sequence, ')
+          ..write('companyID: $companyID, ')
+          ..write('contextType: $contextType, ')
+          ..write('contextField: $contextField, ')
+          ..write('dailyReportID: $dailyReportID, ')
+          ..write('uploadedByID: $uploadedByID, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $RolesTable extends Roles with TableInfo<$RolesTable, RoleRecord> {
   @override
   final GeneratedDatabase attachedDatabase;
@@ -20586,6 +21704,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $AdminsTable admins = $AdminsTable(this);
   late final $SyncQueueTable syncQueue = $SyncQueueTable(this);
   late final $ImageSyncQueueTable imageSyncQueue = $ImageSyncQueueTable(this);
+  late final $FilesTable files = $FilesTable(this);
   late final $RolesTable roles = $RolesTable(this);
   late final $PermissionsTable permissions = $PermissionsTable(this);
   late final $CompaniesTable companies = $CompaniesTable(this);
@@ -20625,6 +21744,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     admins,
     syncQueue,
     imageSyncQueue,
+    files,
     roles,
     permissions,
     companies,
@@ -21838,6 +22958,492 @@ typedef $$ImageSyncQueueTableProcessedTableManager =
         >,
       ),
       ImageSyncQueueRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$FilesTableCreateCompanionBuilder =
+    FilesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String fileName,
+      required String s3Url,
+      required String mimeType,
+      required int size,
+      Value<int?> sequence,
+      required int companyID,
+      required String contextType,
+      Value<String?> contextField,
+      Value<int?> dailyReportID,
+      required int uploadedByID,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+    });
+typedef $$FilesTableUpdateCompanionBuilder =
+    FilesCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> fileName,
+      Value<String> s3Url,
+      Value<String> mimeType,
+      Value<int> size,
+      Value<int?> sequence,
+      Value<int> companyID,
+      Value<String> contextType,
+      Value<String?> contextField,
+      Value<int?> dailyReportID,
+      Value<int> uploadedByID,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+    });
+
+class $$FilesTableFilterComposer extends Composer<_$AppDatabase, $FilesTable> {
+  $$FilesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fileName => $composableBuilder(
+    column: $table.fileName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get s3Url => $composableBuilder(
+    column: $table.s3Url,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get size => $composableBuilder(
+    column: $table.size,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sequence => $composableBuilder(
+    column: $table.sequence,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get companyID => $composableBuilder(
+    column: $table.companyID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contextType => $composableBuilder(
+    column: $table.contextType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contextField => $composableBuilder(
+    column: $table.contextField,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dailyReportID => $composableBuilder(
+    column: $table.dailyReportID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get uploadedByID => $composableBuilder(
+    column: $table.uploadedByID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$FilesTableOrderingComposer
+    extends Composer<_$AppDatabase, $FilesTable> {
+  $$FilesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fileName => $composableBuilder(
+    column: $table.fileName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get s3Url => $composableBuilder(
+    column: $table.s3Url,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get mimeType => $composableBuilder(
+    column: $table.mimeType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get size => $composableBuilder(
+    column: $table.size,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sequence => $composableBuilder(
+    column: $table.sequence,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get companyID => $composableBuilder(
+    column: $table.companyID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contextType => $composableBuilder(
+    column: $table.contextType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contextField => $composableBuilder(
+    column: $table.contextField,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get dailyReportID => $composableBuilder(
+    column: $table.dailyReportID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get uploadedByID => $composableBuilder(
+    column: $table.uploadedByID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$FilesTableAnnotationComposer
+    extends Composer<_$AppDatabase, $FilesTable> {
+  $$FilesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get fileName =>
+      $composableBuilder(column: $table.fileName, builder: (column) => column);
+
+  GeneratedColumn<String> get s3Url =>
+      $composableBuilder(column: $table.s3Url, builder: (column) => column);
+
+  GeneratedColumn<String> get mimeType =>
+      $composableBuilder(column: $table.mimeType, builder: (column) => column);
+
+  GeneratedColumn<int> get size =>
+      $composableBuilder(column: $table.size, builder: (column) => column);
+
+  GeneratedColumn<int> get sequence =>
+      $composableBuilder(column: $table.sequence, builder: (column) => column);
+
+  GeneratedColumn<int> get companyID =>
+      $composableBuilder(column: $table.companyID, builder: (column) => column);
+
+  GeneratedColumn<String> get contextType => $composableBuilder(
+    column: $table.contextType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get contextField => $composableBuilder(
+    column: $table.contextField,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get dailyReportID => $composableBuilder(
+    column: $table.dailyReportID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get uploadedByID => $composableBuilder(
+    column: $table.uploadedByID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$FilesTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $FilesTable,
+          FileRecord,
+          $$FilesTableFilterComposer,
+          $$FilesTableOrderingComposer,
+          $$FilesTableAnnotationComposer,
+          $$FilesTableCreateCompanionBuilder,
+          $$FilesTableUpdateCompanionBuilder,
+          (FileRecord, BaseReferences<_$AppDatabase, $FilesTable, FileRecord>),
+          FileRecord,
+          PrefetchHooks Function()
+        > {
+  $$FilesTableTableManager(_$AppDatabase db, $FilesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$FilesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$FilesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$FilesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> fileName = const Value.absent(),
+                Value<String> s3Url = const Value.absent(),
+                Value<String> mimeType = const Value.absent(),
+                Value<int> size = const Value.absent(),
+                Value<int?> sequence = const Value.absent(),
+                Value<int> companyID = const Value.absent(),
+                Value<String> contextType = const Value.absent(),
+                Value<String?> contextField = const Value.absent(),
+                Value<int?> dailyReportID = const Value.absent(),
+                Value<int> uploadedByID = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => FilesCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                fileName: fileName,
+                s3Url: s3Url,
+                mimeType: mimeType,
+                size: size,
+                sequence: sequence,
+                companyID: companyID,
+                contextType: contextType,
+                contextField: contextField,
+                dailyReportID: dailyReportID,
+                uploadedByID: uploadedByID,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String fileName,
+                required String s3Url,
+                required String mimeType,
+                required int size,
+                Value<int?> sequence = const Value.absent(),
+                required int companyID,
+                required String contextType,
+                Value<String?> contextField = const Value.absent(),
+                Value<int?> dailyReportID = const Value.absent(),
+                required int uploadedByID,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+              }) => FilesCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                fileName: fileName,
+                s3Url: s3Url,
+                mimeType: mimeType,
+                size: size,
+                sequence: sequence,
+                companyID: companyID,
+                contextType: contextType,
+                contextField: contextField,
+                dailyReportID: dailyReportID,
+                uploadedByID: uploadedByID,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$FilesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $FilesTable,
+      FileRecord,
+      $$FilesTableFilterComposer,
+      $$FilesTableOrderingComposer,
+      $$FilesTableAnnotationComposer,
+      $$FilesTableCreateCompanionBuilder,
+      $$FilesTableUpdateCompanionBuilder,
+      (FileRecord, BaseReferences<_$AppDatabase, $FilesTable, FileRecord>),
+      FileRecord,
       PrefetchHooks Function()
     >;
 typedef $$RolesTableCreateCompanionBuilder =
@@ -30130,6 +31736,8 @@ class $AppDatabaseManager {
       $$SyncQueueTableTableManager(_db, _db.syncQueue);
   $$ImageSyncQueueTableTableManager get imageSyncQueue =>
       $$ImageSyncQueueTableTableManager(_db, _db.imageSyncQueue);
+  $$FilesTableTableManager get files =>
+      $$FilesTableTableManager(_db, _db.files);
   $$RolesTableTableManager get roles =>
       $$RolesTableTableManager(_db, _db.roles);
   $$PermissionsTableTableManager get permissions =>

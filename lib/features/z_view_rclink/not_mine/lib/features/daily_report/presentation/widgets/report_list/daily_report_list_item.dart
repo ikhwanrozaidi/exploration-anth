@@ -1,0 +1,332 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:rclink_app/features/daily_report/presentation/pages/daily_report_detail_page.dart';
+
+import '../../../../../core/utils/cache_managers.dart';
+import '../../../../../shared/utils/responsive_helper.dart';
+import '../../../domain/entities/daily_report.dart';
+
+class DailyReportListItem extends StatefulWidget {
+  final DailyReport report;
+
+  const DailyReportListItem({Key? key, required this.report}) : super(key: key);
+
+  @override
+  State<DailyReportListItem> createState() => _DailyReportListItemState();
+}
+
+class _DailyReportListItemState extends State<DailyReportListItem> {
+  int _currentIndex = 0;
+  PageController _pageController = PageController();
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    // _startAutoSlide();
+  }
+
+  // void _startAutoSlide() {
+  //   _timer = Timer.periodic(Duration(seconds: 3), (timer) {
+  //     if (_currentIndex < widget.images.length - 1) {
+  //       _currentIndex++;
+  //     } else {
+  //       _currentIndex = 0;
+  //     }
+
+  //     // Check if PageController is attached before animating
+  //     if (_pageController.hasClients) {
+  //       _pageController.animateToPage(
+  //         _currentIndex,
+  //         duration: Duration(milliseconds: 1000),
+  //         curve: Curves.easeInOut,
+  //       );
+  //     }
+  //   });
+  // }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // Filter files for images only
+    final imageFiles =
+        widget.report.files
+            ?.where((f) => f.mimeType.startsWith('image/'))
+            .toList() ??
+        [];
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DailyReportDetailPage(report: widget.report),
+          ),
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 20),
+        padding: EdgeInsets.symmetric(vertical: 25, horizontal: 15),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey.shade300),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Carousel Slider
+            SizedBox(
+              height: 200,
+              child: Stack(
+                children: [
+                  // Image carousel or placeholder
+                  if (imageFiles.isNotEmpty)
+                    PageView.builder(
+                      controller: _pageController,
+                      onPageChanged: (index) {
+                        setState(() {
+                          _currentIndex = index;
+                        });
+                      },
+                      itemCount: imageFiles.length,
+                      itemBuilder: (context, index) {
+                        final file = imageFiles[index];
+                        print('file: ${file.s3Url}');
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Stack(
+                              fit: StackFit.expand,
+                              children: [
+                                CachedNetworkImage(
+                                  imageUrl: file.s3Url,
+                                  cacheManager: dailyReportImageCacheManager,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) {
+                                    return Container(
+                                      color: Colors.grey.shade300,
+                                      child: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    );
+                                  },
+                                  errorWidget: (context, url, error) {
+                                    return Container(
+                                      color: Colors.grey.shade300,
+                                      child: Icon(
+                                        Icons.image_not_supported,
+                                        size: 50,
+                                        color: Colors.grey.shade600,
+                                      ),
+                                    );
+                                  },
+                                ),
+                                // Dark gradient overlay
+                                Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.black.withOpacity(0.7),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    )
+                  else
+                    Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Colors.black.withOpacity(0.7),
+                              ],
+                            ),
+                          ),
+                          child: Container(
+                            color: Colors.grey.shade300,
+                            child: Icon(
+                              Icons.image_not_supported,
+                              size: 50,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(left: 5),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+
+                              //Scope Code
+                              child: Text(
+                                widget.report.workScope!.code.toString(),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+
+                            Container(
+                              margin: EdgeInsets.only(right: 5),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 5,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              child: Text(
+                                DateFormat('d MMM').format(
+                                  DateTime.parse(
+                                    widget.report.createdAt.toString(),
+                                  ),
+                                ),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        // Page indicators (show only when 2+ images)
+                        if (imageFiles.length > 1)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: List.generate(
+                              imageFiles.length,
+                              (index) => Container(
+                                margin: EdgeInsets.symmetric(horizontal: 2),
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: _currentIndex == index
+                                      ? Colors.white
+                                      : Colors.grey.shade400,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 15),
+
+            Text(
+              widget.report.company?.name ?? 'Company Name',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: ResponsiveHelper.fontSize(context, base: 15),
+              ),
+            ),
+
+            SizedBox(height: 10),
+
+            Row(
+              children: [
+                Icon(Icons.location_on, color: Colors.black),
+
+                SizedBox(width: 12),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Section',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.6),
+                          fontSize: ResponsiveHelper.fontSize(
+                            context,
+                            base: 14,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        '${widget.report.road!.roadNo.toString()} - ${widget.report.road!.name.toString()}',
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+
+            SizedBox(height: 10),
+
+            Row(
+              children: [
+                Icon(Icons.swap_calls, color: Colors.black),
+
+                SizedBox(width: 12),
+                Text(
+                  widget.report.fromSection != null && widget.report.toSection != null
+                      ? '${widget.report.fromSection} - ${widget.report.toSection}'
+                      : widget.report.fromSection ?? '',
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

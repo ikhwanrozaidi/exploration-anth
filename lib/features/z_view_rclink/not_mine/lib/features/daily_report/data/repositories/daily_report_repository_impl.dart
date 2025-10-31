@@ -39,6 +39,7 @@ class DailyReportRepositoryImpl
     int page = 1,
     int limit = 10,
     String sortOrder = 'asc',
+    String? search,
     bool forceRefresh = false,
     Duration? cacheTimeout = const Duration(hours: 1),
   }) async {
@@ -47,10 +48,21 @@ class DailyReportRepositoryImpl
       page: page,
       limit: limit,
       sortOrder: sortOrder,
+      search: search,
     );
 
     return remoteResult.fold(
-      (failure) {
+      (failure) async {
+        // Offline-first: fallback to local data source on remote failure
+        final localReports = await _localDataSource.getCachedDailyReports(
+          companyUID,
+          search,
+        );
+
+        if (localReports != null && localReports.isNotEmpty) {
+          return Right(localReports.map((model) => model.toEntity()).toList());
+        }
+
         return Left(failure);
       },
       (models) async {
@@ -59,6 +71,47 @@ class DailyReportRepositoryImpl
         return Right(models.map((model) => model.toEntity()).toList());
       },
     );
+  }
+
+  @override
+  Future<Either<Failure, DailyReport>> getDailyReportById({
+    required String companyUID,
+    required String dailyReportUID,
+    bool forceRefresh = false,
+  }) async {
+    try {
+      // Try to get from cache first if not forcing refresh
+      if (!forceRefresh) {
+        final cachedReport = await _localDataSource.getCachedDailyReportByUid(dailyReportUID);
+        if (cachedReport != null) {
+          return Right(cachedReport.toEntity());
+        }
+      }
+
+      // Fetch from remote
+      final remoteResult = await _remoteDataSource.getDailyReportById(
+        companyUID: companyUID,
+        dailyReportUID: dailyReportUID,
+      );
+
+      return remoteResult.fold(
+        (failure) async {
+          // On failure, try cache as fallback
+          final cachedReport = await _localDataSource.getCachedDailyReportByUid(dailyReportUID);
+          if (cachedReport != null) {
+            return Right(cachedReport.toEntity());
+          }
+          return Left(failure);
+        },
+        (model) async {
+          // Cache the fetched model
+          await _localDataSource.cacheSingleDailyReport(model);
+          return Right(model.toEntity());
+        },
+      );
+    } catch (e) {
+      return Left(CacheFailure('Failed to get daily report: $e'));
+    }
   }
 
   @override

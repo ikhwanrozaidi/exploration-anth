@@ -15,6 +15,12 @@ abstract class DailyReportRemoteDataSource {
     int page = 1,
     int limit = 10,
     String sortOrder = 'asc',
+    String? search,
+  });
+
+  Future<Either<Failure, DailyReportModel>> getDailyReportById({
+    required String companyUID,
+    required String dailyReportUID,
   });
 
   Future<Either<Failure, DailyReportModel>> createDailyReport({
@@ -40,13 +46,23 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
     int page = 1,
     int limit = 10,
     String sortOrder = 'asc',
+    String? search,
   }) async {
     try {
       final filter = DailyReportFilterModel(
         page: page,
         limit: limit,
         sortOrder: sortOrder,
-        expand: ['workScope', 'road', 'quantities', 'equipments'],
+        search: search,
+        expand: [
+          'contractRelation',
+          'workScope',
+          'road',
+          'quantities',
+          'equipments',
+          'files',
+          'company',
+        ],
       );
 
       final response = await _apiService.getCompanyDailyReports(
@@ -56,6 +72,48 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return Right(response.data);
+      } else {
+        print('❌ RemoteDataSource: API returned error - ${response.message}');
+        return Left(
+          ServerFailure(response.message, statusCode: response.statusCode),
+        );
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return const Left(NotFoundFailure());
+      }
+      if (e.response?.statusCode == 401) {
+        return const Left(UnauthorizedFailure());
+      }
+      return Left(NetworkFailure('Network error: ${e.message}'));
+    } catch (e) {
+      print('❌ RemoteDataSource: Unexpected error - $e');
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, DailyReportModel>> getDailyReportById({
+    required String companyUID,
+    required String dailyReportUID,
+  }) async {
+    try {
+      final response = await _apiService.getDailyReportById(
+        companyUID,
+        dailyReportUID,
+        [
+          'contractRelation',
+          'workScope',
+          'road',
+          'quantities',
+          'equipments',
+          'files',
+          'company',
+        ],
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return Right(response.data!);
       } else {
         print('❌ RemoteDataSource: API returned error - ${response.message}');
         return Left(

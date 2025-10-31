@@ -11,16 +11,18 @@ class GetDailyReportsParams extends Equatable {
   final int page;
   final int limit;
   final String sortOrder;
+  final String? search;
 
   const GetDailyReportsParams({
     required this.companyUID,
     this.page = 1,
     this.limit = 10,
     this.sortOrder = 'asc',
+    this.search,
   });
 
   @override
-  List<Object?> get props => [companyUID, page, limit, sortOrder];
+  List<Object?> get props => [companyUID, page, limit, sortOrder, search];
 }
 
 @lazySingleton
@@ -39,6 +41,7 @@ class GetDailyReportsUseCase
       page: params.page,
       limit: params.limit,
       sortOrder: params.sortOrder,
+      search: params.search,
     );
   }
 }

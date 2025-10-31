@@ -23,6 +23,14 @@ abstract class DailyReportApiService {
     @Queries() DailyReportFilterModel filter,
   );
 
+  /// Get a single daily report by ID
+  @GET('/companies/{companyUID}/daily-reports/{dailyReportUID}')
+  Future<ApiResponse<DailyReportModel>> getDailyReportById(
+    @Path('companyUID') String companyUID,
+    @Path('dailyReportUID') String dailyReportUID,
+    @Query('expand') List<String>? expand,
+  );
+
   /// Create a new daily report for the company
   @POST('/companies/{companyUID}/daily-reports')
   Future<ApiResponse<DailyReportModel>> createDailyReport(

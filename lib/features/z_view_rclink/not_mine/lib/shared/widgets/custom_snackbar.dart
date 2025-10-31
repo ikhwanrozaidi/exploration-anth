@@ -35,7 +35,7 @@ class CustomSnackBar {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: _getBackgroundColor(type).withOpacity(0.2),
+        color: _getBackgroundColor(type),
         borderRadius: BorderRadius.circular(12),
         // boxShadow: [
         //   BoxShadow(
@@ -47,13 +47,13 @@ class CustomSnackBar {
       ),
       child: Row(
         children: [
-          Icon(_getIcon(type), color: _getBackgroundColor(type), size: 24),
+          Icon(_getIcon(type), color: _getTextColor(type), size: 24),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
               message,
               style: TextStyle(
-                color: _getBackgroundColor(type),
+                color: _getTextColor(type),
                 fontSize: 14,
                 fontWeight: FontWeight.w500,
               ),
@@ -67,6 +67,23 @@ class CustomSnackBar {
   static Color _getBackgroundColor(SnackBarType type) {
     switch (type) {
       case SnackBarType.success:
+        return const Color.fromARGB(255, 196, 255, 198);
+      case SnackBarType.error:
+        return const Color.fromARGB(255, 255, 192, 192);
+      case SnackBarType.warning:
+        return const Color.fromARGB(255, 255, 217, 159);
+      case SnackBarType.info:
+        return const Color.fromARGB(255, 158, 211, 255);
+      case SnackBarType.validation:
+        return const Color.fromARGB(255, 255, 175, 151);
+      case SnackBarType.comingsoon:
+        return const Color.fromARGB(255, 221, 221, 221);
+    }
+  }
+
+  static Color _getTextColor(SnackBarType type) {
+    switch (type) {
+      case SnackBarType.success:
         return const Color(0xFF4CAF50);
       case SnackBarType.error:
         return const Color(0xFFE53E3E);
@@ -77,7 +94,7 @@ class CustomSnackBar {
       case SnackBarType.validation:
         return const Color(0xFFFF5722);
       case SnackBarType.comingsoon:
-        return const Color.fromARGB(255, 141, 141, 141);
+        return const Color.fromARGB(255, 107, 107, 107);
     }
   }
 

@@ -11,7 +11,22 @@ class DailyReportViewEvent with _$DailyReportViewEvent {
     @Default(10) int limit,
     @Default('asc') String sortOrder,
     @Default(false) bool forceRefresh,
+    String? search,
   }) = LoadDailyReports;
+
+  const factory DailyReportViewEvent.loadMoreDailyReports({
+    required String companyUID,
+    required int page,
+    @Default(10) int limit,
+    @Default('asc') String sortOrder,
+    String? search,
+  }) = LoadMoreDailyReports;
+
+  const factory DailyReportViewEvent.loadDailyReportById({
+    required String companyUID,
+    required String dailyReportUID,
+    @Default(false) bool forceRefresh,
+  }) = LoadDailyReportById;
 
   const factory DailyReportViewEvent.clearCache() = ClearDailyReportCache;
 

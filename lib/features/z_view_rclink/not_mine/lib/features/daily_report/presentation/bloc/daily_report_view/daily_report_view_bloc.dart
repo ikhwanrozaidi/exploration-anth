@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../domain/usecases/get_daily_report_usecase.dart';
+import '../../../domain/usecases/get_daily_report_by_id_usecase.dart';
 import '../../../domain/usecases/clear_daily_report_cache_usecase.dart';
 import 'daily_report_view_event.dart';
 import 'daily_report_view_state.dart';
@@ -10,13 +11,17 @@ import 'daily_report_view_state.dart';
 class DailyReportViewBloc
     extends Bloc<DailyReportViewEvent, DailyReportViewState> {
   final GetDailyReportsUseCase _getDailyReportsUseCase;
+  final GetDailyReportByIdUseCase _getDailyReportByIdUseCase;
   final ClearDailyReportCacheUseCase _clearDailyReportCacheUseCase;
 
   DailyReportViewBloc(
     this._getDailyReportsUseCase,
+    this._getDailyReportByIdUseCase,
     this._clearDailyReportCacheUseCase,
   ) : super(const DailyReportViewInitial()) {
     on<LoadDailyReports>(_onLoadDailyReports);
+    on<LoadMoreDailyReports>(_onLoadMoreDailyReports);
+    on<LoadDailyReportById>(_onLoadDailyReportById);
     on<ClearDailyReportCache>(_onClearCache);
 
     // on<LoadRoadsForEdit>(_onLoadRoadsForEdit);
@@ -37,12 +42,91 @@ class DailyReportViewBloc
         page: event.page,
         limit: event.limit,
         sortOrder: event.sortOrder,
+        search: event.search,
       ),
     );
 
     result.fold(
       (failure) => emit(DailyReportViewFailure(_mapFailureToMessage(failure))),
-      (reports) => emit(DailyReportViewLoaded(reports)),
+      (reports) => emit(
+        DailyReportViewLoaded(
+          reports: reports,
+          currentPage: event.page,
+          hasMore: reports.length >= event.limit,
+          isLoadingMore: false,
+          searchQuery: event.search,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onLoadMoreDailyReports(
+    LoadMoreDailyReports event,
+    Emitter<DailyReportViewState> emit,
+  ) async {
+    // Only load more if current state is loaded and not already loading more
+    if (state is! DailyReportViewLoaded) return;
+
+    final currentState = state as DailyReportViewLoaded;
+
+    // Don't load if already loading or no more data
+    if (currentState.isLoadingMore || !currentState.hasMore) return;
+
+    // Emit loading more state
+    emit(currentState.copyWith(isLoadingMore: true));
+
+    final result = await _getDailyReportsUseCase(
+      GetDailyReportsParams(
+        companyUID: event.companyUID,
+        page: event.page,
+        limit: event.limit,
+        sortOrder: event.sortOrder,
+        search: event.search,
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        // On error, keep existing data but stop loading more
+        emit(currentState.copyWith(
+          isLoadingMore: false,
+          hasMore: false,
+        ));
+      },
+      (newReports) {
+        // Append new reports to existing ones
+        final allReports = [...currentState.reports, ...newReports];
+
+        emit(
+          DailyReportViewLoaded(
+            reports: allReports,
+            currentPage: event.page,
+            hasMore: newReports.length >= event.limit,
+            isLoadingMore: false,
+            searchQuery: event.search,
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _onLoadDailyReportById(
+    LoadDailyReportById event,
+    Emitter<DailyReportViewState> emit,
+  ) async {
+    emit(const DailyReportViewDetailLoading());
+
+    final result = await _getDailyReportByIdUseCase(
+      GetDailyReportByIdParams(
+        companyUID: event.companyUID,
+        dailyReportUID: event.dailyReportUID,
+        forceRefresh: event.forceRefresh,
+      ),
+    );
+
+    result.fold(
+      (failure) => emit(DailyReportViewDetailFailure(_mapFailureToMessage(failure))),
+      (report) => emit(DailyReportViewDetailLoaded(report: report)),
     );
   }
 

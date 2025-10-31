@@ -6,6 +6,7 @@ import 'package:rclink_app/features/daily_report/data/models/daily_report_model.
 import 'package:rclink_app/features/daily_report/data/models/road_response_model.dart';
 import 'package:rclink_app/features/daily_report/data/models/work_scope_response_model.dart';
 import 'package:rclink_app/features/daily_report/data/models/report_quantities_model.dart';
+import 'package:rclink_app/core/domain/models/file_model.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../road/domain/entities/road_edit_entity.dart';
@@ -14,8 +15,13 @@ import '../models/create_daily_report_equipment_model.dart';
 import '../models/create_daily_report_quantity_model.dart';
 
 abstract class DailyReportLocalDataSource {
-  Future<List<DailyReportModel>?> getCachedDailyReports(String companyUID);
+  Future<List<DailyReportModel>?> getCachedDailyReports(
+    String companyUID,
+    String? search,
+  );
+  Future<DailyReportModel?> getCachedDailyReportByUid(String uid);
   Future<void> cacheDailyReports(List<DailyReportModel> reports);
+  Future<void> cacheSingleDailyReport(DailyReportModel report);
   Future<void> clearCache();
 
   Future<DailyReportModel> createDailyReportLocal(
@@ -47,22 +53,51 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
   @override
   Future<List<DailyReportModel>?> getCachedDailyReports(
     String companyUID,
+    String? search,
   ) async {
     try {
-      final records = await (_database.select(
-        _database.dailyReports,
-      )..where((tbl) => tbl.deletedAt.isNull())).get();
+      final query = _database.select(_database.dailyReports)
+        ..where((tbl) => tbl.deletedAt.isNull());
+
+      // Add search filter if provided
+      if (search != null && search.trim().isNotEmpty) {
+        query.where(
+          (tbl) => tbl.name.like('%${search.trim()}%'),
+        );
+      }
+
+      final records = await query.get();
 
       if (records.isEmpty) {
         return null;
       }
 
       // Use helper method to convert records to models
-      final reports = records.map(_convertRecordToModel).toList();
+      final reports = await Future.wait(
+        records.map((record) => _convertRecordToModel(record)),
+      );
 
       return reports.isEmpty ? null : reports;
     } catch (e) {
       // Error already logged in helper method if needed
+      return null;
+    }
+  }
+
+  @override
+  Future<DailyReportModel?> getCachedDailyReportByUid(String uid) async {
+    try {
+      final record = await (_database.select(_database.dailyReports)
+            ..where((tbl) => tbl.uid.equals(uid) & tbl.deletedAt.isNull()))
+          .getSingleOrNull();
+
+      if (record == null) {
+        return null;
+      }
+
+      return await _convertRecordToModel(record);
+    } catch (e) {
+      print('Error getting cached daily report by UID: $e');
       return null;
     }
   }
@@ -83,14 +118,10 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
           });
         }
 
-        // Convert road to JSON
+        // Convert road to JSON (includes district, state, and country data)
         String? roadData;
         if (report.road != null) {
-          roadData = jsonEncode({
-            'name': report.road!.name,
-            'roadNo': report.road!.roadNo,
-            'uid': report.road!.uid,
-          });
+          roadData = jsonEncode(report.road!.toJson());
         }
 
         // Convert equipments to JSON
@@ -152,9 +183,118 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
                 reportQuantitiesData: Value(reportQuantitiesJson),
               ),
             );
+
+        // Save files if any
+        if (report.files != null && report.files!.isNotEmpty) {
+          for (final file in report.files!) {
+            await _database.into(_database.files).insertOnConflictUpdate(
+                  FilesCompanion(
+                    id: Value(file.id),
+                    uid: Value(file.uid),
+                    fileName: Value(file.fileName),
+                    s3Url: Value(file.s3Url),
+                    mimeType: Value(file.mimeType),
+                    size: Value(file.size),
+                    sequence: Value(file.sequence),
+                    companyID: Value(file.companyID),
+                    contextType: Value(file.contextType),
+                    contextField: Value(file.contextField),
+                    uploadedByID: Value(file.uploadedByID),
+                    dailyReportID: Value(report.id), // Link to daily report
+                    createdAt: Value(file.createdAt ?? DateTime.now()),
+                    updatedAt: Value(file.updatedAt ?? DateTime.now()),
+                    isSynced: Value(file.isSynced),
+                  ),
+                );
+          }
+        }
       }
     } catch (e) {
       print('Error caching daily reports: $e');
+    }
+  }
+
+  @override
+  Future<void> cacheSingleDailyReport(DailyReportModel report) async {
+    try {
+      // Insert or update the single report (reuse logic from cacheDailyReports)
+      await _database.into(_database.dailyReports).insertOnConflictUpdate(
+            DailyReportsCompanion(
+              id: Value(report.id),
+              uid: Value(report.uid),
+              name: Value(report.name),
+              notes: Value(report.notes),
+              weatherCondition: Value(report.weatherCondition),
+              workPerformed: Value(report.workPerformed),
+              companyID: Value(report.companyID),
+              status: Value(report.status),
+              contractRelationID: Value(report.contractRelationID),
+              approvedByID: Value(report.approvedByID),
+              approvedAt: Value(report.approvedAt),
+              rejectionReason: Value(report.rejectionReason),
+              workScopeID: Value(report.workScopeID),
+              roadID: Value(report.roadID),
+              totalWorkers: Value(report.totalWorkers),
+              fromSection: Value(report.fromSection != null ? double.tryParse(report.fromSection!) : null),
+              toSection: Value(report.toSection != null ? double.tryParse(report.toSection!) : null),
+              longitude: Value(report.longitude != null ? double.tryParse(report.longitude!) : null),
+              latitude: Value(report.latitude != null ? double.tryParse(report.latitude!) : null),
+              createdByID: Value(report.createdByID),
+              createdAt: Value(report.createdAt),
+              updatedAt: Value(report.updatedAt),
+              workScopeData: Value(report.workScope != null
+                  ? jsonEncode({
+                      'name': report.workScope!.name,
+                      'code': report.workScope!.code,
+                      'uid': report.workScope!.uid,
+                    })
+                  : null),
+              roadData: Value(report.road != null
+                  ? jsonEncode(report.road!.toJson())
+                  : null),
+              equipmentsData: Value(report.equipments!.isNotEmpty
+                  ? jsonEncode(
+                      report.equipments!
+                          .map((e) => {'name': e.name, 'uid': e.uid})
+                          .toList(),
+                    )
+                  : null),
+              reportQuantitiesData:
+                  Value(report.reportQuantities != null &&
+                          report.reportQuantities!.isNotEmpty
+                      ? jsonEncode(
+                          report.reportQuantities!.map((q) => q.toJson()).toList(),
+                        )
+                      : null),
+            ),
+          );
+
+      // Cache files if any
+      if (report.files != null && report.files!.isNotEmpty) {
+        for (final file in report.files!) {
+          await _database.into(_database.files).insertOnConflictUpdate(
+                FilesCompanion(
+                  id: Value(file.id),
+                  uid: Value(file.uid),
+                  fileName: Value(file.fileName),
+                  s3Url: Value(file.s3Url),
+                  mimeType: Value(file.mimeType),
+                  size: Value(file.size),
+                  sequence: Value(file.sequence),
+                  companyID: Value(file.companyID),
+                  contextType: Value(file.contextType),
+                  contextField: Value(file.contextField),
+                  uploadedByID: Value(file.uploadedByID),
+                  dailyReportID: Value(report.id),
+                  createdAt: Value(file.createdAt ?? DateTime.now()),
+                  updatedAt: Value(file.updatedAt ?? DateTime.now()),
+                  isSynced: Value(file.isSynced),
+                ),
+              );
+        }
+      }
+    } catch (e) {
+      print('Error caching single daily report: $e');
     }
   }
 
@@ -243,7 +383,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
         )..where((tbl) => tbl.uid.equals(tempUID))).getSingle();
 
         // Convert to model using same logic as getCachedDailyReports
-        return _convertRecordToModel(createdRecord);
+        return await _convertRecordToModel(createdRecord);
       } catch (e) {
         // Let transaction auto-rollback on error
         rethrow;
@@ -253,7 +393,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
 
   /// Helper method to convert DailyReportRecord to DailyReportModel
   /// Shared logic between getCachedDailyReports and createDailyReportLocal
-  DailyReportModel _convertRecordToModel(DailyReportRecord record) {
+  Future<DailyReportModel> _convertRecordToModel(DailyReportRecord record) async {
     // Parse workScope JSON
     WorkScopeResponseModel? workScope;
     if (record.workScopeData != null && record.workScopeData!.isNotEmpty) {
@@ -269,16 +409,12 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
       }
     }
 
-    // Parse road JSON
+    // Parse road JSON (includes district, state, and country data)
     RoadResponseModel? road;
     if (record.roadData != null && record.roadData!.isNotEmpty) {
       try {
         final data = jsonDecode(record.roadData!);
-        road = RoadResponseModel(
-          name: data['name'] as String,
-          roadNo: data['roadNo'] as String,
-          uid: data['uid'] as String,
-        );
+        road = RoadResponseModel.fromJson(data);
       } catch (e) {
         // Silently skip parsing errors for optional fields
       }
@@ -318,6 +454,19 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
       }
     }
 
+    // Parse files from Files table
+    List<FileModel> files = [];
+    try {
+      final fileRecords = await (_database.select(_database.files)
+            ..where(
+                (tbl) => tbl.dailyReportID.equals(record.id) & tbl.deletedAt.isNull()))
+          .get();
+
+      files = fileRecords.map((f) => FileModel.fromDatabaseRecord(f)).toList();
+    } catch (e) {
+      // Silently skip parsing errors for optional fields
+    }
+
     return DailyReportModel(
       id: record.id,
       uid: record.uid,
@@ -346,6 +495,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
       road: road,
       equipments: equipments,
       reportQuantities: reportQuantities,
+      files: files,
     );
   }
 

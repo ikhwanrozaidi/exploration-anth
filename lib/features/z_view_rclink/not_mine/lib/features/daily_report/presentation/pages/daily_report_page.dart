@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
@@ -10,8 +11,10 @@ import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
 import '../bloc/daily_report_view/daily_report_view_bloc.dart';
 import '../bloc/daily_report_view/daily_report_view_event.dart';
 import '../bloc/daily_report_view/daily_report_view_state.dart';
-import '../widgets/daily_report_page_loading.dart';
-import 'widget/overview_list_widget.dart';
+import '../widgets/report_list/daily_report_list_header.dart';
+import '../widgets/report_list/daily_report_list_filters.dart';
+import '../widgets/scroll_hide_header_delegate.dart';
+import '../widgets/report_list/daily_report_list_item.dart';
 
 class DailyReportPage extends StatelessWidget {
   const DailyReportPage({Key? key}) : super(key: key);
@@ -36,6 +39,12 @@ class _DailyReportPageContent extends StatefulWidget {
 class _DailyReportPageContentState extends State<_DailyReportPageContent> {
   int selectedMonth = DateTime.now().month;
   int selectedYear = DateTime.now().year;
+  late ScrollController _scrollController;
+  late TextEditingController _searchController;
+  Timer? _debounceTimer;
+  bool _isScrollingUp = false;
+  double _lastScrollPosition = 0.0;
+  bool _isLoadingMore = false;
 
   void onMonthSelected(int month, int year) {
     setState(() {
@@ -48,7 +57,84 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
   @override
   void initState() {
     super.initState();
-    _loadDailyReports();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+    _searchController = TextEditingController();
+
+    // Trigger initial load after frame is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final companyState = context.read<CompanyBloc>().state;
+      companyState.whenOrNull(
+        loaded: (companies, selectedCompany) {
+          if (selectedCompany != null) {
+            context.read<DailyReportViewBloc>().add(
+              DailyReportViewEvent.loadDailyReports(
+                companyUID: selectedCompany.uid,
+                page: 1,
+                limit: 10,
+              ),
+            );
+          }
+        },
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _searchController.dispose();
+    _debounceTimer?.cancel();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+
+    final currentPosition = _scrollController.position.pixels;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+
+    // Update scroll direction (with threshold to prevent jitter)
+    if ((currentPosition - _lastScrollPosition).abs() > 10) {
+      final isScrollingUp = currentPosition > _lastScrollPosition;
+      if (isScrollingUp != _isScrollingUp) {
+        setState(() {
+          _isScrollingUp = isScrollingUp;
+        });
+      }
+    }
+
+    // Pagination trigger
+    if (currentPosition >= (maxScroll - 200.0) && !_isLoadingMore) {
+      final companyState = context.read<CompanyBloc>().state;
+      companyState.whenOrNull(
+        loaded: (companies, selectedCompany) {
+          if (selectedCompany != null) {
+            final bloc = context.read<DailyReportViewBloc>();
+            final state = bloc.state;
+
+            state.whenOrNull(
+              loaded:
+                  (reports, currentPage, hasMore, isLoadingMore, searchQuery) {
+                    if (hasMore && !isLoadingMore) {
+                      setState(() => _isLoadingMore = true);
+                      bloc.add(
+                        DailyReportViewEvent.loadMoreDailyReports(
+                          companyUID: selectedCompany.uid,
+                          page: currentPage + 1,
+                          limit: 10,
+                          search: searchQuery,
+                        ),
+                      );
+                    }
+                  },
+            );
+          }
+        },
+      );
+    }
+
+    _lastScrollPosition = currentPosition;
   }
 
   void _loadDailyReports() {
@@ -68,6 +154,27 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
         }
       },
     );
+  }
+
+  void _onSearchChanged(String query) {
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      final companyState = context.read<CompanyBloc>().state;
+      companyState.whenOrNull(
+        loaded: (companies, selectedCompany) {
+          if (selectedCompany != null) {
+            context.read<DailyReportViewBloc>().add(
+              DailyReportViewEvent.loadDailyReports(
+                companyUID: selectedCompany.uid,
+                page: 1,
+                limit: 10,
+                search: query.trim().isEmpty ? null : query.trim(),
+              ),
+            );
+          }
+        },
+      );
+    });
   }
 
   @override
@@ -181,80 +288,18 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                     children: [
                       BlocBuilder<DailyReportViewBloc, DailyReportViewState>(
                         builder: (context, state) {
-                          return state.maybeWhen(
-                            loaded: (reports) => Padding(
-                              padding: const EdgeInsets.only(
-                                top: 30.0,
-                                left: 30.0,
-                              ),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    'All Reports',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 15,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.amber.withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    child: Text(
-                                      reports.length.toString(),
-                                      style: TextStyle(
-                                        color: Colors.amber,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            orElse: () => Padding(
-                              padding: const EdgeInsets.only(
-                                top: 30.0,
-                                left: 30.0,
-                              ),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    'All Reports',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Container(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 15,
-                                      vertical: 4,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.amber.withOpacity(0.2),
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    child: Text(
-                                      '0',
-                                      style: TextStyle(
-                                        color: Colors.amber,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                          final reportCount = state.maybeWhen(
+                            loaded:
+                                (
+                                  reports,
+                                  currentPage,
+                                  hasMore,
+                                  isLoadingMore,
+                                  searchQuery,
+                                ) => reports.length,
+                            orElse: () => 0,
                           );
+                          return DailyReportListHeader(reportCount: reportCount);
                         },
                       ),
                       _buildBody(),
@@ -270,317 +315,229 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
   }
 
   Widget _buildBody() {
-    return BlocBuilder<DailyReportViewBloc, DailyReportViewState>(
-      builder: (context, state) {
-        return state.when(
-          initial: () => const Expanded(
-            child: Center(child: Text('No daily reports loaded')),
-          ),
-          loading: () => Expanded(child: DailyReportPageLoading()),
-          roadsLoading: () =>
-              const Expanded(child: Center(child: CircularProgressIndicator())),
-          roadsLoaded: (roads, selectedRoad, currentSection, sectionError) =>
-              const Expanded(child: Center(child: Text('Roads loaded'))),
-          roadsFailure: (message) => Expanded(
-            child: Center(
-              child: Text(message, style: const TextStyle(color: Colors.red)),
+    // Get company UID outside of BLoC state check
+    final companyState = context.read<CompanyBloc>().state;
+    String? companyUID;
+
+    companyState.whenOrNull(
+      loaded: (companies, selectedCompany) {
+        companyUID = selectedCompany?.uid;
+      },
+    );
+
+    if (companyUID == null) {
+      return Expanded(child: Center(child: Text('No company selected')));
+    }
+
+    // Use CustomScrollView with slivers for scroll effects
+    return Expanded(
+      child: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
+          // Search bar - always visible (pinned)
+          SliverPersistentHeader(
+            pinned: true,
+            delegate: ScrollHideHeaderDelegate(
+              height: 80,
+              shouldHide: false, // Always visible
+              child: Container(
+                color: Colors.white,
+                padding: const EdgeInsets.all(20.0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: _onSearchChanged,
+                  decoration: InputDecoration(
+                    hintText: 'Search report',
+                    prefixIcon: Icon(
+                      Icons.search,
+                      size: 24,
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey.shade200,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 20,
+                    ),
+                    hintStyle: TextStyle(
+                      color: Colors.black.withOpacity(0.5),
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-          loaded: (reports) => Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            backgroundColor: Colors.grey.shade200,
-                          ),
-                          onPressed: () {},
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 11,
-                              horizontal: 25,
-                            ),
-                            child: Row(
+
+          // MonthFilter - hides on scroll up, shows on scroll down
+          SliverPersistentHeader(
+            pinned: false,
+            floating: true,
+            delegate: ScrollHideHeaderDelegate(
+              height: 70,
+              shouldHide: _isScrollingUp,
+              child: Container(
+                color: Colors.white,
+                child: MonthFilter(
+                  onMonthSelected: onMonthSelected,
+                  primaryColor: primaryColor,
+                ),
+              ),
+            ),
+          ),
+
+          // DailyReportFilters - hides on scroll up, shows on scroll down
+          SliverPersistentHeader(
+            pinned: false,
+            floating: true,
+            delegate: ScrollHideHeaderDelegate(
+              height: 60,
+              shouldHide: _isScrollingUp,
+              child: Container(
+                color: Colors.white,
+                child: DailyReportListFilters(
+                  onContractorTap: () {},
+                  onScopeWorkTap: () {},
+                  onStatusTap: () {},
+                ),
+              ),
+            ),
+          ),
+
+          // Reports list
+          BlocConsumer<DailyReportViewBloc, DailyReportViewState>(
+            listener: (context, state) {
+              state.whenOrNull(
+                loaded:
+                    (
+                      reports,
+                      currentPage,
+                      hasMore,
+                      isLoadingMore,
+                      searchQuery,
+                    ) {
+                      if (!isLoadingMore && _isLoadingMore) {
+                        setState(() => _isLoadingMore = false);
+                      }
+                    },
+              );
+            },
+            builder: (context, state) {
+              return state.when(
+                initial: () => SliverFillRemaining(
+                  child: Center(child: Text('Ready to load reports')),
+                ),
+                loading: () => SliverFillRemaining(
+                  child: Center(child: CircularProgressIndicator()),
+                ),
+                loaded:
+                    (
+                      reports,
+                      currentPage,
+                      hasMore,
+                      isLoadingMore,
+                      searchQuery,
+                    ) {
+                      if (reports.isEmpty) {
+                        return SliverFillRemaining(
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  Icons.search,
-                                  size: 30,
-                                  color: Colors.black.withOpacity(0.5),
+                                  Icons.description_outlined,
+                                  size: 64,
+                                  color: Colors.grey,
                                 ),
-                                SizedBox(width: 20),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Search report',
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.5),
-                                        fontSize: 13,
-                                      ),
-                                    ),
-                                  ],
+                                SizedBox(height: 16),
+                                Text(
+                                  'No reports found',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
+                        );
+                      }
+
+                      return SliverPadding(
+                        padding: EdgeInsets.all(20),
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              if (index == reports.length) {
+                                // Loading indicator at the bottom
+                                return Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
+
+                              return DailyReportListItem(
+                                report: reports[index],
+                              );
+                            },
+                            childCount:
+                                reports.length +
+                                (hasMore || isLoadingMore ? 1 : 0),
+                          ),
                         ),
-                      ],
-                    ),
-                  ),
-                  MonthFilter(
-                    onMonthSelected: onMonthSelected,
-                    primaryColor: primaryColor,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(20),
+                      );
+                    },
+                failure: (message) => SliverFillRemaining(
+                  child: Center(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // Contractor
-                            Expanded(
-                              child: TextButton(
-                                style: TextButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(horizontal: 15),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50),
-                                    side: BorderSide(
-                                      color: Colors.grey.shade300,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  backgroundColor: Colors.white,
-                                ),
-                                onPressed: () {},
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.person,
-                                            size: 10,
-                                            color: Colors.black,
-                                          ),
-                                          SizedBox(width: 5),
-                                          Expanded(
-                                            child: Text(
-                                              'Contractor',
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                overflow: TextOverflow.ellipsis,
-                                                fontSize:
-                                                    ResponsiveHelper.fontSize(
-                                                      context,
-                                                      base: 10,
-                                                    ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.expand_more,
-                                      size: 15,
-                                      color: Colors.black,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            // Scope Work
-                            Expanded(
-                              child: TextButton(
-                                style: TextButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(horizontal: 15),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50),
-                                    side: BorderSide(
-                                      color: Colors.grey.shade300,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  backgroundColor: Colors.white,
-                                ),
-                                onPressed: () {},
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.restaurant_menu,
-                                            size: 10,
-                                            color: Colors.black,
-                                          ),
-                                          SizedBox(width: 5),
-                                          Expanded(
-                                            child: Text(
-                                              'Scope Work',
-                                              style: TextStyle(
-                                                overflow: TextOverflow.ellipsis,
-                                                color: Colors.black,
-                                                fontSize:
-                                                    ResponsiveHelper.fontSize(
-                                                      context,
-                                                      base: 10,
-                                                    ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Icon(
-                                      Icons.expand_more,
-                                      size: 15,
-                                      color: Colors.black,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(width: 10),
-                            // Status
-                            Expanded(
-                              child: TextButton(
-                                style: TextButton.styleFrom(
-                                  padding: EdgeInsets.symmetric(horizontal: 15),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(50),
-                                    side: BorderSide(
-                                      color: Colors.grey.shade300,
-                                      width: 1,
-                                    ),
-                                  ),
-                                  backgroundColor: Colors.white,
-                                ),
-                                onPressed: () {},
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.grid_on,
-                                          size: 10,
-                                          color: Colors.black,
-                                        ),
-                                        SizedBox(width: 5),
-                                        Text(
-                                          'Status',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize: ResponsiveHelper.fontSize(
-                                              context,
-                                              base: 10,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Icon(
-                                      Icons.expand_more,
-                                      size: 15,
-                                      color: Colors.black,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
+                        Text(
+                          message,
+                          style: TextStyle(color: Colors.red),
+                          textAlign: TextAlign.center,
                         ),
-
-                        SizedBox(height: 20),
-
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          padding: ResponsiveHelper.padding(context, all: 10),
-                          itemCount: reports.length,
-                          itemBuilder: (context, index) {
-                            return DailyReportOverviewListWidget(
-                              report: reports[index],
+                        SizedBox(height: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            context.read<DailyReportViewBloc>().add(
+                              DailyReportViewEvent.loadDailyReports(
+                                companyUID: companyUID!,
+                                page: 1,
+                                limit: 10,
+                              ),
                             );
                           },
+                          child: Text('Retry'),
                         ),
-
-                        // // Test Roads
-                        // RoadFieldTile(
-                        //   startFrom: RoadLevel.provinces,
-                        //   endAt: RoadLevel.roads,
-                        //   onRoadSelected: (RoadSelectionResult result) {
-                        //     print('Road UID: ${result.selectedRoad?.uid}');
-                        //     print('Road Name: ${result.selectedRoad?.name}');
-                        //     print('Road No: ${result.selectedRoad?.roadNo}');
-                        //     print(
-                        //       'Section Start: ${result.selectedRoad?.sectionStart}',
-                        //     );
-                        //     print(
-                        //       'Section Finish: ${result.selectedRoad?.sectionFinish}',
-                        //     );
-                        //     print(
-                        //       'Main Category ID: ${result.selectedRoad?.mainCategoryID}',
-                        //     );
-                        //     print(
-                        //       'Secondary Category ID: ${result.selectedRoad?.secondaryCategoryID}',
-                        //     );
-                        //     print(
-                        //       'District: ${result.selectedRoad?.district?.name}',
-                        //     );
-                        //     print(
-                        //       'District UID: ${result.selectedDistrict?.uid}',
-                        //     );
-                        //     print(
-                        //       'Province: ${result.selectedRoad?.district?.state?.name}',
-                        //     );
-                        //     print(
-                        //       'Province UID: ${result.selectedProvince?.uid}',
-                        //     );
-                        //   },
-                        // ),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
+                ),
+                detailLoading: () =>
+                    SliverToBoxAdapter(child: SizedBox.shrink()),
+                detailLoaded: (report) =>
+                    SliverToBoxAdapter(child: SizedBox.shrink()),
+                detailFailure: (message) =>
+                    SliverToBoxAdapter(child: SizedBox.shrink()),
+                roadsLoading: () =>
+                    SliverToBoxAdapter(child: SizedBox.shrink()),
+                roadsLoaded:
+                    (roads, selectedRoad, currentSection, sectionError) =>
+                        SliverToBoxAdapter(child: SizedBox.shrink()),
+                roadsFailure: (message) =>
+                    SliverToBoxAdapter(child: SizedBox.shrink()),
+              );
+            },
           ),
-          failure: (message) => Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(message, style: const TextStyle(color: Colors.red)),
-                  SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: _loadDailyReports,
-                    child: const Text('Retry'),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
+        ],
+      ),
     );
   }
 }
