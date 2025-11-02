@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../../../shared/models/api_response.dart';
+import '../models/package_work_scope_response_model.dart';
 import '../models/work_scope_model.dart';
 import '../models/work_quantity_type_model.dart';
 import '../models/work_scope_equipment_model.dart';
@@ -46,13 +47,11 @@ abstract class WorkScopeApiService {
     @Path('workScopeUID') required String workScopeUID,
   });
 
-  //   @GET(
-  //     '/companies/{companyUID}/contractors/{contractorRelationUID}/package-work-scopes',
-  //   )
-  //   Future<ApiResponse<List<...>>> getContractorsWorkScopes({
-  //     @Queries() Map<String, dynamic>? baseParams,
-
-  //     @Path('companyUID') required String companyUID,
-  //     @Path('contractorRelationUID') required String contractorRelationUID,
-  //   });
+  @GET(
+    '/companies/{companyUID}/contractors/{contractorRelationUID}/package-work-scopes',
+  )
+  Future<ApiResponse<PackageWorkScopeResponseModel>> getPackageWorkScopes({
+    @Path('companyUID') required String companyUID,
+    @Path('contractorRelationUID') required String contractorRelationUID,
+  });
 }

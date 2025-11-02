@@ -40,7 +40,8 @@ class WorkScopesRepositoryImpl
 
     return await getOfflineFirst(
       getLocal: () => _localDataSource.getCachedWorkScopeModels(),
-      getRemote: () => _remoteDataSource.getWorkScopes(companyUID),
+      getRemote: () => _remoteDataSource.getWorkScopes(),
+
       saveLocal: (models, {bool markForSync = false}) =>
           _localDataSource.cacheWorkScopeModels(models),
       toEntity: (models) => models.map((model) => model.toEntity()).toList(),
