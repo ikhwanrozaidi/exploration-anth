@@ -234,7 +234,9 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
         );
       }).toList();
 
-      print('💾 Retrieved cached package data from database');
+      print(
+        '💾 getCachedPackageData: Retrieved cached package data from database',
+      );
       return PackageDataResponseModel(
         package: packageModel,
         countries: countryModels,
@@ -496,7 +498,7 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
         }
       });
 
-      print('💾 Cached complete package data');
+      print('💾cachePackageData RoadLocal: Cached complete package data');
     } catch (e) {
       print('❌ Error caching package data: $e');
       rethrow;

@@ -20,9 +20,11 @@ class _RoadApiService implements RoadApiService {
   @override
   Future<ApiResponse<PackageDataResponseModel>> getCompanyRoads({
     required String companyUID,
+    List<String>? expand,
   }) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'expand': expand};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<ApiResponse<PackageDataResponseModel>>(

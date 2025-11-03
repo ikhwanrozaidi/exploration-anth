@@ -53,6 +53,7 @@ abstract class RoadApiService {
   @GET('/companies/{companyUID}/roads')
   Future<ApiResponse<PackageDataResponseModel>> getCompanyRoads({
     @Path('companyUID') required String companyUID,
+    @Query('expand') List<String>? expand,
   });
 
   //isSelf = false

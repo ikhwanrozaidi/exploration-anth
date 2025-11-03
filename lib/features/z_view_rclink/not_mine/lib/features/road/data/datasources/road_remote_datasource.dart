@@ -66,7 +66,10 @@ class RoadRemoteDataSourceImpl implements RoadRemoteDataSource {
         );
       } else {
         // Call company roads endpoint (when isSelf = true or no contractRelationUID)
-        response = await _apiService.getCompanyRoads(companyUID: companyUID);
+        response = await _apiService.getCompanyRoads(
+          companyUID: companyUID,
+          expand: ['countries', 'states', 'districts'],
+        );
       }
 
       if (response.isSuccess && response.data != null) {
