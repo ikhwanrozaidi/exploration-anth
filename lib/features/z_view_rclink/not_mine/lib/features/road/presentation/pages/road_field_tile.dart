@@ -101,6 +101,7 @@ class _RoadFieldTileState extends State<RoadFieldTile> {
         break;
     }
 
+    // Wait for initial load
     await Future.delayed(const Duration(milliseconds: 500));
     setState(() {
       _isInitialized = true;

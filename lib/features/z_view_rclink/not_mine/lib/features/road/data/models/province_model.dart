@@ -30,6 +30,7 @@ abstract class ProvinceModel with _$ProvinceModel {
       uid: uid,
       name: name,
       countryID: countryID,
+      countryUID: countryUID,
       createdAt: createdAt,
       updatedAt: updatedAt,
       country: country?.toEntity(),
@@ -43,6 +44,7 @@ abstract class ProvinceModel with _$ProvinceModel {
       uid: entity.uid,
       name: entity.name,
       countryID: entity.countryID,
+      countryUID: entity.countryUID,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       country: entity.country != null

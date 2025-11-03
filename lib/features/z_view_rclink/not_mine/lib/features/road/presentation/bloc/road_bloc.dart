@@ -9,7 +9,7 @@ import '../../domain/usecases/get_road_usecase.dart';
 import 'road_event.dart';
 import 'road_state.dart';
 
-@injectable
+@lazySingleton
 class RoadBloc extends Bloc<RoadEvent, RoadState> {
   final GetRoadsUseCase _getRoadsUseCase;
   final ClearRoadCacheUseCase _clearRoadCacheUseCase;
@@ -73,7 +73,7 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
       List<Province> filteredProvinces = _allProvinces;
       if (event.countryUid != null) {
         filteredProvinces = _allProvinces
-            .where((p) => p.country?.uid == event.countryUid)
+            .where((p) => p.countryUID == event.countryUid)
             .toList();
       }
 
@@ -112,7 +112,7 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
       List<Province> filteredProvinces = _allProvinces;
       if (event.countryUid != null) {
         filteredProvinces = _allProvinces
-            .where((p) => p.country?.uid == event.countryUid)
+            .where((p) => p.countryUID == event.countryUid)
             .toList();
       }
 
@@ -155,7 +155,7 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
 
     // Filter districts by provinceUid
     final filteredDistricts = _allDistricts
-        .where((d) => d.state?.uid == event.provinceUid)
+        .where((d) => d.stateUID == event.provinceUid)
         .toList();
 
     final current = _currentLoaded;
@@ -198,7 +198,7 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
 
     // Filter roads by districtUid
     final filteredRoads = _allRoads
-        .where((r) => r.district?.uid == event.districtUid)
+        .where((r) => r.districtUID == event.districtUid)
         .toList();
 
     final current = _currentLoaded;
@@ -320,15 +320,34 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     ClearRoadCache event,
     Emitter<RoadState> emit,
   ) async {
+    print('🧹 RoadBloc: Starting cache clear...');
+    print(
+      '🧹 Before clear - Countries: ${_allCountries.length}, Provinces: ${_allProvinces.length}, Districts: ${_allDistricts.length}, Roads: ${_allRoads.length}',
+    );
+
     emit(const RoadState.loading());
 
-    await _clearRoadCacheUseCase();
+    final result = await _clearRoadCacheUseCase();
+
+    result.fold(
+      (failure) {
+        print('❌ RoadBloc: Failed to clear cache: ${failure.message}');
+      },
+      (_) {
+        print('✅ RoadBloc: Database cache cleared successfully');
+      },
+    );
 
     // Clear in-memory cache
     _allCountries = [];
     _allProvinces = [];
     _allDistricts = [];
     _allRoads = [];
+
+    print('✅ RoadBloc: In-memory cache cleared');
+    print(
+      '🧹 After clear - Countries: ${_allCountries.length}, Provinces: ${_allProvinces.length}, Districts: ${_allDistricts.length}, Roads: ${_allRoads.length}',
+    );
 
     emit(const RoadState.initial());
   }

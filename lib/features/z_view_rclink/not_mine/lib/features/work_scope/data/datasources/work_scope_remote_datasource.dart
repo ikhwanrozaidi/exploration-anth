@@ -63,6 +63,8 @@ class WorkScopeRemoteDataSourceImpl implements WorkScopeRemoteDataSource {
       if (isSelf == false &&
           contractRelationUID != null &&
           contractRelationUID.isNotEmpty) {
+        print('getPackageWorkScopes RemoteDatasource');
+
         // Call contractor package-work-scopes endpoint
         final response = await _apiService.getPackageWorkScopes(
           companyUID: companyUID,
@@ -79,6 +81,8 @@ class WorkScopeRemoteDataSourceImpl implements WorkScopeRemoteDataSource {
           );
         }
       } else {
+        print('getWorkScopes RemoteDatasource');
+
         // Call company work-scopes endpoint (when isSelf = true or no contractRelationUID)
         final response = await _apiService.getWorkScopes(
           companyUID: companyUID,

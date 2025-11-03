@@ -430,16 +430,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i157.RefreshTokenUseCase>(
       () => _i157.RefreshTokenUseCase(gh<_i787.AuthRepository>()),
     );
-    gh.lazySingleton<_i797.AuthBloc>(
-      () => _i797.AuthBloc(
-        gh<_i29.RequestOtpUseCase>(),
-        gh<_i503.VerifyOtpUseCase>(),
-        gh<_i257.GetCurrentAdminUseCase>(),
-        gh<_i388.StoreTokensUseCase>(),
-        gh<_i625.GetTokensUseCase>(),
-        gh<_i871.ClearAuthCacheUseCase>(),
-      ),
-    );
     gh.factory<_i330.SubmitDailyReportUseCase>(
       () => _i330.SubmitDailyReportUseCase(gh<_i819.DailyReportRepository>()),
     );
@@ -542,10 +532,25 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i584.ClearWorkScopesCacheUseCase>(
       () => _i584.ClearWorkScopesCacheUseCase(gh<_i870.WorkScopesRepository>()),
     );
-    gh.factory<_i736.RoadBloc>(
+    gh.lazySingleton<_i736.RoadBloc>(
       () => _i736.RoadBloc(
         gh<_i971.GetRoadsUseCase>(),
         gh<_i275.ClearRoadCacheUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i797.AuthBloc>(
+      () => _i797.AuthBloc(
+        gh<_i29.RequestOtpUseCase>(),
+        gh<_i503.VerifyOtpUseCase>(),
+        gh<_i257.GetCurrentAdminUseCase>(),
+        gh<_i388.StoreTokensUseCase>(),
+        gh<_i625.GetTokensUseCase>(),
+        gh<_i871.ClearAuthCacheUseCase>(),
+        gh<_i275.ClearRoadCacheUseCase>(),
+        gh<_i29.ClearCompanyCacheUseCase>(),
+        gh<_i79.ClearContractorRelationCacheUseCase>(),
+        gh<_i1056.ClearRoleUseCase>(),
+        gh<_i584.ClearWorkScopesCacheUseCase>(),
       ),
     );
     gh.factory<_i248.WorkScopeBloc>(

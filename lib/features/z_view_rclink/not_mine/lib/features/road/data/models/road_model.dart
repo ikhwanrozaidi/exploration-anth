@@ -43,6 +43,7 @@ abstract class RoadModel with _$RoadModel {
       mainCategoryID: mainCategoryID,
       secondaryCategoryID: secondaryCategoryID,
       districtID: districtID,
+      districtUID: districtUID,
       createdAt: createdAt,
       updatedAt: updatedAt,
       district: district?.toEntity(),
@@ -63,6 +64,7 @@ abstract class RoadModel with _$RoadModel {
       mainCategoryID: entity.mainCategoryID,
       secondaryCategoryID: entity.secondaryCategoryID,
       districtID: entity.districtID,
+      districtUID: entity.districtUID,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
       district: entity.district != null

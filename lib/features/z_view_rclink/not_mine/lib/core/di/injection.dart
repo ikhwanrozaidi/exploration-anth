@@ -69,19 +69,19 @@ void _configureDioInterceptors() {
     //
     // Add pretty logging (only in debug mode) for API debug
     //
-    // if (FlavorConfig.instance.flavor != Flavor.production) {
-    //   dio.interceptors.add(
-    //     PrettyDioLogger(
-    //       requestHeader: true,
-    //       requestBody: true,
-    //       responseBody: true,
-    //       responseHeader: false,
-    //       error: true,
-    //       compact: true,
-    //       maxWidth: 90,
-    //     ),
-    //   );
-    // }
+    if (FlavorConfig.instance.flavor != Flavor.production) {
+      dio.interceptors.add(
+        PrettyDioLogger(
+          requestHeader: true,
+          requestBody: false,
+          responseBody: true,
+          responseHeader: true,
+          error: true,
+          compact: true,
+          maxWidth: 90,
+        ),
+      );
+    }
 
     // Add error handling interceptor
     dio.interceptors.add(getIt<ErrorInterceptor>());

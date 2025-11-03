@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
+import '../../../road/presentation/helper/road_level.dart';
+import '../../../road/presentation/helper/road_selection_result.dart';
+import '../../../road/presentation/pages/road_field_tile.dart';
+import '../../../work_scope/presentation/pages/work_scope_field_tile.dart';
 
 class WarningPage extends StatefulWidget {
   const WarningPage({Key? key}) : super(key: key);
@@ -143,10 +147,67 @@ class _WarningPageState extends State<WarningPage> {
                       ),
                     ),
 
-                    // Padding(
-                    //   padding: EdgeInsets.all(20),
-                    //   child: Column(children: [SizedBox(height: 20)]),
-                    // ),
+                    Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
+
+                          RoadFieldTile(
+                            startFrom: RoadLevel.provinces,
+                            endAt: RoadLevel.roads,
+                            label: 'Select Location',
+                            icon: Icons.place,
+                            placeholder: 'Select location',
+                            onRoadSelected: (RoadSelectionResult result) {
+                              print(
+                                'Selected Road UID: ${result.selectedRoad?.uid}',
+                              );
+                              print(
+                                'Selected Province: ${result.selectedProvince?.name}',
+                              );
+                              print(
+                                'Selected District: ${result.selectedDistrict?.name}',
+                              );
+                              print(
+                                'Selected Road: ${result.selectedRoad?.name}',
+                              );
+
+                              // setState(() {
+                              //   _selectedRoadUid = result.selectedRoad?.uid;
+                              // });
+                            },
+                          ),
+
+                          SizedBox(height: 10),
+
+                          WorkScopeFieldTile(
+                            onScopeSelected: (Map<String, dynamic> selectedData) {
+                              print('Selected UID: ${selectedData['uid']}');
+                              print('Code: ${selectedData['code']}');
+                              print('Name: ${selectedData['name']}');
+                              print(
+                                'Description: ${selectedData['description']}',
+                              );
+                              print(
+                                'Allow Multiple Quantities: ${selectedData['allowMultipleQuantities']}',
+                              );
+
+                              List workQuantityTypes =
+                                  selectedData['workQuantityTypes'];
+                              List workEquipments =
+                                  selectedData['workEquipments'];
+
+                              // Store in your state
+                              // setState(() {
+                              //   _selectedWorkScopeUid = selectedData['uid'];
+                              //   _selectedWorkScopeName = selectedData['displayText'];
+                              // });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),

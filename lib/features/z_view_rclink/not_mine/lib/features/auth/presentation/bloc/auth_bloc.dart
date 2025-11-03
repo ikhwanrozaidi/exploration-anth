@@ -1,16 +1,17 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rclink_app/core/errors/failures.dart';
-import 'package:rclink_app/features/auth/domain/entities/tokens.dart';
+
 import 'package:rclink_app/features/auth/domain/usecases/request_otp_usecase.dart';
 import '../../../../core/di/injection.dart';
 import '../../../admin/domain/usecases/get_current_admin_usecase.dart';
-import '../../../company/presentation/bloc/company_bloc.dart';
-import '../../../company/presentation/bloc/company_event.dart';
-import '../../../rbac/domain/entities/role.dart';
+import '../../../company/domain/usecases/company_clear_cache_usecase.dart';
+import '../../../contractor_relation/domain/usecases/clear_contractor_relation_usecase.dart';
+import '../../../rbac/domain/usecases/clear_role_usecase.dart';
 import '../../../rbac/presentation/bloc/rbac_bloc.dart';
 import '../../../rbac/presentation/bloc/rbac_event.dart';
-import '../../../rbac/presentation/bloc/rbac_state.dart';
+import '../../../road/domain/usecases/clear_road_cache_usecase.dart';
+import '../../../work_scope/domain/usecases/clear_work_scopes_cache_usecase.dart';
 import '../../domain/usecases/verify_otp_usecase.dart';
 import '../../domain/usecases/store_tokens_usecase.dart';
 import '../../domain/usecases/get_tokens_usecase.dart';
@@ -27,6 +28,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GetTokensUseCase _getTokensUseCase;
   final ClearAuthCacheUseCase _clearAuthCacheUseCase;
 
+  final ClearRoadCacheUseCase _clearRoadCacheUseCase;
+  final ClearCompanyCacheUseCase _clearCompanyCacheUseCase;
+  final ClearContractorRelationCacheUseCase
+  _clearContractorRelationCacheUseCase;
+  final ClearRoleUseCase _clearRoleUseCase;
+  final ClearWorkScopesCacheUseCase _clearWorkScopesCacheUseCase;
+
   AuthBloc(
     this._requestOtpUseCase,
     this._verifyOtpUseCase,
@@ -34,6 +42,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._storeTokensUseCase,
     this._getTokensUseCase,
     this._clearAuthCacheUseCase,
+
+    this._clearRoadCacheUseCase,
+    this._clearCompanyCacheUseCase,
+    this._clearContractorRelationCacheUseCase,
+    this._clearRoleUseCase,
+    this._clearWorkScopesCacheUseCase,
   ) : super(const AuthInitial()) {
     on<RequestOtpRequested>(_onRequestOtpRequested);
     on<VerifyOtpRequested>(_onVerifyOtpRequested);
@@ -236,28 +250,61 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     LogoutRequested event,
     Emitter<AuthState> emit,
   ) async {
+    print('🚪 AuthBloc: Starting logout process...');
     emit(const AuthLoading());
 
-    // Clear permissions when logging out using RbacBloc
-    final rbacBloc = getIt<RbacBloc>();
-    rbacBloc.add(const ClearPermissions());
+    try {
+      final roleResult = await _clearRoleUseCase();
+      roleResult.fold(
+        (failure) => print('⚠️ RBAC cache clear failed: ${failure.message}'),
+        (_) => print('✅ RBAC cache cleared'),
+      );
 
-    // Clear company cache when logging out using CompanyBloc
-    final companyBloc = getIt<CompanyBloc>();
-    companyBloc.add(const ClearCompanyCache());
+      final companyResult = await _clearCompanyCacheUseCase();
+      companyResult.fold(
+        (failure) => print('⚠️ Company cache clear failed: ${failure.message}'),
+        (_) => print('✅ Company cache cleared'),
+      );
 
-    final result = await _clearAuthCacheUseCase();
+      final roadResult = await _clearRoadCacheUseCase();
+      roadResult.fold(
+        (failure) => print('⚠️ Road cache clear failed: ${failure.message}'),
+        (_) => print('✅ Road cache cleared'),
+      );
 
-    result.fold(
-      (failure) {
-        print('❌ AuthBloc: Logout failed: ${failure.message}');
-        emit(AuthFailure('Failed to logout'));
-      },
-      (_) {
-        print('✅ AuthBloc: Logout successful');
-        emit(const Unauthenticated());
-      },
-    );
+      final contractorResult = await _clearContractorRelationCacheUseCase();
+      contractorResult.fold(
+        (failure) =>
+            print('⚠️ Contractor cache clear failed: ${failure.message}'),
+        (_) => print('✅ Contractor cache cleared'),
+      );
+
+      final workScopeResult = await _clearWorkScopesCacheUseCase();
+      workScopeResult.fold(
+        (failure) =>
+            print('⚠️ WorkScope cache clear failed: ${failure.message}'),
+        (_) => print('✅ WorkScope cache cleared'),
+      );
+
+      final authResult = await _clearAuthCacheUseCase();
+
+      authResult.fold(
+        (failure) {
+          print('❌ AuthBloc: Logout failed: ${failure.message}');
+          emit(AuthFailure('Failed to logout'));
+        },
+        (_) {
+          print('✅ AuthBloc: Logout successful - All caches cleared');
+          emit(const Unauthenticated());
+        },
+      );
+    } catch (e) {
+      print('❌ AuthBloc: Logout error: $e');
+      // Still log out even if cache clearing fails
+
+      await _clearAuthCacheUseCase();
+      emit(const Unauthenticated());
+    }
   }
 
   String _mapFailureToMessage(Failure failure) {

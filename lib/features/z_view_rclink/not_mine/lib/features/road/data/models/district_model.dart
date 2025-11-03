@@ -30,6 +30,7 @@ abstract class DistrictModel with _$DistrictModel {
       uid: uid,
       name: name,
       stateID: stateID,
+      stateUID: stateUID,
       state: state?.toEntity(),
     );
   }
@@ -41,6 +42,7 @@ abstract class DistrictModel with _$DistrictModel {
       uid: entity.uid,
       name: entity.name,
       stateID: entity.stateID,
+      stateUID: entity.stateUID,
       state: entity.state != null
           ? ProvinceModel.fromEntity(entity.state!)
           : null,

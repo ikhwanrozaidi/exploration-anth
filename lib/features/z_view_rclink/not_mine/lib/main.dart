@@ -38,7 +38,6 @@ Future<void> main() async {
         BlocProvider<ContractorRelationBloc>(
           create: (context) => getIt<ContractorRelationBloc>(),
         ),
-
         BlocProvider<WorkScopeBloc>(
           create: (context) => getIt<WorkScopeBloc>(),
         ),
