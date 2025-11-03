@@ -40,7 +40,6 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
   String? conditionSnapshot;
 
   bool _isLoadingQuantities = false;
-  List<Map<String, dynamic>> addedQuantities = [];
   List<Map<String, dynamic>> addedEquipments = [];
   Map<String, List<GalleryImage>> _conditionSnapshotImages = {
     'before': [],
@@ -71,6 +70,32 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
       selectingBasicInfo: (apiData, selections) =>
           selections.selectedScope?.uid,
       orElse: () => null,
+    );
+
+    // Load existing data from BLoC if available
+    reportState.maybeWhen(
+      editingDetails: (apiData, selections, formData) {
+        // Load worker data
+        if (selections.workerCount > 0) {
+          _workerCount = selections.workerCount;
+        }
+        if (selections.workerImage != null) {
+          _workerImage = GalleryImage.fromJson(selections.workerImage!);
+        }
+
+        // Load notes
+        if (selections.notes.isNotEmpty) {
+          _notes = selections.notes;
+        }
+
+        // Load additional images
+        if (selections.additionalImages.isNotEmpty) {
+          _additionalImages = selections.additionalImages
+              .map((imgData) => GalleryImage.fromJson(imgData))
+              .toList();
+        }
+      },
+      orElse: () {},
     );
 
     if (selectedWorkScopeUID != null && selectedWorkScopeUID.isNotEmpty) {
@@ -199,8 +224,23 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
             orElse: () => <WorkEquipment>[],
           );
 
-          return Scaffold(
-            body: Container(
+          // Get quantity field data from BLoC state
+          final quantityFieldData = reportState.maybeWhen(
+            editingDetails: (apiData, selections, formData) =>
+                selections.quantityFieldData,
+            detailsError: (apiData, selections, formData, errorMessage) =>
+                selections.quantityFieldData,
+            submitting: (reportData) => reportData.selections.quantityFieldData,
+            submitted: (reportData) => reportData.selections.quantityFieldData,
+            submissionError: (reportData, errorMessage) =>
+                reportData.selections.quantityFieldData,
+            orElse: () => <String, Map<String, dynamic>>{},
+          );
+
+          return PopScope(
+            canPop: true, // Data already auto-saved to BLoC, safe to navigate
+            child: Scaffold(
+              body: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Color.fromARGB(255, 135, 167, 247), primaryColor],
@@ -663,12 +703,12 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                             CustomFieldTile(
                               icon: Icons.restaurant_menu,
                               title: 'Quantity',
-                              isFilled: addedQuantities.isEmpty ? false : true,
+                              isFilled: quantityFieldData.isNotEmpty,
                               titleDetails: _isLoadingQuantities
                                   ? 'Loading quantities...'
-                                  : (addedQuantities.isEmpty
+                                  : (quantityFieldData.isEmpty
                                         ? 'Work-related quantity info'
-                                        : '${addedQuantities.length} added'),
+                                        : '${quantityFieldData.length} added'),
                               onTap: () {
                                 _handleQuantityTap();
                               },
@@ -709,7 +749,13 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                         setState(() {
                                           _notes = result;
                                         });
-                                        print('Notes saved: $_notes');
+
+                                        // Save notes to BLoC
+                                        _dailyReportCreateBloc.add(
+                                          UpdateNotes(result),
+                                        );
+
+                                        print('Notes saved to BLoC: $_notes');
                                       }
                                     } else if (selectedOption ==
                                         'Additional Images') {
@@ -735,18 +781,18 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                         setState(() {
                                           _additionalImages = result.images;
                                         });
-                                        final imagePaths = _additionalImages
-                                            .map((e) => e.path)
+
+                                        // Save additional images to BLoC
+                                        final imagesData = _additionalImages
+                                            .map((img) => img.toJson())
                                             .toList();
 
-                                        // TODO: Update your report_creation_data
-                                        // Example:
-                                        // context.read<ReportCreationBloc>().add(
-                                        //   UpdateAdditionalImages(imagePaths),
-                                        // );
+                                        _dailyReportCreateBloc.add(
+                                          UpdateAdditionalImages(imagesData),
+                                        );
 
                                         print(
-                                          'Additional images saved: ${imagePaths.length} images',
+                                          'Additional images saved to BLoC: ${imagesData.length} images',
                                         );
                                       }
                                     }
@@ -854,6 +900,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                 ),
               ),
             ),
+            ),
           );
         },
       ),
@@ -898,22 +945,19 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
         orElse: () => null,
       );
 
-      final result = await Navigator.push(
+      await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => QuantitySelectionPage(
-            addedQuantities: addedQuantities,
+            addedQuantities: [], // Not used anymore, page reads from BLoC
             quantityLists: availableQuantities,
             selectedScopeUid: selectedScopeUid,
           ),
         ),
       );
 
-      if (result != null) {
-        setState(() {
-          addedQuantities = result;
-        });
-      }
+      // Data is now in BLoC, no need to handle result
+      // UI will automatically update via BlocBuilder
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -986,19 +1030,24 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
   }
 
   void _saveWorkerData() {
-    final workerImagePath = _workerImage?.path;
+    // Save worker count to BLoC
+    if (_workerCount != null) {
+      _dailyReportCreateBloc.add(
+        UpdateWorkerCount(_workerCount!),
+      );
+    }
 
-    // TODO: Update your report_creation_data
-    // Example:
-    // context.read<ReportCreationBloc>().add(
-    //   UpdateWorkerData(
-    //     imagePath: workerImagePath,
-    //     workerCount: _workerCount,
-    //   ),
-    // );
+    // Save worker image to BLoC
+    final workerImageData = _workerImage != null
+        ? _workerImage!.toJson()
+        : null;
 
-    print('Worker data saved:');
-    print('  Image: $workerImagePath');
+    _dailyReportCreateBloc.add(
+      UpdateWorkerImage(workerImageData),
+    );
+
+    print('Worker data saved to BLoC:');
+    print('  Image: ${_workerImage?.path}');
     print('  Worker count: $_workerCount');
   }
 
@@ -1044,7 +1093,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
         _workerCount = null;
         _notes = null;
         _additionalImages.clear();
-        addedQuantities.clear();
+        // Quantities are cleared via BLoC state reset below
         addedEquipments.clear();
         _conditionSnapshotImages = {'before': [], 'current': [], 'after': []};
       });

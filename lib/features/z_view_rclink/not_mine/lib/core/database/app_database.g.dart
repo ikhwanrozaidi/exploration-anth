@@ -17096,6 +17096,17 @@ class $DailyReportsTable extends DailyReports
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _createdByDataMeta = const VerificationMeta(
+    'createdByData',
+  );
+  @override
+  late final GeneratedColumn<String> createdByData = GeneratedColumn<String>(
+    'created_by_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _equipmentsDataMeta = const VerificationMeta(
     'equipmentsData',
   );
@@ -17150,6 +17161,7 @@ class $DailyReportsTable extends DailyReports
     updatedAt,
     workScopeData,
     roadData,
+    createdByData,
     equipmentsData,
     reportQuantitiesData,
   ];
@@ -17396,6 +17408,15 @@ class $DailyReportsTable extends DailyReports
         roadData.isAcceptableOrUnknown(data['road_data']!, _roadDataMeta),
       );
     }
+    if (data.containsKey('created_by_data')) {
+      context.handle(
+        _createdByDataMeta,
+        createdByData.isAcceptableOrUnknown(
+          data['created_by_data']!,
+          _createdByDataMeta,
+        ),
+      );
+    }
     if (data.containsKey('equipments_data')) {
       context.handle(
         _equipmentsDataMeta,
@@ -17547,6 +17568,10 @@ class $DailyReportsTable extends DailyReports
         DriftSqlType.string,
         data['${effectivePrefix}road_data'],
       ),
+      createdByData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by_data'],
+      ),
       equipmentsData: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}equipments_data'],
@@ -17596,6 +17621,7 @@ class DailyReportRecord extends DataClass
   final DateTime updatedAt;
   final String? workScopeData;
   final String? roadData;
+  final String? createdByData;
   final String? equipmentsData;
   final String? reportQuantitiesData;
   const DailyReportRecord({
@@ -17629,6 +17655,7 @@ class DailyReportRecord extends DataClass
     required this.updatedAt,
     this.workScopeData,
     this.roadData,
+    this.createdByData,
     this.equipmentsData,
     this.reportQuantitiesData,
   });
@@ -17696,6 +17723,9 @@ class DailyReportRecord extends DataClass
     }
     if (!nullToAbsent || roadData != null) {
       map['road_data'] = Variable<String>(roadData);
+    }
+    if (!nullToAbsent || createdByData != null) {
+      map['created_by_data'] = Variable<String>(createdByData);
     }
     if (!nullToAbsent || equipmentsData != null) {
       map['equipments_data'] = Variable<String>(equipmentsData);
@@ -17770,6 +17800,9 @@ class DailyReportRecord extends DataClass
       roadData: roadData == null && nullToAbsent
           ? const Value.absent()
           : Value(roadData),
+      createdByData: createdByData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdByData),
       equipmentsData: equipmentsData == null && nullToAbsent
           ? const Value.absent()
           : Value(equipmentsData),
@@ -17815,6 +17848,7 @@ class DailyReportRecord extends DataClass
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       workScopeData: serializer.fromJson<String?>(json['workScopeData']),
       roadData: serializer.fromJson<String?>(json['roadData']),
+      createdByData: serializer.fromJson<String?>(json['createdByData']),
       equipmentsData: serializer.fromJson<String?>(json['equipmentsData']),
       reportQuantitiesData: serializer.fromJson<String?>(
         json['reportQuantitiesData'],
@@ -17855,6 +17889,7 @@ class DailyReportRecord extends DataClass
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'workScopeData': serializer.toJson<String?>(workScopeData),
       'roadData': serializer.toJson<String?>(roadData),
+      'createdByData': serializer.toJson<String?>(createdByData),
       'equipmentsData': serializer.toJson<String?>(equipmentsData),
       'reportQuantitiesData': serializer.toJson<String?>(reportQuantitiesData),
     };
@@ -17891,6 +17926,7 @@ class DailyReportRecord extends DataClass
     DateTime? updatedAt,
     Value<String?> workScopeData = const Value.absent(),
     Value<String?> roadData = const Value.absent(),
+    Value<String?> createdByData = const Value.absent(),
     Value<String?> equipmentsData = const Value.absent(),
     Value<String?> reportQuantitiesData = const Value.absent(),
   }) => DailyReportRecord(
@@ -17932,6 +17968,9 @@ class DailyReportRecord extends DataClass
         ? workScopeData.value
         : this.workScopeData,
     roadData: roadData.present ? roadData.value : this.roadData,
+    createdByData: createdByData.present
+        ? createdByData.value
+        : this.createdByData,
     equipmentsData: equipmentsData.present
         ? equipmentsData.value
         : this.equipmentsData,
@@ -17999,6 +18038,9 @@ class DailyReportRecord extends DataClass
           ? data.workScopeData.value
           : this.workScopeData,
       roadData: data.roadData.present ? data.roadData.value : this.roadData,
+      createdByData: data.createdByData.present
+          ? data.createdByData.value
+          : this.createdByData,
       equipmentsData: data.equipmentsData.present
           ? data.equipmentsData.value
           : this.equipmentsData,
@@ -18041,6 +18083,7 @@ class DailyReportRecord extends DataClass
           ..write('updatedAt: $updatedAt, ')
           ..write('workScopeData: $workScopeData, ')
           ..write('roadData: $roadData, ')
+          ..write('createdByData: $createdByData, ')
           ..write('equipmentsData: $equipmentsData, ')
           ..write('reportQuantitiesData: $reportQuantitiesData')
           ..write(')'))
@@ -18079,6 +18122,7 @@ class DailyReportRecord extends DataClass
     updatedAt,
     workScopeData,
     roadData,
+    createdByData,
     equipmentsData,
     reportQuantitiesData,
   ]);
@@ -18116,6 +18160,7 @@ class DailyReportRecord extends DataClass
           other.updatedAt == this.updatedAt &&
           other.workScopeData == this.workScopeData &&
           other.roadData == this.roadData &&
+          other.createdByData == this.createdByData &&
           other.equipmentsData == this.equipmentsData &&
           other.reportQuantitiesData == this.reportQuantitiesData);
 }
@@ -18151,6 +18196,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
   final Value<DateTime> updatedAt;
   final Value<String?> workScopeData;
   final Value<String?> roadData;
+  final Value<String?> createdByData;
   final Value<String?> equipmentsData;
   final Value<String?> reportQuantitiesData;
   const DailyReportsCompanion({
@@ -18184,6 +18230,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     this.updatedAt = const Value.absent(),
     this.workScopeData = const Value.absent(),
     this.roadData = const Value.absent(),
+    this.createdByData = const Value.absent(),
     this.equipmentsData = const Value.absent(),
     this.reportQuantitiesData = const Value.absent(),
   });
@@ -18218,6 +18265,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     required DateTime updatedAt,
     this.workScopeData = const Value.absent(),
     this.roadData = const Value.absent(),
+    this.createdByData = const Value.absent(),
     this.equipmentsData = const Value.absent(),
     this.reportQuantitiesData = const Value.absent(),
   }) : uid = Value(uid),
@@ -18260,6 +18308,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     Expression<DateTime>? updatedAt,
     Expression<String>? workScopeData,
     Expression<String>? roadData,
+    Expression<String>? createdByData,
     Expression<String>? equipmentsData,
     Expression<String>? reportQuantitiesData,
   }) {
@@ -18295,6 +18344,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
       if (updatedAt != null) 'updated_at': updatedAt,
       if (workScopeData != null) 'work_scope_data': workScopeData,
       if (roadData != null) 'road_data': roadData,
+      if (createdByData != null) 'created_by_data': createdByData,
       if (equipmentsData != null) 'equipments_data': equipmentsData,
       if (reportQuantitiesData != null)
         'report_quantities_data': reportQuantitiesData,
@@ -18332,6 +18382,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     Value<DateTime>? updatedAt,
     Value<String?>? workScopeData,
     Value<String?>? roadData,
+    Value<String?>? createdByData,
     Value<String?>? equipmentsData,
     Value<String?>? reportQuantitiesData,
   }) {
@@ -18366,6 +18417,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
       updatedAt: updatedAt ?? this.updatedAt,
       workScopeData: workScopeData ?? this.workScopeData,
       roadData: roadData ?? this.roadData,
+      createdByData: createdByData ?? this.createdByData,
       equipmentsData: equipmentsData ?? this.equipmentsData,
       reportQuantitiesData: reportQuantitiesData ?? this.reportQuantitiesData,
     );
@@ -18464,6 +18516,9 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     if (roadData.present) {
       map['road_data'] = Variable<String>(roadData.value);
     }
+    if (createdByData.present) {
+      map['created_by_data'] = Variable<String>(createdByData.value);
+    }
     if (equipmentsData.present) {
       map['equipments_data'] = Variable<String>(equipmentsData.value);
     }
@@ -18508,6 +18563,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
           ..write('updatedAt: $updatedAt, ')
           ..write('workScopeData: $workScopeData, ')
           ..write('roadData: $roadData, ')
+          ..write('createdByData: $createdByData, ')
           ..write('equipmentsData: $equipmentsData, ')
           ..write('reportQuantitiesData: $reportQuantitiesData')
           ..write(')'))
@@ -29514,6 +29570,7 @@ typedef $$DailyReportsTableCreateCompanionBuilder =
       required DateTime updatedAt,
       Value<String?> workScopeData,
       Value<String?> roadData,
+      Value<String?> createdByData,
       Value<String?> equipmentsData,
       Value<String?> reportQuantitiesData,
     });
@@ -29549,6 +29606,7 @@ typedef $$DailyReportsTableUpdateCompanionBuilder =
       Value<DateTime> updatedAt,
       Value<String?> workScopeData,
       Value<String?> roadData,
+      Value<String?> createdByData,
       Value<String?> equipmentsData,
       Value<String?> reportQuantitiesData,
     });
@@ -29709,6 +29767,11 @@ class $$DailyReportsTableFilterComposer
 
   ColumnFilters<String> get roadData => $composableBuilder(
     column: $table.roadData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdByData => $composableBuilder(
+    column: $table.createdByData,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -29882,6 +29945,11 @@ class $$DailyReportsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get createdByData => $composableBuilder(
+    column: $table.createdByData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get equipmentsData => $composableBuilder(
     column: $table.equipmentsData,
     builder: (column) => ColumnOrderings(column),
@@ -30020,6 +30088,11 @@ class $$DailyReportsTableAnnotationComposer
   GeneratedColumn<String> get roadData =>
       $composableBuilder(column: $table.roadData, builder: (column) => column);
 
+  GeneratedColumn<String> get createdByData => $composableBuilder(
+    column: $table.createdByData,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<String> get equipmentsData => $composableBuilder(
     column: $table.equipmentsData,
     builder: (column) => column,
@@ -30096,6 +30169,7 @@ class $$DailyReportsTableTableManager
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<String?> workScopeData = const Value.absent(),
                 Value<String?> roadData = const Value.absent(),
+                Value<String?> createdByData = const Value.absent(),
                 Value<String?> equipmentsData = const Value.absent(),
                 Value<String?> reportQuantitiesData = const Value.absent(),
               }) => DailyReportsCompanion(
@@ -30129,6 +30203,7 @@ class $$DailyReportsTableTableManager
                 updatedAt: updatedAt,
                 workScopeData: workScopeData,
                 roadData: roadData,
+                createdByData: createdByData,
                 equipmentsData: equipmentsData,
                 reportQuantitiesData: reportQuantitiesData,
               ),
@@ -30164,6 +30239,7 @@ class $$DailyReportsTableTableManager
                 required DateTime updatedAt,
                 Value<String?> workScopeData = const Value.absent(),
                 Value<String?> roadData = const Value.absent(),
+                Value<String?> createdByData = const Value.absent(),
                 Value<String?> equipmentsData = const Value.absent(),
                 Value<String?> reportQuantitiesData = const Value.absent(),
               }) => DailyReportsCompanion.insert(
@@ -30197,6 +30273,7 @@ class $$DailyReportsTableTableManager
                 updatedAt: updatedAt,
                 workScopeData: workScopeData,
                 roadData: roadData,
+                createdByData: createdByData,
                 equipmentsData: equipmentsData,
                 reportQuantitiesData: reportQuantitiesData,
               ),

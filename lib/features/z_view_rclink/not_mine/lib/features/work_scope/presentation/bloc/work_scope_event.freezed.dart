@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WorkScopeEvent {
 
- String? get search; String? get code; bool? get allowMultipleQuantities; List<String>? get expand; bool get forceRefresh; Duration? get cacheTimeout;
+ bool get forceRefresh; Duration? get cacheTimeout;
 /// Create a copy of WorkScopeEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $WorkScopeEventCopyWith<WorkScopeEvent> get copyWith => _$WorkScopeEventCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkScopeEvent&&(identical(other.search, search) || other.search == search)&&(identical(other.code, code) || other.code == code)&&(identical(other.allowMultipleQuantities, allowMultipleQuantities) || other.allowMultipleQuantities == allowMultipleQuantities)&&const DeepCollectionEquality().equals(other.expand, expand)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh)&&(identical(other.cacheTimeout, cacheTimeout) || other.cacheTimeout == cacheTimeout));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WorkScopeEvent&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh)&&(identical(other.cacheTimeout, cacheTimeout) || other.cacheTimeout == cacheTimeout));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,search,code,allowMultipleQuantities,const DeepCollectionEquality().hash(expand),forceRefresh,cacheTimeout);
+int get hashCode => Object.hash(runtimeType,forceRefresh,cacheTimeout);
 
 @override
 String toString() {
-  return 'WorkScopeEvent(search: $search, code: $code, allowMultipleQuantities: $allowMultipleQuantities, expand: $expand, forceRefresh: $forceRefresh, cacheTimeout: $cacheTimeout)';
+  return 'WorkScopeEvent(forceRefresh: $forceRefresh, cacheTimeout: $cacheTimeout)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $WorkScopeEventCopyWith<$Res>  {
   factory $WorkScopeEventCopyWith(WorkScopeEvent value, $Res Function(WorkScopeEvent) _then) = _$WorkScopeEventCopyWithImpl;
 @useResult
 $Res call({
- String? search, String? code, bool? allowMultipleQuantities, List<String>? expand, bool forceRefresh, Duration? cacheTimeout
+ bool forceRefresh, Duration? cacheTimeout
 });
 
 
@@ -62,13 +62,9 @@ class _$WorkScopeEventCopyWithImpl<$Res>
 
 /// Create a copy of WorkScopeEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? search = freezed,Object? code = freezed,Object? allowMultipleQuantities = freezed,Object? expand = freezed,Object? forceRefresh = null,Object? cacheTimeout = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? forceRefresh = null,Object? cacheTimeout = freezed,}) {
   return _then(_self.copyWith(
-search: freezed == search ? _self.search : search // ignore: cast_nullable_to_non_nullable
-as String?,code: freezed == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
-as String?,allowMultipleQuantities: freezed == allowMultipleQuantities ? _self.allowMultipleQuantities : allowMultipleQuantities // ignore: cast_nullable_to_non_nullable
-as bool?,expand: freezed == expand ? _self.expand : expand // ignore: cast_nullable_to_non_nullable
-as List<String>?,forceRefresh: null == forceRefresh ? _self.forceRefresh : forceRefresh // ignore: cast_nullable_to_non_nullable
+forceRefresh: null == forceRefresh ? _self.forceRefresh : forceRefresh // ignore: cast_nullable_to_non_nullable
 as bool,cacheTimeout: freezed == cacheTimeout ? _self.cacheTimeout : cacheTimeout // ignore: cast_nullable_to_non_nullable
 as Duration?,
   ));
@@ -155,10 +151,10 @@ return loadWorkScopes(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? search,  String? code,  bool? allowMultipleQuantities,  List<String>? expand,  bool forceRefresh,  Duration? cacheTimeout)?  loadWorkScopes,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( bool forceRefresh,  Duration? cacheTimeout)?  loadWorkScopes,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadWorkScopes() when loadWorkScopes != null:
-return loadWorkScopes(_that.search,_that.code,_that.allowMultipleQuantities,_that.expand,_that.forceRefresh,_that.cacheTimeout);case _:
+return loadWorkScopes(_that.forceRefresh,_that.cacheTimeout);case _:
   return orElse();
 
 }
@@ -176,10 +172,10 @@ return loadWorkScopes(_that.search,_that.code,_that.allowMultipleQuantities,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? search,  String? code,  bool? allowMultipleQuantities,  List<String>? expand,  bool forceRefresh,  Duration? cacheTimeout)  loadWorkScopes,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( bool forceRefresh,  Duration? cacheTimeout)  loadWorkScopes,}) {final _that = this;
 switch (_that) {
 case LoadWorkScopes():
-return loadWorkScopes(_that.search,_that.code,_that.allowMultipleQuantities,_that.expand,_that.forceRefresh,_that.cacheTimeout);case _:
+return loadWorkScopes(_that.forceRefresh,_that.cacheTimeout);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +192,10 @@ return loadWorkScopes(_that.search,_that.code,_that.allowMultipleQuantities,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? search,  String? code,  bool? allowMultipleQuantities,  List<String>? expand,  bool forceRefresh,  Duration? cacheTimeout)?  loadWorkScopes,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( bool forceRefresh,  Duration? cacheTimeout)?  loadWorkScopes,}) {final _that = this;
 switch (_that) {
 case LoadWorkScopes() when loadWorkScopes != null:
-return loadWorkScopes(_that.search,_that.code,_that.allowMultipleQuantities,_that.expand,_that.forceRefresh,_that.cacheTimeout);case _:
+return loadWorkScopes(_that.forceRefresh,_that.cacheTimeout);case _:
   return null;
 
 }
@@ -211,20 +207,8 @@ return loadWorkScopes(_that.search,_that.code,_that.allowMultipleQuantities,_tha
 
 
 class LoadWorkScopes implements WorkScopeEvent {
-  const LoadWorkScopes({this.search, this.code, this.allowMultipleQuantities, final  List<String>? expand, this.forceRefresh = false, this.cacheTimeout}): _expand = expand;
+  const LoadWorkScopes({this.forceRefresh = false, this.cacheTimeout});
   
-
-@override final  String? search;
-@override final  String? code;
-@override final  bool? allowMultipleQuantities;
- final  List<String>? _expand;
-@override List<String>? get expand {
-  final value = _expand;
-  if (value == null) return null;
-  if (_expand is EqualUnmodifiableListView) return _expand;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
-}
 
 @override@JsonKey() final  bool forceRefresh;
 @override final  Duration? cacheTimeout;
@@ -239,16 +223,16 @@ $LoadWorkScopesCopyWith<LoadWorkScopes> get copyWith => _$LoadWorkScopesCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadWorkScopes&&(identical(other.search, search) || other.search == search)&&(identical(other.code, code) || other.code == code)&&(identical(other.allowMultipleQuantities, allowMultipleQuantities) || other.allowMultipleQuantities == allowMultipleQuantities)&&const DeepCollectionEquality().equals(other._expand, _expand)&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh)&&(identical(other.cacheTimeout, cacheTimeout) || other.cacheTimeout == cacheTimeout));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadWorkScopes&&(identical(other.forceRefresh, forceRefresh) || other.forceRefresh == forceRefresh)&&(identical(other.cacheTimeout, cacheTimeout) || other.cacheTimeout == cacheTimeout));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,search,code,allowMultipleQuantities,const DeepCollectionEquality().hash(_expand),forceRefresh,cacheTimeout);
+int get hashCode => Object.hash(runtimeType,forceRefresh,cacheTimeout);
 
 @override
 String toString() {
-  return 'WorkScopeEvent.loadWorkScopes(search: $search, code: $code, allowMultipleQuantities: $allowMultipleQuantities, expand: $expand, forceRefresh: $forceRefresh, cacheTimeout: $cacheTimeout)';
+  return 'WorkScopeEvent.loadWorkScopes(forceRefresh: $forceRefresh, cacheTimeout: $cacheTimeout)';
 }
 
 
@@ -259,7 +243,7 @@ abstract mixin class $LoadWorkScopesCopyWith<$Res> implements $WorkScopeEventCop
   factory $LoadWorkScopesCopyWith(LoadWorkScopes value, $Res Function(LoadWorkScopes) _then) = _$LoadWorkScopesCopyWithImpl;
 @override @useResult
 $Res call({
- String? search, String? code, bool? allowMultipleQuantities, List<String>? expand, bool forceRefresh, Duration? cacheTimeout
+ bool forceRefresh, Duration? cacheTimeout
 });
 
 
@@ -276,13 +260,9 @@ class _$LoadWorkScopesCopyWithImpl<$Res>
 
 /// Create a copy of WorkScopeEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? search = freezed,Object? code = freezed,Object? allowMultipleQuantities = freezed,Object? expand = freezed,Object? forceRefresh = null,Object? cacheTimeout = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? forceRefresh = null,Object? cacheTimeout = freezed,}) {
   return _then(LoadWorkScopes(
-search: freezed == search ? _self.search : search // ignore: cast_nullable_to_non_nullable
-as String?,code: freezed == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
-as String?,allowMultipleQuantities: freezed == allowMultipleQuantities ? _self.allowMultipleQuantities : allowMultipleQuantities // ignore: cast_nullable_to_non_nullable
-as bool?,expand: freezed == expand ? _self._expand : expand // ignore: cast_nullable_to_non_nullable
-as List<String>?,forceRefresh: null == forceRefresh ? _self.forceRefresh : forceRefresh // ignore: cast_nullable_to_non_nullable
+forceRefresh: null == forceRefresh ? _self.forceRefresh : forceRefresh // ignore: cast_nullable_to_non_nullable
 as bool,cacheTimeout: freezed == cacheTimeout ? _self.cacheTimeout : cacheTimeout // ignore: cast_nullable_to_non_nullable
 as Duration?,
   ));

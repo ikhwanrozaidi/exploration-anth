@@ -291,7 +291,7 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Section',
+                        widget.report.road?.districtName ?? '',
                         style: TextStyle(
                           color: Colors.black.withOpacity(0.6),
                           fontSize: ResponsiveHelper.fontSize(
@@ -318,9 +318,12 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
 
                 SizedBox(width: 12),
                 Text(
-                  widget.report.fromSection != null && widget.report.toSection != null
-                      ? '${widget.report.fromSection} - ${widget.report.toSection}'
-                      : widget.report.fromSection ?? '',
+                  widget.report.fromSection != null &&
+                          widget.report.toSection != null
+                      ? '${double.tryParse(widget.report.fromSection!)?.toStringAsFixed(2) ?? widget.report.fromSection} - ${double.tryParse(widget.report.toSection!)?.toStringAsFixed(2) ?? widget.report.toSection}'
+                      : widget.report.fromSection != null
+                          ? (double.tryParse(widget.report.fromSection!)?.toStringAsFixed(2) ?? widget.report.fromSection!)
+                          : '',
                 ),
               ],
             ),

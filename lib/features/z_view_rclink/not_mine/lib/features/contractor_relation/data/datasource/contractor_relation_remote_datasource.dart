@@ -27,16 +27,15 @@ class ContractorRelationRemoteDataSourceImpl
     ApiQueryParams? queryParams,
     required String companyUID,
   }) async {
-    // TEMPORARY: Use dummy JSON response
-    return await _getDummyResponse();
+    // // TEMPORARY: Use dummy JSON response
+    // return await _getDummyResponse();
 
-    /* 
     final params = queryParams ?? const ApiQueryParams();
 
     try {
       final response = await _apiService.getContractorsRelated(
-        params.toQueryParams(),  // Remove 'baseParams:' label
-        companyUID,
+        baseParams: params.toQueryParams(),
+        companyUID: companyUID,
       );
 
       if (response.isSuccess && response.data != null) {
@@ -49,7 +48,6 @@ class ContractorRelationRemoteDataSourceImpl
     } catch (e) {
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
-    */
   }
 
   /// DUMMY!

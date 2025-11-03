@@ -1,4 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../../../road/domain/entities/province_entity.dart';
+import '../../../../road/domain/entities/district_entity.dart';
+import '../../../../road/domain/entities/road_entity.dart';
 
 part 'daily_report_create_event.freezed.dart';
 
@@ -31,6 +34,14 @@ class DailyReportCreateEvent with _$DailyReportCreateEvent {
   const factory DailyReportCreateEvent.selectDistrict(String districtUid) =
       SelectDistrict;
   const factory DailyReportCreateEvent.selectRoad(String roadUid) = SelectRoad;
+
+  // Select location with full objects from RoadSelectionResult
+  const factory DailyReportCreateEvent.selectLocationFromResult({
+    required Province province,
+    required District district,
+    required Road road,
+  }) = SelectLocationFromResult;
+
   const factory DailyReportCreateEvent.updateSection(String section) =
       UpdateSection;
 
@@ -75,6 +86,44 @@ class DailyReportCreateEvent with _$DailyReportCreateEvent {
   const factory DailyReportCreateEvent.updateWorkerImages(
     List<Map<String, dynamic>> images,
   ) = UpdateWorkerImages;
+
+  // Quantity Field Data Updates
+  const factory DailyReportCreateEvent.updateQuantityFieldValue({
+    required String quantityTypeUID,
+    required String fieldKey,
+    required dynamic value,
+  }) = UpdateQuantityFieldValue;
+
+  const factory DailyReportCreateEvent.updateQuantityFieldImages({
+    required String quantityTypeUID,
+    required String fieldKey,
+    required List<String> images,
+  }) = UpdateQuantityFieldImages;
+
+  const factory DailyReportCreateEvent.removeQuantityType(
+    String quantityTypeUID,
+  ) = RemoveQuantityType;
+
+  // Segment Data Updates
+  const factory DailyReportCreateEvent.updateSegmentData({
+    required String quantityTypeUID,
+    required List<Map<String, dynamic>> segments,
+  }) = UpdateSegmentData;
+
+  // Worker Information Updates
+  const factory DailyReportCreateEvent.updateWorkerCount(int count) =
+      UpdateWorkerCount;
+
+  const factory DailyReportCreateEvent.updateWorkerImage(
+    Map<String, dynamic>? image,
+  ) = UpdateWorkerImage;
+
+  // Notes and Additional Images
+  const factory DailyReportCreateEvent.updateNotes(String notes) = UpdateNotes;
+
+  const factory DailyReportCreateEvent.updateAdditionalImages(
+    List<Map<String, dynamic>> images,
+  ) = UpdateAdditionalImages;
 
   // Basics Clear
 

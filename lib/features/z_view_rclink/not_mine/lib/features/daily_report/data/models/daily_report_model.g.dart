@@ -44,6 +44,11 @@ _DailyReportModel _$DailyReportModelFromJson(
   road: json['road'] == null
       ? null
       : RoadResponseModel.fromJson(json['road'] as Map<String, dynamic>),
+  createdBy: json['createdBy'] == null
+      ? null
+      : CreatedByResponseModel.fromJson(
+          json['createdBy'] as Map<String, dynamic>,
+        ),
   equipments: (json['equipments'] as List<dynamic>?)
       ?.map(
         (e) => DailyReportEquipmentModel.fromJson(e as Map<String, dynamic>),
@@ -94,6 +99,7 @@ Map<String, dynamic> _$DailyReportModelToJson(_DailyReportModel instance) =>
       'company': instance.company,
       'workScope': instance.workScope,
       'road': instance.road,
+      'createdBy': instance.createdBy,
       'equipments': instance.equipments,
       'reportQuantities': instance.reportQuantities,
       'files': instance.files,

@@ -113,6 +113,27 @@ abstract class ReportSelections with _$ReportSelections {
     @Default([]) List<WorkQuantityType> selectedQuantityTypes,
     @Default([]) List<WorkEquipment> selectedEquipment,
 
+    // Quantity field data (detailed values and images per quantity instance)
+    // Supports multiple instances of same quantity type via composite keys
+    // Format: { "quantityTypeUID_sequenceNo": { "fieldKey": value, "fieldKey_images": [...] } }
+    // Example: { "abc123_1": {...}, "abc123_2": {...}, "xyz789_1": {...} }
+    @Default({}) Map<String, Map<String, dynamic>> quantityFieldData,
+
+    // Segment breakdown data per quantity instance
+    // Uses same composite key format as quantityFieldData
+    // Format: { "quantityTypeUID_sequenceNo": [segment1, segment2, ...] }
+    @Default({}) Map<String, List<Map<String, dynamic>>> segmentData,
+
+    // Worker information
+    @Default(0) int workerCount,
+    Map<String, dynamic>? workerImage,
+
+    // Notes and remarks
+    @Default('') String notes,
+
+    // Additional images beyond condition snapshots
+    @Default([]) List<Map<String, dynamic>> additionalImages,
+
     // Additional data
     @Default({}) Map<String, List<Map<String, dynamic>>> conditionSnapshots,
     @Default([]) List<Map<String, dynamic>> workerImages,

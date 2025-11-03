@@ -12,10 +12,8 @@ import '../../../domain/entities/daily_report.dart';
 class DailyReportDetailLocationCard extends StatelessWidget {
   final DailyReport report;
 
-  const DailyReportDetailLocationCard({
-    Key? key,
-    required this.report,
-  }) : super(key: key);
+  const DailyReportDetailLocationCard({Key? key, required this.report})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +59,15 @@ class DailyReportDetailLocationCard extends StatelessWidget {
                 // Section Information
                 ThemeListTileWidget(
                   title: 'Section',
-                  titleDetails: report.fromSection?.toString() ?? '',
+                  titleDetails:
+                      report.fromSection != null && report.toSection != null
+                      ? '${double.tryParse(report.fromSection!)?.toStringAsFixed(2) ?? report.fromSection} - ${double.tryParse(report.toSection!)?.toStringAsFixed(2) ?? report.toSection}'
+                      : report.fromSection != null
+                      ? (double.tryParse(
+                              report.fromSection!,
+                            )?.toStringAsFixed(2) ??
+                            report.fromSection!)
+                      : '',
                   icon: Icons.swap_calls,
                   isChevron: false,
                 ),

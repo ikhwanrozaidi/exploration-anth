@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rclink_app/features/work_scope/domain/entities/quantity_field.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
+import '../../bloc/daily_report_create/daily_report_create_bloc.dart';
+import '../../bloc/daily_report_create/daily_report_create_event.dart';
+import '../../bloc/daily_report_create/daily_report_create_state.dart';
 
 class QuantitySegmentBreakdownPage extends StatefulWidget {
+  final String quantityTypeUID;
   final String quantityName;
-  final Map<String, dynamic>? existingData;
   final int segmentSize;
   final int maxSegmentLength;
   final List<QuantityField> segmentFields;
@@ -13,8 +17,8 @@ class QuantitySegmentBreakdownPage extends StatefulWidget {
 
   const QuantitySegmentBreakdownPage({
     Key? key,
+    required this.quantityTypeUID,
     required this.quantityName,
-    this.existingData,
     required this.segmentSize,
     required this.maxSegmentLength,
     required this.segmentFields,
@@ -38,19 +42,44 @@ class _QuantitySegmentBreakdownPageState
   }
 
   void _initializeSegments() {
-    final fieldValues =
-        widget.existingData?['fieldValues'] as Map<String, dynamic>? ?? {};
-
-    final totalLengthField = widget.allQuantityFields.firstWhere(
-      (field) => field.code.toLowerCase() == 'total_length',
-      orElse: () => widget.allQuantityFields.first,
+    // Get quantity field data from BLoC
+    final state = context.read<DailyReportCreateBloc>().state;
+    final quantityData = state.maybeMap(
+      editingDetails: (state) =>
+          state.selections.quantityFieldData[widget.quantityTypeUID] ?? {},
+      orElse: () => <String, dynamic>{},
     );
 
-    final totalLengthValue = fieldValues[totalLengthField.uid];
-    totalLength = double.tryParse(totalLengthValue?.toString() ?? '0') ?? 0;
+    // Get existing segment data from BLoC if available
+    final existingSegments = state.maybeMap(
+      editingDetails: (state) =>
+          state.selections.segmentData[widget.quantityTypeUID],
+      orElse: () => null,
+    );
 
-    if (totalLength > 0) {
-      _generateSegments();
+    if (existingSegments != null && existingSegments.isNotEmpty) {
+      // Load existing segments from BLoC
+      segments = List<Map<String, dynamic>>.from(
+        existingSegments.map((seg) => Map<String, dynamic>.from(seg)),
+      );
+
+      // Recalculate total length from segments
+      if (segments.isNotEmpty) {
+        totalLength = segments.last['endDistance'] as double;
+      }
+    } else {
+      // Generate new segments from total_length field
+      final totalLengthField = widget.allQuantityFields.firstWhere(
+        (field) => field.code.toLowerCase() == 'total_length',
+        orElse: () => widget.allQuantityFields.first,
+      );
+
+      final totalLengthValue = quantityData[totalLengthField.uid];
+      totalLength = double.tryParse(totalLengthValue?.toString() ?? '0') ?? 0;
+
+      if (totalLength > 0) {
+        _generateSegments();
+      }
     }
   }
 
@@ -87,30 +116,30 @@ class _QuantitySegmentBreakdownPageState
     setState(() {});
   }
 
-  void _saveData() {
-    final segmentsData = segments.map((segment) {
-      return {
-        'segmentNumber': segment['segmentNumber'],
-        'startDistance': segment['startDistance'],
-        'endDistance': segment['endDistance'],
-        'segmentValues': (segment['segmentValues'] as Map<String, dynamic>)
-            .entries
-            .map((entry) {
-              return {'quantityFieldUID': entry.key, 'value': entry.value};
-            })
-            .toList(),
-      };
-    }).toList();
+  void _saveSegmentsToBLoC() {
+    // Save segments to BLoC
+    context.read<DailyReportCreateBloc>().add(
+      DailyReportCreateEvent.updateSegmentData(
+        quantityTypeUID: widget.quantityTypeUID,
+        segments: segments,
+      ),
+    );
+  }
 
-    final completeData = {...?widget.existingData, 'segments': segmentsData};
+  void _continueNext() {
+    // Save final state to BLoC
+    _saveSegmentsToBLoC();
 
-    Navigator.pop(context, completeData);
+    // Pop back without returning data (data already in BLoC)
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return PopScope(
+      canPop: true, // Data already auto-saved to BLoC, safe to navigate
+      child: Scaffold(
+        backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
@@ -180,13 +209,13 @@ class _QuantitySegmentBreakdownPageState
                     ),
             ),
 
-            // Save Button
+            // Continue Button
             SizedBox(height: 20),
             Container(
               margin: EdgeInsets.only(top: 20),
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: segments.isEmpty ? null : () => _saveData(),
+                onPressed: segments.isEmpty ? null : () => _continueNext(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor,
                   padding: ResponsiveHelper.padding(context, vertical: 12),
@@ -196,7 +225,7 @@ class _QuantitySegmentBreakdownPageState
                   elevation: 2,
                 ),
                 child: Text(
-                  'Save',
+                  'Continue',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: ResponsiveHelper.fontSize(context, base: 14),
@@ -207,6 +236,7 @@ class _QuantitySegmentBreakdownPageState
             SizedBox(height: 20),
           ],
         ),
+      ),
       ),
     );
   }
@@ -319,6 +349,8 @@ class _QuantitySegmentBreakdownPageState
               setState(() {
                 segments[segmentIndex]['segmentValues'][field.uid] = value;
               });
+              // Save to BLoC incrementally
+              _saveSegmentsToBLoC();
             },
             controller: TextEditingController(
               text: currentValue?.toString() ?? '',

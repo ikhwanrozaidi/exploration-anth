@@ -467,6 +467,9 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
           }
         }
 
+        // Clear existing package roads before inserting new ones (for contractor changes)
+        await _database.delete(_database.packageRoads).go();
+
         // Cache package roads
         if (packageData.packageRoads != null) {
           for (final packageRoad in packageData.packageRoads!) {

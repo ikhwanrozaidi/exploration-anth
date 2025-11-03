@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rclink_app/features/daily_report/presentation/constant/report_model.dart';
 import 'package:rclink_app/features/work_scope/domain/entities/quantity_field.dart';
 import 'package:rclink_app/features/work_scope/domain/entities/work_quantity_type.dart';
@@ -7,7 +8,10 @@ import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
 
+import '../../../../../core/di/injection.dart';
 import '../../../../daily_report/data/mapper/hybrid_field_mapper.dart';
+import '../../bloc/daily_report_create/daily_report_create_bloc.dart';
+import '../../bloc/daily_report_create/daily_report_create_state.dart';
 import 'quantity_fields_page.dart';
 
 class QuantitySelectionPage extends StatefulWidget {
@@ -27,17 +31,72 @@ class QuantitySelectionPage extends StatefulWidget {
 }
 
 class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
-  late List<Map<String, dynamic>> currentQuantities;
+  // Helper method to convert BLoC quantityFieldData to display format
+  List<Map<String, dynamic>> _buildQuantitiesFromBLoC(
+    Map<String, Map<String, dynamic>> quantityFieldData,
+  ) {
+    final quantities = <Map<String, dynamic>>[];
 
-  @override
-  void initState() {
-    super.initState();
-    currentQuantities = List.from(widget.addedQuantities);
+    for (final entry in quantityFieldData.entries) {
+      final compositeKey = entry.key; // Format: "quantityTypeUID_sequenceNo"
+      final fieldData = entry.value;
+
+      // Parse composite key to extract quantityTypeUID and sequenceNo
+      final parts = compositeKey.split('_');
+      final quantityTypeUID = parts.length >= 2
+          ? parts.sublist(0, parts.length - 1).join('_') // Handle UIDs with underscores
+          : compositeKey;
+      final sequenceNo = parts.length >= 2
+          ? int.tryParse(parts.last) ?? 1
+          : 1;
+
+      // Separate field values from image fields
+      final fieldValues = <String, dynamic>{};
+      final imageFields = <String, List<String>>{};
+
+      for (final fieldEntry in fieldData.entries) {
+        if (fieldEntry.key.endsWith('_images')) {
+          // This is an image field
+          final fieldKey = fieldEntry.key.replaceAll('_images', '');
+          final images = (fieldEntry.value as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ?? [];
+          if (images.isNotEmpty) {
+            imageFields[fieldKey] = images;
+          }
+        } else {
+          // This is a regular field value
+          fieldValues[fieldEntry.key] = fieldEntry.value;
+        }
+      }
+
+      // Find the quantity type name
+      final quantityType = widget.quantityLists.firstWhere(
+        (wqt) => wqt.uid == quantityTypeUID,
+        orElse: () => widget.quantityLists.first,
+      );
+
+      quantities.add({
+        'id': compositeKey, // Use composite key as ID
+        'quantityTypeUID': quantityTypeUID, // Store actual UID separately
+        'sequenceNo': sequenceNo,
+        'name': sequenceNo > 1
+            ? '${quantityType.name} (#$sequenceNo)' // Show sequence number if > 1
+            : quantityType.name,
+        'data': {
+          'fieldValues': fieldValues,
+          'imageFields': imageFields,
+        },
+      });
+    }
+
+    return quantities;
   }
 
   void _navigateToQuantityFields(
     WorkQuantityType selectedQuantity,
     Map<String, dynamic>? existingData,
+    String compositeKey, // quantityTypeUID_sequenceNo
   ) async {
     final scopeId = 'R02';
 
@@ -73,53 +132,64 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
         .where((field) => field.isForSegment == true)
         .toList();
 
-    final result = await Navigator.push(
+    // Get the bloc instance from dependency injection
+    final bloc = getIt<DailyReportCreateBloc>();
+
+    await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => QuantityFieldsPage(
-          scopeOfWork: 'Dynamic Scope',
-          weather: 'N/A',
-          location: 'N/A',
-          section: 'N/A',
-          quantityOption: quantityOption,
-          scopeConfig: scopeConfig,
-          existingData: existingData,
-          hasSegmentBreakdown: selectedQuantity.hasSegmentBreakdown,
-          selectedScopeUid: widget.selectedScopeUid,
-          segmentSize: selectedQuantity.segmentSize,
-          maxSegmentLength: selectedQuantity.maxSegmentLength,
-          segmentFields: segmentFields,
-          allQuantityFields: selectedQuantity.quantityFields,
+        builder: (context) => BlocProvider.value(
+          value: bloc,
+          child: QuantityFieldsPage(
+            scopeOfWork: 'Dynamic Scope',
+            weather: 'N/A',
+            location: 'N/A',
+            section: 'N/A',
+            quantityOption: quantityOption,
+            scopeConfig: scopeConfig,
+            existingData: existingData,
+            hasSegmentBreakdown: selectedQuantity.hasSegmentBreakdown,
+            selectedScopeUid: widget.selectedScopeUid,
+            segmentSize: selectedQuantity.segmentSize,
+            maxSegmentLength: selectedQuantity.maxSegmentLength,
+            segmentFields: segmentFields,
+            allQuantityFields: selectedQuantity.quantityFields,
+            compositeKey: compositeKey, // Pass composite key
+          ),
         ),
       ),
     );
 
-    if (result != null) {
-      setState(() {
-        currentQuantities.removeWhere((q) => q['id'] == selectedQuantity.uid);
-        currentQuantities.add({
-          'id': selectedQuantity.uid,
-          'name': selectedQuantity.name,
-          'data': result,
-        });
-      });
-    }
+    // Data is now in BLoC, no need to handle result
+    // UI will automatically update via BlocBuilder
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        titleSpacing: 20,
-        title: Row(
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context, currentQuantities);
-              },
+    return BlocBuilder<DailyReportCreateBloc, DailyReportCreateState>(
+      bloc: getIt<DailyReportCreateBloc>(),
+      builder: (context, state) {
+        // Get quantityFieldData from BLoC state
+        final quantityFieldData = state.maybeMap(
+          editingDetails: (state) => state.selections.quantityFieldData,
+          orElse: () => <String, Map<String, dynamic>>{},
+        );
+
+        // Convert BLoC data to display format
+        final currentQuantities = _buildQuantitiesFromBLoC(quantityFieldData);
+
+        return Scaffold(
+          backgroundColor: Colors.white,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            automaticallyImplyLeading: false,
+            titleSpacing: 20,
+            title: Row(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
               child: Container(
                 padding: EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -225,6 +295,8 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
           ],
         ),
       ),
+        );
+      },
     );
   }
 
@@ -234,15 +306,22 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
     final imageFields =
         data?['imageFields'] as Map<String, List<String>>? ?? {};
 
+    // Use quantityTypeUID (not the composite key 'id') to find the type
     final workQuantityType = widget.quantityLists.firstWhere(
-      (wqt) => wqt.uid == quantity['id'],
+      (wqt) => wqt.uid == quantity['quantityTypeUID'],
+      orElse: () => widget.quantityLists.first,
     );
 
     return Container(
       margin: EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: () async {
-          _navigateToQuantityFields(workQuantityType, quantity['data']);
+          // quantity['id'] is the composite key
+          _navigateToQuantityFields(
+            workQuantityType,
+            quantity['data'],
+            quantity['id'], // Pass composite key for editing
+          );
         },
         borderRadius: BorderRadius.circular(12),
         child: Column(
@@ -491,13 +570,35 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
             (quantity) => quantity.name == selectedName,
           );
 
-          final existingQuantity = currentQuantities
-              .where((q) => q['id'] == selectedQuantity.uid)
-              .firstOrNull;
+          // Get existing data from BLoC to determine next sequence number
+          final bloc = getIt<DailyReportCreateBloc>();
+          final state = bloc.state;
+          final quantityFieldData = state.maybeMap(
+            editingDetails: (state) => state.selections.quantityFieldData,
+            orElse: () => <String, Map<String, dynamic>>{},
+          );
 
+          // Find the highest sequence number for this quantity type
+          int maxSequenceNo = 0;
+          for (final key in quantityFieldData.keys) {
+            if (key.startsWith('${selectedQuantity.uid}_')) {
+              final parts = key.split('_');
+              final seqNo = int.tryParse(parts.last) ?? 0;
+              if (seqNo > maxSequenceNo) {
+                maxSequenceNo = seqNo;
+              }
+            }
+          }
+
+          // Generate next sequence number and composite key
+          final nextSequenceNo = maxSequenceNo + 1;
+          final compositeKey = '${selectedQuantity.uid}_$nextSequenceNo';
+
+          // For adding new instance, no existing data
           _navigateToQuantityFields(
             selectedQuantity,
-            existingQuantity?['data'],
+            null, // No existing data for new instance
+            compositeKey,
           );
         });
       },

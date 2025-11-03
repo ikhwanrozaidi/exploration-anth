@@ -119,9 +119,12 @@ class _ReportCreationFormState extends State<ReportCreationForm> {
                   startFrom: RoadLevel.provinces,
                   endAt: RoadLevel.roads,
                   onRoadSelected: (RoadSelectionResult result) {
+                    // Store the full location data using the new event
                     context.read<DailyReportCreateBloc>().add(
-                      DailyReportCreateEvent.selectRoad(
-                        result.selectedRoad!.uid.toString(),
+                      DailyReportCreateEvent.selectLocationFromResult(
+                        province: result.selectedProvince!,
+                        district: result.selectedDistrict!,
+                        road: result.selectedRoad!,
                       ),
                     );
 

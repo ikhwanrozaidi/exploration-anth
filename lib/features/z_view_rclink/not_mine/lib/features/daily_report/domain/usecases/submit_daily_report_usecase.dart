@@ -48,7 +48,7 @@ class SubmitDailyReportUseCase {
     }
   }
 
-  /// Extract images from selections (conditionSnapshots and workerImages)
+  /// Extract images from selections (condition snapshots, worker image, additional images, and quantity field images)
   static Map<ImageContextField, List<String>>? _extractImagesFromSelections(
     ReportSelections selections,
   ) {
@@ -84,16 +84,51 @@ class SubmitDailyReportUseCase {
       }
     }
 
-    // Extract worker images
-    if (selections.workerImages.isNotEmpty) {
-      final workerPaths = selections.workerImages
+    // Extract worker image (single image from workerImage field)
+    if (selections.workerImage != null) {
+      final workerPath = selections.workerImage!['path'] as String?;
+      if (workerPath != null) {
+        result[ImageContextField.workersImage] = [workerPath];
+      }
+    }
+
+    // Extract additional images
+    if (selections.additionalImages.isNotEmpty) {
+      final additionalPaths = selections.additionalImages
           .map((image) => image['path'] as String?)
           .where((path) => path != null)
           .cast<String>()
           .toList();
 
-      if (workerPaths.isNotEmpty) {
-        result[ImageContextField.workersImage] = workerPaths;
+      if (additionalPaths.isNotEmpty) {
+        // Add to appropriate field or create new context
+        // For now, add to a general additional images field
+        // TODO: Determine correct ImageContextField for additional images
+        // result[ImageContextField.additionalImage] = additionalPaths;
+      }
+    }
+
+    // Extract quantity field images
+    for (final entry in selections.quantityFieldData.entries) {
+      final quantityTypeData = entry.value;
+
+      // Find all image fields (keys ending with '_images')
+      for (final fieldEntry in quantityTypeData.entries) {
+        if (fieldEntry.key.endsWith('_images')) {
+          final images = fieldEntry.value as List<dynamic>?;
+          if (images != null && images.isNotEmpty) {
+            final imagePaths = images
+                .map((path) => path.toString())
+                .where((path) => path.isNotEmpty)
+                .toList();
+
+            if (imagePaths.isNotEmpty) {
+              // TODO: Determine correct ImageContextField for quantity images
+              // For now, these might need to be associated with the quantity itself
+              // result[ImageContextField.quantityImage] = imagePaths;
+            }
+          }
+        }
       }
     }
 

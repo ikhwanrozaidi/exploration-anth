@@ -162,6 +162,8 @@ import '../../features/work_scope/domain/usecases/get_quantity_usecase.dart'
     as _i1005;
 import '../../features/work_scope/domain/usecases/get_work_scopes_usecase.dart'
     as _i890;
+import '../../features/work_scope/presentation/bloc/work_scope_bloc.dart'
+    as _i248;
 import '../database/app_database.dart' as _i982;
 import '../network/auth_interceptor.dart' as _i908;
 import '../network/connectivity_service.dart' as _i491;
@@ -251,10 +253,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i464.DailyReportLocalDataSource>(
       () => _i464.DailyReportLocalDataSourceImpl(gh<_i982.DatabaseService>()),
-    );
-    gh.lazySingleton<_i593.WorkScopeRemoteDataSource>(
-      () =>
-          _i593.WorkScopeRemoteDataSourceImpl(gh<_i468.WorkScopeApiService>()),
     );
     gh.lazySingleton<_i517.AdminRemoteDataSource>(
       () => _i517.AdminRemoteDataSourceImpl(gh<_i472.AdminApiService>()),
@@ -432,20 +430,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i157.RefreshTokenUseCase>(
       () => _i157.RefreshTokenUseCase(gh<_i787.AuthRepository>()),
     );
-    gh.lazySingleton<_i767.EquipmentRepository>(
-      () => _i763.EquipmentRepositoryImpl(
-        gh<_i593.WorkScopeRemoteDataSource>(),
-        gh<_i1028.WorkScopeLocalDataSource>(),
-        gh<_i426.CompanyBloc>(),
-      ),
-    );
-    gh.lazySingleton<_i880.QuantityRepository>(
-      () => _i648.QuantityRepositoryImpl(
-        gh<_i593.WorkScopeRemoteDataSource>(),
-        gh<_i1028.WorkScopeLocalDataSource>(),
-        gh<_i426.CompanyBloc>(),
-      ),
-    );
     gh.lazySingleton<_i797.AuthBloc>(
       () => _i797.AuthBloc(
         gh<_i29.RequestOtpUseCase>(),
@@ -454,16 +438,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i388.StoreTokensUseCase>(),
         gh<_i625.GetTokensUseCase>(),
         gh<_i871.ClearAuthCacheUseCase>(),
-      ),
-    );
-    gh.factory<_i847.GetEquipmentUseCase>(
-      () => _i847.GetEquipmentUseCase(gh<_i767.EquipmentRepository>()),
-    );
-    gh.lazySingleton<_i870.WorkScopesRepository>(
-      () => _i589.WorkScopesRepositoryImpl(
-        gh<_i593.WorkScopeRemoteDataSource>(),
-        gh<_i1028.WorkScopeLocalDataSource>(),
-        gh<_i426.CompanyBloc>(),
       ),
     );
     gh.factory<_i330.SubmitDailyReportUseCase>(
@@ -479,21 +453,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i908.GetDailyReportsUseCase>(
       () => _i908.GetDailyReportsUseCase(gh<_i819.DailyReportRepository>()),
     );
-    gh.factory<_i1005.GetQuantityUseCase>(
-      () => _i1005.GetQuantityUseCase(gh<_i880.QuantityRepository>()),
-    );
     gh.factory<_i337.ContractorRelationRepository>(
       () => _i715.ContractorRelationRepositoryImpl(
         gh<_i816.ContractorRelationRemoteDataSource>(),
         gh<_i722.ContractorRelationLocalDataSource>(),
         gh<_i426.CompanyBloc>(),
       ),
-    );
-    gh.factory<_i890.GetWorkScopesUseCase>(
-      () => _i890.GetWorkScopesUseCase(gh<_i870.WorkScopesRepository>()),
-    );
-    gh.factory<_i584.ClearWorkScopesCacheUseCase>(
-      () => _i584.ClearWorkScopesCacheUseCase(gh<_i870.WorkScopesRepository>()),
     );
     gh.factory<_i266.DailyReportViewBloc>(
       () => _i266.DailyReportViewBloc(
@@ -531,11 +496,60 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i514.RoadLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i593.WorkScopeRemoteDataSource>(
+      () => _i593.WorkScopeRemoteDataSourceImpl(
+        gh<_i468.WorkScopeApiService>(),
+        gh<_i224.ContractorRelationBloc>(),
+        gh<_i426.CompanyBloc>(),
+      ),
+    );
     gh.lazySingleton<_i275.ClearRoadCacheUseCase>(
       () => _i275.ClearRoadCacheUseCase(gh<_i581.RoadRepository>()),
     );
     gh.lazySingleton<_i971.GetRoadsUseCase>(
       () => _i971.GetRoadsUseCase(gh<_i581.RoadRepository>()),
+    );
+    gh.lazySingleton<_i767.EquipmentRepository>(
+      () => _i763.EquipmentRepositoryImpl(
+        gh<_i593.WorkScopeRemoteDataSource>(),
+        gh<_i1028.WorkScopeLocalDataSource>(),
+        gh<_i426.CompanyBloc>(),
+      ),
+    );
+    gh.lazySingleton<_i880.QuantityRepository>(
+      () => _i648.QuantityRepositoryImpl(
+        gh<_i593.WorkScopeRemoteDataSource>(),
+        gh<_i1028.WorkScopeLocalDataSource>(),
+        gh<_i426.CompanyBloc>(),
+      ),
+    );
+    gh.factory<_i847.GetEquipmentUseCase>(
+      () => _i847.GetEquipmentUseCase(gh<_i767.EquipmentRepository>()),
+    );
+    gh.lazySingleton<_i870.WorkScopesRepository>(
+      () => _i589.WorkScopesRepositoryImpl(
+        gh<_i593.WorkScopeRemoteDataSource>(),
+        gh<_i1028.WorkScopeLocalDataSource>(),
+        gh<_i426.CompanyBloc>(),
+      ),
+    );
+    gh.factory<_i1005.GetQuantityUseCase>(
+      () => _i1005.GetQuantityUseCase(gh<_i880.QuantityRepository>()),
+    );
+    gh.factory<_i890.GetWorkScopesUseCase>(
+      () => _i890.GetWorkScopesUseCase(gh<_i870.WorkScopesRepository>()),
+    );
+    gh.factory<_i584.ClearWorkScopesCacheUseCase>(
+      () => _i584.ClearWorkScopesCacheUseCase(gh<_i870.WorkScopesRepository>()),
+    );
+    gh.factory<_i736.RoadBloc>(
+      () => _i736.RoadBloc(
+        gh<_i971.GetRoadsUseCase>(),
+        gh<_i275.ClearRoadCacheUseCase>(),
+      ),
+    );
+    gh.factory<_i248.WorkScopeBloc>(
+      () => _i248.WorkScopeBloc(gh<_i890.GetWorkScopesUseCase>()),
     );
     gh.factory<_i398.ClearAllCacheUseCase>(
       () => _i398.ClearAllCacheUseCase(
@@ -543,12 +557,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i581.RoadRepository>(),
         gh<_i880.QuantityRepository>(),
         gh<_i767.EquipmentRepository>(),
-      ),
-    );
-    gh.factory<_i736.RoadBloc>(
-      () => _i736.RoadBloc(
-        gh<_i971.GetRoadsUseCase>(),
-        gh<_i275.ClearRoadCacheUseCase>(),
       ),
     );
     gh.lazySingleton<_i1040.DailyReportCreateBloc>(

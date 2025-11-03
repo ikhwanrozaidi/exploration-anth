@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rclink_app/features/daily_report/presentation/constant/report_model.dart';
 import 'package:rclink_app/features/work_scope/domain/entities/quantity_field.dart';
+import '../../../../../core/di/injection.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
+import '../../bloc/daily_report_create/daily_report_create_bloc.dart';
+import '../../bloc/daily_report_create/daily_report_create_event.dart';
+import '../../bloc/daily_report_create/daily_report_create_state.dart';
 import 'quantity_segments_breakdown_page.dart';
 import 'shared/creation_fields_widget.dart';
 
@@ -24,6 +29,9 @@ class QuantityFieldsPage extends StatefulWidget {
   final List<QuantityField>? segmentFields;
   final List<QuantityField>? allQuantityFields;
 
+  // Composite key for supporting multiple instances (quantityTypeUID_sequenceNo)
+  final String compositeKey;
+
   const QuantityFieldsPage({
     Key? key,
     required this.scopeOfWork,
@@ -41,6 +49,7 @@ class QuantityFieldsPage extends StatefulWidget {
     this.maxSegmentLength,
     this.segmentFields,
     this.allQuantityFields,
+    required this.compositeKey,
   }) : super(key: key);
 
   @override
@@ -48,30 +57,62 @@ class QuantityFieldsPage extends StatefulWidget {
 }
 
 class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
-  Map<String, dynamic> fieldValues = {};
-  Map<String, List<String>> imageFields = {};
+  // Get the composite key for this quantity instance (quantityTypeUID_sequenceNo)
+  String get quantityTypeUID => widget.compositeKey;
 
   @override
   void initState() {
     super.initState();
 
+    // Load existing data into BLoC if provided
     if (widget.existingData != null) {
-      fieldValues = Map.from(widget.existingData!['fieldValues'] ?? {});
-      imageFields = Map<String, List<String>>.from(
-        widget.existingData!['imageFields']?.map(
-              (k, v) => MapEntry(k, List<String>.from(v)),
-            ) ??
-            {},
-      );
+      final fieldValues = widget.existingData!['fieldValues'] ?? {};
+      final imageFields = widget.existingData!['imageFields'] ?? {};
+
+      // Dispatch events to populate BLoC state with existing data
+      fieldValues.forEach((key, value) {
+        context.read<DailyReportCreateBloc>().add(
+          DailyReportCreateEvent.updateQuantityFieldValue(
+            quantityTypeUID: quantityTypeUID,
+            fieldKey: key,
+            value: value,
+          ),
+        );
+      });
+
+      imageFields.forEach((key, images) {
+        context.read<DailyReportCreateBloc>().add(
+          DailyReportCreateEvent.updateQuantityFieldImages(
+            quantityTypeUID: quantityTypeUID,
+            fieldKey: key,
+            images: List<String>.from(images),
+          ),
+        );
+      });
     }
+  }
+
+  // Helper to get current field data from BLoC
+  Map<String, dynamic> _getFieldData(DailyReportCreateState state) {
+    return state.maybeMap(
+      editingDetails: (state) =>
+          state.selections.quantityFieldData[quantityTypeUID] ?? {},
+      orElse: () => {},
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
+    return BlocBuilder<DailyReportCreateBloc, DailyReportCreateState>(
+      builder: (context, state) {
+        final fieldData = _getFieldData(state);
 
-      appBar: AppBar(
+        return PopScope(
+          canPop: true, // Data already auto-saved to BLoC, safe to navigate
+          child: Scaffold(
+            backgroundColor: Colors.white,
+
+          appBar: AppBar(
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         titleSpacing: 20,
@@ -132,20 +173,20 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: widget.quantityOption.fields
-                      .map((field) => _buildField(field))
+                      .map((field) => _buildField(field, fieldData))
                       .toList(),
                 ),
               ),
             ),
 
-            // Save Button
+            // Continue Button (data auto-saved to BLoC)
             SizedBox(height: 20),
 
             Container(
               margin: EdgeInsets.only(top: 20),
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => _saveData(),
+                onPressed: () => _navigateNext(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor,
                   padding: ResponsiveHelper.padding(context, vertical: 12),
@@ -155,7 +196,7 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
                   elevation: 2,
                 ),
                 child: Text(
-                  'Save',
+                  'Continue',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: ResponsiveHelper.fontSize(context, base: 14),
@@ -167,13 +208,17 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
           ],
         ),
       ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildField(FieldConfig field) {
+  Widget _buildField(FieldConfig field, Map<String, dynamic> fieldData) {
     final fieldId = field.id;
-    final currentValue = fieldValues[fieldId];
-    final currentImages = imageFields[fieldId];
+    final currentValue = fieldData[fieldId];
+    final currentImages = fieldData['${fieldId}_images'] as List<dynamic>?;
+    final imageList = currentImages?.cast<String>().toList();
 
     switch (field.type) {
       case FieldType.multipleImages:
@@ -185,19 +230,27 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
           isTextField: false,
           isBottomSheet: false,
           isTextNumber: false,
-          currentImages: currentImages,
+          currentImages: imageList,
           onImageAdded: (imagePath) {
-            setState(() {
-              final images = imageFields[fieldId] ?? [];
-              imageFields[fieldId] = [...images, imagePath];
-            });
+            final images = imageList ?? [];
+            context.read<DailyReportCreateBloc>().add(
+              DailyReportCreateEvent.updateQuantityFieldImages(
+                quantityTypeUID: quantityTypeUID,
+                fieldKey: fieldId,
+                images: [...images, imagePath],
+              ),
+            );
           },
           onImageRemoved: (imagePath) {
-            setState(() {
-              final images = imageFields[fieldId] ?? [];
-              images.remove(imagePath);
-              imageFields[fieldId] = images;
-            });
+            final images = imageList ?? [];
+            final updatedImages = images.where((img) => img != imagePath).toList();
+            context.read<DailyReportCreateBloc>().add(
+              DailyReportCreateEvent.updateQuantityFieldImages(
+                quantityTypeUID: quantityTypeUID,
+                fieldKey: fieldId,
+                images: updatedImages,
+              ),
+            );
           },
         );
 
@@ -219,9 +272,13 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
               isRadio: true,
               isTips: field.isTips ?? false,
               onSelectionChanged: (selectedValue) {
-                setState(() {
-                  fieldValues[fieldId] = selectedValue;
-                });
+                context.read<DailyReportCreateBloc>().add(
+                  DailyReportCreateEvent.updateQuantityFieldValue(
+                    quantityTypeUID: quantityTypeUID,
+                    fieldKey: fieldId,
+                    value: selectedValue,
+                  ),
+                );
               },
               onPressTips: (field.isTips == true && field.pageNavigate != null)
                   ? () {
@@ -253,9 +310,13 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
           textFieldUnits: field.units,
           currentValue: currentValue?.toString(),
           onTextChanged: (value) {
-            setState(() {
-              fieldValues[fieldId] = value;
-            });
+            context.read<DailyReportCreateBloc>().add(
+              DailyReportCreateEvent.updateQuantityFieldValue(
+                quantityTypeUID: quantityTypeUID,
+                fieldKey: fieldId,
+                value: value,
+              ),
+            );
           },
         );
 
@@ -272,16 +333,20 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
           textFieldHintText: field.hintText,
           currentValue: currentValue?.toString(),
           onTextChanged: (value) {
-            setState(() {
-              fieldValues[fieldId] = value;
-            });
+            context.read<DailyReportCreateBloc>().add(
+              DailyReportCreateEvent.updateQuantityFieldValue(
+                quantityTypeUID: quantityTypeUID,
+                fieldKey: fieldId,
+                value: value,
+              ),
+            );
           },
         );
     }
   }
 
-  void _saveData() {
-    final data = {'fieldValues': fieldValues, 'imageFields': imageFields};
+  void _navigateNext() {
+    // Data already saved to BLoC via incremental updates, just handle navigation
 
     // Check BOTH conditions:
     // 1. selectedScopeUid == Road Shoulder (R02)
@@ -291,23 +356,29 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
         widget.hasSegmentBreakdown;
 
     if (shouldShowSegmentBreakdown) {
-      // Navigate to Segment Breakdown Page instead of popping
+      // Get the bloc instance from dependency injection
+      final bloc = getIt<DailyReportCreateBloc>();
+
+      // Navigate to Segment Breakdown Page
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => QuantitySegmentBreakdownPage(
-            quantityName: widget.quantityOption.name,
-            existingData: data,
-            segmentSize: widget.segmentSize ?? 25,
-            maxSegmentLength: widget.maxSegmentLength ?? 1000,
-            segmentFields: widget.segmentFields ?? [],
-            allQuantityFields: widget.allQuantityFields ?? [],
+          builder: (context) => BlocProvider.value(
+            value: bloc,
+            child: QuantitySegmentBreakdownPage(
+              quantityTypeUID: quantityTypeUID,
+              quantityName: widget.quantityOption.name,
+              segmentSize: widget.segmentSize ?? 25,
+              maxSegmentLength: widget.maxSegmentLength ?? 1000,
+              segmentFields: widget.segmentFields ?? [],
+              allQuantityFields: widget.allQuantityFields ?? [],
+            ),
           ),
         ),
       );
     } else {
-      // Normal flow: pop back with data
-      Navigator.pop(context, data);
+      // Normal flow: pop back WITHOUT data (data already in BLoC)
+      Navigator.pop(context);
     }
   }
 }

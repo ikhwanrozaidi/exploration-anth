@@ -8,11 +8,8 @@ part 'work_scope_state.freezed.dart';
 @freezed
 class WorkScopeState with _$WorkScopeState {
   const factory WorkScopeState.initial() = WorkScopeInitial;
-
   const factory WorkScopeState.loading() = WorkScopeLoading;
-
   const factory WorkScopeState.loaded(List<WorkScope> workScopes) =
       WorkScopeLoaded;
-
   const factory WorkScopeState.error(Failure failure) = WorkScopeError;
 }

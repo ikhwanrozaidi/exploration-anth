@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:rclink_app/features/work_scope_temp/presentation/bloc/work_scope_state.dart';
+import '../bloc/work_scope_state.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../shared/widgets/flexible_bottomsheet.dart';
 
 /// Helper function to show work scope selection bottomsheet
-///
-/// This function can be called from any page that needs work scope selection
-/// without needing to include the SelectionFieldCard widget.
 ///
 /// Usage:
 /// ```dart
@@ -14,12 +11,10 @@ import '../../../../shared/widgets/flexible_bottomsheet.dart';
 ///   context: context,
 ///   state: workScopeState,
 ///   onScopeSelected: (selectedData) {
-///     // Handle selected work scope data
 ///     print('Selected UID: ${selectedData['uid']}');
 ///   },
 /// );
 /// ```
-
 void showWorkScopeSelection({
   required BuildContext context,
   required WorkScopeState state,
@@ -65,13 +60,12 @@ void showWorkScopeSelection({
         'name': selectedScope.name,
         'description': selectedScope.description,
         'allowMultipleQuantities': selectedScope.allowMultipleQuantities,
+        'workQuantityTypes': selectedScope.workQuantityTypes,
+        'workEquipments': selectedScope.workEquipments,
       };
 
       // Callback to caller
       onScopeSelected(selectedData);
-
-      // Close bottom sheet
-      // Navigator.of(context).pop();
     },
   );
 }

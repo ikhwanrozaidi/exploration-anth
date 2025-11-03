@@ -14,6 +14,8 @@ import 'features/locale/presentation/widgets/app_localization.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/company/presentation/bloc/company_bloc.dart';
 import 'features/rbac/presentation/bloc/rbac_bloc.dart';
+import 'features/road/presentation/bloc/road_bloc.dart';
+import 'features/work_scope/presentation/bloc/work_scope_bloc.dart';
 import 'shared/widgets/auth_wrapper.dart';
 
 Future<void> main() async {
@@ -36,6 +38,11 @@ Future<void> main() async {
         BlocProvider<ContractorRelationBloc>(
           create: (context) => getIt<ContractorRelationBloc>(),
         ),
+
+        BlocProvider<WorkScopeBloc>(
+          create: (context) => getIt<WorkScopeBloc>(),
+        ),
+        BlocProvider<RoadBloc>(create: (context) => getIt<RoadBloc>()),
       ],
       child: const MyApp(),
     ),

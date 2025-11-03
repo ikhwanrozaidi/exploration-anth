@@ -6,6 +6,7 @@ import 'package:rclink_app/features/daily_report/data/models/daily_report_model.
 import 'package:rclink_app/features/daily_report/data/models/road_response_model.dart';
 import 'package:rclink_app/features/daily_report/data/models/work_scope_response_model.dart';
 import 'package:rclink_app/features/daily_report/data/models/report_quantities_model.dart';
+import 'package:rclink_app/features/daily_report/data/models/created_by_response_model.dart';
 import 'package:rclink_app/core/domain/models/file_model.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/database/app_database.dart';
@@ -61,9 +62,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
 
       // Add search filter if provided
       if (search != null && search.trim().isNotEmpty) {
-        query.where(
-          (tbl) => tbl.name.like('%${search.trim()}%'),
-        );
+        query.where((tbl) => tbl.name.like('%${search.trim()}%'));
       }
 
       final records = await query.get();
@@ -87,9 +86,10 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
   @override
   Future<DailyReportModel?> getCachedDailyReportByUid(String uid) async {
     try {
-      final record = await (_database.select(_database.dailyReports)
-            ..where((tbl) => tbl.uid.equals(uid) & tbl.deletedAt.isNull()))
-          .getSingleOrNull();
+      final record =
+          await (_database.select(_database.dailyReports)
+                ..where((tbl) => tbl.uid.equals(uid) & tbl.deletedAt.isNull()))
+              .getSingleOrNull();
 
       if (record == null) {
         return null;
@@ -122,6 +122,12 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
         String? roadData;
         if (report.road != null) {
           roadData = jsonEncode(report.road!.toJson());
+        }
+
+        // Convert createdBy to JSON
+        String? createdByData;
+        if (report.createdBy != null) {
+          createdByData = jsonEncode(report.createdBy!.toJson());
         }
 
         // Convert equipments to JSON
@@ -179,6 +185,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
                 updatedAt: Value(report.updatedAt),
                 workScopeData: Value(workScopeData),
                 roadData: Value(roadData),
+                createdByData: Value(createdByData),
                 equipmentsData: Value(equipmentsJson),
                 reportQuantitiesData: Value(reportQuantitiesJson),
               ),
@@ -187,7 +194,9 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
         // Save files if any
         if (report.files != null && report.files!.isNotEmpty) {
           for (final file in report.files!) {
-            await _database.into(_database.files).insertOnConflictUpdate(
+            await _database
+                .into(_database.files)
+                .insertOnConflictUpdate(
                   FilesCompanion(
                     id: Value(file.id),
                     uid: Value(file.uid),
@@ -218,7 +227,9 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
   Future<void> cacheSingleDailyReport(DailyReportModel report) async {
     try {
       // Insert or update the single report (reuse logic from cacheDailyReports)
-      await _database.into(_database.dailyReports).insertOnConflictUpdate(
+      await _database
+          .into(_database.dailyReports)
+          .insertOnConflictUpdate(
             DailyReportsCompanion(
               id: Value(report.id),
               uid: Value(report.uid),
@@ -235,44 +246,69 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
               workScopeID: Value(report.workScopeID),
               roadID: Value(report.roadID),
               totalWorkers: Value(report.totalWorkers),
-              fromSection: Value(report.fromSection != null ? double.tryParse(report.fromSection!) : null),
-              toSection: Value(report.toSection != null ? double.tryParse(report.toSection!) : null),
-              longitude: Value(report.longitude != null ? double.tryParse(report.longitude!) : null),
-              latitude: Value(report.latitude != null ? double.tryParse(report.latitude!) : null),
+              fromSection: Value(
+                report.fromSection != null
+                    ? double.tryParse(report.fromSection!)
+                    : null,
+              ),
+              toSection: Value(
+                report.toSection != null
+                    ? double.tryParse(report.toSection!)
+                    : null,
+              ),
+              longitude: Value(
+                report.longitude != null
+                    ? double.tryParse(report.longitude!)
+                    : null,
+              ),
+              latitude: Value(
+                report.latitude != null
+                    ? double.tryParse(report.latitude!)
+                    : null,
+              ),
               createdByID: Value(report.createdByID),
               createdAt: Value(report.createdAt),
               updatedAt: Value(report.updatedAt),
-              workScopeData: Value(report.workScope != null
-                  ? jsonEncode({
-                      'name': report.workScope!.name,
-                      'code': report.workScope!.code,
-                      'uid': report.workScope!.uid,
-                    })
-                  : null),
-              roadData: Value(report.road != null
-                  ? jsonEncode(report.road!.toJson())
-                  : null),
-              equipmentsData: Value(report.equipments!.isNotEmpty
-                  ? jsonEncode(
-                      report.equipments!
-                          .map((e) => {'name': e.name, 'uid': e.uid})
-                          .toList(),
-                    )
-                  : null),
-              reportQuantitiesData:
-                  Value(report.reportQuantities != null &&
-                          report.reportQuantities!.isNotEmpty
-                      ? jsonEncode(
-                          report.reportQuantities!.map((q) => q.toJson()).toList(),
-                        )
-                      : null),
+              workScopeData: Value(
+                report.workScope != null
+                    ? jsonEncode({
+                        'name': report.workScope!.name,
+                        'code': report.workScope!.code,
+                        'uid': report.workScope!.uid,
+                      })
+                    : null,
+              ),
+              roadData: Value(
+                report.road != null ? jsonEncode(report.road!.toJson()) : null,
+              ),
+              equipmentsData: Value(
+                report.equipments!.isNotEmpty
+                    ? jsonEncode(
+                        report.equipments!
+                            .map((e) => {'name': e.name, 'uid': e.uid})
+                            .toList(),
+                      )
+                    : null,
+              ),
+              reportQuantitiesData: Value(
+                report.reportQuantities != null &&
+                        report.reportQuantities!.isNotEmpty
+                    ? jsonEncode(
+                        report.reportQuantities!
+                            .map((q) => q.toJson())
+                            .toList(),
+                      )
+                    : null,
+              ),
             ),
           );
 
       // Cache files if any
       if (report.files != null && report.files!.isNotEmpty) {
         for (final file in report.files!) {
-          await _database.into(_database.files).insertOnConflictUpdate(
+          await _database
+              .into(_database.files)
+              .insertOnConflictUpdate(
                 FilesCompanion(
                   id: Value(file.id),
                   uid: Value(file.uid),
@@ -393,7 +429,9 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
 
   /// Helper method to convert DailyReportRecord to DailyReportModel
   /// Shared logic between getCachedDailyReports and createDailyReportLocal
-  Future<DailyReportModel> _convertRecordToModel(DailyReportRecord record) async {
+  Future<DailyReportModel> _convertRecordToModel(
+    DailyReportRecord record,
+  ) async {
     // Parse workScope JSON
     WorkScopeResponseModel? workScope;
     if (record.workScopeData != null && record.workScopeData!.isNotEmpty) {
@@ -415,6 +453,21 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
       try {
         final data = jsonDecode(record.roadData!);
         road = RoadResponseModel.fromJson(data);
+      } catch (e) {
+        // Silently skip parsing errors for optional fields
+      }
+    }
+
+    // Parse createdBy JSON
+    CreatedByResponseModel? createdBy;
+    if (record.createdByData != null && record.createdByData!.isNotEmpty) {
+      try {
+        final data = jsonDecode(record.createdByData!);
+        createdBy = CreatedByResponseModel(
+          uid: data['uid'] as String,
+          firstName: data['firstName'] as String?,
+          lastName: data['lastName'] as String?,
+        );
       } catch (e) {
         // Silently skip parsing errors for optional fields
       }
@@ -457,10 +510,13 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
     // Parse files from Files table
     List<FileModel> files = [];
     try {
-      final fileRecords = await (_database.select(_database.files)
-            ..where(
-                (tbl) => tbl.dailyReportID.equals(record.id) & tbl.deletedAt.isNull()))
-          .get();
+      final fileRecords =
+          await (_database.select(_database.files)..where(
+                (tbl) =>
+                    tbl.dailyReportID.equals(record.id) &
+                    tbl.deletedAt.isNull(),
+              ))
+              .get();
 
       files = fileRecords.map((f) => FileModel.fromDatabaseRecord(f)).toList();
     } catch (e) {
@@ -493,6 +549,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
       company: null,
       workScope: workScope,
       road: road,
+      createdBy: createdBy,
       equipments: equipments,
       reportQuantities: reportQuantities,
       files: files,

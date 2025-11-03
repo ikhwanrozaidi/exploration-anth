@@ -40,9 +40,8 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
     if (!hasWorkScopes) {
       _bloc.add(const LoadWorkScopes());
 
-      Future.delayed(const Duration(milliseconds: 100), () {
-        _bloc.add(const LoadStates());
-      });
+      // LoadStates, LoadDistricts, LoadRoads are handled by RoadFieldTile widget
+      // No need to call them here
     }
   }
 

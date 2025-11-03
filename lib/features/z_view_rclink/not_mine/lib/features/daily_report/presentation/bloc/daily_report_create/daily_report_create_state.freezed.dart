@@ -1639,7 +1639,17 @@ mixin _$ReportSelections {
  String? get selectedWeather;// Location selections (UID is inside entity, no need to store separately)
  Province? get selectedState; District? get selectedDistrict; Road? get selectedRoad;// Section input
  String? get section; String? get sectionError;// Quantity and equipment selections
- List<WorkQuantityType> get selectedQuantityTypes; List<WorkEquipment> get selectedEquipment;// Additional data
+ List<WorkQuantityType> get selectedQuantityTypes; List<WorkEquipment> get selectedEquipment;// Quantity field data (detailed values and images per quantity instance)
+// Supports multiple instances of same quantity type via composite keys
+// Format: { "quantityTypeUID_sequenceNo": { "fieldKey": value, "fieldKey_images": [...] } }
+// Example: { "abc123_1": {...}, "abc123_2": {...}, "xyz789_1": {...} }
+ Map<String, Map<String, dynamic>> get quantityFieldData;// Segment breakdown data per quantity instance
+// Uses same composite key format as quantityFieldData
+// Format: { "quantityTypeUID_sequenceNo": [segment1, segment2, ...] }
+ Map<String, List<Map<String, dynamic>>> get segmentData;// Worker information
+ int get workerCount; Map<String, dynamic>? get workerImage;// Notes and remarks
+ String get notes;// Additional images beyond condition snapshots
+ List<Map<String, dynamic>> get additionalImages;// Additional data
  Map<String, List<Map<String, dynamic>>> get conditionSnapshots; List<Map<String, dynamic>> get workerImages;
 /// Create a copy of ReportSelections
 /// with the given fields replaced by the non-null parameter values.
@@ -1651,16 +1661,16 @@ $ReportSelectionsCopyWith<ReportSelections> get copyWith => _$ReportSelectionsCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportSelections&&(identical(other.selectedScope, selectedScope) || other.selectedScope == selectedScope)&&(identical(other.selectedWeather, selectedWeather) || other.selectedWeather == selectedWeather)&&(identical(other.selectedState, selectedState) || other.selectedState == selectedState)&&(identical(other.selectedDistrict, selectedDistrict) || other.selectedDistrict == selectedDistrict)&&(identical(other.selectedRoad, selectedRoad) || other.selectedRoad == selectedRoad)&&(identical(other.section, section) || other.section == section)&&(identical(other.sectionError, sectionError) || other.sectionError == sectionError)&&const DeepCollectionEquality().equals(other.selectedQuantityTypes, selectedQuantityTypes)&&const DeepCollectionEquality().equals(other.selectedEquipment, selectedEquipment)&&const DeepCollectionEquality().equals(other.conditionSnapshots, conditionSnapshots)&&const DeepCollectionEquality().equals(other.workerImages, workerImages));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReportSelections&&(identical(other.selectedScope, selectedScope) || other.selectedScope == selectedScope)&&(identical(other.selectedWeather, selectedWeather) || other.selectedWeather == selectedWeather)&&(identical(other.selectedState, selectedState) || other.selectedState == selectedState)&&(identical(other.selectedDistrict, selectedDistrict) || other.selectedDistrict == selectedDistrict)&&(identical(other.selectedRoad, selectedRoad) || other.selectedRoad == selectedRoad)&&(identical(other.section, section) || other.section == section)&&(identical(other.sectionError, sectionError) || other.sectionError == sectionError)&&const DeepCollectionEquality().equals(other.selectedQuantityTypes, selectedQuantityTypes)&&const DeepCollectionEquality().equals(other.selectedEquipment, selectedEquipment)&&const DeepCollectionEquality().equals(other.quantityFieldData, quantityFieldData)&&const DeepCollectionEquality().equals(other.segmentData, segmentData)&&(identical(other.workerCount, workerCount) || other.workerCount == workerCount)&&const DeepCollectionEquality().equals(other.workerImage, workerImage)&&(identical(other.notes, notes) || other.notes == notes)&&const DeepCollectionEquality().equals(other.additionalImages, additionalImages)&&const DeepCollectionEquality().equals(other.conditionSnapshots, conditionSnapshots)&&const DeepCollectionEquality().equals(other.workerImages, workerImages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedScope,selectedWeather,selectedState,selectedDistrict,selectedRoad,section,sectionError,const DeepCollectionEquality().hash(selectedQuantityTypes),const DeepCollectionEquality().hash(selectedEquipment),const DeepCollectionEquality().hash(conditionSnapshots),const DeepCollectionEquality().hash(workerImages));
+int get hashCode => Object.hash(runtimeType,selectedScope,selectedWeather,selectedState,selectedDistrict,selectedRoad,section,sectionError,const DeepCollectionEquality().hash(selectedQuantityTypes),const DeepCollectionEquality().hash(selectedEquipment),const DeepCollectionEquality().hash(quantityFieldData),const DeepCollectionEquality().hash(segmentData),workerCount,const DeepCollectionEquality().hash(workerImage),notes,const DeepCollectionEquality().hash(additionalImages),const DeepCollectionEquality().hash(conditionSnapshots),const DeepCollectionEquality().hash(workerImages));
 
 @override
 String toString() {
-  return 'ReportSelections(selectedScope: $selectedScope, selectedWeather: $selectedWeather, selectedState: $selectedState, selectedDistrict: $selectedDistrict, selectedRoad: $selectedRoad, section: $section, sectionError: $sectionError, selectedQuantityTypes: $selectedQuantityTypes, selectedEquipment: $selectedEquipment, conditionSnapshots: $conditionSnapshots, workerImages: $workerImages)';
+  return 'ReportSelections(selectedScope: $selectedScope, selectedWeather: $selectedWeather, selectedState: $selectedState, selectedDistrict: $selectedDistrict, selectedRoad: $selectedRoad, section: $section, sectionError: $sectionError, selectedQuantityTypes: $selectedQuantityTypes, selectedEquipment: $selectedEquipment, quantityFieldData: $quantityFieldData, segmentData: $segmentData, workerCount: $workerCount, workerImage: $workerImage, notes: $notes, additionalImages: $additionalImages, conditionSnapshots: $conditionSnapshots, workerImages: $workerImages)';
 }
 
 
@@ -1671,7 +1681,7 @@ abstract mixin class $ReportSelectionsCopyWith<$Res>  {
   factory $ReportSelectionsCopyWith(ReportSelections value, $Res Function(ReportSelections) _then) = _$ReportSelectionsCopyWithImpl;
 @useResult
 $Res call({
- WorkScope? selectedScope, String? selectedWeather, Province? selectedState, District? selectedDistrict, Road? selectedRoad, String? section, String? sectionError, List<WorkQuantityType> selectedQuantityTypes, List<WorkEquipment> selectedEquipment, Map<String, List<Map<String, dynamic>>> conditionSnapshots, List<Map<String, dynamic>> workerImages
+ WorkScope? selectedScope, String? selectedWeather, Province? selectedState, District? selectedDistrict, Road? selectedRoad, String? section, String? sectionError, List<WorkQuantityType> selectedQuantityTypes, List<WorkEquipment> selectedEquipment, Map<String, Map<String, dynamic>> quantityFieldData, Map<String, List<Map<String, dynamic>>> segmentData, int workerCount, Map<String, dynamic>? workerImage, String notes, List<Map<String, dynamic>> additionalImages, Map<String, List<Map<String, dynamic>>> conditionSnapshots, List<Map<String, dynamic>> workerImages
 });
 
 
@@ -1688,7 +1698,7 @@ class _$ReportSelectionsCopyWithImpl<$Res>
 
 /// Create a copy of ReportSelections
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? selectedScope = freezed,Object? selectedWeather = freezed,Object? selectedState = freezed,Object? selectedDistrict = freezed,Object? selectedRoad = freezed,Object? section = freezed,Object? sectionError = freezed,Object? selectedQuantityTypes = null,Object? selectedEquipment = null,Object? conditionSnapshots = null,Object? workerImages = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? selectedScope = freezed,Object? selectedWeather = freezed,Object? selectedState = freezed,Object? selectedDistrict = freezed,Object? selectedRoad = freezed,Object? section = freezed,Object? sectionError = freezed,Object? selectedQuantityTypes = null,Object? selectedEquipment = null,Object? quantityFieldData = null,Object? segmentData = null,Object? workerCount = null,Object? workerImage = freezed,Object? notes = null,Object? additionalImages = null,Object? conditionSnapshots = null,Object? workerImages = null,}) {
   return _then(_self.copyWith(
 selectedScope: freezed == selectedScope ? _self.selectedScope : selectedScope // ignore: cast_nullable_to_non_nullable
 as WorkScope?,selectedWeather: freezed == selectedWeather ? _self.selectedWeather : selectedWeather // ignore: cast_nullable_to_non_nullable
@@ -1699,7 +1709,13 @@ as Road?,section: freezed == section ? _self.section : section // ignore: cast_n
 as String?,sectionError: freezed == sectionError ? _self.sectionError : sectionError // ignore: cast_nullable_to_non_nullable
 as String?,selectedQuantityTypes: null == selectedQuantityTypes ? _self.selectedQuantityTypes : selectedQuantityTypes // ignore: cast_nullable_to_non_nullable
 as List<WorkQuantityType>,selectedEquipment: null == selectedEquipment ? _self.selectedEquipment : selectedEquipment // ignore: cast_nullable_to_non_nullable
-as List<WorkEquipment>,conditionSnapshots: null == conditionSnapshots ? _self.conditionSnapshots : conditionSnapshots // ignore: cast_nullable_to_non_nullable
+as List<WorkEquipment>,quantityFieldData: null == quantityFieldData ? _self.quantityFieldData : quantityFieldData // ignore: cast_nullable_to_non_nullable
+as Map<String, Map<String, dynamic>>,segmentData: null == segmentData ? _self.segmentData : segmentData // ignore: cast_nullable_to_non_nullable
+as Map<String, List<Map<String, dynamic>>>,workerCount: null == workerCount ? _self.workerCount : workerCount // ignore: cast_nullable_to_non_nullable
+as int,workerImage: freezed == workerImage ? _self.workerImage : workerImage // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,notes: null == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String,additionalImages: null == additionalImages ? _self.additionalImages : additionalImages // ignore: cast_nullable_to_non_nullable
+as List<Map<String, dynamic>>,conditionSnapshots: null == conditionSnapshots ? _self.conditionSnapshots : conditionSnapshots // ignore: cast_nullable_to_non_nullable
 as Map<String, List<Map<String, dynamic>>>,workerImages: null == workerImages ? _self.workerImages : workerImages // ignore: cast_nullable_to_non_nullable
 as List<Map<String, dynamic>>,
   ));
@@ -1786,10 +1802,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( WorkScope? selectedScope,  String? selectedWeather,  Province? selectedState,  District? selectedDistrict,  Road? selectedRoad,  String? section,  String? sectionError,  List<WorkQuantityType> selectedQuantityTypes,  List<WorkEquipment> selectedEquipment,  Map<String, List<Map<String, dynamic>>> conditionSnapshots,  List<Map<String, dynamic>> workerImages)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( WorkScope? selectedScope,  String? selectedWeather,  Province? selectedState,  District? selectedDistrict,  Road? selectedRoad,  String? section,  String? sectionError,  List<WorkQuantityType> selectedQuantityTypes,  List<WorkEquipment> selectedEquipment,  Map<String, Map<String, dynamic>> quantityFieldData,  Map<String, List<Map<String, dynamic>>> segmentData,  int workerCount,  Map<String, dynamic>? workerImage,  String notes,  List<Map<String, dynamic>> additionalImages,  Map<String, List<Map<String, dynamic>>> conditionSnapshots,  List<Map<String, dynamic>> workerImages)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ReportSelections() when $default != null:
-return $default(_that.selectedScope,_that.selectedWeather,_that.selectedState,_that.selectedDistrict,_that.selectedRoad,_that.section,_that.sectionError,_that.selectedQuantityTypes,_that.selectedEquipment,_that.conditionSnapshots,_that.workerImages);case _:
+return $default(_that.selectedScope,_that.selectedWeather,_that.selectedState,_that.selectedDistrict,_that.selectedRoad,_that.section,_that.sectionError,_that.selectedQuantityTypes,_that.selectedEquipment,_that.quantityFieldData,_that.segmentData,_that.workerCount,_that.workerImage,_that.notes,_that.additionalImages,_that.conditionSnapshots,_that.workerImages);case _:
   return orElse();
 
 }
@@ -1807,10 +1823,10 @@ return $default(_that.selectedScope,_that.selectedWeather,_that.selectedState,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( WorkScope? selectedScope,  String? selectedWeather,  Province? selectedState,  District? selectedDistrict,  Road? selectedRoad,  String? section,  String? sectionError,  List<WorkQuantityType> selectedQuantityTypes,  List<WorkEquipment> selectedEquipment,  Map<String, List<Map<String, dynamic>>> conditionSnapshots,  List<Map<String, dynamic>> workerImages)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( WorkScope? selectedScope,  String? selectedWeather,  Province? selectedState,  District? selectedDistrict,  Road? selectedRoad,  String? section,  String? sectionError,  List<WorkQuantityType> selectedQuantityTypes,  List<WorkEquipment> selectedEquipment,  Map<String, Map<String, dynamic>> quantityFieldData,  Map<String, List<Map<String, dynamic>>> segmentData,  int workerCount,  Map<String, dynamic>? workerImage,  String notes,  List<Map<String, dynamic>> additionalImages,  Map<String, List<Map<String, dynamic>>> conditionSnapshots,  List<Map<String, dynamic>> workerImages)  $default,) {final _that = this;
 switch (_that) {
 case _ReportSelections():
-return $default(_that.selectedScope,_that.selectedWeather,_that.selectedState,_that.selectedDistrict,_that.selectedRoad,_that.section,_that.sectionError,_that.selectedQuantityTypes,_that.selectedEquipment,_that.conditionSnapshots,_that.workerImages);case _:
+return $default(_that.selectedScope,_that.selectedWeather,_that.selectedState,_that.selectedDistrict,_that.selectedRoad,_that.section,_that.sectionError,_that.selectedQuantityTypes,_that.selectedEquipment,_that.quantityFieldData,_that.segmentData,_that.workerCount,_that.workerImage,_that.notes,_that.additionalImages,_that.conditionSnapshots,_that.workerImages);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1827,10 +1843,10 @@ return $default(_that.selectedScope,_that.selectedWeather,_that.selectedState,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( WorkScope? selectedScope,  String? selectedWeather,  Province? selectedState,  District? selectedDistrict,  Road? selectedRoad,  String? section,  String? sectionError,  List<WorkQuantityType> selectedQuantityTypes,  List<WorkEquipment> selectedEquipment,  Map<String, List<Map<String, dynamic>>> conditionSnapshots,  List<Map<String, dynamic>> workerImages)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( WorkScope? selectedScope,  String? selectedWeather,  Province? selectedState,  District? selectedDistrict,  Road? selectedRoad,  String? section,  String? sectionError,  List<WorkQuantityType> selectedQuantityTypes,  List<WorkEquipment> selectedEquipment,  Map<String, Map<String, dynamic>> quantityFieldData,  Map<String, List<Map<String, dynamic>>> segmentData,  int workerCount,  Map<String, dynamic>? workerImage,  String notes,  List<Map<String, dynamic>> additionalImages,  Map<String, List<Map<String, dynamic>>> conditionSnapshots,  List<Map<String, dynamic>> workerImages)?  $default,) {final _that = this;
 switch (_that) {
 case _ReportSelections() when $default != null:
-return $default(_that.selectedScope,_that.selectedWeather,_that.selectedState,_that.selectedDistrict,_that.selectedRoad,_that.section,_that.sectionError,_that.selectedQuantityTypes,_that.selectedEquipment,_that.conditionSnapshots,_that.workerImages);case _:
+return $default(_that.selectedScope,_that.selectedWeather,_that.selectedState,_that.selectedDistrict,_that.selectedRoad,_that.section,_that.sectionError,_that.selectedQuantityTypes,_that.selectedEquipment,_that.quantityFieldData,_that.segmentData,_that.workerCount,_that.workerImage,_that.notes,_that.additionalImages,_that.conditionSnapshots,_that.workerImages);case _:
   return null;
 
 }
@@ -1842,7 +1858,7 @@ return $default(_that.selectedScope,_that.selectedWeather,_that.selectedState,_t
 
 
 class _ReportSelections implements ReportSelections {
-  const _ReportSelections({this.selectedScope, this.selectedWeather, this.selectedState, this.selectedDistrict, this.selectedRoad, this.section, this.sectionError, final  List<WorkQuantityType> selectedQuantityTypes = const [], final  List<WorkEquipment> selectedEquipment = const [], final  Map<String, List<Map<String, dynamic>>> conditionSnapshots = const {}, final  List<Map<String, dynamic>> workerImages = const []}): _selectedQuantityTypes = selectedQuantityTypes,_selectedEquipment = selectedEquipment,_conditionSnapshots = conditionSnapshots,_workerImages = workerImages;
+  const _ReportSelections({this.selectedScope, this.selectedWeather, this.selectedState, this.selectedDistrict, this.selectedRoad, this.section, this.sectionError, final  List<WorkQuantityType> selectedQuantityTypes = const [], final  List<WorkEquipment> selectedEquipment = const [], final  Map<String, Map<String, dynamic>> quantityFieldData = const {}, final  Map<String, List<Map<String, dynamic>>> segmentData = const {}, this.workerCount = 0, final  Map<String, dynamic>? workerImage, this.notes = '', final  List<Map<String, dynamic>> additionalImages = const [], final  Map<String, List<Map<String, dynamic>>> conditionSnapshots = const {}, final  List<Map<String, dynamic>> workerImages = const []}): _selectedQuantityTypes = selectedQuantityTypes,_selectedEquipment = selectedEquipment,_quantityFieldData = quantityFieldData,_segmentData = segmentData,_workerImage = workerImage,_additionalImages = additionalImages,_conditionSnapshots = conditionSnapshots,_workerImages = workerImages;
   
 
 // Scope selection
@@ -1872,6 +1888,56 @@ class _ReportSelections implements ReportSelections {
   return EqualUnmodifiableListView(_selectedEquipment);
 }
 
+// Quantity field data (detailed values and images per quantity instance)
+// Supports multiple instances of same quantity type via composite keys
+// Format: { "quantityTypeUID_sequenceNo": { "fieldKey": value, "fieldKey_images": [...] } }
+// Example: { "abc123_1": {...}, "abc123_2": {...}, "xyz789_1": {...} }
+ final  Map<String, Map<String, dynamic>> _quantityFieldData;
+// Quantity field data (detailed values and images per quantity instance)
+// Supports multiple instances of same quantity type via composite keys
+// Format: { "quantityTypeUID_sequenceNo": { "fieldKey": value, "fieldKey_images": [...] } }
+// Example: { "abc123_1": {...}, "abc123_2": {...}, "xyz789_1": {...} }
+@override@JsonKey() Map<String, Map<String, dynamic>> get quantityFieldData {
+  if (_quantityFieldData is EqualUnmodifiableMapView) return _quantityFieldData;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_quantityFieldData);
+}
+
+// Segment breakdown data per quantity instance
+// Uses same composite key format as quantityFieldData
+// Format: { "quantityTypeUID_sequenceNo": [segment1, segment2, ...] }
+ final  Map<String, List<Map<String, dynamic>>> _segmentData;
+// Segment breakdown data per quantity instance
+// Uses same composite key format as quantityFieldData
+// Format: { "quantityTypeUID_sequenceNo": [segment1, segment2, ...] }
+@override@JsonKey() Map<String, List<Map<String, dynamic>>> get segmentData {
+  if (_segmentData is EqualUnmodifiableMapView) return _segmentData;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_segmentData);
+}
+
+// Worker information
+@override@JsonKey() final  int workerCount;
+ final  Map<String, dynamic>? _workerImage;
+@override Map<String, dynamic>? get workerImage {
+  final value = _workerImage;
+  if (value == null) return null;
+  if (_workerImage is EqualUnmodifiableMapView) return _workerImage;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
+
+// Notes and remarks
+@override@JsonKey() final  String notes;
+// Additional images beyond condition snapshots
+ final  List<Map<String, dynamic>> _additionalImages;
+// Additional images beyond condition snapshots
+@override@JsonKey() List<Map<String, dynamic>> get additionalImages {
+  if (_additionalImages is EqualUnmodifiableListView) return _additionalImages;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_additionalImages);
+}
+
 // Additional data
  final  Map<String, List<Map<String, dynamic>>> _conditionSnapshots;
 // Additional data
@@ -1899,16 +1965,16 @@ _$ReportSelectionsCopyWith<_ReportSelections> get copyWith => __$ReportSelection
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportSelections&&(identical(other.selectedScope, selectedScope) || other.selectedScope == selectedScope)&&(identical(other.selectedWeather, selectedWeather) || other.selectedWeather == selectedWeather)&&(identical(other.selectedState, selectedState) || other.selectedState == selectedState)&&(identical(other.selectedDistrict, selectedDistrict) || other.selectedDistrict == selectedDistrict)&&(identical(other.selectedRoad, selectedRoad) || other.selectedRoad == selectedRoad)&&(identical(other.section, section) || other.section == section)&&(identical(other.sectionError, sectionError) || other.sectionError == sectionError)&&const DeepCollectionEquality().equals(other._selectedQuantityTypes, _selectedQuantityTypes)&&const DeepCollectionEquality().equals(other._selectedEquipment, _selectedEquipment)&&const DeepCollectionEquality().equals(other._conditionSnapshots, _conditionSnapshots)&&const DeepCollectionEquality().equals(other._workerImages, _workerImages));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReportSelections&&(identical(other.selectedScope, selectedScope) || other.selectedScope == selectedScope)&&(identical(other.selectedWeather, selectedWeather) || other.selectedWeather == selectedWeather)&&(identical(other.selectedState, selectedState) || other.selectedState == selectedState)&&(identical(other.selectedDistrict, selectedDistrict) || other.selectedDistrict == selectedDistrict)&&(identical(other.selectedRoad, selectedRoad) || other.selectedRoad == selectedRoad)&&(identical(other.section, section) || other.section == section)&&(identical(other.sectionError, sectionError) || other.sectionError == sectionError)&&const DeepCollectionEquality().equals(other._selectedQuantityTypes, _selectedQuantityTypes)&&const DeepCollectionEquality().equals(other._selectedEquipment, _selectedEquipment)&&const DeepCollectionEquality().equals(other._quantityFieldData, _quantityFieldData)&&const DeepCollectionEquality().equals(other._segmentData, _segmentData)&&(identical(other.workerCount, workerCount) || other.workerCount == workerCount)&&const DeepCollectionEquality().equals(other._workerImage, _workerImage)&&(identical(other.notes, notes) || other.notes == notes)&&const DeepCollectionEquality().equals(other._additionalImages, _additionalImages)&&const DeepCollectionEquality().equals(other._conditionSnapshots, _conditionSnapshots)&&const DeepCollectionEquality().equals(other._workerImages, _workerImages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,selectedScope,selectedWeather,selectedState,selectedDistrict,selectedRoad,section,sectionError,const DeepCollectionEquality().hash(_selectedQuantityTypes),const DeepCollectionEquality().hash(_selectedEquipment),const DeepCollectionEquality().hash(_conditionSnapshots),const DeepCollectionEquality().hash(_workerImages));
+int get hashCode => Object.hash(runtimeType,selectedScope,selectedWeather,selectedState,selectedDistrict,selectedRoad,section,sectionError,const DeepCollectionEquality().hash(_selectedQuantityTypes),const DeepCollectionEquality().hash(_selectedEquipment),const DeepCollectionEquality().hash(_quantityFieldData),const DeepCollectionEquality().hash(_segmentData),workerCount,const DeepCollectionEquality().hash(_workerImage),notes,const DeepCollectionEquality().hash(_additionalImages),const DeepCollectionEquality().hash(_conditionSnapshots),const DeepCollectionEquality().hash(_workerImages));
 
 @override
 String toString() {
-  return 'ReportSelections(selectedScope: $selectedScope, selectedWeather: $selectedWeather, selectedState: $selectedState, selectedDistrict: $selectedDistrict, selectedRoad: $selectedRoad, section: $section, sectionError: $sectionError, selectedQuantityTypes: $selectedQuantityTypes, selectedEquipment: $selectedEquipment, conditionSnapshots: $conditionSnapshots, workerImages: $workerImages)';
+  return 'ReportSelections(selectedScope: $selectedScope, selectedWeather: $selectedWeather, selectedState: $selectedState, selectedDistrict: $selectedDistrict, selectedRoad: $selectedRoad, section: $section, sectionError: $sectionError, selectedQuantityTypes: $selectedQuantityTypes, selectedEquipment: $selectedEquipment, quantityFieldData: $quantityFieldData, segmentData: $segmentData, workerCount: $workerCount, workerImage: $workerImage, notes: $notes, additionalImages: $additionalImages, conditionSnapshots: $conditionSnapshots, workerImages: $workerImages)';
 }
 
 
@@ -1919,7 +1985,7 @@ abstract mixin class _$ReportSelectionsCopyWith<$Res> implements $ReportSelectio
   factory _$ReportSelectionsCopyWith(_ReportSelections value, $Res Function(_ReportSelections) _then) = __$ReportSelectionsCopyWithImpl;
 @override @useResult
 $Res call({
- WorkScope? selectedScope, String? selectedWeather, Province? selectedState, District? selectedDistrict, Road? selectedRoad, String? section, String? sectionError, List<WorkQuantityType> selectedQuantityTypes, List<WorkEquipment> selectedEquipment, Map<String, List<Map<String, dynamic>>> conditionSnapshots, List<Map<String, dynamic>> workerImages
+ WorkScope? selectedScope, String? selectedWeather, Province? selectedState, District? selectedDistrict, Road? selectedRoad, String? section, String? sectionError, List<WorkQuantityType> selectedQuantityTypes, List<WorkEquipment> selectedEquipment, Map<String, Map<String, dynamic>> quantityFieldData, Map<String, List<Map<String, dynamic>>> segmentData, int workerCount, Map<String, dynamic>? workerImage, String notes, List<Map<String, dynamic>> additionalImages, Map<String, List<Map<String, dynamic>>> conditionSnapshots, List<Map<String, dynamic>> workerImages
 });
 
 
@@ -1936,7 +2002,7 @@ class __$ReportSelectionsCopyWithImpl<$Res>
 
 /// Create a copy of ReportSelections
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? selectedScope = freezed,Object? selectedWeather = freezed,Object? selectedState = freezed,Object? selectedDistrict = freezed,Object? selectedRoad = freezed,Object? section = freezed,Object? sectionError = freezed,Object? selectedQuantityTypes = null,Object? selectedEquipment = null,Object? conditionSnapshots = null,Object? workerImages = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? selectedScope = freezed,Object? selectedWeather = freezed,Object? selectedState = freezed,Object? selectedDistrict = freezed,Object? selectedRoad = freezed,Object? section = freezed,Object? sectionError = freezed,Object? selectedQuantityTypes = null,Object? selectedEquipment = null,Object? quantityFieldData = null,Object? segmentData = null,Object? workerCount = null,Object? workerImage = freezed,Object? notes = null,Object? additionalImages = null,Object? conditionSnapshots = null,Object? workerImages = null,}) {
   return _then(_ReportSelections(
 selectedScope: freezed == selectedScope ? _self.selectedScope : selectedScope // ignore: cast_nullable_to_non_nullable
 as WorkScope?,selectedWeather: freezed == selectedWeather ? _self.selectedWeather : selectedWeather // ignore: cast_nullable_to_non_nullable
@@ -1947,7 +2013,13 @@ as Road?,section: freezed == section ? _self.section : section // ignore: cast_n
 as String?,sectionError: freezed == sectionError ? _self.sectionError : sectionError // ignore: cast_nullable_to_non_nullable
 as String?,selectedQuantityTypes: null == selectedQuantityTypes ? _self._selectedQuantityTypes : selectedQuantityTypes // ignore: cast_nullable_to_non_nullable
 as List<WorkQuantityType>,selectedEquipment: null == selectedEquipment ? _self._selectedEquipment : selectedEquipment // ignore: cast_nullable_to_non_nullable
-as List<WorkEquipment>,conditionSnapshots: null == conditionSnapshots ? _self._conditionSnapshots : conditionSnapshots // ignore: cast_nullable_to_non_nullable
+as List<WorkEquipment>,quantityFieldData: null == quantityFieldData ? _self._quantityFieldData : quantityFieldData // ignore: cast_nullable_to_non_nullable
+as Map<String, Map<String, dynamic>>,segmentData: null == segmentData ? _self._segmentData : segmentData // ignore: cast_nullable_to_non_nullable
+as Map<String, List<Map<String, dynamic>>>,workerCount: null == workerCount ? _self.workerCount : workerCount // ignore: cast_nullable_to_non_nullable
+as int,workerImage: freezed == workerImage ? _self._workerImage : workerImage // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,notes: null == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String,additionalImages: null == additionalImages ? _self._additionalImages : additionalImages // ignore: cast_nullable_to_non_nullable
+as List<Map<String, dynamic>>,conditionSnapshots: null == conditionSnapshots ? _self._conditionSnapshots : conditionSnapshots // ignore: cast_nullable_to_non_nullable
 as Map<String, List<Map<String, dynamic>>>,workerImages: null == workerImages ? _self._workerImages : workerImages // ignore: cast_nullable_to_non_nullable
 as List<Map<String, dynamic>>,
   ));

@@ -5,6 +5,7 @@ import 'daily_report_equipment.dart';
 import 'report_quantity.dart';
 import 'work_scope_response.dart';
 import 'road_response.dart';
+import 'created_by_response.dart';
 
 class DailyReport extends Equatable {
   final int id;
@@ -33,6 +34,7 @@ class DailyReport extends Equatable {
   final CompanyResponse? company;
   final WorkScopeResponse? workScope;
   final RoadResponse? road;
+  final CreatedByResponse? createdBy;
   final List<DailyReportEquipment>? equipments;
   final List<ReportQuantity>? reportQuantities;
   final List<FileEntity>? files;
@@ -63,6 +65,7 @@ class DailyReport extends Equatable {
     this.company,
     this.workScope,
     this.road,
+    this.createdBy,
     this.equipments,
     required this.reportQuantities,
     this.files,
@@ -95,6 +98,7 @@ class DailyReport extends Equatable {
     company,
     workScope,
     road,
+    createdBy,
     equipments,
     reportQuantities,
     files,

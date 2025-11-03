@@ -62,6 +62,7 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
           'equipments',
           'files',
           'company',
+          'createdBy',
         ],
       );
 
@@ -109,6 +110,7 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
           'equipments',
           'files',
           'company',
+          'createdBy',
         ],
       );
 

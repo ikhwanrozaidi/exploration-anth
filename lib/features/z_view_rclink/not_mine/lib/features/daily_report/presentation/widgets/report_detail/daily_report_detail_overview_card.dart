@@ -117,7 +117,7 @@ class DailyReportDetailOverviewCard extends StatelessWidget {
                 // Reporter
                 ThemeListTileWidget(
                   title: 'Reporter',
-                  titleDetails: report.createdByID.toString(),
+                  titleDetails: report.createdBy?.fullName ?? 'Unknown',
                   icon: Icons.person_pin,
                 ),
               ],

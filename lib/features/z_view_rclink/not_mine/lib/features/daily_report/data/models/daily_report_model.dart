@@ -6,6 +6,7 @@ import 'daily_report_equipment_model.dart';
 import 'report_quantities_model.dart';
 import 'work_scope_response_model.dart';
 import 'road_response_model.dart';
+import 'created_by_response_model.dart';
 
 part 'daily_report_model.freezed.dart';
 part 'daily_report_model.g.dart';
@@ -58,6 +59,7 @@ abstract class DailyReportModel with _$DailyReportModel {
     CompanyResponseModel? company,
     WorkScopeResponseModel? workScope,
     RoadResponseModel? road,
+    CreatedByResponseModel? createdBy,
     List<DailyReportEquipmentModel>? equipments,
     List<ReportQuantitiesModel>? reportQuantities,
     List<FileModel>? files,
@@ -101,6 +103,7 @@ abstract class DailyReportModel with _$DailyReportModel {
       company: company?.toEntity(),
       workScope: workScope?.toEntity(),
       road: road?.toEntity(),
+      createdBy: createdBy?.toEntity(),
       equipments: equipments?.map((e) => e.toEntity()).toList() ?? [],
       reportQuantities:
           reportQuantities?.map((q) => q.toEntity()).toList() ?? [],

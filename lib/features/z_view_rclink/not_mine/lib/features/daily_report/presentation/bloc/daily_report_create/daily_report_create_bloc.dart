@@ -43,9 +43,9 @@ class DailyReportCreateBloc
     this._submitDailyReportUseCase,
   ) : super(const DailyReportCreateState.initial()) {
     on<LoadWorkScopes>(_onLoadWorkScopes);
-    // on<LoadStates>(_onLoadStates);
-    // on<LoadDistricts>(_onLoadDistricts);
-    // on<LoadRoads>(_onLoadRoads);
+    // on<LoadStates>(_onLoadStates); // Handled by RoadFieldTile widget
+    // on<LoadDistricts>(_onLoadDistricts); // Handled by RoadFieldTile widget
+    // on<LoadRoads>(_onLoadRoads); // Handled by RoadFieldTile widget
     on<LoadQuantities>(_onLoadQuantities);
     on<LoadEquipments>(_onLoadEquipments);
     on<LoadQuantitiesAndEquipments>(_onLoadQuantitiesAndEquipments);
@@ -56,9 +56,26 @@ class DailyReportCreateBloc
     on<SelectState>(_onSelectState);
     on<SelectDistrict>(_onSelectDistrict);
     on<SelectRoad>(_onSelectRoad);
-    // on<UpdateSection>(_onUpdateSection);
+    on<SelectLocationFromResult>(_onSelectLocationFromResult);
+    on<UpdateSection>(_onUpdateSection);
     on<UpdateConditionSnapshots>(_onUpdateConditionSnapshots);
     on<UpdateWorkerImages>(_onUpdateWorkerImages);
+
+    // Quantity field data events
+    on<UpdateQuantityFieldValue>(_onUpdateQuantityFieldValue);
+    on<UpdateQuantityFieldImages>(_onUpdateQuantityFieldImages);
+    on<RemoveQuantityType>(_onRemoveQuantityType);
+
+    // Segment data events
+    on<UpdateSegmentData>(_onUpdateSegmentData);
+
+    // Worker information events
+    on<UpdateWorkerCount>(_onUpdateWorkerCount);
+    on<UpdateWorkerImage>(_onUpdateWorkerImage);
+
+    // Notes and additional images events
+    on<UpdateNotes>(_onUpdateNotes);
+    on<UpdateAdditionalImages>(_onUpdateAdditionalImages);
 
     // Quantity and equipment selection events
     on<SelectQuantityTypes>(_onSelectQuantityTypes);
@@ -541,9 +558,15 @@ class DailyReportCreateBloc
     final currentApiData = _getCurrentApiData();
     final currentSelections = _getCurrentSelections();
 
-    // Find the selected road from available roads
+    // Find the selected road from available roads (or use currently selected road if already set)
     final selectedRoad = currentApiData.roads.firstWhere(
       (road) => road.uid == event.roadUid,
+      orElse: () {
+        // If road not in list, keep the currently selected road
+        // This happens when RoadFieldTile manages its own data
+        print('⚠️ Road ${event.roadUid} not found in roads list, keeping current selection');
+        return currentSelections.selectedRoad!;
+      },
     );
 
     emit(
@@ -554,50 +577,93 @@ class DailyReportCreateBloc
     );
   }
 
-  // Future<void> _onUpdateSection(
-  //   UpdateSection event,
-  //   Emitter<DailyReportCreateState> emit,
-  // ) async {
-  //   final currentApiData = _getCurrentApiData();
-  //   final currentSelections = _getCurrentSelections();
+  Future<void> _onSelectLocationFromResult(
+    SelectLocationFromResult event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
 
-  //   // Validate section input
-  //   String? sectionError;
-  //   if (event.section.isEmpty) {
-  //     sectionError = 'Section is required';
-  //   } else {
-  //     // Validate section range if road is selected
-  //     final selectedRoad = currentSelections.selectedRoad;
-  //     if (selectedRoad != null) {
-  //       final sectionValue = double.tryParse(event.section);
-  //       if (sectionValue == null) {
-  //         sectionError = 'Please enter a valid number';
-  //       } else if (selectedRoad.sectionStart != null &&
-  //           selectedRoad.sectionFinish != null) {
-  //         final start = double.tryParse(selectedRoad.sectionStart!);
-  //         final finish = double.tryParse(selectedRoad.sectionFinish!);
+    print('📍 Storing location from RoadSelectionResult:');
+    print('   Province: ${event.province.name}');
+    print('   District: ${event.district.name}');
+    print('   Road: ${event.road.name} (${event.road.sectionStart} - ${event.road.sectionFinish})');
 
-  //         if (start != null && finish != null) {
-  //           if (sectionValue < start || sectionValue > finish) {
-  //             sectionError = 'Section must be between $start and $finish';
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
+    emit(
+      DailyReportCreateState.selectingBasicInfo(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(
+          selectedState: event.province,
+          selectedDistrict: event.district,
+          selectedRoad: event.road,
+        ),
+      ),
+    );
+  }
 
-  //   final updatedSelections = currentSelections.copyWith(
-  //     section: event.section,
-  //     sectionError: sectionError,
-  //   );
+  Future<void> _onUpdateSection(
+    UpdateSection event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
 
-  //   emit(
-  //     DailyReportCreateState.selectingBasicInfo(
-  //       apiData: currentApiData,
-  //       selections: updatedSelections,
-  //     ),
-  //   );
-  // }
+    print('🔍 UpdateSection called with value: "${event.section}"');
+    print('🔍 Selected road: ${currentSelections.selectedRoad?.name}');
+    print('🔍 Section range: ${currentSelections.selectedRoad?.sectionStart} - ${currentSelections.selectedRoad?.sectionFinish}');
+
+    // Validate section input
+    String? sectionError;
+    if (event.section.isEmpty) {
+      sectionError = 'Section is required';
+      print('❌ Section is empty');
+    } else {
+      // Validate section range if road is selected
+      final selectedRoad = currentSelections.selectedRoad;
+      if (selectedRoad != null) {
+        final sectionValue = double.tryParse(event.section);
+        print('🔍 Parsed section value: $sectionValue');
+
+        if (sectionValue == null) {
+          sectionError = 'Please enter a valid number';
+          print('❌ Section is not a valid number');
+        } else if (selectedRoad.sectionStart != null &&
+            selectedRoad.sectionFinish != null) {
+          // Road entity already has sectionStart and sectionFinish as double?
+          final start = selectedRoad.sectionStart!;
+          final finish = selectedRoad.sectionFinish!;
+          print('🔍 Validating: $sectionValue < $start || $sectionValue > $finish');
+
+          if (sectionValue < start || sectionValue > finish) {
+            sectionError = 'Section must be between $start and $finish';
+            print('❌ Section out of range');
+          } else {
+            print('✅ Section is valid');
+          }
+        } else {
+          print('⚠️ Road has no section range defined (sectionStart or sectionFinish is null)');
+        }
+      } else {
+        print('⚠️ No road selected');
+      }
+    }
+
+    print('🔍 Final sectionError: $sectionError');
+
+    final updatedSelections = currentSelections.copyWith(
+      section: event.section,
+      sectionError: sectionError,
+    );
+
+    emit(
+      DailyReportCreateState.selectingBasicInfo(
+        apiData: currentApiData,
+        selections: updatedSelections,
+      ),
+    );
+
+    print('✅ State emitted with section: "${updatedSelections.section}", error: $sectionError');
+  }
 
   Future<void> _onUpdateConditionSnapshots(
     UpdateConditionSnapshots event,
@@ -630,6 +696,200 @@ class DailyReportCreateBloc
       DailyReportCreateState.editingDetails(
         apiData: currentApiData,
         selections: currentSelections.copyWith(workerImages: event.images),
+        formData: currentFormData,
+      ),
+    );
+  }
+
+  // ------------------------------------------------------- Quantity Field Data Handlers
+
+  Future<void> _onUpdateQuantityFieldValue(
+    UpdateQuantityFieldValue event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    // Get existing data for this quantity type or create new
+    final quantityData = Map<String, Map<String, dynamic>>.from(
+      currentSelections.quantityFieldData,
+    );
+    final typeData = Map<String, dynamic>.from(
+      quantityData[event.quantityTypeUID] ?? {},
+    );
+
+    // Update the specific field value
+    typeData[event.fieldKey] = event.value;
+    quantityData[event.quantityTypeUID] = typeData;
+
+    emit(
+      DailyReportCreateState.editingDetails(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(
+          quantityFieldData: quantityData,
+        ),
+        formData: currentFormData,
+      ),
+    );
+  }
+
+  Future<void> _onUpdateQuantityFieldImages(
+    UpdateQuantityFieldImages event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    // Get existing data for this quantity type or create new
+    final quantityData = Map<String, Map<String, dynamic>>.from(
+      currentSelections.quantityFieldData,
+    );
+    final typeData = Map<String, dynamic>.from(
+      quantityData[event.quantityTypeUID] ?? {},
+    );
+
+    // Store images with _images suffix to distinguish from regular fields
+    typeData['${event.fieldKey}_images'] = event.images;
+    quantityData[event.quantityTypeUID] = typeData;
+
+    emit(
+      DailyReportCreateState.editingDetails(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(
+          quantityFieldData: quantityData,
+        ),
+        formData: currentFormData,
+      ),
+    );
+  }
+
+  Future<void> _onRemoveQuantityType(
+    RemoveQuantityType event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    // Remove quantity type data
+    final quantityData = Map<String, Map<String, dynamic>>.from(
+      currentSelections.quantityFieldData,
+    );
+    quantityData.remove(event.quantityTypeUID);
+
+    // Also remove segment data for this quantity type
+    final segmentData = Map<String, List<Map<String, dynamic>>>.from(
+      currentSelections.segmentData,
+    );
+    segmentData.remove(event.quantityTypeUID);
+
+    emit(
+      DailyReportCreateState.editingDetails(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(
+          quantityFieldData: quantityData,
+          segmentData: segmentData,
+        ),
+        formData: currentFormData,
+      ),
+    );
+  }
+
+  // ------------------------------------------------------- Segment Data Handlers
+
+  Future<void> _onUpdateSegmentData(
+    UpdateSegmentData event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    final segmentData = Map<String, List<Map<String, dynamic>>>.from(
+      currentSelections.segmentData,
+    );
+    segmentData[event.quantityTypeUID] = event.segments;
+
+    emit(
+      DailyReportCreateState.editingDetails(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(segmentData: segmentData),
+        formData: currentFormData,
+      ),
+    );
+  }
+
+  // ------------------------------------------------------- Worker Information Handlers
+
+  Future<void> _onUpdateWorkerCount(
+    UpdateWorkerCount event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    emit(
+      DailyReportCreateState.editingDetails(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(workerCount: event.count),
+        formData: currentFormData,
+      ),
+    );
+  }
+
+  Future<void> _onUpdateWorkerImage(
+    UpdateWorkerImage event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    emit(
+      DailyReportCreateState.editingDetails(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(workerImage: event.image),
+        formData: currentFormData,
+      ),
+    );
+  }
+
+  // ------------------------------------------------------- Notes and Additional Images Handlers
+
+  Future<void> _onUpdateNotes(
+    UpdateNotes event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    emit(
+      DailyReportCreateState.editingDetails(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(notes: event.notes),
+        formData: currentFormData,
+      ),
+    );
+  }
+
+  Future<void> _onUpdateAdditionalImages(
+    UpdateAdditionalImages event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    final currentApiData = _getCurrentApiData();
+    final currentSelections = _getCurrentSelections();
+    final currentFormData = _getCurrentFormData();
+
+    emit(
+      DailyReportCreateState.editingDetails(
+        apiData: currentApiData,
+        selections: currentSelections.copyWith(
+          additionalImages: event.images,
+        ),
         formData: currentFormData,
       ),
     );

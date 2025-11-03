@@ -177,19 +177,20 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
     });
   }
 
+  Future<void> _onRefresh() async {
+    context.read<DailyReportViewBloc>().add(
+      const DailyReportViewEvent.clearCache(),
+    );
+    _loadDailyReports();
+
+    // Wait a bit for the refresh to complete
+    await Future.delayed(const Duration(milliseconds: 500));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.read<DailyReportViewBloc>().add(
-            const DailyReportViewEvent.clearCache(),
-          );
-          _loadDailyReports();
-        },
-        child: const Icon(Icons.refresh),
-      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -331,9 +332,11 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
 
     // Use CustomScrollView with slivers for scroll effects
     return Expanded(
-      child: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
+      child: RefreshIndicator(
+        onRefresh: _onRefresh,
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
           // Search bar - always visible (pinned)
           SliverPersistentHeader(
             pinned: true,
@@ -537,6 +540,7 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
             },
           ),
         ],
+        ),
       ),
     );
   }

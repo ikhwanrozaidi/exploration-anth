@@ -25,8 +25,8 @@ class ReportDataToCreateModelMapper {
       roadUID: data.selections.selectedRoad!.uid!,
 
       // OPTIONAL: Total workers
-      totalWorkers: data.selections.workerImages.isNotEmpty
-          ? data.selections.workerImages.length
+      totalWorkers: data.selections.workerCount > 0
+          ? data.selections.workerCount
           : null,
 
       // OPTIONAL: Section range
@@ -53,7 +53,8 @@ class ReportDataToCreateModelMapper {
       // OPTIONAL: Quantities
       quantities: _mapQuantities(
         data.selections.selectedQuantityTypes,
-        data.formData.fieldValues,
+        data.selections.quantityFieldData,
+        data.selections.segmentData,
       ),
     );
   }
@@ -106,52 +107,84 @@ class ReportDataToCreateModelMapper {
     }
   }
 
-  /// Extract notes from condition snapshots or other fields
+  /// Extract notes from selections
   static String? _extractNotes(ReportData data) {
-    // TODO: Extract notes from conditionSnapshots or other form fields
-    // For now, return null as notes field is not clearly defined in current form
-    return null;
+    final notes = data.selections.notes;
+    return (notes.isNotEmpty) ? notes : null;
   }
 
-  /// Map quantities from selected types and form field values
+  /// Map quantities from selected types and quantity field data from BLoC
   static List<CreateDailyReportQuantityModel>? _mapQuantities(
     List<WorkQuantityType> selectedQuantityTypes,
-    Map<String, dynamic> fieldValues,
+    Map<String, Map<String, dynamic>> quantityFieldData,
+    Map<String, List<Map<String, dynamic>>> segmentData,
   ) {
-    if (selectedQuantityTypes.isEmpty) return null;
+    if (quantityFieldData.isEmpty) return null;
 
     final quantities = <CreateDailyReportQuantityModel>[];
 
-    for (final quantityType in selectedQuantityTypes) {
-      // Extract field values for this quantity type
+    // Iterate over each quantity instance (composite keys)
+    for (final entry in quantityFieldData.entries) {
+      final compositeKey = entry.key; // Format: "quantityTypeUID_sequenceNo"
+      final typeFieldData = entry.value;
+
+      if (typeFieldData.isEmpty) continue;
+
+      // Parse composite key to extract quantityTypeUID and sequenceNo
+      final parts = compositeKey.split('_');
+      final quantityTypeUID = parts.length >= 2
+          ? parts.sublist(0, parts.length - 1).join('_') // Handle UIDs with underscores
+          : compositeKey;
+      final sequenceNo = parts.length >= 2
+          ? int.tryParse(parts.last) ?? 1
+          : 1;
+
+      // Find the corresponding quantity type
+      final quantityType = selectedQuantityTypes.firstWhere(
+        (qt) => qt.uid == quantityTypeUID,
+        orElse: () => selectedQuantityTypes.first, // Fallback (shouldn't happen)
+      );
+
+      // Extract field values for this quantity instance
       final quantityValues = <CreateDailyReportQuantityFieldModel>[];
 
-      if (quantityType.quantityFields.isNotEmpty) {
-        for (final field in quantityType.quantityFields) {
-          // Check if this field has a value in fieldValues
-          final fieldValue = fieldValues[field.uid] ?? fieldValues[field.code];
+      // Extract totalLength if available
+      double? totalLength;
 
-          if (fieldValue != null && fieldValue.toString().isNotEmpty) {
-            quantityValues.add(
-              CreateDailyReportQuantityFieldModel(
-                quantityFieldUID: field.uid,
-                value: fieldValue.toString(),
-              ),
-            );
-          }
+      for (final field in quantityType.quantityFields) {
+        // Check if this field has a value in the instance's field data
+        final fieldValue = typeFieldData[field.uid];
+
+        // Track total_length for segment-based quantities
+        if (field.code.toLowerCase() == 'total_length' && fieldValue != null) {
+          totalLength = double.tryParse(fieldValue.toString());
+        }
+
+        if (fieldValue != null &&
+            fieldValue.toString().isNotEmpty &&
+            !field.uid.endsWith('_images')) { // Skip image fields
+          quantityValues.add(
+            CreateDailyReportQuantityFieldModel(
+              quantityFieldUID: field.uid,
+              value: fieldValue.toString(),
+            ),
+          );
         }
       }
 
+      // Get segment data for this quantity instance using composite key
+      final typeSegments = segmentData[compositeKey];
+
       // Only add quantity if it has at least one value
-      if (quantityValues.isNotEmpty) {
+      if (quantityValues.isNotEmpty || typeSegments != null) {
         quantities.add(
           CreateDailyReportQuantityModel(
-            quantityTypeUID: quantityType.uid,
-            sequenceNo: 1, // Default sequence number
-            totalLength: null, // TODO: Extract from segment data if available
-            notes: null, // TODO: Extract quantity-specific notes if available
+            quantityTypeUID: quantityTypeUID, // Use extracted UID
+            sequenceNo: sequenceNo, // Use extracted sequence number
+            totalLength: totalLength,
+            notes: null, // Quantity-specific notes not yet implemented
             quantityValues: quantityValues,
-            segments: null, // Segments excluded for now (complex)
+            segments: null, // TODO: Convert typeSegments to proper model format
           ),
         );
       }
