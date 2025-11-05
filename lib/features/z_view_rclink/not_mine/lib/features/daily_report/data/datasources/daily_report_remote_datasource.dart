@@ -6,6 +6,7 @@ import 'package:rclink_app/features/road/data/models/road_model.dart';
 import '../../../../core/errors/failures.dart';
 import '../../data/datasources/daily_report_api_service.dart';
 import '../models/create_daily_report_model.dart';
+import '../models/update_daily_report_model.dart';
 import '../models/daily_report_model.dart';
 import '../models/daily_report_filter_model.dart';
 
@@ -16,6 +17,9 @@ abstract class DailyReportRemoteDataSource {
     int limit = 10,
     String sortOrder = 'asc',
     String? search,
+    String? roadUid,
+    String? workScopeUid,
+    String? contractorUid,
   });
 
   Future<Either<Failure, DailyReportModel>> getDailyReportById({
@@ -26,6 +30,12 @@ abstract class DailyReportRemoteDataSource {
   Future<Either<Failure, DailyReportModel>> createDailyReport({
     required CreateDailyReportModel data,
     required String companyUID,
+  });
+
+  Future<Either<Failure, DailyReportModel>> updateDailyReport({
+    required String companyUID,
+    required String dailyReportUID,
+    required UpdateDailyReportModel data,
   });
 
   // Future<Either<Failure, List<RoadModel>>> getRoadsByDistrictName(
@@ -47,6 +57,9 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
     int limit = 10,
     String sortOrder = 'asc',
     String? search,
+    String? roadUid,
+    String? workScopeUid,
+    String? contractorUid,
   }) async {
     try {
       final filter = DailyReportFilterModel(
@@ -54,6 +67,10 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
         limit: limit,
         sortOrder: sortOrder,
         search: search,
+        roadUID: roadUid,
+        workScopeUID: workScopeUid,
+        contractorRelationUID: contractorUid,
+
         expand: [
           'contractRelation',
           'workScope',
@@ -99,20 +116,17 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
     required String dailyReportUID,
   }) async {
     try {
-      final response = await _apiService.getDailyReportById(
-        companyUID,
-        dailyReportUID,
-        [
-          'contractRelation',
-          'workScope',
-          'road',
-          'quantities',
-          'equipments',
-          'files',
-          'company',
-          'createdBy',
-        ],
-      );
+      final response = await _apiService
+          .getDailyReportById(companyUID, dailyReportUID, [
+            'contractRelation',
+            'workScope',
+            'road',
+            'quantities',
+            'equipments',
+            'files',
+            'company',
+            'createdBy',
+          ]);
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
         return Right(response.data!);
@@ -167,6 +181,49 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
       return Left(NetworkFailure('Network error: ${e.message}'));
     } catch (e) {
       print('❌ RemoteDataSource: Create unexpected error - $e');
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, DailyReportModel>> updateDailyReport({
+    required String companyUID,
+    required String dailyReportUID,
+    required UpdateDailyReportModel data,
+  }) async {
+    try {
+      final response = await _apiService.updateDailyReport(
+        companyUID,
+        dailyReportUID,
+        data,
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return Right(response.data!);
+      } else {
+        print('❌ RemoteDataSource: Update failed - ${response.message}');
+        return Left(
+          ServerFailure(response.message, statusCode: response.statusCode),
+        );
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return const Left(NotFoundFailure());
+      }
+      if (e.response?.statusCode == 401) {
+        return const Left(UnauthorizedFailure());
+      }
+      if (e.response?.statusCode == 403) {
+        return const Left(UnauthorizedFailure());
+      }
+      if (e.response?.statusCode == 400) {
+        return Left(
+          ValidationFailure(e.response?.data['message'] ?? 'Invalid data'),
+        );
+      }
+      return Left(NetworkFailure('Network error: ${e.message}'));
+    } catch (e) {
+      print('❌ RemoteDataSource: Update unexpected error - $e');
       return Left(ServerFailure('Unexpected error: $e'));
     }
   }

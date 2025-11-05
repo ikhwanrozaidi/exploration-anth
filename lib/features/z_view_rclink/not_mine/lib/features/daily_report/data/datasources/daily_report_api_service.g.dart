@@ -117,6 +117,40 @@ class _DailyReportApiService implements DailyReportApiService {
   }
 
   @override
+  Future<ApiResponse<DailyReportModel>> updateDailyReport(
+    String companyUID,
+    String dailyReportUID,
+    UpdateDailyReportModel data,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = data;
+    final _options = _setStreamType<ApiResponse<DailyReportModel>>(
+      Options(method: 'PUT', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/companies/${companyUID}/daily-reports/${dailyReportUID}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<DailyReportModel> _value;
+    try {
+      _value = ApiResponse<DailyReportModel>.fromJson(
+        _result.data!,
+        (json) => DailyReportModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<ApiResponse<List<FileResponseDto>>> uploadDailyReportFiles(
     String companyUID,
     String dailyReportUID,

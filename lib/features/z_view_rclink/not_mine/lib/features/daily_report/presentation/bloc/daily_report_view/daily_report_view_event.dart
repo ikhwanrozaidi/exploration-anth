@@ -12,6 +12,9 @@ class DailyReportViewEvent with _$DailyReportViewEvent {
     @Default('asc') String sortOrder,
     @Default(false) bool forceRefresh,
     String? search,
+    String? roadUid,
+    String? workScopeUid,
+    String? contractorUid,
   }) = LoadDailyReports;
 
   const factory DailyReportViewEvent.loadMoreDailyReports({

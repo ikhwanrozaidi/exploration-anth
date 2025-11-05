@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../../../../../core/di/injection.dart';
 import '../../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../../shared/utils/theme.dart';
 import '../../../../domain/entities/daily_report.dart';
+import '../../../bloc/daily_report_edit/daily_report_edit_bloc.dart';
+import '../../../bloc/daily_report_edit/daily_report_edit_event.dart';
 
 class WorkerRemarkEditPage extends StatefulWidget {
   final DailyReport report;
@@ -14,8 +17,23 @@ class WorkerRemarkEditPage extends StatefulWidget {
 }
 
 class _WorkerRemarkEditPageState extends State<WorkerRemarkEditPage> {
-  final TextEditingController _sectionController = TextEditingController();
+  final TextEditingController _workerController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Populate initial values
+    _workerController.text = widget.report.totalWorkers?.toString() ?? '0';
+    _notesController.text = widget.report.notes ?? '';
+  }
+
+  @override
+  void dispose() {
+    _workerController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,17 +80,11 @@ class _WorkerRemarkEditPageState extends State<WorkerRemarkEditPage> {
 
               SizedBox(
                 child: TextField(
-                  controller: _sectionController,
-
-                  onChanged: (value) {
-                    // context.read<ReportCreationBloc>().add(
-                    //   UpdateSection(value),
-                    // );
-                  },
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
+                  controller: _workerController,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     isDense: true,
-                    hintText: widget.report.totalWorkers.toString(),
+                    hintText: 'Enter number of workers',
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: 12,
                       vertical: 8,
@@ -122,7 +134,7 @@ class _WorkerRemarkEditPageState extends State<WorkerRemarkEditPage> {
                   controller: _notesController,
                   maxLines: 5,
                   decoration: InputDecoration(
-                    hintText: widget.report.notes,
+                    hintText: 'Enter additional notes',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8.0),
                       borderSide: BorderSide(
@@ -144,6 +156,78 @@ class _WorkerRemarkEditPageState extends State<WorkerRemarkEditPage> {
                   ),
                 ),
               ),
+
+              SizedBox(height: ResponsiveHelper.spacing(context, 2)),
+
+              // Update Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    final workerCount = int.tryParse(_workerController.text) ?? 0;
+                    final notes = _notesController.text;
+
+                    // Validate worker count
+                    if (workerCount < 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Worker count cannot be negative'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+
+                    final bloc = getIt<DailyReportEditBloc>();
+
+                    // Update worker count
+                    bloc.add(
+                      DailyReportEditEvent.updateWorkers(count: workerCount),
+                    );
+
+                    // Update notes
+                    bloc.add(
+                      DailyReportEditEvent.updateNotes(notes: notes),
+                    );
+
+                    // Show success and pop back
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Worker and remark updated!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    padding: ResponsiveHelper.padding(
+                      context,
+                      vertical: 10,
+                      horizontal: 20,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: ResponsiveHelper.borderRadius(
+                        context,
+                        all: 14,
+                      ),
+                    ),
+                    elevation: ResponsiveHelper.adaptive(
+                      context,
+                      mobile: 1,
+                      tablet: 2,
+                      desktop: 3,
+                    ),
+                  ),
+                  child: const Text(
+                    'Update',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: ResponsiveHelper.spacing(context, 2)),
             ],
           ),
         ),

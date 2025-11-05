@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'create_daily_report_model.dart';
+import 'create_daily_report_quantity_model.dart';
 
 part 'update_daily_report_model.freezed.dart';
 part 'update_daily_report_model.g.dart';
@@ -45,6 +46,12 @@ abstract class UpdateDailyReportModel with _$UpdateDailyReportModel {
 
     /// Rejection reason
     String? rejectionReason,
+
+    /// Equipment UIDs (replaces all existing equipment)
+    List<String>? equipments,
+
+    /// Work quantities for this report (replaces all existing quantities)
+    List<CreateDailyReportQuantityModel>? quantities,
   }) = _UpdateDailyReportModel;
 
   factory UpdateDailyReportModel.fromJson(Map<String, dynamic> json) =>

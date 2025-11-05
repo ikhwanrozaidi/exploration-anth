@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../../../../../core/di/injection.dart';
 import '../../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../../shared/utils/theme.dart';
 import '../../../../domain/entities/daily_report.dart';
+import '../../../bloc/daily_report_edit/daily_report_edit_bloc.dart';
+import '../../../bloc/daily_report_edit/daily_report_edit_event.dart';
 import '../quantity_card.dart';
 
 class QuantityEditPage extends StatefulWidget {
@@ -98,27 +101,40 @@ class _QuantityEditPageState extends State<QuantityEditPage> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          final payload = {
-                            "quantities": _changes.entries
-                                .map(
-                                  (entry) => {
-                                    "quantityTypeUID": entry.key,
-                                    "quantityValues": entry.value,
-                                  },
-                                )
-                                .toList(),
-                          };
+                        onPressed: _changes.isEmpty
+                            ? null
+                            : () {
+                                final bloc = getIt<DailyReportEditBloc>();
 
-                          debugPrint(payload.toString());
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                "Changes saved! Check console output.",
-                              ),
-                            ),
-                          );
-                        },
+                                // Apply all the changes to the BLoC
+                                for (final entry in _changes.entries) {
+                                  final quantityTypeUID = entry.key;
+                                  final fieldChanges = entry.value;
+
+                                  for (final change in fieldChanges) {
+                                    final fieldUID = change["quantityFieldUID"]!;
+                                    final value = change["value"]!;
+
+                                    bloc.add(
+                                      DailyReportEditEvent.updateQuantityFieldValue(
+                                        compositeKey: quantityTypeUID,
+                                        fieldKey: fieldUID,
+                                        value: value,
+                                      ),
+                                    );
+                                  }
+                                }
+
+                                // Show success message and pop back
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Quantity changes applied!"),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+
+                                Navigator.pop(context);
+                              },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: primaryColor,
                           disabledBackgroundColor: Colors.grey[300],

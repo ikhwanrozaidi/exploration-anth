@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
@@ -6,6 +7,11 @@ import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_state.dart';
+import '../../../road/presentation/helper/road_level.dart';
+import '../../../road/presentation/helper/road_selection_result.dart';
+import '../../../road/presentation/widgets/road_bottom_sheet.dart';
+import '../../../work_scope/presentation/bloc/work_scope_bloc.dart';
+import '../../../work_scope/presentation/widgets/work_scope_bottom_sheet.dart';
 import '../../presentation/pages/report_creation_page.dart';
 import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
 import '../bloc/daily_report_view/daily_report_view_bloc.dart';
@@ -45,6 +51,9 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
   bool _isScrollingUp = false;
   double _lastScrollPosition = 0.0;
   bool _isLoadingMore = false;
+
+  String? _selectedRoadUID;
+  String? _selectedWorkScopeUID;
 
   void onMonthSelected(int month, int year) {
     setState(() {
@@ -94,12 +103,11 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
     final currentPosition = _scrollController.position.pixels;
     final maxScroll = _scrollController.position.maxScrollExtent;
 
-    // Update scroll direction (with threshold to prevent jitter)
-    if ((currentPosition - _lastScrollPosition).abs() > 10) {
-      final isScrollingUp = currentPosition > _lastScrollPosition;
-      if (isScrollingUp != _isScrollingUp) {
+    if ((currentPosition - _lastScrollPosition).abs() > 5) {
+      final isScrollingDown = currentPosition > _lastScrollPosition;
+      if (isScrollingDown != _isScrollingUp) {
         setState(() {
-          _isScrollingUp = isScrollingUp;
+          _isScrollingUp = isScrollingDown;
         });
       }
     }
@@ -156,10 +164,49 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
     );
   }
 
+  void _onDistrictSelected(RoadSelectionResult selectedData) {
+    setState(() {
+      _selectedRoadUID = selectedData.selectedRoad?.uid;
+    });
+
+    _loadDailyReportsWithFilters();
+  }
+
+  void _onWorkScopeSelected(Map<String, dynamic> selectedData) {
+    setState(() {
+      _selectedWorkScopeUID = selectedData['uid'];
+    });
+
+    _loadDailyReportsWithFilters();
+  }
+
+  void _loadDailyReportsWithFilters() {
+    final companyState = context.read<CompanyBloc>().state;
+
+    companyState.whenOrNull(
+      loaded: (companies, selectedCompany) {
+        if (selectedCompany != null) {
+          context.read<DailyReportViewBloc>().add(
+            DailyReportViewEvent.loadDailyReports(
+              companyUID: selectedCompany.uid,
+              page: 1,
+              limit: 10,
+              roadUid: _selectedRoadUID != null ? null : _selectedRoadUID,
+              workScopeUid: _selectedWorkScopeUID != null
+                  ? null
+                  : _selectedWorkScopeUID,
+            ),
+          );
+        }
+      },
+    );
+  }
+
   void _onSearchChanged(String query) {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
       final companyState = context.read<CompanyBloc>().state;
+
       companyState.whenOrNull(
         loaded: (companies, selectedCompany) {
           if (selectedCompany != null) {
@@ -206,7 +253,7 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
             children: [
               SizedBox(height: ResponsiveHelper.getHeight(context, 0.02)),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30),
+                padding: EdgeInsets.symmetric(horizontal: 20),
                 child: Column(
                   children: [
                     Row(
@@ -236,7 +283,7 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                               'Daily Report',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontWeight: FontWeight.w700,
+                                fontWeight: FontWeight.w600,
                                 fontSize: 20,
                               ),
                             ),
@@ -300,7 +347,9 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                                 ) => reports.length,
                             orElse: () => 0,
                           );
-                          return DailyReportListHeader(reportCount: reportCount);
+                          return DailyReportListHeader(
+                            reportCount: reportCount,
+                          );
                         },
                       ),
                       _buildBody(),
@@ -330,13 +379,11 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
       return Expanded(child: Center(child: Text('No company selected')));
     }
 
-    // Use CustomScrollView with slivers for scroll effects
+    // CustomScrollView with slivers for scroll effects
     return Expanded(
-      child: RefreshIndicator(
-        onRefresh: _onRefresh,
-        child: CustomScrollView(
-          controller: _scrollController,
-          slivers: [
+      child: CustomScrollView(
+        controller: _scrollController,
+        slivers: [
           // Search bar - always visible (pinned)
           SliverPersistentHeader(
             pinned: true,
@@ -345,7 +392,10 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
               shouldHide: false, // Always visible
               child: Container(
                 color: Colors.white,
-                padding: const EdgeInsets.all(20.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 15,
+                ),
                 child: TextField(
                   controller: _searchController,
                   onChanged: _onSearchChanged,
@@ -363,8 +413,8 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                       borderSide: BorderSide.none,
                     ),
                     contentPadding: const EdgeInsets.symmetric(
-                      vertical: 10,
-                      horizontal: 20,
+                      vertical: 11,
+                      horizontal: 25,
                     ),
                     hintStyle: TextStyle(
                       color: Colors.black.withOpacity(0.5),
@@ -376,24 +426,29 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
             ),
           ),
 
-          // MonthFilter - hides on scroll up, shows on scroll down
+          // MonthFilter - hides when scrolling DOWN (showing more), shows when scrolling UP
           SliverPersistentHeader(
             pinned: false,
             floating: true,
             delegate: ScrollHideHeaderDelegate(
               height: 70,
-              shouldHide: _isScrollingUp,
-              child: Container(
-                color: Colors.white,
-                child: MonthFilter(
-                  onMonthSelected: onMonthSelected,
-                  primaryColor: primaryColor,
-                ),
+              shouldHide: _isScrollingUp, // Hide when scrolling down
+              child: Column(
+                children: [
+                  Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: MonthFilter(
+                      onMonthSelected: onMonthSelected,
+                      primaryColor: primaryColor,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
 
-          // DailyReportFilters - hides on scroll up, shows on scroll down
+          // DailyReportFilters - hides when scrolling DOWN, shows when scrolling UP
           SliverPersistentHeader(
             pinned: false,
             floating: true,
@@ -402,14 +457,41 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
               shouldHide: _isScrollingUp,
               child: Container(
                 color: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: DailyReportListFilters(
+                  onDistrictTap: () {
+                    showRoadSelection(
+                      context: context,
+                      startFrom: RoadLevel.districts,
+                      endAt: RoadLevel.roads,
+                      onRoadSelected: (selectedData) {
+                        print(
+                          'Selected District: ${selectedData.selectedDistrict?.name}',
+                        );
+                        _onDistrictSelected(selectedData);
+                      },
+                    );
+                  },
                   onContractorTap: () {},
-                  onScopeWorkTap: () {},
-                  onStatusTap: () {},
+                  onScopeTap: () {
+                    final workScopeState = context.read<WorkScopeBloc>().state;
+
+                    showWorkScopeSelection(
+                      context: context,
+                      state: workScopeState,
+                      onScopeSelected: (selectedData) {
+                        print('Selected Work Scope: ${selectedData['name']}');
+                        print('Work Scope UID: ${selectedData['uid']}');
+                        _onWorkScopeSelected(selectedData);
+                      },
+                    );
+                  },
                 ),
               ),
             ),
           ),
+
+          CupertinoSliverRefreshControl(onRefresh: _onRefresh),
 
           // Reports list
           BlocConsumer<DailyReportViewBloc, DailyReportViewState>(
@@ -540,7 +622,6 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
             },
           ),
         ],
-        ),
       ),
     );
   }

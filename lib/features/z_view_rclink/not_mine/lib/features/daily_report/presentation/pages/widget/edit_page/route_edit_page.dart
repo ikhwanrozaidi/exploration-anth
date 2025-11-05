@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import '../../../../../../core/di/injection.dart';
 import '../../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../../shared/utils/theme.dart';
 import '../../../../domain/entities/daily_report.dart';
+import '../../../bloc/daily_report_edit/daily_report_edit_bloc.dart';
+import '../../../bloc/daily_report_edit/daily_report_edit_event.dart';
 
 class RouteEditPage extends StatefulWidget {
   final DailyReport report;
@@ -14,6 +17,22 @@ class RouteEditPage extends StatefulWidget {
 
 class _RouteEditPageState extends State<RouteEditPage> {
   final TextEditingController _sectionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Populate initial section value (from-to format)
+    if (widget.report.fromSection != null && widget.report.toSection != null) {
+      _sectionController.text =
+          '${widget.report.fromSection} - ${widget.report.toSection}';
+    }
+  }
+
+  @override
+  void dispose() {
+    _sectionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -115,17 +134,17 @@ class _RouteEditPageState extends State<RouteEditPage> {
                           ],
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(7),
-                          color: Color.fromARGB(255, 214, 226, 255),
-                        ),
-                        child: Icon(
-                          Icons.chevron_right_rounded,
-                          color: primaryColor,
-                        ),
-                      ),
+                      // Container(
+                      //   padding: const EdgeInsets.all(2),
+                      //   decoration: BoxDecoration(
+                      //     borderRadius: BorderRadius.circular(7),
+                      //     color: Color.fromARGB(255, 214, 226, 255),
+                      //   ),
+                      //   child: Icon(
+                      //     Icons.chevron_right_rounded,
+                      //     color: primaryColor,
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -283,6 +302,70 @@ class _RouteEditPageState extends State<RouteEditPage> {
                   ],
                 ),
               ),
+
+              SizedBox(height: ResponsiveHelper.spacing(context, 2)),
+
+              // Update Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    final sectionText = _sectionController.text.trim();
+
+                    // Validate section format (expecting "from - to")
+                    if (sectionText.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please enter a section'),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                      return;
+                    }
+
+                    // Update section in BLoC
+                    getIt<DailyReportEditBloc>().add(
+                      DailyReportEditEvent.updateSection(section: sectionText),
+                    );
+
+                    // Show success and pop back
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Route section updated!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
+
+                    Navigator.pop(context);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    padding: ResponsiveHelper.padding(
+                      context,
+                      vertical: 10,
+                      horizontal: 20,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: ResponsiveHelper.borderRadius(
+                        context,
+                        all: 14,
+                      ),
+                    ),
+                    elevation: ResponsiveHelper.adaptive(
+                      context,
+                      mobile: 1,
+                      tablet: 2,
+                      desktop: 3,
+                    ),
+                  ),
+                  child: const Text(
+                    'Update',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+
+              SizedBox(height: ResponsiveHelper.spacing(context, 2)),
             ],
           ),
         ),

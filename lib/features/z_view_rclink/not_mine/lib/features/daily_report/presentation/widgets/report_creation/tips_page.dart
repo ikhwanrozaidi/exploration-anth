@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
+import '../traffic_management_plan_tips.dart';
 import 'draft_page.dart';
 
 class TipsOnboardingPage extends StatefulWidget {
@@ -82,9 +83,9 @@ class _TipsOnboardingPageState extends State<TipsOnboardingPage> {
   }
 
   void _openPlan() {
-    // Navigator.of(
-    //   context,
-    // ).push(MaterialPageRoute(builder: (context) => DailyReportDetailPage()));
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => TrafficManagementPlanTips()),
+    );
   }
 
   @override

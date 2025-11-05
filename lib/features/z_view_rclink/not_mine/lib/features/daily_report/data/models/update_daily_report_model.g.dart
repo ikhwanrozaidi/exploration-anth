@@ -25,6 +25,15 @@ _UpdateDailyReportModel _$UpdateDailyReportModelFromJson(
   latitude: (json['latitude'] as num?)?.toDouble(),
   status: json['status'] as String?,
   rejectionReason: json['rejectionReason'] as String?,
+  equipments: (json['equipments'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  quantities: (json['quantities'] as List<dynamic>?)
+      ?.map(
+        (e) =>
+            CreateDailyReportQuantityModel.fromJson(e as Map<String, dynamic>),
+      )
+      .toList(),
 );
 
 Map<String, dynamic> _$UpdateDailyReportModelToJson(
@@ -43,6 +52,8 @@ Map<String, dynamic> _$UpdateDailyReportModelToJson(
   'latitude': instance.latitude,
   'status': instance.status,
   'rejectionReason': instance.rejectionReason,
+  'equipments': instance.equipments,
+  'quantities': instance.quantities,
 };
 
 const _$WeatherConditionEnumMap = {

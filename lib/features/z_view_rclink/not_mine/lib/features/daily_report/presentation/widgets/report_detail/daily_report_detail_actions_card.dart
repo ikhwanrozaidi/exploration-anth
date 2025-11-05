@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../../../core/di/injection.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/widgets/divider_config.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../../../shared/widgets/theme_listtile_widget.dart';
+import '../../../../company/presentation/bloc/company_bloc.dart';
+import '../../../../company/presentation/bloc/company_state.dart';
 import '../../../domain/entities/daily_report.dart';
+import '../../bloc/daily_report_edit/daily_report_edit_bloc.dart';
+import '../../bloc/daily_report_edit/daily_report_edit_event.dart';
 import '../../pages/widget/edit_page/equipment_edit_page.dart';
 import '../../pages/widget/edit_page/quantity_edit_page.dart';
 import '../../pages/widget/edit_page/route_edit_page.dart';
@@ -81,6 +87,29 @@ class DailyReportDetailActionsCard extends StatelessWidget {
                       isRadio: false,
                       isNavigate: true,
                       onTap: (selectedOption) {
+                        // Get companyUID from CompanyBloc
+                        final companyState = context.read<CompanyBloc>().state;
+                        final companyUID = companyState.whenOrNull(
+                          loaded: (_, selectedCompany) => selectedCompany?.uid,
+                        );
+
+                        if (companyUID == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Please select a company first'),
+                              backgroundColor: Colors.red,
+                            ),
+                          );
+                          return;
+                        }
+
+                        // Initialize the BLoC with the report data
+                        final bloc = getIt<DailyReportEditBloc>();
+                        bloc.add(LoadExistingReportEdit(
+                          report: report,
+                          companyUID: companyUID,
+                        ));
+
                         // Navigate to respective pages based on selection
                         switch (selectedOption) {
                           case 'Route & Selection':

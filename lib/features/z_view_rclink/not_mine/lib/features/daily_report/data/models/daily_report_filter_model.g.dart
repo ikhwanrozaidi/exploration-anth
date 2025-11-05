@@ -22,6 +22,7 @@ _DailyReportFilterModel _$DailyReportFilterModelFromJson(
       ? null
       : DateTime.parse(json['endDate'] as String),
   search: json['search'] as String?,
+  contractorRelationUID: json['contractorRelationUID'] as String?,
   sortBy: json['sortBy'] as String?,
   sortOrder: json['sortOrder'] as String?,
   expand: (json['expand'] as List<dynamic>?)?.map((e) => e as String).toList(),
@@ -39,6 +40,7 @@ Map<String, dynamic> _$DailyReportFilterModelToJson(
   'startDate': ?instance.startDate?.toIso8601String(),
   'endDate': ?instance.endDate?.toIso8601String(),
   'search': ?instance.search,
+  'contractorRelationUID': ?instance.contractorRelationUID,
   'sortBy': ?instance.sortBy,
   'sortOrder': ?instance.sortOrder,
   'expand': ?instance.expand,

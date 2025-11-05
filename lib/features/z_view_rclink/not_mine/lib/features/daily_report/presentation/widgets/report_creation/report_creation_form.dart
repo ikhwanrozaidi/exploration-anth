@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rclink_app/shared/utils/theme.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
@@ -168,9 +169,7 @@ class _ReportCreationFormState extends State<ReportCreationForm> {
                               child: Center(
                                 child: Icon(
                                   Icons.swap_calls,
-                                  color: hasError
-                                      ? Colors.red
-                                      : const Color(0xFF5B7FFF),
+                                  color: hasError ? Colors.red : primaryColor,
                                 ),
                               ),
                             ),

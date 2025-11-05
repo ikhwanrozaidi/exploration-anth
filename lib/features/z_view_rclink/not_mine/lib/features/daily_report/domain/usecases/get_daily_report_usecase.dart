@@ -12,6 +12,9 @@ class GetDailyReportsParams extends Equatable {
   final int limit;
   final String sortOrder;
   final String? search;
+  final String? roadUid;
+  final String? workScopeUid;
+  final String? contractorUid;
 
   const GetDailyReportsParams({
     required this.companyUID,
@@ -19,6 +22,9 @@ class GetDailyReportsParams extends Equatable {
     this.limit = 10,
     this.sortOrder = 'asc',
     this.search,
+    this.roadUid,
+    this.workScopeUid,
+    this.contractorUid,
   });
 
   @override
@@ -42,6 +48,9 @@ class GetDailyReportsUseCase
       limit: params.limit,
       sortOrder: params.sortOrder,
       search: params.search,
+      roadUid: params.roadUid,
+      workScopeUid: params.workScopeUid,
+      contractorUid: params.contractorUid,
     );
   }
 }

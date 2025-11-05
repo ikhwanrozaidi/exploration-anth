@@ -26,7 +26,9 @@ class _QuantityCardState extends State<QuantityCard> {
     super.initState();
 
     for (var qv in widget.reportQuantity.quantityValues) {
-      _controllers[qv.quantityField.uid] = TextEditingController();
+      _controllers[qv.quantityField.uid] = TextEditingController(
+        text: qv.value, // Populate initial value from existing data
+      );
     }
   }
 
@@ -116,7 +118,7 @@ class _QuantityCardState extends State<QuantityCard> {
                       onChanged: (value) =>
                           _handleChange(field.uid, field.fieldType, value),
                       decoration: InputDecoration(
-                        hintText: qv.value ?? "Enter value...",
+                        hintText: "Enter value...",
                         suffix: field.unit != null
                             ? Container(
                                 padding: const EdgeInsets.symmetric(

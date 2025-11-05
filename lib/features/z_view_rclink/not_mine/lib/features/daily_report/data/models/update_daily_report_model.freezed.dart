@@ -28,7 +28,9 @@ mixin _$UpdateDailyReportModel {
  double? get longitude;/// Latitude coordinate of the work location
  double? get latitude;/// Report status
  String? get status;/// Rejection reason
- String? get rejectionReason;
+ String? get rejectionReason;/// Equipment UIDs (replaces all existing equipment)
+ List<String>? get equipments;/// Work quantities for this report (replaces all existing quantities)
+ List<CreateDailyReportQuantityModel>? get quantities;
 /// Create a copy of UpdateDailyReportModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -41,16 +43,16 @@ $UpdateDailyReportModelCopyWith<UpdateDailyReportModel> get copyWith => _$Update
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateDailyReportModel&&(identical(other.name, name) || other.name == name)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.weatherCondition, weatherCondition) || other.weatherCondition == weatherCondition)&&(identical(other.workPerformed, workPerformed) || other.workPerformed == workPerformed)&&(identical(other.workScopeUID, workScopeUID) || other.workScopeUID == workScopeUID)&&(identical(other.roadUID, roadUID) || other.roadUID == roadUID)&&(identical(other.totalWorkers, totalWorkers) || other.totalWorkers == totalWorkers)&&(identical(other.fromSection, fromSection) || other.fromSection == fromSection)&&(identical(other.toSection, toSection) || other.toSection == toSection)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.status, status) || other.status == status)&&(identical(other.rejectionReason, rejectionReason) || other.rejectionReason == rejectionReason));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateDailyReportModel&&(identical(other.name, name) || other.name == name)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.weatherCondition, weatherCondition) || other.weatherCondition == weatherCondition)&&(identical(other.workPerformed, workPerformed) || other.workPerformed == workPerformed)&&(identical(other.workScopeUID, workScopeUID) || other.workScopeUID == workScopeUID)&&(identical(other.roadUID, roadUID) || other.roadUID == roadUID)&&(identical(other.totalWorkers, totalWorkers) || other.totalWorkers == totalWorkers)&&(identical(other.fromSection, fromSection) || other.fromSection == fromSection)&&(identical(other.toSection, toSection) || other.toSection == toSection)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.status, status) || other.status == status)&&(identical(other.rejectionReason, rejectionReason) || other.rejectionReason == rejectionReason)&&const DeepCollectionEquality().equals(other.equipments, equipments)&&const DeepCollectionEquality().equals(other.quantities, quantities));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,notes,weatherCondition,workPerformed,workScopeUID,roadUID,totalWorkers,fromSection,toSection,longitude,latitude,status,rejectionReason);
+int get hashCode => Object.hash(runtimeType,name,notes,weatherCondition,workPerformed,workScopeUID,roadUID,totalWorkers,fromSection,toSection,longitude,latitude,status,rejectionReason,const DeepCollectionEquality().hash(equipments),const DeepCollectionEquality().hash(quantities));
 
 @override
 String toString() {
-  return 'UpdateDailyReportModel(name: $name, notes: $notes, weatherCondition: $weatherCondition, workPerformed: $workPerformed, workScopeUID: $workScopeUID, roadUID: $roadUID, totalWorkers: $totalWorkers, fromSection: $fromSection, toSection: $toSection, longitude: $longitude, latitude: $latitude, status: $status, rejectionReason: $rejectionReason)';
+  return 'UpdateDailyReportModel(name: $name, notes: $notes, weatherCondition: $weatherCondition, workPerformed: $workPerformed, workScopeUID: $workScopeUID, roadUID: $roadUID, totalWorkers: $totalWorkers, fromSection: $fromSection, toSection: $toSection, longitude: $longitude, latitude: $latitude, status: $status, rejectionReason: $rejectionReason, equipments: $equipments, quantities: $quantities)';
 }
 
 
@@ -61,7 +63,7 @@ abstract mixin class $UpdateDailyReportModelCopyWith<$Res>  {
   factory $UpdateDailyReportModelCopyWith(UpdateDailyReportModel value, $Res Function(UpdateDailyReportModel) _then) = _$UpdateDailyReportModelCopyWithImpl;
 @useResult
 $Res call({
- String? name, String? notes, WeatherCondition? weatherCondition, bool? workPerformed, String? workScopeUID, String? roadUID, int? totalWorkers, double? fromSection, double? toSection, double? longitude, double? latitude, String? status, String? rejectionReason
+ String? name, String? notes, WeatherCondition? weatherCondition, bool? workPerformed, String? workScopeUID, String? roadUID, int? totalWorkers, double? fromSection, double? toSection, double? longitude, double? latitude, String? status, String? rejectionReason, List<String>? equipments, List<CreateDailyReportQuantityModel>? quantities
 });
 
 
@@ -78,7 +80,7 @@ class _$UpdateDailyReportModelCopyWithImpl<$Res>
 
 /// Create a copy of UpdateDailyReportModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,Object? notes = freezed,Object? weatherCondition = freezed,Object? workPerformed = freezed,Object? workScopeUID = freezed,Object? roadUID = freezed,Object? totalWorkers = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? status = freezed,Object? rejectionReason = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = freezed,Object? notes = freezed,Object? weatherCondition = freezed,Object? workPerformed = freezed,Object? workScopeUID = freezed,Object? roadUID = freezed,Object? totalWorkers = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? status = freezed,Object? rejectionReason = freezed,Object? equipments = freezed,Object? quantities = freezed,}) {
   return _then(_self.copyWith(
 name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
@@ -93,7 +95,9 @@ as double?,longitude: freezed == longitude ? _self.longitude : longitude // igno
 as double?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String?,rejectionReason: freezed == rejectionReason ? _self.rejectionReason : rejectionReason // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,equipments: freezed == equipments ? _self.equipments : equipments // ignore: cast_nullable_to_non_nullable
+as List<String>?,quantities: freezed == quantities ? _self.quantities : quantities // ignore: cast_nullable_to_non_nullable
+as List<CreateDailyReportQuantityModel>?,
   ));
 }
 
@@ -178,10 +182,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  String? notes,  WeatherCondition? weatherCondition,  bool? workPerformed,  String? workScopeUID,  String? roadUID,  int? totalWorkers,  double? fromSection,  double? toSection,  double? longitude,  double? latitude,  String? status,  String? rejectionReason)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? name,  String? notes,  WeatherCondition? weatherCondition,  bool? workPerformed,  String? workScopeUID,  String? roadUID,  int? totalWorkers,  double? fromSection,  double? toSection,  double? longitude,  double? latitude,  String? status,  String? rejectionReason,  List<String>? equipments,  List<CreateDailyReportQuantityModel>? quantities)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UpdateDailyReportModel() when $default != null:
-return $default(_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.workScopeUID,_that.roadUID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.longitude,_that.latitude,_that.status,_that.rejectionReason);case _:
+return $default(_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.workScopeUID,_that.roadUID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.longitude,_that.latitude,_that.status,_that.rejectionReason,_that.equipments,_that.quantities);case _:
   return orElse();
 
 }
@@ -199,10 +203,10 @@ return $default(_that.name,_that.notes,_that.weatherCondition,_that.workPerforme
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  String? notes,  WeatherCondition? weatherCondition,  bool? workPerformed,  String? workScopeUID,  String? roadUID,  int? totalWorkers,  double? fromSection,  double? toSection,  double? longitude,  double? latitude,  String? status,  String? rejectionReason)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? name,  String? notes,  WeatherCondition? weatherCondition,  bool? workPerformed,  String? workScopeUID,  String? roadUID,  int? totalWorkers,  double? fromSection,  double? toSection,  double? longitude,  double? latitude,  String? status,  String? rejectionReason,  List<String>? equipments,  List<CreateDailyReportQuantityModel>? quantities)  $default,) {final _that = this;
 switch (_that) {
 case _UpdateDailyReportModel():
-return $default(_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.workScopeUID,_that.roadUID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.longitude,_that.latitude,_that.status,_that.rejectionReason);case _:
+return $default(_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.workScopeUID,_that.roadUID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.longitude,_that.latitude,_that.status,_that.rejectionReason,_that.equipments,_that.quantities);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -219,10 +223,10 @@ return $default(_that.name,_that.notes,_that.weatherCondition,_that.workPerforme
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  String? notes,  WeatherCondition? weatherCondition,  bool? workPerformed,  String? workScopeUID,  String? roadUID,  int? totalWorkers,  double? fromSection,  double? toSection,  double? longitude,  double? latitude,  String? status,  String? rejectionReason)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? name,  String? notes,  WeatherCondition? weatherCondition,  bool? workPerformed,  String? workScopeUID,  String? roadUID,  int? totalWorkers,  double? fromSection,  double? toSection,  double? longitude,  double? latitude,  String? status,  String? rejectionReason,  List<String>? equipments,  List<CreateDailyReportQuantityModel>? quantities)?  $default,) {final _that = this;
 switch (_that) {
 case _UpdateDailyReportModel() when $default != null:
-return $default(_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.workScopeUID,_that.roadUID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.longitude,_that.latitude,_that.status,_that.rejectionReason);case _:
+return $default(_that.name,_that.notes,_that.weatherCondition,_that.workPerformed,_that.workScopeUID,_that.roadUID,_that.totalWorkers,_that.fromSection,_that.toSection,_that.longitude,_that.latitude,_that.status,_that.rejectionReason,_that.equipments,_that.quantities);case _:
   return null;
 
 }
@@ -234,7 +238,7 @@ return $default(_that.name,_that.notes,_that.weatherCondition,_that.workPerforme
 @JsonSerializable()
 
 class _UpdateDailyReportModel implements UpdateDailyReportModel {
-  const _UpdateDailyReportModel({this.name, this.notes, this.weatherCondition, this.workPerformed, this.workScopeUID, this.roadUID, this.totalWorkers, this.fromSection, this.toSection, this.longitude, this.latitude, this.status, this.rejectionReason});
+  const _UpdateDailyReportModel({this.name, this.notes, this.weatherCondition, this.workPerformed, this.workScopeUID, this.roadUID, this.totalWorkers, this.fromSection, this.toSection, this.longitude, this.latitude, this.status, this.rejectionReason, final  List<String>? equipments, final  List<CreateDailyReportQuantityModel>? quantities}): _equipments = equipments,_quantities = quantities;
   factory _UpdateDailyReportModel.fromJson(Map<String, dynamic> json) => _$UpdateDailyReportModelFromJson(json);
 
 /// Report name/title
@@ -263,6 +267,28 @@ class _UpdateDailyReportModel implements UpdateDailyReportModel {
 @override final  String? status;
 /// Rejection reason
 @override final  String? rejectionReason;
+/// Equipment UIDs (replaces all existing equipment)
+ final  List<String>? _equipments;
+/// Equipment UIDs (replaces all existing equipment)
+@override List<String>? get equipments {
+  final value = _equipments;
+  if (value == null) return null;
+  if (_equipments is EqualUnmodifiableListView) return _equipments;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+/// Work quantities for this report (replaces all existing quantities)
+ final  List<CreateDailyReportQuantityModel>? _quantities;
+/// Work quantities for this report (replaces all existing quantities)
+@override List<CreateDailyReportQuantityModel>? get quantities {
+  final value = _quantities;
+  if (value == null) return null;
+  if (_quantities is EqualUnmodifiableListView) return _quantities;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of UpdateDailyReportModel
 /// with the given fields replaced by the non-null parameter values.
@@ -277,16 +303,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateDailyReportModel&&(identical(other.name, name) || other.name == name)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.weatherCondition, weatherCondition) || other.weatherCondition == weatherCondition)&&(identical(other.workPerformed, workPerformed) || other.workPerformed == workPerformed)&&(identical(other.workScopeUID, workScopeUID) || other.workScopeUID == workScopeUID)&&(identical(other.roadUID, roadUID) || other.roadUID == roadUID)&&(identical(other.totalWorkers, totalWorkers) || other.totalWorkers == totalWorkers)&&(identical(other.fromSection, fromSection) || other.fromSection == fromSection)&&(identical(other.toSection, toSection) || other.toSection == toSection)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.status, status) || other.status == status)&&(identical(other.rejectionReason, rejectionReason) || other.rejectionReason == rejectionReason));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdateDailyReportModel&&(identical(other.name, name) || other.name == name)&&(identical(other.notes, notes) || other.notes == notes)&&(identical(other.weatherCondition, weatherCondition) || other.weatherCondition == weatherCondition)&&(identical(other.workPerformed, workPerformed) || other.workPerformed == workPerformed)&&(identical(other.workScopeUID, workScopeUID) || other.workScopeUID == workScopeUID)&&(identical(other.roadUID, roadUID) || other.roadUID == roadUID)&&(identical(other.totalWorkers, totalWorkers) || other.totalWorkers == totalWorkers)&&(identical(other.fromSection, fromSection) || other.fromSection == fromSection)&&(identical(other.toSection, toSection) || other.toSection == toSection)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.status, status) || other.status == status)&&(identical(other.rejectionReason, rejectionReason) || other.rejectionReason == rejectionReason)&&const DeepCollectionEquality().equals(other._equipments, _equipments)&&const DeepCollectionEquality().equals(other._quantities, _quantities));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,notes,weatherCondition,workPerformed,workScopeUID,roadUID,totalWorkers,fromSection,toSection,longitude,latitude,status,rejectionReason);
+int get hashCode => Object.hash(runtimeType,name,notes,weatherCondition,workPerformed,workScopeUID,roadUID,totalWorkers,fromSection,toSection,longitude,latitude,status,rejectionReason,const DeepCollectionEquality().hash(_equipments),const DeepCollectionEquality().hash(_quantities));
 
 @override
 String toString() {
-  return 'UpdateDailyReportModel(name: $name, notes: $notes, weatherCondition: $weatherCondition, workPerformed: $workPerformed, workScopeUID: $workScopeUID, roadUID: $roadUID, totalWorkers: $totalWorkers, fromSection: $fromSection, toSection: $toSection, longitude: $longitude, latitude: $latitude, status: $status, rejectionReason: $rejectionReason)';
+  return 'UpdateDailyReportModel(name: $name, notes: $notes, weatherCondition: $weatherCondition, workPerformed: $workPerformed, workScopeUID: $workScopeUID, roadUID: $roadUID, totalWorkers: $totalWorkers, fromSection: $fromSection, toSection: $toSection, longitude: $longitude, latitude: $latitude, status: $status, rejectionReason: $rejectionReason, equipments: $equipments, quantities: $quantities)';
 }
 
 
@@ -297,7 +323,7 @@ abstract mixin class _$UpdateDailyReportModelCopyWith<$Res> implements $UpdateDa
   factory _$UpdateDailyReportModelCopyWith(_UpdateDailyReportModel value, $Res Function(_UpdateDailyReportModel) _then) = __$UpdateDailyReportModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? name, String? notes, WeatherCondition? weatherCondition, bool? workPerformed, String? workScopeUID, String? roadUID, int? totalWorkers, double? fromSection, double? toSection, double? longitude, double? latitude, String? status, String? rejectionReason
+ String? name, String? notes, WeatherCondition? weatherCondition, bool? workPerformed, String? workScopeUID, String? roadUID, int? totalWorkers, double? fromSection, double? toSection, double? longitude, double? latitude, String? status, String? rejectionReason, List<String>? equipments, List<CreateDailyReportQuantityModel>? quantities
 });
 
 
@@ -314,7 +340,7 @@ class __$UpdateDailyReportModelCopyWithImpl<$Res>
 
 /// Create a copy of UpdateDailyReportModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? notes = freezed,Object? weatherCondition = freezed,Object? workPerformed = freezed,Object? workScopeUID = freezed,Object? roadUID = freezed,Object? totalWorkers = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? status = freezed,Object? rejectionReason = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? name = freezed,Object? notes = freezed,Object? weatherCondition = freezed,Object? workPerformed = freezed,Object? workScopeUID = freezed,Object? roadUID = freezed,Object? totalWorkers = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? status = freezed,Object? rejectionReason = freezed,Object? equipments = freezed,Object? quantities = freezed,}) {
   return _then(_UpdateDailyReportModel(
 name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
@@ -329,7 +355,9 @@ as double?,longitude: freezed == longitude ? _self.longitude : longitude // igno
 as double?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String?,rejectionReason: freezed == rejectionReason ? _self.rejectionReason : rejectionReason // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,equipments: freezed == equipments ? _self._equipments : equipments // ignore: cast_nullable_to_non_nullable
+as List<String>?,quantities: freezed == quantities ? _self._quantities : quantities // ignore: cast_nullable_to_non_nullable
+as List<CreateDailyReportQuantityModel>?,
   ));
 }
 

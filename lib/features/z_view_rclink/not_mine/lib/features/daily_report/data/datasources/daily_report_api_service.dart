@@ -3,6 +3,7 @@ import 'package:retrofit/retrofit.dart';
 import 'package:injectable/injectable.dart';
 import '../models/daily_report_model.dart';
 import '../models/create_daily_report_model.dart';
+import '../models/update_daily_report_model.dart';
 import '../models/daily_report_filter_model.dart';
 import '../models/daily_report_response_model.dart';
 import '../../../../shared/models/api_response.dart';
@@ -36,6 +37,14 @@ abstract class DailyReportApiService {
   Future<ApiResponse<DailyReportModel>> createDailyReport(
     @Path('companyUID') String companyUID,
     @Body() CreateDailyReportModel data,
+  );
+
+  /// Update an existing daily report
+  @PUT('/companies/{companyUID}/daily-reports/{dailyReportUID}')
+  Future<ApiResponse<DailyReportModel>> updateDailyReport(
+    @Path('companyUID') String companyUID,
+    @Path('dailyReportUID') String dailyReportUID,
+    @Body() UpdateDailyReportModel data,
   );
 
   /// Upload images for a daily report

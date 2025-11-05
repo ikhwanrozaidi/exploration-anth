@@ -11,6 +11,7 @@ import '../datasources/daily_report_image_remote_datasource.dart';
 import '../datasources/daily_report_local_datasource.dart';
 import '../datasources/daily_report_remote_datasource.dart';
 import '../models/create_daily_report_model.dart';
+import '../models/update_daily_report_model.dart';
 import '../models/daily_report_model.dart';
 
 @Injectable(as: DailyReportRepository)
@@ -29,9 +30,9 @@ class DailyReportRepositoryImpl
     this._imageLocalDataSource,
     this._imageRemoteDataSource,
   ) : super(
-          databaseService: databaseService,
-          imageLocalDataSource: _imageLocalDataSource,
-        );
+        databaseService: databaseService,
+        imageLocalDataSource: _imageLocalDataSource,
+      );
 
   @override
   Future<Either<Failure, List<DailyReport>>> getDailyReports({
@@ -40,6 +41,10 @@ class DailyReportRepositoryImpl
     int limit = 10,
     String sortOrder = 'asc',
     String? search,
+    String? roadUid,
+    String? workScopeUid,
+    String? contractorUid,
+
     bool forceRefresh = false,
     Duration? cacheTimeout = const Duration(hours: 1),
   }) async {
@@ -49,6 +54,9 @@ class DailyReportRepositoryImpl
       limit: limit,
       sortOrder: sortOrder,
       search: search,
+      roadUid: roadUid,
+      workScopeUid: workScopeUid,
+      contractorUid: contractorUid,
     );
 
     return remoteResult.fold(
@@ -82,7 +90,9 @@ class DailyReportRepositoryImpl
     try {
       // Try to get from cache first if not forcing refresh
       if (!forceRefresh) {
-        final cachedReport = await _localDataSource.getCachedDailyReportByUid(dailyReportUID);
+        final cachedReport = await _localDataSource.getCachedDailyReportByUid(
+          dailyReportUID,
+        );
         if (cachedReport != null) {
           return Right(cachedReport.toEntity());
         }
@@ -97,7 +107,9 @@ class DailyReportRepositoryImpl
       return remoteResult.fold(
         (failure) async {
           // On failure, try cache as fallback
-          final cachedReport = await _localDataSource.getCachedDailyReportByUid(dailyReportUID);
+          final cachedReport = await _localDataSource.getCachedDailyReportByUid(
+            dailyReportUID,
+          );
           if (cachedReport != null) {
             return Right(cachedReport.toEntity());
           }
@@ -142,7 +154,9 @@ class DailyReportRepositoryImpl
           );
 
           // Step 2: Save images to sync queue if provided
-          print('💾 Checking image save conditions: images=${images != null ? "not null (${images.length} fields)" : "null"}, adminUID=${adminUID ?? "null"}');
+          print(
+            '💾 Checking image save conditions: images=${images != null ? "not null (${images.length} fields)" : "null"}, adminUID=${adminUID ?? "null"}',
+          );
           if (images != null && images.isNotEmpty && adminUID != null) {
             print('💾 Saving ${images.length} image fields to sync queue...');
             await saveImagesForEntity(
@@ -234,7 +248,9 @@ class DailyReportRepositoryImpl
           );
         },
         (uploadedFiles) async {
-          print('✅ Immediate upload successful! ${uploadedFiles.length} images uploaded');
+          print(
+            '✅ Immediate upload successful! ${uploadedFiles.length} images uploaded',
+          );
 
           // Mark images as synced with server metadata
           await _imageLocalDataSource.markImagesAsSynced(
@@ -255,5 +271,129 @@ class DailyReportRepositoryImpl
         e.toString(),
       );
     }
+  }
+
+  @override
+  Future<Either<Failure, DailyReport>> updateDailyReport({
+    required String companyUID,
+    required String dailyReportUID,
+    required UpdateDailyReportModel data,
+    Map<ImageContextField, List<String>>? images,
+  }) async {
+    try {
+      // Use base class executeOptimistic with automatic SyncQueue fallback
+      return await executeOptimistic<DailyReport, DailyReportModel>(
+        local: () async {
+          // Step 1: Update locally
+          // Note: For updates, we keep the same UID, not creating a temp one
+          final localModel = await _localDataSource.getCachedDailyReportByUid(
+            dailyReportUID,
+          );
+
+          if (localModel == null) {
+            throw Exception('Report not found locally');
+          }
+
+          // Create updated model by merging existing data with updates
+          final updatedModel = _mergeUpdateData(localModel, data);
+
+          // Cache the updated model
+          await _localDataSource.cacheSingleDailyReport(updatedModel);
+
+          // Step 2: Save new images to sync queue if provided
+          if (images != null && images.isNotEmpty) {
+            print(
+              '💾 Saving ${images.length} image fields to sync queue for update...',
+            );
+            await saveImagesForEntity(
+              entityType: SyncEntityType.dailyReport,
+              entityUID: dailyReportUID, // Use actual UID (not temp)
+              companyUID: companyUID,
+              uploadedByUID:
+                  '', // Empty string for updates (will be determined by backend)
+              imagesByContextField: images,
+            );
+          }
+
+          return updatedModel.toEntity();
+        },
+        remote: () => _remoteDataSource.updateDailyReport(
+          companyUID: companyUID,
+          dailyReportUID: dailyReportUID,
+          data: data,
+        ),
+        onSyncSuccess: (serverModel, tempUID) async {
+          // Update local DB with server data
+          await _localDataSource.cacheSingleDailyReport(serverModel);
+
+          // Upload images if they exist
+          if (images != null && images.isNotEmpty) {
+            // For updates, images are already activated (no temp UID conversion needed)
+            _uploadImagesImmediately(companyUID, dailyReportUID);
+          }
+        },
+        entityType: SyncEntityType.dailyReport,
+        action: SyncAction.update,
+        payload: {
+          ...data.toJson(),
+          'companyUID': companyUID,
+          'dailyReportUID': dailyReportUID,
+        },
+        priority: 10,
+      );
+    } catch (e) {
+      return Left(CacheFailure('Failed to update report: $e'));
+    }
+  }
+
+  /// Merge update data into existing model
+  /// This is needed because UpdateDailyReportModel has optional fields
+  DailyReportModel _mergeUpdateData(
+    DailyReportModel existing,
+    UpdateDailyReportModel updates,
+  ) {
+    return DailyReportModel(
+      id: existing.id,
+      uid: existing.uid,
+      name: updates.name ?? existing.name,
+      notes: updates.notes ?? existing.notes,
+      weatherCondition:
+          updates.weatherCondition?.name ?? existing.weatherCondition,
+      workPerformed: updates.workPerformed ?? existing.workPerformed,
+      totalWorkers: updates.totalWorkers ?? existing.totalWorkers,
+      fromSection: updates.fromSection?.toString() ?? existing.fromSection,
+      toSection: updates.toSection?.toString() ?? existing.toSection,
+      longitude: updates.longitude?.toString() ?? existing.longitude,
+      latitude: updates.latitude?.toString() ?? existing.latitude,
+      status: updates.status ?? existing.status,
+      rejectionReason: updates.rejectionReason ?? existing.rejectionReason,
+      // These are not updated via UpdateDailyReportModel
+      companyID: existing.companyID,
+      contractRelationID: existing.contractRelationID,
+      workScopeID: existing.workScopeID,
+      roadID: existing.roadID,
+      createdByID: existing.createdByID,
+      createdAt: existing.createdAt,
+      updatedAt: DateTime.now(),
+      deletedAt: existing.deletedAt,
+      // Related entities - preserved from existing
+      company: existing.company,
+      workScope: existing.workScope,
+      road: existing.road,
+      createdBy: existing.createdBy,
+      reportQuantities:
+          existing.reportQuantities, // Will be replaced by server on sync
+      equipments: existing.equipments, // Will be replaced by server on sync
+      files: existing.files,
+      // Sync fields
+      isSynced: false, // Mark as not synced since we updated locally
+      syncAction: existing.syncAction,
+      syncRetryCount: existing.syncRetryCount,
+      syncError: existing.syncError,
+      lastSyncAttempt: existing.lastSyncAttempt,
+      // Approval fields
+      approvedByID: existing.approvedByID,
+      approvedAt: existing.approvedAt,
+    );
   }
 }

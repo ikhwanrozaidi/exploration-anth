@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/widgets/divider_config.dart';
 import '../../../../../shared/widgets/theme_listtile_widget.dart';
+import '../../../../../shared/widgets/location_map_widget.dart';
 import '../../../domain/entities/daily_report.dart';
 
 /// Location card for daily report detail page
@@ -72,8 +73,17 @@ class DailyReportDetailLocationCard extends StatelessWidget {
                   isChevron: false,
                 ),
 
-                // TODO: Add Google Maps integration if needed
-                // Commented out in original implementation
+                // Google Maps - only show if lat/long are available
+                if (report.latitude != null && report.longitude != null) ...[
+                  dividerConfig(),
+                  const SizedBox(height: 10),
+                  LocationMapWidget(
+                    latitude: double.parse(report.latitude!),
+                    longitude: double.parse(report.longitude!),
+                    markerTitle: report.road?.name,
+                  ),
+                  const SizedBox(height: 10),
+                ],
               ],
             ),
           ),

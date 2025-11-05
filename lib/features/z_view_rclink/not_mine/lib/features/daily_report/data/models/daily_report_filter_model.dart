@@ -33,6 +33,9 @@ abstract class DailyReportFilterModel with _$DailyReportFilterModel {
     /// Search term for report name
     @JsonKey(includeIfNull: false) String? search,
 
+    /// Contractor Relation Filter
+    @JsonKey(includeIfNull: false) String? contractorRelationUID,
+
     /// Sort field
     @JsonKey(includeIfNull: false) String? sortBy,
 

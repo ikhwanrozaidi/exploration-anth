@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 
 class DailyReportListFilters extends StatelessWidget {
+  final VoidCallback? onDistrictTap;
   final VoidCallback? onContractorTap;
-  final VoidCallback? onScopeWorkTap;
-  final VoidCallback? onStatusTap;
+  final VoidCallback? onScopeTap;
 
   const DailyReportListFilters({
     Key? key,
+    this.onDistrictTap,
     this.onContractorTap,
-    this.onScopeWorkTap,
-    this.onStatusTap,
+    this.onScopeTap,
   }) : super(key: key);
 
   @override
@@ -23,27 +23,27 @@ class DailyReportListFilters extends StatelessWidget {
           // Contractor
           Expanded(
             child: _FilterButton(
-              icon: Icons.person,
-              label: 'Contractor',
-              onTap: onContractorTap,
+              icon: Icons.location_city,
+              label: 'District',
+              onTap: onDistrictTap,
             ),
           ),
           SizedBox(width: 10),
           // Scope Work
           Expanded(
             child: _FilterButton(
-              icon: Icons.restaurant_menu,
-              label: 'Scope Work',
-              onTap: onScopeWorkTap,
+              icon: Icons.person_2_rounded,
+              label: 'Contractor',
+              onTap: onContractorTap,
             ),
           ),
           SizedBox(width: 10),
           // Status
           Expanded(
             child: _FilterButton(
-              icon: Icons.grid_on,
-              label: 'Status',
-              onTap: onStatusTap,
+              icon: Icons.restaurant_menu,
+              label: 'Scope Work',
+              onTap: onScopeTap,
             ),
           ),
         ],
