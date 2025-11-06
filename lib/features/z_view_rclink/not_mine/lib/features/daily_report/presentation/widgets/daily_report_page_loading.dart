@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rclink_app/shared/widgets/shimmer_loading.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
-import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
+import '../../../../shared/widgets/month_filter_widget.dart';
 
 class DailyReportPageLoading extends StatefulWidget {
   const DailyReportPageLoading({Key? key}) : super(key: key);
@@ -15,12 +15,13 @@ class _DailyReportPageLoadingState extends State<DailyReportPageLoading> {
   int selectedMonth = DateTime.now().month;
   int selectedYear = DateTime.now().year;
 
-  void onMonthSelected(int month, int year) {
+  void onMonthSelected(String from, String to) {
     setState(() {
-      selectedMonth = month;
-      selectedYear = year;
+      final fromDate = DateTime.parse(from);
+      selectedMonth = fromDate.month;
+      selectedYear = fromDate.year;
     });
-    print('Selected month: $month, year: $year');
+    print('From: $from, To: $to');
   }
 
   @override

@@ -25,10 +25,10 @@ abstract class DailyReportFilterModel with _$DailyReportFilterModel {
     @JsonKey(includeIfNull: false) int? createdByID,
 
     /// Filter by date range - start date
-    @JsonKey(includeIfNull: false) DateTime? startDate,
+    @JsonKey(includeIfNull: false) String? fromDate,
 
     /// Filter by date range - end date
-    @JsonKey(includeIfNull: false) DateTime? endDate,
+    @JsonKey(includeIfNull: false) String? toDate,
 
     /// Search term for report name
     @JsonKey(includeIfNull: false) String? search,

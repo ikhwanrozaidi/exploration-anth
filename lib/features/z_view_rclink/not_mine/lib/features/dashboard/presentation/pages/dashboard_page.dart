@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rclink_app/features/disaster/presentation/pages/disaster_page.dart';
+import 'package:rclink_app/features/inspection/presentation/pages/inspection_page.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/network/connectivity_service.dart';
+import '../../../../shared/helper/navigation_helper.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 
@@ -90,6 +93,8 @@ class _DashboardPageState extends State<DashboardPage> {
           child: SafeArea(
             child: Column(
               children: [
+                SizedBox(height: ResponsiveHelper.getHeight(context, 0.02)),
+
                 Padding(
                   padding: ResponsiveHelper.padding(context, horizontal: 30),
                   child: Column(
@@ -100,7 +105,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         children: [
                           Image.asset(
                             'assets/images/rclink_logo.png',
-                            height: ResponsiveHelper.getHeight(context, 0.04),
+                            height: ResponsiveHelper.getHeight(context, 0.035),
                             fit: BoxFit.contain,
                           ),
 
@@ -114,140 +119,59 @@ class _DashboardPageState extends State<DashboardPage> {
                       SizedBox(height: ResponsiveHelper.spacing(context, 20)),
 
                       // Search Button
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                padding: EdgeInsets.zero,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: ResponsiveHelper.borderRadius(
-                                    context,
-                                    topLeft: 50,
-                                    bottomLeft: 50,
-                                  ),
-                                ),
-                                backgroundColor: Colors.white.withOpacity(0.6),
-                              ),
-                              onPressed: () {
-                                CustomSnackBar.show(
-                                  context,
-                                  'This feature is coming soon...',
-                                  type: SnackBarType.comingsoon,
-                                );
-                              },
-                              child: Padding(
-                                padding: ResponsiveHelper.padding(
-                                  context,
-                                  horizontal: 20,
-                                  vertical: 13,
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.search,
-                                      size: ResponsiveHelper.iconSize(
-                                        context,
-                                        base: 25,
-                                      ),
-                                      color: Colors.black.withOpacity(0.6),
-                                    ),
-                                    SizedBox(
-                                      width: ResponsiveHelper.spacing(
-                                        context,
-                                        10,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Search Report',
-                                            style: TextStyle(
-                                              overflow: TextOverflow.ellipsis,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize:
-                                                  ResponsiveHelper.fontSize(
-                                                    context,
-                                                    base: 14,
-                                                  ),
-                                            ),
-                                          ),
-                                          Text(
-                                            'By district or contractor',
-                                            style: TextStyle(
-                                              color: Colors.black.withOpacity(
-                                                0.7,
-                                              ),
-                                              overflow: TextOverflow.ellipsis,
-                                              fontSize:
-                                                  ResponsiveHelper.fontSize(
-                                                    context,
-                                                    base: 12,
-                                                  ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
+                      BlocBuilder<
+                        ContractorRelationBloc,
+                        ContractorRelationState
+                      >(
+                        builder: (context, contractorState) {
+                          final isLoading =
+                              contractorState is ContractorRelationLoading;
 
-                          BlocBuilder<
-                            ContractorRelationBloc,
-                            ContractorRelationState
-                          >(
-                            builder: (context, contractorState) {
-                              final isLoading =
-                                  contractorState is ContractorRelationLoading;
-                              final selectedContractor = contractorState
-                                  .maybeWhen(
-                                    loaded: (contractors, selectedContractor) =>
-                                        selectedContractor,
-                                    orElse: () => null,
-                                  );
+                          // Determine selected contractor (if any)
+                          final selectedContractor = contractorState.maybeWhen(
+                            loaded: (contractors, selectedContractor) =>
+                                selectedContractor,
+                            orElse: () => null,
+                          );
 
-                              return Expanded(
+                          // Determine if second button should be shown
+                          final shouldShowSecondButton =
+                              contractorState is! ContractorRelationFailure &&
+                              selectedContractor != null;
+
+                          return Row(
+                            children: [
+                              // --- First Expanded: Search Button ---
+                              Expanded(
                                 child: TextButton(
                                   style: TextButton.styleFrom(
                                     padding: EdgeInsets.zero,
                                     shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          ResponsiveHelper.borderRadius(
-                                            context,
-                                            topRight: 50,
-                                            bottomRight: 50,
-                                          ),
+                                      borderRadius: shouldShowSecondButton
+                                          ? ResponsiveHelper.borderRadius(
+                                              context,
+                                              topLeft: 50,
+                                              bottomLeft: 50,
+                                            )
+                                          : ResponsiveHelper.borderRadius(
+                                              context,
+                                              topLeft: 50,
+                                              bottomLeft: 50,
+                                              topRight: 50,
+                                              bottomRight: 50,
+                                            ),
                                     ),
                                     backgroundColor: Colors.white.withOpacity(
                                       0.6,
                                     ),
                                   ),
-                                  onPressed: isLoading
-                                      ? null
-                                      : () {
-                                          showContractorRelationSelection(
-                                            context: context,
-                                            state: contractorState,
-                                            onContractorSelected: (selectedData) {
-                                              context
-                                                  .read<
-                                                    ContractorRelationBloc
-                                                  >()
-                                                  .add(
-                                                    SelectContractorRelation(
-                                                      selectedData['companyReportToUID'],
-                                                    ),
-                                                  );
-                                            },
-                                          );
-                                        },
+                                  onPressed: () {
+                                    CustomSnackBar.show(
+                                      context,
+                                      'This feature is coming soon...',
+                                      type: SnackBarType.comingsoon,
+                                    );
+                                  },
                                   child: Padding(
                                     padding: ResponsiveHelper.padding(
                                       context,
@@ -256,39 +180,14 @@ class _DashboardPageState extends State<DashboardPage> {
                                     ),
                                     child: Row(
                                       children: [
-                                        isLoading
-                                            ? SizedBox(
-                                                width:
-                                                    ResponsiveHelper.iconSize(
-                                                      context,
-                                                      base: 25,
-                                                    ),
-                                                height:
-                                                    ResponsiveHelper.iconSize(
-                                                      context,
-                                                      base: 25,
-                                                    ),
-                                                child: CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                        Color
-                                                      >(
-                                                        Colors.black
-                                                            .withOpacity(0.6),
-                                                      ),
-                                                ),
-                                              )
-                                            : Icon(
-                                                Icons.note_alt_outlined,
-                                                size: ResponsiveHelper.iconSize(
-                                                  context,
-                                                  base: 25,
-                                                ),
-                                                color: Colors.black.withOpacity(
-                                                  0.6,
-                                                ),
-                                              ),
+                                        Icon(
+                                          Icons.search,
+                                          size: ResponsiveHelper.iconSize(
+                                            context,
+                                            base: 25,
+                                          ),
+                                          color: Colors.black.withOpacity(0.6),
+                                        ),
                                         SizedBox(
                                           width: ResponsiveHelper.spacing(
                                             context,
@@ -301,7 +200,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                'Report to',
+                                                'Search Report',
                                                 style: TextStyle(
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -310,26 +209,15 @@ class _DashboardPageState extends State<DashboardPage> {
                                                   fontSize:
                                                       ResponsiveHelper.fontSize(
                                                         context,
-                                                        base: 14,
+                                                        base: 12,
                                                       ),
                                                 ),
                                               ),
                                               Text(
-                                                isLoading
-                                                    ? 'Loading...'
-                                                    : selectedContractor
-                                                              ?.name ??
-                                                          'Company name',
+                                                'By district or contractor',
                                                 style: TextStyle(
-                                                  color: isLoading
-                                                      ? Colors.black
-                                                            .withOpacity(0.5)
-                                                      : selectedContractor !=
-                                                            null
-                                                      ? Colors.black
-                                                            .withOpacity(0.7)
-                                                      : Colors.black
-                                                            .withOpacity(0.4),
+                                                  color: Colors.black
+                                                      .withOpacity(0.7),
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   fontSize:
@@ -346,10 +234,143 @@ class _DashboardPageState extends State<DashboardPage> {
                                     ),
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                        ],
+                              ),
+
+                              // --- Conditionally show second Expanded: Contractor Button ---
+                              if (shouldShowSecondButton)
+                                Expanded(
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            ResponsiveHelper.borderRadius(
+                                              context,
+                                              topRight: 50,
+                                              bottomRight: 50,
+                                            ),
+                                      ),
+                                      backgroundColor: Colors.white.withOpacity(
+                                        0.6,
+                                      ),
+                                    ),
+                                    onPressed: isLoading
+                                        ? null
+                                        : () {
+                                            showContractorRelationSelection(
+                                              context: context,
+                                              state: contractorState,
+                                              onContractorSelected: (selectedData) {
+                                                context
+                                                    .read<
+                                                      ContractorRelationBloc
+                                                    >()
+                                                    .add(
+                                                      SelectContractorRelation(
+                                                        selectedData['companyReportToUID'],
+                                                      ),
+                                                    );
+                                              },
+                                            );
+                                          },
+                                    child: Padding(
+                                      padding: ResponsiveHelper.padding(
+                                        context,
+                                        horizontal: 20,
+                                        vertical: 13,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          isLoading
+                                              ? SizedBox(
+                                                  width:
+                                                      ResponsiveHelper.iconSize(
+                                                        context,
+                                                        base: 25,
+                                                      ),
+                                                  height:
+                                                      ResponsiveHelper.iconSize(
+                                                        context,
+                                                        base: 25,
+                                                      ),
+                                                  child: CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                          Color
+                                                        >(
+                                                          Colors.black
+                                                              .withOpacity(0.6),
+                                                        ),
+                                                  ),
+                                                )
+                                              : Icon(
+                                                  Icons.note_alt_outlined,
+                                                  size:
+                                                      ResponsiveHelper.iconSize(
+                                                        context,
+                                                        base: 25,
+                                                      ),
+                                                  color: Colors.black
+                                                      .withOpacity(0.6),
+                                                ),
+                                          SizedBox(
+                                            width: ResponsiveHelper.spacing(
+                                              context,
+                                              10,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Report to',
+                                                  style: TextStyle(
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize:
+                                                        ResponsiveHelper.fontSize(
+                                                          context,
+                                                          base: 12,
+                                                        ),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  isLoading
+                                                      ? 'Loading...'
+                                                      : selectedContractor
+                                                                ?.name ??
+                                                            'Company name',
+                                                  style: TextStyle(
+                                                    color: isLoading
+                                                        ? Colors.black
+                                                              .withOpacity(0.5)
+                                                        : Colors.black
+                                                              .withOpacity(0.7),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    fontSize:
+                                                        ResponsiveHelper.fontSize(
+                                                          context,
+                                                          base: 12,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
                       ),
 
                       SizedBox(height: ResponsiveHelper.spacing(context, 10)),
@@ -412,11 +433,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                   image: 'assets/images/icons/inspection.png',
                                   label: 'Inspection',
                                   onTap: () {
-                                    print('Inspection tapped');
-                                    CustomSnackBar.show(
+                                    Navigator.push(
                                       context,
-                                      'This feature is coming soon...',
-                                      type: SnackBarType.comingsoon,
+                                      MaterialPageRoute(
+                                        builder: (context) => InspectionPage(),
+                                      ),
                                     );
                                   },
                                 ),
@@ -427,12 +448,14 @@ class _DashboardPageState extends State<DashboardPage> {
                                   image: 'assets/images/icons/site_warning.png',
                                   label: 'Site\nWarning',
                                   onTap: () {
-                                    print('Site Warning tapped');
-                                    CustomSnackBar.show(
-                                      context,
-                                      'This feature is coming soon...',
-                                      type: SnackBarType.comingsoon,
-                                    );
+                                    NavigationHelper().switchToTab(3);
+
+                                    // print('Site Warning tapped');
+                                    // CustomSnackBar.show(
+                                    //   context,
+                                    //   'This feature is coming soon...',
+                                    //   type: SnackBarType.comingsoon,
+                                    // );
                                   },
                                 ),
                               ),
@@ -442,12 +465,14 @@ class _DashboardPageState extends State<DashboardPage> {
                                   image: 'assets/images/icons/program.png',
                                   label: 'Program',
                                   onTap: () {
-                                    print('Program tapped');
-                                    CustomSnackBar.show(
-                                      context,
-                                      'This feature is coming soon...',
-                                      type: SnackBarType.comingsoon,
-                                    );
+                                    NavigationHelper().switchToTab(1);
+
+                                    // print('Program tapped');
+                                    // CustomSnackBar.show(
+                                    //   context,
+                                    //   'This feature is coming soon...',
+                                    //   type: SnackBarType.comingsoon,
+                                    // );
                                   },
                                 ),
                               ),
@@ -482,12 +507,18 @@ class _DashboardPageState extends State<DashboardPage> {
                                   image: 'assets/images/icons/disaster.png',
                                   label: 'Disaster',
                                   onTap: () {
-                                    print('Disaster tapped');
-                                    CustomSnackBar.show(
+                                    Navigator.push(
                                       context,
-                                      'This feature is coming soon...',
-                                      type: SnackBarType.comingsoon,
+                                      MaterialPageRoute(
+                                        builder: (context) => DisasterPage(),
+                                      ),
                                     );
+
+                                    // CustomSnackBar.show(
+                                    //   context,
+                                    //   'This feature is coming soon...',
+                                    //   type: SnackBarType.comingsoon,
+                                    // );
                                   },
                                 ),
                               ),
@@ -528,139 +559,139 @@ class _DashboardPageState extends State<DashboardPage> {
 
                       SizedBox(height: ResponsiveHelper.spacing(context, 25)),
 
-                      // Action Required Section
-                      AnimatedContainer(
-                        duration: Duration(milliseconds: 400),
-                        curve: Curves.easeInOut,
-                        height: warningLists.isNotEmpty ? null : 0,
-                        child: AnimatedOpacity(
-                          duration: Duration(milliseconds: 300),
-                          opacity: warningLists.isNotEmpty ? 1.0 : 0.0,
-                          child: GestureDetector(
-                            onTap: () {
-                              CustomSnackBar.show(
-                                context,
-                                'This feature is coming soon...',
-                                type: SnackBarType.comingsoon,
-                              );
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                bottom: warningLists.isNotEmpty
-                                    ? ResponsiveHelper.spacing(context, 10)
-                                    : 0,
-                              ),
-                              padding: ResponsiveHelper.padding(
-                                context,
-                                vertical: 15,
-                                horizontal: 20,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius: ResponsiveHelper.borderRadius(
-                                  context,
-                                  all: 15,
-                                ),
-                                color: Colors.white.withOpacity(0.5),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  Expanded(
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                          padding: ResponsiveHelper.padding(
-                                            context,
-                                            vertical: 10,
-                                            horizontal: 15,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius:
-                                                ResponsiveHelper.borderRadius(
-                                                  context,
-                                                  all: 15,
-                                                ),
-                                          ),
-                                          child: Center(
-                                            child: AnimatedSwitcher(
-                                              duration: Duration(
-                                                milliseconds: 300,
-                                              ),
-                                              child: Text(
-                                                '$actionCount',
-                                                key: ValueKey(actionCount),
-                                                style: TextStyle(
-                                                  fontSize:
-                                                      ResponsiveHelper.fontSize(
-                                                        context,
-                                                        base: 20,
-                                                      ),
-                                                  color: Colors.red,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: ResponsiveHelper.spacing(
-                                            context,
-                                            15,
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                'Action Required',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize:
-                                                      ResponsiveHelper.fontSize(
-                                                        context,
-                                                        base: 16,
-                                                      ),
-                                                ),
-                                              ),
-                                              Text(
-                                                'Please complete it promptly',
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize:
-                                                      ResponsiveHelper.fontSize(
-                                                        context,
-                                                        base: 12,
-                                                      ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Icon(
-                                    Icons.keyboard_arrow_right,
-                                    color: Colors.white,
-                                    size: ResponsiveHelper.iconSize(
-                                      context,
-                                      base: 24,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-
+                      // // Action Required Section
+                      //
+                      // AnimatedContainer(
+                      //   duration: Duration(milliseconds: 400),
+                      //   curve: Curves.easeInOut,
+                      //   height: warningLists.isNotEmpty ? null : 0,
+                      //   child: AnimatedOpacity(
+                      //     duration: Duration(milliseconds: 300),
+                      //     opacity: warningLists.isNotEmpty ? 1.0 : 0.0,
+                      //     child: GestureDetector(
+                      //       onTap: () {
+                      //         CustomSnackBar.show(
+                      //           context,
+                      //           'This feature is coming soon...',
+                      //           type: SnackBarType.comingsoon,
+                      //         );
+                      //       },
+                      //       child: Container(
+                      //         margin: EdgeInsets.only(
+                      //           bottom: warningLists.isNotEmpty
+                      //               ? ResponsiveHelper.spacing(context, 10)
+                      //               : 0,
+                      //         ),
+                      //         padding: ResponsiveHelper.padding(
+                      //           context,
+                      //           vertical: 15,
+                      //           horizontal: 15,
+                      //         ),
+                      //         decoration: BoxDecoration(
+                      //           borderRadius: ResponsiveHelper.borderRadius(
+                      //             context,
+                      //             all: 15,
+                      //           ),
+                      //           color: Colors.white.withOpacity(0.5),
+                      //         ),
+                      //         child: Row(
+                      //           mainAxisAlignment:
+                      //               MainAxisAlignment.spaceAround,
+                      //           children: [
+                      //             Expanded(
+                      //               child: Row(
+                      //                 children: [
+                      //                   Container(
+                      //                     padding: ResponsiveHelper.padding(
+                      //                       context,
+                      //                       vertical: 10,
+                      //                       horizontal: 15,
+                      //                     ),
+                      //                     decoration: BoxDecoration(
+                      //                       color: Colors.white,
+                      //                       borderRadius:
+                      //                           ResponsiveHelper.borderRadius(
+                      //                             context,
+                      //                             all: 15,
+                      //                           ),
+                      //                     ),
+                      //                     child: Center(
+                      //                       child: AnimatedSwitcher(
+                      //                         duration: Duration(
+                      //                           milliseconds: 300,
+                      //                         ),
+                      //                         child: Text(
+                      //                           '$actionCount',
+                      //                           key: ValueKey(actionCount),
+                      //                           style: TextStyle(
+                      //                             fontSize:
+                      //                                 ResponsiveHelper.fontSize(
+                      //                                   context,
+                      //                                   base: 20,
+                      //                                 ),
+                      //                             color: Colors.red,
+                      //                             fontWeight: FontWeight.bold,
+                      //                           ),
+                      //                         ),
+                      //                       ),
+                      //                     ),
+                      //                   ),
+                      //                   SizedBox(
+                      //                     width: ResponsiveHelper.spacing(
+                      //                       context,
+                      //                       15,
+                      //                     ),
+                      //                   ),
+                      //                   Expanded(
+                      //                     child: Column(
+                      //                       crossAxisAlignment:
+                      //                           CrossAxisAlignment.start,
+                      //                       children: [
+                      //                         Text(
+                      //                           'Action Required',
+                      //                           style: TextStyle(
+                      //                             color: Colors.white,
+                      //                             fontWeight: FontWeight.bold,
+                      //                             fontSize:
+                      //                                 ResponsiveHelper.fontSize(
+                      //                                   context,
+                      //                                   base: 15,
+                      //                                 ),
+                      //                           ),
+                      //                         ),
+                      //                         Text(
+                      //                           'Please complete it promptly',
+                      //                           overflow: TextOverflow.ellipsis,
+                      //                           style: TextStyle(
+                      //                             color: Colors.white,
+                      //                             fontWeight: FontWeight.w500,
+                      //                             fontSize:
+                      //                                 ResponsiveHelper.fontSize(
+                      //                                   context,
+                      //                                   base: 12,
+                      //                                 ),
+                      //                           ),
+                      //                         ),
+                      //                       ],
+                      //                     ),
+                      //                   ),
+                      //                 ],
+                      //               ),
+                      //             ),
+                      //             Icon(
+                      //               Icons.keyboard_arrow_right,
+                      //               color: Colors.white,
+                      //               size: ResponsiveHelper.iconSize(
+                      //                 context,
+                      //                 base: 24,
+                      //               ),
+                      //             ),
+                      //           ],
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
                       SizedBox(height: ResponsiveHelper.spacing(context, 10)),
                     ],
                   ),

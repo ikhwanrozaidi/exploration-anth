@@ -1,8 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import 'package:rclink_app/features/road/data/datasources/road_api_service.dart';
-import 'package:rclink_app/features/road/data/models/road_model.dart';
 import '../../../../core/errors/failures.dart';
 import '../../data/datasources/daily_report_api_service.dart';
 import '../models/create_daily_report_model.dart';
@@ -20,6 +18,8 @@ abstract class DailyReportRemoteDataSource {
     String? roadUid,
     String? workScopeUid,
     String? contractorUid,
+    String? fromDate,
+    String? toDate,
   });
 
   Future<Either<Failure, DailyReportModel>> getDailyReportById({
@@ -46,9 +46,8 @@ abstract class DailyReportRemoteDataSource {
 @LazySingleton(as: DailyReportRemoteDataSource)
 class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
   final DailyReportApiService _apiService;
-  final RoadApiService _roadApiService;
 
-  DailyReportRemoteDataSourceImpl(this._apiService, this._roadApiService);
+  DailyReportRemoteDataSourceImpl(this._apiService);
 
   @override
   Future<Either<Failure, List<DailyReportModel>>> getDailyReports({
@@ -60,6 +59,8 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
     String? roadUid,
     String? workScopeUid,
     String? contractorUid,
+    String? fromDate,
+    String? toDate,
   }) async {
     try {
       final filter = DailyReportFilterModel(
@@ -70,6 +71,8 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
         roadUID: roadUid,
         workScopeUID: workScopeUid,
         contractorRelationUID: contractorUid,
+        fromDate: fromDate,
+        toDate: toDate,
 
         expand: [
           'contractRelation',

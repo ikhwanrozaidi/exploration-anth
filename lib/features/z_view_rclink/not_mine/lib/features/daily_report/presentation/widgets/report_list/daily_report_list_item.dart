@@ -75,7 +75,11 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 20),
-        padding: EdgeInsets.symmetric(vertical: 25, horizontal: 15),
+        padding: ResponsiveHelper.padding(
+          context,
+          vertical: 25,
+          horizontal: 15,
+        ),
         decoration: BoxDecoration(
           border: Border.all(color: Colors.grey.shade300),
           borderRadius: BorderRadius.circular(10),
@@ -85,7 +89,7 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
           children: [
             // Carousel Slider
             SizedBox(
-              height: 200,
+              height: ResponsiveHelper.getHeight(context, 0.22),
               child: Stack(
                 children: [
                   // Image carousel or placeholder
@@ -178,7 +182,10 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
                             color: Colors.grey.shade300,
                             child: Icon(
                               Icons.image_not_supported,
-                              size: 50,
+                              size: ResponsiveHelper.iconSize(
+                                context,
+                                base: 20,
+                              ),
                               color: Colors.grey.shade600,
                             ),
                           ),
@@ -209,7 +216,10 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
                               child: Text(
                                 widget.report.workScope!.code.toString(),
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: ResponsiveHelper.fontSize(
+                                    context,
+                                    base: 12,
+                                  ),
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
                                 ),
@@ -233,7 +243,10 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
                                   ),
                                 ),
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: ResponsiveHelper.fontSize(
+                                    context,
+                                    base: 12,
+                                  ),
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
                                 ),
@@ -274,7 +287,7 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
               widget.report.company?.name ?? 'Company Name',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
-                fontSize: ResponsiveHelper.fontSize(context, base: 15),
+                fontSize: ResponsiveHelper.fontSize(context, base: 14),
               ),
             ),
 
@@ -282,7 +295,11 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
 
             Row(
               children: [
-                Icon(Icons.location_on, color: Colors.black),
+                Icon(
+                  Icons.location_on,
+                  color: Colors.black,
+                  size: ResponsiveHelper.iconSize(context, base: 20),
+                ),
 
                 SizedBox(width: 12),
 
@@ -296,13 +313,20 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
                           color: Colors.black.withOpacity(0.6),
                           fontSize: ResponsiveHelper.fontSize(
                             context,
-                            base: 14,
+                            base: 13,
                           ),
                         ),
                       ),
                       Text(
                         '${widget.report.road!.roadNo.toString()} - ${widget.report.road!.name.toString()}',
                         overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: ResponsiveHelper.fontSize(
+                            context,
+                            base: 13,
+                          ),
+                        ),
                       ),
                     ],
                   ),
@@ -314,7 +338,11 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
 
             Row(
               children: [
-                Icon(Icons.swap_calls, color: Colors.black),
+                Icon(
+                  Icons.swap_calls,
+                  color: Colors.black,
+                  size: ResponsiveHelper.iconSize(context, base: 20),
+                ),
 
                 SizedBox(width: 12),
                 Text(
@@ -322,8 +350,15 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
                           widget.report.toSection != null
                       ? '${double.tryParse(widget.report.fromSection!)?.toStringAsFixed(2) ?? widget.report.fromSection} - ${double.tryParse(widget.report.toSection!)?.toStringAsFixed(2) ?? widget.report.toSection}'
                       : widget.report.fromSection != null
-                          ? (double.tryParse(widget.report.fromSection!)?.toStringAsFixed(2) ?? widget.report.fromSection!)
-                          : '',
+                      ? (double.tryParse(
+                              widget.report.fromSection!,
+                            )?.toStringAsFixed(2) ??
+                            widget.report.fromSection!)
+                      : '',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: ResponsiveHelper.fontSize(context, base: 13),
+                  ),
                 ),
               ],
             ),

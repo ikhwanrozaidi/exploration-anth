@@ -216,9 +216,12 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
 
   Widget _buildField(FieldConfig field, Map<String, dynamic> fieldData) {
     final fieldId = field.id;
+    print('🔑 [FIELD DEBUG] Building field: "${field.title}" with ID: $fieldId');
     final currentValue = fieldData[fieldId];
     final currentImages = fieldData['${fieldId}_images'] as List<dynamic>?;
     final imageList = currentImages?.cast<String>().toList();
+    print('   - Current value: $currentValue');
+    print('   - Current images count: ${imageList?.length ?? 0}');
 
     switch (field.type) {
       case FieldType.multipleImages:

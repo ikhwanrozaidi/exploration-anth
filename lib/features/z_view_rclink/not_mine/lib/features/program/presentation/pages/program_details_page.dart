@@ -48,7 +48,7 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
 
                 // Header
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 30),
+                  padding: ResponsiveHelper.padding(context, horizontal: 15),
                   child: Column(
                     children: [
                       Row(
@@ -65,10 +65,13 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                icon: const Icon(
+                                icon: Icon(
                                   Icons.arrow_back_rounded,
                                   color: primaryColor,
-                                  size: 25,
+                                  size: ResponsiveHelper.iconSize(
+                                    context,
+                                    base: 20,
+                                  ),
                                 ),
                               ),
                               SizedBox(
@@ -78,8 +81,11 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                 'Program',
                                 style: TextStyle(
                                   color: Colors.white,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: ResponsiveHelper.fontSize(
+                                    context,
+                                    base: 18,
+                                  ),
                                 ),
                               ),
                             ],
@@ -91,15 +97,19 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                               padding: const EdgeInsets.all(5),
                             ),
                             onPressed: () {},
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.share_sharp,
                               color: primaryColor,
-                              size: 25,
+                              size: ResponsiveHelper.iconSize(
+                                context,
+                                base: 20,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 30),
+
+                      SizedBox(height: ResponsiveHelper.spacing(context, 20)),
                     ],
                   ),
                 ),
@@ -109,7 +119,7 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                   child: Container(
                     padding: ResponsiveHelper.padding(
                       context,
-                      horizontal: 25,
+                      horizontal: 20,
                       vertical: 20,
                     ),
                     width: double.infinity,
@@ -129,13 +139,14 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                     ),
                     child: ListView(
                       children: [
-                        SizedBox(height: ResponsiveHelper.spacing(context, 10)),
+                        SizedBox(height: ResponsiveHelper.spacing(context, 5)),
 
-                        // Progress
+                        // Progress Section
                         Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: ResponsiveHelper.padding(
+                            context,
+                            vertical: 15,
                             horizontal: 15,
-                            vertical: 20,
                           ),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.grey, width: 0.5),
@@ -152,57 +163,59 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 10.0,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          Container(
-                                            padding: EdgeInsets.all(12),
-                                            decoration: BoxDecoration(
-                                              color: primaryColor,
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                'code',
-                                                style: const TextStyle(
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          padding: EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: primaryColor,
+                                            borderRadius:
+                                                ResponsiveHelper.borderRadius(
+                                                  context,
+                                                  all: 6,
                                                 ),
-                                              ),
-                                            ),
                                           ),
-
-                                          SizedBox(width: 10),
-
-                                          Expanded(
+                                          child: Center(
                                             child: Text(
-                                              'workscope name',
-                                              overflow: TextOverflow.ellipsis,
+                                              'code',
                                               style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
                                                 fontSize:
                                                     ResponsiveHelper.fontSize(
                                                       context,
-                                                      base: 14,
+                                                      base: 15,
                                                     ),
-                                                fontWeight: FontWeight.w600,
                                               ),
                                             ),
                                           ),
-                                        ],
-                                      ),
+                                        ),
+
+                                        SizedBox(width: 10),
+
+                                        Expanded(
+                                          child: Text(
+                                            'workscope name',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                              fontSize:
+                                                  ResponsiveHelper.fontSize(
+                                                    context,
+                                                    base: 14,
+                                                  ),
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
 
                               dividerConfig(),
@@ -217,15 +230,21 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                       Text(
                                         'Progress',
                                         style: TextStyle(
-                                          fontSize: 12,
+                                          fontSize: ResponsiveHelper.fontSize(
+                                            context,
+                                            base: 12,
+                                          ),
                                           fontWeight: FontWeight.w500,
                                           color: Colors.black,
                                         ),
                                       ),
                                       Text(
-                                        '10/50 Report',
+                                        'null/10 Report',
                                         style: TextStyle(
-                                          fontSize: 12,
+                                          fontSize: ResponsiveHelper.fontSize(
+                                            context,
+                                            base: 12,
+                                          ),
                                           fontWeight: FontWeight.w600,
                                           color: primaryColor,
                                         ),
@@ -233,10 +252,18 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                     ],
                                   ),
 
-                                  SizedBox(height: 8),
+                                  SizedBox(
+                                    height: ResponsiveHelper.spacing(
+                                      context,
+                                      8,
+                                    ),
+                                  ),
 
                                   Container(
-                                    height: 12,
+                                    height: ResponsiveHelper.spacing(
+                                      context,
+                                      10,
+                                    ),
                                     width: double.infinity,
                                     decoration: BoxDecoration(
                                       color: Colors.white,

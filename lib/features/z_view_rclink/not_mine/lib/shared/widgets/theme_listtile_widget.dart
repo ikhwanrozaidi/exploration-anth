@@ -45,9 +45,17 @@ class ThemeListTileWidget extends StatelessWidget {
                     color: Color.fromARGB(255, 214, 226, 255),
                     shape: BoxShape.circle,
                   ),
-                  child: Center(child: Icon(icon, color: defaultPrimaryColor)),
+                  child: Center(
+                    child: Icon(
+                      icon,
+                      color: defaultPrimaryColor,
+                      size: ResponsiveHelper.iconSize(context, base: 20),
+                    ),
+                  ),
                 ),
-                const SizedBox(width: 20),
+
+                SizedBox(width: ResponsiveHelper.spacing(context, 15)),
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +67,7 @@ class ThemeListTileWidget extends StatelessWidget {
                           style: TextStyle(
                             fontSize: ResponsiveHelper.fontSize(
                               context,
-                              base: 13,
+                              base: 12,
                             ),
                             fontWeight: isInverseBold
                                 ? FontWeight.w600
@@ -74,7 +82,7 @@ class ThemeListTileWidget extends StatelessWidget {
                         style: TextStyle(
                           fontSize: ResponsiveHelper.fontSize(
                             context,
-                            base: 12,
+                            base: 11,
                           ),
                           fontWeight: isInverseBold
                               ? FontWeight.normal
@@ -99,10 +107,9 @@ class ThemeListTileWidget extends StatelessWidget {
               ),
               // Chevron icon
               child: Icon(
-                trailingIcon == null
-                    ? Icons.chevron_right_rounded
-                    : trailingIcon,
+                trailingIcon ?? Icons.chevron_right_rounded,
                 color: defaultPrimaryColor,
+                size: ResponsiveHelper.iconSize(context, base: 20),
               ),
             ),
         ],

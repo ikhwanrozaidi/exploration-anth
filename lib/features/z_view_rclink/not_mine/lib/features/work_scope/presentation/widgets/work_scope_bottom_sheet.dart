@@ -40,7 +40,7 @@ void showWorkScopeSelection({
   // Show bottom sheet with work scopes
   showFlexibleBottomsheet(
     context: context,
-    title: 'Select Scope of Work',
+    title: 'Scope of Work',
     attributes: workScopes
         .where((scope) => scope.name.isNotEmpty)
         .map((scope) => '${scope.code} - ${scope.name}')

@@ -7,6 +7,7 @@ import 'package:rclink_app/features/daily_report/data/models/road_response_model
 import 'package:rclink_app/features/daily_report/data/models/work_scope_response_model.dart';
 import 'package:rclink_app/features/daily_report/data/models/report_quantities_model.dart';
 import 'package:rclink_app/features/daily_report/data/models/created_by_response_model.dart';
+import 'package:rclink_app/features/daily_report/data/models/company_response_model.dart';
 import 'package:rclink_app/core/domain/models/file_model.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/database/app_database.dart';
@@ -130,6 +131,12 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
           createdByData = jsonEncode(report.createdBy!.toJson());
         }
 
+        // Convert company to JSON
+        String? companyData;
+        if (report.company != null) {
+          companyData = jsonEncode(report.company!.toJson());
+        }
+
         // Convert equipments to JSON
         String? equipmentsJson;
         if (report.equipments!.isNotEmpty) {
@@ -186,6 +193,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
                 workScopeData: Value(workScopeData),
                 roadData: Value(roadData),
                 createdByData: Value(createdByData),
+                companyData: Value(companyData),
                 equipmentsData: Value(equipmentsJson),
                 reportQuantitiesData: Value(reportQuantitiesJson),
               ),
@@ -280,6 +288,16 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
               ),
               roadData: Value(
                 report.road != null ? jsonEncode(report.road!.toJson()) : null,
+              ),
+              createdByData: Value(
+                report.createdBy != null
+                    ? jsonEncode(report.createdBy!.toJson())
+                    : null,
+              ),
+              companyData: Value(
+                report.company != null
+                    ? jsonEncode(report.company!.toJson())
+                    : null,
               ),
               equipmentsData: Value(
                 report.equipments!.isNotEmpty
@@ -473,6 +491,17 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
       }
     }
 
+    // Parse company JSON
+    CompanyResponseModel? company;
+    if (record.companyData != null && record.companyData!.isNotEmpty) {
+      try {
+        final data = jsonDecode(record.companyData!);
+        company = CompanyResponseModel.fromJson(data);
+      } catch (e) {
+        // Silently skip parsing errors for optional fields
+      }
+    }
+
     // Parse equipments JSON
     List<DailyReportEquipmentModel> equipments = [];
     if (record.equipmentsData != null && record.equipmentsData!.isNotEmpty) {
@@ -546,7 +575,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
       createdByID: record.createdByID,
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
-      company: null,
+      company: company,
       workScope: workScope,
       road: road,
       createdBy: createdBy,

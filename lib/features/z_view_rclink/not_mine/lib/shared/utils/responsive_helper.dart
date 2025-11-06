@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum DeviceType {
-  mobile,
-  tablet,
-  desktop,
-}
+enum DeviceType { mobile, tablet, desktop }
 
 class ResponsiveHelper {
   // Breakpoints
@@ -15,7 +11,7 @@ class ResponsiveHelper {
   // Get device type based on screen width
   static DeviceType getDeviceType(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    
+
     if (width < mobileBreakpoint) {
       return DeviceType.mobile;
     } else if (width < tabletBreakpoint) {
@@ -26,13 +22,13 @@ class ResponsiveHelper {
   }
 
   // Check device type booleans
-  static bool isMobile(BuildContext context) => 
+  static bool isMobile(BuildContext context) =>
       getDeviceType(context) == DeviceType.mobile;
-  
-  static bool isTablet(BuildContext context) => 
+
+  static bool isTablet(BuildContext context) =>
       getDeviceType(context) == DeviceType.tablet;
-  
-  static bool isDesktop(BuildContext context) => 
+
+  static bool isDesktop(BuildContext context) =>
       getDeviceType(context) == DeviceType.desktop;
 
   // Responsive value helper - returns different values based on device type
@@ -43,7 +39,7 @@ class ResponsiveHelper {
     T? desktop,
   }) {
     final deviceType = getDeviceType(context);
-    
+
     switch (deviceType) {
       case DeviceType.mobile:
         return mobile;
@@ -56,15 +52,19 @@ class ResponsiveHelper {
 
   // Get percentage-based width
   static double getWidth(BuildContext context, double percentage) {
-    assert(percentage >= 0 && percentage <= 1, 
-        'Percentage must be between 0 and 1');
+    assert(
+      percentage >= 0 && percentage <= 1,
+      'Percentage must be between 0 and 1',
+    );
     return MediaQuery.of(context).size.width * percentage;
   }
 
   // Get percentage-based height
   static double getHeight(BuildContext context, double percentage) {
-    assert(percentage >= 0 && percentage <= 1, 
-        'Percentage must be between 0 and 1');
+    assert(
+      percentage >= 0 && percentage <= 1,
+      'Percentage must be between 0 and 1',
+    );
     return MediaQuery.of(context).size.height * percentage;
   }
 
@@ -83,28 +83,25 @@ class ResponsiveHelper {
       tablet: 1.15,
       desktop: 1.3,
     );
-    
+
     // Return size based on provided breakpoints
     if (xl != null && base >= 32) return xl * scaleFactor;
     if (lg != null && base >= 24) return lg * scaleFactor;
     if (md != null && base >= 18) return md * scaleFactor;
     if (sm != null && base >= 14) return sm * scaleFactor;
-    
+
     return base * scaleFactor;
   }
 
   // Spacing/padding helper
   static double spacing(
-    BuildContext context, 
+    BuildContext context,
     double base, {
     double? multiplier,
   }) {
-    final factor = multiplier ?? adaptive<double>(
-      context,
-      mobile: 1.0,
-      tablet: 1.3,
-      desktop: 1.5,
-    );
+    final factor =
+        multiplier ??
+        adaptive<double>(context, mobile: 1.0, tablet: 1.3, desktop: 1.5);
     return base * factor;
   }
 
@@ -183,10 +180,7 @@ class ResponsiveHelper {
   }
 
   // Get responsive icon size
-  static double iconSize(
-    BuildContext context, {
-    required double base,
-  }) {
+  static double iconSize(BuildContext context, {required double base}) {
     return adaptive(
       context,
       mobile: base,
@@ -220,3 +214,13 @@ class ResponsiveHelper {
     return getOrientation(context) == Orientation.portrait;
   }
 }
+
+/*
+/// ResponsiveHelper.getHeight(context, 0.02)
+/// ResponsiveHelper.padding(context, vertical: 10, horizontal: 20)
+/// ResponsiveHelper.borderRadius(context, all: 14)
+/// ResponsiveHelper.fontSize(context, base: 14)
+/// 
+/// ResponsiveHelper.spacing(context, 20)
+/// ResponsiveHelper.iconSize(context, base: 20)
+*/

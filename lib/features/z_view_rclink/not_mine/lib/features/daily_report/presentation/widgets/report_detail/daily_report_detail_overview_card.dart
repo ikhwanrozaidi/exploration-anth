@@ -16,10 +16,8 @@ import '../../../domain/entities/daily_report.dart';
 class DailyReportDetailOverviewCard extends StatelessWidget {
   final DailyReport report;
 
-  const DailyReportDetailOverviewCard({
-    Key? key,
-    required this.report,
-  }) : super(key: key);
+  const DailyReportDetailOverviewCard({Key? key, required this.report})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +105,10 @@ class DailyReportDetailOverviewCard extends StatelessWidget {
                 // Contractor
                 ThemeListTileWidget(
                   title: 'Contractor',
-                  titleDetails: report.contractRelationID.toString(),
+                  titleDetails:
+                      report.contractRelationID?.toString() ??
+                      report.company?.name ??
+                      'Unknown',
                   icon: Icons.person,
                   isChevron: false,
                 ),

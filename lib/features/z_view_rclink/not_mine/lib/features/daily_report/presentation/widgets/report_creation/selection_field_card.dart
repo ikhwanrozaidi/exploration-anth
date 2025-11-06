@@ -68,6 +68,7 @@ class SelectionFieldCard extends StatelessWidget {
                         color: hasError && errorMessage != null
                             ? Colors.red
                             : primaryColor,
+                        size: ResponsiveHelper.iconSize(context, base: 20),
                       ),
                     ),
                   ),
@@ -82,6 +83,10 @@ class SelectionFieldCard extends StatelessWidget {
                         Text(
                           label,
                           style: TextStyle(
+                            fontSize: ResponsiveHelper.fontSize(
+                              context,
+                              base: 13,
+                            ),
                             color: hasError && errorMessage != null
                                 ? Colors.red.shade600
                                 : Colors.black,
@@ -97,7 +102,7 @@ class SelectionFieldCard extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: ResponsiveHelper.fontSize(
                                   context,
-                                  base: 14,
+                                  base: 13,
                                 ),
                                 fontWeight: FontWeight.w700,
                                 color: isEmpty
@@ -124,9 +129,10 @@ class SelectionFieldCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(7),
                   color: const Color.fromARGB(255, 214, 226, 255),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.chevron_right_rounded,
                   color: primaryColor,
+                  size: ResponsiveHelper.iconSize(context, base: 20),
                 ),
               ),
           ],

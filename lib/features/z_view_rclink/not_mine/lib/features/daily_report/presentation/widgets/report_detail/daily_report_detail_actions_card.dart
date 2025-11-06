@@ -105,10 +105,12 @@ class DailyReportDetailActionsCard extends StatelessWidget {
 
                         // Initialize the BLoC with the report data
                         final bloc = getIt<DailyReportEditBloc>();
-                        bloc.add(LoadExistingReportEdit(
-                          report: report,
-                          companyUID: companyUID,
-                        ));
+                        bloc.add(
+                          LoadExistingReportEdit(
+                            report: report,
+                            companyUID: companyUID,
+                          ),
+                        );
 
                         // Navigate to respective pages based on selection
                         switch (selectedOption) {
@@ -116,9 +118,8 @@ class DailyReportDetailActionsCard extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => RouteEditPage(
-                                  report: report,
-                                ),
+                                builder: (context) =>
+                                    RouteEditPage(report: report),
                               ),
                             );
                             break;
@@ -126,9 +127,8 @@ class DailyReportDetailActionsCard extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => QuantityEditPage(
-                                  report: report,
-                                ),
+                                builder: (context) =>
+                                    QuantityEditPage(report: report),
                               ),
                             );
                             break;
@@ -136,9 +136,8 @@ class DailyReportDetailActionsCard extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => WorkerRemarkEditPage(
-                                  report: report,
-                                ),
+                                builder: (context) =>
+                                    WorkerRemarkEditPage(report: report),
                               ),
                             );
                             break;
@@ -146,9 +145,8 @@ class DailyReportDetailActionsCard extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => EquipmentEditPage(
-                                  report: report,
-                                ),
+                                builder: (context) =>
+                                    EquipmentEditPage(report: report),
                               ),
                             );
                             break;
@@ -160,24 +158,28 @@ class DailyReportDetailActionsCard extends StatelessWidget {
                 dividerConfig(),
 
                 // Monthly Summary
-                ThemeListTileWidget(
-                  title: 'Monthly Summary',
-                  titleDetails: 'List of overall report',
-                  icon: Icons.calendar_today_rounded,
-                  isInverseBold: true,
-                  onTap: onMonthlySummary,
-                ),
-                dividerConfig(),
+                if (onMonthlySummary != null) ...[
+                  ThemeListTileWidget(
+                    title: 'Monthly Summary',
+                    titleDetails: 'List of overall report',
+                    icon: Icons.calendar_today_rounded,
+                    isInverseBold: true,
+                    onTap: onMonthlySummary,
+                  ),
+                  dividerConfig(),
+                ],
 
                 // Update History
-                ThemeListTileWidget(
-                  title: 'Update History',
-                  titleDetails: 'List of overall report',
-                  icon: Icons.history,
-                  isInverseBold: true,
-                  onTap: onUpdateHistory,
-                ),
-                dividerConfig(),
+                if (onUpdateHistory != null) ...[
+                  ThemeListTileWidget(
+                    title: 'Update History',
+                    titleDetails: 'List of overall report',
+                    icon: Icons.history,
+                    isInverseBold: true,
+                    onTap: onUpdateHistory,
+                  ),
+                  dividerConfig(),
+                ],
 
                 // Remove Program
                 GestureDetector(

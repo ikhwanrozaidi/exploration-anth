@@ -22,8 +22,8 @@ mixin _$DailyReportFilterModel {
 @JsonKey(includeIfNull: false) String? get workScopeUID;/// Filter by road UID
 @JsonKey(includeIfNull: false) String? get roadUID;/// Filter by created by admin ID
 @JsonKey(includeIfNull: false) int? get createdByID;/// Filter by date range - start date
-@JsonKey(includeIfNull: false) DateTime? get startDate;/// Filter by date range - end date
-@JsonKey(includeIfNull: false) DateTime? get endDate;/// Search term for report name
+@JsonKey(includeIfNull: false) String? get fromDate;/// Filter by date range - end date
+@JsonKey(includeIfNull: false) String? get toDate;/// Search term for report name
 @JsonKey(includeIfNull: false) String? get search;/// Contractor Relation Filter
 @JsonKey(includeIfNull: false) String? get contractorRelationUID;/// Sort field
 @JsonKey(includeIfNull: false) String? get sortBy;/// Sort order (asc/desc)
@@ -41,16 +41,16 @@ $DailyReportFilterModelCopyWith<DailyReportFilterModel> get copyWith => _$DailyR
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyReportFilterModel&&(identical(other.page, page) || other.page == page)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.status, status) || other.status == status)&&(identical(other.workScopeUID, workScopeUID) || other.workScopeUID == workScopeUID)&&(identical(other.roadUID, roadUID) || other.roadUID == roadUID)&&(identical(other.createdByID, createdByID) || other.createdByID == createdByID)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.search, search) || other.search == search)&&(identical(other.contractorRelationUID, contractorRelationUID) || other.contractorRelationUID == contractorRelationUID)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.sortOrder, sortOrder) || other.sortOrder == sortOrder)&&const DeepCollectionEquality().equals(other.expand, expand));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyReportFilterModel&&(identical(other.page, page) || other.page == page)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.status, status) || other.status == status)&&(identical(other.workScopeUID, workScopeUID) || other.workScopeUID == workScopeUID)&&(identical(other.roadUID, roadUID) || other.roadUID == roadUID)&&(identical(other.createdByID, createdByID) || other.createdByID == createdByID)&&(identical(other.fromDate, fromDate) || other.fromDate == fromDate)&&(identical(other.toDate, toDate) || other.toDate == toDate)&&(identical(other.search, search) || other.search == search)&&(identical(other.contractorRelationUID, contractorRelationUID) || other.contractorRelationUID == contractorRelationUID)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.sortOrder, sortOrder) || other.sortOrder == sortOrder)&&const DeepCollectionEquality().equals(other.expand, expand));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,page,limit,status,workScopeUID,roadUID,createdByID,startDate,endDate,search,contractorRelationUID,sortBy,sortOrder,const DeepCollectionEquality().hash(expand));
+int get hashCode => Object.hash(runtimeType,page,limit,status,workScopeUID,roadUID,createdByID,fromDate,toDate,search,contractorRelationUID,sortBy,sortOrder,const DeepCollectionEquality().hash(expand));
 
 @override
 String toString() {
-  return 'DailyReportFilterModel(page: $page, limit: $limit, status: $status, workScopeUID: $workScopeUID, roadUID: $roadUID, createdByID: $createdByID, startDate: $startDate, endDate: $endDate, search: $search, contractorRelationUID: $contractorRelationUID, sortBy: $sortBy, sortOrder: $sortOrder, expand: $expand)';
+  return 'DailyReportFilterModel(page: $page, limit: $limit, status: $status, workScopeUID: $workScopeUID, roadUID: $roadUID, createdByID: $createdByID, fromDate: $fromDate, toDate: $toDate, search: $search, contractorRelationUID: $contractorRelationUID, sortBy: $sortBy, sortOrder: $sortOrder, expand: $expand)';
 }
 
 
@@ -61,7 +61,7 @@ abstract mixin class $DailyReportFilterModelCopyWith<$Res>  {
   factory $DailyReportFilterModelCopyWith(DailyReportFilterModel value, $Res Function(DailyReportFilterModel) _then) = _$DailyReportFilterModelCopyWithImpl;
 @useResult
 $Res call({
- int page, int limit,@JsonKey(includeIfNull: false) String? status,@JsonKey(includeIfNull: false) String? workScopeUID,@JsonKey(includeIfNull: false) String? roadUID,@JsonKey(includeIfNull: false) int? createdByID,@JsonKey(includeIfNull: false) DateTime? startDate,@JsonKey(includeIfNull: false) DateTime? endDate,@JsonKey(includeIfNull: false) String? search,@JsonKey(includeIfNull: false) String? contractorRelationUID,@JsonKey(includeIfNull: false) String? sortBy,@JsonKey(includeIfNull: false) String? sortOrder,@JsonKey(includeIfNull: false) List<String>? expand
+ int page, int limit,@JsonKey(includeIfNull: false) String? status,@JsonKey(includeIfNull: false) String? workScopeUID,@JsonKey(includeIfNull: false) String? roadUID,@JsonKey(includeIfNull: false) int? createdByID,@JsonKey(includeIfNull: false) String? fromDate,@JsonKey(includeIfNull: false) String? toDate,@JsonKey(includeIfNull: false) String? search,@JsonKey(includeIfNull: false) String? contractorRelationUID,@JsonKey(includeIfNull: false) String? sortBy,@JsonKey(includeIfNull: false) String? sortOrder,@JsonKey(includeIfNull: false) List<String>? expand
 });
 
 
@@ -78,7 +78,7 @@ class _$DailyReportFilterModelCopyWithImpl<$Res>
 
 /// Create a copy of DailyReportFilterModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? page = null,Object? limit = null,Object? status = freezed,Object? workScopeUID = freezed,Object? roadUID = freezed,Object? createdByID = freezed,Object? startDate = freezed,Object? endDate = freezed,Object? search = freezed,Object? contractorRelationUID = freezed,Object? sortBy = freezed,Object? sortOrder = freezed,Object? expand = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? page = null,Object? limit = null,Object? status = freezed,Object? workScopeUID = freezed,Object? roadUID = freezed,Object? createdByID = freezed,Object? fromDate = freezed,Object? toDate = freezed,Object? search = freezed,Object? contractorRelationUID = freezed,Object? sortBy = freezed,Object? sortOrder = freezed,Object? expand = freezed,}) {
   return _then(_self.copyWith(
 page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
 as int,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
@@ -86,9 +86,9 @@ as int,status: freezed == status ? _self.status : status // ignore: cast_nullabl
 as String?,workScopeUID: freezed == workScopeUID ? _self.workScopeUID : workScopeUID // ignore: cast_nullable_to_non_nullable
 as String?,roadUID: freezed == roadUID ? _self.roadUID : roadUID // ignore: cast_nullable_to_non_nullable
 as String?,createdByID: freezed == createdByID ? _self.createdByID : createdByID // ignore: cast_nullable_to_non_nullable
-as int?,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,search: freezed == search ? _self.search : search // ignore: cast_nullable_to_non_nullable
+as int?,fromDate: freezed == fromDate ? _self.fromDate : fromDate // ignore: cast_nullable_to_non_nullable
+as String?,toDate: freezed == toDate ? _self.toDate : toDate // ignore: cast_nullable_to_non_nullable
+as String?,search: freezed == search ? _self.search : search // ignore: cast_nullable_to_non_nullable
 as String?,contractorRelationUID: freezed == contractorRelationUID ? _self.contractorRelationUID : contractorRelationUID // ignore: cast_nullable_to_non_nullable
 as String?,sortBy: freezed == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
 as String?,sortOrder: freezed == sortOrder ? _self.sortOrder : sortOrder // ignore: cast_nullable_to_non_nullable
@@ -178,10 +178,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int page,  int limit, @JsonKey(includeIfNull: false)  String? status, @JsonKey(includeIfNull: false)  String? workScopeUID, @JsonKey(includeIfNull: false)  String? roadUID, @JsonKey(includeIfNull: false)  int? createdByID, @JsonKey(includeIfNull: false)  DateTime? startDate, @JsonKey(includeIfNull: false)  DateTime? endDate, @JsonKey(includeIfNull: false)  String? search, @JsonKey(includeIfNull: false)  String? contractorRelationUID, @JsonKey(includeIfNull: false)  String? sortBy, @JsonKey(includeIfNull: false)  String? sortOrder, @JsonKey(includeIfNull: false)  List<String>? expand)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int page,  int limit, @JsonKey(includeIfNull: false)  String? status, @JsonKey(includeIfNull: false)  String? workScopeUID, @JsonKey(includeIfNull: false)  String? roadUID, @JsonKey(includeIfNull: false)  int? createdByID, @JsonKey(includeIfNull: false)  String? fromDate, @JsonKey(includeIfNull: false)  String? toDate, @JsonKey(includeIfNull: false)  String? search, @JsonKey(includeIfNull: false)  String? contractorRelationUID, @JsonKey(includeIfNull: false)  String? sortBy, @JsonKey(includeIfNull: false)  String? sortOrder, @JsonKey(includeIfNull: false)  List<String>? expand)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _DailyReportFilterModel() when $default != null:
-return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roadUID,_that.createdByID,_that.startDate,_that.endDate,_that.search,_that.contractorRelationUID,_that.sortBy,_that.sortOrder,_that.expand);case _:
+return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roadUID,_that.createdByID,_that.fromDate,_that.toDate,_that.search,_that.contractorRelationUID,_that.sortBy,_that.sortOrder,_that.expand);case _:
   return orElse();
 
 }
@@ -199,10 +199,10 @@ return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roa
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int page,  int limit, @JsonKey(includeIfNull: false)  String? status, @JsonKey(includeIfNull: false)  String? workScopeUID, @JsonKey(includeIfNull: false)  String? roadUID, @JsonKey(includeIfNull: false)  int? createdByID, @JsonKey(includeIfNull: false)  DateTime? startDate, @JsonKey(includeIfNull: false)  DateTime? endDate, @JsonKey(includeIfNull: false)  String? search, @JsonKey(includeIfNull: false)  String? contractorRelationUID, @JsonKey(includeIfNull: false)  String? sortBy, @JsonKey(includeIfNull: false)  String? sortOrder, @JsonKey(includeIfNull: false)  List<String>? expand)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int page,  int limit, @JsonKey(includeIfNull: false)  String? status, @JsonKey(includeIfNull: false)  String? workScopeUID, @JsonKey(includeIfNull: false)  String? roadUID, @JsonKey(includeIfNull: false)  int? createdByID, @JsonKey(includeIfNull: false)  String? fromDate, @JsonKey(includeIfNull: false)  String? toDate, @JsonKey(includeIfNull: false)  String? search, @JsonKey(includeIfNull: false)  String? contractorRelationUID, @JsonKey(includeIfNull: false)  String? sortBy, @JsonKey(includeIfNull: false)  String? sortOrder, @JsonKey(includeIfNull: false)  List<String>? expand)  $default,) {final _that = this;
 switch (_that) {
 case _DailyReportFilterModel():
-return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roadUID,_that.createdByID,_that.startDate,_that.endDate,_that.search,_that.contractorRelationUID,_that.sortBy,_that.sortOrder,_that.expand);case _:
+return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roadUID,_that.createdByID,_that.fromDate,_that.toDate,_that.search,_that.contractorRelationUID,_that.sortBy,_that.sortOrder,_that.expand);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -219,10 +219,10 @@ return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roa
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int page,  int limit, @JsonKey(includeIfNull: false)  String? status, @JsonKey(includeIfNull: false)  String? workScopeUID, @JsonKey(includeIfNull: false)  String? roadUID, @JsonKey(includeIfNull: false)  int? createdByID, @JsonKey(includeIfNull: false)  DateTime? startDate, @JsonKey(includeIfNull: false)  DateTime? endDate, @JsonKey(includeIfNull: false)  String? search, @JsonKey(includeIfNull: false)  String? contractorRelationUID, @JsonKey(includeIfNull: false)  String? sortBy, @JsonKey(includeIfNull: false)  String? sortOrder, @JsonKey(includeIfNull: false)  List<String>? expand)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int page,  int limit, @JsonKey(includeIfNull: false)  String? status, @JsonKey(includeIfNull: false)  String? workScopeUID, @JsonKey(includeIfNull: false)  String? roadUID, @JsonKey(includeIfNull: false)  int? createdByID, @JsonKey(includeIfNull: false)  String? fromDate, @JsonKey(includeIfNull: false)  String? toDate, @JsonKey(includeIfNull: false)  String? search, @JsonKey(includeIfNull: false)  String? contractorRelationUID, @JsonKey(includeIfNull: false)  String? sortBy, @JsonKey(includeIfNull: false)  String? sortOrder, @JsonKey(includeIfNull: false)  List<String>? expand)?  $default,) {final _that = this;
 switch (_that) {
 case _DailyReportFilterModel() when $default != null:
-return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roadUID,_that.createdByID,_that.startDate,_that.endDate,_that.search,_that.contractorRelationUID,_that.sortBy,_that.sortOrder,_that.expand);case _:
+return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roadUID,_that.createdByID,_that.fromDate,_that.toDate,_that.search,_that.contractorRelationUID,_that.sortBy,_that.sortOrder,_that.expand);case _:
   return null;
 
 }
@@ -234,7 +234,7 @@ return $default(_that.page,_that.limit,_that.status,_that.workScopeUID,_that.roa
 @JsonSerializable()
 
 class _DailyReportFilterModel implements DailyReportFilterModel {
-  const _DailyReportFilterModel({this.page = 1, this.limit = 10, @JsonKey(includeIfNull: false) this.status, @JsonKey(includeIfNull: false) this.workScopeUID, @JsonKey(includeIfNull: false) this.roadUID, @JsonKey(includeIfNull: false) this.createdByID, @JsonKey(includeIfNull: false) this.startDate, @JsonKey(includeIfNull: false) this.endDate, @JsonKey(includeIfNull: false) this.search, @JsonKey(includeIfNull: false) this.contractorRelationUID, @JsonKey(includeIfNull: false) this.sortBy, @JsonKey(includeIfNull: false) this.sortOrder, @JsonKey(includeIfNull: false) final  List<String>? expand}): _expand = expand;
+  const _DailyReportFilterModel({this.page = 1, this.limit = 10, @JsonKey(includeIfNull: false) this.status, @JsonKey(includeIfNull: false) this.workScopeUID, @JsonKey(includeIfNull: false) this.roadUID, @JsonKey(includeIfNull: false) this.createdByID, @JsonKey(includeIfNull: false) this.fromDate, @JsonKey(includeIfNull: false) this.toDate, @JsonKey(includeIfNull: false) this.search, @JsonKey(includeIfNull: false) this.contractorRelationUID, @JsonKey(includeIfNull: false) this.sortBy, @JsonKey(includeIfNull: false) this.sortOrder, @JsonKey(includeIfNull: false) final  List<String>? expand}): _expand = expand;
   factory _DailyReportFilterModel.fromJson(Map<String, dynamic> json) => _$DailyReportFilterModelFromJson(json);
 
 /// Page number for pagination
@@ -250,9 +250,9 @@ class _DailyReportFilterModel implements DailyReportFilterModel {
 /// Filter by created by admin ID
 @override@JsonKey(includeIfNull: false) final  int? createdByID;
 /// Filter by date range - start date
-@override@JsonKey(includeIfNull: false) final  DateTime? startDate;
+@override@JsonKey(includeIfNull: false) final  String? fromDate;
 /// Filter by date range - end date
-@override@JsonKey(includeIfNull: false) final  DateTime? endDate;
+@override@JsonKey(includeIfNull: false) final  String? toDate;
 /// Search term for report name
 @override@JsonKey(includeIfNull: false) final  String? search;
 /// Contractor Relation Filter
@@ -286,16 +286,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyReportFilterModel&&(identical(other.page, page) || other.page == page)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.status, status) || other.status == status)&&(identical(other.workScopeUID, workScopeUID) || other.workScopeUID == workScopeUID)&&(identical(other.roadUID, roadUID) || other.roadUID == roadUID)&&(identical(other.createdByID, createdByID) || other.createdByID == createdByID)&&(identical(other.startDate, startDate) || other.startDate == startDate)&&(identical(other.endDate, endDate) || other.endDate == endDate)&&(identical(other.search, search) || other.search == search)&&(identical(other.contractorRelationUID, contractorRelationUID) || other.contractorRelationUID == contractorRelationUID)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.sortOrder, sortOrder) || other.sortOrder == sortOrder)&&const DeepCollectionEquality().equals(other._expand, _expand));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DailyReportFilterModel&&(identical(other.page, page) || other.page == page)&&(identical(other.limit, limit) || other.limit == limit)&&(identical(other.status, status) || other.status == status)&&(identical(other.workScopeUID, workScopeUID) || other.workScopeUID == workScopeUID)&&(identical(other.roadUID, roadUID) || other.roadUID == roadUID)&&(identical(other.createdByID, createdByID) || other.createdByID == createdByID)&&(identical(other.fromDate, fromDate) || other.fromDate == fromDate)&&(identical(other.toDate, toDate) || other.toDate == toDate)&&(identical(other.search, search) || other.search == search)&&(identical(other.contractorRelationUID, contractorRelationUID) || other.contractorRelationUID == contractorRelationUID)&&(identical(other.sortBy, sortBy) || other.sortBy == sortBy)&&(identical(other.sortOrder, sortOrder) || other.sortOrder == sortOrder)&&const DeepCollectionEquality().equals(other._expand, _expand));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,page,limit,status,workScopeUID,roadUID,createdByID,startDate,endDate,search,contractorRelationUID,sortBy,sortOrder,const DeepCollectionEquality().hash(_expand));
+int get hashCode => Object.hash(runtimeType,page,limit,status,workScopeUID,roadUID,createdByID,fromDate,toDate,search,contractorRelationUID,sortBy,sortOrder,const DeepCollectionEquality().hash(_expand));
 
 @override
 String toString() {
-  return 'DailyReportFilterModel(page: $page, limit: $limit, status: $status, workScopeUID: $workScopeUID, roadUID: $roadUID, createdByID: $createdByID, startDate: $startDate, endDate: $endDate, search: $search, contractorRelationUID: $contractorRelationUID, sortBy: $sortBy, sortOrder: $sortOrder, expand: $expand)';
+  return 'DailyReportFilterModel(page: $page, limit: $limit, status: $status, workScopeUID: $workScopeUID, roadUID: $roadUID, createdByID: $createdByID, fromDate: $fromDate, toDate: $toDate, search: $search, contractorRelationUID: $contractorRelationUID, sortBy: $sortBy, sortOrder: $sortOrder, expand: $expand)';
 }
 
 
@@ -306,7 +306,7 @@ abstract mixin class _$DailyReportFilterModelCopyWith<$Res> implements $DailyRep
   factory _$DailyReportFilterModelCopyWith(_DailyReportFilterModel value, $Res Function(_DailyReportFilterModel) _then) = __$DailyReportFilterModelCopyWithImpl;
 @override @useResult
 $Res call({
- int page, int limit,@JsonKey(includeIfNull: false) String? status,@JsonKey(includeIfNull: false) String? workScopeUID,@JsonKey(includeIfNull: false) String? roadUID,@JsonKey(includeIfNull: false) int? createdByID,@JsonKey(includeIfNull: false) DateTime? startDate,@JsonKey(includeIfNull: false) DateTime? endDate,@JsonKey(includeIfNull: false) String? search,@JsonKey(includeIfNull: false) String? contractorRelationUID,@JsonKey(includeIfNull: false) String? sortBy,@JsonKey(includeIfNull: false) String? sortOrder,@JsonKey(includeIfNull: false) List<String>? expand
+ int page, int limit,@JsonKey(includeIfNull: false) String? status,@JsonKey(includeIfNull: false) String? workScopeUID,@JsonKey(includeIfNull: false) String? roadUID,@JsonKey(includeIfNull: false) int? createdByID,@JsonKey(includeIfNull: false) String? fromDate,@JsonKey(includeIfNull: false) String? toDate,@JsonKey(includeIfNull: false) String? search,@JsonKey(includeIfNull: false) String? contractorRelationUID,@JsonKey(includeIfNull: false) String? sortBy,@JsonKey(includeIfNull: false) String? sortOrder,@JsonKey(includeIfNull: false) List<String>? expand
 });
 
 
@@ -323,7 +323,7 @@ class __$DailyReportFilterModelCopyWithImpl<$Res>
 
 /// Create a copy of DailyReportFilterModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? page = null,Object? limit = null,Object? status = freezed,Object? workScopeUID = freezed,Object? roadUID = freezed,Object? createdByID = freezed,Object? startDate = freezed,Object? endDate = freezed,Object? search = freezed,Object? contractorRelationUID = freezed,Object? sortBy = freezed,Object? sortOrder = freezed,Object? expand = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? page = null,Object? limit = null,Object? status = freezed,Object? workScopeUID = freezed,Object? roadUID = freezed,Object? createdByID = freezed,Object? fromDate = freezed,Object? toDate = freezed,Object? search = freezed,Object? contractorRelationUID = freezed,Object? sortBy = freezed,Object? sortOrder = freezed,Object? expand = freezed,}) {
   return _then(_DailyReportFilterModel(
 page: null == page ? _self.page : page // ignore: cast_nullable_to_non_nullable
 as int,limit: null == limit ? _self.limit : limit // ignore: cast_nullable_to_non_nullable
@@ -331,9 +331,9 @@ as int,status: freezed == status ? _self.status : status // ignore: cast_nullabl
 as String?,workScopeUID: freezed == workScopeUID ? _self.workScopeUID : workScopeUID // ignore: cast_nullable_to_non_nullable
 as String?,roadUID: freezed == roadUID ? _self.roadUID : roadUID // ignore: cast_nullable_to_non_nullable
 as String?,createdByID: freezed == createdByID ? _self.createdByID : createdByID // ignore: cast_nullable_to_non_nullable
-as int?,startDate: freezed == startDate ? _self.startDate : startDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,endDate: freezed == endDate ? _self.endDate : endDate // ignore: cast_nullable_to_non_nullable
-as DateTime?,search: freezed == search ? _self.search : search // ignore: cast_nullable_to_non_nullable
+as int?,fromDate: freezed == fromDate ? _self.fromDate : fromDate // ignore: cast_nullable_to_non_nullable
+as String?,toDate: freezed == toDate ? _self.toDate : toDate // ignore: cast_nullable_to_non_nullable
+as String?,search: freezed == search ? _self.search : search // ignore: cast_nullable_to_non_nullable
 as String?,contractorRelationUID: freezed == contractorRelationUID ? _self.contractorRelationUID : contractorRelationUID // ignore: cast_nullable_to_non_nullable
 as String?,sortBy: freezed == sortBy ? _self.sortBy : sortBy // ignore: cast_nullable_to_non_nullable
 as String?,sortOrder: freezed == sortOrder ? _self.sortOrder : sortOrder // ignore: cast_nullable_to_non_nullable

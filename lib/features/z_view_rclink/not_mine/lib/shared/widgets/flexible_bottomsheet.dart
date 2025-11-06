@@ -88,7 +88,10 @@ class _FlexibleBottomsheetState extends State<FlexibleBottomsheet> {
               Expanded(
                 child: Text(
                   widget.title,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    fontSize: ResponsiveHelper.fontSize(context, base: 16),
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
               if (widget.isTips)
@@ -165,7 +168,7 @@ class _FlexibleBottomsheetState extends State<FlexibleBottomsheet> {
                         style: TextStyle(
                           fontSize: ResponsiveHelper.fontSize(
                             context,
-                            base: 16,
+                            base: 14,
                           ),
                           fontWeight: FontWeight.w500,
                         ),
@@ -192,7 +195,7 @@ class _FlexibleBottomsheetState extends State<FlexibleBottomsheet> {
                         style: TextStyle(
                           fontSize: ResponsiveHelper.fontSize(
                             context,
-                            base: 16,
+                            base: 14,
                           ),
                           fontWeight: FontWeight.w500,
                         ),

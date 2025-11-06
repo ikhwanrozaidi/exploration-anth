@@ -10,6 +10,36 @@ import '../helper/road_level.dart';
 import '../helper/road_selection_result.dart';
 import '../widgets/road_selection_flow.dart';
 
+/*
+HOW TO USE:
+
+ RoadFieldTile(
+    startFrom: RoadLevel.provinces,
+    endAt: RoadLevel.roads,
+    label: 'Select Location',
+    icon: Icons.place,
+    placeholder: 'Select location',
+    onRoadSelected: (RoadSelectionResult result) {
+      print(
+        'Selected Road UID: ${result.selectedRoad?.uid}',
+      );
+      print(
+        'Selected Province: ${result.selectedProvince?.name}',
+      );
+      print(
+        'Selected District: ${result.selectedDistrict?.name}',
+      );
+      print(
+        'Selected Road: ${result.selectedRoad?.name}',
+      );
+
+      // setState(() {
+      //   _selectedRoadUid = result.selectedRoad?.uid;
+      // });
+    },
+  ),
+*/
+
 class RoadFieldTile extends StatefulWidget {
   final RoadLevel startFrom;
   final RoadLevel endAt;
@@ -18,7 +48,6 @@ class RoadFieldTile extends StatefulWidget {
   final String? preSelectedDistrictUid;
   final Function(RoadSelectionResult)? onRoadSelected;
   final String? label;
-  final IconData? icon;
   final String? placeholder;
   final bool forceRefresh;
 
@@ -31,7 +60,6 @@ class RoadFieldTile extends StatefulWidget {
     this.preSelectedDistrictUid,
     this.onRoadSelected,
     this.label,
-    this.icon,
     this.placeholder,
     this.forceRefresh = false,
   }) : super(key: key);
@@ -247,7 +275,7 @@ class _RoadFieldTileState extends State<RoadFieldTile> {
           );
 
           return SelectionFieldCard(
-            icon: widget.icon ?? Icons.location_on,
+            imagePath: 'assets/images/icons/location.png',
             label: widget.label ?? 'Location',
             value: selectedRoadDisplay,
             placeholder: isLoading

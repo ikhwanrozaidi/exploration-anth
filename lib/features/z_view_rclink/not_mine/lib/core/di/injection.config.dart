@@ -101,8 +101,12 @@ import '../../features/daily_report/domain/usecases/get_daily_report_usecase.dar
     as _i908;
 import '../../features/daily_report/domain/usecases/submit_daily_report_usecase.dart'
     as _i330;
+import '../../features/daily_report/domain/usecases/update_daily_report_usecase.dart'
+    as _i11;
 import '../../features/daily_report/presentation/bloc/daily_report_create/daily_report_create_bloc.dart'
     as _i1040;
+import '../../features/daily_report/presentation/bloc/daily_report_edit/daily_report_edit_bloc.dart'
+    as _i618;
 import '../../features/daily_report/presentation/bloc/daily_report_view/daily_report_view_bloc.dart'
     as _i266;
 import '../../features/locale/presentation/bloc/locale_bloc.dart' as _i458;
@@ -302,12 +306,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i107.AuthRemoteDataSource>(
       () => _i107.AuthRemoteDataSourceImpl(gh<_i156.AuthApiService>()),
     );
-    gh.lazySingleton<_i328.DailyReportRemoteDataSource>(
-      () => _i328.DailyReportRemoteDataSourceImpl(
-        gh<_i538.DailyReportApiService>(),
-        gh<_i1060.RoadApiService>(),
-      ),
-    );
     gh.lazySingleton<_i908.AuthInterceptor>(
       () => _i908.AuthInterceptor(gh<_i852.AuthLocalDataSource>()),
     );
@@ -339,6 +337,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i448.CheckPermissionUseCase>(),
         gh<_i644.CheckAnyPermissionUseCase>(),
         gh<_i976.CheckAllPermissionsUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i328.DailyReportRemoteDataSource>(
+      () => _i328.DailyReportRemoteDataSourceImpl(
+        gh<_i538.DailyReportApiService>(),
       ),
     );
     gh.lazySingleton<_i626.DailyReportImageRemoteDataSource>(
@@ -429,6 +432,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i157.RefreshTokenUseCase>(
       () => _i157.RefreshTokenUseCase(gh<_i787.AuthRepository>()),
+    );
+    gh.factory<_i11.UpdateDailyReportUseCase>(
+      () => _i11.UpdateDailyReportUseCase(gh<_i819.DailyReportRepository>()),
     );
     gh.factory<_i330.SubmitDailyReportUseCase>(
       () => _i330.SubmitDailyReportUseCase(gh<_i819.DailyReportRepository>()),
@@ -553,7 +559,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i584.ClearWorkScopesCacheUseCase>(),
       ),
     );
-    gh.factory<_i248.WorkScopeBloc>(
+    gh.lazySingleton<_i248.WorkScopeBloc>(
       () => _i248.WorkScopeBloc(gh<_i890.GetWorkScopesUseCase>()),
     );
     gh.factory<_i398.ClearAllCacheUseCase>(
@@ -562,6 +568,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i581.RoadRepository>(),
         gh<_i880.QuantityRepository>(),
         gh<_i767.EquipmentRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i618.DailyReportEditBloc>(
+      () => _i618.DailyReportEditBloc(
+        gh<_i1005.GetQuantityUseCase>(),
+        gh<_i847.GetEquipmentUseCase>(),
+        gh<_i11.UpdateDailyReportUseCase>(),
       ),
     );
     gh.lazySingleton<_i1040.DailyReportCreateBloc>(

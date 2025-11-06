@@ -502,6 +502,7 @@ class DailyReports extends Table with SyncableTable {
   TextColumn get workScopeData => text().nullable()();
   TextColumn get roadData => text().nullable()();
   TextColumn get createdByData => text().nullable()();
+  TextColumn get companyData => text().nullable()();
   TextColumn get equipmentsData => text().nullable()();
   TextColumn get reportQuantitiesData => text().nullable()();
 
@@ -637,7 +638,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 16; // Added createdByData to DailyReports table
+  int get schemaVersion => 17; // Added companyData to DailyReports table
 
   @override
   MigrationStrategy get migration {
@@ -964,6 +965,10 @@ class AppDatabase extends _$AppDatabase {
         from15To16: (m, schema) async {
           // Migration from version 15 to 16: Add createdByData to DailyReports table
           await m.addColumn(schema.dailyReports, schema.dailyReports.createdByData);
+        },
+        from16To17: (m, schema) async {
+          // Migration from version 16 to 17: Add companyData to DailyReports table
+          await m.addColumn(schema.dailyReports, schema.dailyReports.companyData);
         },
       ),
       beforeOpen: (details) async {

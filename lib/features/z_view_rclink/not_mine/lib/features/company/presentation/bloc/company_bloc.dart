@@ -57,6 +57,7 @@ class CompanyBloc extends Bloc<CompanyEvent, CompanyState> {
     Emitter<CompanyState> emit,
   ) async {
     final currentState = state;
+
     if (currentState is CompanyLoaded) {
       final result = await _selectCompanyUseCase(
         SelectCompanyParams(companyId: event.companyId),

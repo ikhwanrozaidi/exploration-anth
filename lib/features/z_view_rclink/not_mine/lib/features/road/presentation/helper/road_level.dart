@@ -21,7 +21,7 @@ enum RoadLevel {
       case RoadLevel.countries:
         return 'Country';
       case RoadLevel.provinces:
-        return 'Province/State';
+        return 'State';
       case RoadLevel.districts:
         return 'District';
       case RoadLevel.roads:

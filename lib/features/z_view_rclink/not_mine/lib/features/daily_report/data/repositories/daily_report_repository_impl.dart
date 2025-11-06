@@ -44,6 +44,8 @@ class DailyReportRepositoryImpl
     String? roadUid,
     String? workScopeUid,
     String? contractorUid,
+    String? fromDate,
+    String? toDate,
 
     bool forceRefresh = false,
     Duration? cacheTimeout = const Duration(hours: 1),
@@ -57,6 +59,8 @@ class DailyReportRepositoryImpl
       roadUid: roadUid,
       workScopeUid: workScopeUid,
       contractorUid: contractorUid,
+      fromDate: fromDate,
+      toDate: toDate,
     );
 
     return remoteResult.fold(

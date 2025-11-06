@@ -15,6 +15,8 @@ abstract class DailyReportRepository {
     String? roadUid,
     String? workScopeUid,
     String? contractorUid,
+    String? fromDate,
+    String? toDate,
   });
 
   Future<Either<Failure, DailyReport>> getDailyReportById({

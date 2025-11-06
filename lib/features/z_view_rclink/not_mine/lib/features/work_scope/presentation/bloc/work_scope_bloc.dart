@@ -6,7 +6,7 @@ import '../../domain/usecases/get_work_scopes_usecase.dart';
 import 'work_scope_event.dart';
 import 'work_scope_state.dart';
 
-@injectable
+@lazySingleton
 class WorkScopeBloc extends Bloc<WorkScopeEvent, WorkScopeState> {
   final GetWorkScopesUseCase _getWorkScopesUseCase;
 

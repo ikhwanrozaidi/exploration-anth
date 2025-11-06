@@ -84,7 +84,7 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                   child: Icon(
                     Icons.arrow_back_rounded,
                     color: Colors.black,
-                    size: 25,
+                    size: ResponsiveHelper.iconSize(context, base: 20),
                   ),
                 ),
               ),
@@ -101,10 +101,10 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                     onPressed: () {
                       print("Bell button clicked");
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.notifications_active,
                       color: Colors.white,
-                      size: 25,
+                      size: ResponsiveHelper.iconSize(context, base: 20),
                     ),
                   ),
                   SizedBox(width: 8),
@@ -117,10 +117,10 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                     onPressed: () {
                       print("Share button clicked");
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.share,
                       color: Colors.white,
-                      size: 25,
+                      size: ResponsiveHelper.iconSize(context, base: 20),
                     ),
                   ),
                 ],
@@ -132,12 +132,19 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
 
       // Content
       body: Padding(
-        padding: const EdgeInsets.all(25.0),
+        padding: ResponsiveHelper.padding(
+          context,
+          left: 20,
+          right: 20,
+          bottom: 20,
+        ),
         child: ListView(
           children: [
+            SizedBox(height: ResponsiveHelper.getHeight(context, 0.02)),
+
             Container(
               width: double.infinity,
-              height: 250,
+              height: ResponsiveHelper.getHeight(context, 0.28),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -147,7 +154,7 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                     borderRadius: BorderRadius.circular(10),
                     child: Container(
                       width: double.infinity,
-                      height: 250,
+                      height: ResponsiveHelper.getHeight(context, 0.28),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
@@ -169,7 +176,10 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                             ),
                             child: Icon(
                               Icons.image_not_supported,
-                              size: 50,
+                              size: ResponsiveHelper.iconSize(
+                                context,
+                                base: 20,
+                              ),
                               color: Colors.grey.shade600,
                             ),
                           );
@@ -190,12 +200,16 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                         color: greenAccent,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Completed',
                         style: TextStyle(
                           color: Colors.white,
-                          // fontSize: 12,
+
                           fontWeight: FontWeight.w600,
+                          fontSize: ResponsiveHelper.fontSize(
+                            context,
+                            base: 13,
+                          ),
                         ),
                       ),
                     ),
@@ -228,11 +242,14 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                           ),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'View images',
                         style: TextStyle(
-                          // fontSize: 13,
                           fontWeight: FontWeight.w600,
+                          fontSize: ResponsiveHelper.fontSize(
+                            context,
+                            base: 13,
+                          ),
                         ),
                       ),
                     ),
@@ -241,7 +258,7 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
               ),
             ),
 
-            SizedBox(height: 20),
+            SizedBox(height: ResponsiveHelper.spacing(context, 20)),
 
             // Warning
             Container(
@@ -269,7 +286,11 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                     ),
                   ),
 
-                  Divider(height: 40, thickness: 0.5, color: Colors.white),
+                  Divider(
+                    height: ResponsiveHelper.spacing(context, 25),
+                    thickness: 0.5,
+                    color: Colors.white,
+                  ),
 
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.0),
@@ -294,8 +315,6 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                             ),
                           ],
                         ),
-
-                        SizedBox(height: 15),
                       ],
                     ),
                   ),
@@ -324,7 +343,11 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                     ),
                   ),
 
-                  Divider(height: 40, thickness: 0.5, color: Colors.white),
+                  Divider(
+                    height: ResponsiveHelper.spacing(context, 25),
+                    thickness: 0.5,
+                    color: Colors.white,
+                  ),
 
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5.0),
@@ -341,8 +364,6 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                             color: Colors.white,
                           ),
                         ),
-
-                        SizedBox(height: 15),
                       ],
                     ),
                   ),
@@ -379,15 +400,21 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                                 padding: EdgeInsets.all(12),
                                 decoration: BoxDecoration(
                                   color: primaryColor,
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: ResponsiveHelper.borderRadius(
+                                    context,
+                                    all: 6,
+                                  ),
                                 ),
                                 child: Center(
                                   child: Text(
                                     'code',
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 16,
+                                      fontSize: ResponsiveHelper.fontSize(
+                                        context,
+                                        base: 15,
+                                      ),
                                     ),
                                   ),
                                 ),

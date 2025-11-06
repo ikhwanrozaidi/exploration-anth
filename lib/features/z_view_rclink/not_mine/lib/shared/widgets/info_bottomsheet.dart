@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
+import '../utils/responsive_helper.dart';
+
 class InfoBottomsheet extends StatefulWidget {
-  final String title;
+  final String? title;
   final bool blurry;
   final Widget widgetUI;
 
   const InfoBottomsheet({
     Key? key,
-    required this.title,
+    this.title,
     this.blurry = false,
     required this.widgetUI,
   }) : super(key: key);
@@ -45,6 +47,16 @@ class _InfoBottomsheetState extends State<InfoBottomsheet> {
             ),
           ),
 
+          widget.title == null
+              ? SizedBox.shrink()
+              : Text(
+                  widget.title ?? '',
+                  style: TextStyle(
+                    fontSize: ResponsiveHelper.fontSize(context, base: 16),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+
           const SizedBox(height: 20),
 
           Flexible(child: SingleChildScrollView(child: widget.widgetUI)),
@@ -71,7 +83,7 @@ class _InfoBottomsheetState extends State<InfoBottomsheet> {
 // Updated helper function to show the bottomsheet
 void showInfoBottomsheet({
   required BuildContext context,
-  required String title,
+  String? title,
   bool blurry = false,
   required Widget widgetUI,
 }) {

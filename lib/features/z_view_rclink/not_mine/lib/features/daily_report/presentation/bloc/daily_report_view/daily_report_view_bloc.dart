@@ -43,6 +43,11 @@ class DailyReportViewBloc
         limit: event.limit,
         sortOrder: event.sortOrder,
         search: event.search,
+        roadUid: event.roadUid,
+        workScopeUid: event.workScopeUid,
+        contractorUid: event.contractorUid,
+        fromDate: event.fromDate,
+        toDate: event.toDate,
       ),
     );
 
@@ -88,10 +93,7 @@ class DailyReportViewBloc
     result.fold(
       (failure) {
         // On error, keep existing data but stop loading more
-        emit(currentState.copyWith(
-          isLoadingMore: false,
-          hasMore: false,
-        ));
+        emit(currentState.copyWith(isLoadingMore: false, hasMore: false));
       },
       (newReports) {
         // Append new reports to existing ones
@@ -125,7 +127,8 @@ class DailyReportViewBloc
     );
 
     result.fold(
-      (failure) => emit(DailyReportViewDetailFailure(_mapFailureToMessage(failure))),
+      (failure) =>
+          emit(DailyReportViewDetailFailure(_mapFailureToMessage(failure))),
       (report) => emit(DailyReportViewDetailLoaded(report: report)),
     );
   }

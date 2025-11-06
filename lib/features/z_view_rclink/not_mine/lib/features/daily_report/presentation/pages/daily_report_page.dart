@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
+import 'package:rclink_app/shared/widgets/shimmer_loading.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
@@ -13,7 +15,7 @@ import '../../../road/presentation/widgets/road_bottom_sheet.dart';
 import '../../../work_scope/presentation/bloc/work_scope_bloc.dart';
 import '../../../work_scope/presentation/widgets/work_scope_bottom_sheet.dart';
 import '../../presentation/pages/report_creation_page.dart';
-import '../../../program/presentation/pages/widgets/month_filter_widget.dart';
+import '../../../../shared/widgets/month_filter_widget.dart';
 import '../bloc/daily_report_view/daily_report_view_bloc.dart';
 import '../bloc/daily_report_view/daily_report_view_event.dart';
 import '../bloc/daily_report_view/daily_report_view_state.dart';
@@ -43,8 +45,6 @@ class _DailyReportPageContent extends StatefulWidget {
 }
 
 class _DailyReportPageContentState extends State<_DailyReportPageContent> {
-  int selectedMonth = DateTime.now().month;
-  int selectedYear = DateTime.now().year;
   late ScrollController _scrollController;
   late TextEditingController _searchController;
   Timer? _debounceTimer;
@@ -55,13 +55,10 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
   String? _selectedRoadUID;
   String? _selectedWorkScopeUID;
 
-  void onMonthSelected(int month, int year) {
-    setState(() {
-      selectedMonth = month;
-      selectedYear = year;
-    });
-    print('Selected month: $month, year: $year');
-  }
+  Timer? _monthFilterDebounceTimer;
+  String fromDate =
+      '${DateTime.utc(DateTime.now().year, DateTime.now().month, 1).toIso8601String()}Z';
+  String? toDate;
 
   @override
   void initState() {
@@ -81,6 +78,8 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                 companyUID: selectedCompany.uid,
                 page: 1,
                 limit: 10,
+                fromDate:
+                    fromDate, // because by default MonthlyFilter already active
               ),
             );
           }
@@ -94,6 +93,7 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
     _scrollController.dispose();
     _searchController.dispose();
     _debounceTimer?.cancel();
+    _monthFilterDebounceTimer?.cancel();
     super.dispose();
   }
 
@@ -164,39 +164,45 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
     );
   }
 
-  void _onDistrictSelected(RoadSelectionResult selectedData) {
+  void onMonthSelected(String from, String to) {
+    _monthFilterDebounceTimer?.cancel();
+
     setState(() {
-      _selectedRoadUID = selectedData.selectedRoad?.uid;
+      fromDate = from;
+      toDate = to;
     });
 
-    _loadDailyReportsWithFilters();
-  }
+    print('From: $from, To: $to');
 
-  void _onWorkScopeSelected(Map<String, dynamic> selectedData) {
-    setState(() {
-      _selectedWorkScopeUID = selectedData['uid'];
+    _monthFilterDebounceTimer = Timer(const Duration(milliseconds: 300), () {
+      _loadDailyReportsWithFilters();
     });
-
-    _loadDailyReportsWithFilters();
   }
 
-  void _loadDailyReportsWithFilters() {
+  void _loadDailyReportsWithFilters() async {
     final companyState = context.read<CompanyBloc>().state;
 
     companyState.whenOrNull(
-      loaded: (companies, selectedCompany) {
+      loaded: (companies, selectedCompany) async {
         if (selectedCompany != null) {
+          final loadingFuture = Future.delayed(
+            const Duration(milliseconds: 1000),
+          );
+
           context.read<DailyReportViewBloc>().add(
             DailyReportViewEvent.loadDailyReports(
               companyUID: selectedCompany.uid,
               page: 1,
               limit: 10,
-              roadUid: _selectedRoadUID != null ? null : _selectedRoadUID,
-              workScopeUid: _selectedWorkScopeUID != null
-                  ? null
-                  : _selectedWorkScopeUID,
+              roadUid: _selectedRoadUID,
+              workScopeUid: _selectedWorkScopeUID,
+              sortOrder: 'asc',
+              fromDate: fromDate,
+              toDate: toDate,
             ),
           );
+
+          await loadingFuture;
         }
       },
     );
@@ -204,7 +210,7 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
 
   void _onSearchChanged(String query) {
     _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+    _debounceTimer = Timer(const Duration(milliseconds: 1000), () {
       final companyState = context.read<CompanyBloc>().state;
 
       companyState.whenOrNull(
@@ -252,8 +258,9 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
           child: Column(
             children: [
               SizedBox(height: ResponsiveHelper.getHeight(context, 0.02)),
+
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20),
+                padding: ResponsiveHelper.padding(context, horizontal: 15),
                 child: Column(
                   children: [
                     Row(
@@ -265,15 +272,21 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                               style: IconButton.styleFrom(
                                 shape: const CircleBorder(),
                                 backgroundColor: Colors.white,
-                                padding: const EdgeInsets.all(5),
+                                padding: ResponsiveHelper.padding(
+                                  context,
+                                  all: 10,
+                                ),
                               ),
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.arrow_back_rounded,
                                 color: primaryColor,
-                                size: 25,
+                                size: ResponsiveHelper.iconSize(
+                                  context,
+                                  base: 20,
+                                ),
                               ),
                             ),
                             SizedBox(
@@ -284,7 +297,10 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                               style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
-                                fontSize: 20,
+                                fontSize: ResponsiveHelper.fontSize(
+                                  context,
+                                  base: 18,
+                                ),
                               ),
                             ),
                           ],
@@ -293,7 +309,7 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                           style: IconButton.styleFrom(
                             shape: const CircleBorder(),
                             backgroundColor: Colors.white,
-                            padding: const EdgeInsets.all(5),
+                            padding: ResponsiveHelper.padding(context, all: 10),
                           ),
                           onPressed: () {
                             Navigator.push(
@@ -303,15 +319,15 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                               ),
                             );
                           },
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.add,
                             color: primaryColor,
-                            size: 25,
+                            size: ResponsiveHelper.iconSize(context, base: 20),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(height: 30),
+                    SizedBox(height: ResponsiveHelper.spacing(context, 20)),
                   ],
                 ),
               ),
@@ -347,8 +363,54 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                                 ) => reports.length,
                             orElse: () => 0,
                           );
-                          return DailyReportListHeader(
-                            reportCount: reportCount,
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              top: 20.0,
+                              left: 30.0,
+                              right: 30.0,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                DailyReportListHeader(reportCount: reportCount),
+
+                                if (_selectedRoadUID != null ||
+                                    _selectedWorkScopeUID != null)
+                                  TextButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedRoadUID = null;
+                                        _selectedWorkScopeUID = null;
+                                      });
+
+                                      _loadDailyReportsWithFilters();
+                                    },
+
+                                    style: TextButton.styleFrom(
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      minimumSize: Size(0, 0),
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: Colors.red,
+                                      side: BorderSide(color: Colors.red),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 4,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Clear Filter',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        // fontSize: 10,
+                                      ),
+                                    ),
+                                  ),
+                              ],
+                            ),
                           );
                         },
                       ),
@@ -392,9 +454,10 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
               shouldHide: false, // Always visible
               child: Container(
                 color: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0,
+                padding: ResponsiveHelper.padding(
+                  context,
                   vertical: 15,
+                  horizontal: 15,
                 ),
                 child: TextField(
                   controller: _searchController,
@@ -403,7 +466,7 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                     hintText: 'Search report',
                     prefixIcon: Icon(
                       Icons.search,
-                      size: 24,
+                      size: ResponsiveHelper.iconSize(context, base: 20),
                       color: Colors.black.withOpacity(0.5),
                     ),
                     filled: true,
@@ -412,13 +475,14 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                       borderRadius: BorderRadius.circular(50),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(
+                    contentPadding: ResponsiveHelper.padding(
+                      context,
                       vertical: 11,
                       horizontal: 25,
                     ),
                     hintStyle: TextStyle(
                       color: Colors.black.withOpacity(0.5),
-                      fontSize: 14,
+                      fontSize: ResponsiveHelper.fontSize(context, base: 14),
                     ),
                   ),
                 ),
@@ -437,7 +501,7 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                 children: [
                   Container(
                     color: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: ResponsiveHelper.padding(context, horizontal: 15),
                     child: MonthFilter(
                       onMonthSelected: onMonthSelected,
                       primaryColor: primaryColor,
@@ -457,7 +521,7 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
               shouldHide: _isScrollingUp,
               child: Container(
                 color: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: ResponsiveHelper.padding(context, horizontal: 15),
                 child: DailyReportListFilters(
                   onDistrictTap: () {
                     showRoadSelection(
@@ -465,10 +529,11 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                       startFrom: RoadLevel.districts,
                       endAt: RoadLevel.roads,
                       onRoadSelected: (selectedData) {
-                        print(
-                          'Selected District: ${selectedData.selectedDistrict?.name}',
-                        );
-                        _onDistrictSelected(selectedData);
+                        setState(() {
+                          _selectedRoadUID = selectedData.selectedRoad?.uid;
+                        });
+
+                        _loadDailyReportsWithFilters();
                       },
                     );
                   },
@@ -480,9 +545,14 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                       context: context,
                       state: workScopeState,
                       onScopeSelected: (selectedData) {
-                        print('Selected Work Scope: ${selectedData['name']}');
-                        print('Work Scope UID: ${selectedData['uid']}');
-                        _onWorkScopeSelected(selectedData);
+                        // print('Selected Work Scope: ${selectedData['name']}');
+                        // print('Work Scope UID: ${selectedData['uid']}');
+
+                        setState(() {
+                          _selectedWorkScopeUID = selectedData['uid'];
+                        });
+
+                        _loadDailyReportsWithFilters();
                       },
                     );
                   },
@@ -517,7 +587,14 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                   child: Center(child: Text('Ready to load reports')),
                 ),
                 loading: () => SliverFillRemaining(
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(
+                    child: Lottie.asset(
+                      'assets/lottie/blue_loading.json',
+                      width: 200,
+                      height: 200,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
                 loaded:
                     (
@@ -531,18 +608,20 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                         return SliverFillRemaining(
                           child: Center(
                             child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                Icon(
-                                  Icons.description_outlined,
-                                  size: 64,
-                                  color: Colors.grey,
+                                SizedBox(height: 20),
+                                Lottie.asset(
+                                  'assets/lottie/no_record.json',
+                                  width: 200,
+                                  height: 200,
+                                  fit: BoxFit.contain,
                                 ),
-                                SizedBox(height: 16),
+                                SizedBox(height: 10),
                                 Text(
                                   'No reports found',
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 15,
                                     color: Colors.grey,
                                   ),
                                 ),
@@ -560,9 +639,17 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                               if (index == reports.length) {
                                 // Loading indicator at the bottom
                                 return Padding(
-                                  padding: const EdgeInsets.all(16.0),
+                                  padding: ResponsiveHelper.padding(
+                                    context,
+                                    all: 15,
+                                  ),
                                   child: Center(
-                                    child: CircularProgressIndicator(),
+                                    child: Lottie.asset(
+                                      'assets/lottie/blue_loading.json',
+                                      width: 200,
+                                      height: 200,
+                                      fit: BoxFit.contain,
+                                    ),
                                   ),
                                 );
                               }

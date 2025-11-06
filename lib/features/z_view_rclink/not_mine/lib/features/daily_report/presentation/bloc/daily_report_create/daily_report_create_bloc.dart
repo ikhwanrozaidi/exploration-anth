@@ -707,6 +707,11 @@ class DailyReportCreateBloc
     UpdateQuantityFieldValue event,
     Emitter<DailyReportCreateState> emit,
   ) async {
+    print('✏️ [QUANTITY DEBUG] UpdateQuantityFieldValue event received:');
+    print('  - quantityTypeUID: ${event.quantityTypeUID}');
+    print('  - fieldKey: ${event.fieldKey}');
+    print('  - value: ${event.value}');
+
     final currentApiData = _getCurrentApiData();
     final currentSelections = _getCurrentSelections();
     final currentFormData = _getCurrentFormData();
@@ -722,6 +727,9 @@ class DailyReportCreateBloc
     // Update the specific field value
     typeData[event.fieldKey] = event.value;
     quantityData[event.quantityTypeUID] = typeData;
+
+    print('  - Updated quantityFieldData keys: ${quantityData.keys.toList()}');
+    print('  - This type data: $typeData');
 
     emit(
       DailyReportCreateState.editingDetails(
@@ -785,12 +793,21 @@ class DailyReportCreateBloc
     );
     segmentData.remove(event.quantityTypeUID);
 
+    // Remove from selectedQuantityTypes as well
+    final updatedSelectedTypes = currentSelections.selectedQuantityTypes
+        .where((qt) => qt.uid != event.quantityTypeUID)
+        .toList();
+
+    print('🗑️ [QUANTITY DEBUG] Removing quantity type: ${event.quantityTypeUID}');
+    print('   - Remaining selectedQuantityTypes: ${updatedSelectedTypes.map((q) => q.name).toList()}');
+
     emit(
       DailyReportCreateState.editingDetails(
         apiData: currentApiData,
         selections: currentSelections.copyWith(
           quantityFieldData: quantityData,
           segmentData: segmentData,
+          selectedQuantityTypes: updatedSelectedTypes,
         ),
         formData: currentFormData,
       ),
@@ -1114,16 +1131,34 @@ class DailyReportCreateBloc
       fieldErrors['section'] = 'Section is required';
     }
 
+    // Validate quantity fields - check in quantityFieldData (not fieldValues)
     for (final quantityType in currentSelections.selectedQuantityTypes) {
-      for (final field in quantityType.quantityFields) {
-        final fieldKey = '${quantityType.uid}_${field.code}';
+      // Find all instances of this quantity type (using composite keys)
+      final instanceKeys = currentSelections.quantityFieldData.keys
+          .where((key) => key.startsWith('${quantityType.uid}_'))
+          .toList();
 
-        if (field.isRequired) {
-          final value = currentFormData.fieldValues[fieldKey];
+      if (instanceKeys.isEmpty) {
+        // No data entered for this quantity type at all
+        validationErrors.add('Please fill in ${quantityType.name} quantity data');
+        continue;
+      }
 
-          if (value == null || value.toString().isEmpty) {
-            fieldErrors[fieldKey] = '${field.name} is required';
-            validationErrors.add('${field.name} is required');
+      // Validate each instance
+      for (final compositeKey in instanceKeys) {
+        final instanceData = currentSelections.quantityFieldData[compositeKey] ?? {};
+
+        // Check each required field
+        for (final field in quantityType.quantityFields) {
+          if (field.isRequired && !field.isForSegment) {
+            // Look up value using field.uid (not field.code)
+            final value = instanceData[field.uid];
+
+            if (value == null || value.toString().trim().isEmpty) {
+              final errorKey = '${compositeKey}_${field.uid}';
+              fieldErrors[errorKey] = '${field.name} is required';
+              validationErrors.add('${field.name} is required in ${quantityType.name}');
+            }
           }
         }
       }
@@ -1148,6 +1183,13 @@ class DailyReportCreateBloc
         isFormValid: isFormValid,
       ),
     );
+
+    print('📊 [QUANTITY DEBUG] Quantity data before submission:');
+    print('  - quantityFieldData isEmpty: ${currentSelections.quantityFieldData.isEmpty}');
+    print('  - quantityFieldData keys: ${currentSelections.quantityFieldData.keys.toList()}');
+    print('  - quantityFieldData full: ${currentSelections.quantityFieldData}');
+    print('  - selectedQuantityTypes count: ${currentSelections.selectedQuantityTypes.length}');
+    print('  - selectedQuantityTypes: ${currentSelections.selectedQuantityTypes.map((q) => q.name).toList()}');
 
     if (!isFormValid) {
       print('❌ Form validation failed');

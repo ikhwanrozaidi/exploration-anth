@@ -11,6 +11,7 @@ import '../../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../../../core/di/injection.dart';
 import '../../../../daily_report/data/mapper/hybrid_field_mapper.dart';
 import '../../bloc/daily_report_create/daily_report_create_bloc.dart';
+import '../../bloc/daily_report_create/daily_report_create_event.dart';
 import '../../bloc/daily_report_create/daily_report_create_state.dart';
 import 'quantity_fields_page.dart';
 
@@ -572,6 +573,13 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
 
           // Get existing data from BLoC to determine next sequence number
           final bloc = getIt<DailyReportCreateBloc>();
+
+          // Add the selected quantity type to selectedQuantityTypes
+          // This is needed for the mapper to find field definitions during submission
+          bloc.add(DailyReportCreateEvent.toggleQuantityType(
+            selectedQuantity.uid,
+          ));
+
           final state = bloc.state;
           final quantityFieldData = state.maybeMap(
             editingDetails: (state) => state.selections.quantityFieldData,

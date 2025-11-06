@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
+import '../../../domain/entities/daily_report.dart';
 
 /// Company details card for daily report detail page
 ///
 /// Displays contractor enterprise information including:
+/// - Contractor name (dynamic from report)
 /// - Reports count
 /// - Users count
 /// - CIDB status
 /// - "View all reports" action button
 class DailyReportDetailCompanyCard extends StatelessWidget {
+  final DailyReport report;
   final VoidCallback? onViewAllReports;
 
   const DailyReportDetailCompanyCard({
     Key? key,
+    required this.report,
     this.onViewAllReports,
   }) : super(key: key);
 
@@ -29,7 +33,9 @@ class DailyReportDetailCompanyCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'CONTRACTOR ENTERPRISE',
+            report.contractRelationID?.toString() ??
+            report.company?.name ??
+            'Unknown Contractor',
             style: TextStyle(
               fontSize: ResponsiveHelper.fontSize(context, base: 14),
               fontWeight: FontWeight.w600,

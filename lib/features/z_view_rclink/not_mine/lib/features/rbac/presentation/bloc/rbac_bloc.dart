@@ -39,23 +39,17 @@ class RbacBloc extends Bloc<RbacEvent, RbacState> {
   ) async {
     emit(const RbacLoading());
 
-    final result = await _getRoleUseCase(
-      GetRoleParams(roleUID: event.roleUID),
-    );
-    
-    result.fold(
-      (failure) => emit(RbacError(_mapFailureToMessage(failure))),
-      (role) {
-        if (role != null && role.permissions.isNotEmpty) {
-          emit(RbacLoaded(
-            role: role,
-            permissions: role.permissions,
-          ));
-        } else {
-          emit(const RbacNoPermissions());
-        }
-      },
-    );
+    final result = await _getRoleUseCase(GetRoleParams(roleUID: event.roleUID));
+
+    result.fold((failure) => emit(RbacError(_mapFailureToMessage(failure))), (
+      role,
+    ) {
+      if (role != null && role.permissions.isNotEmpty) {
+        emit(RbacLoaded(role: role, permissions: role.permissions));
+      } else {
+        emit(const RbacNoPermissions());
+      }
+    });
   }
 
   Future<void> _onClearPermissions(
@@ -63,7 +57,7 @@ class RbacBloc extends Bloc<RbacEvent, RbacState> {
     Emitter<RbacState> emit,
   ) async {
     final result = await _clearRoleUseCase();
-    
+
     result.fold(
       (failure) => emit(RbacError(_mapFailureToMessage(failure))),
       (_) => emit(const RbacInitial()),
@@ -94,7 +88,9 @@ class RbacBloc extends Bloc<RbacEvent, RbacState> {
   ) async {
     // This event doesn't change state, it's just for logging/tracking
     final hasPermission = state.hasAllPermissions(event.permissionCodes);
-    print('🔐 All permissions check: ${event.permissionCodes} = $hasPermission');
+    print(
+      '🔐 All permissions check: ${event.permissionCodes} = $hasPermission',
+    );
   }
 
   Future<void> _onCheckModuleAccess(

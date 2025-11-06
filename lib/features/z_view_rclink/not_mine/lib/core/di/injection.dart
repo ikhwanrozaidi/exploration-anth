@@ -74,8 +74,8 @@ void _configureDioInterceptors() {
         PrettyDioLogger(
           requestHeader: true,
           requestBody: false,
-          responseBody: true,
-          responseHeader: true,
+          responseBody: false,
+          responseHeader: false,
           error: true,
           compact: true,
           maxWidth: 90,

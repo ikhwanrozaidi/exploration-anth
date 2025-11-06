@@ -119,7 +119,16 @@ class ReportDataToCreateModelMapper {
     Map<String, Map<String, dynamic>> quantityFieldData,
     Map<String, List<Map<String, dynamic>>> segmentData,
   ) {
-    if (quantityFieldData.isEmpty) return null;
+    print('🔍 [MAPPER DEBUG] _mapQuantities called');
+    print('  - quantityFieldData isEmpty: ${quantityFieldData.isEmpty}');
+    print('  - quantityFieldData keys: ${quantityFieldData.keys.toList()}');
+    print('  - selectedQuantityTypes count: ${selectedQuantityTypes.length}');
+    print('  - selectedQuantityTypes: ${selectedQuantityTypes.map((q) => q.name).toList()}');
+
+    if (quantityFieldData.isEmpty) {
+      print('  ⚠️ quantityFieldData is EMPTY - returning null');
+      return null;
+    }
 
     final quantities = <CreateDailyReportQuantityModel>[];
 
@@ -127,6 +136,9 @@ class ReportDataToCreateModelMapper {
     for (final entry in quantityFieldData.entries) {
       final compositeKey = entry.key; // Format: "quantityTypeUID_sequenceNo"
       final typeFieldData = entry.value;
+
+      print('  📦 Processing composite key: $compositeKey');
+      print('     - typeFieldData: $typeFieldData');
 
       if (typeFieldData.isEmpty) continue;
 
@@ -140,10 +152,16 @@ class ReportDataToCreateModelMapper {
           : 1;
 
       // Find the corresponding quantity type
-      final quantityType = selectedQuantityTypes.firstWhere(
-        (qt) => qt.uid == quantityTypeUID,
-        orElse: () => selectedQuantityTypes.first, // Fallback (shouldn't happen)
-      );
+      WorkQuantityType? quantityType;
+      try {
+        quantityType = selectedQuantityTypes.firstWhere(
+          (qt) => qt.uid == quantityTypeUID,
+        );
+      } catch (e) {
+        print('     ⚠️ Quantity type not found in selectedQuantityTypes: $quantityTypeUID');
+        print('        Skipping this quantity. Make sure ToggleQuantityType is called when adding quantities.');
+        continue;
+      }
 
       // Extract field values for this quantity instance
       final quantityValues = <CreateDailyReportQuantityFieldModel>[];
@@ -177,6 +195,7 @@ class ReportDataToCreateModelMapper {
 
       // Only add quantity if it has at least one value
       if (quantityValues.isNotEmpty || typeSegments != null) {
+        print('     ✅ Adding quantity: typeUID=$quantityTypeUID, seq=$sequenceNo, values=${quantityValues.length}');
         quantities.add(
           CreateDailyReportQuantityModel(
             quantityTypeUID: quantityTypeUID, // Use extracted UID
@@ -187,8 +206,14 @@ class ReportDataToCreateModelMapper {
             segments: null, // TODO: Convert typeSegments to proper model format
           ),
         );
+      } else {
+        print('     ⚠️ Skipping quantity (no values): $compositeKey');
       }
     }
+
+    print('  📊 [MAPPER DEBUG] Final result:');
+    print('     - quantities.length: ${quantities.length}');
+    print('     - returning: ${quantities.isNotEmpty ? "List with ${quantities.length} items" : "null"}');
 
     return quantities.isNotEmpty ? quantities : null;
   }

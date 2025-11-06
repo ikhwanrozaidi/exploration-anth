@@ -65,8 +65,13 @@ class _ProgramDetailsOverviewWidgetState
                       },
                     );
                   },
+
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    padding: ResponsiveHelper.padding(
+                      context,
+                      vertical: 5,
+                      horizontal: 15,
+                    ),
                     decoration: BoxDecoration(
                       color: Color.fromARGB(255, 215, 241, 255),
 
@@ -77,7 +82,7 @@ class _ProgramDetailsOverviewWidgetState
                         DateTime.parse('2025-09-22T20:01:55.752Z').toLocal(),
                       ),
                       style: TextStyle(
-                        fontSize: ResponsiveHelper.fontSize(context, base: 13),
+                        fontSize: ResponsiveHelper.fontSize(context, base: 12),
                         color: Color.fromARGB(255, 22, 177, 255),
                         fontWeight: FontWeight.w500,
                       ),
@@ -107,7 +112,7 @@ class _ProgramDetailsOverviewWidgetState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                padding: ResponsiveHelper.padding(context, horizontal: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -118,15 +123,21 @@ class _ProgramDetailsOverviewWidgetState
                             padding: EdgeInsets.all(12),
                             decoration: BoxDecoration(
                               color: primaryColor,
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: ResponsiveHelper.borderRadius(
+                                context,
+                                all: 6,
+                              ),
                             ),
                             child: Center(
                               child: Text(
                                 'code',
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: ResponsiveHelper.fontSize(
+                                    context,
+                                    base: 15,
+                                  ),
                                 ),
                               ),
                             ),

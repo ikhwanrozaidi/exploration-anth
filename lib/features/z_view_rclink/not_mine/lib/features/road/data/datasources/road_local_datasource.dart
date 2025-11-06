@@ -518,7 +518,7 @@ class RoadLocalDataSourceImpl implements RoadLocalDataSource {
         await _database.delete(_database.countries).go();
         await _database.delete(_database.packages).go();
       });
-      print('🗑️ Road cache cleared successfully');
+      // print('🗑️ Road cache cleared successfully');
     } catch (e) {
       print('❌ Error clearing road cache: $e');
       rethrow;

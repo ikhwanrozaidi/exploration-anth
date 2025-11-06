@@ -7,6 +7,8 @@ import 'package:rclink_app/shared/utils/theme.dart';
 import '../../core/config/flavor_config.dart';
 import '../../features/locale/presentation/widgets/app_localization.dart';
 import '../helper/navigation_helper.dart';
+import '../utils/responsive_helper.dart';
+import '../widgets/show_shortcut_selection.dart';
 
 /// RootPage manages the main app navigation and pages for authenticated users
 class RootPage extends StatefulWidget {
@@ -45,7 +47,7 @@ class _RootPageState extends State<RootPage> {
     // HomePage(),
     DashboardPage(),
     ProgramPage(),
-    _AddPage(),
+    SizedBox.shrink(),
     WarningPage(),
     ProfilePage(),
   ];
@@ -102,6 +104,7 @@ class _RootPageState extends State<RootPage> {
       //   ],
       // ),
       body: IndexedStack(index: _selectedIndex, children: _pages),
+
       bottomNavigationBar: _CustomBottomNavigationBar(
         selectedIndex: _selectedIndex,
         onTap: (index) {
@@ -110,9 +113,10 @@ class _RootPageState extends State<RootPage> {
           });
         },
       ),
+
       floatingActionButton: Container(
         width: 70,
-        height: 70,
+        height: ResponsiveHelper.getHeight(context, 0.07),
         decoration: const BoxDecoration(
           shape: BoxShape.circle,
           gradient: LinearGradient(
@@ -123,13 +127,16 @@ class _RootPageState extends State<RootPage> {
         ),
         child: FloatingActionButton(
           onPressed: () {
-            setState(() {
-              _selectedIndex = 2;
-            });
+            showShortcutSelection(context: context);
           },
           elevation: 0,
           backgroundColor: Colors.transparent,
-          child: const Icon(Icons.add, color: Colors.white, size: 40),
+          shape: const CircleBorder(),
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+            size: ResponsiveHelper.iconSize(context, base: 30),
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -244,94 +251,19 @@ class _NavBarItem extends StatelessWidget {
             Image.asset(
               isSelected ? selectedImagePath : imagePath,
               width: 24,
-              height: 24,
+              height: ResponsiveHelper.getHeight(context, 0.025),
             ),
             const SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                fontSize: 12,
+                fontSize: ResponsiveHelper.fontSize(context, base: 12),
                 color: isSelected ? const Color(0xFF4A6CF7) : Colors.grey,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _ProgramPage extends StatelessWidget {
-  const _ProgramPage();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.list_alt, size: 64, color: Colors.grey),
-          SizedBox(height: 16),
-          Text('Program Page'),
-          Text('Coming Soon...'),
-        ],
-      ),
-    );
-  }
-}
-
-class _AddPage extends StatelessWidget {
-  const _AddPage();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.update, size: 64, color: Colors.grey),
-          SizedBox(height: 16),
-          Text('Coming Soon...'),
-        ],
-      ),
-    );
-  }
-}
-
-class _WarningPage extends StatelessWidget {
-  const _WarningPage();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.warning, size: 64, color: Colors.orange),
-          SizedBox(height: 16),
-          Text('Warning Page'),
-          Text('Safety alerts and warnings...'),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProfilePage extends StatelessWidget {
-  const _ProfilePage();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.person, size: 64, color: Colors.grey),
-          SizedBox(height: 16),
-          Text('Profile Page'),
-          Text('User profile and settings...'),
-        ],
       ),
     );
   }

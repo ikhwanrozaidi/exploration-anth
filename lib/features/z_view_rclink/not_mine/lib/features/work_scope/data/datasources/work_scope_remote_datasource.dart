@@ -39,40 +39,36 @@ class WorkScopeRemoteDataSourceImpl implements WorkScopeRemoteDataSource {
   @override
   Future<Either<Failure, List<WorkScopeModel>>> getWorkScopes() async {
     try {
-      // Get company UID from CompanyBloc
       final companyState = _companyBloc.state;
       if (companyState is! CompanyLoaded ||
           companyState.selectedCompany == null) {
         return const Left(CacheFailure('No company selected'));
       }
-      final companyUID = companyState.selectedCompany!.uid;
 
-      // Get contractor relation info from ContractorRelationBloc
+      final companyUID = companyState.selectedCompany!.uid;
       final contractorRelationState = _contractorRelationBloc.state;
 
-      if (contractorRelationState is! ContractorRelationLoaded ||
-          contractorRelationState.selectedContractor == null) {
-        return const Left(CacheFailure('No contractor relation selected'));
+      bool isSelf = true;
+      String? contractRelationUID;
+
+      if (contractorRelationState is ContractorRelationLoaded &&
+          contractorRelationState.selectedContractor != null) {
+        final selectedContractor = contractorRelationState.selectedContractor!;
+        isSelf = selectedContractor.isSelf ?? true;
+        contractRelationUID = selectedContractor.contractRelationUID;
       }
 
-      final selectedContractor = contractorRelationState.selectedContractor!;
-      final isSelf = selectedContractor.isSelf ?? false;
-      final contractRelationUID = selectedContractor.contractRelationUID;
-
-      // Conditional API call based on isSelf and contractRelationUID
-      if (isSelf == false &&
+      if (!isSelf &&
           contractRelationUID != null &&
           contractRelationUID.isNotEmpty) {
         print('getPackageWorkScopes RemoteDatasource');
 
-        // Call contractor package-work-scopes endpoint
         final response = await _apiService.getPackageWorkScopes(
           companyUID: companyUID,
           contractorRelationUID: contractRelationUID,
         );
 
         if (response.isSuccess && response.data != null) {
-          // Transform flat response to nested WorkScopeModel list
           final workScopes = response.data!.toWorkScopeModels();
           return Right(workScopes);
         } else {
@@ -81,9 +77,8 @@ class WorkScopeRemoteDataSourceImpl implements WorkScopeRemoteDataSource {
           );
         }
       } else {
-        print('getWorkScopes RemoteDatasource');
+        print('getWorkScopes RemoteDatasource (self/company)');
 
-        // Call company work-scopes endpoint (when isSelf = true or no contractRelationUID)
         final response = await _apiService.getWorkScopes(
           companyUID: companyUID,
           limit: 0,

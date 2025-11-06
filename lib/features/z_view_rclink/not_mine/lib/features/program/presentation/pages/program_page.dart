@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:rclink_app/features/program/presentation/pages/program_details_page.dart';
+import 'package:rclink_app/features/program/presentation/pages/program_creation_page.dart';
 
 import '../../../../routes/app_router.dart';
+import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
-import 'widgets/month_filter_widget.dart';
+import '../../../work_scope/presentation/bloc/work_scope_bloc.dart';
+import '../../../work_scope/presentation/widgets/work_scope_bottom_sheet.dart';
+import '../../../../shared/widgets/month_filter_widget.dart';
 
 class ProgramPage extends StatefulWidget {
   const ProgramPage({Key? key}) : super(key: key);
@@ -25,12 +29,13 @@ class _ProgramPageState extends State<ProgramPage> {
     });
   }
 
-  void onMonthSelected(int month, int year) {
+  void onMonthSelected(String from, String to) {
     setState(() {
-      selectedMonth = month;
-      selectedYear = year;
+      final fromDate = DateTime.parse(from);
+      selectedMonth = fromDate.month;
+      selectedYear = fromDate.year;
     });
-    print('Selected month: $month, year: $year');
+    print('From: $from, To: $to');
   }
 
   @override
@@ -57,6 +62,8 @@ class _ProgramPageState extends State<ProgramPage> {
                 padding: EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
                   children: [
+                    SizedBox(height: ResponsiveHelper.getHeight(context, 0.02)),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -65,7 +72,10 @@ class _ProgramPageState extends State<ProgramPage> {
                           style: TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.w700,
-                            fontSize: 20,
+                            fontSize: ResponsiveHelper.fontSize(
+                              context,
+                              base: 18,
+                            ),
                           ),
                         ),
 
@@ -79,20 +89,34 @@ class _ProgramPageState extends State<ProgramPage> {
                                 padding: const EdgeInsets.all(5),
                               ),
                               onPressed: () {
-                                print("Add button clicked");
-                                CustomSnackBar.show(
+                                Navigator.push(
                                   context,
-                                  'This feature is coming soon...',
-                                  type: SnackBarType.comingsoon,
+                                  MaterialPageRoute(
+                                    builder: (context) => ProgramCreationPage(),
+                                  ),
                                 );
+
+                                // print("Add button clicked");
+                                // CustomSnackBar.show(
+                                //   context,
+                                //   'This feature is coming soon...',
+                                //   type: SnackBarType.comingsoon,
+                                // );
                               },
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.add,
                                 color: primaryColor,
-                                size: 25,
+                                size: ResponsiveHelper.iconSize(
+                                  context,
+                                  base: 20,
+                                ),
                               ),
                             ),
-                            SizedBox(width: 8),
+
+                            SizedBox(
+                              width: ResponsiveHelper.spacing(context, 5),
+                            ),
+
                             IconButton(
                               style: IconButton.styleFrom(
                                 shape: const CircleBorder(),
@@ -107,10 +131,13 @@ class _ProgramPageState extends State<ProgramPage> {
                                   type: SnackBarType.comingsoon,
                                 );
                               },
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.delete,
                                 color: Colors.red,
-                                size: 25,
+                                size: ResponsiveHelper.iconSize(
+                                  context,
+                                  base: 20,
+                                ),
                               ),
                             ),
                           ],
@@ -130,7 +157,7 @@ class _ProgramPageState extends State<ProgramPage> {
                 duration: Duration(milliseconds: 500),
                 curve: Curves.easeInOutCubic,
                 width: double.infinity,
-                height: bottomContainerHeight,
+                height: MediaQuery.of(context).size.height * 0.74,
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -163,7 +190,10 @@ class _ProgramPageState extends State<ProgramPage> {
                                 Text(
                                   'All Reports',
                                   style: TextStyle(
-                                    fontSize: 18,
+                                    fontSize: ResponsiveHelper.fontSize(
+                                      context,
+                                      base: 15,
+                                    ),
                                     fontWeight: FontWeight.w700,
                                     color: Colors.black,
                                   ),
@@ -190,7 +220,9 @@ class _ProgramPageState extends State<ProgramPage> {
                             ),
                           ),
 
-                          SizedBox(height: 20),
+                          SizedBox(
+                            height: ResponsiveHelper.spacing(context, 15),
+                          ),
 
                           TextButton(
                             style: TextButton.styleFrom(
@@ -216,10 +248,15 @@ class _ProgramPageState extends State<ProgramPage> {
                                 children: [
                                   Icon(
                                     Icons.search,
-                                    size: 30,
+                                    size: ResponsiveHelper.iconSize(
+                                      context,
+                                      base: 25,
+                                    ),
                                     color: Colors.black.withOpacity(0.5),
                                   ),
+
                                   SizedBox(width: 20),
+
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -228,7 +265,10 @@ class _ProgramPageState extends State<ProgramPage> {
                                         'Search contractor or district',
                                         style: TextStyle(
                                           color: Colors.black.withOpacity(0.5),
-                                          fontSize: 13,
+                                          fontSize: ResponsiveHelper.fontSize(
+                                            context,
+                                            base: 13,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -247,7 +287,7 @@ class _ProgramPageState extends State<ProgramPage> {
                     ),
 
                     Padding(
-                      padding: EdgeInsets.all(20),
+                      padding: ResponsiveHelper.padding(context, all: 15),
                       child: Column(
                         children: [
                           Row(
@@ -327,10 +367,31 @@ class _ProgramPageState extends State<ProgramPage> {
                                     backgroundColor: Colors.white,
                                   ),
                                   onPressed: () {
-                                    CustomSnackBar.show(
-                                      context,
-                                      'This feature is coming soon...',
-                                      type: SnackBarType.comingsoon,
+                                    final workScopeBloc = context
+                                        .read<WorkScopeBloc>();
+                                    final workScopeState = workScopeBloc.state;
+
+                                    showWorkScopeSelection(
+                                      context: context,
+                                      state: workScopeState,
+                                      onScopeSelected: (selectedData) {
+                                        print(
+                                          'Selected UID: ${selectedData['uid']}',
+                                        );
+                                        print('Code: ${selectedData['code']}');
+                                        print('Name: ${selectedData['name']}');
+                                        print(
+                                          'Description: ${selectedData['description']}',
+                                        );
+                                        print(
+                                          'Allow Multiple Quantities: ${selectedData['allowMultipleQuantities']}',
+                                        );
+
+                                        // setState(() {
+                                        //   _selectedWorkScopeUid = selectedData['uid'];
+                                        //   _selectedWorkScopeName = selectedData['displayText'];
+                                        // });
+                                      },
                                     );
                                   },
                                   child: Row(
@@ -446,9 +507,10 @@ class _ProgramPageState extends State<ProgramPage> {
                               );
                             },
                             child: Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 25,
-                                horizontal: 15,
+                              padding: ResponsiveHelper.padding(
+                                context,
+                                vertical: 20,
+                                horizontal: 20,
                               ),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
@@ -467,7 +529,10 @@ class _ProgramPageState extends State<ProgramPage> {
                                   Row(
                                     children: [
                                       Container(
-                                        padding: EdgeInsets.all(15),
+                                        padding: ResponsiveHelper.padding(
+                                          context,
+                                          all: 12,
+                                        ),
                                         decoration: BoxDecoration(
                                           color: primaryColor,
                                           borderRadius: BorderRadius.circular(
@@ -477,10 +542,14 @@ class _ProgramPageState extends State<ProgramPage> {
                                         child: Center(
                                           child: Text(
                                             '007',
-                                            style: const TextStyle(
+                                            style: TextStyle(
                                               color: Colors.white,
                                               fontWeight: FontWeight.bold,
-                                              fontSize: 16,
+                                              fontSize:
+                                                  ResponsiveHelper.fontSize(
+                                                    context,
+                                                    base: 13,
+                                                  ),
                                             ),
                                           ),
                                         ),
@@ -497,6 +566,11 @@ class _ProgramPageState extends State<ProgramPage> {
                                             style: TextStyle(
                                               fontWeight: FontWeight.w700,
                                               color: Colors.black,
+                                              fontSize:
+                                                  ResponsiveHelper.fontSize(
+                                                    context,
+                                                    base: 13,
+                                                  ),
                                             ),
                                           ),
                                           SizedBox(height: 2),
@@ -504,7 +578,10 @@ class _ProgramPageState extends State<ProgramPage> {
                                             children: [
                                               Icon(
                                                 Icons.swap_calls,
-                                                size: 18,
+                                                size: ResponsiveHelper.iconSize(
+                                                  context,
+                                                  base: 16,
+                                                ),
                                                 color: Colors.black,
                                               ),
                                               SizedBox(width: 5),
@@ -513,7 +590,11 @@ class _ProgramPageState extends State<ProgramPage> {
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   color: Colors.black,
-                                                  fontSize: 12,
+                                                  fontSize:
+                                                      ResponsiveHelper.fontSize(
+                                                        context,
+                                                        base: 12,
+                                                      ),
                                                 ),
                                               ),
                                             ],
@@ -537,8 +618,11 @@ class _ProgramPageState extends State<ProgramPage> {
                                       children: [
                                         Icon(
                                           Icons.location_on_sharp,
-                                          size: 20,
                                           color: Colors.black,
+                                          size: ResponsiveHelper.iconSize(
+                                            context,
+                                            base: 20,
+                                          ),
                                         ),
 
                                         SizedBox(width: 15),
@@ -553,7 +637,11 @@ class _ProgramPageState extends State<ProgramPage> {
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w400,
                                                   color: Colors.grey,
-                                                  fontSize: 12,
+                                                  fontSize:
+                                                      ResponsiveHelper.fontSize(
+                                                        context,
+                                                        base: 12,
+                                                      ),
                                                 ),
                                               ),
                                               SizedBox(height: 2),
@@ -564,7 +652,11 @@ class _ProgramPageState extends State<ProgramPage> {
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w600,
                                                   color: Colors.black,
-                                                  fontSize: 12,
+                                                  fontSize:
+                                                      ResponsiveHelper.fontSize(
+                                                        context,
+                                                        base: 12,
+                                                      ),
                                                 ),
                                               ),
                                             ],
@@ -591,15 +683,23 @@ class _ProgramPageState extends State<ProgramPage> {
                                           Text(
                                             'Progress',
                                             style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize:
+                                                  ResponsiveHelper.fontSize(
+                                                    context,
+                                                    base: 12,
+                                                  ),
                                               fontWeight: FontWeight.w500,
                                               color: Colors.black,
                                             ),
                                           ),
                                           Text(
-                                            '10/50',
+                                            'null/50',
                                             style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize:
+                                                  ResponsiveHelper.fontSize(
+                                                    context,
+                                                    base: 12,
+                                                  ),
                                               fontWeight: FontWeight.w600,
                                               color: primaryColor,
                                             ),
@@ -607,10 +707,18 @@ class _ProgramPageState extends State<ProgramPage> {
                                         ],
                                       ),
 
-                                      SizedBox(height: 8),
+                                      SizedBox(
+                                        height: ResponsiveHelper.spacing(
+                                          context,
+                                          8,
+                                        ),
+                                      ),
 
                                       Container(
-                                        height: 12,
+                                        height: ResponsiveHelper.spacing(
+                                          context,
+                                          10,
+                                        ),
                                         width: double.infinity,
                                         decoration: BoxDecoration(
                                           color: Colors.white,

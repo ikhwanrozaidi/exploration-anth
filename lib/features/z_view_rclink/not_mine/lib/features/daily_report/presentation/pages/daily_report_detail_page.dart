@@ -294,6 +294,7 @@ class _DailyReportDetailPageView extends StatelessWidget {
 
               // Company Card
               DailyReportDetailCompanyCard(
+                report: report,
                 onViewAllReports: () {
                   // Navigation to all reports will be implemented
                 },

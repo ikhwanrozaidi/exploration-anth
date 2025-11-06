@@ -15,6 +15,8 @@ class DailyReportViewEvent with _$DailyReportViewEvent {
     String? roadUid,
     String? workScopeUid,
     String? contractorUid,
+    String? fromDate,
+    String? toDate,
   }) = LoadDailyReports;
 
   const factory DailyReportViewEvent.loadMoreDailyReports({

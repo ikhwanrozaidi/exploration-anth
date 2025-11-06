@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../utils/responsive_helper.dart';
+
 class MonthFilter extends StatefulWidget {
-  final Function(int, int) onMonthSelected;
+  final Function(String from, String to) onMonthSelected;
   final Color primaryColor;
 
   const MonthFilter({
@@ -56,7 +58,29 @@ class _MonthFilterState extends State<MonthFilter> {
     setState(() {
       selectedMonth = month;
     });
-    widget.onMonthSelected(month, currentYear);
+
+    // Get first day of the month
+    final firstDay = DateTime(currentYear, month, 1);
+
+    // Get last day of the month
+    final lastDay = DateTime(currentYear, month + 1, 0);
+
+    // Convert to ISO 8601 format with UTC timezone
+    final from = DateTime(
+      firstDay.year,
+      firstDay.month,
+      firstDay.day,
+    ).toUtc().toIso8601String();
+    final to = DateTime(
+      lastDay.year,
+      lastDay.month,
+      lastDay.day,
+      23,
+      59,
+      59,
+    ).toUtc().toIso8601String();
+
+    widget.onMonthSelected(from, to);
   }
 
   @override
@@ -97,7 +121,7 @@ class _MonthFilterState extends State<MonthFilter> {
                     style: TextStyle(
                       color: isSelected ? Colors.white : Colors.black,
                       fontWeight: FontWeight.w700,
-                      fontSize: 18,
+                      fontSize: ResponsiveHelper.fontSize(context, base: 16),
                     ),
                   ),
                   Text(
@@ -105,7 +129,7 @@ class _MonthFilterState extends State<MonthFilter> {
                     style: TextStyle(
                       color: isSelected ? Colors.white : Colors.black,
                       fontWeight: FontWeight.w400,
-                      fontSize: 12,
+                      fontSize: ResponsiveHelper.fontSize(context, base: 12),
                     ),
                   ),
                 ],

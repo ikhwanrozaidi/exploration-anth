@@ -25,9 +25,11 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     on<LoadRoadProvinces>(_onLoadProvinces);
     on<LoadRoadDistricts>(_onLoadDistricts);
     on<LoadRoadRoads>(_onLoadRoads);
+
     on<SelectRoadProvince>(_onSelectProvince);
     on<SelectRoadDistrict>(_onSelectDistrict);
     on<SelectRoadRoad>(_onSelectRoad);
+
     on<ClearRoadSelections>(_onClearSelections);
     on<ClearRoadCache>(_onClearCache);
   }
@@ -222,7 +224,12 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     Emitter<RoadState> emit,
   ) async {
     final current = _currentLoaded;
-    final selectedProvince = current.provinces.firstWhere(
+
+    final searchList = current.provinces.isNotEmpty
+        ? current.provinces
+        : _allProvinces;
+
+    final selectedProvince = searchList.firstWhere(
       (province) => province.uid == event.uid,
     );
 
@@ -248,7 +255,12 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     Emitter<RoadState> emit,
   ) async {
     final current = _currentLoaded;
-    final selectedDistrict = current.districts.firstWhere(
+
+    final searchList = current.districts.isNotEmpty
+        ? current.districts
+        : _allDistricts;
+
+    final selectedDistrict = searchList.firstWhere(
       (district) => district.uid == event.uid,
     );
 
@@ -274,9 +286,10 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     Emitter<RoadState> emit,
   ) async {
     final current = _currentLoaded;
-    final selectedRoad = current.roads.firstWhere(
-      (road) => road.uid == event.uid,
-    );
+
+    final searchList = current.roads.isNotEmpty ? current.roads : _allRoads;
+
+    final selectedRoad = searchList.firstWhere((road) => road.uid == event.uid);
 
     emit(
       RoadState.loaded(

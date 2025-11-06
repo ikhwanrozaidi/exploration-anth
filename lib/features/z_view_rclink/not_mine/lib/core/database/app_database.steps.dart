@@ -8474,6 +8474,797 @@ i1.GeneratedColumn<String> _column_138(String aliasedName) =>
       true,
       type: i1.DriftSqlType.string,
     );
+
+final class Schema17 extends i0.VersionedSchema {
+  Schema17({required super.database}) : super(version: 17);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    admins,
+    syncQueue,
+    imageSyncQueue,
+    files,
+    roles,
+    permissions,
+    companies,
+    workScopes,
+    workQuantityTypes,
+    workQuantityFields,
+    workQuantityFieldOptions,
+    workScopeEquipments,
+    workScopeEquipment,
+    countries,
+    provinces,
+    districts,
+    roadCategories,
+    roads,
+    packages,
+    packageRoads,
+    dailyReports,
+    reportEquipments,
+    reportQuantities,
+    reportQuantityValues,
+    reportSegments,
+  ];
+  late final Shape2 admins = Shape2(
+    source: i0.VersionedTable(
+      entityName: 'admins',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)', 'UNIQUE(phone)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_8,
+        _column_9,
+        _column_10,
+        _column_11,
+        _column_13,
+        _column_14,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape1 syncQueue = Shape1(
+    source: i0.VersionedTable(
+      entityName: 'sync_queue',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_6,
+        _column_15,
+        _column_16,
+        _column_17,
+        _column_18,
+        _column_19,
+        _column_20,
+        _column_21,
+        _column_14,
+        _column_22,
+        _column_23,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape27 imageSyncQueue = Shape27(
+    source: i0.VersionedTable(
+      entityName: 'image_sync_queue',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_6,
+        _column_15,
+        _column_113,
+        _column_114,
+        _column_115,
+        _column_116,
+        _column_117,
+        _column_118,
+        _column_119,
+        _column_120,
+        _column_121,
+        _column_122,
+        _column_20,
+        _column_123,
+        _column_124,
+        _column_125,
+        _column_126,
+        _column_21,
+        _column_127,
+        _column_128,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape32 files = Shape32(
+    source: i0.VersionedTable(
+      entityName: 'files',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_117,
+        _column_132,
+        _column_118,
+        _column_133,
+        _column_134,
+        _column_26,
+        _column_135,
+        _column_136,
+        _column_98,
+        _column_137,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape3 roles = Shape3(
+    source: i0.VersionedTable(
+      entityName: 'roles',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_25,
+        _column_26,
+        _column_27,
+        _column_28,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape4 permissions = Shape4(
+    source: i0.VersionedTable(
+      entityName: 'permissions',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_29,
+        _column_24,
+        _column_25,
+        _column_30,
+        _column_31,
+        _column_32,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape6 companies = Shape6(
+    source: i0.VersionedTable(
+      entityName: 'companies',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_33,
+        _column_34,
+        _column_35,
+        _column_36,
+        _column_37,
+        _column_38,
+        _column_39,
+        _column_40,
+        _column_11,
+        _column_41,
+        _column_42,
+        _column_43,
+        _column_44,
+        _column_45,
+        _column_14,
+        _column_13,
+        _column_1,
+        _column_46,
+        _column_47,
+        _column_48,
+        _column_49,
+        _column_50,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape7 workScopes = Shape7(
+    source: i0.VersionedTable(
+      entityName: 'work_scopes',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_29,
+        _column_51,
+        _column_52,
+        _column_14,
+        _column_13,
+        _column_26,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape13 workQuantityTypes = Shape13(
+    source: i0.VersionedTable(
+      entityName: 'work_quantity_types',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_29,
+        _column_53,
+        _column_54,
+        _column_55,
+        _column_56,
+        _column_70,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape14 workQuantityFields = Shape14(
+    source: i0.VersionedTable(
+      entityName: 'work_quantity_fields',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_29,
+        _column_58,
+        _column_59,
+        _column_60,
+        _column_53,
+        _column_61,
+        _column_62,
+        _column_63,
+        _column_64,
+        _column_65,
+        _column_71,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape15 workQuantityFieldOptions = Shape15(
+    source: i0.VersionedTable(
+      entityName: 'work_quantity_field_options',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_67,
+        _column_53,
+        _column_72,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape11 workScopeEquipments = Shape11(
+    source: i0.VersionedTable(
+      entityName: 'work_scope_equipments',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_29,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape16 workScopeEquipment = Shape16(
+    source: i0.VersionedTable(
+      entityName: 'work_scope_equipment',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(work_scope_i_d, work_equipment_i_d)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_70,
+        _column_73,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape17 countries = Shape17(
+    source: i0.VersionedTable(
+      entityName: 'countries',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape18 provinces = Shape18(
+    source: i0.VersionedTable(
+      entityName: 'provinces',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_74,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape19 districts = Shape19(
+    source: i0.VersionedTable(
+      entityName: 'districts',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_75,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape17 roadCategories = Shape17(
+    source: i0.VersionedTable(
+      entityName: 'road_categories',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape28 roads = Shape28(
+    source: i0.VersionedTable(
+      entityName: 'roads',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_76,
+        _column_129,
+        _column_130,
+        _column_79,
+        _column_80,
+        _column_81,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape29 packages = Shape29(
+    source: i0.VersionedTable(
+      entityName: 'packages',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_25,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape30 packageRoads = Shape30(
+    source: i0.VersionedTable(
+      entityName: 'package_roads',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_131,
+        _column_129,
+        _column_130,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape34 dailyReports = Shape34(
+    source: i0.VersionedTable(
+      entityName: 'daily_reports',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(uid)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_7,
+        _column_24,
+        _column_82,
+        _column_83,
+        _column_84,
+        _column_85,
+        _column_86,
+        _column_26,
+        _column_87,
+        _column_88,
+        _column_89,
+        _column_90,
+        _column_91,
+        _column_70,
+        _column_92,
+        _column_93,
+        _column_94,
+        _column_95,
+        _column_96,
+        _column_14,
+        _column_13,
+        _column_109,
+        _column_110,
+        _column_138,
+        _column_139,
+        _column_111,
+        _column_112,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape22 reportEquipments = Shape22(
+    source: i0.VersionedTable(
+      entityName: 'report_equipments',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(daily_report_i_d, work_equipment_i_d)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_97,
+        _column_98,
+        _column_73,
+        _column_99,
+        _column_14,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape23 reportQuantities = Shape23(
+    source: i0.VersionedTable(
+      entityName: 'report_quantities',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [
+        'UNIQUE(daily_report_i_d, quantity_type_i_d, sequence_no)',
+      ],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_97,
+        _column_98,
+        _column_71,
+        _column_100,
+        _column_101,
+        _column_82,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape24 reportQuantityValues = Shape24(
+    source: i0.VersionedTable(
+      entityName: 'report_quantity_values',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: [
+        'UNIQUE(report_quantity_i_d, quantity_field_i_d)',
+        'UNIQUE(segment_i_d, quantity_field_i_d)',
+      ],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_102,
+        _column_103,
+        _column_104,
+        _column_67,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+  late final Shape25 reportSegments = Shape25(
+    source: i0.VersionedTable(
+      entityName: 'report_segments',
+      withoutRowId: false,
+      isStrict: false,
+      tableConstraints: ['UNIQUE(report_quantity_i_d, segment_number)'],
+      columns: [
+        _column_0,
+        _column_1,
+        _column_2,
+        _column_3,
+        _column_4,
+        _column_5,
+        _column_6,
+        _column_105,
+        _column_106,
+        _column_107,
+        _column_108,
+        _column_14,
+        _column_13,
+      ],
+      attachedDatabase: database,
+    ),
+    alias: null,
+  );
+}
+
+class Shape34 extends i0.VersionedTable {
+  Shape34({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<bool> get isSynced =>
+      columnsByName['is_synced']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<DateTime> get deletedAt =>
+      columnsByName['deleted_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get syncAction =>
+      columnsByName['sync_action']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get syncRetryCount =>
+      columnsByName['sync_retry_count']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get syncError =>
+      columnsByName['sync_error']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get lastSyncAttempt =>
+      columnsByName['last_sync_attempt']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get uid =>
+      columnsByName['uid']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get name =>
+      columnsByName['name']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get notes =>
+      columnsByName['notes']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get weatherCondition =>
+      columnsByName['weather_condition']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<bool> get workPerformed =>
+      columnsByName['work_performed']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<double> get longitude =>
+      columnsByName['longitude']! as i1.GeneratedColumn<double>;
+  i1.GeneratedColumn<double> get latitude =>
+      columnsByName['latitude']! as i1.GeneratedColumn<double>;
+  i1.GeneratedColumn<int> get companyID =>
+      columnsByName['company_i_d']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get contractRelationID =>
+      columnsByName['contract_relation_i_d']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get status =>
+      columnsByName['status']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get approvedByID =>
+      columnsByName['approved_by_i_d']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<DateTime> get approvedAt =>
+      columnsByName['approved_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get rejectionReason =>
+      columnsByName['rejection_reason']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get workScopeID =>
+      columnsByName['work_scope_i_d']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get roadID =>
+      columnsByName['road_i_d']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<int> get totalWorkers =>
+      columnsByName['total_workers']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<double> get fromSection =>
+      columnsByName['from_section']! as i1.GeneratedColumn<double>;
+  i1.GeneratedColumn<double> get toSection =>
+      columnsByName['to_section']! as i1.GeneratedColumn<double>;
+  i1.GeneratedColumn<int> get createdByID =>
+      columnsByName['created_by_i_d']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<DateTime> get createdAt =>
+      columnsByName['created_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<DateTime> get updatedAt =>
+      columnsByName['updated_at']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<String> get workScopeData =>
+      columnsByName['work_scope_data']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get roadData =>
+      columnsByName['road_data']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get createdByData =>
+      columnsByName['created_by_data']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get companyData =>
+      columnsByName['company_data']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get equipmentsData =>
+      columnsByName['equipments_data']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get reportQuantitiesData =>
+      columnsByName['report_quantities_data']! as i1.GeneratedColumn<String>;
+}
+
+i1.GeneratedColumn<String> _column_139(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'company_data',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
@@ -8490,6 +9281,7 @@ i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema14 schema) from13To14,
   required Future<void> Function(i1.Migrator m, Schema15 schema) from14To15,
   required Future<void> Function(i1.Migrator m, Schema16 schema) from15To16,
+  required Future<void> Function(i1.Migrator m, Schema17 schema) from16To17,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -8568,6 +9360,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from15To16(migrator, schema);
         return 16;
+      case 16:
+        final schema = Schema17(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from16To17(migrator, schema);
+        return 17;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -8590,6 +9387,7 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema14 schema) from13To14,
   required Future<void> Function(i1.Migrator m, Schema15 schema) from14To15,
   required Future<void> Function(i1.Migrator m, Schema16 schema) from15To16,
+  required Future<void> Function(i1.Migrator m, Schema17 schema) from16To17,
 }) => i0.VersionedSchema.stepByStepHelper(
   step: migrationSteps(
     from1To2: from1To2,
@@ -8607,5 +9405,6 @@ i1.OnUpgrade stepByStep({
     from13To14: from13To14,
     from14To15: from14To15,
     from15To16: from15To16,
+    from16To17: from16To17,
   ),
 );

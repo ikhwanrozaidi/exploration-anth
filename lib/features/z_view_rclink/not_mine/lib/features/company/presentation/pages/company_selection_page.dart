@@ -143,6 +143,7 @@ class _CompanySelectionPageState extends State<CompanySelectionPage>
           selectedCompany: _selectedCompany!,
           isRoleLoading: _isRoleLoading,
           onSignIn: _signInToCompany,
+          onBackToSelection: _backToSelection,
         );
     }
   }

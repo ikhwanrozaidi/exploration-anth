@@ -6,10 +6,13 @@ import 'package:rclink_app/features/auth/domain/usecases/request_otp_usecase.dar
 import '../../../../core/di/injection.dart';
 import '../../../admin/domain/usecases/get_current_admin_usecase.dart';
 import '../../../company/domain/usecases/company_clear_cache_usecase.dart';
+import '../../../company/presentation/bloc/company_bloc.dart';
+import '../../../company/presentation/bloc/company_state.dart';
 import '../../../contractor_relation/domain/usecases/clear_contractor_relation_usecase.dart';
 import '../../../rbac/domain/usecases/clear_role_usecase.dart';
 import '../../../rbac/presentation/bloc/rbac_bloc.dart';
 import '../../../rbac/presentation/bloc/rbac_event.dart';
+import '../../../rbac/presentation/bloc/rbac_state.dart';
 import '../../../road/domain/usecases/clear_road_cache_usecase.dart';
 import '../../../work_scope/domain/usecases/clear_work_scopes_cache_usecase.dart';
 import '../../domain/usecases/verify_otp_usecase.dart';
@@ -257,13 +260,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final roleResult = await _clearRoleUseCase();
       roleResult.fold(
         (failure) => print('⚠️ RBAC cache clear failed: ${failure.message}'),
-        (_) => print('✅ RBAC cache cleared'),
+        (_) {
+          print('✅ RBAC cache cleared');
+
+          final rbacBloc = getIt<RbacBloc>();
+          rbacBloc.emit(const RbacState.initial());
+        },
       );
 
       final companyResult = await _clearCompanyCacheUseCase();
       companyResult.fold(
         (failure) => print('⚠️ Company cache clear failed: ${failure.message}'),
-        (_) => print('✅ Company cache cleared'),
+        (_) {
+          print('✅ Company cache cleared');
+
+          final companyBloc = getIt<CompanyBloc>();
+          companyBloc.emit(const CompanyState.initial());
+        },
       );
 
       final roadResult = await _clearRoadCacheUseCase();

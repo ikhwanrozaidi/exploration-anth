@@ -15,12 +15,8 @@ _DailyReportFilterModel _$DailyReportFilterModelFromJson(
   workScopeUID: json['workScopeUID'] as String?,
   roadUID: json['roadUID'] as String?,
   createdByID: (json['createdByID'] as num?)?.toInt(),
-  startDate: json['startDate'] == null
-      ? null
-      : DateTime.parse(json['startDate'] as String),
-  endDate: json['endDate'] == null
-      ? null
-      : DateTime.parse(json['endDate'] as String),
+  fromDate: json['fromDate'] as String?,
+  toDate: json['toDate'] as String?,
   search: json['search'] as String?,
   contractorRelationUID: json['contractorRelationUID'] as String?,
   sortBy: json['sortBy'] as String?,
@@ -37,8 +33,8 @@ Map<String, dynamic> _$DailyReportFilterModelToJson(
   'workScopeUID': ?instance.workScopeUID,
   'roadUID': ?instance.roadUID,
   'createdByID': ?instance.createdByID,
-  'startDate': ?instance.startDate?.toIso8601String(),
-  'endDate': ?instance.endDate?.toIso8601String(),
+  'fromDate': ?instance.fromDate,
+  'toDate': ?instance.toDate,
   'search': ?instance.search,
   'contractorRelationUID': ?instance.contractorRelationUID,
   'sortBy': ?instance.sortBy,

@@ -29,7 +29,6 @@ void showWorkdayDetail({
 }) {
   showInfoBottomsheet(
     context: context,
-    title: "Workday",
     blurry: true,
     widgetUI: Column(
       mainAxisSize: MainAxisSize.min,
@@ -40,7 +39,7 @@ void showWorkdayDetail({
           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
 
-        const SizedBox(height: 20),
+        SizedBox(height: ResponsiveHelper.spacing(context, 15)),
 
         Container(
           padding: const EdgeInsets.all(10),
@@ -51,7 +50,7 @@ void showWorkdayDetail({
           child: Column(
             children: [
               SizedBox(
-                height: 200,
+                height: ResponsiveHelper.getHeight(context, 0.21),
                 child: Stack(
                   children: [
                     // Image placeholder
@@ -79,7 +78,10 @@ void showWorkdayDetail({
                             color: Colors.grey.shade300,
                             child: Icon(
                               Icons.image_not_supported,
-                              size: 50,
+                              size: ResponsiveHelper.iconSize(
+                                context,
+                                base: 20,
+                              ),
                               color: Colors.grey.shade600,
                             ),
                           ),
@@ -108,8 +110,11 @@ void showWorkdayDetail({
                                 ),
                                 child: Text(
                                   scopeCode,
-                                  style: const TextStyle(
-                                    fontSize: 12,
+                                  style: TextStyle(
+                                    fontSize: ResponsiveHelper.fontSize(
+                                      context,
+                                      base: 12,
+                                    ),
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
                                   ),
@@ -129,9 +134,12 @@ void showWorkdayDetail({
                                   DateFormat(
                                     'hh:mma',
                                   ).format(DateTime.parse(date)),
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
+                                  style: TextStyle(
+                                    fontSize: ResponsiveHelper.fontSize(
+                                      context,
+                                      base: 12,
+                                    ),
+                                    fontWeight: FontWeight.w600,
                                     color: Colors.black,
                                   ),
                                 ),
@@ -175,7 +183,7 @@ void showWorkdayDetail({
                   child: Text(
                     'View Report',
                     style: TextStyle(
-                      fontSize: ResponsiveHelper.spacing(context, 14),
+                      fontSize: ResponsiveHelper.spacing(context, 13),
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                     ),
@@ -186,7 +194,7 @@ void showWorkdayDetail({
           ),
         ),
 
-        const SizedBox(height: 30),
+        SizedBox(height: ResponsiveHelper.spacing(context, 20)),
       ],
     ),
   );

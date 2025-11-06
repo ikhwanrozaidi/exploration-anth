@@ -68,16 +68,9 @@ class RoadSelectionFlow {
       currentLevel: startFrom,
       endLevel: endAt,
       onSelected: (result) {
-        // Call the user's callback
         onSelected(result);
 
-        // Clear selections and close bloc after callback completes
         roadBloc.add(const RoadEvent.clearSelections());
-
-        // Close bloc after a short delay to ensure all events are processed
-        Future.delayed(const Duration(milliseconds: 100), () {
-          roadBloc.close();
-        });
       },
     );
   }
@@ -123,6 +116,9 @@ class RoadSelectionFlow {
             final items = _getItemsForLevel(
               currentLevel,
               allCountries,
+              allProvinces,
+              allDistricts,
+              allRoads,
               provinces,
               districts,
               roads,
@@ -196,20 +192,23 @@ class RoadSelectionFlow {
   /// Get items for the current level - returns actual entity objects
   static List<dynamic> _getItemsForLevel(
     RoadLevel level,
-    List<Country> countries,
+    List<Country> allCountries,
+    List<Province> allProvinces,
+    List<District> allDistricts,
+    List<Road> allRoads,
     List<Province> provinces,
     List<District> districts,
     List<Road> roads,
   ) {
     switch (level) {
       case RoadLevel.countries:
-        return countries;
+        return allCountries;
       case RoadLevel.provinces:
-        return provinces;
+        return provinces.isNotEmpty ? provinces : allProvinces;
       case RoadLevel.districts:
-        return districts;
+        return districts.isNotEmpty ? districts : allDistricts;
       case RoadLevel.roads:
-        return roads;
+        return roads.isNotEmpty ? roads : allRoads;
     }
   }
 

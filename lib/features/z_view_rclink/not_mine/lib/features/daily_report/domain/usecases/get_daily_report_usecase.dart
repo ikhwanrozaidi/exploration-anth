@@ -15,6 +15,8 @@ class GetDailyReportsParams extends Equatable {
   final String? roadUid;
   final String? workScopeUid;
   final String? contractorUid;
+  final String? fromDate;
+  final String? toDate;
 
   const GetDailyReportsParams({
     required this.companyUID,
@@ -25,10 +27,23 @@ class GetDailyReportsParams extends Equatable {
     this.roadUid,
     this.workScopeUid,
     this.contractorUid,
+    this.fromDate,
+    this.toDate,
   });
 
   @override
-  List<Object?> get props => [companyUID, page, limit, sortOrder, search];
+  List<Object?> get props => [
+    companyUID,
+    page,
+    limit,
+    sortOrder,
+    search,
+    roadUid,
+    workScopeUid,
+    contractorUid,
+    fromDate,
+    toDate,
+  ];
 }
 
 @lazySingleton
@@ -51,6 +66,8 @@ class GetDailyReportsUseCase
       roadUid: params.roadUid,
       workScopeUid: params.workScopeUid,
       contractorUid: params.contractorUid,
+      fromDate: params.fromDate,
+      toDate: params.toDate,
     );
   }
 }

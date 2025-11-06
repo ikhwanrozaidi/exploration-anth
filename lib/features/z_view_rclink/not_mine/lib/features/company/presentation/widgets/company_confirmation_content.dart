@@ -8,12 +8,14 @@ class CompanyConfirmationContent extends StatelessWidget {
   final Company selectedCompany;
   final bool isRoleLoading;
   final VoidCallback onSignIn;
+  final VoidCallback onBackToSelection;
 
   const CompanyConfirmationContent({
     super.key,
     required this.selectedCompany,
     required this.isRoleLoading,
     required this.onSignIn,
+    required this.onBackToSelection,
   });
 
   @override
@@ -40,24 +42,21 @@ class CompanyConfirmationContent extends StatelessWidget {
 
           Row(
             children: [
-              //
-              // Disable back button
-              //
-              // GestureDetector(
-              //   onTap: _backToSelection,
-              //   child: Container(
-              //     padding: EdgeInsets.all(10),
-              //     decoration: BoxDecoration(
-              //       color: primaryShade,
-              //       borderRadius: BorderRadius.circular(8),
-              //     ),
-              //     child: Icon(
-              //       Icons.arrow_back_ios,
-              //       size: ResponsiveHelper.iconSize(context, base: 15),
-              //       color: primaryColor,
-              //     ),
-              //   ),
-              // ),
+              GestureDetector(
+                onTap: onBackToSelection,
+                child: Container(
+                  padding: ResponsiveHelper.padding(context, all: 12),
+                  decoration: BoxDecoration(
+                    color: primaryShade,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Icon(
+                    Icons.arrow_back_ios,
+                    size: ResponsiveHelper.iconSize(context, base: 15),
+                    color: primaryColor,
+                  ),
+                ),
+              ),
               SizedBox(width: ResponsiveHelper.adaptive(context, mobile: 15)),
 
               Text(

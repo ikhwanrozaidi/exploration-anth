@@ -33,45 +33,45 @@ class RoadRemoteDataSourceImpl implements RoadRemoteDataSource {
     // return await _getDummyResponse();
 
     try {
-      // Get company UID from CompanyBloc
       final companyState = _companyBloc.state;
       if (companyState is! CompanyLoaded ||
           companyState.selectedCompany == null) {
         return const Left(CacheFailure('No company selected'));
       }
-      final companyUID = companyState.selectedCompany!.uid!;
 
-      // Get contractor relation info from ContractorRelationBloc
+      final companyUID = companyState.selectedCompany!.uid!;
       final contractorRelationState = _contractorRelationBloc.state;
 
-      if (contractorRelationState is! ContractorRelationLoaded ||
-          contractorRelationState.selectedContractor == null) {
-        return const Left(CacheFailure('No contractor relation selected'));
+      bool isSelf = true;
+      String? contractRelationUID;
+
+      if (contractorRelationState is ContractorRelationLoaded &&
+          contractorRelationState.selectedContractor != null) {
+        final selectedContractor = contractorRelationState.selectedContractor!;
+        isSelf = selectedContractor.isSelf ?? true;
+        contractRelationUID = selectedContractor.contractRelationUID;
       }
-
-      final selectedContractor = contractorRelationState.selectedContractor!;
-      final isSelf = selectedContractor.isSelf ?? false;
-      final contractRelationUID = selectedContractor.contractRelationUID;
-
-      // Conditional API call based on isSelf and contractRelationUID
       final ApiResponse<PackageDataResponseModel> response;
 
-      if (isSelf == false &&
+      if (!isSelf &&
           contractRelationUID != null &&
           contractRelationUID.isNotEmpty) {
-        // Call contractor package-roads endpoint
+        print('getPackageRoads RemoteDatasource');
+
         response = await _apiService.getPackageRoads(
           companyUID: companyUID,
           contractRelationUID: contractRelationUID,
         );
       } else {
-        // Call company roads endpoint (when isSelf = true or no contractRelationUID)
+        print('getCompanyRoads RemoteDatasource (self/company)');
+
         response = await _apiService.getCompanyRoads(
           companyUID: companyUID,
           expand: ['countries', 'states', 'districts'],
         );
       }
 
+      // Handle response
       if (response.isSuccess && response.data != null) {
         return Right(response.data!);
       } else {
