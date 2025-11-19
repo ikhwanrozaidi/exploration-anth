@@ -4,7 +4,8 @@ import '../../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../../shared/utils/theme.dart';
 
 class CustomFieldTile extends StatelessWidget {
-  final IconData icon;
+  final IconData? icon;
+  final String? imageIcon;
   final String title;
   final String? titleDetails;
   final String? controller;
@@ -16,7 +17,8 @@ class CustomFieldTile extends StatelessWidget {
 
   const CustomFieldTile({
     Key? key,
-    required this.icon,
+    this.icon,
+    this.imageIcon,
     required this.title,
     this.controller,
     this.titleDetails,
@@ -65,7 +67,15 @@ class CustomFieldTile extends StatelessWidget {
                       shape: BoxShape.circle,
                     ),
                     child: Center(
-                      child: Icon(icon, color: iconColor ?? primaryColor),
+                      child: icon == null
+                          ? SizedBox(
+                              height: 22,
+                              child: Image.asset(
+                                imageIcon ?? '',
+                                fit: BoxFit.contain,
+                              ),
+                            )
+                          : Icon(icon, color: iconColor ?? primaryColor),
                     ),
                   ),
                   const SizedBox(width: 20),

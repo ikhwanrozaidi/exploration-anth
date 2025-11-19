@@ -15,16 +15,24 @@ import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/company/presentation/bloc/company_bloc.dart';
 import 'features/rbac/presentation/bloc/rbac_bloc.dart';
 import 'features/road/presentation/bloc/road_bloc.dart';
+import 'features/warnings/presentation/bloc/warning_categories_bloc.dart';
 import 'features/work_scope/presentation/bloc/work_scope_bloc.dart';
 import 'shared/widgets/auth_wrapper.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  print('🚀 main: Configuring dependencies...');
   await configureDependencies();
+  print('✅ main: Dependencies configured');
 
+  print('🚀 main: Getting ConnectivityService from GetIt...');
   final connectivityService = getIt<ConnectivityService>();
+  print('✅ main: ConnectivityService retrieved');
+
+  print('🚀 main: Starting connectivity monitoring...');
   connectivityService.startMonitoring();
+  print('✅ main: Connectivity monitoring started');
 
   runApp(
     MultiBlocProvider(
@@ -42,6 +50,9 @@ Future<void> main() async {
           create: (context) => getIt<WorkScopeBloc>(),
         ),
         BlocProvider<RoadBloc>(create: (context) => getIt<RoadBloc>()),
+        BlocProvider<WarningCategoriesBloc>(
+          create: (context) => getIt<WarningCategoriesBloc>(),
+        ),
       ],
       child: const MyApp(),
     ),

@@ -128,12 +128,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Country> allCountries,  List<Province> allProvinces,  List<District> allDistricts,  List<Road> allRoads,  List<Province> provinces,  List<District> districts,  List<Road> roads,  Province? selectedProvince,  District? selectedDistrict,  Road? selectedRoad)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Country> allCountries,  List<Province> allProvinces,  List<District> allDistricts,  List<Road> allRoads,  List<Province> provinces,  List<District> districts,  List<Road> roads,  Province? selectedProvince,  District? selectedDistrict,  Road? selectedRoad,  List<Road> selectedRoads)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case RoadInitial() when initial != null:
 return initial();case RoadLoading() when loading != null:
 return loading();case RoadLoaded() when loaded != null:
-return loaded(_that.allCountries,_that.allProvinces,_that.allDistricts,_that.allRoads,_that.provinces,_that.districts,_that.roads,_that.selectedProvince,_that.selectedDistrict,_that.selectedRoad);case RoadError() when error != null:
+return loaded(_that.allCountries,_that.allProvinces,_that.allDistricts,_that.allRoads,_that.provinces,_that.districts,_that.roads,_that.selectedProvince,_that.selectedDistrict,_that.selectedRoad,_that.selectedRoads);case RoadError() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Country> allCountries,  List<Province> allProvinces,  List<District> allDistricts,  List<Road> allRoads,  List<Province> provinces,  List<District> districts,  List<Road> roads,  Province? selectedProvince,  District? selectedDistrict,  Road? selectedRoad)  loaded,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Country> allCountries,  List<Province> allProvinces,  List<District> allDistricts,  List<Road> allRoads,  List<Province> provinces,  List<District> districts,  List<Road> roads,  Province? selectedProvince,  District? selectedDistrict,  Road? selectedRoad,  List<Road> selectedRoads)  loaded,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case RoadInitial():
 return initial();case RoadLoading():
 return loading();case RoadLoaded():
-return loaded(_that.allCountries,_that.allProvinces,_that.allDistricts,_that.allRoads,_that.provinces,_that.districts,_that.roads,_that.selectedProvince,_that.selectedDistrict,_that.selectedRoad);case RoadError():
+return loaded(_that.allCountries,_that.allProvinces,_that.allDistricts,_that.allRoads,_that.provinces,_that.districts,_that.roads,_that.selectedProvince,_that.selectedDistrict,_that.selectedRoad,_that.selectedRoads);case RoadError():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Country> allCountries,  List<Province> allProvinces,  List<District> allDistricts,  List<Road> allRoads,  List<Province> provinces,  List<District> districts,  List<Road> roads,  Province? selectedProvince,  District? selectedDistrict,  Road? selectedRoad)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Country> allCountries,  List<Province> allProvinces,  List<District> allDistricts,  List<Road> allRoads,  List<Province> provinces,  List<District> districts,  List<Road> roads,  Province? selectedProvince,  District? selectedDistrict,  Road? selectedRoad,  List<Road> selectedRoads)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case RoadInitial() when initial != null:
 return initial();case RoadLoading() when loading != null:
 return loading();case RoadLoaded() when loaded != null:
-return loaded(_that.allCountries,_that.allProvinces,_that.allDistricts,_that.allRoads,_that.provinces,_that.districts,_that.roads,_that.selectedProvince,_that.selectedDistrict,_that.selectedRoad);case RoadError() when error != null:
+return loaded(_that.allCountries,_that.allProvinces,_that.allDistricts,_that.allRoads,_that.provinces,_that.districts,_that.roads,_that.selectedProvince,_that.selectedDistrict,_that.selectedRoad,_that.selectedRoads);case RoadError() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -257,12 +257,10 @@ String toString() {
 
 
 class RoadLoaded implements RoadState {
-  const RoadLoaded({final  List<Country> allCountries = const [], final  List<Province> allProvinces = const [], final  List<District> allDistricts = const [], final  List<Road> allRoads = const [], final  List<Province> provinces = const [], final  List<District> districts = const [], final  List<Road> roads = const [], this.selectedProvince, this.selectedDistrict, this.selectedRoad}): _allCountries = allCountries,_allProvinces = allProvinces,_allDistricts = allDistricts,_allRoads = allRoads,_provinces = provinces,_districts = districts,_roads = roads;
+  const RoadLoaded({final  List<Country> allCountries = const [], final  List<Province> allProvinces = const [], final  List<District> allDistricts = const [], final  List<Road> allRoads = const [], final  List<Province> provinces = const [], final  List<District> districts = const [], final  List<Road> roads = const [], this.selectedProvince, this.selectedDistrict, this.selectedRoad, final  List<Road> selectedRoads = const []}): _allCountries = allCountries,_allProvinces = allProvinces,_allDistricts = allDistricts,_allRoads = allRoads,_provinces = provinces,_districts = districts,_roads = roads,_selectedRoads = selectedRoads;
   
 
-// ALL data (for reference and filtering)
  final  List<Country> _allCountries;
-// ALL data (for reference and filtering)
 @JsonKey() List<Country> get allCountries {
   if (_allCountries is EqualUnmodifiableListView) return _allCountries;
   // ignore: implicit_dynamic_type
@@ -290,9 +288,7 @@ class RoadLoaded implements RoadState {
   return EqualUnmodifiableListView(_allRoads);
 }
 
-// FILTERED data (for current display)
  final  List<Province> _provinces;
-// FILTERED data (for current display)
 @JsonKey() List<Province> get provinces {
   if (_provinces is EqualUnmodifiableListView) return _provinces;
   // ignore: implicit_dynamic_type
@@ -313,10 +309,16 @@ class RoadLoaded implements RoadState {
   return EqualUnmodifiableListView(_roads);
 }
 
-// Selected items
  final  Province? selectedProvince;
  final  District? selectedDistrict;
  final  Road? selectedRoad;
+ final  List<Road> _selectedRoads;
+@JsonKey() List<Road> get selectedRoads {
+  if (_selectedRoads is EqualUnmodifiableListView) return _selectedRoads;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_selectedRoads);
+}
+
 
 /// Create a copy of RoadState
 /// with the given fields replaced by the non-null parameter values.
@@ -328,16 +330,16 @@ $RoadLoadedCopyWith<RoadLoaded> get copyWith => _$RoadLoadedCopyWithImpl<RoadLoa
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoadLoaded&&const DeepCollectionEquality().equals(other._allCountries, _allCountries)&&const DeepCollectionEquality().equals(other._allProvinces, _allProvinces)&&const DeepCollectionEquality().equals(other._allDistricts, _allDistricts)&&const DeepCollectionEquality().equals(other._allRoads, _allRoads)&&const DeepCollectionEquality().equals(other._provinces, _provinces)&&const DeepCollectionEquality().equals(other._districts, _districts)&&const DeepCollectionEquality().equals(other._roads, _roads)&&(identical(other.selectedProvince, selectedProvince) || other.selectedProvince == selectedProvince)&&(identical(other.selectedDistrict, selectedDistrict) || other.selectedDistrict == selectedDistrict)&&(identical(other.selectedRoad, selectedRoad) || other.selectedRoad == selectedRoad));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoadLoaded&&const DeepCollectionEquality().equals(other._allCountries, _allCountries)&&const DeepCollectionEquality().equals(other._allProvinces, _allProvinces)&&const DeepCollectionEquality().equals(other._allDistricts, _allDistricts)&&const DeepCollectionEquality().equals(other._allRoads, _allRoads)&&const DeepCollectionEquality().equals(other._provinces, _provinces)&&const DeepCollectionEquality().equals(other._districts, _districts)&&const DeepCollectionEquality().equals(other._roads, _roads)&&(identical(other.selectedProvince, selectedProvince) || other.selectedProvince == selectedProvince)&&(identical(other.selectedDistrict, selectedDistrict) || other.selectedDistrict == selectedDistrict)&&(identical(other.selectedRoad, selectedRoad) || other.selectedRoad == selectedRoad)&&const DeepCollectionEquality().equals(other._selectedRoads, _selectedRoads));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_allCountries),const DeepCollectionEquality().hash(_allProvinces),const DeepCollectionEquality().hash(_allDistricts),const DeepCollectionEquality().hash(_allRoads),const DeepCollectionEquality().hash(_provinces),const DeepCollectionEquality().hash(_districts),const DeepCollectionEquality().hash(_roads),selectedProvince,selectedDistrict,selectedRoad);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_allCountries),const DeepCollectionEquality().hash(_allProvinces),const DeepCollectionEquality().hash(_allDistricts),const DeepCollectionEquality().hash(_allRoads),const DeepCollectionEquality().hash(_provinces),const DeepCollectionEquality().hash(_districts),const DeepCollectionEquality().hash(_roads),selectedProvince,selectedDistrict,selectedRoad,const DeepCollectionEquality().hash(_selectedRoads));
 
 @override
 String toString() {
-  return 'RoadState.loaded(allCountries: $allCountries, allProvinces: $allProvinces, allDistricts: $allDistricts, allRoads: $allRoads, provinces: $provinces, districts: $districts, roads: $roads, selectedProvince: $selectedProvince, selectedDistrict: $selectedDistrict, selectedRoad: $selectedRoad)';
+  return 'RoadState.loaded(allCountries: $allCountries, allProvinces: $allProvinces, allDistricts: $allDistricts, allRoads: $allRoads, provinces: $provinces, districts: $districts, roads: $roads, selectedProvince: $selectedProvince, selectedDistrict: $selectedDistrict, selectedRoad: $selectedRoad, selectedRoads: $selectedRoads)';
 }
 
 
@@ -348,7 +350,7 @@ abstract mixin class $RoadLoadedCopyWith<$Res> implements $RoadStateCopyWith<$Re
   factory $RoadLoadedCopyWith(RoadLoaded value, $Res Function(RoadLoaded) _then) = _$RoadLoadedCopyWithImpl;
 @useResult
 $Res call({
- List<Country> allCountries, List<Province> allProvinces, List<District> allDistricts, List<Road> allRoads, List<Province> provinces, List<District> districts, List<Road> roads, Province? selectedProvince, District? selectedDistrict, Road? selectedRoad
+ List<Country> allCountries, List<Province> allProvinces, List<District> allDistricts, List<Road> allRoads, List<Province> provinces, List<District> districts, List<Road> roads, Province? selectedProvince, District? selectedDistrict, Road? selectedRoad, List<Road> selectedRoads
 });
 
 
@@ -365,7 +367,7 @@ class _$RoadLoadedCopyWithImpl<$Res>
 
 /// Create a copy of RoadState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? allCountries = null,Object? allProvinces = null,Object? allDistricts = null,Object? allRoads = null,Object? provinces = null,Object? districts = null,Object? roads = null,Object? selectedProvince = freezed,Object? selectedDistrict = freezed,Object? selectedRoad = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? allCountries = null,Object? allProvinces = null,Object? allDistricts = null,Object? allRoads = null,Object? provinces = null,Object? districts = null,Object? roads = null,Object? selectedProvince = freezed,Object? selectedDistrict = freezed,Object? selectedRoad = freezed,Object? selectedRoads = null,}) {
   return _then(RoadLoaded(
 allCountries: null == allCountries ? _self._allCountries : allCountries // ignore: cast_nullable_to_non_nullable
 as List<Country>,allProvinces: null == allProvinces ? _self._allProvinces : allProvinces // ignore: cast_nullable_to_non_nullable
@@ -377,7 +379,8 @@ as List<District>,roads: null == roads ? _self._roads : roads // ignore: cast_nu
 as List<Road>,selectedProvince: freezed == selectedProvince ? _self.selectedProvince : selectedProvince // ignore: cast_nullable_to_non_nullable
 as Province?,selectedDistrict: freezed == selectedDistrict ? _self.selectedDistrict : selectedDistrict // ignore: cast_nullable_to_non_nullable
 as District?,selectedRoad: freezed == selectedRoad ? _self.selectedRoad : selectedRoad // ignore: cast_nullable_to_non_nullable
-as Road?,
+as Road?,selectedRoads: null == selectedRoads ? _self._selectedRoads : selectedRoads // ignore: cast_nullable_to_non_nullable
+as List<Road>,
   ));
 }
 

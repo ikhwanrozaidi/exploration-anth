@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rclink_app/features/work_scope/domain/usecases/get_equipment_usecase.dart';
@@ -13,8 +14,22 @@ import 'package:rclink_app/features/work_scope/domain/entities/work_quantity_typ
 import '../../../../../core/di/injection.dart';
 import '../../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../../auth/presentation/bloc/auth_state.dart';
+import '../../../../company/presentation/bloc/company_bloc.dart';
+import '../../../../company/presentation/bloc/company_state.dart';
+import '../../../../road/domain/entities/district_entity.dart';
+import '../../../../road/domain/entities/province_entity.dart';
+import '../../../../road/domain/entities/road_entity.dart';
+import '../../../../work_scope/domain/entities/work_scope.dart';
+import '../../../data/datasources/daily_report_local_datasource.dart';
+import '../../../data/mapper/report_data_to_create_model_mapper.dart';
+import '../../../data/models/district_response_model.dart';
+import '../../../data/models/road_response_model.dart';
+import '../../../data/models/work_scope_response_model.dart';
 import '../../../domain/usecases/clear_all_cache_usecase.dart';
 import '../../../domain/usecases/submit_daily_report_usecase.dart';
+import '../../../../../core/sync/datasources/image_local_datasource.dart';
+import '../../../../../core/sync/sync_constants.dart';
+import '../../../../../shared/widgets/gallery/models/gallery_image.dart';
 import 'daily_report_create_event.dart';
 import 'daily_report_create_state.dart';
 
@@ -30,6 +45,11 @@ class DailyReportCreateBloc
   final GetEquipmentUseCase _getEquipmentUseCase;
   final ClearAllCacheUseCase _clearAllCacheUseCase;
   final SubmitDailyReportUseCase _submitDailyReportUseCase;
+  final DailyReportLocalDataSource _localDataSource;
+  final ImageLocalDataSource _imageLocalDataSource;
+
+  // Auto-save debounce timer
+  Timer? _autoSaveTimer;
 
   DailyReportCreateBloc(
     this._getWorkScopesUseCase,
@@ -41,6 +61,8 @@ class DailyReportCreateBloc
     this._getEquipmentUseCase,
     this._clearAllCacheUseCase,
     this._submitDailyReportUseCase,
+    this._localDataSource,
+    this._imageLocalDataSource,
   ) : super(const DailyReportCreateState.initial()) {
     on<LoadWorkScopes>(_onLoadWorkScopes);
     // on<LoadStates>(_onLoadStates); // Handled by RoadFieldTile widget
@@ -92,11 +114,23 @@ class DailyReportCreateBloc
     on<SubmitReport>(_onSubmitReport);
     on<SaveAsDraft>(_onSaveAsDraft);
 
+    // Draft management events
+    on<InitializeDraftReport>(_onInitializeDraftReport);
+    on<LoadExistingDraft>(_onLoadExistingDraft);
+    on<DeleteDraft>(_onDeleteDraft);
+    on<AutoSaveDraft>(_onAutoSaveDraft);
+
     // Utility events
     on<ResetForm>(_onResetForm);
     on<ClearCache>(_onClearCache);
     on<StartOver>(_onStartOver);
     on<ClearAllCache>(_onClearAllCache);
+  }
+
+  @override
+  Future<void> close() {
+    _autoSaveTimer?.cancel();
+    return super.close();
   }
 
   // ------------------------------------------------------- Helper, Fetch from API data
@@ -143,6 +177,74 @@ class DailyReportCreateBloc
     );
   }
 
+  /// Helper method to trigger auto-save if in draft mode
+  void _triggerAutoSave(String companyUID) {
+    final selections = _getCurrentSelections();
+    if (selections.isDraftMode) {
+      add(AutoSaveDraft(companyUID: companyUID));
+    }
+  }
+
+  /// Check if form is ready for submission
+  /// Returns true if all required fields are filled
+  bool canSubmitForm() {
+    final selections = _getCurrentSelections();
+
+    // 1. Basic info must be complete
+    if (selections.selectedScope == null ||
+        selections.selectedWeather == null ||
+        selections.selectedRoad == null ||
+        selections.section == null ||
+        selections.section!.isEmpty) {
+      return false;
+    }
+
+    // 2. At least 1 equipment must be selected
+    if (selections.selectedEquipment.isEmpty) {
+      return false;
+    }
+
+    // 3. At least 1 quantity type must be selected
+    if (selections.selectedQuantityTypes.isEmpty) {
+      return false;
+    }
+
+    // 4. Images must be uploaded (before only, during/after optional)
+    final conditionSnapshots = selections.conditionSnapshots;
+    final beforeImages = conditionSnapshots['before'] ?? [];
+
+    if (beforeImages.isEmpty) {
+      return false;
+    }
+
+    // 5. Quantity fields must be filled
+    for (final quantityType in selections.selectedQuantityTypes) {
+      final instanceKeys = selections.quantityFieldData.keys
+          .where((key) => key.startsWith('${quantityType.uid}_'))
+          .toList();
+
+      if (instanceKeys.isEmpty) {
+        return false; // No data entered for this quantity type
+      }
+
+      // Check if all required fields are filled
+      for (final compositeKey in instanceKeys) {
+        final instanceData = selections.quantityFieldData[compositeKey] ?? {};
+
+        for (final field in quantityType.quantityFields) {
+          if (field.isRequired && !field.isForSegment) {
+            final value = instanceData[field.uid];
+            if (value == null || value.toString().trim().isEmpty) {
+              return false; // Required field is empty
+            }
+          }
+        }
+      }
+    }
+
+    return true; // All validations passed
+  }
+
   // ------------------------------------------------------- Load API fetching
   Future<void> _onLoadWorkScopes(
     LoadWorkScopes event,
@@ -175,10 +277,21 @@ class DailyReportCreateBloc
           equipment: latestApiData.equipment, // Preserve existing
         );
 
+        // CRITICAL FIX: Check if selections were just cleared by StartOver
+        // If all key selections are null, use fresh empty selections instead of preserving old ones
+        final latestSelections = _getCurrentSelections();
+        final shouldUseEmptySelections =
+            latestSelections.selectedScope == null &&
+            latestSelections.selectedWeather == null &&
+            latestSelections.selectedRoad == null &&
+            latestSelections.section == null;
+
         emit(
           DailyReportCreateState.selectingBasicInfo(
             apiData: updatedApiData,
-            selections: currentSelections,
+            selections: shouldUseEmptySelections
+                ? const ReportSelections()
+                : latestSelections,
           ),
         );
       },
@@ -391,10 +504,14 @@ class DailyReportCreateBloc
 
   Future<void> _onLoadQuantitiesAndEquipments(
     LoadQuantitiesAndEquipments event,
-    Emitter<DailyReportCreateState> emit,
-  ) async {
-    final currentApiData = _getCurrentApiData();
-    final currentSelections = _getCurrentSelections();
+    Emitter<DailyReportCreateState> emit, {
+    ReportApiData?
+    updatedApiData, // CRITICAL: Must pass when loading draft to preserve work scopes in state
+    ReportSelections?
+    updatedSelections, // CRITICAL: Must pass when loading draft to preserve road/district in state
+  }) async {
+    final currentApiData = updatedApiData ?? _getCurrentApiData();
+    final currentSelections = updatedSelections ?? _getCurrentSelections();
     final currentFormData = _getCurrentFormData();
 
     final results = await Future.wait([
@@ -442,15 +559,29 @@ class DailyReportCreateBloc
       (r) => r as List<WorkEquipment>,
     );
 
-    emit(
-      DailyReportCreateState.editingDetails(
-        apiData: currentApiData.copyWith(
-          quantities: quantities,
-          equipment: equipments,
-        ),
-        selections: currentSelections,
-        formData: currentFormData,
-      ),
+    // Extract quantity type UIDs from quantityFieldData composite keys
+    // This is needed when loading a draft - the draft has quantityFieldData
+    // but selectedQuantityTypes is empty, so we need to populate it
+    final quantityTypeUIDsFromData = currentSelections.quantityFieldData.keys
+        .map((compositeKey) {
+          // Parse "quantityTypeUID_sequenceNo" to extract UID
+          final parts = compositeKey.split('_');
+          return parts.length >= 2
+              ? parts.sublist(0, parts.length - 1).join('_')
+              : compositeKey;
+        })
+        .toSet() // Remove duplicates
+        .toList();
+
+    // Match UIDs to actual WorkQuantityType objects
+    final selectedQuantityTypes = quantities
+        .where((qt) => quantityTypeUIDsFromData.contains(qt.uid))
+        .toList();
+
+    print('🔍 [LOAD Q&E] Matching quantity types from draft:');
+    print('   - UIDs from quantityFieldData: $quantityTypeUIDsFromData');
+    print(
+      '   - Matched quantity types: ${selectedQuantityTypes.map((q) => q.name).toList()}',
     );
 
     emit(
@@ -459,7 +590,10 @@ class DailyReportCreateBloc
           quantities: quantities,
           equipment: equipments,
         ),
-        selections: currentSelections,
+        selections: currentSelections.copyWith(
+          selectedQuantityTypes:
+              selectedQuantityTypes, // ✅ Populate from draft data
+        ),
         formData: currentFormData,
       ),
     );
@@ -564,7 +698,9 @@ class DailyReportCreateBloc
       orElse: () {
         // If road not in list, keep the currently selected road
         // This happens when RoadFieldTile manages its own data
-        print('⚠️ Road ${event.roadUid} not found in roads list, keeping current selection');
+        print(
+          '⚠️ Road ${event.roadUid} not found in roads list, keeping current selection',
+        );
         return currentSelections.selectedRoad!;
       },
     );
@@ -587,16 +723,27 @@ class DailyReportCreateBloc
     print('📍 Storing location from RoadSelectionResult:');
     print('   Province: ${event.province.name}');
     print('   District: ${event.district.name}');
-    print('   Road: ${event.road.name} (${event.road.sectionStart} - ${event.road.sectionFinish})');
+    print(
+      '   Road: ${event.road.name} (${event.road.sectionStart} - ${event.road.sectionFinish})',
+    );
+    print(
+      '🔍 [DRAFT UID DEBUG] SelectLocationFromResult - Before copyWith - draftUID: ${currentSelections.draftReportUID}, isDraftMode: ${currentSelections.isDraftMode}',
+    );
+
+    final updatedSelections = currentSelections.copyWith(
+      selectedState: event.province,
+      selectedDistrict: event.district,
+      selectedRoad: event.road,
+    );
+
+    print(
+      '🔍 [DRAFT UID DEBUG] SelectLocationFromResult - After copyWith - draftUID: ${updatedSelections.draftReportUID}, isDraftMode: ${updatedSelections.isDraftMode}',
+    );
 
     emit(
       DailyReportCreateState.selectingBasicInfo(
         apiData: currentApiData,
-        selections: currentSelections.copyWith(
-          selectedState: event.province,
-          selectedDistrict: event.district,
-          selectedRoad: event.road,
-        ),
+        selections: updatedSelections,
       ),
     );
   }
@@ -610,7 +757,9 @@ class DailyReportCreateBloc
 
     print('🔍 UpdateSection called with value: "${event.section}"');
     print('🔍 Selected road: ${currentSelections.selectedRoad?.name}');
-    print('🔍 Section range: ${currentSelections.selectedRoad?.sectionStart} - ${currentSelections.selectedRoad?.sectionFinish}');
+    print(
+      '🔍 Section range: ${currentSelections.selectedRoad?.sectionStart} - ${currentSelections.selectedRoad?.sectionFinish}',
+    );
 
     // Validate section input
     String? sectionError;
@@ -632,7 +781,9 @@ class DailyReportCreateBloc
           // Road entity already has sectionStart and sectionFinish as double?
           final start = selectedRoad.sectionStart!;
           final finish = selectedRoad.sectionFinish!;
-          print('🔍 Validating: $sectionValue < $start || $sectionValue > $finish');
+          print(
+            '🔍 Validating: $sectionValue < $start || $sectionValue > $finish',
+          );
 
           if (sectionValue < start || sectionValue > finish) {
             sectionError = 'Section must be between $start and $finish';
@@ -641,7 +792,9 @@ class DailyReportCreateBloc
             print('✅ Section is valid');
           }
         } else {
-          print('⚠️ Road has no section range defined (sectionStart or sectionFinish is null)');
+          print(
+            '⚠️ Road has no section range defined (sectionStart or sectionFinish is null)',
+          );
         }
       } else {
         print('⚠️ No road selected');
@@ -649,10 +802,17 @@ class DailyReportCreateBloc
     }
 
     print('🔍 Final sectionError: $sectionError');
+    print(
+      '🔍 [DRAFT UID DEBUG] Before copyWith - draftUID: ${currentSelections.draftReportUID}, isDraftMode: ${currentSelections.isDraftMode}',
+    );
 
     final updatedSelections = currentSelections.copyWith(
       section: event.section,
       sectionError: sectionError,
+    );
+
+    print(
+      '🔍 [DRAFT UID DEBUG] After copyWith - draftUID: ${updatedSelections.draftReportUID}, isDraftMode: ${updatedSelections.isDraftMode}',
     );
 
     emit(
@@ -662,7 +822,9 @@ class DailyReportCreateBloc
       ),
     );
 
-    print('✅ State emitted with section: "${updatedSelections.section}", error: $sectionError');
+    print(
+      '✅ State emitted with section: "${updatedSelections.section}", error: $sectionError',
+    );
   }
 
   Future<void> _onUpdateConditionSnapshots(
@@ -734,9 +896,7 @@ class DailyReportCreateBloc
     emit(
       DailyReportCreateState.editingDetails(
         apiData: currentApiData,
-        selections: currentSelections.copyWith(
-          quantityFieldData: quantityData,
-        ),
+        selections: currentSelections.copyWith(quantityFieldData: quantityData),
         formData: currentFormData,
       ),
     );
@@ -765,9 +925,7 @@ class DailyReportCreateBloc
     emit(
       DailyReportCreateState.editingDetails(
         apiData: currentApiData,
-        selections: currentSelections.copyWith(
-          quantityFieldData: quantityData,
-        ),
+        selections: currentSelections.copyWith(quantityFieldData: quantityData),
         formData: currentFormData,
       ),
     );
@@ -798,8 +956,12 @@ class DailyReportCreateBloc
         .where((qt) => qt.uid != event.quantityTypeUID)
         .toList();
 
-    print('🗑️ [QUANTITY DEBUG] Removing quantity type: ${event.quantityTypeUID}');
-    print('   - Remaining selectedQuantityTypes: ${updatedSelectedTypes.map((q) => q.name).toList()}');
+    print(
+      '🗑️ [QUANTITY DEBUG] Removing quantity type: ${event.quantityTypeUID}',
+    );
+    print(
+      '   - Remaining selectedQuantityTypes: ${updatedSelectedTypes.map((q) => q.name).toList()}',
+    );
 
     emit(
       DailyReportCreateState.editingDetails(
@@ -904,9 +1066,7 @@ class DailyReportCreateBloc
     emit(
       DailyReportCreateState.editingDetails(
         apiData: currentApiData,
-        selections: currentSelections.copyWith(
-          additionalImages: event.images,
-        ),
+        selections: currentSelections.copyWith(additionalImages: event.images),
         formData: currentFormData,
       ),
     );
@@ -1116,6 +1276,7 @@ class DailyReportCreateBloc
     final fieldErrors = <String, String?>{};
     final validationErrors = <String>[];
 
+    // 1. Basic Info Validation
     if (currentSelections.selectedScope == null) {
       validationErrors.add('Please select a scope of work');
     }
@@ -1131,7 +1292,17 @@ class DailyReportCreateBloc
       fieldErrors['section'] = 'Section is required';
     }
 
-    // Validate quantity fields - check in quantityFieldData (not fieldValues)
+    // 2. Equipment Validation - At least 1 equipment required
+    if (currentSelections.selectedEquipment.isEmpty) {
+      validationErrors.add('Please select at least 1 equipment');
+    }
+
+    // 3. Quantity Type Validation - At least 1 quantity type required
+    if (currentSelections.selectedQuantityTypes.isEmpty) {
+      validationErrors.add('Please select at least 1 quantity type');
+    }
+
+    // 4. Validate quantity fields - check in quantityFieldData (not fieldValues)
     for (final quantityType in currentSelections.selectedQuantityTypes) {
       // Find all instances of this quantity type (using composite keys)
       final instanceKeys = currentSelections.quantityFieldData.keys
@@ -1140,13 +1311,16 @@ class DailyReportCreateBloc
 
       if (instanceKeys.isEmpty) {
         // No data entered for this quantity type at all
-        validationErrors.add('Please fill in ${quantityType.name} quantity data');
+        validationErrors.add(
+          'Please fill in ${quantityType.name} quantity data',
+        );
         continue;
       }
 
       // Validate each instance
       for (final compositeKey in instanceKeys) {
-        final instanceData = currentSelections.quantityFieldData[compositeKey] ?? {};
+        final instanceData =
+            currentSelections.quantityFieldData[compositeKey] ?? {};
 
         // Check each required field
         for (final field in quantityType.quantityFields) {
@@ -1157,11 +1331,22 @@ class DailyReportCreateBloc
             if (value == null || value.toString().trim().isEmpty) {
               final errorKey = '${compositeKey}_${field.uid}';
               fieldErrors[errorKey] = '${field.name} is required';
-              validationErrors.add('${field.name} is required in ${quantityType.name}');
+              validationErrors.add(
+                '${field.name} is required in ${quantityType.name}',
+              );
             }
           }
         }
       }
+    }
+
+    // 5. Image Validation - Condition Snapshots (before only, during/after optional)
+    final conditionSnapshots = currentSelections.conditionSnapshots;
+
+    // Check if at least one image exists in BEFORE snapshots
+    final beforeImages = conditionSnapshots['before'] ?? [];
+    if (beforeImages.isEmpty) {
+      validationErrors.add('Please upload at least 1 BEFORE image');
     }
 
     final isFormValid = validationErrors.isEmpty;
@@ -1171,6 +1356,11 @@ class DailyReportCreateBloc
     print('  - Weather: ${currentSelections.selectedWeather}');
     print('  - Road: ${currentSelections.selectedRoad?.name}');
     print('  - Section: ${currentSelections.section}');
+    print('  - Equipment count: ${currentSelections.selectedEquipment.length}');
+    print(
+      '  - Quantity types count: ${currentSelections.selectedQuantityTypes.length}',
+    );
+    print('  - BEFORE images: ${beforeImages.length}');
     print('  - Validation errors: $validationErrors');
     print('  - Form valid: $isFormValid');
 
@@ -1185,11 +1375,19 @@ class DailyReportCreateBloc
     );
 
     print('📊 [QUANTITY DEBUG] Quantity data before submission:');
-    print('  - quantityFieldData isEmpty: ${currentSelections.quantityFieldData.isEmpty}');
-    print('  - quantityFieldData keys: ${currentSelections.quantityFieldData.keys.toList()}');
+    print(
+      '  - quantityFieldData isEmpty: ${currentSelections.quantityFieldData.isEmpty}',
+    );
+    print(
+      '  - quantityFieldData keys: ${currentSelections.quantityFieldData.keys.toList()}',
+    );
     print('  - quantityFieldData full: ${currentSelections.quantityFieldData}');
-    print('  - selectedQuantityTypes count: ${currentSelections.selectedQuantityTypes.length}');
-    print('  - selectedQuantityTypes: ${currentSelections.selectedQuantityTypes.map((q) => q.name).toList()}');
+    print(
+      '  - selectedQuantityTypes count: ${currentSelections.selectedQuantityTypes.length}',
+    );
+    print(
+      '  - selectedQuantityTypes: ${currentSelections.selectedQuantityTypes.map((q) => q.name).toList()}',
+    );
 
     if (!isFormValid) {
       print('❌ Form validation failed');
@@ -1226,19 +1424,56 @@ class DailyReportCreateBloc
         adminUID: adminUID,
       );
 
-      result.fold(
-        (failure) {
+      await result.fold(
+        (failure) async {
           print('❌ Submission failed: ${failure.message}');
-          emit(
-            DailyReportCreateState.submissionError(
-              reportData: reportData,
-              errorMessage: failure.message,
-            ),
-          );
+          if (!emit.isDone) {
+            emit(
+              DailyReportCreateState.submissionError(
+                reportData: reportData,
+                errorMessage: failure.message,
+              ),
+            );
+          }
         },
-        (response) {
+        (response) async {
           print('✅ Submission successful: ${response.uid}');
-          emit(DailyReportCreateState.submitted(reportData: reportData));
+
+          // Activate draft images for upload if draft exists
+          final draftUID = currentSelections.draftReportUID;
+          if (draftUID != null && adminUID != null) {
+            try {
+              print(
+                '📷 Activating draft images for upload: $draftUID → ${response.uid}',
+              );
+              await _imageLocalDataSource.activateDraftImagesForSubmission(
+                entityType: SyncEntityType.dailyReport,
+                draftUID: draftUID,
+                serverUID: response.uid,
+                uploadedByUID: adminUID,
+              );
+              print('✅ Draft images activated for upload');
+            } catch (e) {
+              print('⚠️ Error activating draft images: $e');
+              // Don't fail submission if image activation fails
+            }
+
+            // Delete draft record (images now linked to submitted report)
+            try {
+              print(
+                '🗑️ Deleting draft after successful submission: $draftUID',
+              );
+              await _localDataSource.deleteDraftReport(draftUID);
+              print('✅ Draft deleted');
+            } catch (e) {
+              print('⚠️ Error deleting draft: $e');
+              // Don't fail submission if draft deletion fails
+            }
+          }
+
+          if (!emit.isDone) {
+            emit(DailyReportCreateState.submitted(reportData: reportData));
+          }
         },
       );
     } catch (e) {
@@ -1295,6 +1530,8 @@ class DailyReportCreateBloc
     final clearedSelections = currentSelections.copyWith(
       selectedQuantityTypes: [],
       selectedEquipment: [],
+      notes: '',
+      additionalImages: [],
     );
 
     emit(
@@ -1324,7 +1561,19 @@ class DailyReportCreateBloc
     StartOver event,
     Emitter<DailyReportCreateState> emit,
   ) async {
-    emit(const DailyReportCreateState.initial());
+    // CRITICAL FIX: Clear user selections but preserve API data
+    // BLoC is @lazySingleton so state persists between navigations
+    // Preserving API data (workScopes, quantities, equipment) avoids unnecessary re-fetching
+    // and ensures UI is responsive immediately
+    final currentApiData = _getCurrentApiData();
+
+    emit(
+      DailyReportCreateState.selectingBasicInfo(
+        apiData:
+            currentApiData, // Preserve loaded workScopes/quantities/equipment
+        selections: const ReportSelections(), // Clear user selections only
+      ),
+    );
   }
 
   Future<void> _onClearAllCache(
@@ -1337,5 +1586,670 @@ class DailyReportCreateBloc
     } catch (e) {
       print('Error clearing caches: $e');
     }
+  }
+
+  // ======================================================================
+  // DRAFT MANAGEMENT EVENT HANDLERS
+  // ======================================================================
+
+  /// Initialize a new draft report
+  Future<void> _onInitializeDraftReport(
+    InitializeDraftReport event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    try {
+      print('📝 Creating new draft report for company: ${event.companyUID}');
+
+      // Create draft in local database
+      final draftReport = await _localDataSource.createDraftReportLocal(
+        event.companyUID,
+      );
+
+      print('✅ Draft created with UID: ${draftReport.uid}');
+
+      // Update current state with draft UID
+      final currentApiData = _getCurrentApiData();
+      final currentSelections = _getCurrentSelections();
+
+      final updatedSelections = currentSelections.copyWith(
+        draftReportUID: draftReport.uid,
+        isDraftMode: true,
+      );
+
+      emit(
+        DailyReportCreateState.selectingBasicInfo(
+          apiData: currentApiData,
+          selections: updatedSelections,
+        ),
+      );
+
+      print(
+        '✅ State updated with new draft UID: ${updatedSelections.draftReportUID}',
+      );
+
+      // Verify draft was created by querying it back
+      print('🔍 Verifying draft exists in database...');
+      final drafts = await _localDataSource.getDraftReports(event.companyUID);
+      print('✅ Verification: Found ${drafts.length} drafts for company');
+    } catch (e) {
+      print('❌ Error creating draft: $e');
+      // Don't emit error state - just log it
+      // User can continue without draft if creation fails
+    }
+  }
+
+  /// Load an existing draft report
+  Future<void> _onLoadExistingDraft(
+    LoadExistingDraft event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    try {
+      print('📂 Loading draft report: ${event.draftUID}');
+
+      // Get draft MODEL from local database
+      final draftModel = await _localDataSource.getCachedDailyReportByUid(
+        event.draftUID,
+      );
+
+      if (draftModel == null) {
+        print('❌ Draft not found: ${event.draftUID}');
+        return;
+      }
+
+      // CLEAN ARCHITECTURE: Convert Model to Entity immediately
+      final draftEntity = draftModel.toEntity();
+
+      print('✅ Draft entity loaded: ${draftEntity.name}');
+      print('   Work Scope: ${draftEntity.workScope?.name}');
+      print('   Road: ${draftEntity.road?.name}');
+      print('   Weather: ${draftEntity.weatherCondition}');
+
+      // Get current API data
+      var currentApiData = _getCurrentApiData();
+
+      // Ensure work scopes are loaded BEFORE matching
+      if (currentApiData.workScopes.isEmpty) {
+        print('⚠️ Work scopes not loaded, loading now...');
+
+        final result = await _getWorkScopesUseCase(
+          GetWorkScopesParams(forceRefresh: false), // Use cache if available
+        );
+
+        await result.fold(
+          (failure) {
+            print('❌ Failed to load work scopes: ${failure.message}');
+            return Future.value();
+          },
+          (workScopes) {
+            print('✅ Work scopes loaded: ${workScopes.length} scopes');
+            // Update currentApiData with loaded work scopes
+            currentApiData = ReportApiData(
+              workScopes: workScopes,
+              states: currentApiData.states,
+              districts: currentApiData.districts,
+              roads: currentApiData.roads,
+              quantities: currentApiData.quantities,
+              equipment: currentApiData.equipment,
+            );
+            return Future.value();
+          },
+        );
+      } else {
+        print(
+          '✅ Work scopes already loaded: ${currentApiData.workScopes.length} scopes',
+        );
+      }
+
+      // Find matching work scope from loaded work scopes
+      // draftEntity.workScope is WorkScopeResponse (flattened entity)
+      // We need full WorkScope entity with quantities and equipment
+      WorkScope? selectedScope;
+      if (draftEntity.workScope != null &&
+          currentApiData.workScopes.isNotEmpty) {
+        try {
+          selectedScope = currentApiData.workScopes.firstWhere(
+            (scope) => scope.uid == draftEntity.workScope!.uid,
+          );
+          print('   ✓ Found matching scope: ${selectedScope.name}');
+        } catch (e) {
+          print(
+            '   ⚠️ Work scope not found in loaded scopes: ${draftEntity.workScope!.uid}',
+          );
+        }
+      }
+
+      // Extract road/district/province from draft entity
+      // draftEntity.road is RoadResponse entity (flattened structure)
+      Road? selectedRoad;
+      District? selectedDistrict;
+      Province? selectedState;
+
+      if (draftEntity.road != null) {
+        // Reconstruct Road entity from flattened RoadResponse
+        selectedRoad = Road(
+          uid: draftEntity.road!.uid,
+          name: draftEntity.road!.name,
+          roadNo: draftEntity.road!.roadNo,
+        );
+
+        // Create District entity from flattened data
+        if (draftEntity.road!.districtName != null) {
+          selectedDistrict = District(
+            name: draftEntity.road!.districtName,
+            // UID not available in flattened RoadResponse, will be null
+          );
+        }
+
+        // Create Province entity from flattened data
+        if (draftEntity.road!.stateName != null) {
+          selectedState = Province(
+            name: draftEntity.road!.stateName,
+            // UID not available in flattened RoadResponse, will be null
+          );
+        }
+
+        print('   ✓ Road: ${selectedRoad.name}');
+        print('   ✓ District: ${selectedDistrict?.name}');
+        print('   ✓ State: ${selectedState?.name}');
+      }
+
+      // Parse section from entity
+      String? section;
+      if (draftEntity.fromSection != null && draftEntity.toSection != null) {
+        section = '${draftEntity.fromSection}-${draftEntity.toSection}';
+      } else if (draftEntity.fromSection != null) {
+        section = draftEntity.fromSection.toString();
+      }
+
+      // Parse equipment from entity
+      // draftEntity.equipments is List<DailyReportEquipment> (domain entities)
+      final selectedEquipment = <WorkEquipment>[];
+      if (draftEntity.equipments != null &&
+          draftEntity.equipments!.isNotEmpty) {
+        for (final equipEntity in draftEntity.equipments!) {
+          // Create WorkEquipment entity (only uid and name are available from draft)
+          // Full equipment data will be loaded when quantities/equipment are fetched
+          selectedEquipment.add(
+            WorkEquipment(
+              id: 0, // Not available in draft, will be populated from API
+              uid: equipEntity.uid,
+              name: equipEntity.name,
+              code: '', // Not stored in draft
+            ),
+          );
+        }
+        print('   ✓ Equipment: ${selectedEquipment.length} items');
+      }
+
+      // Load draft images from permanent storage
+      print('   Loading draft images from permanent storage...');
+      final draftImages = await _imageLocalDataSource.getDraftImages(
+        entityType: SyncEntityType.dailyReport,
+        entityUID: event.draftUID,
+      );
+
+      // Convert image paths back to GalleryImage JSON format
+      Map<String, dynamic>? workerImage;
+      List<Map<String, dynamic>> workerImages = [];
+      Map<String, List<Map<String, dynamic>>> conditionSnapshots = {};
+      List<Map<String, dynamic>> additionalImages = [];
+
+      // Worker images
+      final workerImagePaths =
+          draftImages[ImageContextField.workersImage] ?? [];
+      if (workerImagePaths.isNotEmpty) {
+        workerImage = _pathToGalleryImageJson(workerImagePaths.first);
+        workerImages = workerImagePaths.map(_pathToGalleryImageJson).toList();
+      }
+
+      // Condition snapshots
+      conditionSnapshots['before'] =
+          (draftImages[ImageContextField.beforeImage] ?? [])
+              .map(_pathToGalleryImageJson)
+              .toList();
+      conditionSnapshots['current'] =
+          (draftImages[ImageContextField.inprogressImage] ?? [])
+              .map(_pathToGalleryImageJson)
+              .toList();
+      conditionSnapshots['after'] =
+          (draftImages[ImageContextField.afterImage] ?? [])
+              .map(_pathToGalleryImageJson)
+              .toList();
+
+      // Additional images
+      additionalImages = (draftImages[ImageContextField.general] ?? [])
+          .map(_pathToGalleryImageJson)
+          .toList();
+
+      print('   ✓ Loaded ${draftImages.length} image contexts');
+
+      print('   Storing quantity UIDs for later matching...');
+      // Store quantity type UIDs to match after LoadQuantitiesAndEquipments completes
+      final List<String> quantityTypeUIDsFromDraft = [];
+      final Map<String, Map<String, dynamic>> savedQuantityFieldData = {};
+
+      if (draftEntity.reportQuantities != null &&
+          draftEntity.reportQuantities!.isNotEmpty) {
+        print(
+          '   ✓ Found ${draftEntity.reportQuantities!.length} quantity types in draft',
+        );
+
+        for (final reportQty in draftEntity.reportQuantities!) {
+          final quantityUID = reportQty.quantityType.uid;
+          quantityTypeUIDsFromDraft.add(quantityUID);
+
+          // Build temporary composite key (will be rebuilt after matching with full data)
+          final tempKey = '${quantityUID}_1';
+
+          // Reconstruct field data map
+          final fieldData = <String, dynamic>{};
+          for (final qtyValue in reportQty.quantityValues) {
+            fieldData[qtyValue.quantityField.uid] = qtyValue.value;
+          }
+
+          savedQuantityFieldData[tempKey] = fieldData;
+          print(
+            '      - ${reportQty.quantityType.name} (${reportQty.quantityValues.length} fields)',
+          );
+        }
+      }
+
+      print('📦 Draft data parsed successfully');
+
+      // Create selections with populated data (including quantity field data)
+      final selections = ReportSelections(
+        draftReportUID: draftEntity.uid,
+        isDraftMode: true,
+        selectedScope: selectedScope,
+        selectedWeather: draftEntity.weatherCondition?.toLowerCase(),
+        selectedState: selectedState,
+        selectedDistrict: selectedDistrict,
+        selectedRoad: selectedRoad,
+        section: section,
+        selectedEquipment: selectedEquipment,
+        workerCount: draftEntity.totalWorkers ?? 0,
+        workerImage: workerImage,
+        workerImages: workerImages,
+        conditionSnapshots: conditionSnapshots,
+        additionalImages: additionalImages,
+        notes: draftEntity.notes ?? '',
+        quantityFieldData:
+            savedQuantityFieldData, // ✅ Quantity data now included!
+      );
+
+      // Load quantities and equipment BEFORE emitting state
+      // This ensures equipment/quantity lists are populated when UI renders
+      if (selectedScope != null) {
+        print(
+          '🔄 Loading quantities and equipment for scope: ${selectedScope.name}',
+        );
+        final companyState = getIt<CompanyBloc>().state;
+        if (companyState is CompanyLoaded &&
+            companyState.selectedCompany != null) {
+          // Call handler directly and await completion
+          // CRITICAL: Pass both updatedApiData and updatedSelections to preserve draft data
+          // Without these params, the handler will call _getCurrentApiData() and _getCurrentSelections()
+          // which retrieve OLD state data, causing work scope and road to disappear from the UI
+          await _onLoadQuantitiesAndEquipments(
+            LoadQuantitiesAndEquipments(
+              companyUID: companyState.selectedCompany!.uid,
+              workScopeUID: selectedScope.uid,
+            ),
+            emit,
+            updatedApiData:
+                currentApiData, // Contains work scopes loaded from cache/API
+            updatedSelections:
+                selections, // Contains road/district/state parsed from draft
+          );
+          // Handler already emitted editingDetails state with populated equipment/quantities
+          print('✅ Draft loaded with equipment and quantities');
+          return;
+        }
+      }
+
+      // Fallback: emit state without quantities/equipment if no scope selected
+      emit(
+        DailyReportCreateState.editingDetails(
+          apiData: currentApiData,
+          selections: selections,
+          formData: const ReportFormData(),
+        ),
+      );
+    } catch (e, stackTrace) {
+      print('❌ Error loading draft: $e');
+      print('   Stack trace: $stackTrace');
+    }
+  }
+
+  /// Delete a draft report
+  Future<void> _onDeleteDraft(
+    DeleteDraft event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    try {
+      print('🗑️ Deleting draft: ${event.draftUID}');
+
+      // Delete draft images first
+      try {
+        await _imageLocalDataSource.deleteDraftImages(
+          entityType: SyncEntityType.dailyReport,
+          draftUID: event.draftUID,
+        );
+        print('✅ Draft images deleted');
+      } catch (e) {
+        print('⚠️ Error deleting draft images: $e');
+        // Continue with draft deletion even if image deletion fails
+      }
+
+      // Delete draft record
+      await _localDataSource.deleteDraftReport(event.draftUID);
+
+      print('✅ Draft deleted successfully');
+
+      // Clear draft UID from state
+      final currentApiData = _getCurrentApiData();
+      final currentSelections = _getCurrentSelections();
+
+      emit(
+        DailyReportCreateState.selectingBasicInfo(
+          apiData: currentApiData,
+          selections: currentSelections.copyWith(
+            draftReportUID: null,
+            isDraftMode: false,
+          ),
+        ),
+      );
+    } catch (e) {
+      print('❌ Error deleting draft: $e');
+    }
+  }
+
+  /// Auto-save draft - saves immediately without debounce
+  /// Debounce can be handled at the UI layer if needed
+  Future<void> _onAutoSaveDraft(
+    AutoSaveDraft event,
+    Emitter<DailyReportCreateState> emit,
+  ) async {
+    try {
+      final currentSelections = _getCurrentSelections();
+      final draftUID = currentSelections.draftReportUID;
+
+      print('🔍 [AUTO-SAVE DEBUG] Current state draft UID: $draftUID');
+      print(
+        '🔍 [AUTO-SAVE DEBUG] isDraftMode: ${currentSelections.isDraftMode}',
+      );
+
+      // If no draft UID, create one first
+      if (draftUID == null) {
+        print('📝 No draft UID, creating new draft...');
+        final draftReport = await _localDataSource.createDraftReportLocal(
+          event.companyUID,
+        );
+
+        // Update state with new draft UID
+        final currentApiData = _getCurrentApiData();
+        final updatedSelections = currentSelections.copyWith(
+          draftReportUID: draftReport.uid,
+          isDraftMode: true,
+        );
+
+        // Emit updated state based on current state type
+        state.maybeMap(
+          selectingBasicInfo: (state) {
+            emit(state.copyWith(selections: updatedSelections));
+          },
+          editingDetails: (state) {
+            emit(state.copyWith(selections: updatedSelections));
+          },
+          orElse: () {},
+        );
+
+        print('✅ New draft created: ${draftReport.uid}');
+
+        // Now save the current form data
+        final currentFormData = _getCurrentFormData();
+        final reportData = ReportData(
+          apiData: currentApiData,
+          selections: updatedSelections,
+          formData: currentFormData,
+        );
+
+        final createModel = ReportDataToCreateModelMapper.fromReportData(
+          reportData,
+        );
+
+        // Convert road to response model for proper storage
+        // Use separate province/district/road from selections to build complete nested structure
+        final roadResponseModel = _convertRoadToResponseModel(
+          updatedSelections.selectedRoad,
+          updatedSelections.selectedDistrict,
+          updatedSelections.selectedState,
+        );
+
+        // Convert workScope to response model for proper storage
+        final workScopeResponseModel = _convertWorkScopeToResponseModel(
+          currentSelections.selectedScope,
+        );
+
+        // Update draft with current form data
+        await _localDataSource.updateDraftReportLocal(
+          draftReport.uid,
+          createModel,
+          selectedRoad: roadResponseModel,
+          selectedWorkScope: workScopeResponseModel,
+        );
+
+        print('✅ Draft auto-saved with initial data');
+        return;
+      }
+
+      print('💾 Auto-saving draft: $draftUID');
+
+      // Convert current state to CreateDailyReportModel using the mapper
+      final currentApiData = _getCurrentApiData();
+      final currentFormData = _getCurrentFormData();
+
+      final reportData = ReportData(
+        apiData: currentApiData,
+        selections: currentSelections,
+        formData: currentFormData,
+      );
+
+      final createModel = ReportDataToCreateModelMapper.fromReportData(
+        reportData,
+      );
+
+      // Convert road to response model for proper storage
+      // Use separate province/district/road from selections to build complete nested structure
+      final roadResponseModel = _convertRoadToResponseModel(
+        currentSelections.selectedRoad,
+        currentSelections.selectedDistrict,
+        currentSelections.selectedState,
+      );
+
+      // Convert workScope to response model for proper storage
+      final workScopeResponseModel = _convertWorkScopeToResponseModel(
+        currentSelections.selectedScope,
+      );
+
+      // Update draft with current form data
+      await _localDataSource.updateDraftReportLocal(
+        draftUID,
+        createModel,
+        selectedRoad: roadResponseModel,
+        selectedWorkScope: workScopeResponseModel,
+      );
+
+      print('✅ Draft auto-saved: $draftUID');
+
+      // Save draft images to permanent storage
+      await _saveDraftImages(
+        draftUID: draftUID,
+        companyUID: event.companyUID,
+        selections: currentSelections,
+      );
+    } catch (e) {
+      print('❌ Error auto-saving draft: $e');
+    }
+  }
+
+  /// Convert file path to GalleryImage JSON format
+  Map<String, dynamic> _pathToGalleryImageJson(String path) {
+    return GalleryImage(
+      path: path,
+      capturedAt: DateTime.now(), // Timestamp not critical for display
+    ).toJson();
+  }
+
+  /// Save draft images to permanent storage
+  /// Extracts images from selections and calls ImageLocalDataSource
+  Future<void> _saveDraftImages({
+    required String draftUID,
+    required String companyUID,
+    required ReportSelections selections,
+  }) async {
+    try {
+      // Map draft images to ImageContextField
+      final imagesByContext = <ImageContextField, List<String>>{};
+
+      // 1. Worker images
+      if (selections.workerImages.isNotEmpty) {
+        final workerImagePaths = selections.workerImages
+            .map((json) => GalleryImage.fromJson(json).path)
+            .toList();
+        imagesByContext[ImageContextField.workersImage] = workerImagePaths;
+      } else if (selections.workerImage != null) {
+        // Fallback to single worker image
+        final workerImg = GalleryImage.fromJson(selections.workerImage!);
+        imagesByContext[ImageContextField.workersImage] = [workerImg.path];
+      }
+
+      // 2. Condition snapshots
+      final conditionSnapshots = selections.conditionSnapshots;
+
+      // Before images
+      final beforeImages = (conditionSnapshots['before'] ?? [])
+          .map((json) => GalleryImage.fromJson(json).path)
+          .toList();
+      if (beforeImages.isNotEmpty) {
+        imagesByContext[ImageContextField.beforeImage] = beforeImages;
+      }
+
+      // Current/In-progress images
+      final currentImages = (conditionSnapshots['current'] ?? [])
+          .map((json) => GalleryImage.fromJson(json).path)
+          .toList();
+      if (currentImages.isNotEmpty) {
+        imagesByContext[ImageContextField.inprogressImage] = currentImages;
+      }
+
+      // After images
+      final afterImages = (conditionSnapshots['after'] ?? [])
+          .map((json) => GalleryImage.fromJson(json).path)
+          .toList();
+      if (afterImages.isNotEmpty) {
+        imagesByContext[ImageContextField.afterImage] = afterImages;
+      }
+
+      // 3. Additional images
+      final additionalImages = selections.additionalImages
+          .map((json) => GalleryImage.fromJson(json).path)
+          .toList();
+      if (additionalImages.isNotEmpty) {
+        imagesByContext[ImageContextField.general] = additionalImages;
+      }
+
+      if (imagesByContext.isEmpty) {
+        print('📷 No draft images to save for $draftUID');
+        return;
+      }
+
+      // Save to permanent storage with draft_pending status
+      await _imageLocalDataSource.saveDraftImages(
+        entityType: SyncEntityType.dailyReport,
+        entityUID: draftUID,
+        companyUID: companyUID,
+        imagesByContextField: imagesByContext,
+      );
+
+      print(
+        '✅ Draft images saved: $draftUID (${imagesByContext.length} contexts)',
+      );
+    } catch (e) {
+      print('❌ Error saving draft images: $e');
+    }
+  }
+
+  /// Convert Road entity to RoadResponseModel for proper storage
+  /// This ensures draft reports display road name and district information
+  ///
+  /// Uses separate province/district/road objects from selections (just like SelectLocationFromResult)
+  /// to build the complete nested structure that matches the API response format
+  RoadResponseModel? _convertRoadToResponseModel(
+    Road? road,
+    District? district,
+    Province? province,
+  ) {
+    if (road == null) return null;
+    if (road.uid == null || road.name == null) {
+      return null;
+    }
+
+    // Build nested district/state/country structure from separate objects
+    // This matches how the API returns data: road → district → state → country
+    DistrictResponseModel? districtModel;
+    if (district != null && district.uid != null && district.name != null) {
+      StateResponseModel? stateModel;
+      if (province != null && province.uid != null && province.name != null) {
+        // Build country model from province.country
+        CountryResponseModel? countryModel;
+        if (province.country != null &&
+            province.country!.uid != null &&
+            province.country!.name != null) {
+          countryModel = CountryResponseModel(
+            uid: province.country!.uid!,
+            name: province.country!.name!,
+          );
+        }
+
+        stateModel = StateResponseModel(
+          uid: province.uid!,
+          name: province.name!,
+          country: countryModel,
+        );
+      }
+
+      districtModel = DistrictResponseModel(
+        uid: district.uid!,
+        name: district.name!,
+        state: stateModel,
+      );
+    }
+
+    return RoadResponseModel(
+      uid: road.uid!,
+      name: road.name!,
+      roadNo: road.roadNo ?? '', // Use empty string if roadNo is null
+      district: districtModel,
+    );
+  }
+
+  /// Convert WorkScope entity to WorkScopeResponseModel for proper storage
+  /// This ensures draft reports display work scope code and name
+  WorkScopeResponseModel? _convertWorkScopeToResponseModel(
+    WorkScope? workScope,
+  ) {
+    if (workScope == null) return null;
+    if (workScope.uid == null ||
+        workScope.name == null ||
+        workScope.code == null) {
+      return null;
+    }
+
+    return WorkScopeResponseModel(
+      uid: workScope.uid!,
+      name: workScope.name!,
+      code: workScope.code!,
+    );
   }
 }

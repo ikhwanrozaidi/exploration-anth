@@ -4,7 +4,7 @@ import 'package:rclink_app/shared/widgets/auth_wrapper.dart';
 
 import '../features/program/presentation/pages/program_details_page.dart';
 import '../features/program/presentation/pages/view_report_program_page.dart';
-import '../features/warnings/presentation/pages/warning_details_page.dart';
+import '../features/program/presentation/pages/program_warning_page.dart';
 
 class AppRouteName {
   static const String root = 'root';
@@ -57,7 +57,7 @@ final GoRouter appRouter = GoRouter(
         final from = state.uri.queryParameters['from'];
         final relatedProgramId = state.uri.queryParameters['programId'];
         final relatedProgramName = state.uri.queryParameters['programName'];
-        return WarningDetailsPage(
+        return ProgramWarningPage(
           warningId: warningId,
           from: from,
           relatedProgramId: relatedProgramId,

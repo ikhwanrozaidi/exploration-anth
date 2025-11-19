@@ -146,12 +146,12 @@ return roadsFailure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<DailyReport> reports,  int currentPage,  bool hasMore,  bool isLoadingMore,  String? searchQuery)?  loaded,TResult Function( String message)?  failure,TResult Function()?  detailLoading,TResult Function( DailyReport report)?  detailLoaded,TResult Function( String message)?  detailFailure,TResult Function()?  roadsLoading,TResult Function( List<Road> roads,  Road? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult Function( String message)?  roadsFailure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<DailyReport> reports,  int currentPage,  bool hasMore,  bool isLoadingMore,  String? searchQuery,  int selectedTabIndex)?  loaded,TResult Function( String message)?  failure,TResult Function()?  detailLoading,TResult Function( DailyReport report)?  detailLoaded,TResult Function( String message)?  detailFailure,TResult Function()?  roadsLoading,TResult Function( List<Road> roads,  Road? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult Function( String message)?  roadsFailure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case DailyReportViewInitial() when initial != null:
 return initial();case DailyReportViewLoading() when loading != null:
 return loading();case DailyReportViewLoaded() when loaded != null:
-return loaded(_that.reports,_that.currentPage,_that.hasMore,_that.isLoadingMore,_that.searchQuery);case DailyReportViewFailure() when failure != null:
+return loaded(_that.reports,_that.currentPage,_that.hasMore,_that.isLoadingMore,_that.searchQuery,_that.selectedTabIndex);case DailyReportViewFailure() when failure != null:
 return failure(_that.message);case DailyReportViewDetailLoading() when detailLoading != null:
 return detailLoading();case DailyReportViewDetailLoaded() when detailLoaded != null:
 return detailLoaded(_that.report);case DailyReportViewDetailFailure() when detailFailure != null:
@@ -176,12 +176,12 @@ return roadsFailure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<DailyReport> reports,  int currentPage,  bool hasMore,  bool isLoadingMore,  String? searchQuery)  loaded,required TResult Function( String message)  failure,required TResult Function()  detailLoading,required TResult Function( DailyReport report)  detailLoaded,required TResult Function( String message)  detailFailure,required TResult Function()  roadsLoading,required TResult Function( List<Road> roads,  Road? selectedRoad,  String? currentSection,  String? sectionError)  roadsLoaded,required TResult Function( String message)  roadsFailure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<DailyReport> reports,  int currentPage,  bool hasMore,  bool isLoadingMore,  String? searchQuery,  int selectedTabIndex)  loaded,required TResult Function( String message)  failure,required TResult Function()  detailLoading,required TResult Function( DailyReport report)  detailLoaded,required TResult Function( String message)  detailFailure,required TResult Function()  roadsLoading,required TResult Function( List<Road> roads,  Road? selectedRoad,  String? currentSection,  String? sectionError)  roadsLoaded,required TResult Function( String message)  roadsFailure,}) {final _that = this;
 switch (_that) {
 case DailyReportViewInitial():
 return initial();case DailyReportViewLoading():
 return loading();case DailyReportViewLoaded():
-return loaded(_that.reports,_that.currentPage,_that.hasMore,_that.isLoadingMore,_that.searchQuery);case DailyReportViewFailure():
+return loaded(_that.reports,_that.currentPage,_that.hasMore,_that.isLoadingMore,_that.searchQuery,_that.selectedTabIndex);case DailyReportViewFailure():
 return failure(_that.message);case DailyReportViewDetailLoading():
 return detailLoading();case DailyReportViewDetailLoaded():
 return detailLoaded(_that.report);case DailyReportViewDetailFailure():
@@ -205,12 +205,12 @@ return roadsFailure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<DailyReport> reports,  int currentPage,  bool hasMore,  bool isLoadingMore,  String? searchQuery)?  loaded,TResult? Function( String message)?  failure,TResult? Function()?  detailLoading,TResult? Function( DailyReport report)?  detailLoaded,TResult? Function( String message)?  detailFailure,TResult? Function()?  roadsLoading,TResult? Function( List<Road> roads,  Road? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult? Function( String message)?  roadsFailure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<DailyReport> reports,  int currentPage,  bool hasMore,  bool isLoadingMore,  String? searchQuery,  int selectedTabIndex)?  loaded,TResult? Function( String message)?  failure,TResult? Function()?  detailLoading,TResult? Function( DailyReport report)?  detailLoaded,TResult? Function( String message)?  detailFailure,TResult? Function()?  roadsLoading,TResult? Function( List<Road> roads,  Road? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult? Function( String message)?  roadsFailure,}) {final _that = this;
 switch (_that) {
 case DailyReportViewInitial() when initial != null:
 return initial();case DailyReportViewLoading() when loading != null:
 return loading();case DailyReportViewLoaded() when loaded != null:
-return loaded(_that.reports,_that.currentPage,_that.hasMore,_that.isLoadingMore,_that.searchQuery);case DailyReportViewFailure() when failure != null:
+return loaded(_that.reports,_that.currentPage,_that.hasMore,_that.isLoadingMore,_that.searchQuery,_that.selectedTabIndex);case DailyReportViewFailure() when failure != null:
 return failure(_that.message);case DailyReportViewDetailLoading() when detailLoading != null:
 return detailLoading();case DailyReportViewDetailLoaded() when detailLoaded != null:
 return detailLoaded(_that.report);case DailyReportViewDetailFailure() when detailFailure != null:
@@ -293,7 +293,7 @@ String toString() {
 
 
 class DailyReportViewLoaded implements DailyReportViewState {
-  const DailyReportViewLoaded({required final  List<DailyReport> reports, this.currentPage = 1, this.hasMore = true, this.isLoadingMore = false, this.searchQuery}): _reports = reports;
+  const DailyReportViewLoaded({required final  List<DailyReport> reports, this.currentPage = 1, this.hasMore = true, this.isLoadingMore = false, this.searchQuery, this.selectedTabIndex = 0}): _reports = reports;
   
 
  final  List<DailyReport> _reports;
@@ -307,6 +307,7 @@ class DailyReportViewLoaded implements DailyReportViewState {
 @JsonKey() final  bool hasMore;
 @JsonKey() final  bool isLoadingMore;
  final  String? searchQuery;
+@JsonKey() final  int selectedTabIndex;
 
 /// Create a copy of DailyReportViewState
 /// with the given fields replaced by the non-null parameter values.
@@ -318,16 +319,16 @@ $DailyReportViewLoadedCopyWith<DailyReportViewLoaded> get copyWith => _$DailyRep
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyReportViewLoaded&&const DeepCollectionEquality().equals(other._reports, _reports)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&(identical(other.isLoadingMore, isLoadingMore) || other.isLoadingMore == isLoadingMore)&&(identical(other.searchQuery, searchQuery) || other.searchQuery == searchQuery));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyReportViewLoaded&&const DeepCollectionEquality().equals(other._reports, _reports)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&(identical(other.isLoadingMore, isLoadingMore) || other.isLoadingMore == isLoadingMore)&&(identical(other.searchQuery, searchQuery) || other.searchQuery == searchQuery)&&(identical(other.selectedTabIndex, selectedTabIndex) || other.selectedTabIndex == selectedTabIndex));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_reports),currentPage,hasMore,isLoadingMore,searchQuery);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_reports),currentPage,hasMore,isLoadingMore,searchQuery,selectedTabIndex);
 
 @override
 String toString() {
-  return 'DailyReportViewState.loaded(reports: $reports, currentPage: $currentPage, hasMore: $hasMore, isLoadingMore: $isLoadingMore, searchQuery: $searchQuery)';
+  return 'DailyReportViewState.loaded(reports: $reports, currentPage: $currentPage, hasMore: $hasMore, isLoadingMore: $isLoadingMore, searchQuery: $searchQuery, selectedTabIndex: $selectedTabIndex)';
 }
 
 
@@ -338,7 +339,7 @@ abstract mixin class $DailyReportViewLoadedCopyWith<$Res> implements $DailyRepor
   factory $DailyReportViewLoadedCopyWith(DailyReportViewLoaded value, $Res Function(DailyReportViewLoaded) _then) = _$DailyReportViewLoadedCopyWithImpl;
 @useResult
 $Res call({
- List<DailyReport> reports, int currentPage, bool hasMore, bool isLoadingMore, String? searchQuery
+ List<DailyReport> reports, int currentPage, bool hasMore, bool isLoadingMore, String? searchQuery, int selectedTabIndex
 });
 
 
@@ -355,14 +356,15 @@ class _$DailyReportViewLoadedCopyWithImpl<$Res>
 
 /// Create a copy of DailyReportViewState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? reports = null,Object? currentPage = null,Object? hasMore = null,Object? isLoadingMore = null,Object? searchQuery = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? reports = null,Object? currentPage = null,Object? hasMore = null,Object? isLoadingMore = null,Object? searchQuery = freezed,Object? selectedTabIndex = null,}) {
   return _then(DailyReportViewLoaded(
 reports: null == reports ? _self._reports : reports // ignore: cast_nullable_to_non_nullable
 as List<DailyReport>,currentPage: null == currentPage ? _self.currentPage : currentPage // ignore: cast_nullable_to_non_nullable
 as int,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
 as bool,isLoadingMore: null == isLoadingMore ? _self.isLoadingMore : isLoadingMore // ignore: cast_nullable_to_non_nullable
 as bool,searchQuery: freezed == searchQuery ? _self.searchQuery : searchQuery // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,selectedTabIndex: null == selectedTabIndex ? _self.selectedTabIndex : selectedTabIndex // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 

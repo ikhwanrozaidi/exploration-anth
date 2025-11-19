@@ -31,12 +31,13 @@ class _DailyReportPaginatedListState extends State<DailyReportPaginatedList> {
     // Trigger initial load
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<DailyReportViewBloc>().add(
-            DailyReportViewEvent.loadDailyReports(
-              companyUID: widget.companyUID,
-              page: 1,
-              limit: widget.pageSize,
-            ),
-          );
+        DailyReportViewEvent.loadDailyReports(
+          companyUID: widget.companyUID,
+          page: 1,
+          limit: widget.pageSize,
+          sortOrder: 'desc',
+        ),
+      );
     });
   }
 
@@ -58,19 +59,27 @@ class _DailyReportPaginatedListState extends State<DailyReportPaginatedList> {
       final state = bloc.state;
 
       state.whenOrNull(
-        loaded: (reports, currentPage, hasMore, isLoadingMore, searchQuery) {
-          if (hasMore && !isLoadingMore) {
-            setState(() => _isLoadingMore = true);
-            bloc.add(
-              DailyReportViewEvent.loadMoreDailyReports(
-                companyUID: widget.companyUID,
-                page: currentPage + 1,
-                limit: widget.pageSize,
-                search: searchQuery,
-              ),
-            );
-          }
-        },
+        loaded:
+            (
+              reports,
+              currentPage,
+              hasMore,
+              isLoadingMore,
+              searchQuery,
+              selectedTabIndex,
+            ) {
+              if (hasMore && !isLoadingMore) {
+                setState(() => _isLoadingMore = true);
+                bloc.add(
+                  DailyReportViewEvent.loadMoreDailyReports(
+                    companyUID: widget.companyUID,
+                    page: currentPage + 1,
+                    limit: widget.pageSize,
+                    search: searchQuery,
+                  ),
+                );
+              }
+            },
       );
     }
   }
@@ -80,60 +89,72 @@ class _DailyReportPaginatedListState extends State<DailyReportPaginatedList> {
     return BlocConsumer<DailyReportViewBloc, DailyReportViewState>(
       listener: (context, state) {
         state.whenOrNull(
-          loaded: (reports, currentPage, hasMore, isLoadingMore, searchQuery) {
-            if (!isLoadingMore && _isLoadingMore) {
-              setState(() => _isLoadingMore = false);
-            }
-          },
+          loaded:
+              (
+                reports,
+                currentPage,
+                hasMore,
+                isLoadingMore,
+                searchQuery,
+                selectedTabIndex,
+              ) {
+                if (!isLoadingMore && _isLoadingMore) {
+                  setState(() => _isLoadingMore = false);
+                }
+              },
         );
       },
       builder: (context, state) {
         return state.when(
           initial: () => const Center(child: Text('Ready to load reports')),
           loading: () => const Center(child: CircularProgressIndicator()),
-          loaded: (reports, currentPage, hasMore, isLoadingMore, searchQuery) {
-            if (reports.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.description_outlined,
-                      size: 64,
-                      color: Colors.grey,
+          loaded:
+              (
+                reports,
+                currentPage,
+                hasMore,
+                isLoadingMore,
+                searchQuery,
+                selectedTabIndex,
+              ) {
+                if (reports.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.description_outlined,
+                          size: 64,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          'No reports found',
+                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 16),
-                    Text(
-                      'No reports found',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-
-            return ListView.builder(
-              controller: _scrollController,
-              padding: EdgeInsets.all(20),
-              itemCount: reports.length + (hasMore || isLoadingMore ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index == reports.length) {
-                  // Loading indicator at the bottom
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Center(child: CircularProgressIndicator()),
                   );
                 }
 
-                return DailyReportListItem(
-                  report: reports[index],
+                return ListView.builder(
+                  controller: _scrollController,
+                  padding: EdgeInsets.all(20),
+                  itemCount:
+                      reports.length + (hasMore || isLoadingMore ? 1 : 0),
+                  itemBuilder: (context, index) {
+                    if (index == reports.length) {
+                      // Loading indicator at the bottom
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
+                    return DailyReportListItem(report: reports[index]);
+                  },
                 );
               },
-            );
-          },
           failure: (message) => Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -147,12 +168,13 @@ class _DailyReportPaginatedListState extends State<DailyReportPaginatedList> {
                 ElevatedButton(
                   onPressed: () {
                     context.read<DailyReportViewBloc>().add(
-                          DailyReportViewEvent.loadDailyReports(
-                            companyUID: widget.companyUID,
-                            page: 1,
-                            limit: widget.pageSize,
-                          ),
-                        );
+                      DailyReportViewEvent.loadDailyReports(
+                        companyUID: widget.companyUID,
+                        page: 1,
+                        limit: widget.pageSize,
+                        sortOrder: 'desc',
+                      ),
+                    );
                   },
                   child: Text('Retry'),
                 ),

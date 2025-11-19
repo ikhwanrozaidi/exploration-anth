@@ -250,7 +250,9 @@ class _GalleryWidgetState extends State<GalleryWidget>
     }
 
     try {
-      final allowGallery = _currentTab != 'before';
+      // // Configure to allow Gallery
+      // final allowGallery = _currentTab != 'before';
+      final allowGallery = false;
 
       final source = await _showImageSourceDialog(allowGallery);
       if (source == null) return;

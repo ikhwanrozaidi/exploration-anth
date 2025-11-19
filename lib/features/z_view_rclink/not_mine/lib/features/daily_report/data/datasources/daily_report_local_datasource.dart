@@ -6,15 +6,18 @@ import 'package:rclink_app/features/daily_report/data/models/daily_report_model.
 import 'package:rclink_app/features/daily_report/data/models/road_response_model.dart';
 import 'package:rclink_app/features/daily_report/data/models/work_scope_response_model.dart';
 import 'package:rclink_app/features/daily_report/data/models/report_quantities_model.dart';
+import 'package:rclink_app/features/daily_report/data/models/quantity_type_model.dart';
+import 'package:rclink_app/features/daily_report/data/models/quantity_value_model.dart';
+import 'package:rclink_app/features/daily_report/data/models/quantity_field_model.dart';
 import 'package:rclink_app/features/daily_report/data/models/created_by_response_model.dart';
 import 'package:rclink_app/features/daily_report/data/models/company_response_model.dart';
 import 'package:rclink_app/core/domain/models/file_model.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/database/app_database.dart';
-import '../../../road/domain/entities/road_edit_entity.dart';
 import '../models/create_daily_report_model.dart';
 import '../models/create_daily_report_equipment_model.dart';
 import '../models/create_daily_report_quantity_model.dart';
+import 'daily_report_format_detector.dart';
 
 abstract class DailyReportLocalDataSource {
   Future<List<DailyReportModel>?> getCachedDailyReports(
@@ -38,6 +41,19 @@ abstract class DailyReportLocalDataSource {
 
   Future<({CreateDailyReportModel model, String companyUID})?>
   getUnsyncedReportData(String uid);
+
+  // Draft-specific methods
+  Future<DailyReportModel> createDraftReportLocal(
+    String companyUID,
+  );
+  Future<void> updateDraftReportLocal(
+    String draftUID,
+    CreateDailyReportModel data, {
+    RoadResponseModel? selectedRoad,
+    WorkScopeResponseModel? selectedWorkScope,
+  });
+  Future<List<DailyReportModel>> getDraftReports(String companyUID);
+  Future<void> deleteDraftReport(String draftUID);
 
   // Future<List<RoadEdit>?> getCachedRoadsByDistrictName(String districtName);
   // Future<void> cacheRoads(List<RoadEdit> roads, String districtName);
@@ -72,9 +88,23 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
         return null;
       }
 
-      // Use helper method to convert records to models
+      // OPTIMIZATION: Fetch all files for all reports in one query (eliminates N+1 problem)
+      final reportUIDs = records.map((r) => r.uid).toList();
+      final allFileRecords = await (_database.select(_database.files)
+            ..where((tbl) =>
+                tbl.dailyReportUID.isIn(reportUIDs) &
+                tbl.deletedAt.isNull()))
+          .get();
+
+      // Group files by dailyReportUID for O(1) lookup
+      final filesByReportUID = <String, List<FileRecord>>{};
+      for (final fileRecord in allFileRecords) {
+        filesByReportUID.putIfAbsent(fileRecord.dailyReportUID!, () => []).add(fileRecord);
+      }
+
+      // Convert records to models, passing pre-fetched files
       final reports = await Future.wait(
-        records.map((record) => _convertRecordToModel(record)),
+        records.map((record) => _convertRecordToModel(record, filesByReportUID[record.uid])),
       );
 
       return reports.isEmpty ? null : reports;
@@ -106,8 +136,8 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
   @override
   Future<void> cacheDailyReports(List<DailyReportModel> reports) async {
     try {
-      await _database.delete(_database.dailyReports).go();
-
+      // Use insertOnConflictUpdate instead of delete + insert
+      // This preserves drafts and other reports not in the API response
       for (final report in reports) {
         // Convert workScope to JSON
         String? workScopeData;
@@ -156,46 +186,65 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
           );
         }
 
-        await _database
-            .into(_database.dailyReports)
-            .insert(
-              DailyReportsCompanion(
-                id: Value(report.id),
-                uid: Value(report.uid),
-                name: Value(report.name),
-                notes: Value(report.notes),
-                weatherCondition: Value(report.weatherCondition),
-                workPerformed: Value(report.workPerformed),
-                longitude: report.longitude != null
-                    ? Value(double.tryParse(report.longitude!))
-                    : const Value.absent(),
-                latitude: report.latitude != null
-                    ? Value(double.tryParse(report.latitude!))
-                    : const Value.absent(),
-                companyID: Value(report.companyID),
-                contractRelationID: Value(report.contractRelationID),
-                status: Value(report.status),
-                approvedByID: Value(report.approvedByID),
-                approvedAt: Value(report.approvedAt),
-                rejectionReason: Value(report.rejectionReason),
-                workScopeID: Value(report.workScopeID),
-                roadID: Value(report.roadID),
-                totalWorkers: Value(report.totalWorkers),
-                fromSection: report.fromSection != null
-                    ? Value(double.tryParse(report.fromSection!))
-                    : const Value.absent(),
-                toSection: report.toSection != null
-                    ? Value(double.tryParse(report.toSection!))
-                    : const Value.absent(),
-                createdByID: Value(report.createdByID),
-                createdAt: Value(report.createdAt),
-                updatedAt: Value(report.updatedAt),
-                workScopeData: Value(workScopeData),
-                roadData: Value(roadData),
-                createdByData: Value(createdByData),
-                companyData: Value(companyData),
-                equipmentsData: Value(equipmentsJson),
-                reportQuantitiesData: Value(reportQuantitiesJson),
+        // Use insert with DoUpdate to detect conflicts by UID, not ID
+        // This prevents ID collision between drafts (auto-generated local IDs)
+        // and submitted reports (server-assigned IDs)
+
+        // CRITICAL FIX: Check if record already exists to avoid ID update conflicts
+        final existingRecord = await (_database.select(_database.dailyReports)
+              ..where((tbl) => tbl.uid.equals(report.uid)))
+            .getSingleOrNull();
+
+        // Only set ID if record doesn't exist OR if existing ID is NULL
+        final idValue = (existingRecord == null || existingRecord.id == null)
+            ? Value<int?>(report.id)
+            : const Value<int?>.absent();
+
+        final companion = DailyReportsCompanion(
+          id: idValue, // Only set ID on first insert or when NULL
+          uid: Value(report.uid),
+          name: Value(report.name),
+          notes: Value(report.notes),
+          weatherCondition: Value(report.weatherCondition),
+          workPerformed: Value(report.workPerformed),
+          longitude: report.longitude != null
+              ? Value(double.tryParse(report.longitude!))
+              : const Value.absent(),
+          latitude: report.latitude != null
+              ? Value(double.tryParse(report.latitude!))
+              : const Value.absent(),
+          companyID: Value(report.companyID),
+          contractRelationID: Value(report.contractRelationID),
+          status: Value(report.status),
+          approvedByID: Value(report.approvedByID),
+          approvedAt: Value(report.approvedAt),
+          rejectionReason: Value(report.rejectionReason),
+          workScopeID: Value(report.workScopeID),
+          roadID: Value(report.roadID),
+          totalWorkers: Value(report.totalWorkers),
+          fromSection: report.fromSection != null
+              ? Value(double.tryParse(report.fromSection!))
+              : const Value.absent(),
+          toSection: report.toSection != null
+              ? Value(double.tryParse(report.toSection!))
+              : const Value.absent(),
+          createdByID: Value(report.createdByID),
+          createdAt: Value(report.createdAt),
+          updatedAt: Value(report.updatedAt),
+          workScopeData: Value(workScopeData),
+          roadData: Value(roadData),
+          createdByData: Value(createdByData),
+          companyData: Value(companyData),
+          equipmentsData: Value(equipmentsJson),
+          reportQuantitiesData: Value(reportQuantitiesJson),
+        );
+
+        await _database.into(_database.dailyReports).insert(
+              companion,
+              mode: InsertMode.insertOrReplace,
+              onConflict: DoUpdate(
+                (_) => companion,
+                target: [_database.dailyReports.uid],
               ),
             );
 
@@ -217,7 +266,8 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
                     contextType: Value(file.contextType),
                     contextField: Value(file.contextField),
                     uploadedByID: Value(file.uploadedByID),
-                    dailyReportID: Value(report.id), // Link to daily report
+                    dailyReportID: Value(report.id), // Link to daily report (numeric ID)
+                    dailyReportUID: Value(report.uid), // Link to daily report (UID-based, more reliable)
                     createdAt: Value(file.createdAt ?? DateTime.now()),
                     updatedAt: Value(file.updatedAt ?? DateTime.now()),
                     isSynced: Value(file.isSynced),
@@ -234,90 +284,96 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
   @override
   Future<void> cacheSingleDailyReport(DailyReportModel report) async {
     try {
-      // Insert or update the single report (reuse logic from cacheDailyReports)
-      await _database
-          .into(_database.dailyReports)
-          .insertOnConflictUpdate(
-            DailyReportsCompanion(
-              id: Value(report.id),
-              uid: Value(report.uid),
-              name: Value(report.name),
-              notes: Value(report.notes),
-              weatherCondition: Value(report.weatherCondition),
-              workPerformed: Value(report.workPerformed),
-              companyID: Value(report.companyID),
-              status: Value(report.status),
-              contractRelationID: Value(report.contractRelationID),
-              approvedByID: Value(report.approvedByID),
-              approvedAt: Value(report.approvedAt),
-              rejectionReason: Value(report.rejectionReason),
-              workScopeID: Value(report.workScopeID),
-              roadID: Value(report.roadID),
-              totalWorkers: Value(report.totalWorkers),
-              fromSection: Value(
-                report.fromSection != null
-                    ? double.tryParse(report.fromSection!)
-                    : null,
-              ),
-              toSection: Value(
-                report.toSection != null
-                    ? double.tryParse(report.toSection!)
-                    : null,
-              ),
-              longitude: Value(
-                report.longitude != null
-                    ? double.tryParse(report.longitude!)
-                    : null,
-              ),
-              latitude: Value(
-                report.latitude != null
-                    ? double.tryParse(report.latitude!)
-                    : null,
-              ),
-              createdByID: Value(report.createdByID),
-              createdAt: Value(report.createdAt),
-              updatedAt: Value(report.updatedAt),
-              workScopeData: Value(
-                report.workScope != null
-                    ? jsonEncode({
-                        'name': report.workScope!.name,
-                        'code': report.workScope!.code,
-                        'uid': report.workScope!.uid,
-                      })
-                    : null,
-              ),
-              roadData: Value(
-                report.road != null ? jsonEncode(report.road!.toJson()) : null,
-              ),
-              createdByData: Value(
-                report.createdBy != null
-                    ? jsonEncode(report.createdBy!.toJson())
-                    : null,
-              ),
-              companyData: Value(
-                report.company != null
-                    ? jsonEncode(report.company!.toJson())
-                    : null,
-              ),
-              equipmentsData: Value(
-                report.equipments!.isNotEmpty
-                    ? jsonEncode(
-                        report.equipments!
-                            .map((e) => {'name': e.name, 'uid': e.uid})
-                            .toList(),
-                      )
-                    : null,
-              ),
-              reportQuantitiesData: Value(
-                report.reportQuantities != null &&
-                        report.reportQuantities!.isNotEmpty
-                    ? jsonEncode(
-                        report.reportQuantities!
-                            .map((q) => q.toJson())
-                            .toList(),
-                      )
-                    : null,
-              ),
+      // Use insert with DoUpdate to detect conflicts by UID, not ID
+      // This prevents ID collision between drafts and submitted reports
+      final companion = DailyReportsCompanion(
+        id: Value(report.id),
+        uid: Value(report.uid),
+        name: Value(report.name),
+        notes: Value(report.notes),
+        weatherCondition: Value(report.weatherCondition),
+        workPerformed: Value(report.workPerformed),
+        companyID: Value(report.companyID),
+        status: Value(report.status),
+        contractRelationID: Value(report.contractRelationID),
+        approvedByID: Value(report.approvedByID),
+        approvedAt: Value(report.approvedAt),
+        rejectionReason: Value(report.rejectionReason),
+        workScopeID: Value(report.workScopeID),
+        roadID: Value(report.roadID),
+        totalWorkers: Value(report.totalWorkers),
+        fromSection: Value(
+          report.fromSection != null
+              ? double.tryParse(report.fromSection!)
+              : null,
+        ),
+        toSection: Value(
+          report.toSection != null
+              ? double.tryParse(report.toSection!)
+              : null,
+        ),
+        longitude: Value(
+          report.longitude != null
+              ? double.tryParse(report.longitude!)
+              : null,
+        ),
+        latitude: Value(
+          report.latitude != null
+              ? double.tryParse(report.latitude!)
+              : null,
+        ),
+        createdByID: Value(report.createdByID),
+        createdAt: Value(report.createdAt),
+        updatedAt: Value(report.updatedAt),
+        workScopeData: Value(
+          report.workScope != null
+              ? jsonEncode({
+                  'name': report.workScope!.name,
+                  'code': report.workScope!.code,
+                  'uid': report.workScope!.uid,
+                })
+              : null,
+        ),
+        roadData: Value(
+          report.road != null ? jsonEncode(report.road!.toJson()) : null,
+        ),
+        createdByData: Value(
+          report.createdBy != null
+              ? jsonEncode(report.createdBy!.toJson())
+              : null,
+        ),
+        companyData: Value(
+          report.company != null
+              ? jsonEncode(report.company!.toJson())
+              : null,
+        ),
+        equipmentsData: Value(
+          report.equipments!.isNotEmpty
+              ? jsonEncode(
+                  report.equipments!
+                      .map((e) => {'name': e.name, 'uid': e.uid})
+                      .toList(),
+                )
+              : null,
+        ),
+        reportQuantitiesData: Value(
+          report.reportQuantities != null &&
+                  report.reportQuantities!.isNotEmpty
+              ? jsonEncode(
+                  report.reportQuantities!
+                      .map((q) => q.toJson())
+                      .toList(),
+                )
+              : null,
+        ),
+      );
+
+      await _database.into(_database.dailyReports).insert(
+            companion,
+            mode: InsertMode.insertOrReplace,
+            onConflict: DoUpdate(
+              (_) => companion,
+              target: [_database.dailyReports.uid],
             ),
           );
 
@@ -339,7 +395,8 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
                   contextType: Value(file.contextType),
                   contextField: Value(file.contextField),
                   uploadedByID: Value(file.uploadedByID),
-                  dailyReportID: Value(report.id),
+                  dailyReportID: Value(report.id), // Link to daily report (numeric ID)
+                  dailyReportUID: Value(report.uid), // Link to daily report (UID-based, more reliable)
                   createdAt: Value(file.createdAt ?? DateTime.now()),
                   updatedAt: Value(file.updatedAt ?? DateTime.now()),
                   isSynced: Value(file.isSynced),
@@ -447,8 +504,11 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
 
   /// Helper method to convert DailyReportRecord to DailyReportModel
   /// Shared logic between getCachedDailyReports and createDailyReportLocal
+  ///
+  /// [preFetchedFiles] - Optional pre-fetched file records to avoid N+1 query problem
   Future<DailyReportModel> _convertRecordToModel(
     DailyReportRecord record,
+    [List<FileRecord>? preFetchedFiles]
   ) async {
     // Parse workScope JSON
     WorkScopeResponseModel? workScope;
@@ -509,13 +569,31 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
         final List<dynamic> equipmentsData = jsonDecode(record.equipmentsData!);
         equipments = equipmentsData
             .map(
-              (e) => DailyReportEquipmentModel(
-                name: e['name'] as String,
-                uid: e['uid'] as String,
-              ),
+              (e) {
+                // Handle two different JSON formats:
+                // 1. Draft format (from auto-save): {"workEquipmentUID": "uid-123"}
+                //    - Comes from CreateDailyReportEquipmentModel (report_data_to_create_model_mapper.dart)
+                //    - No name field available
+                // 2. Submitted report format: {"uid": "uid-123", "name": "Equipment Name"}
+                //    - Comes from server response after successful submission
+                //    - Includes full equipment details
+
+                final bool isDraftFormat = DailyReportFormatDetector.isDraftEquipmentFormat(e);
+                final String equipmentUid = isDraftFormat
+                    ? e['workEquipmentUID'] as String  // From draft (auto-save)
+                    : e['uid'] as String;              // From submitted report
+
+                final String equipmentName = (e['name'] as String?) ?? ''; // May not exist in draft format
+
+                return DailyReportEquipmentModel(
+                  name: equipmentName,
+                  uid: equipmentUid,
+                );
+              },
             )
             .toList();
       } catch (e) {
+        print('❌ Error parsing equipment data: $e');
         // Silently skip parsing errors for optional fields
       }
     }
@@ -528,21 +606,64 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
         final List<dynamic> quantitiesData = jsonDecode(
           record.reportQuantitiesData!,
         );
-        reportQuantities = quantitiesData
-            .map((q) => ReportQuantitiesModel.fromJson(q))
-            .toList();
+
+        reportQuantities = quantitiesData.map((q) {
+          // Handle two different JSON formats (same pattern as equipment):
+          // 1. Draft format (from auto-save): {"quantityTypeUID": "...", "sequenceNo": 1, "quantityValues": [...]}
+          //    - Comes from CreateDailyReportQuantityModel (report_data_to_create_model_mapper.dart)
+          //    - No full quantity type object available
+          // 2. Submitted report format: {"quantityType": {...}, "quantityValues": [...]}
+          //    - Comes from server response after successful submission
+          //    - Includes full quantity type and field details
+
+          final bool isDraftFormat = DailyReportFormatDetector.isDraftQuantityFormat(q);
+
+          if (isDraftFormat) {
+            // Draft format - convert to common format
+            final quantityTypeUID = q['quantityTypeUID'] as String;
+            final List<dynamic> valuesData = q['quantityValues'] as List<dynamic>? ?? [];
+
+            final quantityValues = valuesData.map((v) {
+              final fieldUID = v['quantityFieldUID'] as String;
+              final value = v['value'] as String;
+
+              return QuantityValueModel(
+                quantityField: QuantityFieldModel(
+                  uid: fieldUID,
+                  name: '',  // Not available in draft format
+                  fieldType: 'text',  // Default type since not available in draft
+                ),
+                value: value,
+              );
+            }).toList();
+
+            return ReportQuantitiesModel(
+              quantityType: QuantityTypeModel(
+                uid: quantityTypeUID,
+                name: '',  // Not available in draft format
+                code: '',  // Not available in draft format
+              ),
+              quantityValues: quantityValues,
+            );
+          } else {
+            // Server format - use existing parser
+            return ReportQuantitiesModel.fromJson(q);
+          }
+        }).toList();
       } catch (e) {
         // Silently skip parsing errors for optional fields
+        print('Error parsing reportQuantities: $e');
       }
     }
 
-    // Parse files from Files table
+    // Parse files from Files table (using UID-based FK)
     List<FileModel> files = [];
     try {
-      final fileRecords =
+      // Use pre-fetched files if available (optimization), otherwise query database
+      final fileRecords = preFetchedFiles ??
           await (_database.select(_database.files)..where(
                 (tbl) =>
-                    tbl.dailyReportID.equals(record.id) &
+                    tbl.dailyReportUID.equals(record.uid) &
                     tbl.deletedAt.isNull(),
               ))
               .get();
@@ -591,11 +712,27 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
     DailyReportModel serverModel,
   ) async {
     try {
+      // First, check if the record already has a server ID
+      final existingRecord = await (_database.select(_database.dailyReports)
+            ..where((tbl) => tbl.uid.equals(tempUID)))
+          .getSingleOrNull();
+
+      if (existingRecord == null) {
+        print('⚠️ Report not found for UID: $tempUID');
+        return;
+      }
+
+      // Only set ID if it's currently NULL (first sync)
+      // This prevents UNIQUE constraint failures on subsequent syncs
+      final idValue = existingRecord.id == null
+          ? Value<int?>(serverModel.id)
+          : const Value<int?>.absent();
+
       await (_database.update(
         _database.dailyReports,
       )..where((tbl) => tbl.uid.equals(tempUID))).write(
         DailyReportsCompanion(
-          id: Value(serverModel.id),
+          id: idValue, // Only set on first sync when NULL
           uid: Value(serverModel.uid), // Replace temp UID with server UID
           name: Value(serverModel.name),
           notes: Value(serverModel.notes),
@@ -612,7 +749,7 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
         ),
       );
 
-      print('✅ Updated report: $tempUID → ${serverModel.uid}');
+      print('✅ Updated report: $tempUID → ${serverModel.uid} (ID: ${existingRecord.id == null ? "set to ${serverModel.id}" : "kept as ${existingRecord.id}"})');
     } catch (e) {
       print('❌ Error updating report with server data: $e');
       rethrow;
@@ -823,4 +960,225 @@ class DailyReportLocalDataSourceImpl implements DailyReportLocalDataSource {
   //     print('❌ Error clearing road edit cache: $e');
   //   }
   // }
+
+  // DRAFT REPORT METHODS
+
+  @override
+  Future<DailyReportModel> createDraftReportLocal(
+    String companyUID,
+  ) async {
+    return await _database.transaction(() async {
+      try {
+        // Generate temp UID for draft
+        final draftUID = const Uuid().v4();
+        final now = DateTime.now();
+
+        print('📝 Creating draft with UID: $draftUID for company: $companyUID');
+
+        // Validate company exists
+        final company = await (_database.select(
+          _database.companies,
+        )..where((tbl) => tbl.uid.equals(companyUID))).getSingleOrNull();
+
+        if (company == null) {
+          throw Exception('Company not found: $companyUID');
+        }
+
+        print('✅ Found company ID: ${company.id}');
+
+        // Prepare company data JSON for storage
+        final companyDataJson = jsonEncode({
+          'uid': company.uid,
+          'name': company.name,
+        });
+
+        // Insert minimal draft report with DRAFT status
+        await _database.into(_database.dailyReports).insert(
+          DailyReportsCompanion(
+            uid: Value(draftUID),
+            name: Value('Draft Report ${now.toLocal().toString().split('.')[0]}'),
+            notes: const Value(''),
+            weatherCondition: const Value('SUNNY'), // Default value
+            workPerformed: const Value(false), // Boolean field
+            companyID: Value(company.id),
+            companyData: Value(companyDataJson), // Store full company data
+            workScopeID: const Value(0),
+            roadID: const Value(0),
+            totalWorkers: const Value(0),
+            createdByID: const Value(0),
+            status: const Value('DRAFT'), // Set status as DRAFT
+            createdAt: Value(now),
+            updatedAt: Value(now),
+            isSynced: const Value(false),
+            syncAction: const Value.absent(), // No sync action for drafts
+          ),
+        );
+
+        print('✅ Draft inserted into database');
+
+        // Read back the created draft record
+        final createdRecord = await (_database.select(
+          _database.dailyReports,
+        )..where((tbl) => tbl.uid.equals(draftUID))).getSingle();
+
+        print('✅ Draft record retrieved: ${createdRecord.uid}, status: ${createdRecord.status}, companyID: ${createdRecord.companyID}');
+
+        // Convert to model
+        final model = await _convertRecordToModel(createdRecord);
+
+        print('✅ Draft model created successfully');
+        return model;
+      } catch (e) {
+        print('❌ Error creating draft report: $e');
+        rethrow;
+      }
+    }); // Transaction auto-commits here
+  }
+
+  @override
+  Future<void> updateDraftReportLocal(
+    String draftUID,
+    CreateDailyReportModel data, {
+    RoadResponseModel? selectedRoad, // Optional: full road object for proper display
+    WorkScopeResponseModel? selectedWorkScope, // Optional: full workScope object for proper display
+  }) async {
+    return await _database.transaction(() async {
+      try {
+        final now = DateTime.now();
+
+        // Serialize data for storage
+        // If full workScope object is provided, store complete data (includes name and code)
+        // Otherwise, fall back to UID-only format
+        final workScopeJson = selectedWorkScope != null
+            ? jsonEncode(selectedWorkScope.toJson())
+            : jsonEncode({'uid': data.workScopeUID});
+
+        // If full road object is provided, store complete data (includes district, state, country)
+        // Otherwise, fall back to UID-only format
+        final roadJson = selectedRoad != null
+            ? jsonEncode(selectedRoad.toJson())
+            : jsonEncode({'uid': data.roadUID});
+        final equipmentsJson = data.equipments != null
+            ? jsonEncode(data.equipments!.map((e) => e.toJson()).toList())
+            : null;
+        final quantitiesJson = data.quantities != null
+            ? jsonEncode(data.quantities!.map((q) => q.toJson()).toList())
+            : null;
+
+        // Update the draft report
+        await (_database.update(_database.dailyReports)
+          ..where((tbl) => tbl.uid.equals(draftUID))).write(
+          DailyReportsCompanion(
+            name: Value(data.name),
+            notes: Value(data.notes),
+            weatherCondition: Value(data.weatherCondition.name.toUpperCase()),
+            workPerformed: Value(data.workPerformed),
+            longitude: data.longitude != null
+                ? Value(data.longitude)
+                : const Value.absent(),
+            latitude: data.latitude != null
+                ? Value(data.latitude)
+                : const Value.absent(),
+            totalWorkers: Value(data.totalWorkers),
+            fromSection: data.fromSection != null
+                ? Value(data.fromSection)
+                : const Value.absent(),
+            toSection: data.toSection != null
+                ? Value(data.toSection)
+                : const Value.absent(),
+            updatedAt: Value(now),
+            workScopeData: Value(workScopeJson),
+            roadData: Value(roadJson),
+            equipmentsData: Value(equipmentsJson),
+            reportQuantitiesData: Value(quantitiesJson),
+            status: const Value('DRAFT'), // Ensure status remains DRAFT
+          ),
+        );
+
+        print('✅ Draft report updated: $draftUID');
+      } catch (e) {
+        print('❌ Error updating draft report: $e');
+        rethrow;
+      }
+    });
+  }
+
+  @override
+  Future<List<DailyReportModel>> getDraftReports(String companyUID) async {
+    try {
+      print('🔍 Looking for drafts with companyUID: $companyUID');
+
+      // Get company ID
+      final company = await (_database.select(
+        _database.companies,
+      )..where((tbl) => tbl.uid.equals(companyUID))).getSingleOrNull();
+
+      if (company == null) {
+        print('❌ Company not found: $companyUID');
+        return [];
+      }
+
+      print('✅ Found company ID: ${company.id}');
+
+      // Debug: Query ALL records for this company to see what's in the database
+      final allRecords = await (_database.select(_database.dailyReports)
+        ..where((tbl) => tbl.companyID.equals(company.id))
+        ..orderBy([
+          (tbl) => OrderingTerm(
+                expression: tbl.updatedAt,
+                mode: OrderingMode.desc,
+              ),
+        ])).get();
+
+      print('🔍 [DEBUG] Total records for company ${company.id}: ${allRecords.length}');
+      for (final record in allRecords) {
+        print('  - UID: ${record.uid}, status: ${record.status}, deletedAt: ${record.deletedAt}, companyID: ${record.companyID}');
+      }
+
+      // Query draft reports (status = 'DRAFT')
+      final draftRecords = await (_database.select(_database.dailyReports)
+        ..where((tbl) =>
+            tbl.companyID.equals(company.id) &
+            tbl.status.equals('DRAFT') &
+            tbl.deletedAt.isNull())
+        ..orderBy([
+          (tbl) => OrderingTerm(
+                expression: tbl.updatedAt,
+                mode: OrderingMode.desc,
+              ),
+        ])).get();
+
+      print('📊 Found ${draftRecords.length} draft records');
+      for (final record in draftRecords) {
+        print('  - Draft: ${record.uid}, status: ${record.status}, companyID: ${record.companyID}');
+      }
+
+      // Convert records to models
+      final drafts = <DailyReportModel>[];
+      for (final record in draftRecords) {
+        final model = await _convertRecordToModel(record);
+        drafts.add(model);
+      }
+
+      print('✅ Retrieved ${drafts.length} draft reports');
+      return drafts;
+    } catch (e) {
+      print('❌ Error getting draft reports: $e');
+      return [];
+    }
+  }
+
+  @override
+  Future<void> deleteDraftReport(String draftUID) async {
+    try {
+      // Hard delete the draft report from database
+      await (_database.delete(_database.dailyReports)
+        ..where((tbl) => tbl.uid.equals(draftUID))).go();
+
+      print('✅ Draft report hard deleted: $draftUID');
+    } catch (e) {
+      print('❌ Error deleting draft report: $e');
+      rethrow;
+    }
+  }
 }

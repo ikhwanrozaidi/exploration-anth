@@ -21,8 +21,8 @@ class GetDailyReportsParams extends Equatable {
   const GetDailyReportsParams({
     required this.companyUID,
     this.page = 1,
-    this.limit = 10,
-    this.sortOrder = 'asc',
+    this.limit = 50,
+    this.sortOrder = 'desc',
     this.search,
     this.roadUid,
     this.workScopeUid,

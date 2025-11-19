@@ -50,6 +50,7 @@ class RoadFieldTile extends StatefulWidget {
   final String? label;
   final String? placeholder;
   final bool forceRefresh;
+  final bool selectMultipleRoads;
 
   const RoadFieldTile({
     Key? key,
@@ -62,6 +63,7 @@ class RoadFieldTile extends StatefulWidget {
     this.label,
     this.placeholder,
     this.forceRefresh = false,
+    this.selectMultipleRoads = false,
   }) : super(key: key);
 
   @override
@@ -71,6 +73,7 @@ class RoadFieldTile extends StatefulWidget {
 class _RoadFieldTileState extends State<RoadFieldTile> {
   String selectedRoadDisplay = '';
   RoadSelectionResult? selectedRoad;
+  List<String> _selectedRoadUids = [];
   late RoadBloc _roadBloc;
   bool _isInitialized = false;
 
@@ -159,8 +162,8 @@ class _RoadFieldTileState extends State<RoadFieldTile> {
             _,
             __,
             ___,
+            ____,
           ) {
-            // Check if we have any data loaded
             return allProvinces.isNotEmpty ||
                 allDistricts.isNotEmpty ||
                 allRoads.isNotEmpty;
@@ -193,6 +196,7 @@ class _RoadFieldTileState extends State<RoadFieldTile> {
               ________,
               _________,
               __________,
+              ___________,
             ) {
               return true;
             },
@@ -216,11 +220,31 @@ class _RoadFieldTileState extends State<RoadFieldTile> {
       preSelectedCountryUid: widget.preSelectedCountryUid,
       preSelectedProvinceUid: widget.preSelectedProvinceUid,
       preSelectedDistrictUid: widget.preSelectedDistrictUid,
+      preSelectedRoadUids: widget.selectMultipleRoads
+          ? _selectedRoadUids
+          : null, // Pass pre-selected UIDs
+      selectMultipleRoads: widget.selectMultipleRoads,
       onSelected: (result) {
         setState(() {
           selectedRoad = result;
+
           // Build display text based on what was selected
-          selectedRoadDisplay = _buildDisplayText(result);
+          if (widget.selectMultipleRoads && result.selectedRoads != null) {
+            // For multiple selection, show count
+            final count = result.selectedRoads!.length;
+            selectedRoadDisplay =
+                '$count ${count == 1 ? 'road' : 'roads'} selected';
+
+            // Store the selected road UIDs
+            _selectedRoadUids = result.selectedRoads!
+                .map((road) => road.uid ?? '')
+                .where((uid) => uid.isNotEmpty)
+                .toList();
+          } else {
+            // For single selection, show road name
+            selectedRoadDisplay = _buildDisplayText(result);
+            _selectedRoadUids = [];
+          }
         });
 
         if (widget.onRoadSelected != null) {

@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:dartz/dartz.dart';
 import 'package:rclink_app/core/errors/failures.dart';
 
 import 'package:rclink_app/features/auth/domain/usecases/request_otp_usecase.dart';
@@ -52,6 +53,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     this._clearRoleUseCase,
     this._clearWorkScopesCacheUseCase,
   ) : super(const AuthInitial()) {
+    print('🔐 AuthBloc: Constructor called - instance hashCode: ${hashCode}');
+    print('🔐 AuthBloc: Initial state: $state');
     on<RequestOtpRequested>(_onRequestOtpRequested);
     on<VerifyOtpRequested>(_onVerifyOtpRequested);
     on<CheckAuthStatus>(_onCheckAuthStatus);
@@ -154,19 +157,51 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     CheckAuthStatus event,
     Emitter<AuthState> emit,
   ) async {
-    emit(const AuthLoading());
+    print('🔍 AuthBloc ($hashCode): CheckAuthStatus event received, current state: $state');
+    print('🔍 AuthBloc ($hashCode): About to emit AuthLoading state...');
 
-    final tokensResult = await _getTokensUseCase();
+    try {
+      emit(const AuthLoading());
+      print('✅ AuthBloc ($hashCode): AuthLoading state emitted successfully, new state: $state');
+    } catch (e, stackTrace) {
+      print('❌ AuthBloc ($hashCode): Error emitting AuthLoading: $e');
+      print('❌ Stack trace: $stackTrace');
+      return;
+    }
 
-    await tokensResult.fold(
+    print('🔍 AuthBloc ($hashCode): Fetching stored tokens...');
+
+    try {
+      final tokensResult = await _getTokensUseCase().timeout(
+        const Duration(seconds: 5),
+        onTimeout: () {
+          print('⏰ AuthBloc ($hashCode): GetTokensUseCase timed out after 5 seconds');
+          return Left(CacheFailure('Token fetch timed out'));
+        },
+      );
+      print('✅ AuthBloc ($hashCode): Tokens fetch completed');
+
+      await tokensResult.fold(
       (failure) async {
         print('❌ AuthBloc: Failed to get stored tokens: ${failure.message}');
-        emit(const Unauthenticated());
+        if (!emit.isDone) {
+          print('🔍 AuthBloc: Emitting Unauthenticated state (failure case)...');
+          emit(const Unauthenticated());
+          print('✅ AuthBloc: Unauthenticated state emitted (failure case)');
+        } else {
+          print('⚠️ AuthBloc: Cannot emit Unauthenticated - emit.isDone is true');
+        }
       },
       (tokens) async {
         if (tokens == null) {
-          print('📝 AuthBloc: No stored tokens found');
-          emit(const Unauthenticated());
+          print('📝 AuthBloc (${hashCode}): No stored tokens found');
+          if (!emit.isDone) {
+            print('🔍 AuthBloc (${hashCode}): Emitting Unauthenticated state (no tokens)...');
+            emit(const Unauthenticated());
+            print('✅ AuthBloc (${hashCode}): Unauthenticated state emitted, new state: $state');
+          } else {
+            print('⚠️ AuthBloc: Cannot emit Unauthenticated - emit.isDone is true');
+          }
         } else {
           final now = DateTime.now();
           if (tokens.accessTokenExpiresAt.isAfter(now)) {
@@ -219,11 +254,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           } else {
             print('❌ AuthBloc: All tokens expired');
             await _clearAuthCacheUseCase();
-            emit(const Unauthenticated());
+            if (!emit.isDone) {
+              print('🔍 AuthBloc: Emitting Unauthenticated state (tokens expired)...');
+              emit(const Unauthenticated());
+              print('✅ AuthBloc: Unauthenticated state emitted (tokens expired)');
+            } else {
+              print('⚠️ AuthBloc: Cannot emit Unauthenticated - emit.isDone is true');
+            }
           }
         }
       },
     );
+    } catch (e, stackTrace) {
+      print('❌ AuthBloc ($hashCode): Exception in CheckAuthStatus: $e');
+      print('❌ Stack trace: $stackTrace');
+      if (!emit.isDone) {
+        emit(const Unauthenticated());
+      }
+    }
   }
 
   Future<void> _onLoadCurrentAdmin(

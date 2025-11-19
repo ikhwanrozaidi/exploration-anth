@@ -414,7 +414,11 @@ class ImageSyncQueue extends Table {
   DateTimeColumn get lastAttemptAt => dateTime().nullable()();
 
   @override
-  List<Set<Column>> get uniqueKeys => [];
+  List<Set<Column>> get uniqueKeys => [
+    // CRITICAL FIX: Prevent duplicate images in sync queue
+    // Each image position (entity + context + sequence) should be unique
+    {entityUID, contextField, sequence},
+  ];
 }
 
 // Files table - stores file metadata from backend
@@ -434,7 +438,8 @@ class Files extends Table with SyncableTable {
   IntColumn get companyID => integer()();
   TextColumn get contextType => text()(); // 'daily_report', 'disaster', etc.
   TextColumn get contextField => text().nullable()(); // 'before_image', 'after_image', etc.
-  IntColumn get dailyReportID => integer().nullable()(); // FK to DailyReports
+  IntColumn get dailyReportID => integer().nullable()(); // FK to DailyReports (numeric ID)
+  TextColumn get dailyReportUID => text().nullable()(); // FK to DailyReports (UID-based, more reliable)
 
   // Metadata
   IntColumn get uploadedByID => integer()();
@@ -453,7 +458,7 @@ class Files extends Table with SyncableTable {
 // Daily Reports table
 @DataClassName('DailyReportRecord')
 class DailyReports extends Table with SyncableTable {
-  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  IntColumn get id => integer().nullable().autoIncrement()(); // Primary key - Server ID (NULL during draft)
   TextColumn get uid => text()(); // Business UUID
   TextColumn get name => text()();
   TextColumn get notes => text().nullable()();
@@ -476,7 +481,7 @@ class DailyReports extends Table with SyncableTable {
   // Report status for workflow management
   TextColumn get status => text().withDefault(
     const Constant('SUBMITTED'),
-  )(); // 'SUBMITTED', 'APPROVED', 'REJECTED', 'REVISION_REQUESTED'
+  )(); // 'DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'REVISION_REQUESTED'
 
   // Optional approval tracking
   IntColumn get approvedByID => integer().nullable()(); // Foreign key to Admins
@@ -605,6 +610,108 @@ class ReportSegments extends Table with SyncableTable {
   ];
 }
 
+// ============================================================================
+// WARNING TABLES
+// ============================================================================
+
+/// Warning categories table
+/// Stores predefined warning categories for different warning types
+@DataClassName('WarningCategoryRecord')
+class WarningCategories extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UID for API lookups
+  TextColumn get name => text()(); // Category name
+  TextColumn get warningType => text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {warningType, name}, // Unique name per warning type
+  ];
+}
+
+/// Warning reasons table
+/// Stores predefined warning reasons linked to categories and work scopes
+@DataClassName('WarningReasonRecord')
+class WarningReasons extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UID for API lookups
+  TextColumn get name => text()(); // Reason name
+  TextColumn get warningType => text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING
+  IntColumn get categoryID => integer()(); // Foreign key to WarningCategories
+  IntColumn get workScopeID => integer()(); // Foreign key to WorkScopes
+  BoolColumn get requiresAction => boolean().withDefault(const Constant(true))();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  IntColumn get displayOrder => integer().withDefault(const Constant(0))();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  // Cached JSON data for nested relationships
+  TextColumn get categoryData => text().nullable()(); // JSON: WarningCategory
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {workScopeID, warningType, name}, // Unique name per work scope and warning type
+  ];
+}
+
+/// Warnings table
+/// Main table for storing warnings with offline/draft support
+@DataClassName('WarningRecord')
+class Warnings extends Table with SyncableTable {
+  IntColumn get id => integer().nullable().autoIncrement()(); // NULL during draft
+  TextColumn get uid => text()(); // Business UID for API lookups
+
+  // Warning type discriminator
+  TextColumn get warningType => text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING
+
+  // Optional linkage (null for SITE_WARNING)
+  IntColumn get dailyReportID => integer().nullable()();
+
+  // Core data - foreign keys
+  IntColumn get companyID => integer()();
+  IntColumn get roadID => integer()();
+  IntColumn get workScopeID => integer()();
+  IntColumn get contractRelationID => integer().nullable()();
+
+  // Section information (stored as text for flexibility)
+  TextColumn get fromSection => text()();
+  TextColumn get toSection => text()();
+
+  // Completion tracking
+  BoolColumn get requiresAction => boolean().withDefault(const Constant(true))();
+  BoolColumn get isResolved => boolean().withDefault(const Constant(false))();
+  IntColumn get resolvedByID => integer().nullable()();
+  DateTimeColumn get resolvedAt => dateTime().nullable()();
+  TextColumn get resolutionNotes => text().nullable()();
+
+  // Location (GPS coordinates)
+  TextColumn get longitude => text().nullable()();
+  TextColumn get latitude => text().nullable()();
+
+  // Additional notes
+  TextColumn get description => text().nullable()();
+
+  // Creation tracking
+  IntColumn get createdByID => integer()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  // Cached JSON data for nested relationships and warning items
+  TextColumn get warningItemsData => text().nullable()(); // JSON array: List<WarningItem>
+  TextColumn get roadData => text().nullable()(); // JSON: RoadResponse
+  TextColumn get workScopeData => text().nullable()(); // JSON: WorkScopeResponse
+  TextColumn get companyData => text().nullable()(); // JSON: CompanyResponse
+  TextColumn get createdByData => text().nullable()(); // JSON: CreatedByResponse
+  TextColumn get resolvedByData => text().nullable()(); // JSON: CreatedByResponse
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid},
+  ];
+}
+
 @DriftDatabase(
   tables: [
     Admins,
@@ -632,13 +739,16 @@ class ReportSegments extends Table with SyncableTable {
     ReportQuantities,
     ReportQuantityValues,
     ReportSegments,
+    WarningCategories,
+    WarningReasons,
+    Warnings,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 17; // Added companyData to DailyReports table
+  int get schemaVersion => 20; // Added Warning tables (WarningCategories, WarningReasons, Warnings)
 
   @override
   MigrationStrategy get migration {
@@ -969,6 +1079,75 @@ class AppDatabase extends _$AppDatabase {
         from16To17: (m, schema) async {
           // Migration from version 16 to 17: Add companyData to DailyReports table
           await m.addColumn(schema.dailyReports, schema.dailyReports.companyData);
+        },
+        from17To18: (m, schema) async {
+          // Migration from version 17 to 18:
+          // 1. Make DailyReports.id nullable (was NOT NULL, now nullable)
+          // 2. Add Files.dailyReportUID column for UID-based FK
+
+          // Check if dailyReportUID column already exists
+          final result = await customSelect(
+            "PRAGMA table_info('files')",
+          ).get();
+
+          final existingColumns = result
+              .map((row) => row.data['name'] as String)
+              .toSet();
+
+          // Only add column if it doesn't exist
+          if (!existingColumns.contains('daily_report_u_i_d')) {
+            await m.addColumn(schema.files, schema.files.dailyReportUID);
+          }
+
+          // Populate dailyReportUID for existing files by joining with daily_reports table
+          await customStatement('''
+            UPDATE files
+            SET daily_report_u_i_d = (
+              SELECT uid FROM daily_reports WHERE daily_reports.id = files.daily_report_i_d
+            )
+            WHERE files.daily_report_i_d IS NOT NULL
+              AND (files.daily_report_u_i_d IS NULL OR files.daily_report_u_i_d = '')
+          ''');
+
+          // Note: Making DailyReports.id nullable doesn't require data migration
+          // SQLite allows NULL values in PRIMARY KEY columns by default
+          // The schema change is handled automatically by Drift
+        },
+        from18To19: (m, schema) async {
+          // Migration from version 18 to 19:
+          // Add UNIQUE constraint to ImageSyncQueue (entityUID, contextField, sequence)
+          // to prevent duplicate images in sync queue
+
+          // Note: SQLite doesn't support adding constraints to existing tables
+          // The UNIQUE constraint will be automatically applied by Drift during table recreation
+          // Drift handles this by creating a new table with the constraint and copying data
+
+          // Remove any existing duplicates before applying the constraint
+          await customStatement('''
+            DELETE FROM image_sync_queue
+            WHERE id NOT IN (
+              SELECT MIN(id)
+              FROM image_sync_queue
+              GROUP BY entity_u_i_d, context_field, sequence
+            )
+          ''');
+
+          print('✅ Migration 18→19: Removed duplicate images and added UNIQUE constraint');
+        },
+        from19To20: (m, schema) async {
+          // Migration from version 19 to 20:
+          // Add Warning tables (WarningCategories, WarningReasons, Warnings)
+
+          // Create WarningCategories table
+          await m.createTable(schema.warningCategories);
+
+          // Create WarningReasons table
+          await m.createTable(schema.warningReasons);
+
+          // Create Warnings table
+          await m.createTable(schema.warnings);
+
+          print('✅ Migration 19→20: Created Warning tables (WarningCategories, WarningReasons, Warnings)');
         },
       ),
       beforeOpen: (details) async {

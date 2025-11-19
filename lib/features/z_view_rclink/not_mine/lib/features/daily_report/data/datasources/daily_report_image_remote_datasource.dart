@@ -52,6 +52,10 @@ class DailyReportImageRemoteDataSourceImpl
       List<MultipartFile>? afterImages;
       List<MultipartFile>? workersImages;
 
+      // CRITICAL FIX: Track missing images to report to user
+      final List<String> missingImagePaths = [];
+      final Map<ImageContextField, int> missingByContext = {};
+
       for (final entry in groupedImages.entries) {
         final contextField = entry.key;
         final imageRecords = entry.value;
@@ -64,6 +68,10 @@ class DailyReportImageRemoteDataSourceImpl
           final file = File(record.localFilePath);
           if (!await file.exists()) {
             print('⚠️ Image file not found: ${record.localFilePath}');
+            // CRITICAL FIX: Track missing images instead of silently skipping
+            missingImagePaths.add(record.localFilePath);
+            missingByContext[contextField] =
+                (missingByContext[contextField] ?? 0) + 1;
             continue;
           }
 
@@ -100,6 +108,24 @@ class DailyReportImageRemoteDataSourceImpl
             print('⚠️ GENERAL images not supported for daily reports');
             break;
         }
+      }
+
+      // CRITICAL FIX: Report missing images to user instead of silent skip
+      if (missingImagePaths.isNotEmpty) {
+        final contextDetails = missingByContext.entries
+            .map((e) => '${e.key.value}: ${e.value}')
+            .join(', ');
+
+        print('❌ Missing ${missingImagePaths.length} image(s): $contextDetails');
+        print('   Missing paths: ${missingImagePaths.join(", ")}');
+
+        return Left(
+          ServerFailure(
+            '${missingImagePaths.length} image(s) not found on device. '
+            'Missing: $contextDetails. '
+            'Please retake the photos and try again.',
+          ),
+        );
       }
 
       // Call API

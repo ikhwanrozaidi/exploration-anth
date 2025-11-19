@@ -33,6 +33,15 @@ class DailyReportViewEvent with _$DailyReportViewEvent {
     @Default(false) bool forceRefresh,
   }) = LoadDailyReportById;
 
+  const factory DailyReportViewEvent.changeTab({
+    required int tabIndex,
+    required String companyUID,
+  }) = ChangeTab;
+
+  const factory DailyReportViewEvent.loadDraftReports({
+    required String companyUID,
+  }) = LoadDraftReports;
+
   const factory DailyReportViewEvent.clearCache() = ClearDailyReportCache;
 
   // Route Edit Events

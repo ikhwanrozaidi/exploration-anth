@@ -8,7 +8,7 @@ import 'road_response.dart';
 import 'created_by_response.dart';
 
 class DailyReport extends Equatable {
-  final int id;
+  final int? id; // Nullable - NULL during draft, set from server on first sync
   final String uid;
   final String name;
   final String? notes;

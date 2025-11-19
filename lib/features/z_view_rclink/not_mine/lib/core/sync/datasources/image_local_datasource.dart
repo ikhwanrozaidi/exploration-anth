@@ -59,6 +59,40 @@ abstract class ImageLocalDataSource {
 
   /// Cleanup synced images - both files and database records
   Future<void> cleanupSyncedImageFiles(SyncEntityType entityType, String entityUID);
+
+  // ==================== Draft Image Methods ====================
+
+  /// Save draft images to permanent storage with draftPending status
+  /// Images are copied from temporary locations to app documents directory
+  Future<void> saveDraftImages({
+    required SyncEntityType entityType,
+    required String entityUID,
+    required String companyUID,
+    required Map<ImageContextField, List<String>> imagesByContextField,
+  });
+
+  /// Get draft images with permanent file paths
+  /// Returns map of context field to list of local file paths
+  Future<Map<ImageContextField, List<String>>> getDraftImages({
+    required SyncEntityType entityType,
+    required String entityUID,
+  });
+
+  /// Activate draft images for upload when draft is submitted
+  /// Changes status from draftPending to pendingUpload and replaces draft UID with server UID
+  Future<void> activateDraftImagesForSubmission({
+    required SyncEntityType entityType,
+    required String draftUID,
+    required String serverUID,
+    required String uploadedByUID,
+  });
+
+  /// Delete draft images when draft is deleted
+  /// Removes both database records and files from storage
+  Future<void> deleteDraftImages({
+    required SyncEntityType entityType,
+    required String draftUID,
+  });
 }
 
 @LazySingleton(as: ImageLocalDataSource)
@@ -139,9 +173,24 @@ class ImageLocalDataSourceImpl implements ImageLocalDataSource {
 
     if (records.isNotEmpty) {
       await _database.batch((batch) {
-        batch.insertAll(_database.imageSyncQueue, records);
+        // CRITICAL FIX: Use insertOnConflictUpdate to prevent duplicates
+        // If image already exists (same entityUID + contextField + sequence), update it
+        for (final record in records) {
+          batch.insert(
+            _database.imageSyncQueue,
+            record,
+            onConflict: DoUpdate(
+              (_) => record,
+              target: [
+                _database.imageSyncQueue.entityUID,
+                _database.imageSyncQueue.contextField,
+                _database.imageSyncQueue.sequence,
+              ],
+            ),
+          );
+        }
       });
-      print('✅ Saved ${records.length} images to sync queue for ${entityType.value}/$entityUID');
+      print('✅ Saved ${records.length} images to sync queue for ${entityType.value}/$entityUID (duplicates prevented)');
     }
   }
 
@@ -299,6 +348,9 @@ class ImageLocalDataSourceImpl implements ImageLocalDataSource {
     for (final image in images) {
       final status = ImageSyncStatus.fromString(image.syncStatus);
       switch (status) {
+        case ImageSyncStatus.draftPending:
+          pendingCount++;
+          break;
         case ImageSyncStatus.pendingEntitySync:
         case ImageSyncStatus.pendingUpload:
           pendingCount++;
@@ -352,5 +404,187 @@ class ImageLocalDataSourceImpl implements ImageLocalDataSource {
     await deleteSyncedImages(entityType, entityUID);
 
     print('🧹 Cleaned up synced images (files + DB) for ${entityType.value}/$entityUID');
+  }
+
+  // ==================== Draft Image Methods Implementation ====================
+
+  @override
+  Future<void> saveDraftImages({
+    required SyncEntityType entityType,
+    required String entityUID,
+    required String companyUID,
+    required Map<ImageContextField, List<String>> imagesByContextField,
+  }) async {
+    // First, delete existing draft images for this entity to avoid duplicates
+    await (_database.delete(_database.imageSyncQueue)
+          ..where(
+            (tbl) =>
+                tbl.entityType.equals(entityType.value) &
+                tbl.entityUID.equals(entityUID) &
+                tbl.syncStatus.equals(ImageSyncStatus.draftPending.value),
+          ))
+        .go();
+
+    final records = <ImageSyncQueueCompanion>[];
+
+    for (final entry in imagesByContextField.entries) {
+      final contextField = entry.key;
+      final imagePaths = entry.value;
+
+      for (int i = 0; i < imagePaths.length; i++) {
+        final imagePath = imagePaths[i];
+        final file = File(imagePath);
+
+        if (!await file.exists()) {
+          print('⚠️ Draft image not found: $imagePath');
+          continue;
+        }
+
+        // Copy to permanent storage
+        final permanentPath = await _fileStorageService.copyToAppStorage(
+          imagePath,
+          entityType,
+          entityUID,
+          contextField,
+          i,
+        );
+
+        final permanentFile = File(permanentPath);
+        final fileSize = await permanentFile.length();
+        final fileName = permanentFile.uri.pathSegments.last;
+        final mimeType = lookupMimeType(permanentPath) ?? 'image/jpeg';
+
+        records.add(
+          ImageSyncQueueCompanion.insert(
+            entityType: entityType.value,
+            entityUID: entityUID,
+            contextField: contextField.value,
+            sequence: i,
+            localFilePath: permanentPath,
+            fileName: fileName,
+            mimeType: mimeType,
+            fileSize: fileSize,
+            companyUID: companyUID,
+            uploadedByUID: '', // Will be set on submission
+            syncStatus: ImageSyncStatus.draftPending.value, // NEW: Draft status
+            createdAt: Value(DateTime.now()),
+          ),
+        );
+      }
+    }
+
+    if (records.isNotEmpty) {
+      await _database.batch((batch) {
+        batch.insertAll(_database.imageSyncQueue, records);
+      });
+      print(
+        '✅ Saved ${records.length} draft images for ${entityType.value}/$entityUID',
+      );
+    }
+  }
+
+  @override
+  Future<Map<ImageContextField, List<String>>> getDraftImages({
+    required SyncEntityType entityType,
+    required String entityUID,
+  }) async {
+    final images = await (_database.select(_database.imageSyncQueue)
+          ..where(
+            (tbl) =>
+                tbl.entityType.equals(entityType.value) &
+                tbl.entityUID.equals(entityUID) &
+                tbl.syncStatus.equals(ImageSyncStatus.draftPending.value),
+          )
+          ..orderBy([
+            (tbl) => OrderingTerm(expression: tbl.contextField),
+            (tbl) => OrderingTerm(expression: tbl.sequence),
+          ]))
+        .get();
+
+    // Group by context field
+    final result = <ImageContextField, List<String>>{};
+
+    for (final image in images) {
+      final contextField = ImageContextField.fromString(image.contextField);
+      result.putIfAbsent(contextField, () => []).add(image.localFilePath);
+    }
+
+    print(
+      '📂 Loaded ${images.length} draft images for ${entityType.value}/$entityUID',
+    );
+    return result;
+  }
+
+  @override
+  Future<void> activateDraftImagesForSubmission({
+    required SyncEntityType entityType,
+    required String draftUID,
+    required String serverUID,
+    required String uploadedByUID,
+  }) async {
+    // Update all draft images:
+    // 1. Change UID from draft to server
+    // 2. Change status from draftPending to pendingUpload
+    // 3. Set uploadedByUID
+    final updated = await (_database.update(_database.imageSyncQueue)
+          ..where(
+            (tbl) =>
+                tbl.entityType.equals(entityType.value) &
+                tbl.entityUID.equals(draftUID) &
+                tbl.syncStatus.equals(ImageSyncStatus.draftPending.value),
+          ))
+        .write(
+      ImageSyncQueueCompanion(
+        entityUID: Value(serverUID),
+        uploadedByUID: Value(uploadedByUID),
+        syncStatus: Value(ImageSyncStatus.pendingUpload.value),
+      ),
+    );
+
+    print(
+      '✅ Activated $updated draft images for upload: ${entityType.value} $draftUID → $serverUID',
+    );
+  }
+
+  @override
+  Future<void> deleteDraftImages({
+    required SyncEntityType entityType,
+    required String draftUID,
+  }) async {
+    // Get all draft images to delete files
+    final images = await (_database.select(_database.imageSyncQueue)
+          ..where(
+            (tbl) =>
+                tbl.entityType.equals(entityType.value) &
+                tbl.entityUID.equals(draftUID) &
+                tbl.syncStatus.equals(ImageSyncStatus.draftPending.value),
+          ))
+        .get();
+
+    // Delete files from storage
+    for (final image in images) {
+      try {
+        final file = File(image.localFilePath);
+        if (await file.exists()) {
+          await file.delete();
+        }
+      } catch (e) {
+        print('⚠️ Failed to delete draft image file: ${image.localFilePath}');
+      }
+    }
+
+    // Delete database records
+    await (_database.delete(_database.imageSyncQueue)
+          ..where(
+            (tbl) =>
+                tbl.entityType.equals(entityType.value) &
+                tbl.entityUID.equals(draftUID) &
+                tbl.syncStatus.equals(ImageSyncStatus.draftPending.value),
+          ))
+        .go();
+
+    print(
+      '🗑️ Deleted ${images.length} draft images for ${entityType.value}/$draftUID',
+    );
   }
 }

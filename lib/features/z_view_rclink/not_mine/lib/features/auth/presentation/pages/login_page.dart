@@ -20,7 +20,10 @@ class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginPage> createState() {
+    print('🔐 LoginPage: createState() called');
+    return _LoginPageState();
+  }
 }
 
 class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
@@ -51,6 +54,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    print('🔐 LoginPage: initState() called');
     super.initState();
 
     _bottomSheetController = AnimationController(
@@ -65,12 +69,16 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
     // Check current auth state and navigate accordingly
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      print('🔐 LoginPage: addPostFrameCallback executing');
       final authState = context.read<AuthBloc>().state;
+      print('🔐 LoginPage: Current auth state: $authState');
       if (authState is Authenticated) {
         // If already authenticated, go directly to company selection
+        print('🔐 LoginPage: State is Authenticated, showing company screen');
         _showCompanyScreen();
       } else if (authState is AuthOtpSent) {
         // If OTP was sent, show OTP screen
+        print('🔐 LoginPage: State is AuthOtpSent, showing OTP screen');
         _showOtpScreen();
       }
       // Otherwise stay on sign in screen

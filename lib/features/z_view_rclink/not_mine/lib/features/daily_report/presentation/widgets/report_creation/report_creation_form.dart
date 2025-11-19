@@ -7,6 +7,7 @@ import '../../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../../road/presentation/helper/road_level.dart';
 import '../../../../road/presentation/helper/road_selection_result.dart';
 import '../../../../road/presentation/pages/road_field_tile.dart';
+import '../../../../work_scope/presentation/pages/work_scope_field_tile.dart';
 import '../../bloc/daily_report_create/daily_report_create_bloc.dart';
 import '../../bloc/daily_report_create/daily_report_create_event.dart';
 import '../../bloc/daily_report_create/daily_report_create_state.dart';
@@ -70,20 +71,29 @@ class _ReportCreationFormState extends State<ReportCreationForm> {
           );
 
           // Update display values from BLoC state
+          // CRITICAL FIX: Clear local state when BLoC selections are null
           if (selections?.selectedScope != null) {
             selectedScopeDisplay =
                 '${selections!.selectedScope!.code} - ${selections.selectedScope!.name}';
+          } else {
+            selectedScopeDisplay = '';
           }
+
           if (selections?.selectedWeather != null) {
             selectedWeatherDisplay =
                 WeatherEnhancements.getWeatherData(
                   selections!.selectedWeather!,
                 )?.displayName ??
                 selections.selectedWeather!;
+          } else {
+            selectedWeatherDisplay = '';
           }
+
           if (selections?.selectedRoad != null) {
             selectedLocationDisplay =
                 '${selections!.selectedRoad!.name!} (${selections.selectedRoad!.roadNo ?? ''})';
+          } else {
+            selectedLocationDisplay = '';
           }
 
           final sectionError = selections?.sectionError;
@@ -95,13 +105,27 @@ class _ReportCreationFormState extends State<ReportCreationForm> {
               children: [
                 SizedBox(height: ResponsiveHelper.spacing(context, 10)),
 
-                // Scope of Work
-                SelectionFieldCard(
-                  icon: Icons.restaurant_menu,
-                  label: 'Scope of Work',
-                  value: selectedScopeDisplay,
-                  placeholder: 'Choose scope of work',
-                  onTap: () => _showScopeSelection(context, state),
+                // // Scope of Work
+                // SelectionFieldCard(
+                //   icon: Icons.restaurant_menu,
+                //   label: 'Scope of Work',
+                //   value: selectedScopeDisplay,
+                //   placeholder: 'Choose scope of work',
+                //   onTap: () => _showScopeSelection(context, state),
+                // ),
+                WorkScopeFieldTile(
+                  onScopeSelected: (selectedData) {
+                    print(
+                      'Allow Multiple Quantities: ${selectedData['allowMultipleQuantities']}',
+                    );
+
+                    context.read<DailyReportCreateBloc>().add(
+                      SelectScope(selectedData['uid']),
+                    );
+                    setState(() {
+                      selectedScopeDisplay = selectedData['displayText'];
+                    });
+                  },
                 ),
 
                 // SizedBox(height: ResponsiveHelper.spacing(context, 10)),

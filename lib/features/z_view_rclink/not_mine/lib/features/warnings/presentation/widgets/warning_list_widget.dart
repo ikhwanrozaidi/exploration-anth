@@ -7,6 +7,7 @@ import 'package:rclink_app/shared/utils/theme.dart';
 
 import '../../../../../core/utils/cache_managers.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
+import '../pages/warning_details_page.dart';
 
 class WarningProgramListWidget extends StatefulWidget {
   const WarningProgramListWidget({Key? key}) : super(key: key);
@@ -63,6 +64,11 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
 
     return GestureDetector(
       onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => WarningDetailsPage()),
+        );
+
         // Navigator.push(
         //   context,
         //   MaterialPageRoute(

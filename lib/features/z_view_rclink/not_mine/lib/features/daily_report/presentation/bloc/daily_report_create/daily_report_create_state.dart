@@ -94,6 +94,10 @@ abstract class ReportApiData with _$ReportApiData {
 @freezed
 abstract class ReportSelections with _$ReportSelections {
   const factory ReportSelections({
+    // Draft tracking
+    String? draftReportUID,
+    @Default(false) bool isDraftMode,
+
     // Scope selection
     WorkScope? selectedScope,
 

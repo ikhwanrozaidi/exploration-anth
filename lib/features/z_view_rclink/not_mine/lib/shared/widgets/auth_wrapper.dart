@@ -15,6 +15,8 @@ import '../../features/rbac/presentation/bloc/rbac_bloc.dart';
 import '../../features/rbac/presentation/bloc/rbac_state.dart';
 import '../../features/road/presentation/bloc/road_bloc.dart';
 import '../../features/road/presentation/bloc/road_event.dart';
+import '../../features/warnings/presentation/bloc/warning_categories_bloc.dart';
+import '../../features/warnings/presentation/bloc/warning_categories_event.dart';
 import '../../features/work_scope/presentation/bloc/work_scope_bloc.dart';
 import '../../features/work_scope/presentation/bloc/work_scope_event.dart';
 import '../pages/root_page.dart';
@@ -33,20 +35,58 @@ class _AuthWrapperState extends State<AuthWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthBloc, AuthState>(
+    print('🎨 AuthWrapper: build() called');
+    final authBloc = context.read<AuthBloc>();
+    print('🎨 AuthWrapper: AuthBloc instance hashCode: ${authBloc.hashCode}');
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        print('🎨 AuthWrapper: Listener received state: $state');
+        // Listener ensures widget responds to state changes
+        // No side effects - just logging for diagnostics
+      },
+      buildWhen: (previous, current) {
+        print('🎨 AuthWrapper: buildWhen called - previous: $previous, current: $current');
+        return true; // Always rebuild (same as default behavior)
+      },
       builder: (context, authState) {
+        print('🎨 AuthWrapper: Builder received state: $authState');
         return authState.when(
           initial: () {
-            // Trigger auth check on initial state
-            context.read<AuthBloc>().add(CheckAuthStatus());
+            print('🎨 AuthWrapper: Handling initial state');
+            // Trigger auth check after the widget tree is built
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              print('🎨 AuthWrapper: PostFrameCallback executing - triggering CheckAuthStatus');
+              context.read<AuthBloc>().add(CheckAuthStatus());
+            });
+            print('🎨 AuthWrapper: Returning _SplashScreen');
             return const _SplashScreen();
           },
-          loading: () => _loginPage,
-          otpSent: (_) => _loginPage,
+          loading: () {
+            print('🎨 AuthWrapper: Handling loading state');
+            print('🎨 AuthWrapper: Returning LoginPage');
+            return _loginPage;
+          },
+          otpSent: (_) {
+            print('🎨 AuthWrapper: Handling otpSent state');
+            print('🎨 AuthWrapper: Returning LoginPage');
+            return _loginPage;
+          },
           // authenticated: (tokens, currentAdmin) => RootPage(),
-          authenticated: (tokens, currentAdmin) => _buildAuthenticatedView(),
-          unauthenticated: () => _loginPage,
-          failure: (_) => _loginPage,
+          authenticated: (tokens, currentAdmin) {
+            print('🎨 AuthWrapper: Handling authenticated state');
+            print('🎨 AuthWrapper: Returning _buildAuthenticatedView');
+            return _buildAuthenticatedView();
+          },
+          unauthenticated: () {
+            print('🎨 AuthWrapper: Handling unauthenticated state');
+            print('🎨 AuthWrapper: Returning LoginPage');
+            return _loginPage;
+          },
+          failure: (_) {
+            print('🎨 AuthWrapper: Handling failure state');
+            print('🎨 AuthWrapper: Returning LoginPage');
+            return _loginPage;
+          },
         );
       },
     );
@@ -79,6 +119,11 @@ class _AuthWrapperState extends State<AuthWrapper> {
             // Load Roads with fresh data
             context.read<RoadBloc>().add(
               const RoadEvent.loadProvinces(forceRefresh: true),
+            );
+
+            // Load Warning Categories with fresh data
+            context.read<WarningCategoriesBloc>().add(
+              const WarningCategoriesEvent.loadCategories(forceRefresh: true),
             );
           }
         },

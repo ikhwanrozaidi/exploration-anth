@@ -53,8 +53,8 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
   Future<Either<Failure, List<DailyReportModel>>> getDailyReports({
     required String companyUID,
     int page = 1,
-    int limit = 10,
-    String sortOrder = 'asc',
+    int limit = 50,
+    String sortOrder = 'desc',
     String? search,
     String? roadUid,
     String? workScopeUid,
@@ -92,6 +92,7 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
       );
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        print('Total Reports: ${response.data.length}');
         return Right(response.data);
       } else {
         print('❌ RemoteDataSource: API returned error - ${response.message}');

@@ -45,11 +45,11 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
       // Parse composite key to extract quantityTypeUID and sequenceNo
       final parts = compositeKey.split('_');
       final quantityTypeUID = parts.length >= 2
-          ? parts.sublist(0, parts.length - 1).join('_') // Handle UIDs with underscores
+          ? parts
+                .sublist(0, parts.length - 1)
+                .join('_') // Handle UIDs with underscores
           : compositeKey;
-      final sequenceNo = parts.length >= 2
-          ? int.tryParse(parts.last) ?? 1
-          : 1;
+      final sequenceNo = parts.length >= 2 ? int.tryParse(parts.last) ?? 1 : 1;
 
       // Separate field values from image fields
       final fieldValues = <String, dynamic>{};
@@ -59,9 +59,11 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
         if (fieldEntry.key.endsWith('_images')) {
           // This is an image field
           final fieldKey = fieldEntry.key.replaceAll('_images', '');
-          final images = (fieldEntry.value as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList() ?? [];
+          final images =
+              (fieldEntry.value as List<dynamic>?)
+                  ?.map((e) => e.toString())
+                  .toList() ??
+              [];
           if (images.isNotEmpty) {
             imageFields[fieldKey] = images;
           }
@@ -84,10 +86,7 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
         'name': sequenceNo > 1
             ? '${quantityType.name} (#$sequenceNo)' // Show sequence number if > 1
             : quantityType.name,
-        'data': {
-          'fieldValues': fieldValues,
-          'imageFields': imageFields,
-        },
+        'data': {'fieldValues': fieldValues, 'imageFields': imageFields},
       });
     }
 
@@ -161,8 +160,8 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
       ),
     );
 
-    // Data is now in BLoC, no need to handle result
-    // UI will automatically update via BlocBuilder
+    // Data is now in BLoC
+    // Auto-save is triggered at draft_page level (matches Worker/Equipment/Notes pattern)
   }
 
   @override
@@ -191,111 +190,111 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
                   onTap: () {
                     Navigator.pop(context);
                   },
-              child: Container(
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12.withOpacity(0.1),
-                      blurRadius: 5,
-                      offset: Offset(-2, 6),
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12.withOpacity(0.1),
+                          blurRadius: 5,
+                          offset: Offset(-2, 6),
+                        ),
+                      ],
                     ),
-                  ],
+                    child: Icon(
+                      Icons.arrow_back_rounded,
+                      color: Colors.black,
+                      size: 25,
+                    ),
+                  ),
                 ),
-                child: Icon(
-                  Icons.arrow_back_rounded,
-                  color: Colors.black,
-                  size: 25,
+
+                SizedBox(width: ResponsiveHelper.spacing(context, 15)),
+
+                const Text(
+                  'Quantity',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                  ),
                 ),
-              ),
+              ],
             ),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: currentQuantities.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: currentQuantities.length,
+                          itemBuilder: (context, index) {
+                            final quantity = currentQuantities[index];
+                            return _buildQuantityCard(quantity, index);
+                          },
+                        )
+                      : Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.category_outlined,
+                                size: 80,
+                                color: Colors.grey.shade300,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'Empty Quantity',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Add quantity to display',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey.shade500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                ),
 
-            SizedBox(width: ResponsiveHelper.spacing(context, 15)),
-
-            const Text(
-              'Quantity',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-                fontSize: 20,
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: currentQuantities.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: currentQuantities.length,
-                      itemBuilder: (context, index) {
-                        final quantity = currentQuantities[index];
-                        return _buildQuantityCard(quantity, index);
-                      },
-                    )
-                  : Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.category_outlined,
-                            size: 80,
-                            color: Colors.grey.shade300,
-                          ),
-                          SizedBox(height: 16),
-                          Text(
-                            'Empty Quantity',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey.shade600,
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                          Text(
-                            'Add quantity to display',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey.shade500,
-                            ),
-                          ),
-                        ],
+                // Add Quantity Button
+                Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: ElevatedButton(
+                    onPressed: () => _showQuantityOptions(),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      padding: ResponsiveHelper.padding(context, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 2,
+                    ),
+                    child: Text(
+                      '+  Add Quantity',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: ResponsiveHelper.fontSize(context, base: 14),
                       ),
                     ),
-            ),
-
-            // Add Quantity Button
-            Container(
-              width: double.infinity,
-              margin: EdgeInsets.only(bottom: 20),
-              child: ElevatedButton(
-                onPressed: () => _showQuantityOptions(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  padding: ResponsiveHelper.padding(context, vertical: 12),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  elevation: 2,
-                ),
-                child: Text(
-                  '+  Add Quantity',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: ResponsiveHelper.fontSize(context, base: 14),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
         );
       },
     );
@@ -345,12 +344,110 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      quantity['name'] ?? workQuantityType.name,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            quantity['name'] ?? workQuantityType.name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+
+                        Row(
+                          children: [
+                            SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.red,
+                                  size: 20,
+                                ),
+                                padding: EdgeInsets.zero,
+
+                                onPressed: () async {
+                                  // Show confirmation dialog
+                                  final confirmed = await showDialog<bool>(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: Text('Remove Quantity'),
+                                      content: Text(
+                                        'Are you sure you want to remove "${quantity['name'] ?? workQuantityType.name}"?',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(false),
+                                          child: Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(true),
+                                          style: TextButton.styleFrom(
+                                            foregroundColor: Colors.red,
+                                          ),
+                                          child: Text('Remove'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+
+                                  if (confirmed == true && mounted) {
+                                    // Use the composite key (id) to remove
+                                    final compositeKey =
+                                        quantity['id'] as String;
+
+                                    // Debug prints
+                                    print(
+                                      '🗑️ [DELETE DEBUG] Attempting to remove:',
+                                    );
+                                    print('   - Composite Key: $compositeKey');
+                                    print(
+                                      '   - Quantity Name: ${quantity['name']}',
+                                    );
+
+                                    // Get the BLoC and dispatch the event
+                                    final bloc = context
+                                        .read<DailyReportCreateBloc>();
+                                    bloc.add(
+                                      DailyReportCreateEvent.removeQuantityType(
+                                        compositeKey,
+                                      ),
+                                    );
+
+                                    // Small delay to ensure BLoC processes the event
+                                    await Future.delayed(
+                                      Duration(milliseconds: 100),
+                                    );
+
+                                    // Show success message
+                                    if (mounted) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(
+                                          content: Text(
+                                            'Quantity removed successfully',
+                                          ),
+                                          backgroundColor: Colors.green,
+                                          duration: Duration(seconds: 2),
+                                        ),
+                                      );
+                                    }
+                                  }
+                                },
+                              ),
+                            ),
+
+                            SizedBox(width: 10),
+                          ],
+                        ),
+                      ],
                     ),
 
                     dividerConfig(),
@@ -576,9 +673,9 @@ class _QuantitySelectionPageState extends State<QuantitySelectionPage> {
 
           // Add the selected quantity type to selectedQuantityTypes
           // This is needed for the mapper to find field definitions during submission
-          bloc.add(DailyReportCreateEvent.toggleQuantityType(
-            selectedQuantity.uid,
-          ));
+          bloc.add(
+            DailyReportCreateEvent.toggleQuantityType(selectedQuantity.uid),
+          );
 
           final state = bloc.state;
           final quantityFieldData = state.maybeMap(

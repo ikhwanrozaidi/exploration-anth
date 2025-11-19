@@ -10,22 +10,20 @@ part 'road_state.freezed.dart';
 class RoadState with _$RoadState {
   const factory RoadState.initial() = RoadInitial;
   const factory RoadState.loading() = RoadLoading;
+
   const factory RoadState.loaded({
-    // ALL data (for reference and filtering)
     @Default([]) List<Country> allCountries,
     @Default([]) List<Province> allProvinces,
     @Default([]) List<District> allDistricts,
     @Default([]) List<Road> allRoads,
-
-    // FILTERED data (for current display)
     @Default([]) List<Province> provinces,
     @Default([]) List<District> districts,
     @Default([]) List<Road> roads,
-
-    // Selected items
     Province? selectedProvince,
     District? selectedDistrict,
     Road? selectedRoad,
+    @Default([]) List<Road> selectedRoads,
   }) = RoadLoaded;
+
   const factory RoadState.error(String message) = RoadError;
 }

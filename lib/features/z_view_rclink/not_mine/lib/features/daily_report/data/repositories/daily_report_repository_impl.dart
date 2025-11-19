@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/database/app_database.dart';
@@ -38,8 +39,8 @@ class DailyReportRepositoryImpl
   Future<Either<Failure, List<DailyReport>>> getDailyReports({
     required String companyUID,
     int page = 1,
-    int limit = 10,
-    String sortOrder = 'asc',
+    int limit = 50,
+    String sortOrder = 'desc',
     String? search,
     String? roadUid,
     String? workScopeUid,
@@ -78,7 +79,8 @@ class DailyReportRepositoryImpl
         return Left(failure);
       },
       (models) async {
-        await _localDataSource.cacheDailyReports(models);
+        // Cache in background without blocking UI update
+        unawaited(_localDataSource.cacheDailyReports(models));
 
         return Right(models.map((model) => model.toEntity()).toList());
       },

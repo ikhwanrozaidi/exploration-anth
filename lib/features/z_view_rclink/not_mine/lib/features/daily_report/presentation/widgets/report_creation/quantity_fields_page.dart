@@ -101,6 +101,35 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
     );
   }
 
+  // Validation: Check if all fields are filled
+  bool _isFormValid(Map<String, dynamic> fieldData) {
+    for (final field in widget.quantityOption.fields) {
+      final fieldId = field.id;
+
+      switch (field.type) {
+        case FieldType.multipleImages:
+          // Image field: require at least one image
+          final images = fieldData['${fieldId}_images'] as List<dynamic>?;
+          if (images == null || images.isEmpty) {
+            return false;
+          }
+          break;
+
+        case FieldType.dropdown:
+        case FieldType.numericField:
+        case FieldType.textField:
+        case FieldType.notes:
+          // Text/numeric/dropdown fields: require non-empty value
+          final value = fieldData[fieldId];
+          if (value == null || value.toString().trim().isEmpty) {
+            return false;
+          }
+          break;
+      }
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<DailyReportCreateBloc, DailyReportCreateState>(
@@ -182,18 +211,33 @@ class _QuantityFieldsPageState extends State<QuantityFieldsPage> {
             // Continue Button (data auto-saved to BLoC)
             SizedBox(height: 20),
 
+            // Validation check
+            if (!_isFormValid(fieldData))
+              Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Text(
+                  'Please fill in all fields before continuing',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: ResponsiveHelper.fontSize(context, base: 12),
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+
             Container(
               margin: EdgeInsets.only(top: 20),
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => _navigateNext(),
+                onPressed: _isFormValid(fieldData) ? () => _navigateNext() : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
+                  backgroundColor: _isFormValid(fieldData) ? primaryColor : Colors.grey,
                   padding: ResponsiveHelper.padding(context, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   elevation: 2,
+                  disabledBackgroundColor: Colors.grey,
                 ),
                 child: Text(
                   'Continue',

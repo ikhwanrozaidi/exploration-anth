@@ -32,6 +32,10 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
 
     on<ClearRoadSelections>(_onClearSelections);
     on<ClearRoadCache>(_onClearCache);
+
+    on<AddRoadSelection>(_onAddRoadSelection);
+    on<RemoveRoadSelection>(_onRemoveRoadSelection);
+    on<ClearMultipleSelections>(_onClearMultipleSelections);
   }
 
   // Helper to get current loaded state
@@ -49,6 +53,7 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
             selectedProvince,
             selectedDistrict,
             selectedRoad,
+            selectedRoads,
           ) => RoadLoaded(
             allCountries: allCountries,
             allProvinces: allProvinces,
@@ -60,6 +65,7 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
             selectedProvince: selectedProvince,
             selectedDistrict: selectedDistrict,
             selectedRoad: selectedRoad,
+            selectedRoads: selectedRoads,
           ),
       orElse: () => const RoadLoaded(),
     );
@@ -321,10 +327,10 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
         provinces: current.provinces,
         districts: current.districts,
         roads: current.roads,
-        // Clear all selections
         selectedProvince: null,
         selectedDistrict: null,
         selectedRoad: null,
+        selectedRoads: [],
       ),
     );
   }
@@ -363,5 +369,88 @@ class RoadBloc extends Bloc<RoadEvent, RoadState> {
     );
 
     emit(const RoadState.initial());
+  }
+
+  Future<void> _onAddRoadSelection(
+    AddRoadSelection event,
+    Emitter<RoadState> emit,
+  ) async {
+    final current = _currentLoaded;
+
+    final searchList = current.roads.isNotEmpty ? current.roads : _allRoads;
+
+    final roadToAdd = searchList.firstWhere((road) => road.uid == event.uid);
+
+    // Check if already selected
+    if (current.selectedRoads.any((r) => r.uid == event.uid)) {
+      return; // Already selected, do nothing
+    }
+
+    final updatedSelectedRoads = [...current.selectedRoads, roadToAdd];
+
+    emit(
+      RoadState.loaded(
+        allCountries: _allCountries,
+        allProvinces: _allProvinces,
+        allDistricts: _allDistricts,
+        allRoads: _allRoads,
+        provinces: current.provinces,
+        districts: current.districts,
+        roads: current.roads,
+        selectedProvince: current.selectedProvince,
+        selectedDistrict: current.selectedDistrict,
+        selectedRoad: null, // Clear single selection
+        selectedRoads: updatedSelectedRoads,
+      ),
+    );
+  }
+
+  Future<void> _onRemoveRoadSelection(
+    RemoveRoadSelection event,
+    Emitter<RoadState> emit,
+  ) async {
+    final current = _currentLoaded;
+
+    final updatedSelectedRoads = current.selectedRoads
+        .where((road) => road.uid != event.uid)
+        .toList();
+
+    emit(
+      RoadState.loaded(
+        allCountries: _allCountries,
+        allProvinces: _allProvinces,
+        allDistricts: _allDistricts,
+        allRoads: _allRoads,
+        provinces: current.provinces,
+        districts: current.districts,
+        roads: current.roads,
+        selectedProvince: current.selectedProvince,
+        selectedDistrict: current.selectedDistrict,
+        selectedRoad: current.selectedRoad,
+        selectedRoads: updatedSelectedRoads,
+      ),
+    );
+  }
+
+  Future<void> _onClearMultipleSelections(
+    ClearMultipleSelections event,
+    Emitter<RoadState> emit,
+  ) async {
+    final current = _currentLoaded;
+    emit(
+      RoadState.loaded(
+        allCountries: _allCountries,
+        allProvinces: _allProvinces,
+        allDistricts: _allDistricts,
+        allRoads: _allRoads,
+        provinces: current.provinces,
+        districts: current.districts,
+        roads: current.roads,
+        selectedProvince: current.selectedProvince,
+        selectedDistrict: current.selectedDistrict,
+        selectedRoad: current.selectedRoad,
+        selectedRoads: [],
+      ),
+    );
   }
 }

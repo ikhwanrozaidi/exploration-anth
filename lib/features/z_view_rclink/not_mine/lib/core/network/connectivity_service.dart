@@ -1,91 +1,61 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:injectable/injectable.dart';
 
 @singleton
 class ConnectivityService {
-  final Connectivity _connectivity = Connectivity();
-
+  final Connectivity _connectivity;
   StreamController<bool>? _connectivityController;
-  StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
-  bool _isConnected = false;
+
+  ConnectivityService(this._connectivity) {
+    print('📡 ConnectivityService: Constructor called with Connectivity instance');
+  }
 
   Stream<bool> get connectivityStream {
+    print('📡 ConnectivityService: connectivityStream getter called');
     _connectivityController ??= StreamController<bool>.broadcast();
+    _connectivity.onConnectivityChanged.listen((result) {
+      print('📡 ConnectivityService: Connectivity changed - $result');
+      _connectivityController?.add(!result.contains(ConnectivityResult.none));
+    });
     return _connectivityController!.stream;
   }
 
-  bool get isCurrentlyConnected => _isConnected;
+  bool get isCurrentlyConnected {
+    // This is synchronous approximation, use checkConnectivity for accurate result
+    return true;
+  }
 
   void startMonitoring() {
-    _connectivitySubscription = _connectivity.onConnectivityChanged.listen((
-      List<ConnectivityResult> results,
-    ) async {
-      final wasConnected = _isConnected;
-      _isConnected = await _checkActualConnectivity(results.first);
-
-      if (wasConnected != _isConnected) {
-        _connectivityController?.add(_isConnected);
-      }
-    });
-
-    // Check initial connectivity
-    _checkInitialConnectivity();
-  }
-
-  Future<void> _checkInitialConnectivity() async {
-    final results = await _connectivity.checkConnectivity();
-    _isConnected = await _checkActualConnectivity(results.first);
-    _connectivityController?.add(_isConnected);
-  }
-
-  Future<bool> _checkActualConnectivity(ConnectivityResult result) async {
-    if (result == ConnectivityResult.none) {
-      return false;
-    }
-
-    // Even if connectivity shows we're connected, we need to verify
-    // actual internet access
+    print('📡 ConnectivityService: startMonitoring() called');
     try {
-      final response = await InternetAddress.lookup(
-        'google.com',
-      ).timeout(const Duration(seconds: 5));
-      return response.isNotEmpty && response[0].rawAddress.isNotEmpty;
-    } catch (e) {
-      return false;
+      _connectivity.onConnectivityChanged.listen((result) {
+        print('📡 ConnectivityService: Connectivity changed in monitoring - $result');
+        _connectivityController?.add(!result.contains(ConnectivityResult.none));
+      });
+      print('📡 ConnectivityService: Monitoring started successfully');
+    } catch (e, stackTrace) {
+      print('❌ ConnectivityService: Error starting monitoring: $e');
+      print('❌ ConnectivityService: Stack trace: $stackTrace');
     }
   }
 
   Future<bool> checkConnectivity() async {
-    final results = await _connectivity.checkConnectivity();
-    _isConnected = await _checkActualConnectivity(results.first);
-    return _isConnected;
+    print('📡 ConnectivityService: checkConnectivity() called');
+    try {
+      final result = await _connectivity.checkConnectivity();
+      final isConnected = !result.contains(ConnectivityResult.none);
+      print('📡 ConnectivityService: checkConnectivity result: $result (connected: $isConnected)');
+      return isConnected;
+    } catch (e, stackTrace) {
+      print('❌ ConnectivityService: Error checking connectivity: $e');
+      print('❌ ConnectivityService: Stack trace: $stackTrace');
+      return false;
+    }
   }
 
   void dispose() {
-    _connectivitySubscription?.cancel();
+    print('📡 ConnectivityService: dispose() called');
     _connectivityController?.close();
   }
-}
-
-// Enhanced network info that uses ConnectivityService
-@LazySingleton(as: NetworkInfo)
-class EnhancedNetworkInfo implements NetworkInfo {
-  final ConnectivityService _connectivityService;
-
-  EnhancedNetworkInfo(this._connectivityService);
-
-  @override
-  Future<bool> get isConnected async {
-    return await _connectivityService.checkConnectivity();
-  }
-
-  Stream<bool> get connectivityStream =>
-      _connectivityService.connectivityStream;
-}
-
-// Base NetworkInfo interface (if not already defined)
-abstract class NetworkInfo {
-  Future<bool> get isConnected;
 }

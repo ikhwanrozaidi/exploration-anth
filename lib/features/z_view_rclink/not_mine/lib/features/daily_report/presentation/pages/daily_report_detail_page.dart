@@ -4,6 +4,7 @@ import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_state.dart';
+import '../../../warnings/presentation/pages/warning_report_review_page.dart';
 import '../../domain/entities/daily_report.dart';
 import '../bloc/daily_report_view/daily_report_view_bloc.dart';
 import '../bloc/daily_report_view/daily_report_view_event.dart';
@@ -26,8 +27,8 @@ class DailyReportDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<DailyReportViewBloc>(),
+    return BlocProvider.value(
+      value: getIt<DailyReportViewBloc>(),
       child: _DailyReportDetailPageContent(initialReport: report),
     );
   }
@@ -84,8 +85,6 @@ class _DailyReportDetailPageContentState
   /// Handle pull-to-refresh
   Future<void> _onRefresh() async {
     _fetchFreshData(forceRefresh: true);
-    // Wait a bit for the request to complete
-    await Future.delayed(const Duration(seconds: 1));
   }
 
   @override
@@ -251,7 +250,13 @@ class _DailyReportDetailPageView extends StatelessWidget {
               // Report Review Card
               DailyReportDetailReviewCard(
                 onLike: () => print("Like button clicked"),
-                onDislike: () => print("Dislike button clicked"),
+                onDislike: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        WarningReportReviewPage(report: report),
+                  ),
+                ),
               ),
 
               const SizedBox(height: 20),

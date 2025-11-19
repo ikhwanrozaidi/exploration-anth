@@ -146,5 +146,22 @@ class DailyReportCreateEvent with _$DailyReportCreateEvent {
   }) = SubmitReport;
   const factory DailyReportCreateEvent.saveAsDraft() = SaveAsDraft;
 
+  // Draft Management
+  const factory DailyReportCreateEvent.initializeDraftReport({
+    required String companyUID,
+  }) = InitializeDraftReport;
+
+  const factory DailyReportCreateEvent.loadExistingDraft({
+    required String draftUID,
+  }) = LoadExistingDraft;
+
+  const factory DailyReportCreateEvent.deleteDraft({
+    required String draftUID,
+  }) = DeleteDraft;
+
+  const factory DailyReportCreateEvent.autoSaveDraft({
+    required String companyUID,
+  }) = AutoSaveDraft;
+
   const factory DailyReportCreateEvent.clearAllCache() = ClearAllCache;
 }

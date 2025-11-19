@@ -29,8 +29,8 @@ class DailyReportPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<DailyReportViewBloc>(),
+    return BlocProvider.value(
+      value: getIt<DailyReportViewBloc>(),
       child: const _DailyReportPageContent(),
     );
   }
@@ -44,9 +44,13 @@ class _DailyReportPageContent extends StatefulWidget {
       _DailyReportPageContentState();
 }
 
-class _DailyReportPageContentState extends State<_DailyReportPageContent> {
+class _DailyReportPageContentState extends State<_DailyReportPageContent>
+    with SingleTickerProviderStateMixin {
+  int selectedMonth = DateTime.now().month;
+  int selectedYear = DateTime.now().year;
   late ScrollController _scrollController;
   late TextEditingController _searchController;
+  late TabController _tabController;
   Timer? _debounceTimer;
   bool _isScrollingUp = false;
   double _lastScrollPosition = 0.0;
@@ -56,8 +60,11 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
   String? _selectedWorkScopeUID;
 
   Timer? _monthFilterDebounceTimer;
-  String fromDate =
-      '${DateTime.utc(DateTime.now().year, DateTime.now().month, 1).toIso8601String()}Z';
+  String fromDate = DateTime.utc(
+    DateTime.now().year,
+    DateTime.now().month,
+    1,
+  ).toIso8601String();
   String? toDate;
 
   @override
@@ -66,20 +73,25 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
     _searchController = TextEditingController();
+    _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_onTabChanged);
 
     // Trigger initial load after frame is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Check if widget is still mounted before accessing context
+      if (!mounted) return;
+
       final companyState = context.read<CompanyBloc>().state;
       companyState.whenOrNull(
         loaded: (companies, selectedCompany) {
-          if (selectedCompany != null) {
+          if (selectedCompany != null && mounted) {
             context.read<DailyReportViewBloc>().add(
               DailyReportViewEvent.loadDailyReports(
                 companyUID: selectedCompany.uid,
                 page: 1,
-                limit: 10,
-                fromDate:
-                    fromDate, // because by default MonthlyFilter already active
+                limit: 50,
+                sortOrder: 'desc',
+                // fromDate: fromDate, // because by default MonthlyFilter already active
               ),
             );
           }
@@ -92,9 +104,30 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
   void dispose() {
     _scrollController.dispose();
     _searchController.dispose();
+    _tabController.dispose();
     _debounceTimer?.cancel();
     _monthFilterDebounceTimer?.cancel();
     super.dispose();
+  }
+
+  void _onTabChanged() {
+    if (!_tabController.indexIsChanging) {
+      if (!mounted) return;
+
+      final companyState = context.read<CompanyBloc>().state;
+      companyState.whenOrNull(
+        loaded: (companies, selectedCompany) {
+          if (selectedCompany != null && mounted) {
+            context.read<DailyReportViewBloc>().add(
+              DailyReportViewEvent.changeTab(
+                tabIndex: _tabController.index,
+                companyUID: selectedCompany.uid,
+              ),
+            );
+          }
+        },
+      );
+    }
   }
 
   void _onScroll() {
@@ -123,14 +156,22 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
 
             state.whenOrNull(
               loaded:
-                  (reports, currentPage, hasMore, isLoadingMore, searchQuery) {
+                  (
+                    reports,
+                    currentPage,
+                    hasMore,
+                    isLoadingMore,
+                    searchQuery,
+                    selectedTabIndex,
+                  ) {
                     if (hasMore && !isLoadingMore) {
                       setState(() => _isLoadingMore = true);
                       bloc.add(
                         DailyReportViewEvent.loadMoreDailyReports(
                           companyUID: selectedCompany.uid,
                           page: currentPage + 1,
-                          limit: 10,
+                          limit: 50,
+                          sortOrder: 'desc',
                           search: searchQuery,
                         ),
                       );
@@ -146,17 +187,19 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
   }
 
   void _loadDailyReports() {
+    if (!mounted) return;
+
     final companyState = context.read<CompanyBloc>().state;
 
     companyState.whenOrNull(
       loaded: (companies, selectedCompany) {
-        if (selectedCompany != null) {
+        if (selectedCompany != null && mounted) {
           context.read<DailyReportViewBloc>().add(
             DailyReportViewEvent.loadDailyReports(
               companyUID: selectedCompany.uid,
               page: 1,
-              limit: 10,
-              sortOrder: 'asc',
+              limit: 50,
+              sortOrder: 'desc',
             ),
           );
         }
@@ -179,30 +222,28 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
     });
   }
 
-  void _loadDailyReportsWithFilters() async {
+  void _loadDailyReportsWithFilters() {
+    // Add mounted check to prevent accessing context after widget disposal
+    if (!mounted) return;
+
     final companyState = context.read<CompanyBloc>().state;
 
     companyState.whenOrNull(
-      loaded: (companies, selectedCompany) async {
-        if (selectedCompany != null) {
-          final loadingFuture = Future.delayed(
-            const Duration(milliseconds: 1000),
-          );
-
+      loaded: (companies, selectedCompany) {
+        // Check mounted again before accessing context after potential async operations
+        if (selectedCompany != null && mounted) {
           context.read<DailyReportViewBloc>().add(
             DailyReportViewEvent.loadDailyReports(
               companyUID: selectedCompany.uid,
               page: 1,
-              limit: 10,
+              limit: 50,
               roadUid: _selectedRoadUID,
               workScopeUid: _selectedWorkScopeUID,
-              sortOrder: 'asc',
+              sortOrder: 'desc',
               fromDate: fromDate,
               toDate: toDate,
             ),
           );
-
-          await loadingFuture;
         }
       },
     );
@@ -211,16 +252,20 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
   void _onSearchChanged(String query) {
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 1000), () {
+      // Check if widget is still mounted before accessing context in timer callback
+      if (!mounted) return;
+
       final companyState = context.read<CompanyBloc>().state;
 
       companyState.whenOrNull(
         loaded: (companies, selectedCompany) {
-          if (selectedCompany != null) {
+          if (selectedCompany != null && mounted) {
             context.read<DailyReportViewBloc>().add(
               DailyReportViewEvent.loadDailyReports(
                 companyUID: selectedCompany.uid,
                 page: 1,
-                limit: 10,
+                limit: 50,
+                sortOrder: 'desc',
                 search: query.trim().isEmpty ? null : query.trim(),
               ),
             );
@@ -231,13 +276,29 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
   }
 
   Future<void> _onRefresh() async {
-    context.read<DailyReportViewBloc>().add(
-      const DailyReportViewEvent.clearCache(),
-    );
-    _loadDailyReports();
+    // Check mounted before accessing context
+    if (!mounted) return;
 
-    // Wait a bit for the refresh to complete
-    await Future.delayed(const Duration(milliseconds: 500));
+    // Respect current tab when refreshing
+    final companyState = context.read<CompanyBloc>().state;
+    companyState.whenOrNull(
+      loaded: (companies, selectedCompany) {
+        if (selectedCompany != null && mounted) {
+          // Check which tab is active
+          if (_tabController.index == 0) {
+            // Submitted tab - load regular reports
+            _loadDailyReports();
+          } else {
+            // Draft tab - reload drafts
+            context.read<DailyReportViewBloc>().add(
+              DailyReportViewEvent.loadDraftReports(
+                companyUID: selectedCompany.uid,
+              ),
+            );
+          }
+        }
+      },
+    );
   }
 
   @override
@@ -312,10 +373,13 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                             padding: ResponsiveHelper.padding(context, all: 10),
                           ),
                           onPressed: () {
+                            // Navigate to creation page with isNewDraft flag
+                            // This will trigger draft mode and auto-save
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => DailyReportCreationPage(),
+                                builder: (context) =>
+                                    DailyReportCreationPage(isNewDraft: true),
                               ),
                             );
                           },
@@ -360,6 +424,7 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                                   hasMore,
                                   isLoadingMore,
                                   searchQuery,
+                                  selectedTabIndex,
                                 ) => reports.length,
                             orElse: () => 0,
                           );
@@ -413,6 +478,43 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                             ),
                           );
                         },
+                      ),
+                      // TabBar for Submitted/Draft
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF5F5F5),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: TabBar(
+                            controller: _tabController,
+                            dividerColor: Colors.transparent,
+                            labelColor: Colors.black,
+                            indicator: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            indicatorSize: TabBarIndicatorSize.tab,
+                            labelStyle: TextStyle(
+                              fontSize: ResponsiveHelper.spacing(context, 14),
+                              fontWeight: FontWeight.w600,
+                            ),
+                            unselectedLabelColor: Colors.grey[600],
+                            unselectedLabelStyle: TextStyle(
+                              fontSize: ResponsiveHelper.spacing(context, 14),
+                              fontWeight: FontWeight.normal,
+                            ),
+                            tabs: const [
+                              Tab(text: 'Submitted'),
+                              Tab(text: 'Draft'),
+                            ],
+                          ),
+                        ),
                       ),
                       _buildBody(),
                     ],
@@ -574,6 +676,7 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                       hasMore,
                       isLoadingMore,
                       searchQuery,
+                      selectedTabIndex,
                     ) {
                       if (!isLoadingMore && _isLoadingMore) {
                         setState(() => _isLoadingMore = false);
@@ -603,6 +706,7 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                       hasMore,
                       isLoadingMore,
                       searchQuery,
+                      selectedTabIndex,
                     ) {
                       if (reports.isEmpty) {
                         return SliverFillRemaining(
@@ -682,7 +786,8 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent> {
                               DailyReportViewEvent.loadDailyReports(
                                 companyUID: companyUID!,
                                 page: 1,
-                                limit: 10,
+                                limit: 50,
+                                sortOrder: 'desc',
                               ),
                             );
                           },

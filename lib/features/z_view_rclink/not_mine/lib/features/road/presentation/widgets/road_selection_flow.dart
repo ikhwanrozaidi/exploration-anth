@@ -11,6 +11,7 @@ import '../bloc/road_event.dart';
 import '../bloc/road_state.dart';
 import '../helper/road_level.dart';
 import '../helper/road_selection_result.dart';
+import 'road_multi_selection_bottomsheet.dart';
 
 class RoadSelectionFlow {
   /// Show road selection flow with flexible level configuration
@@ -21,7 +22,9 @@ class RoadSelectionFlow {
     String? preSelectedCountryUid,
     String? preSelectedProvinceUid,
     String? preSelectedDistrictUid,
+    List<String>? preSelectedRoadUids,
     required Function(RoadSelectionResult) onSelected,
+    bool selectMultipleRoads = false,
   }) async {
     // Validate: startFrom must be before or equal to endAt
     if (startFrom.isAfter(endAt)) {
@@ -72,6 +75,8 @@ class RoadSelectionFlow {
 
         roadBloc.add(const RoadEvent.clearSelections());
       },
+      selectMultipleRoads: selectMultipleRoads,
+      preSelectedRoadUids: preSelectedRoadUids, // Pass it
     );
   }
 
@@ -81,6 +86,8 @@ class RoadSelectionFlow {
     required RoadLevel currentLevel,
     required RoadLevel endLevel,
     required Function(RoadSelectionResult) onSelected,
+    bool selectMultipleRoads = false,
+    List<String>? preSelectedRoadUids,
   }) async {
     final state = bloc.state;
 
@@ -103,7 +110,8 @@ class RoadSelectionFlow {
             selectedProvince,
             selectedDistrict,
             selectedRoad,
-          ) {
+            selectedRoads, // Added this parameter
+          ) async {
             // If no data is loaded yet, show loading
             if (allProvinces.isEmpty &&
                 allDistricts.isEmpty &&
@@ -137,7 +145,74 @@ class RoadSelectionFlow {
               return _getDisplayName(currentLevel, item);
             }).toList();
 
-            // Show bottom sheet
+            // Check if we should show multi-selection bottomsheet
+            if (selectMultipleRoads && currentLevel == RoadLevel.roads) {
+              print(
+                '🔵 MULTI-SELECTION PATH - selectMultipleRoads: $selectMultipleRoads, currentLevel: $currentLevel',
+              );
+              // Show multi-selection bottomsheet for roads
+              final currentSelectedRoads = bloc.state.maybeWhen(
+                loaded:
+                    (
+                      _,
+                      __,
+                      ___,
+                      ____,
+                      _____,
+                      ______,
+                      _______,
+                      ________,
+                      _________,
+                      __________,
+                      selectedRoads,
+                    ) => selectedRoads,
+                orElse: () => <Road>[],
+              );
+
+              await RoadMultiSelectionBottomsheet.show(
+                context: context,
+                bloc: bloc,
+                roads: items.cast<Road>(),
+                initialSelectedRoads: currentSelectedRoads,
+                preSelectedRoadUids: preSelectedRoadUids,
+                onConfirm: (selectedRoads) {
+                  final result = bloc.state.maybeWhen(
+                    loaded:
+                        (
+                          _,
+                          __,
+                          ___,
+                          ____,
+                          _____,
+                          ______,
+                          _______,
+                          selectedProvince,
+                          selectedDistrict,
+                          __________,
+                          ___________,
+                        ) => RoadSelectionResult(
+                          completedAt: RoadLevel.roads,
+                          selectedProvince: selectedProvince,
+                          selectedDistrict: selectedDistrict,
+                          selectedRoads: selectedRoads,
+                        ),
+                    orElse: () => RoadSelectionResult(
+                      completedAt: RoadLevel.roads,
+                      selectedRoads: selectedRoads,
+                    ),
+                  );
+
+                  onSelected(result);
+                  bloc.add(const RoadEvent.clearSelections());
+                },
+              );
+              return;
+            }
+
+            print(
+              '🟢 SINGLE-SELECTION PATH - selectMultipleRoads: $selectMultipleRoads, currentLevel: $currentLevel',
+            );
+            // Show single selection bottom sheet (existing behavior)
             showFlexibleBottomsheet(
               context: context,
               title: 'Select ${currentLevel.displayName}',
@@ -180,6 +255,8 @@ class RoadSelectionFlow {
                     currentLevel: nextLevel,
                     endLevel: endLevel,
                     onSelected: onSelected,
+                    selectMultipleRoads: selectMultipleRoads,
+                    preSelectedRoadUids: preSelectedRoadUids,
                   );
                 }
               },
@@ -301,6 +378,7 @@ class RoadSelectionFlow {
             selectedProvince,
             selectedDistrict,
             selectedRoad,
+            selectedRoads,
           ) {
             // Determine which level was completed based on what's selected
             RoadLevel completedAt = RoadLevel.provinces;
@@ -317,6 +395,7 @@ class RoadSelectionFlow {
               selectedProvince: selectedProvince,
               selectedDistrict: selectedDistrict,
               selectedRoad: selectedRoad,
+              selectedRoads: selectedRoads.isNotEmpty ? selectedRoads : null,
             );
           },
       orElse: () => RoadSelectionResult(completedAt: RoadLevel.provinces),

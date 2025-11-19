@@ -349,18 +349,36 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
           RoadFieldTile(
             startFrom: RoadLevel.roads,
             endAt: RoadLevel.roads,
+            selectMultipleRoads: true,
             label: 'Route',
             // preSelectedDistrictUid: 'df3ae453-1f8f-4739-9d17-54db2355e17f',
             placeholder: 'Require Update',
             onRoadSelected: (RoadSelectionResult result) {
-              // print('Selected Road UID: ${result.selectedRoad?.uid}');
-              // print('Selected Province: ${result.selectedProvince?.name}');
-              // print('Selected District: ${result.selectedDistrict?.name}');
-              // print('Selected Road: ${result.selectedRoad?.name}');
+              // For multiple roads selection
+              if (result.selectedRoads != null) {
+                print('Selected ${result.selectedRoads!.length} roads');
 
-              // setState(() {
-              //   _selectedRoadUid = result.selectedRoad?.uid;
-              // });
+                // Loop through all selected roads
+                result.selectedRoads!.forEach((road) {
+                  print('Road UID: ${road.uid}');
+                  print('Road Name: ${road.name}');
+                  print('Road No: ${road.roadNo}');
+                });
+
+                // Get list of road UIDs
+                final roadUids = result.selectedRoads!
+                    .map((road) => road.uid)
+                    .toList();
+                print('All Road UIDs: $roadUids');
+
+                // setState(() {
+                //   _selectedRoadUids = roadUids; // Store multiple UIDs
+                // });
+              }
+
+              // Province and District info still available
+              print('Province: ${result.selectedProvince?.name}');
+              print('District: ${result.selectedDistrict?.name}');
             },
           ),
 

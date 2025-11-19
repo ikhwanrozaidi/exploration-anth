@@ -108,6 +108,7 @@ enum ImageContextField {
 
 /// Image sync status types
 enum ImageSyncStatus {
+  draftPending, // Draft images in permanent storage, not yet submitted
   pendingEntitySync, // Waiting for entity (report/inspection/etc.) to sync first
   pendingUpload, // Entity synced, ready to upload
   uploading, // Currently uploading
@@ -117,6 +118,8 @@ enum ImageSyncStatus {
   /// Convert to string for database storage
   String get value {
     switch (this) {
+      case ImageSyncStatus.draftPending:
+        return 'draft_pending';
       case ImageSyncStatus.pendingEntitySync:
         return 'pending_entity_sync';
       case ImageSyncStatus.pendingUpload:

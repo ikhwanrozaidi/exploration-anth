@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 
 class TemplatePage extends StatelessWidget {
-  final String pageTitle;
+  final String? pageTitle;
   final Widget body;
 
-  const TemplatePage({super.key, required this.pageTitle, required this.body});
+  const TemplatePage({super.key, this.pageTitle, required this.body});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +15,7 @@ class TemplatePage extends StatelessWidget {
         backgroundColor: Colors.white,
         automaticallyImplyLeading: false,
         titleSpacing: 20,
+        toolbarHeight: ResponsiveHelper.getHeight(context, 0.08),
         title: Row(
           children: [
             GestureDetector(
@@ -43,12 +44,12 @@ class TemplatePage extends StatelessWidget {
             ),
             SizedBox(width: ResponsiveHelper.spacing(context, 15)),
             Text(
-              pageTitle,
-              style: const TextStyle(
+              pageTitle ?? '',
+              style: TextStyle(
                 letterSpacing: 0.6,
                 color: Colors.black,
                 fontWeight: FontWeight.w600,
-                fontSize: 20,
+                fontSize: ResponsiveHelper.fontSize(context, base: 18),
               ),
             ),
           ],

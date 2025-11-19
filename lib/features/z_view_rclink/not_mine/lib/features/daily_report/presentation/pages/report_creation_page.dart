@@ -12,7 +12,14 @@ import '../widgets/report_creation/report_creation_form.dart';
 import '../widgets/report_creation/report_submit_button.dart';
 
 class DailyReportCreationPage extends StatefulWidget {
-  const DailyReportCreationPage({super.key});
+  final String? draftUID; // Optional draft UID for editing drafts
+  final bool isNewDraft; // If true, will auto-initialize a draft
+
+  const DailyReportCreationPage({
+    super.key,
+    this.draftUID,
+    this.isNewDraft = false,
+  });
 
   @override
   State<DailyReportCreationPage> createState() =>
@@ -26,6 +33,21 @@ class _DailyReportCreationPageState extends State<DailyReportCreationPage> {
   void initState() {
     super.initState();
     _bloc = getIt<DailyReportCreateBloc>();
+
+    // CRITICAL: Reset BLoC state when creating new draft
+    // This clears any old draftReportUID from previous draft creation
+    // (BLoC is @lazySingleton, so it retains state across navigations)
+    if (widget.isNewDraft) {
+      _bloc.add(const DailyReportCreateEvent.startOver());
+    }
+
+    // Handle draft loading/creation
+    if (widget.draftUID != null) {
+      // Load existing draft
+      _bloc.add(LoadExistingDraft(draftUID: widget.draftUID!));
+    }
+    // Don't initialize draft on page load - let auto-save handle it
+    // when user clicks Add button
 
     // Check if work scopes are already loaded
     final currentState = _bloc.state;

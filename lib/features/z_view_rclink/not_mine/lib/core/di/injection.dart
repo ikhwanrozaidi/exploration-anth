@@ -121,5 +121,16 @@ abstract class RegisterModule {
   }
 
   @lazySingleton
-  Connectivity get connectivity => Connectivity();
+  Connectivity get connectivity {
+    print('🔧 RegisterModule: Creating Connectivity instance...');
+    try {
+      final conn = Connectivity();
+      print('✅ RegisterModule: Connectivity instance created successfully');
+      return conn;
+    } catch (e, stackTrace) {
+      print('❌ RegisterModule: Error creating Connectivity instance: $e');
+      print('❌ RegisterModule: Stack trace: $stackTrace');
+      rethrow;
+    }
+  }
 }

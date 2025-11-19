@@ -10,6 +10,7 @@ class RoadSelectionResult {
   final Province? selectedProvince;
   final District? selectedDistrict;
   final Road? selectedRoad;
+  final List<Road>? selectedRoads;
 
   RoadSelectionResult({
     required this.completedAt,
@@ -17,6 +18,7 @@ class RoadSelectionResult {
     this.selectedProvince,
     this.selectedDistrict,
     this.selectedRoad,
+    this.selectedRoads,
   });
 
   @override
@@ -34,6 +36,9 @@ class RoadSelectionResult {
     }
     if (selectedRoad != null) {
       buffer.write(', road: ${selectedRoad!.name}');
+    }
+    if (selectedRoads != null && selectedRoads!.isNotEmpty) {
+      buffer.write(', roads: ${selectedRoads!.length} selected');
     }
     buffer.write(')');
     return buffer.toString();

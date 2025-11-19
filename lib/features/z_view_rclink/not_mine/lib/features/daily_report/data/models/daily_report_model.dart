@@ -16,7 +16,7 @@ abstract class DailyReportModel with _$DailyReportModel {
   const DailyReportModel._();
 
   const factory DailyReportModel({
-    required int id,
+    int? id, // Nullable - NULL during draft, set from server on first sync
     required String uid,
     required String name,
     String? notes,

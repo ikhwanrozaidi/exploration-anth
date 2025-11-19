@@ -16,8 +16,11 @@ import '../../../contractor_relation/presentation/bloc/contractor_relation_event
 import '../../../contractor_relation/presentation/bloc/contractor_relation_state.dart';
 import '../../../contractor_relation/presentation/widgets/show_contractor_relation_selection.dart';
 import '../../../daily_report/presentation/pages/daily_report_page.dart';
+import '../../../locale/presentation/pages/localization_debug_page.dart';
 import '../../../road/presentation/bloc/road_bloc.dart';
 import '../../../road/presentation/bloc/road_event.dart';
+import '../../../warnings/presentation/bloc/warning_categories_bloc.dart';
+import '../../../warnings/presentation/bloc/warning_categories_event.dart';
 import '../../../work_scope/presentation/bloc/work_scope_bloc.dart';
 import '../../../work_scope/presentation/bloc/work_scope_event.dart';
 import '../widgets/animated_connection_status_widget.dart';
@@ -78,6 +81,10 @@ class _DashboardPageState extends State<DashboardPage> {
 
           context.read<RoadBloc>().add(
             const RoadEvent.loadProvinces(forceRefresh: true),
+          );
+
+          context.read<WarningCategoriesBloc>().add(
+            const WarningCategoriesEvent.loadCategories(forceRefresh: true),
           );
         }
       },
@@ -543,7 +550,15 @@ class _DashboardPageState extends State<DashboardPage> {
                                   image: 'assets/images/icons/others.png',
                                   label: 'Others',
                                   onTap: () {
-                                    print('Others tapped');
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) =>
+                                    //         LocalizationTestPage(),
+                                    //   ),
+                                    // );
+
+                                    // print('Others tapped');
                                     CustomSnackBar.show(
                                       context,
                                       'This feature is coming soon...',

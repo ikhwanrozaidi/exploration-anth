@@ -9,7 +9,7 @@ part of 'daily_report_model.dart';
 _DailyReportModel _$DailyReportModelFromJson(
   Map<String, dynamic> json,
 ) => _DailyReportModel(
-  id: (json['id'] as num).toInt(),
+  id: (json['id'] as num?)?.toInt(),
   uid: json['uid'] as String,
   name: json['name'] as String,
   notes: json['notes'] as String?,

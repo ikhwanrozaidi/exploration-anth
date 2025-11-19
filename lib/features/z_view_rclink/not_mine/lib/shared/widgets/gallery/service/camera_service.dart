@@ -100,22 +100,45 @@ class CameraService {
   }
 
   Future<String> _saveImageToAppDirectory(XFile image) async {
-    final appDir = await getApplicationDocumentsDirectory();
-    final fileName =
-        '${DateTime.now().millisecondsSinceEpoch}${path.extension(image.path)}';
-    final savedPath = path.join(appDir.path, 'images', fileName);
+    try {
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName =
+          '${DateTime.now().millisecondsSinceEpoch}${path.extension(image.path)}';
+      final savedPath = path.join(appDir.path, 'images', fileName);
 
-    // Create directory if not exists
-    final directory = Directory(path.dirname(savedPath));
-    if (!await directory.exists()) {
-      await directory.create(recursive: true);
+      // Create directory if not exists
+      final directory = Directory(path.dirname(savedPath));
+      if (!await directory.exists()) {
+        await directory.create(recursive: true);
+      }
+
+      // Debug logging
+      print('📸 Saving camera image:');
+      print('   Source: ${image.path}');
+      print('   Source exists: ${await File(image.path).exists()}');
+      print('   Destination: $savedPath');
+      print('   Platform: ${Platform.operatingSystem} ${Platform.version}');
+
+      // CRITICAL FIX: Use XFile.saveTo() instead of File.copy()
+      // This method handles permissions correctly on all Android versions
+      await image.saveTo(savedPath);
+
+      // Verify file was saved successfully
+      final savedFile = File(savedPath);
+      final fileExists = await savedFile.exists();
+
+      if (!fileExists) {
+        throw Exception('Failed to save camera image to: $savedPath');
+      }
+
+      final fileSize = await savedFile.length();
+      print('   ✅ Image saved successfully (${fileSize} bytes)');
+
+      return savedPath;
+    } catch (e) {
+      print('   ❌ Failed to save image: $e');
+      rethrow;
     }
-
-    // Copy file
-    final File sourceFile = File(image.path);
-    await sourceFile.copy(savedPath);
-
-    return savedPath;
   }
 
   Future<void> deleteImage(String imagePath) async {

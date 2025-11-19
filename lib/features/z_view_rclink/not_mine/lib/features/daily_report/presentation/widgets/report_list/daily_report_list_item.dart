@@ -4,10 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rclink_app/features/daily_report/presentation/pages/daily_report_detail_page.dart';
+import 'package:rclink_app/features/daily_report/presentation/widgets/report_creation/draft_page.dart';
 
+import '../../../../../core/di/injection.dart';
 import '../../../../../core/utils/cache_managers.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
+import '../../../../../features/company/presentation/bloc/company_bloc.dart';
+import '../../../../../features/company/presentation/bloc/company_state.dart';
 import '../../../domain/entities/daily_report.dart';
+import '../../bloc/daily_report_create/daily_report_create_bloc.dart';
+import '../../bloc/daily_report_create/daily_report_create_event.dart';
+import '../../bloc/daily_report_view/daily_report_view_bloc.dart';
+import '../../bloc/daily_report_view/daily_report_view_event.dart';
 
 class DailyReportListItem extends StatefulWidget {
   final DailyReport report;
@@ -66,12 +74,48 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
 
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => DailyReportDetailPage(report: widget.report),
-          ),
-        );
+        // If status is DRAFT, load draft data then navigate to draft editing page
+        // Otherwise, navigate to detail page
+        if (widget.report.status == 'DRAFT') {
+          // Get BLoC instance and load draft data
+          final bloc = getIt<DailyReportCreateBloc>();
+          bloc.add(LoadExistingDraft(draftUID: widget.report.uid));
+
+          // Navigate to draft page (page will read data from BLoC)
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const DraftDailyReportPage(),
+            ),
+          );
+        } else {
+          // Navigate to detail page and refresh list when returning
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  DailyReportDetailPage(report: widget.report),
+            ),
+          ).then((_) {
+            // Reload list after returning from detail page
+            // The detail page changes BLoC state to DetailLoaded,
+            // so we need to restore the list state
+            final companyBloc = getIt<CompanyBloc>();
+            final companyState = companyBloc.state;
+
+            if (companyState is CompanyLoaded &&
+                companyState.selectedCompany != null) {
+              getIt<DailyReportViewBloc>().add(
+                DailyReportViewEvent.loadDailyReports(
+                  companyUID: companyState.selectedCompany!.uid,
+                  page: 1,
+                  limit: 50,
+                  sortOrder: 'desc',
+                ),
+              );
+            }
+          });
+        }
       },
       child: Container(
         margin: EdgeInsets.only(bottom: 20),
@@ -104,7 +148,6 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
                       itemCount: imageFiles.length,
                       itemBuilder: (context, index) {
                         final file = imageFiles[index];
-                        print('file: ${file.s3Url}');
                         return Container(
                           margin: EdgeInsets.symmetric(horizontal: 5),
                           decoration: BoxDecoration(
@@ -201,30 +244,55 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              margin: EdgeInsets.only(left: 5),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 5,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-
-                              //Scope Code
-                              child: Text(
-                                widget.report.workScope!.code.toString(),
-                                style: TextStyle(
-                                  fontSize: ResponsiveHelper.fontSize(
-                                    context,
-                                    base: 12,
+                            // Show work scope code only if available
+                            if (widget.report.workScope != null)
+                              Container(
+                                margin: EdgeInsets.only(left: 5),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                //Scope Code
+                                child: Text(
+                                  widget.report.workScope!.code.toString(),
+                                  style: TextStyle(
+                                    fontSize: ResponsiveHelper.fontSize(
+                                      context,
+                                      base: 12,
+                                    ),
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
                                   ),
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
                                 ),
                               ),
-                            ),
+
+                            // Show DRAFT badge for draft reports
+                            if (widget.report.status == 'DRAFT')
+                              Container(
+                                margin: EdgeInsets.only(left: 5),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 10,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.orange.shade100,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  'DRAFT',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange.shade800,
+                                  ),
+                                ),
+                              ),
+
+                            Spacer(),
 
                             Container(
                               margin: EdgeInsets.only(right: 5),
@@ -237,11 +305,9 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
                                 borderRadius: BorderRadius.circular(100),
                               ),
                               child: Text(
-                                DateFormat('d MMM').format(
-                                  DateTime.parse(
-                                    widget.report.createdAt.toString(),
-                                  ),
-                                ),
+                                DateFormat(
+                                  'd MMM',
+                                ).format(widget.report.createdAt.toLocal()),
                                 style: TextStyle(
                                   fontSize: ResponsiveHelper.fontSize(
                                     context,
@@ -318,10 +384,17 @@ class _DailyReportListItemState extends State<DailyReportListItem> {
                         ),
                       ),
                       Text(
-                        '${widget.report.road!.roadNo.toString()} - ${widget.report.road!.name.toString()}',
+                        widget.report.road != null
+                            ? '${widget.report.road!.roadNo.toString()} - ${widget.report.road!.name.toString()}'
+                            : 'No location selected',
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: Colors.black,
+                          color: widget.report.road == null
+                              ? Colors.grey.shade600
+                              : Colors.black,
+                          fontStyle: widget.report.road == null
+                              ? FontStyle.italic
+                              : FontStyle.normal,
                           fontSize: ResponsiveHelper.fontSize(
                             context,
                             base: 13,

@@ -18,6 +18,12 @@ class FileStorageService {
     int sequence,
   ) async {
     try {
+      // CRITICAL FIX: Verify source file exists before attempting copy
+      final sourceFile = File(sourcePath);
+      if (!await sourceFile.exists()) {
+        throw Exception('Source image file does not exist: $sourcePath');
+      }
+
       // Get app documents directory (permanent storage)
       final appDir = await getApplicationDocumentsDirectory();
 
@@ -37,7 +43,6 @@ class FileStorageService {
       }
 
       // Generate filename: {contextField}_{sequence}_{timestamp}.{extension}
-      final sourceFile = File(sourcePath);
       final extension = path.extension(sourcePath);
       final timestamp = DateTime.now().millisecondsSinceEpoch;
       final filename = '${contextField.value}_${sequence}_$timestamp$extension';
@@ -46,6 +51,8 @@ class FileStorageService {
 
       print('📂 File copy details:');
       print('   Source: $sourcePath');
+      print('   Source exists: ${await sourceFile.exists()}');
+      print('   Source size: ${await sourceFile.length()} bytes');
       print('   Extension: $extension');
       print('   Filename: $filename');
       print('   Destination: $destinationPath');
@@ -53,13 +60,21 @@ class FileStorageService {
       // Copy file to permanent storage
       await sourceFile.copy(destinationPath);
 
-      print('📁 Copied image to permanent storage: $destinationPath');
+      // CRITICAL FIX: Verify destination file was created successfully
+      final destinationFile = File(destinationPath);
+      if (!await destinationFile.exists()) {
+        throw Exception('Failed to copy file to permanent storage: $destinationPath');
+      }
+
+      final destSize = await destinationFile.length();
+      print('📁 Copied image to permanent storage: $destinationPath ($destSize bytes)');
 
       return destinationPath;
     } catch (e) {
       print('❌ Failed to copy image to permanent storage: $e');
-      // Return original path as fallback
-      return sourcePath;
+      // CRITICAL FIX: Throw error instead of returning original path
+      // This ensures the caller knows the operation failed
+      rethrow;
     }
   }
 

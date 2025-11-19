@@ -55,7 +55,7 @@ extension RoadEventPatterns on RoadEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRoadProvinces value)?  loadProvinces,TResult Function( LoadRoadDistricts value)?  loadDistricts,TResult Function( LoadRoadRoads value)?  loadRoads,TResult Function( SelectRoadProvince value)?  selectProvince,TResult Function( SelectRoadDistrict value)?  selectDistrict,TResult Function( SelectRoadRoad value)?  selectRoad,TResult Function( ClearRoadSelections value)?  clearSelections,TResult Function( ClearRoadCache value)?  clearCache,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadRoadProvinces value)?  loadProvinces,TResult Function( LoadRoadDistricts value)?  loadDistricts,TResult Function( LoadRoadRoads value)?  loadRoads,TResult Function( SelectRoadProvince value)?  selectProvince,TResult Function( SelectRoadDistrict value)?  selectDistrict,TResult Function( SelectRoadRoad value)?  selectRoad,TResult Function( ClearRoadSelections value)?  clearSelections,TResult Function( ClearRoadCache value)?  clearCache,TResult Function( AddRoadSelection value)?  addRoadSelection,TResult Function( RemoveRoadSelection value)?  removeRoadSelection,TResult Function( ClearMultipleSelections value)?  clearMultipleSelections,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadRoadProvinces() when loadProvinces != null:
@@ -66,7 +66,10 @@ return selectProvince(_that);case SelectRoadDistrict() when selectDistrict != nu
 return selectDistrict(_that);case SelectRoadRoad() when selectRoad != null:
 return selectRoad(_that);case ClearRoadSelections() when clearSelections != null:
 return clearSelections(_that);case ClearRoadCache() when clearCache != null:
-return clearCache(_that);case _:
+return clearCache(_that);case AddRoadSelection() when addRoadSelection != null:
+return addRoadSelection(_that);case RemoveRoadSelection() when removeRoadSelection != null:
+return removeRoadSelection(_that);case ClearMultipleSelections() when clearMultipleSelections != null:
+return clearMultipleSelections(_that);case _:
   return orElse();
 
 }
@@ -84,7 +87,7 @@ return clearCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRoadProvinces value)  loadProvinces,required TResult Function( LoadRoadDistricts value)  loadDistricts,required TResult Function( LoadRoadRoads value)  loadRoads,required TResult Function( SelectRoadProvince value)  selectProvince,required TResult Function( SelectRoadDistrict value)  selectDistrict,required TResult Function( SelectRoadRoad value)  selectRoad,required TResult Function( ClearRoadSelections value)  clearSelections,required TResult Function( ClearRoadCache value)  clearCache,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadRoadProvinces value)  loadProvinces,required TResult Function( LoadRoadDistricts value)  loadDistricts,required TResult Function( LoadRoadRoads value)  loadRoads,required TResult Function( SelectRoadProvince value)  selectProvince,required TResult Function( SelectRoadDistrict value)  selectDistrict,required TResult Function( SelectRoadRoad value)  selectRoad,required TResult Function( ClearRoadSelections value)  clearSelections,required TResult Function( ClearRoadCache value)  clearCache,required TResult Function( AddRoadSelection value)  addRoadSelection,required TResult Function( RemoveRoadSelection value)  removeRoadSelection,required TResult Function( ClearMultipleSelections value)  clearMultipleSelections,}){
 final _that = this;
 switch (_that) {
 case LoadRoadProvinces():
@@ -95,7 +98,10 @@ return selectProvince(_that);case SelectRoadDistrict():
 return selectDistrict(_that);case SelectRoadRoad():
 return selectRoad(_that);case ClearRoadSelections():
 return clearSelections(_that);case ClearRoadCache():
-return clearCache(_that);case _:
+return clearCache(_that);case AddRoadSelection():
+return addRoadSelection(_that);case RemoveRoadSelection():
+return removeRoadSelection(_that);case ClearMultipleSelections():
+return clearMultipleSelections(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -112,7 +118,7 @@ return clearCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRoadProvinces value)?  loadProvinces,TResult? Function( LoadRoadDistricts value)?  loadDistricts,TResult? Function( LoadRoadRoads value)?  loadRoads,TResult? Function( SelectRoadProvince value)?  selectProvince,TResult? Function( SelectRoadDistrict value)?  selectDistrict,TResult? Function( SelectRoadRoad value)?  selectRoad,TResult? Function( ClearRoadSelections value)?  clearSelections,TResult? Function( ClearRoadCache value)?  clearCache,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadRoadProvinces value)?  loadProvinces,TResult? Function( LoadRoadDistricts value)?  loadDistricts,TResult? Function( LoadRoadRoads value)?  loadRoads,TResult? Function( SelectRoadProvince value)?  selectProvince,TResult? Function( SelectRoadDistrict value)?  selectDistrict,TResult? Function( SelectRoadRoad value)?  selectRoad,TResult? Function( ClearRoadSelections value)?  clearSelections,TResult? Function( ClearRoadCache value)?  clearCache,TResult? Function( AddRoadSelection value)?  addRoadSelection,TResult? Function( RemoveRoadSelection value)?  removeRoadSelection,TResult? Function( ClearMultipleSelections value)?  clearMultipleSelections,}){
 final _that = this;
 switch (_that) {
 case LoadRoadProvinces() when loadProvinces != null:
@@ -123,7 +129,10 @@ return selectProvince(_that);case SelectRoadDistrict() when selectDistrict != nu
 return selectDistrict(_that);case SelectRoadRoad() when selectRoad != null:
 return selectRoad(_that);case ClearRoadSelections() when clearSelections != null:
 return clearSelections(_that);case ClearRoadCache() when clearCache != null:
-return clearCache(_that);case _:
+return clearCache(_that);case AddRoadSelection() when addRoadSelection != null:
+return addRoadSelection(_that);case RemoveRoadSelection() when removeRoadSelection != null:
+return removeRoadSelection(_that);case ClearMultipleSelections() when clearMultipleSelections != null:
+return clearMultipleSelections(_that);case _:
   return null;
 
 }
@@ -140,7 +149,7 @@ return clearCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? countryUid,  bool forceRefresh)?  loadProvinces,TResult Function( String provinceUid,  bool forceRefresh)?  loadDistricts,TResult Function( String districtUid,  bool forceRefresh)?  loadRoads,TResult Function( String uid)?  selectProvince,TResult Function( String uid)?  selectDistrict,TResult Function( String uid)?  selectRoad,TResult Function()?  clearSelections,TResult Function()?  clearCache,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? countryUid,  bool forceRefresh)?  loadProvinces,TResult Function( String provinceUid,  bool forceRefresh)?  loadDistricts,TResult Function( String districtUid,  bool forceRefresh)?  loadRoads,TResult Function( String uid)?  selectProvince,TResult Function( String uid)?  selectDistrict,TResult Function( String uid)?  selectRoad,TResult Function()?  clearSelections,TResult Function()?  clearCache,TResult Function( String uid)?  addRoadSelection,TResult Function( String uid)?  removeRoadSelection,TResult Function()?  clearMultipleSelections,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadRoadProvinces() when loadProvinces != null:
 return loadProvinces(_that.countryUid,_that.forceRefresh);case LoadRoadDistricts() when loadDistricts != null:
@@ -150,7 +159,10 @@ return selectProvince(_that.uid);case SelectRoadDistrict() when selectDistrict !
 return selectDistrict(_that.uid);case SelectRoadRoad() when selectRoad != null:
 return selectRoad(_that.uid);case ClearRoadSelections() when clearSelections != null:
 return clearSelections();case ClearRoadCache() when clearCache != null:
-return clearCache();case _:
+return clearCache();case AddRoadSelection() when addRoadSelection != null:
+return addRoadSelection(_that.uid);case RemoveRoadSelection() when removeRoadSelection != null:
+return removeRoadSelection(_that.uid);case ClearMultipleSelections() when clearMultipleSelections != null:
+return clearMultipleSelections();case _:
   return orElse();
 
 }
@@ -168,7 +180,7 @@ return clearCache();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? countryUid,  bool forceRefresh)  loadProvinces,required TResult Function( String provinceUid,  bool forceRefresh)  loadDistricts,required TResult Function( String districtUid,  bool forceRefresh)  loadRoads,required TResult Function( String uid)  selectProvince,required TResult Function( String uid)  selectDistrict,required TResult Function( String uid)  selectRoad,required TResult Function()  clearSelections,required TResult Function()  clearCache,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? countryUid,  bool forceRefresh)  loadProvinces,required TResult Function( String provinceUid,  bool forceRefresh)  loadDistricts,required TResult Function( String districtUid,  bool forceRefresh)  loadRoads,required TResult Function( String uid)  selectProvince,required TResult Function( String uid)  selectDistrict,required TResult Function( String uid)  selectRoad,required TResult Function()  clearSelections,required TResult Function()  clearCache,required TResult Function( String uid)  addRoadSelection,required TResult Function( String uid)  removeRoadSelection,required TResult Function()  clearMultipleSelections,}) {final _that = this;
 switch (_that) {
 case LoadRoadProvinces():
 return loadProvinces(_that.countryUid,_that.forceRefresh);case LoadRoadDistricts():
@@ -178,7 +190,10 @@ return selectProvince(_that.uid);case SelectRoadDistrict():
 return selectDistrict(_that.uid);case SelectRoadRoad():
 return selectRoad(_that.uid);case ClearRoadSelections():
 return clearSelections();case ClearRoadCache():
-return clearCache();case _:
+return clearCache();case AddRoadSelection():
+return addRoadSelection(_that.uid);case RemoveRoadSelection():
+return removeRoadSelection(_that.uid);case ClearMultipleSelections():
+return clearMultipleSelections();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,7 +210,7 @@ return clearCache();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? countryUid,  bool forceRefresh)?  loadProvinces,TResult? Function( String provinceUid,  bool forceRefresh)?  loadDistricts,TResult? Function( String districtUid,  bool forceRefresh)?  loadRoads,TResult? Function( String uid)?  selectProvince,TResult? Function( String uid)?  selectDistrict,TResult? Function( String uid)?  selectRoad,TResult? Function()?  clearSelections,TResult? Function()?  clearCache,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? countryUid,  bool forceRefresh)?  loadProvinces,TResult? Function( String provinceUid,  bool forceRefresh)?  loadDistricts,TResult? Function( String districtUid,  bool forceRefresh)?  loadRoads,TResult? Function( String uid)?  selectProvince,TResult? Function( String uid)?  selectDistrict,TResult? Function( String uid)?  selectRoad,TResult? Function()?  clearSelections,TResult? Function()?  clearCache,TResult? Function( String uid)?  addRoadSelection,TResult? Function( String uid)?  removeRoadSelection,TResult? Function()?  clearMultipleSelections,}) {final _that = this;
 switch (_that) {
 case LoadRoadProvinces() when loadProvinces != null:
 return loadProvinces(_that.countryUid,_that.forceRefresh);case LoadRoadDistricts() when loadDistricts != null:
@@ -205,7 +220,10 @@ return selectProvince(_that.uid);case SelectRoadDistrict() when selectDistrict !
 return selectDistrict(_that.uid);case SelectRoadRoad() when selectRoad != null:
 return selectRoad(_that.uid);case ClearRoadSelections() when clearSelections != null:
 return clearSelections();case ClearRoadCache() when clearCache != null:
-return clearCache();case _:
+return clearCache();case AddRoadSelection() when addRoadSelection != null:
+return addRoadSelection(_that.uid);case RemoveRoadSelection() when removeRoadSelection != null:
+return removeRoadSelection(_that.uid);case ClearMultipleSelections() when clearMultipleSelections != null:
+return clearMultipleSelections();case _:
   return null;
 
 }
@@ -671,6 +689,170 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'RoadEvent.clearCache()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class AddRoadSelection implements RoadEvent {
+  const AddRoadSelection(this.uid);
+  
+
+ final  String uid;
+
+/// Create a copy of RoadEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AddRoadSelectionCopyWith<AddRoadSelection> get copyWith => _$AddRoadSelectionCopyWithImpl<AddRoadSelection>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddRoadSelection&&(identical(other.uid, uid) || other.uid == uid));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,uid);
+
+@override
+String toString() {
+  return 'RoadEvent.addRoadSelection(uid: $uid)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AddRoadSelectionCopyWith<$Res> implements $RoadEventCopyWith<$Res> {
+  factory $AddRoadSelectionCopyWith(AddRoadSelection value, $Res Function(AddRoadSelection) _then) = _$AddRoadSelectionCopyWithImpl;
+@useResult
+$Res call({
+ String uid
+});
+
+
+
+
+}
+/// @nodoc
+class _$AddRoadSelectionCopyWithImpl<$Res>
+    implements $AddRoadSelectionCopyWith<$Res> {
+  _$AddRoadSelectionCopyWithImpl(this._self, this._then);
+
+  final AddRoadSelection _self;
+  final $Res Function(AddRoadSelection) _then;
+
+/// Create a copy of RoadEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? uid = null,}) {
+  return _then(AddRoadSelection(
+null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class RemoveRoadSelection implements RoadEvent {
+  const RemoveRoadSelection(this.uid);
+  
+
+ final  String uid;
+
+/// Create a copy of RoadEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$RemoveRoadSelectionCopyWith<RemoveRoadSelection> get copyWith => _$RemoveRoadSelectionCopyWithImpl<RemoveRoadSelection>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RemoveRoadSelection&&(identical(other.uid, uid) || other.uid == uid));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,uid);
+
+@override
+String toString() {
+  return 'RoadEvent.removeRoadSelection(uid: $uid)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $RemoveRoadSelectionCopyWith<$Res> implements $RoadEventCopyWith<$Res> {
+  factory $RemoveRoadSelectionCopyWith(RemoveRoadSelection value, $Res Function(RemoveRoadSelection) _then) = _$RemoveRoadSelectionCopyWithImpl;
+@useResult
+$Res call({
+ String uid
+});
+
+
+
+
+}
+/// @nodoc
+class _$RemoveRoadSelectionCopyWithImpl<$Res>
+    implements $RemoveRoadSelectionCopyWith<$Res> {
+  _$RemoveRoadSelectionCopyWithImpl(this._self, this._then);
+
+  final RemoveRoadSelection _self;
+  final $Res Function(RemoveRoadSelection) _then;
+
+/// Create a copy of RoadEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? uid = null,}) {
+  return _then(RemoveRoadSelection(
+null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ClearMultipleSelections implements RoadEvent {
+  const ClearMultipleSelections();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClearMultipleSelections);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'RoadEvent.clearMultipleSelections()';
 }
 
 

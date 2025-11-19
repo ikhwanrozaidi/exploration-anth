@@ -14,6 +14,7 @@ class DailyReportViewState with _$DailyReportViewState {
     @Default(true) bool hasMore,
     @Default(false) bool isLoadingMore,
     String? searchQuery,
+    @Default(0) int selectedTabIndex, // 0 = Submitted, 1 = Draft
   }) = DailyReportViewLoaded;
   const factory DailyReportViewState.failure(String message) =
       DailyReportViewFailure;

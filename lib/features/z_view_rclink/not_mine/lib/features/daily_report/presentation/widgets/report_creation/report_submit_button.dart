@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/custom_snackbar.dart';
+import '../../../../company/presentation/bloc/company_bloc.dart';
+import '../../../../company/presentation/bloc/company_state.dart';
 import '../../bloc/daily_report_create/daily_report_create_bloc.dart';
+import '../../bloc/daily_report_create/daily_report_create_event.dart';
 import '../../bloc/daily_report_create/daily_report_create_state.dart';
 import '../../constant/field_enhancements.dart';
 import 'tips_page.dart';
@@ -133,6 +136,29 @@ class ReportSubmitButton extends StatelessWidget {
     }
 
     final bloc = context.read<DailyReportCreateBloc>();
+
+    // Always trigger auto-save when Add button is clicked
+    // This ensures draft is created/updated with current form data
+    final companyState = context.read<CompanyBloc>().state;
+    companyState.whenOrNull(
+      loaded: (companies, selectedCompany) {
+        if (selectedCompany != null) {
+          print('💾 Triggering auto-save from Submit button (isDraftMode: ${selections.isDraftMode}, draftUID: ${selections.draftReportUID})');
+          bloc.add(AutoSaveDraft(companyUID: selectedCompany.uid));
+
+          // CRITICAL FIX: Load equipment and quantities for fresh reports
+          // This ensures data is available when user reaches draft page
+          // (For existing drafts, this data is already loaded by LoadExistingDraft)
+          if (selections.selectedScope != null) {
+            print('📥 Loading quantities and equipment for scope: ${selections.selectedScope!.uid}');
+            bloc.add(LoadQuantitiesAndEquipments(
+              companyUID: selectedCompany.uid,
+              workScopeUID: selections.selectedScope!.uid,
+            ));
+          }
+        }
+      },
+    );
 
     Navigator.of(context).push(
       MaterialPageRoute(

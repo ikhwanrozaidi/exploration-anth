@@ -1,46 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 import '../../../../../shared/utils/responsive_helper.dart';
-import '../../../../routes/app_router.dart';
-import '../../../../shared/helper/navigation_helper.dart';
-import '../../../../shared/pages/root_page.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/divider_config.dart';
 import '../../../../shared/widgets/theme_listtile_widget.dart';
+import '../../../daily_report/presentation/widgets/report_detail/daily_report_detail_equipment_card.dart';
+import '../../../daily_report/presentation/widgets/report_detail/daily_report_detail_quantity_card.dart';
+import '../widgets/show_status_selection.dart';
 
 class WarningDetailsPage extends StatefulWidget {
-  final String warningId;
-  final String? from;
-  final String? relatedProgramId;
-  final String? relatedProgramName;
-
-  const WarningDetailsPage({
-    Key? key,
-    required this.warningId,
-    this.from,
-    this.relatedProgramId,
-    this.relatedProgramName,
-  }) : super(key: key);
+  const WarningDetailsPage({Key? key}) : super(key: key);
 
   @override
   State<WarningDetailsPage> createState() => _WarningDetailsPageState();
 }
 
 class _WarningDetailsPageState extends State<WarningDetailsPage> {
-  @override
-  void initState() {
-    super.initState();
-
-    print('Warning ID: ${widget.warningId}');
-    print('Came from: ${widget.from}');
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  bool isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -58,15 +35,7 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
             children: [
               GestureDetector(
                 onTap: () {
-                  if (widget.from == 'program') {
-                    Navigator.of(context).popUntil((route) {
-                      return route.isFirst;
-                    });
-
-                    NavigationHelper().switchToTab(3);
-                  } else {
-                    Navigator.pop(context);
-                  }
+                  Navigator.pop(context);
                 },
                 child: Container(
                   padding: EdgeInsets.all(10),
@@ -189,33 +158,6 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                   ),
 
                   Positioned(
-                    top: 12,
-                    left: 12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 6,
-                      ),
-                      decoration: BoxDecoration(
-                        color: greenAccent,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        'Completed',
-                        style: TextStyle(
-                          color: Colors.white,
-
-                          fontWeight: FontWeight.w600,
-                          fontSize: ResponsiveHelper.fontSize(
-                            context,
-                            base: 13,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  Positioned(
                     bottom: 12,
                     right: 12,
                     child: ElevatedButton(
@@ -260,113 +202,237 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
 
             SizedBox(height: ResponsiveHelper.spacing(context, 20)),
 
-            // Warning
-            Container(
-              padding: EdgeInsets.all(15),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              padding: const EdgeInsets.all(20),
+              height: isExpanded
+                  ? ResponsiveHelper.getHeight(context, 0.5)
+                  : ResponsiveHelper.getHeight(context, 0.08),
               decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey, width: 0.5),
                 borderRadius: BorderRadius.circular(10),
-                gradient: LinearGradient(
+                gradient: const LinearGradient(
+                  colors: [Colors.white, Color.fromARGB(255, 238, 242, 254)],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
-                  colors: [
-                    Colors.redAccent.shade200,
-                    Colors.redAccent.shade100.withOpacity(0.5),
-                  ],
                 ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Warning',
-                    style: TextStyle(
-                      fontSize: ResponsiveHelper.fontSize(context, base: 14),
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-
-                  Divider(
-                    height: ResponsiveHelper.spacing(context, 25),
-                    thickness: 0.5,
-                    color: Colors.white,
-                  ),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Column(
+                  // Header
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isExpanded = !isExpanded;
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.info, color: Colors.white),
-
-                            SizedBox(width: 10),
-
+                            Container(
+                              width: 12,
+                              height: 12,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.red,
+                              ),
+                            ),
+                            const SizedBox(width: 8),
                             Text(
-                              'warning null',
+                              'null Warnings',
                               style: TextStyle(
                                 fontSize: ResponsiveHelper.fontSize(
                                   context,
                                   base: 14,
                                 ),
                                 fontWeight: FontWeight.w600,
-                                color: Colors.white,
                               ),
                             ),
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 20),
-
-            // Action
-            Container(
-              padding: EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.blue.shade700,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Action',
-                    style: TextStyle(
-                      fontSize: ResponsiveHelper.fontSize(context, base: 14),
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
-                    ),
-                  ),
-
-                  Divider(
-                    height: ResponsiveHelper.spacing(context, 25),
-                    thickness: 0.5,
-                    color: Colors.white,
-                  ),
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          'action null',
-                          style: TextStyle(
-                            fontSize: ResponsiveHelper.fontSize(
-                              context,
-                              base: 14,
+                        AnimatedRotation(
+                          turns: isExpanded ? 0.5 : 0,
+                          duration: const Duration(milliseconds: 300),
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(7),
+                              color: const Color.fromARGB(255, 214, 226, 255),
                             ),
-
-                            color: Colors.white,
+                            child: Icon(
+                              Icons.expand_more,
+                              color: Theme.of(context).primaryColor,
+                              size: ResponsiveHelper.iconSize(
+                                context,
+                                base: 20,
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
+
+                  // Expanded Content
+                  if (isExpanded) ...[
+                    dividerConfig(),
+
+                    // Expanded(
+                    //   child: ListView.separated(
+                    //     itemCount: widget.warnings.length,
+                    //     separatorBuilder: (context, index) =>
+                    //         const SizedBox(height: 12),
+                    //     itemBuilder: (context, index) {
+                    //       final warning = widget.warnings[index];
+                    //       return WarningCard(warning: warning);
+                    //     },
+                    //   ),
+                    // ),
+                    Container(
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Colors.redAccent.shade200,
+                            Colors.redAccent.shade100.withOpacity(0.5),
+                          ],
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Warning',
+                                style: TextStyle(
+                                  fontSize: ResponsiveHelper.fontSize(
+                                    context,
+                                    base: 14,
+                                  ),
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                'Resolve by: null Date',
+                                style: TextStyle(
+                                  fontSize: ResponsiveHelper.fontSize(
+                                    context,
+                                    base: 14,
+                                  ),
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          Divider(
+                            height: ResponsiveHelper.spacing(context, 25),
+                            thickness: 0.5,
+                            color: Colors.white,
+                          ),
+
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5.0),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.info, color: Colors.white),
+
+                                    SizedBox(width: 10),
+
+                                    Text(
+                                      'warning null',
+                                      style: TextStyle(
+                                        fontSize: ResponsiveHelper.fontSize(
+                                          context,
+                                          base: 14,
+                                        ),
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                SizedBox(
+                                  height: ResponsiveHelper.spacing(context, 15),
+                                ),
+
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      showStatusSelection(
+                                        context: context,
+                                        currentStatus: 'No Action Yet',
+                                        onStatusSelected: (selectedStatus) {
+                                          print(
+                                            'Selected status: $selectedStatus',
+                                          );
+
+                                          // setState(() {
+                                          //   _currentStatus = selectedStatus;
+                                          // });
+
+                                          // context.read<WarningBloc>().add(
+                                          //   UpdateWarningStatus(status: selectedStatus),
+                                          // );
+                                        },
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      padding: ResponsiveHelper.padding(
+                                        context,
+                                        vertical: 10,
+                                        horizontal: 10,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      elevation: 0,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Center(
+                                            child: Text(
+                                              'null Status',
+                                              style: TextStyle(
+                                                color: Colors.redAccent,
+                                                fontSize:
+                                                    ResponsiveHelper.fontSize(
+                                                      context,
+                                                      base: 13,
+                                                    ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(Icons.expand_more),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -629,6 +695,22 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
 
             SizedBox(height: 20),
 
+            // // Quantities
+            // if (report.reportQuantities != null &&
+            //     report.reportQuantities!.isNotEmpty)
+            //   ...report.reportQuantities!.map((reportQuantity) {
+            //     return DailyReportDetailQuantityCard(
+            //       reportQuantity: reportQuantity,
+            //     );
+            //   }),
+
+            // SizedBox(height: 20),
+
+            // // Equipments
+            // DailyReportDetailEquipmentCard(equipments: report.equipments ?? []),
+
+            // SizedBox(height: 20),
+
             // Others
             Container(
               padding: EdgeInsets.all(15),
@@ -659,18 +741,18 @@ class _WarningDetailsPageState extends State<WarningDetailsPage> {
                     child: Column(
                       children: [
                         ThemeListTileWidget(
-                          title: 'Show Specification',
-                          titleDetails: 'Specification information',
-                          icon: Icons.report,
+                          title: 'Monthly Summary',
+                          titleDetails: 'List of overall report',
+                          icon: Icons.calendar_month,
                           isInverseBold: true,
                         ),
 
                         dividerConfig(),
 
                         ThemeListTileWidget(
-                          title: 'View Report',
-                          titleDetails: 'View work report',
-                          icon: Icons.sticky_note_2_rounded,
+                          title: 'Update History',
+                          titleDetails: 'List of changes',
+                          icon: Icons.history,
                           isInverseBold: true,
                         ),
 

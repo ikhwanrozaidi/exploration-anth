@@ -25,4 +25,8 @@ class RoadEvent with _$RoadEvent {
 
   const factory RoadEvent.clearSelections() = ClearRoadSelections;
   const factory RoadEvent.clearCache() = ClearRoadCache;
+
+  const factory RoadEvent.addRoadSelection(String uid) = AddRoadSelection;
+  const factory RoadEvent.removeRoadSelection(String uid) = RemoveRoadSelection;
+  const factory RoadEvent.clearMultipleSelections() = ClearMultipleSelections;
 }
