@@ -13,11 +13,8 @@ class DailyReportDetailReviewCard extends StatelessWidget {
   final VoidCallback? onLike;
   final VoidCallback? onDislike;
 
-  const DailyReportDetailReviewCard({
-    Key? key,
-    this.onLike,
-    this.onDislike,
-  }) : super(key: key);
+  const DailyReportDetailReviewCard({Key? key, this.onLike, this.onDislike})
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +35,7 @@ class DailyReportDetailReviewCard extends StatelessWidget {
             'Report Review',
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              fontSize: ResponsiveHelper.fontSize(context, base: 15),
+              fontSize: ResponsiveHelper.fontSize(context, base: 14),
             ),
           ),
           Row(
@@ -52,10 +49,10 @@ class DailyReportDetailReviewCard extends StatelessWidget {
                   padding: const EdgeInsets.all(5),
                 ),
                 onPressed: onLike,
-                icon: const Icon(
+                icon: Icon(
                   Icons.thumb_up,
                   color: primaryColor,
-                  size: 25,
+                  size: ResponsiveHelper.iconSize(context, base: 20),
                 ),
               ),
               const SizedBox(width: 8),
@@ -70,7 +67,7 @@ class DailyReportDetailReviewCard extends StatelessWidget {
                 icon: Icon(
                   Icons.thumb_down_alt_rounded,
                   color: Colors.red.shade400,
-                  size: 25,
+                  size: ResponsiveHelper.iconSize(context, base: 20),
                 ),
               ),
             ],

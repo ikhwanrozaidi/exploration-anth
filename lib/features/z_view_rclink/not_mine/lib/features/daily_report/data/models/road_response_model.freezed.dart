@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RoadResponseModel {
 
- String get uid; String get name; String get roadNo; DistrictResponseModel? get district;
+ String get uid; String get name; String? get roadNo; DistrictResponseModel? get district;
 /// Create a copy of RoadResponseModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $RoadResponseModelCopyWith<$Res>  {
   factory $RoadResponseModelCopyWith(RoadResponseModel value, $Res Function(RoadResponseModel) _then) = _$RoadResponseModelCopyWithImpl;
 @useResult
 $Res call({
- String uid, String name, String roadNo, DistrictResponseModel? district
+ String uid, String name, String? roadNo, DistrictResponseModel? district
 });
 
 
@@ -65,12 +65,12 @@ class _$RoadResponseModelCopyWithImpl<$Res>
 
 /// Create a copy of RoadResponseModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? name = null,Object? roadNo = null,Object? district = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? name = null,Object? roadNo = freezed,Object? district = freezed,}) {
   return _then(_self.copyWith(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,roadNo: null == roadNo ? _self.roadNo : roadNo // ignore: cast_nullable_to_non_nullable
-as String,district: freezed == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
+as String,roadNo: freezed == roadNo ? _self.roadNo : roadNo // ignore: cast_nullable_to_non_nullable
+as String?,district: freezed == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
 as DistrictResponseModel?,
   ));
 }
@@ -168,7 +168,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String name,  String roadNo,  DistrictResponseModel? district)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String name,  String? roadNo,  DistrictResponseModel? district)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RoadResponseModel() when $default != null:
 return $default(_that.uid,_that.name,_that.roadNo,_that.district);case _:
@@ -189,7 +189,7 @@ return $default(_that.uid,_that.name,_that.roadNo,_that.district);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String name,  String roadNo,  DistrictResponseModel? district)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String name,  String? roadNo,  DistrictResponseModel? district)  $default,) {final _that = this;
 switch (_that) {
 case _RoadResponseModel():
 return $default(_that.uid,_that.name,_that.roadNo,_that.district);case _:
@@ -209,7 +209,7 @@ return $default(_that.uid,_that.name,_that.roadNo,_that.district);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String name,  String roadNo,  DistrictResponseModel? district)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String name,  String? roadNo,  DistrictResponseModel? district)?  $default,) {final _that = this;
 switch (_that) {
 case _RoadResponseModel() when $default != null:
 return $default(_that.uid,_that.name,_that.roadNo,_that.district);case _:
@@ -224,12 +224,12 @@ return $default(_that.uid,_that.name,_that.roadNo,_that.district);case _:
 @JsonSerializable()
 
 class _RoadResponseModel extends RoadResponseModel {
-  const _RoadResponseModel({required this.uid, required this.name, required this.roadNo, this.district}): super._();
+  const _RoadResponseModel({required this.uid, required this.name, this.roadNo, this.district}): super._();
   factory _RoadResponseModel.fromJson(Map<String, dynamic> json) => _$RoadResponseModelFromJson(json);
 
 @override final  String uid;
 @override final  String name;
-@override final  String roadNo;
+@override final  String? roadNo;
 @override final  DistrictResponseModel? district;
 
 /// Create a copy of RoadResponseModel
@@ -265,7 +265,7 @@ abstract mixin class _$RoadResponseModelCopyWith<$Res> implements $RoadResponseM
   factory _$RoadResponseModelCopyWith(_RoadResponseModel value, $Res Function(_RoadResponseModel) _then) = __$RoadResponseModelCopyWithImpl;
 @override @useResult
 $Res call({
- String uid, String name, String roadNo, DistrictResponseModel? district
+ String uid, String name, String? roadNo, DistrictResponseModel? district
 });
 
 
@@ -282,12 +282,12 @@ class __$RoadResponseModelCopyWithImpl<$Res>
 
 /// Create a copy of RoadResponseModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? name = null,Object? roadNo = null,Object? district = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? name = null,Object? roadNo = freezed,Object? district = freezed,}) {
   return _then(_RoadResponseModel(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,roadNo: null == roadNo ? _self.roadNo : roadNo // ignore: cast_nullable_to_non_nullable
-as String,district: freezed == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
+as String,roadNo: freezed == roadNo ? _self.roadNo : roadNo // ignore: cast_nullable_to_non_nullable
+as String?,district: freezed == district ? _self.district : district // ignore: cast_nullable_to_non_nullable
 as DistrictResponseModel?,
   ));
 }

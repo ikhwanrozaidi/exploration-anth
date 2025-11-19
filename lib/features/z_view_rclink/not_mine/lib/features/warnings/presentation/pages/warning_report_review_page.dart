@@ -3,11 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rclink_app/shared/utils/theme.dart';
 import 'package:rclink_app/shared/widgets/divider_config.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/widgets/image_viewer/image_viewer_page.dart';
 import '../../../../shared/widgets/template_page.dart';
 import '../../../daily_report/domain/entities/daily_report.dart';
 import '../../domain/entities/warning_type.dart';
+import '../bloc/create_warning_bloc.dart';
+import '../bloc/create_warning_event.dart';
+import '../bloc/create_warning_state.dart';
 import '../bloc/warning_categories_bloc.dart';
 import '../bloc/warning_categories_event.dart';
 import '../bloc/warning_categories_state.dart';
@@ -219,14 +223,55 @@ class _WarningReportReviewPageState extends State<WarningReportReviewPage> {
             .toList() ??
         [];
 
-    return GestureDetector(
-      onTap: () {
-        // Dismiss keyboard when tapping outside
-        FocusScope.of(context).unfocus();
-      },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: TemplatePage(
+    return BlocProvider(
+      create: (context) => getIt<CreateWarningBloc>(),
+      child: BlocListener<CreateWarningBloc, CreateWarningState>(
+        listener: (context, state) {
+          state.when(
+            initial: () {},
+            loading: () {},
+            success: (warning) {
+              // Show success message
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Warning report submitted successfully'),
+                  backgroundColor: Colors.green,
+                  duration: Duration(seconds: 2),
+                ),
+              );
+
+              // Navigate back after a short delay
+              Future.delayed(Duration(milliseconds: 500), () {
+                if (context.mounted) {
+                  Navigator.of(context).pop(true); // Return true to indicate success
+                }
+              });
+            },
+            error: (failure) {
+              // Show error message
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Failed to submit warning: ${failure.message}'),
+                  backgroundColor: Colors.red,
+                  duration: Duration(seconds: 4),
+                  action: SnackBarAction(
+                    label: 'DISMISS',
+                    textColor: Colors.white,
+                    onPressed: () {},
+                  ),
+                ),
+              );
+            },
+          );
+        },
+        child: GestureDetector(
+          onTap: () {
+            // Dismiss keyboard when tapping outside
+            FocusScope.of(context).unfocus();
+          },
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            body: TemplatePage(
           body: Column(
             children: [
               Expanded(
@@ -658,78 +703,87 @@ class _WarningReportReviewPageState extends State<WarningReportReviewPage> {
                 child: SafeArea(
                   child: SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _hasSelectedWarnings
-                          ? () {
-                              // Build selected warnings summary
-                              final selectedWarningsSummary =
-                                  <Map<String, dynamic>>[];
+                    child: BlocBuilder<CreateWarningBloc, CreateWarningState>(
+                      builder: (context, state) {
+                        final isLoading = state.maybeWhen(
+                          loading: () => true,
+                          orElse: () => false,
+                        );
 
-                              _selectedWarningsByCategory.forEach(
-                                (categoryUID, reasonUIDs) {
-                                  if (reasonUIDs.isNotEmpty) {
-                                    selectedWarningsSummary.add({
-                                      'categoryUID': categoryUID,
-                                      'reasonUIDs': reasonUIDs.toList(),
-                                    });
-                                  }
-                                },
-                              );
+                        return ElevatedButton(
+                          onPressed: (_hasSelectedWarnings && !isLoading)
+                              ? () {
+                                  // Flatten all selected reason UIDs into a single list
+                                  final allReasonUIDs = _selectedWarningsByCategory.values
+                                      .expand((reasonUIDs) => reasonUIDs)
+                                      .toList();
 
-                              print('Selected Warnings Summary: ');
-                              print(
-                                'Total categories: ${selectedWarningsSummary.length}',
-                              );
-                              print('Total warnings: $_totalSelectedCount');
-                              print('Details: $selectedWarningsSummary');
-                              print('Notes: ${_notesController.text}');
-
-                              // TODO: Submit warning data to backend
-                              // API payload would include:
-                              // - reportUID: widget.report.uid
-                              // - warnings: selectedWarningsSummary
-                              // - notes: _notesController.text
-                            }
-                          : null,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: primaryColor,
-                        disabledBackgroundColor: Colors.grey[300],
-                        padding: ResponsiveHelper.padding(
-                          context,
-                          vertical: 10,
-                          horizontal: 20,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: ResponsiveHelper.borderRadius(
-                            context,
-                            all: 14,
+                                  // Dispatch BLoC event to create warning
+                                  context.read<CreateWarningBloc>().add(
+                                        CreateWarningEvent.createWarning(
+                                          dailyReportUID: widget.report.uid,
+                                          warningReasonUIDs: allReasonUIDs,
+                                          description: _notesController.text.trim().isNotEmpty
+                                              ? _notesController.text.trim()
+                                              : null,
+                                        ),
+                                      );
+                                }
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: primaryColor,
+                            disabledBackgroundColor: Colors.grey[300],
+                            padding: ResponsiveHelper.padding(
+                              context,
+                              vertical: 10,
+                              horizontal: 20,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: ResponsiveHelper.borderRadius(
+                                context,
+                                all: 14,
+                              ),
+                            ),
+                            elevation: ResponsiveHelper.adaptive(
+                              context,
+                              mobile: 1,
+                              tablet: 2,
+                              desktop: 3,
+                            ),
                           ),
-                        ),
-                        elevation: ResponsiveHelper.adaptive(
-                          context,
-                          mobile: 1,
-                          tablet: 2,
-                          desktop: 3,
-                        ),
-                      ),
-                      child: Text(
-                        _hasSelectedWarnings
-                            ? 'Submit Warning ($_totalSelectedCount)'
-                            : 'Submit Warning',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: ResponsiveHelper.fontSize(
-                            context,
-                            base: 14,
-                          ),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
+                          child: isLoading
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  _hasSelectedWarnings
+                                      ? 'Submit Warning ($_totalSelectedCount)'
+                                      : 'Submit Warning',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: ResponsiveHelper.fontSize(
+                                      context,
+                                      base: 14,
+                                    ),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                        );
+                      },
                     ),
                   ),
                 ),
               ),
             ],
+          ),
+        ),
           ),
         ),
       ),

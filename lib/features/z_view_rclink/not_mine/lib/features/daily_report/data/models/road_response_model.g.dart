@@ -10,7 +10,7 @@ _RoadResponseModel _$RoadResponseModelFromJson(Map<String, dynamic> json) =>
     _RoadResponseModel(
       uid: json['uid'] as String,
       name: json['name'] as String,
-      roadNo: json['roadNo'] as String,
+      roadNo: json['roadNo'] as String?,
       district: json['district'] == null
           ? null
           : DistrictResponseModel.fromJson(

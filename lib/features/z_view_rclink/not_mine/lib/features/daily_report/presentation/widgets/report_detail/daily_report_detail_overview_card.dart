@@ -54,10 +54,13 @@ class DailyReportDetailOverviewCard extends StatelessWidget {
                         child: Center(
                           child: Text(
                             report.workScope?.code ?? '',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: ResponsiveHelper.fontSize(
+                                context,
+                                base: 14,
+                              ),
                             ),
                           ),
                         ),
@@ -98,6 +101,7 @@ class DailyReportDetailOverviewCard extends StatelessWidget {
                     DateTime.parse(report.createdAt.toString()).toLocal(),
                   ),
                   icon: Icons.calendar_month,
+                  isChevron: false, // Tempo: API havent ready
                 ),
 
                 dividerConfig(),
@@ -120,6 +124,7 @@ class DailyReportDetailOverviewCard extends StatelessWidget {
                   title: 'Reporter',
                   titleDetails: report.createdBy?.fullName ?? 'Unknown',
                   icon: Icons.person_pin,
+                  isChevron: false, // Tempo: API havent ready
                 ),
               ],
             ),

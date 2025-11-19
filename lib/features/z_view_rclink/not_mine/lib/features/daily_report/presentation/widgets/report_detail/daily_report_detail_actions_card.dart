@@ -199,10 +199,18 @@ class DailyReportDetailActionsCard extends StatelessWidget {
                               child: Icon(
                                 Icons.delete,
                                 color: Colors.red.shade400,
+                                size: ResponsiveHelper.iconSize(
+                                  context,
+                                  base: 20,
+                                ),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 20),
+
+                          SizedBox(
+                            width: ResponsiveHelper.spacing(context, 15),
+                          ),
+
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -211,7 +219,7 @@ class DailyReportDetailActionsCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: ResponsiveHelper.fontSize(
                                     context,
-                                    base: 14,
+                                    base: 12,
                                   ),
                                   fontWeight: FontWeight.w600,
                                   color: Colors.red.shade400,
@@ -222,7 +230,7 @@ class DailyReportDetailActionsCard extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: ResponsiveHelper.fontSize(
                                     context,
-                                    base: 12,
+                                    base: 11,
                                   ),
                                   color: Colors.red.shade400,
                                 ),
@@ -240,6 +248,7 @@ class DailyReportDetailActionsCard extends StatelessWidget {
                         child: Icon(
                           Icons.chevron_right_rounded,
                           color: Colors.red.shade400,
+                          size: ResponsiveHelper.iconSize(context, base: 20),
                         ),
                       ),
                     ],

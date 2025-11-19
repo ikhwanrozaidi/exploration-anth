@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:rclink_app/shared/widgets/coming_soon_overlay.dart';
 
+import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../shared/widgets/month_filter_widget.dart';
 import '../../../../shared/widgets/custom_tab_widget.dart';
+import '../../../../shared/widgets/year_filter_widget.dart';
 import '../widgets/warning_list_widget.dart';
 
 class WarningPage extends StatefulWidget {
@@ -41,134 +43,141 @@ class _WarningPageState extends State<WarningPage> {
             stops: [0.0, 0.2],
           ),
         ),
-        child: Stack(
-          children: [
-            SafeArea(
-              child: Padding(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: ResponsiveHelper.getHeight(context, 0.03)),
+
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  children: [
-                    SizedBox(height: 10),
-                    Text(
-                      'Warning',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  'Warning',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: ResponsiveHelper.fontSize(context, base: 18),
+                  ),
                 ),
               ),
-            ),
 
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: AnimatedContainer(
-                duration: Duration(milliseconds: 500),
-                curve: Curves.easeInOutCubic,
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.76,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 10,
-                      offset: Offset(0, -2),
+              SizedBox(height: 30),
+
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24),
+                      topRight: Radius.circular(24),
                     ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    right: 20.0,
-                    left: 20.0,
-                    top: 20.0,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MonthFilter(
-                        onMonthSelected: onMonthSelected,
-                        primaryColor: primaryColor,
-                      ),
-
-                      SizedBox(height: 20),
-
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          backgroundColor: Colors.grey.shade200,
-                        ),
-                        onPressed: () {
-                          CustomSnackBar.show(
-                            context,
-                            'This feature is coming soon...',
-                            type: SnackBarType.comingsoon,
-                          );
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 11,
-                            horizontal: 25,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.search,
-                                size: 30,
-                                color: Colors.black.withOpacity(0.5),
-                              ),
-                              SizedBox(width: 20),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Search contractor or district',
-                                    style: TextStyle(
-                                      color: Colors.black.withOpacity(0.5),
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(height: 20),
-
-                      Expanded(
-                        child: CustomTabWidget(
-                          tabs: const ['Reports', 'Site Warning'],
-                          initialIndex: 1,
-                          onTabChanged: (index, tabLabel) {
-                            setState(() {
-                              _currentTab = tabLabel;
-                            });
-                            print('Tab changed to: $tabLabel (index: $index)');
-                          },
-                          tabContents: [
-                            _buildReportsContent(),
-                            _buildProgramsContent(),
-                          ],
-                        ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                        offset: Offset(0, -2),
                       ),
                     ],
                   ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 15,
+                      right: 15,
+                      left: 15,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 10),
+
+                        YearFilter(
+                          onYearSelected: (from, to) {
+                            // setState(() {
+                            //   fromDate = from;
+                            //   toDate = to;
+                            // });
+
+                            print('From: $from, To: $to');
+                          },
+                          primaryColor: primaryColor,
+                        ),
+
+                        SizedBox(height: 20),
+
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            backgroundColor: Colors.grey.shade200,
+                          ),
+                          onPressed: () {
+                            CustomSnackBar.show(
+                              context,
+                              'This feature is coming soon...',
+                              type: SnackBarType.comingsoon,
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 11,
+                              horizontal: 25,
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.search,
+                                  size: 30,
+                                  color: Colors.black.withOpacity(0.5),
+                                ),
+                                SizedBox(width: 20),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Search contractor or district',
+                                      style: TextStyle(
+                                        color: Colors.black.withOpacity(0.5),
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        SizedBox(height: 20),
+
+                        Expanded(
+                          child: CustomTabWidget(
+                            tabs: const ['Reports', 'Site Warning'],
+                            initialIndex: 1,
+                            onTabChanged: (index, tabLabel) {
+                              setState(() {
+                                _currentTab = tabLabel;
+                              });
+                              print(
+                                'Tab changed to: $tabLabel (index: $index)',
+                              );
+                            },
+                            tabContents: [
+                              _buildReportsContent(),
+                              _buildProgramsContent(),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

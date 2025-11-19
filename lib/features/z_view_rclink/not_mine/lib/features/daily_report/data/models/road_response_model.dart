@@ -12,7 +12,7 @@ abstract class RoadResponseModel with _$RoadResponseModel {
   const factory RoadResponseModel({
     required String uid,
     required String name,
-    required String roadNo,
+    String? roadNo,
     DistrictResponseModel? district,
   }) = _RoadResponseModel;
 

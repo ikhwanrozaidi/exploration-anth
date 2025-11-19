@@ -146,12 +146,24 @@ import '../../features/warnings/data/datasources/warning_categories_local_dataso
     as _i263;
 import '../../features/warnings/data/datasources/warning_categories_remote_datasource.dart'
     as _i224;
+import '../../features/warnings/data/datasources/warnings_api_service.dart'
+    as _i863;
+import '../../features/warnings/data/datasources/warnings_remote_datasource.dart'
+    as _i820;
 import '../../features/warnings/data/repositories/warning_categories_repository_impl.dart'
     as _i16;
+import '../../features/warnings/data/repositories/warnings_repository_impl.dart'
+    as _i1073;
 import '../../features/warnings/domain/repositories/warning_categories_repository.dart'
     as _i720;
+import '../../features/warnings/domain/repositories/warnings_repository.dart'
+    as _i568;
+import '../../features/warnings/domain/usecases/create_report_warning_usecase.dart'
+    as _i284;
 import '../../features/warnings/domain/usecases/get_warning_categories_usecase.dart'
     as _i1062;
+import '../../features/warnings/presentation/bloc/create_warning_bloc.dart'
+    as _i112;
 import '../../features/warnings/presentation/bloc/warning_categories_bloc.dart'
     as _i119;
 import '../../features/work_scope/data/datasources/work_scope_api_service.dart'
@@ -269,11 +281,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i538.DailyReportApiService>(
       () => _i538.DailyReportApiService.new(gh<_i361.Dio>()),
     );
+    gh.factory<_i178.CompanyApiService>(
+      () => _i178.CompanyApiService.new(gh<_i361.Dio>()),
+    );
     gh.factory<_i51.WarningCategoriesApiService>(
       () => _i51.WarningCategoriesApiService.new(gh<_i361.Dio>()),
     );
-    gh.factory<_i178.CompanyApiService>(
-      () => _i178.CompanyApiService.new(gh<_i361.Dio>()),
+    gh.factory<_i863.WarningsApiService>(
+      () => _i863.WarningsApiService.new(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i432.PermissionRemoteDataSource>(
       () => _i432.PermissionRemoteDataSourceImpl(gh<_i1020.RoleApiService>()),
@@ -294,6 +309,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i722.ContractorRelationLocalDataSourceImpl(
         gh<_i982.DatabaseService>(),
       ),
+    );
+    gh.lazySingleton<_i820.WarningsRemoteDataSource>(
+      () => _i820.WarningsRemoteDataSourceImpl(gh<_i863.WarningsApiService>()),
     );
     gh.factory<_i448.CheckPermissionUseCase>(
       () => _i448.CheckPermissionUseCase(gh<_i999.PermissionRepository>()),
@@ -508,12 +526,24 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i119.WarningCategoriesBloc(gh<_i1062.GetWarningCategoriesUseCase>()),
     );
+    gh.lazySingleton<_i568.WarningsRepository>(
+      () => _i1073.WarningsRepositoryImpl(
+        gh<_i820.WarningsRemoteDataSource>(),
+        gh<_i426.CompanyBloc>(),
+      ),
+    );
     gh.factory<_i337.ContractorRelationRepository>(
       () => _i715.ContractorRelationRepositoryImpl(
         gh<_i816.ContractorRelationRemoteDataSource>(),
         gh<_i722.ContractorRelationLocalDataSource>(),
         gh<_i426.CompanyBloc>(),
       ),
+    );
+    gh.factory<_i284.CreateReportWarningUseCase>(
+      () => _i284.CreateReportWarningUseCase(gh<_i568.WarningsRepository>()),
+    );
+    gh.factory<_i112.CreateWarningBloc>(
+      () => _i112.CreateWarningBloc(gh<_i284.CreateReportWarningUseCase>()),
     );
     gh.factory<_i79.ClearContractorRelationCacheUseCase>(
       () => _i79.ClearContractorRelationCacheUseCase(

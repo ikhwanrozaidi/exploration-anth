@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../../../../../core/domain/entities/file_entity.dart';
 import '../../../../../core/utils/cache_managers.dart';
+import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../../shared/widgets/image_viewer/image_viewer_page.dart';
 import '../shared/page_indicators.dart';
 
@@ -102,7 +103,10 @@ class _DailyReportDetailImageCarouselState
                               color: Colors.grey.shade300,
                               child: Icon(
                                 Icons.image_not_supported,
-                                size: 50,
+                                size: ResponsiveHelper.iconSize(
+                                  context,
+                                  base: 25,
+                                ),
                                 color: Colors.grey.shade600,
                               ),
                             );
@@ -140,7 +144,7 @@ class _DailyReportDetailImageCarouselState
                 color: Colors.grey.shade300,
                 child: Icon(
                   Icons.image_not_supported,
-                  size: 50,
+                  size: ResponsiveHelper.iconSize(context, base: 25),
                   color: Colors.grey.shade600,
                 ),
               ),

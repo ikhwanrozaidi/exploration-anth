@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_state.dart';
@@ -162,10 +163,10 @@ class _DailyReportDetailPageView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.arrow_back_rounded,
                     color: Colors.black,
-                    size: 25,
+                    size: ResponsiveHelper.iconSize(context, base: 20),
                   ),
                 ),
               ),
@@ -200,10 +201,10 @@ class _DailyReportDetailPageView extends StatelessWidget {
                     onPressed: () {
                       print("Bell button clicked");
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.notifications_active,
                       color: Colors.white,
-                      size: 25,
+                      size: ResponsiveHelper.iconSize(context, base: 20),
                     ),
                   ),
 
@@ -219,10 +220,10 @@ class _DailyReportDetailPageView extends StatelessWidget {
                     onPressed: () {
                       print("Share button clicked");
                     },
-                    icon: const Icon(
+                    icon: Icon(
                       Icons.share,
                       color: Colors.white,
-                      size: 25,
+                      size: ResponsiveHelper.iconSize(context, base: 20),
                     ),
                   ),
                 ],
@@ -236,9 +237,11 @@ class _DailyReportDetailPageView extends StatelessWidget {
       body: RefreshIndicator(
         onRefresh: onRefresh,
         child: Padding(
-          padding: const EdgeInsets.all(25.0),
+          padding: EdgeInsets.only(right: 25.0, left: 25, bottom: 25),
           child: ListView(
             children: [
+              SizedBox(height: 25),
+
               // Image Carousel
               SizedBox(
                 height: 250,

@@ -34,8 +34,8 @@ class DailyReportDetailCompanyCard extends StatelessWidget {
         children: [
           Text(
             report.contractRelationID?.toString() ??
-            report.company?.name ??
-            'Unknown Contractor',
+                report.company?.name ??
+                'Unknown Contractor',
             style: TextStyle(
               fontSize: ResponsiveHelper.fontSize(context, base: 14),
               fontWeight: FontWeight.w600,
@@ -51,12 +51,9 @@ class DailyReportDetailCompanyCard extends StatelessWidget {
               Column(
                 children: [
                   Text(
-                    '1',
+                    'null',
                     style: TextStyle(
-                      fontSize: ResponsiveHelper.fontSize(
-                        context,
-                        base: 14,
-                      ),
+                      fontSize: ResponsiveHelper.fontSize(context, base: 14),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -69,12 +66,9 @@ class DailyReportDetailCompanyCard extends StatelessWidget {
               Column(
                 children: [
                   Text(
-                    '3',
+                    'null',
                     style: TextStyle(
-                      fontSize: ResponsiveHelper.fontSize(
-                        context,
-                        base: 14,
-                      ),
+                      fontSize: ResponsiveHelper.fontSize(context, base: 14),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -87,12 +81,9 @@ class DailyReportDetailCompanyCard extends StatelessWidget {
               Column(
                 children: [
                   Text(
-                    'No Record',
+                    'null',
                     style: TextStyle(
-                      fontSize: ResponsiveHelper.fontSize(
-                        context,
-                        base: 14,
-                      ),
+                      fontSize: ResponsiveHelper.fontSize(context, base: 14),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -110,10 +101,7 @@ class DailyReportDetailCompanyCard extends StatelessWidget {
               onPressed: onViewAllReports,
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryColor,
-                padding: ResponsiveHelper.padding(
-                  context,
-                  vertical: 12,
-                ),
+                padding: ResponsiveHelper.padding(context, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -123,10 +111,7 @@ class DailyReportDetailCompanyCard extends StatelessWidget {
                 'View all reports',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: ResponsiveHelper.fontSize(
-                    context,
-                    base: 14,
-                  ),
+                  fontSize: ResponsiveHelper.fontSize(context, base: 14),
                 ),
               ),
             ),

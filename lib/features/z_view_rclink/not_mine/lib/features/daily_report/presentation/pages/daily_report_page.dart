@@ -91,7 +91,8 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent>
                 page: 1,
                 limit: 50,
                 sortOrder: 'desc',
-                // fromDate: fromDate, // because by default MonthlyFilter already active
+                fromDate:
+                    fromDate, // because by default MonthlyFilter already active
               ),
             );
           }
@@ -545,275 +546,284 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent>
 
     // CustomScrollView with slivers for scroll effects
     return Expanded(
-      child: CustomScrollView(
-        controller: _scrollController,
-        slivers: [
-          // Search bar - always visible (pinned)
-          SliverPersistentHeader(
-            pinned: true,
-            delegate: ScrollHideHeaderDelegate(
-              height: 80,
-              shouldHide: false, // Always visible
-              child: Container(
-                color: Colors.white,
-                padding: ResponsiveHelper.padding(
-                  context,
-                  vertical: 15,
-                  horizontal: 15,
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  onChanged: _onSearchChanged,
-                  decoration: InputDecoration(
-                    hintText: 'Search report',
-                    prefixIcon: Icon(
-                      Icons.search,
-                      size: ResponsiveHelper.iconSize(context, base: 20),
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey.shade200,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(50),
-                      borderSide: BorderSide.none,
-                    ),
-                    contentPadding: ResponsiveHelper.padding(
-                      context,
-                      vertical: 11,
-                      horizontal: 25,
-                    ),
-                    hintStyle: TextStyle(
-                      color: Colors.black.withOpacity(0.5),
-                      fontSize: ResponsiveHelper.fontSize(context, base: 14),
+      child: RefreshIndicator(
+        onRefresh: _onRefresh,
+        color: primaryColor,
+        child: CustomScrollView(
+          controller: _scrollController,
+          slivers: [
+            // Search bar - always visible (pinned)
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: ScrollHideHeaderDelegate(
+                height: 80,
+                shouldHide: false, // Always visible
+                child: Container(
+                  color: Colors.white,
+                  padding: ResponsiveHelper.padding(
+                    context,
+                    vertical: 15,
+                    horizontal: 15,
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: _onSearchChanged,
+                    decoration: InputDecoration(
+                      hintText: 'Search report',
+                      prefixIcon: Icon(
+                        Icons.search,
+                        size: ResponsiveHelper.iconSize(context, base: 20),
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.shade200,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(50),
+                        borderSide: BorderSide.none,
+                      ),
+                      contentPadding: ResponsiveHelper.padding(
+                        context,
+                        vertical: 11,
+                        horizontal: 25,
+                      ),
+                      hintStyle: TextStyle(
+                        color: Colors.black.withOpacity(0.5),
+                        fontSize: ResponsiveHelper.fontSize(context, base: 14),
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
 
-          // MonthFilter - hides when scrolling DOWN (showing more), shows when scrolling UP
-          SliverPersistentHeader(
-            pinned: false,
-            floating: true,
-            delegate: ScrollHideHeaderDelegate(
-              height: 70,
-              shouldHide: _isScrollingUp, // Hide when scrolling down
-              child: Column(
-                children: [
-                  Container(
-                    color: Colors.white,
-                    padding: ResponsiveHelper.padding(context, horizontal: 15),
-                    child: MonthFilter(
-                      onMonthSelected: onMonthSelected,
-                      primaryColor: primaryColor,
+            // MonthFilter - hides when scrolling DOWN (showing more), shows when scrolling UP
+            SliverPersistentHeader(
+              pinned: false,
+              floating: true,
+              delegate: ScrollHideHeaderDelegate(
+                height: 70,
+                shouldHide: _isScrollingUp, // Hide when scrolling down
+                child: Column(
+                  children: [
+                    Container(
+                      color: Colors.white,
+                      padding: ResponsiveHelper.padding(
+                        context,
+                        horizontal: 15,
+                      ),
+                      child: MonthFilter(
+                        onMonthSelected: onMonthSelected,
+                        primaryColor: primaryColor,
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // DailyReportFilters - hides when scrolling DOWN, shows when scrolling UP
-          SliverPersistentHeader(
-            pinned: false,
-            floating: true,
-            delegate: ScrollHideHeaderDelegate(
-              height: 60,
-              shouldHide: _isScrollingUp,
-              child: Container(
-                color: Colors.white,
-                padding: ResponsiveHelper.padding(context, horizontal: 15),
-                child: DailyReportListFilters(
-                  onDistrictTap: () {
-                    showRoadSelection(
-                      context: context,
-                      startFrom: RoadLevel.districts,
-                      endAt: RoadLevel.roads,
-                      onRoadSelected: (selectedData) {
-                        setState(() {
-                          _selectedRoadUID = selectedData.selectedRoad?.uid;
-                        });
-
-                        _loadDailyReportsWithFilters();
-                      },
-                    );
-                  },
-                  onContractorTap: () {},
-                  onScopeTap: () {
-                    final workScopeState = context.read<WorkScopeBloc>().state;
-
-                    showWorkScopeSelection(
-                      context: context,
-                      state: workScopeState,
-                      onScopeSelected: (selectedData) {
-                        // print('Selected Work Scope: ${selectedData['name']}');
-                        // print('Work Scope UID: ${selectedData['uid']}');
-
-                        setState(() {
-                          _selectedWorkScopeUID = selectedData['uid'];
-                        });
-
-                        _loadDailyReportsWithFilters();
-                      },
-                    );
-                  },
+                  ],
                 ),
               ),
             ),
-          ),
 
-          CupertinoSliverRefreshControl(onRefresh: _onRefresh),
+            // DailyReportFilters - hides when scrolling DOWN, shows when scrolling UP
+            SliverPersistentHeader(
+              pinned: false,
+              floating: true,
+              delegate: ScrollHideHeaderDelegate(
+                height: 60,
+                shouldHide: _isScrollingUp,
+                child: Container(
+                  color: Colors.white,
+                  padding: ResponsiveHelper.padding(context, horizontal: 15),
+                  child: DailyReportListFilters(
+                    onDistrictTap: () {
+                      showRoadSelection(
+                        context: context,
+                        startFrom: RoadLevel.districts,
+                        endAt: RoadLevel.roads,
+                        onRoadSelected: (selectedData) {
+                          setState(() {
+                            _selectedRoadUID = selectedData.selectedRoad?.uid;
+                          });
 
-          // Reports list
-          BlocConsumer<DailyReportViewBloc, DailyReportViewState>(
-            listener: (context, state) {
-              state.whenOrNull(
-                loaded:
-                    (
-                      reports,
-                      currentPage,
-                      hasMore,
-                      isLoadingMore,
-                      searchQuery,
-                      selectedTabIndex,
-                    ) {
-                      if (!isLoadingMore && _isLoadingMore) {
-                        setState(() => _isLoadingMore = false);
-                      }
+                          _loadDailyReportsWithFilters();
+                        },
+                      );
                     },
-              );
-            },
-            builder: (context, state) {
-              return state.when(
-                initial: () => SliverFillRemaining(
-                  child: Center(child: Text('Ready to load reports')),
-                ),
-                loading: () => SliverFillRemaining(
-                  child: Center(
-                    child: Lottie.asset(
-                      'assets/lottie/blue_loading.json',
-                      width: 200,
-                      height: 200,
-                      fit: BoxFit.contain,
-                    ),
+                    onContractorTap: () {},
+                    onScopeTap: () {
+                      final workScopeState = context
+                          .read<WorkScopeBloc>()
+                          .state;
+
+                      showWorkScopeSelection(
+                        context: context,
+                        state: workScopeState,
+                        onScopeSelected: (selectedData) {
+                          // print('Selected Work Scope: ${selectedData['name']}');
+                          // print('Work Scope UID: ${selectedData['uid']}');
+
+                          setState(() {
+                            _selectedWorkScopeUID = selectedData['uid'];
+                          });
+
+                          _loadDailyReportsWithFilters();
+                        },
+                      );
+                    },
                   ),
                 ),
-                loaded:
-                    (
-                      reports,
-                      currentPage,
-                      hasMore,
-                      isLoadingMore,
-                      searchQuery,
-                      selectedTabIndex,
-                    ) {
-                      if (reports.isEmpty) {
-                        return SliverFillRemaining(
-                          child: Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(height: 20),
-                                Lottie.asset(
-                                  'assets/lottie/no_record.json',
-                                  width: 200,
-                                  height: 200,
-                                  fit: BoxFit.contain,
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  'No reports found',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.grey,
+              ),
+            ),
+
+            // CupertinoSliverRefreshControl(onRefresh: _onRefresh),
+
+            // Reports list
+            BlocConsumer<DailyReportViewBloc, DailyReportViewState>(
+              listener: (context, state) {
+                state.whenOrNull(
+                  loaded:
+                      (
+                        reports,
+                        currentPage,
+                        hasMore,
+                        isLoadingMore,
+                        searchQuery,
+                        selectedTabIndex,
+                      ) {
+                        if (!isLoadingMore && _isLoadingMore) {
+                          setState(() => _isLoadingMore = false);
+                        }
+                      },
+                );
+              },
+              builder: (context, state) {
+                return state.when(
+                  initial: () => SliverFillRemaining(
+                    child: Center(child: Text('Ready to load reports')),
+                  ),
+                  loading: () => SliverFillRemaining(
+                    child: Center(
+                      child: Lottie.asset(
+                        'assets/lottie/blue_loading.json',
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                  ),
+                  loaded:
+                      (
+                        reports,
+                        currentPage,
+                        hasMore,
+                        isLoadingMore,
+                        searchQuery,
+                        selectedTabIndex,
+                      ) {
+                        if (reports.isEmpty) {
+                          return SliverFillRemaining(
+                            child: Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 20),
+                                  Lottie.asset(
+                                    'assets/lottie/no_record.json',
+                                    width: 200,
+                                    height: 200,
+                                    fit: BoxFit.contain,
                                   ),
-                                ),
-                              ],
+                                  SizedBox(height: 10),
+                                  Text(
+                                    'No reports found',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }
+
+                        return SliverPadding(
+                          padding: EdgeInsets.all(20),
+                          sliver: SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                if (index == reports.length) {
+                                  // Loading indicator at the bottom
+                                  return Padding(
+                                    padding: ResponsiveHelper.padding(
+                                      context,
+                                      all: 15,
+                                    ),
+                                    child: Center(
+                                      child: Lottie.asset(
+                                        'assets/lottie/blue_loading.json',
+                                        width: 200,
+                                        height: 200,
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                return DailyReportListItem(
+                                  report: reports[index],
+                                );
+                              },
+                              childCount:
+                                  reports.length +
+                                  (hasMore || isLoadingMore ? 1 : 0),
                             ),
                           ),
                         );
-                      }
-
-                      return SliverPadding(
-                        padding: EdgeInsets.all(20),
-                        sliver: SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              if (index == reports.length) {
-                                // Loading indicator at the bottom
-                                return Padding(
-                                  padding: ResponsiveHelper.padding(
-                                    context,
-                                    all: 15,
-                                  ),
-                                  child: Center(
-                                    child: Lottie.asset(
-                                      'assets/lottie/blue_loading.json',
-                                      width: 200,
-                                      height: 200,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                );
-                              }
-
-                              return DailyReportListItem(
-                                report: reports[index],
+                      },
+                  failure: (message) => SliverFillRemaining(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            message,
+                            style: TextStyle(color: Colors.red),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () {
+                              context.read<DailyReportViewBloc>().add(
+                                DailyReportViewEvent.loadDailyReports(
+                                  companyUID: companyUID!,
+                                  page: 1,
+                                  limit: 50,
+                                  sortOrder: 'desc',
+                                ),
                               );
                             },
-                            childCount:
-                                reports.length +
-                                (hasMore || isLoadingMore ? 1 : 0),
+                            child: Text('Retry'),
                           ),
-                        ),
-                      );
-                    },
-                failure: (message) => SliverFillRemaining(
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          message,
-                          style: TextStyle(color: Colors.red),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: 16),
-                        ElevatedButton(
-                          onPressed: () {
-                            context.read<DailyReportViewBloc>().add(
-                              DailyReportViewEvent.loadDailyReports(
-                                companyUID: companyUID!,
-                                page: 1,
-                                limit: 50,
-                                sortOrder: 'desc',
-                              ),
-                            );
-                          },
-                          child: Text('Retry'),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                detailLoading: () =>
-                    SliverToBoxAdapter(child: SizedBox.shrink()),
-                detailLoaded: (report) =>
-                    SliverToBoxAdapter(child: SizedBox.shrink()),
-                detailFailure: (message) =>
-                    SliverToBoxAdapter(child: SizedBox.shrink()),
-                roadsLoading: () =>
-                    SliverToBoxAdapter(child: SizedBox.shrink()),
-                roadsLoaded:
-                    (roads, selectedRoad, currentSection, sectionError) =>
-                        SliverToBoxAdapter(child: SizedBox.shrink()),
-                roadsFailure: (message) =>
-                    SliverToBoxAdapter(child: SizedBox.shrink()),
-              );
-            },
-          ),
-        ],
+                  detailLoading: () =>
+                      SliverToBoxAdapter(child: SizedBox.shrink()),
+                  detailLoaded: (report) =>
+                      SliverToBoxAdapter(child: SizedBox.shrink()),
+                  detailFailure: (message) =>
+                      SliverToBoxAdapter(child: SizedBox.shrink()),
+                  roadsLoading: () =>
+                      SliverToBoxAdapter(child: SizedBox.shrink()),
+                  roadsLoaded:
+                      (roads, selectedRoad, currentSection, sectionError) =>
+                          SliverToBoxAdapter(child: SizedBox.shrink()),
+                  roadsFailure: (message) =>
+                      SliverToBoxAdapter(child: SizedBox.shrink()),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
