@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rclink_app/features/warnings/data/models/warning_filter_model.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../../../shared/models/api_response.dart';
 import '../models/create_report_warning_model.dart';
@@ -18,5 +19,12 @@ abstract class WarningsApiService {
   Future<ApiResponse<WarningModel>> createReportWarning(
     @Path('companyUID') String companyUID,
     @Body() CreateReportWarningModel data,
+  );
+
+  /// Get warnings listings
+  @GET('/companies/{companyUID}/warnings')
+  Future<ApiResponse<WarningModel>> getWarningListing(
+    @Path('companyUID') String companyUID,
+    @Queries() WarningFilterModel filter,
   );
 }

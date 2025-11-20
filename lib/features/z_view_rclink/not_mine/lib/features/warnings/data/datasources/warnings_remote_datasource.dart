@@ -7,10 +7,13 @@ import '../models/warning_model.dart';
 import 'warnings_api_service.dart';
 
 abstract class WarningsRemoteDataSource {
+  // CREATE Warning
   Future<Either<Failure, WarningModel>> createReportWarning({
     required CreateReportWarningModel data,
     required String companyUID,
   });
+
+  // GET Warning
 }
 
 @LazySingleton(as: WarningsRemoteDataSource)
@@ -19,6 +22,7 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
 
   WarningsRemoteDataSourceImpl(this._apiService);
 
+  /// CREATE Warning
   @override
   Future<Either<Failure, WarningModel>> createReportWarning({
     required CreateReportWarningModel data,
@@ -31,9 +35,7 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
         if (response.data != null) {
           return Right(response.data!);
         } else {
-          return const Left(
-            ServerFailure('No data returned from server'),
-          );
+          return const Left(ServerFailure('No data returned from server'));
         }
       } else {
         return Left(
@@ -90,13 +92,38 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
         );
       }
 
-      return Left(
-        NetworkFailure('Network error: ${e.message}'),
-      );
+      return Left(NetworkFailure('Network error: ${e.message}'));
     } catch (e) {
-      return Left(
-        ServerFailure('Unexpected error: $e'),
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  ///GET Warning
+  @override
+  Future<Either<Failure, List<ContractorRelationModel>>> getContractorRelation({
+    ApiQueryParams? queryParams,
+    required String companyUID,
+  }) async {
+    // // TEMPORARY: Use dummy JSON response
+    // return await _getDummyResponse();
+
+    final params = queryParams ?? const ApiQueryParams();
+
+    try {
+      final response = await _apiService.getContractorsRelated(
+        baseParams: params.toQueryParams(),
+        companyUID: companyUID,
       );
+
+      if (response.isSuccess && response.data != null) {
+        return Right(response.data!);
+      } else {
+        return Left(
+          ServerFailure(response.message, statusCode: response.statusCode),
+        );
+      }
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }
 }
