@@ -1,11 +1,13 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../daily_report/data/models/company_response_model.dart';
 import '../../../daily_report/data/models/created_by_response_model.dart';
+import '../../../daily_report/data/models/daily_report_model.dart';
 import '../../../daily_report/data/models/road_response_model.dart';
 import '../../../daily_report/data/models/work_scope_response_model.dart';
 import '../../../../core/domain/models/file_model.dart';
 import '../../domain/entities/warning.dart';
 import '../../domain/entities/warning_type.dart';
+import 'warning_daily_report_model.dart';
 import 'warning_item_model.dart';
 
 part 'warning_model.freezed.dart';
@@ -24,9 +26,10 @@ abstract class WarningModel with _$WarningModel {
     required int roadID,
     required int workScopeID,
     int? contractRelationID,
-    required String fromSection,
-    required String toSection,
+    String? fromSection,
+    String? toSection,
     @Default([]) List<WarningItemModel> warningItems,
+    WarningDailyReportModel? dailyReport,
     @Default(true) bool requiresAction,
     @Default(false) bool isResolved,
     int? resolvedByID,
@@ -64,6 +67,7 @@ abstract class WarningModel with _$WarningModel {
       fromSection: fromSection,
       toSection: toSection,
       warningItems: warningItems.map((item) => item.toEntity()).toList(),
+      dailyReport: dailyReport?.toEntity(),
       requiresAction: requiresAction,
       isResolved: isResolved,
       resolvedByID: resolvedByID,

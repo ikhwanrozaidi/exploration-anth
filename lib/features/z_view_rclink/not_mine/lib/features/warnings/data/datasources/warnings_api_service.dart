@@ -4,6 +4,7 @@ import 'package:rclink_app/features/warnings/data/models/warning_filter_model.da
 import 'package:retrofit/retrofit.dart';
 import '../../../../shared/models/api_response.dart';
 import '../models/create_report_warning_model.dart';
+import '../models/warning_list_response_model.dart';
 import '../models/warning_model.dart';
 
 part 'warnings_api_service.g.dart';
@@ -23,8 +24,16 @@ abstract class WarningsApiService {
 
   /// Get warnings listings
   @GET('/companies/{companyUID}/warnings')
-  Future<ApiResponse<WarningModel>> getWarningListing(
+  Future<WarningListResponseModel> getWarnings(
     @Path('companyUID') String companyUID,
     @Queries() WarningFilterModel filter,
+  );
+
+  /// Get single warning by UID
+  @GET('/companies/{companyUID}/warnings/{uid}')
+  Future<ApiResponse<WarningModel>> getWarningByUid(
+    @Path('companyUID') String companyUID,
+    @Path('uid') String uid,
+    @Query('expand') List<String>? expand,
   );
 }

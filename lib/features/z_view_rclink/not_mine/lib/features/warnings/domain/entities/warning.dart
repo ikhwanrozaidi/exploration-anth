@@ -1,9 +1,11 @@
 import 'package:equatable/equatable.dart';
 import '../../../daily_report/domain/entities/company_response.dart';
 import '../../../daily_report/domain/entities/created_by_response.dart';
+import '../../../daily_report/domain/entities/daily_report.dart';
 import '../../../daily_report/domain/entities/road_response.dart';
 import '../../../daily_report/domain/entities/work_scope_response.dart';
 import '../../../../core/domain/entities/file_entity.dart';
+import 'warning_daily_report.dart';
 import 'warning_type.dart';
 import 'warning_item.dart';
 
@@ -25,11 +27,12 @@ class Warning extends Equatable {
   final int? contractRelationID; // Optional for in-house work
 
   // Section information
-  final String fromSection;
-  final String toSection;
+  final String? fromSection;
+  final String? toSection;
 
   // Warning items (stored as JSON in database)
   final List<WarningItem> warningItems;
+  final WarningDailyReport? dailyReport;
 
   // Completion tracking
   final bool requiresAction;
@@ -57,7 +60,8 @@ class Warning extends Equatable {
   final RoadResponse? road;
   final WorkScopeResponse? workScope;
   final CreatedByResponse? createdBy;
-  final CreatedByResponse? resolvedBy; // Reuse CreatedByResponse for resolved admin
+  final CreatedByResponse?
+  resolvedBy; // Reuse CreatedByResponse for resolved admin
 
   const Warning({
     required this.id,
@@ -71,6 +75,7 @@ class Warning extends Equatable {
     required this.fromSection,
     required this.toSection,
     required this.warningItems,
+    this.dailyReport,
     required this.requiresAction,
     required this.isResolved,
     this.resolvedByID,
@@ -93,34 +98,35 @@ class Warning extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        uid,
-        warningType,
-        dailyReportID,
-        companyID,
-        roadID,
-        workScopeID,
-        contractRelationID,
-        fromSection,
-        toSection,
-        warningItems,
-        requiresAction,
-        isResolved,
-        resolvedByID,
-        resolvedAt,
-        resolutionNotes,
-        longitude,
-        latitude,
-        description,
-        createdByID,
-        createdAt,
-        updatedAt,
-        deletedAt,
-        files,
-        company,
-        road,
-        workScope,
-        createdBy,
-        resolvedBy,
-      ];
+    id,
+    uid,
+    warningType,
+    dailyReportID,
+    companyID,
+    roadID,
+    workScopeID,
+    contractRelationID,
+    fromSection,
+    toSection,
+    warningItems,
+    dailyReport,
+    requiresAction,
+    isResolved,
+    resolvedByID,
+    resolvedAt,
+    resolutionNotes,
+    longitude,
+    latitude,
+    description,
+    createdByID,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    files,
+    company,
+    road,
+    workScope,
+    createdBy,
+    resolvedBy,
+  ];
 }

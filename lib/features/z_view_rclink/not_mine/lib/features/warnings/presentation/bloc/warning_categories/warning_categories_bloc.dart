@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../domain/usecases/get_warning_categories_usecase.dart';
+import '../../../domain/usecases/get_warning_categories_usecase.dart';
 import 'warning_categories_event.dart';
 import 'warning_categories_state.dart';
 
@@ -12,7 +12,7 @@ class WarningCategoriesBloc
   final GetWarningCategoriesUseCase _getWarningCategoriesUseCase;
 
   WarningCategoriesBloc(this._getWarningCategoriesUseCase)
-      : super(const WarningCategoriesState.initial()) {
+    : super(const WarningCategoriesState.initial()) {
     on<LoadWarningCategories>(_onLoadWarningCategories);
   }
 

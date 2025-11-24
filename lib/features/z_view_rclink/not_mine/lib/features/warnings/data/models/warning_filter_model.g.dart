@@ -8,6 +8,10 @@ part of 'warning_filter_model.dart';
 
 _WarningFilterModel _$WarningFilterModelFromJson(Map<String, dynamic> json) =>
     _WarningFilterModel(
+      page: (json['page'] as num?)?.toInt() ?? 1,
+      limit: (json['limit'] as num?)?.toInt() ?? 10,
+      sortBy: json['sortBy'] as String?,
+      sortOrder: json['sortOrder'] as String?,
       warningType: (json['warningType'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -17,10 +21,17 @@ _WarningFilterModel _$WarningFilterModelFromJson(Map<String, dynamic> json) =>
       dailyReportID: json['dailyReportID'] as String?,
       isResolved: json['isResolved'] as bool?,
       requiresAction: json['requiresAction'] as bool?,
+      expand: (json['expand'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
     );
 
 Map<String, dynamic> _$WarningFilterModelToJson(_WarningFilterModel instance) =>
     <String, dynamic>{
+      'page': instance.page,
+      'limit': instance.limit,
+      'sortBy': ?instance.sortBy,
+      'sortOrder': ?instance.sortOrder,
       'warningType': ?instance.warningType,
       'roadID': ?instance.roadID,
       'workScopeID': ?instance.workScopeID,
@@ -28,4 +39,5 @@ Map<String, dynamic> _$WarningFilterModelToJson(_WarningFilterModel instance) =>
       'dailyReportID': ?instance.dailyReportID,
       'isResolved': ?instance.isResolved,
       'requiresAction': ?instance.requiresAction,
+      'expand': ?instance.expand,
     };

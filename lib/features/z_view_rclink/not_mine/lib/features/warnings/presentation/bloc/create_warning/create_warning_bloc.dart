@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import '../../domain/usecases/create_report_warning_usecase.dart';
+import '../../../domain/usecases/create_report_warning_usecase.dart';
 import 'create_warning_event.dart';
 import 'create_warning_state.dart';
 
@@ -9,7 +9,7 @@ class CreateWarningBloc extends Bloc<CreateWarningEvent, CreateWarningState> {
   final CreateReportWarningUseCase _createReportWarningUseCase;
 
   CreateWarningBloc(this._createReportWarningUseCase)
-      : super(const CreateWarningState.initial()) {
+    : super(const CreateWarningState.initial()) {
     on<CreateWarning>(_onCreateWarning);
   }
 

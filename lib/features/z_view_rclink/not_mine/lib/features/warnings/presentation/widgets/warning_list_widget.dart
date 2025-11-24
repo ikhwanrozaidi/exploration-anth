@@ -3,14 +3,19 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:lottie/lottie.dart';
 import 'package:rclink_app/shared/utils/theme.dart';
 
 import '../../../../../core/utils/cache_managers.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
+import '../../domain/entities/warning.dart';
 import '../pages/warning_details_page.dart';
 
 class WarningProgramListWidget extends StatefulWidget {
-  const WarningProgramListWidget({Key? key}) : super(key: key);
+  final Warning warning;
+
+  const WarningProgramListWidget({required this.warning, Key? key})
+    : super(key: key);
 
   @override
   State<WarningProgramListWidget> createState() =>
@@ -35,7 +40,7 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
   //     } else {
   //       _currentIndex = 0;
   //     }
-
+  //
   //     // Check if PageController is attached before animating
   //     if (_pageController.hasClients) {
   //       _pageController.animateToPage(
@@ -66,14 +71,15 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
       onTap: () {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => WarningDetailsPage()),
+          MaterialPageRoute(
+            builder: (context) =>
+                WarningDetailsPage(warningUID: widget.warning.uid),
+          ),
         );
 
         // Navigator.push(
         //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => DailyReportDetailPage(report: widget.report),
-        //   ),
+        //   MaterialPageRoute(builder: (context) => WarningDetailsPage()),
         // );
       },
       child: Container(
@@ -122,7 +128,14 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
                                     return Container(
                                       color: Colors.grey.shade300,
                                       child: Center(
-                                        child: CircularProgressIndicator(),
+                                        child: Center(
+                                          child: Lottie.asset(
+                                            'assets/lottie/blue_loading.json',
+                                            width: 200,
+                                            height: 200,
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
                                       ),
                                     );
                                   },
@@ -210,7 +223,7 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
 
                               //Scope Code
                               child: Text(
-                                'code',
+                                widget.warning.workScope!.code ?? '',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -231,7 +244,9 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
                               ),
                               child: Text(
                                 DateFormat('d MMM').format(
-                                  DateTime.parse('2025-09-22T20:01:55.752Z'),
+                                  DateTime.parse(
+                                    widget.warning.createdAt.toString(),
+                                  ),
                                 ),
                                 style: TextStyle(
                                   fontSize: 12,
@@ -272,7 +287,7 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
             SizedBox(height: 15),
 
             Text(
-              'company null',
+              widget.warning.company!.name,
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: ResponsiveHelper.fontSize(context, base: 15),
@@ -292,7 +307,7 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'districtName',
+                        widget.warning.road!.districtName.toString(),
                         style: TextStyle(
                           color: Colors.black.withOpacity(0.6),
                           fontSize: ResponsiveHelper.fontSize(
@@ -302,7 +317,7 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
                         ),
                       ),
                       Text(
-                        'roadNo roadName',
+                        '${widget.warning.road!.roadNo} ${widget.warning.road!.name}',
                         // '${widget.report.road!.roadNo.toString()} - ${widget.report.road!.name.toString()}',
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -356,7 +371,7 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
                     ),
                     child: Center(
                       child: Text(
-                        'null Warnings',
+                        '${widget.warning.warningItems.length} Warnings',
                         style: TextStyle(
                           color: Colors.red,
                           fontWeight: FontWeight.w600,
@@ -383,7 +398,7 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
                           SizedBox(width: 5),
 
                           Text(
-                            'null Resolved',
+                            '${widget.warning.warningItems.where((item) => item.isCompleted).length} Resolved',
                             style: TextStyle(
                               color: Colors.blueAccent.shade700,
                               fontWeight: FontWeight.w600,
@@ -407,7 +422,7 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
                           SizedBox(width: 5),
 
                           Text(
-                            'null Pending',
+                            '${widget.warning.warningItems.where((item) => !item.isCompleted).length} Pending',
                             style: TextStyle(
                               color: Colors.blueAccent.shade700,
                               fontWeight: FontWeight.w600,

@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/errors/failures.dart';
-import '../../domain/repositories/warning_categories_repository.dart';
+import '../../../../../core/errors/failures.dart';
+import '../../../domain/repositories/warning_categories_repository.dart';
 
 part 'warning_categories_state.freezed.dart';
 

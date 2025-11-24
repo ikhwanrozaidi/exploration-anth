@@ -51,7 +51,7 @@ class _WarningsApiService implements WarningsApiService {
   }
 
   @override
-  Future<ApiResponse<WarningModel>> getWarningListing(
+  Future<WarningListResponseModel> getWarnings(
     String companyUID,
     WarningFilterModel filter,
   ) async {
@@ -60,11 +60,43 @@ class _WarningsApiService implements WarningsApiService {
     queryParameters.addAll(filter.toJson());
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ApiResponse<WarningModel>>(
+    final _options = _setStreamType<WarningListResponseModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
             '/companies/${companyUID}/warnings',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late WarningListResponseModel _value;
+    try {
+      _value = WarningListResponseModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<ApiResponse<WarningModel>> getWarningByUid(
+    String companyUID,
+    String uid,
+    List<String>? expand,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'expand': expand};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<ApiResponse<WarningModel>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/companies/${companyUID}/warnings/${uid}',
             queryParameters: queryParameters,
             data: _data,
           )

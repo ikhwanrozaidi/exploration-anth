@@ -6,6 +6,18 @@ part 'warning_filter_model.g.dart';
 @Freezed(toJson: true)
 abstract class WarningFilterModel with _$WarningFilterModel {
   const factory WarningFilterModel({
+    /// Page number for pagination
+    @Default(1) int page,
+
+    /// Number of items per page
+    @Default(10) int limit,
+
+    /// Sort field
+    @JsonKey(includeIfNull: false) String? sortBy,
+
+    /// Sort order (asc/desc)
+    @JsonKey(includeIfNull: false) String? sortOrder,
+
     /// Filter by warning type
     @JsonKey(includeIfNull: false) List<String>? warningType,
 
@@ -26,6 +38,9 @@ abstract class WarningFilterModel with _$WarningFilterModel {
 
     /// Filter by Action status
     @JsonKey(includeIfNull: false) bool? requiresAction,
+
+    /// Expand relations
+    @JsonKey(includeIfNull: false) List<String>? expand,
   }) = _WarningFilterModel;
 
   factory WarningFilterModel.fromJson(Map<String, dynamic> json) =>

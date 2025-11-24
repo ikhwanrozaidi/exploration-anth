@@ -1,26 +1,169 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:rclink_app/shared/widgets/coming_soon_overlay.dart';
 
+import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../shared/widgets/month_filter_widget.dart';
 import '../../../../shared/widgets/custom_tab_widget.dart';
 import '../../../../shared/widgets/year_filter_widget.dart';
+import '../../../company/presentation/bloc/company_bloc.dart';
+import '../../../company/presentation/bloc/company_state.dart';
+import '../../domain/entities/warning.dart';
+import '../../domain/entities/warning_type.dart';
+import '../bloc/warning_view/warning_bloc.dart';
+import '../bloc/warning_view/warning_event.dart';
+import '../bloc/warning_view/warning_state.dart';
 import '../widgets/warning_list_widget.dart';
 
-class WarningPage extends StatefulWidget {
+class WarningPage extends StatelessWidget {
   const WarningPage({Key? key}) : super(key: key);
 
   @override
-  State<WarningPage> createState() => _WarningPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => getIt<WarningBloc>(),
+      child: const _WarningPageContent(),
+    );
+  }
 }
 
-class _WarningPageState extends State<WarningPage> {
+class _WarningPageContent extends StatefulWidget {
+  const _WarningPageContent({Key? key}) : super(key: key);
+
+  @override
+  State<_WarningPageContent> createState() => _WarningPageContentState();
+}
+
+class _WarningPageContentState extends State<_WarningPageContent> {
   int selectedMonth = DateTime.now().month;
   int selectedYear = DateTime.now().year;
+  String _currentTab = 'Site Warning';
+  int _currentTabIndex = 1;
+  late ScrollController _scrollController;
+  bool _isLoadingMore = false;
 
-  String _currentTab = 'Programs';
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_onScroll);
+
+    // Load warnings on page init
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadWarnings();
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _loadWarnings() {
+    final companyState = context.read<CompanyBloc>().state;
+    if (companyState is! CompanyLoaded ||
+        companyState.selectedCompany == null) {
+      return;
+    }
+
+    final companyUID = companyState.selectedCompany!.uid;
+    final warningType = _currentTabIndex == 0
+        ? ['REPORT_WARNING']
+        : ['SITE_WARNING'];
+
+    context.read<WarningBloc>().add(
+      WarningEvent.loadWarnings(
+        companyUID: companyUID,
+        warningType: warningType,
+      ),
+    );
+  }
+
+  void _onScroll() {
+    if (_isScrolledToBottom && !_isLoadingMore) {
+      _loadMoreWarnings();
+    }
+  }
+
+  bool get _isScrolledToBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  void _loadMoreWarnings() {
+    final state = context.read<WarningBloc>().state;
+    if (state is! WarningLoaded) return;
+    if (!state.hasMore || state.isLoadingMore) return;
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    final companyState = context.read<CompanyBloc>().state;
+    if (companyState is! CompanyLoaded ||
+        companyState.selectedCompany == null) {
+      setState(() {
+        _isLoadingMore = false;
+      });
+      return;
+    }
+
+    final companyUID = companyState.selectedCompany!.uid;
+    final warningType = _currentTabIndex == 0
+        ? ['REPORT_WARNING']
+        : ['SITE_WARNING'];
+
+    context.read<WarningBloc>().add(
+      WarningEvent.loadMoreWarnings(
+        companyUID: companyUID,
+        nextPage: state.currentPage + 1,
+        warningType: warningType,
+      ),
+    );
+
+    setState(() {
+      _isLoadingMore = false;
+    });
+  }
+
+  Future<void> _onRefresh() async {
+    final companyState = context.read<CompanyBloc>().state;
+    if (companyState is! CompanyLoaded ||
+        companyState.selectedCompany == null) {
+      return;
+    }
+
+    final companyUID = companyState.selectedCompany!.uid;
+    final warningType = _currentTabIndex == 0
+        ? ['REPORT_WARNING']
+        : ['SITE_WARNING'];
+
+    context.read<WarningBloc>().add(
+      WarningEvent.refreshWarnings(
+        companyUID: companyUID,
+        warningType: warningType,
+      ),
+    );
+  }
+
+  // Helper method to filter warnings by tab
+  List<Warning> _filterWarningsByTab(List<Warning> warnings) {
+    final targetType = _currentTabIndex == 0
+        ? WarningType.reportWarning
+        : WarningType.siteWarning;
+
+    return warnings
+        .where((warning) => warning.warningType == targetType)
+        .toList();
+  }
 
   void onMonthSelected(String from, String to) {
     setState(() {
@@ -94,12 +237,8 @@ class _WarningPageState extends State<WarningPage> {
 
                         YearFilter(
                           onYearSelected: (from, to) {
-                            // setState(() {
-                            //   fromDate = from;
-                            //   toDate = to;
-                            // });
-
                             print('From: $from, To: $to');
+                            // TODO: Implement year filtering with API
                           },
                           primaryColor: primaryColor,
                         ),
@@ -160,14 +299,17 @@ class _WarningPageState extends State<WarningPage> {
                             onTabChanged: (index, tabLabel) {
                               setState(() {
                                 _currentTab = tabLabel;
+                                _currentTabIndex = index;
                               });
                               print(
                                 'Tab changed to: $tabLabel (index: $index)',
                               );
+                              // Load warnings for the new tab
+                              _loadWarnings();
                             },
                             tabContents: [
-                              _buildReportsContent(),
-                              _buildProgramsContent(),
+                              _buildWarningsContent(),
+                              _buildWarningsContent(),
                             ],
                           ),
                         ),
@@ -183,13 +325,164 @@ class _WarningPageState extends State<WarningPage> {
     );
   }
 
-  Widget _buildReportsContent() {
-    return Center(
-      child: Text('Reports Content', style: TextStyle(fontSize: 12)),
+  Widget _buildWarningsContent() {
+    return BlocBuilder<WarningBloc, WarningState>(
+      builder: (context, state) {
+        return state.when(
+          initial: () => Center(
+            child: Center(
+              child: Lottie.asset(
+                'assets/lottie/blue_loading.json',
+                width: 200,
+                height: 200,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          loading: () => Center(
+            child: Center(
+              child: Lottie.asset(
+                'assets/lottie/blue_loading.json',
+                width: 200,
+                height: 200,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          loaded: (warnings, currentPage, hasMore, isLoadingMore) {
+            // Filter warnings based on current tab
+            final filteredWarnings = _filterWarningsByTab(warnings);
+
+            if (filteredWarnings.isEmpty) {
+              return _buildEmptyState();
+            }
+
+            return RefreshIndicator(
+              onRefresh: _onRefresh,
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.only(top: 10),
+                itemCount: filteredWarnings.length + (hasMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index == filteredWarnings.length) {
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(
+                          child: Lottie.asset(
+                            'assets/lottie/blue_loading.json',
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  final warning = filteredWarnings[index];
+                  return WarningProgramListWidget(warning: warning);
+                },
+              ),
+            );
+          },
+          loadingMore: (warnings, currentPage) {
+            // Filter warnings based on current tab
+            final filteredWarnings = _filterWarningsByTab(warnings);
+
+            return ListView.builder(
+              controller: _scrollController,
+              padding: const EdgeInsets.only(top: 10),
+              itemCount: filteredWarnings.length + 1,
+              itemBuilder: (context, index) {
+                if (index == filteredWarnings.length) {
+                  return Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Center(
+                        child: Lottie.asset(
+                          'assets/lottie/blue_loading.json',
+                          width: 200,
+                          height: 200,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
+                final warning = filteredWarnings[index];
+                return WarningProgramListWidget(warning: warning);
+              },
+            );
+          },
+          error: (failure, cachedWarnings) {
+            if (cachedWarnings != null && cachedWarnings.isNotEmpty) {
+              // Filter warnings based on current tab
+              final filteredWarnings = _filterWarningsByTab(cachedWarnings);
+
+              if (filteredWarnings.isEmpty) {
+                return _buildEmptyState();
+              }
+
+              return RefreshIndicator(
+                onRefresh: _onRefresh,
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.only(top: 10),
+                  itemCount: filteredWarnings.length,
+                  itemBuilder: (context, index) {
+                    final warning = filteredWarnings[index];
+                    return WarningProgramListWidget(warning: warning);
+                  },
+                ),
+              );
+            }
+
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Error: ${failure.message}',
+                    style: TextStyle(
+                      fontSize: ResponsiveHelper.fontSize(context, base: 14),
+                    ),
+                  ),
+                  SizedBox(height: ResponsiveHelper.spacing(context, 2)),
+                  ElevatedButton(
+                    onPressed: _loadWarnings,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: primaryColor,
+                    ),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
-  Widget _buildProgramsContent() {
-    return SingleChildScrollView(child: WarningProgramListWidget());
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        children: [
+          SizedBox(height: 20),
+          Lottie.asset(
+            'assets/lottie/no_record.json',
+            width: 200,
+            height: 200,
+            fit: BoxFit.contain,
+          ),
+          Text(
+            'No warnings found',
+            style: TextStyle(fontSize: 15, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
   }
 }

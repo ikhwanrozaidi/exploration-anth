@@ -16,13 +16,18 @@ _WarningModel _$WarningModelFromJson(Map<String, dynamic> json) =>
       roadID: (json['roadID'] as num).toInt(),
       workScopeID: (json['workScopeID'] as num).toInt(),
       contractRelationID: (json['contractRelationID'] as num?)?.toInt(),
-      fromSection: json['fromSection'] as String,
-      toSection: json['toSection'] as String,
+      fromSection: json['fromSection'] as String?,
+      toSection: json['toSection'] as String?,
       warningItems:
           (json['warningItems'] as List<dynamic>?)
               ?.map((e) => WarningItemModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
+      dailyReport: json['dailyReport'] == null
+          ? null
+          : WarningDailyReportModel.fromJson(
+              json['dailyReport'] as Map<String, dynamic>,
+            ),
       requiresAction: json['requiresAction'] as bool? ?? true,
       isResolved: json['isResolved'] as bool? ?? false,
       resolvedByID: (json['resolvedByID'] as num?)?.toInt(),
@@ -80,6 +85,7 @@ Map<String, dynamic> _$WarningModelToJson(_WarningModel instance) =>
       'fromSection': instance.fromSection,
       'toSection': instance.toSection,
       'warningItems': instance.warningItems,
+      'dailyReport': instance.dailyReport,
       'requiresAction': instance.requiresAction,
       'isResolved': instance.isResolved,
       'resolvedByID': instance.resolvedByID,

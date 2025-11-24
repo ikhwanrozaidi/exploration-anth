@@ -3,6 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../models/create_report_warning_model.dart';
+import '../models/warning_filter_model.dart';
+import '../models/warning_list_response_model.dart';
 import '../models/warning_model.dart';
 import 'warnings_api_service.dart';
 
@@ -14,6 +16,25 @@ abstract class WarningsRemoteDataSource {
   });
 
   // GET Warning
+  Future<Either<Failure, List<WarningModel>>> getWarnings({
+    required String companyUID,
+    int page = 1,
+    int limit = 50,
+    String sortOrder = 'desc',
+    List<String>? warningType,
+    String? roadUID,
+    String? workScopeUID,
+    String? contractRelationUID,
+    String? dailyReportUID,
+    bool? isResolved,
+    bool? requiresAction,
+  });
+
+  // GET Warning by Uid
+  Future<Either<Failure, WarningModel>> getWarningById({
+    required String companyUID,
+    required String uid,
+  });
 }
 
 @LazySingleton(as: WarningsRemoteDataSource)
@@ -98,32 +119,96 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
     }
   }
 
-  ///GET Warning
+  /// GET Warning
   @override
-  Future<Either<Failure, List<ContractorRelationModel>>> getContractorRelation({
-    ApiQueryParams? queryParams,
+  Future<Either<Failure, List<WarningModel>>> getWarnings({
     required String companyUID,
+    int page = 1,
+    int limit = 50,
+    String sortOrder = 'desc',
+    List<String>? warningType,
+    String? roadUID,
+    String? workScopeUID,
+    String? contractRelationUID,
+    String? dailyReportUID,
+    bool? isResolved,
+    bool? requiresAction,
   }) async {
-    // // TEMPORARY: Use dummy JSON response
-    // return await _getDummyResponse();
-
-    final params = queryParams ?? const ApiQueryParams();
-
     try {
-      final response = await _apiService.getContractorsRelated(
-        baseParams: params.toQueryParams(),
-        companyUID: companyUID,
+      final filter = WarningFilterModel(
+        warningType: warningType,
+        roadID: roadUID,
+        workScopeID: workScopeUID,
+        contractRelationID: contractRelationUID,
+        dailyReportID: dailyReportUID,
+        isResolved: isResolved,
+        requiresAction: requiresAction,
+        expand: [
+          'workScope',
+          'road',
+          'contractRelation',
+          'files',
+          'createdBy',
+          'company',
+        ],
       );
 
-      if (response.isSuccess && response.data != null) {
-        return Right(response.data!);
+      final response = await _apiService.getWarnings(companyUID, filter);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        print('✅ Total Warnings: ${response.data.length}');
+
+        return Right(response.data);
       } else {
+        print('❌ RemoteDataSource: API returned error - ${response.message}');
         return Left(
           ServerFailure(response.message, statusCode: response.statusCode),
         );
       }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return const Left(NotFoundFailure());
+      }
+      if (e.response?.statusCode == 401) {
+        return const Left(UnauthorizedFailure());
+      }
+      return Left(NetworkFailure('Network error: ${e.message}'));
     } catch (e) {
-      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+      print('❌ RemoteDataSource: Unexpected error - $e');
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, WarningModel>> getWarningById({
+    required String companyUID,
+    required String uid,
+  }) async {
+    try {
+      final response = await _apiService.getWarningByUid(companyUID, uid, [
+        'dailyReport',
+        'resolvedBy',
+      ]);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        return Right(response.data!);
+      } else {
+        print('❌ RemoteDataSource: API returned error - ${response.message}');
+        return Left(
+          ServerFailure(response.message, statusCode: response.statusCode),
+        );
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 404) {
+        return const Left(NotFoundFailure());
+      }
+      if (e.response?.statusCode == 401) {
+        return const Left(UnauthorizedFailure());
+      }
+      return Left(NetworkFailure('Network error: ${e.message}'));
+    } catch (e) {
+      print('❌ RemoteDataSource: Unexpected error - $e');
+      return Left(ServerFailure('Unexpected error: $e'));
     }
   }
 }
