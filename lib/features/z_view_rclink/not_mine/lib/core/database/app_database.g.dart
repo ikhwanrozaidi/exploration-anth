@@ -17200,6 +17200,17 @@ class $DailyReportsTable extends DailyReports
         type: DriftSqlType.string,
         requiredDuringInsert: false,
       );
+  static const VerificationMeta _warningDataMeta = const VerificationMeta(
+    'warningData',
+  );
+  @override
+  late final GeneratedColumn<String> warningData = GeneratedColumn<String>(
+    'warning_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     isSynced,
@@ -17236,6 +17247,7 @@ class $DailyReportsTable extends DailyReports
     companyData,
     equipmentsData,
     reportQuantitiesData,
+    warningData,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -17516,6 +17528,15 @@ class $DailyReportsTable extends DailyReports
         ),
       );
     }
+    if (data.containsKey('warning_data')) {
+      context.handle(
+        _warningDataMeta,
+        warningData.isAcceptableOrUnknown(
+          data['warning_data']!,
+          _warningDataMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -17665,6 +17686,10 @@ class $DailyReportsTable extends DailyReports
         DriftSqlType.string,
         data['${effectivePrefix}report_quantities_data'],
       ),
+      warningData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}warning_data'],
+      ),
     );
   }
 
@@ -17710,6 +17735,7 @@ class DailyReportRecord extends DataClass
   final String? companyData;
   final String? equipmentsData;
   final String? reportQuantitiesData;
+  final String? warningData;
   const DailyReportRecord({
     required this.isSynced,
     this.deletedAt,
@@ -17745,6 +17771,7 @@ class DailyReportRecord extends DataClass
     this.companyData,
     this.equipmentsData,
     this.reportQuantitiesData,
+    this.warningData,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -17825,6 +17852,9 @@ class DailyReportRecord extends DataClass
     if (!nullToAbsent || reportQuantitiesData != null) {
       map['report_quantities_data'] = Variable<String>(reportQuantitiesData);
     }
+    if (!nullToAbsent || warningData != null) {
+      map['warning_data'] = Variable<String>(warningData);
+    }
     return map;
   }
 
@@ -17904,6 +17934,9 @@ class DailyReportRecord extends DataClass
       reportQuantitiesData: reportQuantitiesData == null && nullToAbsent
           ? const Value.absent()
           : Value(reportQuantitiesData),
+      warningData: warningData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(warningData),
     );
   }
 
@@ -17949,6 +17982,7 @@ class DailyReportRecord extends DataClass
       reportQuantitiesData: serializer.fromJson<String?>(
         json['reportQuantitiesData'],
       ),
+      warningData: serializer.fromJson<String?>(json['warningData']),
     );
   }
   @override
@@ -17989,6 +18023,7 @@ class DailyReportRecord extends DataClass
       'companyData': serializer.toJson<String?>(companyData),
       'equipmentsData': serializer.toJson<String?>(equipmentsData),
       'reportQuantitiesData': serializer.toJson<String?>(reportQuantitiesData),
+      'warningData': serializer.toJson<String?>(warningData),
     };
   }
 
@@ -18027,6 +18062,7 @@ class DailyReportRecord extends DataClass
     Value<String?> companyData = const Value.absent(),
     Value<String?> equipmentsData = const Value.absent(),
     Value<String?> reportQuantitiesData = const Value.absent(),
+    Value<String?> warningData = const Value.absent(),
   }) => DailyReportRecord(
     isSynced: isSynced ?? this.isSynced,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
@@ -18076,6 +18112,7 @@ class DailyReportRecord extends DataClass
     reportQuantitiesData: reportQuantitiesData.present
         ? reportQuantitiesData.value
         : this.reportQuantitiesData,
+    warningData: warningData.present ? warningData.value : this.warningData,
   );
   DailyReportRecord copyWithCompanion(DailyReportsCompanion data) {
     return DailyReportRecord(
@@ -18149,6 +18186,9 @@ class DailyReportRecord extends DataClass
       reportQuantitiesData: data.reportQuantitiesData.present
           ? data.reportQuantitiesData.value
           : this.reportQuantitiesData,
+      warningData: data.warningData.present
+          ? data.warningData.value
+          : this.warningData,
     );
   }
 
@@ -18188,7 +18228,8 @@ class DailyReportRecord extends DataClass
           ..write('createdByData: $createdByData, ')
           ..write('companyData: $companyData, ')
           ..write('equipmentsData: $equipmentsData, ')
-          ..write('reportQuantitiesData: $reportQuantitiesData')
+          ..write('reportQuantitiesData: $reportQuantitiesData, ')
+          ..write('warningData: $warningData')
           ..write(')'))
         .toString();
   }
@@ -18229,6 +18270,7 @@ class DailyReportRecord extends DataClass
     companyData,
     equipmentsData,
     reportQuantitiesData,
+    warningData,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -18267,7 +18309,8 @@ class DailyReportRecord extends DataClass
           other.createdByData == this.createdByData &&
           other.companyData == this.companyData &&
           other.equipmentsData == this.equipmentsData &&
-          other.reportQuantitiesData == this.reportQuantitiesData);
+          other.reportQuantitiesData == this.reportQuantitiesData &&
+          other.warningData == this.warningData);
 }
 
 class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
@@ -18305,6 +18348,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
   final Value<String?> companyData;
   final Value<String?> equipmentsData;
   final Value<String?> reportQuantitiesData;
+  final Value<String?> warningData;
   const DailyReportsCompanion({
     this.isSynced = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -18340,6 +18384,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     this.companyData = const Value.absent(),
     this.equipmentsData = const Value.absent(),
     this.reportQuantitiesData = const Value.absent(),
+    this.warningData = const Value.absent(),
   });
   DailyReportsCompanion.insert({
     this.isSynced = const Value.absent(),
@@ -18376,6 +18421,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     this.companyData = const Value.absent(),
     this.equipmentsData = const Value.absent(),
     this.reportQuantitiesData = const Value.absent(),
+    this.warningData = const Value.absent(),
   }) : uid = Value(uid),
        name = Value(name),
        weatherCondition = Value(weatherCondition),
@@ -18420,6 +18466,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     Expression<String>? companyData,
     Expression<String>? equipmentsData,
     Expression<String>? reportQuantitiesData,
+    Expression<String>? warningData,
   }) {
     return RawValuesInsertable({
       if (isSynced != null) 'is_synced': isSynced,
@@ -18458,6 +18505,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
       if (equipmentsData != null) 'equipments_data': equipmentsData,
       if (reportQuantitiesData != null)
         'report_quantities_data': reportQuantitiesData,
+      if (warningData != null) 'warning_data': warningData,
     });
   }
 
@@ -18496,6 +18544,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
     Value<String?>? companyData,
     Value<String?>? equipmentsData,
     Value<String?>? reportQuantitiesData,
+    Value<String?>? warningData,
   }) {
     return DailyReportsCompanion(
       isSynced: isSynced ?? this.isSynced,
@@ -18532,6 +18581,7 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
       companyData: companyData ?? this.companyData,
       equipmentsData: equipmentsData ?? this.equipmentsData,
       reportQuantitiesData: reportQuantitiesData ?? this.reportQuantitiesData,
+      warningData: warningData ?? this.warningData,
     );
   }
 
@@ -18642,6 +18692,9 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
         reportQuantitiesData.value,
       );
     }
+    if (warningData.present) {
+      map['warning_data'] = Variable<String>(warningData.value);
+    }
     return map;
   }
 
@@ -18681,7 +18734,8 @@ class DailyReportsCompanion extends UpdateCompanion<DailyReportRecord> {
           ..write('createdByData: $createdByData, ')
           ..write('companyData: $companyData, ')
           ..write('equipmentsData: $equipmentsData, ')
-          ..write('reportQuantitiesData: $reportQuantitiesData')
+          ..write('reportQuantitiesData: $reportQuantitiesData, ')
+          ..write('warningData: $warningData')
           ..write(')'))
         .toString();
   }
@@ -24000,6 +24054,17 @@ class $WarningsTable extends Warnings
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _dailyReportDataMeta = const VerificationMeta(
+    'dailyReportData',
+  );
+  @override
+  late final GeneratedColumn<String> dailyReportData = GeneratedColumn<String>(
+    'daily_report_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     isSynced,
@@ -24035,6 +24100,7 @@ class $WarningsTable extends Warnings
     companyData,
     createdByData,
     resolvedByData,
+    dailyReportData,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -24314,6 +24380,15 @@ class $WarningsTable extends Warnings
         ),
       );
     }
+    if (data.containsKey('daily_report_data')) {
+      context.handle(
+        _dailyReportDataMeta,
+        dailyReportData.isAcceptableOrUnknown(
+          data['daily_report_data']!,
+          _dailyReportDataMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -24459,6 +24534,10 @@ class $WarningsTable extends Warnings
         DriftSqlType.string,
         data['${effectivePrefix}resolved_by_data'],
       ),
+      dailyReportData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}daily_report_data'],
+      ),
     );
   }
 
@@ -24502,6 +24581,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
   final String? companyData;
   final String? createdByData;
   final String? resolvedByData;
+  final String? dailyReportData;
   const WarningRecord({
     required this.isSynced,
     this.deletedAt,
@@ -24536,6 +24616,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     this.companyData,
     this.createdByData,
     this.resolvedByData,
+    this.dailyReportData,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -24611,6 +24692,9 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     if (!nullToAbsent || resolvedByData != null) {
       map['resolved_by_data'] = Variable<String>(resolvedByData);
     }
+    if (!nullToAbsent || dailyReportData != null) {
+      map['daily_report_data'] = Variable<String>(dailyReportData);
+    }
     return map;
   }
 
@@ -24685,6 +24769,9 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       resolvedByData: resolvedByData == null && nullToAbsent
           ? const Value.absent()
           : Value(resolvedByData),
+      dailyReportData: dailyReportData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dailyReportData),
     );
   }
 
@@ -24727,6 +24814,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       companyData: serializer.fromJson<String?>(json['companyData']),
       createdByData: serializer.fromJson<String?>(json['createdByData']),
       resolvedByData: serializer.fromJson<String?>(json['resolvedByData']),
+      dailyReportData: serializer.fromJson<String?>(json['dailyReportData']),
     );
   }
   @override
@@ -24766,6 +24854,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       'companyData': serializer.toJson<String?>(companyData),
       'createdByData': serializer.toJson<String?>(createdByData),
       'resolvedByData': serializer.toJson<String?>(resolvedByData),
+      'dailyReportData': serializer.toJson<String?>(dailyReportData),
     };
   }
 
@@ -24803,6 +24892,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     Value<String?> companyData = const Value.absent(),
     Value<String?> createdByData = const Value.absent(),
     Value<String?> resolvedByData = const Value.absent(),
+    Value<String?> dailyReportData = const Value.absent(),
   }) => WarningRecord(
     isSynced: isSynced ?? this.isSynced,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
@@ -24853,6 +24943,9 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     resolvedByData: resolvedByData.present
         ? resolvedByData.value
         : this.resolvedByData,
+    dailyReportData: dailyReportData.present
+        ? dailyReportData.value
+        : this.dailyReportData,
   );
   WarningRecord copyWithCompanion(WarningsCompanion data) {
     return WarningRecord(
@@ -24929,6 +25022,9 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       resolvedByData: data.resolvedByData.present
           ? data.resolvedByData.value
           : this.resolvedByData,
+      dailyReportData: data.dailyReportData.present
+          ? data.dailyReportData.value
+          : this.dailyReportData,
     );
   }
 
@@ -24967,7 +25063,8 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
           ..write('workScopeData: $workScopeData, ')
           ..write('companyData: $companyData, ')
           ..write('createdByData: $createdByData, ')
-          ..write('resolvedByData: $resolvedByData')
+          ..write('resolvedByData: $resolvedByData, ')
+          ..write('dailyReportData: $dailyReportData')
           ..write(')'))
         .toString();
   }
@@ -25007,6 +25104,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     companyData,
     createdByData,
     resolvedByData,
+    dailyReportData,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -25044,7 +25142,8 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
           other.workScopeData == this.workScopeData &&
           other.companyData == this.companyData &&
           other.createdByData == this.createdByData &&
-          other.resolvedByData == this.resolvedByData);
+          other.resolvedByData == this.resolvedByData &&
+          other.dailyReportData == this.dailyReportData);
 }
 
 class WarningsCompanion extends UpdateCompanion<WarningRecord> {
@@ -25081,6 +25180,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
   final Value<String?> companyData;
   final Value<String?> createdByData;
   final Value<String?> resolvedByData;
+  final Value<String?> dailyReportData;
   const WarningsCompanion({
     this.isSynced = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -25115,6 +25215,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     this.companyData = const Value.absent(),
     this.createdByData = const Value.absent(),
     this.resolvedByData = const Value.absent(),
+    this.dailyReportData = const Value.absent(),
   });
   WarningsCompanion.insert({
     this.isSynced = const Value.absent(),
@@ -25150,6 +25251,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     this.companyData = const Value.absent(),
     this.createdByData = const Value.absent(),
     this.resolvedByData = const Value.absent(),
+    this.dailyReportData = const Value.absent(),
   }) : uid = Value(uid),
        warningType = Value(warningType),
        companyID = Value(companyID),
@@ -25194,6 +25296,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     Expression<String>? companyData,
     Expression<String>? createdByData,
     Expression<String>? resolvedByData,
+    Expression<String>? dailyReportData,
   }) {
     return RawValuesInsertable({
       if (isSynced != null) 'is_synced': isSynced,
@@ -25230,6 +25333,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
       if (companyData != null) 'company_data': companyData,
       if (createdByData != null) 'created_by_data': createdByData,
       if (resolvedByData != null) 'resolved_by_data': resolvedByData,
+      if (dailyReportData != null) 'daily_report_data': dailyReportData,
     });
   }
 
@@ -25267,6 +25371,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     Value<String?>? companyData,
     Value<String?>? createdByData,
     Value<String?>? resolvedByData,
+    Value<String?>? dailyReportData,
   }) {
     return WarningsCompanion(
       isSynced: isSynced ?? this.isSynced,
@@ -25302,6 +25407,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
       companyData: companyData ?? this.companyData,
       createdByData: createdByData ?? this.createdByData,
       resolvedByData: resolvedByData ?? this.resolvedByData,
+      dailyReportData: dailyReportData ?? this.dailyReportData,
     );
   }
 
@@ -25407,6 +25513,9 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     if (resolvedByData.present) {
       map['resolved_by_data'] = Variable<String>(resolvedByData.value);
     }
+    if (dailyReportData.present) {
+      map['daily_report_data'] = Variable<String>(dailyReportData.value);
+    }
     return map;
   }
 
@@ -25445,7 +25554,8 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
           ..write('workScopeData: $workScopeData, ')
           ..write('companyData: $companyData, ')
           ..write('createdByData: $createdByData, ')
-          ..write('resolvedByData: $resolvedByData')
+          ..write('resolvedByData: $resolvedByData, ')
+          ..write('dailyReportData: $dailyReportData')
           ..write(')'))
         .toString();
   }
@@ -33300,6 +33410,7 @@ typedef $$DailyReportsTableCreateCompanionBuilder =
       Value<String?> companyData,
       Value<String?> equipmentsData,
       Value<String?> reportQuantitiesData,
+      Value<String?> warningData,
     });
 typedef $$DailyReportsTableUpdateCompanionBuilder =
     DailyReportsCompanion Function({
@@ -33337,6 +33448,7 @@ typedef $$DailyReportsTableUpdateCompanionBuilder =
       Value<String?> companyData,
       Value<String?> equipmentsData,
       Value<String?> reportQuantitiesData,
+      Value<String?> warningData,
     });
 
 class $$DailyReportsTableFilterComposer
@@ -33515,6 +33627,11 @@ class $$DailyReportsTableFilterComposer
 
   ColumnFilters<String> get reportQuantitiesData => $composableBuilder(
     column: $table.reportQuantitiesData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get warningData => $composableBuilder(
+    column: $table.warningData,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -33697,6 +33814,11 @@ class $$DailyReportsTableOrderingComposer
     column: $table.reportQuantitiesData,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get warningData => $composableBuilder(
+    column: $table.warningData,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$DailyReportsTableAnnotationComposer
@@ -33845,6 +33967,11 @@ class $$DailyReportsTableAnnotationComposer
     column: $table.reportQuantitiesData,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get warningData => $composableBuilder(
+    column: $table.warningData,
+    builder: (column) => column,
+  );
 }
 
 class $$DailyReportsTableTableManager
@@ -33916,6 +34043,7 @@ class $$DailyReportsTableTableManager
                 Value<String?> companyData = const Value.absent(),
                 Value<String?> equipmentsData = const Value.absent(),
                 Value<String?> reportQuantitiesData = const Value.absent(),
+                Value<String?> warningData = const Value.absent(),
               }) => DailyReportsCompanion(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -33951,6 +34079,7 @@ class $$DailyReportsTableTableManager
                 companyData: companyData,
                 equipmentsData: equipmentsData,
                 reportQuantitiesData: reportQuantitiesData,
+                warningData: warningData,
               ),
           createCompanionCallback:
               ({
@@ -33988,6 +34117,7 @@ class $$DailyReportsTableTableManager
                 Value<String?> companyData = const Value.absent(),
                 Value<String?> equipmentsData = const Value.absent(),
                 Value<String?> reportQuantitiesData = const Value.absent(),
+                Value<String?> warningData = const Value.absent(),
               }) => DailyReportsCompanion.insert(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -34023,6 +34153,7 @@ class $$DailyReportsTableTableManager
                 companyData: companyData,
                 equipmentsData: equipmentsData,
                 reportQuantitiesData: reportQuantitiesData,
+                warningData: warningData,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -36402,6 +36533,7 @@ typedef $$WarningsTableCreateCompanionBuilder =
       Value<String?> companyData,
       Value<String?> createdByData,
       Value<String?> resolvedByData,
+      Value<String?> dailyReportData,
     });
 typedef $$WarningsTableUpdateCompanionBuilder =
     WarningsCompanion Function({
@@ -36438,6 +36570,7 @@ typedef $$WarningsTableUpdateCompanionBuilder =
       Value<String?> companyData,
       Value<String?> createdByData,
       Value<String?> resolvedByData,
+      Value<String?> dailyReportData,
     });
 
 class $$WarningsTableFilterComposer
@@ -36611,6 +36744,11 @@ class $$WarningsTableFilterComposer
 
   ColumnFilters<String> get resolvedByData => $composableBuilder(
     column: $table.resolvedByData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dailyReportData => $composableBuilder(
+    column: $table.dailyReportData,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -36788,6 +36926,11 @@ class $$WarningsTableOrderingComposer
     column: $table.resolvedByData,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get dailyReportData => $composableBuilder(
+    column: $table.dailyReportData,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$WarningsTableAnnotationComposer
@@ -36937,6 +37080,11 @@ class $$WarningsTableAnnotationComposer
     column: $table.resolvedByData,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get dailyReportData => $composableBuilder(
+    column: $table.dailyReportData,
+    builder: (column) => column,
+  );
 }
 
 class $$WarningsTableTableManager
@@ -37003,6 +37151,7 @@ class $$WarningsTableTableManager
                 Value<String?> companyData = const Value.absent(),
                 Value<String?> createdByData = const Value.absent(),
                 Value<String?> resolvedByData = const Value.absent(),
+                Value<String?> dailyReportData = const Value.absent(),
               }) => WarningsCompanion(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -37037,6 +37186,7 @@ class $$WarningsTableTableManager
                 companyData: companyData,
                 createdByData: createdByData,
                 resolvedByData: resolvedByData,
+                dailyReportData: dailyReportData,
               ),
           createCompanionCallback:
               ({
@@ -37073,6 +37223,7 @@ class $$WarningsTableTableManager
                 Value<String?> companyData = const Value.absent(),
                 Value<String?> createdByData = const Value.absent(),
                 Value<String?> resolvedByData = const Value.absent(),
+                Value<String?> dailyReportData = const Value.absent(),
               }) => WarningsCompanion.insert(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -37107,6 +37258,7 @@ class $$WarningsTableTableManager
                 companyData: companyData,
                 createdByData: createdByData,
                 resolvedByData: resolvedByData,
+                dailyReportData: dailyReportData,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

@@ -20,33 +20,33 @@ class _ExpandableWarningCardState extends State<ExpandableWarningCard> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeInOut,
-      padding: const EdgeInsets.all(20),
-      height: isExpanded
-          ? ResponsiveHelper.getHeight(context, 0.5)
-          : ResponsiveHelper.getHeight(context, 0.08),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey, width: 0.5),
-        borderRadius: BorderRadius.circular(10),
-        gradient: const LinearGradient(
-          colors: [Colors.white, Color.fromARGB(255, 238, 242, 254)],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          isExpanded = !isExpanded;
+        });
+      },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.all(20),
+        height: isExpanded
+            ? ResponsiveHelper.getHeight(context, 0.5)
+            : ResponsiveHelper.getHeight(context, 0.08),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.grey, width: 0.5),
+          borderRadius: BorderRadius.circular(10),
+          gradient: const LinearGradient(
+            colors: [Colors.white, Color.fromARGB(255, 238, 242, 254)],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
         ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header
-          GestureDetector(
-            onTap: () {
-              setState(() {
-                isExpanded = !isExpanded;
-              });
-            },
-            child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Header
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
@@ -87,163 +87,164 @@ class _ExpandableWarningCardState extends State<ExpandableWarningCard> {
                 ),
               ],
             ),
-          ),
 
-          // Expanded Content
-          if (isExpanded) ...[
-            dividerConfig(),
+            // Expanded Content
+            if (isExpanded) ...[
+              dividerConfig(),
 
-            Expanded(
-              child: ListView.separated(
-                itemCount: widget.warning.warningItems.length,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 12),
-                itemBuilder: (context, index) {
-                  final item = widget.warning.warningItems[index];
-                  return Container(
-                    padding: EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      gradient: LinearGradient(
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                        colors: [
-                          Colors.redAccent.shade200,
-                          Colors.redAccent.shade100.withOpacity(0.7),
-                        ],
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Warning',
-                              style: TextStyle(
-                                fontSize: ResponsiveHelper.fontSize(
-                                  context,
-                                  base: 14,
-                                ),
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
-
-                            Text(
-                              'Resolve by: null date',
-                              style: TextStyle(
-                                fontSize: ResponsiveHelper.fontSize(
-                                  context,
-                                  base: 14,
-                                ),
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                              ),
-                            ),
+              Expanded(
+                child: ListView.separated(
+                  itemCount: widget.warning.warningItems.length,
+                  separatorBuilder: (context, index) =>
+                      const SizedBox(height: 12),
+                  itemBuilder: (context, index) {
+                    final item = widget.warning.warningItems[index];
+                    return Container(
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [
+                            Colors.redAccent.shade200,
+                            Colors.redAccent.shade100.withOpacity(0.7),
                           ],
                         ),
-
-                        Divider(
-                          height: ResponsiveHelper.spacing(context, 25),
-                          thickness: 0.5,
-                          color: Colors.white,
-                        ),
-
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 5.0),
-                          child: Column(
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  Icon(Icons.info, color: Colors.white),
-                                  SizedBox(width: 10),
-                                  Expanded(
-                                    child: Text(
-                                      item.warningReason?.name ?? 'Unknown',
-                                      style: TextStyle(
-                                        fontSize: ResponsiveHelper.fontSize(
-                                          context,
-                                          base: 14,
-                                        ),
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.white,
-                                      ),
-                                    ),
+                              Text(
+                                'Warning',
+                                style: TextStyle(
+                                  fontSize: ResponsiveHelper.fontSize(
+                                    context,
+                                    base: 14,
                                   ),
-                                ],
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                ),
                               ),
 
-                              SizedBox(
-                                height: ResponsiveHelper.spacing(context, 15),
-                              ),
-
-                              SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    showStatusSelection(
-                                      context: context,
-                                      currentStatus: item.isCompleted
-                                          ? 'Closed / Resolved'
-                                          : 'No Action Yet',
-                                      onStatusSelected: (selectedStatus) {
-                                        print(
-                                          'Selected status: $selectedStatus',
-                                        );
-                                      },
-                                    );
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.white,
-                                    padding: ResponsiveHelper.padding(
-                                      context,
-                                      vertical: 10,
-                                      horizontal: 10,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    elevation: 0,
+                              Text(
+                                'Resolve by: null date',
+                                style: TextStyle(
+                                  fontSize: ResponsiveHelper.fontSize(
+                                    context,
+                                    base: 14,
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Center(
-                                          child: Text(
-                                            item.isCompleted
-                                                ? 'Resolved'
-                                                : 'Pending Action',
-                                            style: TextStyle(
-                                              color: item.isCompleted
-                                                  ? greenAccent
-                                                  : Colors.redAccent,
-                                              fontSize:
-                                                  ResponsiveHelper.fontSize(
-                                                    context,
-                                                    base: 13,
-                                                  ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Icon(Icons.expand_more),
-                                    ],
-                                  ),
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+
+                          Divider(
+                            height: ResponsiveHelper.spacing(context, 25),
+                            thickness: 0.5,
+                            color: Colors.white,
+                          ),
+
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 5.0),
+                            child: Column(
+                              children: [
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Icon(Icons.info, color: Colors.white),
+                                    SizedBox(width: 10),
+                                    Expanded(
+                                      child: Text(
+                                        item.warningReason?.name ?? 'Unknown',
+                                        style: TextStyle(
+                                          fontSize: ResponsiveHelper.fontSize(
+                                            context,
+                                            base: 14,
+                                          ),
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                SizedBox(
+                                  height: ResponsiveHelper.spacing(context, 15),
+                                ),
+
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      showStatusSelection(
+                                        context: context,
+                                        currentStatus: item.isCompleted
+                                            ? 'Closed / Resolved'
+                                            : 'No Action Yet',
+                                        onStatusSelected: (selectedStatus) {
+                                          print(
+                                            'Selected status: $selectedStatus',
+                                          );
+                                        },
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      padding: ResponsiveHelper.padding(
+                                        context,
+                                        vertical: 10,
+                                        horizontal: 10,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      elevation: 0,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: Center(
+                                            child: Text(
+                                              item.isCompleted
+                                                  ? 'Resolved'
+                                                  : 'Pending Action',
+                                              style: TextStyle(
+                                                color: item.isCompleted
+                                                    ? greenAccent
+                                                    : Colors.redAccent,
+                                                fontSize:
+                                                    ResponsiveHelper.fontSize(
+                                                      context,
+                                                      base: 13,
+                                                    ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Icon(Icons.expand_more),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

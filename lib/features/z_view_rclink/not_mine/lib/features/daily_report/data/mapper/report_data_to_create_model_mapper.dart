@@ -33,9 +33,9 @@ class ReportDataToCreateModelMapper {
       fromSection: _parseSection(data.selections.section, isFrom: true),
       toSection: _parseSection(data.selections.section, isFrom: false),
 
-      // OPTIONAL: Location coordinates (not captured in current form)
-      longitude: null,
-      latitude: null,
+      // OPTIONAL: Location coordinates from field values
+      longitude: _parseDouble(data.formData.fieldValues['longitude']),
+      latitude: _parseDouble(data.formData.fieldValues['latitude']),
 
       // OPTIONAL: Notes
       notes: _extractNotes(data),
@@ -105,6 +105,17 @@ class ReportDataToCreateModelMapper {
       print('Error parsing section: $e');
       return null;
     }
+  }
+
+  /// Parse double value from dynamic field value (String or double)
+  static double? _parseDouble(dynamic value) {
+    if (value == null) return null;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) {
+      return double.tryParse(value.trim());
+    }
+    return null;
   }
 
   /// Extract notes from selections

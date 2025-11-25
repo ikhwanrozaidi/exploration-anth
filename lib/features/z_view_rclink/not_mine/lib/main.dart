@@ -15,7 +15,7 @@ import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/company/presentation/bloc/company_bloc.dart';
 import 'features/rbac/presentation/bloc/rbac_bloc.dart';
 import 'features/road/presentation/bloc/road_bloc.dart';
-import 'features/warnings/presentation/bloc/warning_categories_bloc.dart';
+import 'features/warnings/presentation/bloc/warning_categories/warning_categories_bloc.dart';
 import 'features/work_scope/presentation/bloc/work_scope_bloc.dart';
 import 'shared/widgets/auth_wrapper.dart';
 

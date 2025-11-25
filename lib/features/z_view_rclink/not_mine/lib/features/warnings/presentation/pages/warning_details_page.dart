@@ -6,6 +6,7 @@ import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/divider_config.dart';
 import '../../../../shared/widgets/theme_listtile_widget.dart';
+import '../../domain/entities/warning.dart';
 import '../bloc/warning_details/warning_details_bloc.dart';
 import '../bloc/warning_details/warning_details_event.dart';
 import '../bloc/warning_details/warning_details_state.dart';
@@ -14,25 +15,36 @@ import '../widgets/show_status_selection.dart';
 
 class WarningDetailsPage extends StatelessWidget {
   final String warningUID;
+  final Warning warningReport;
 
-  const WarningDetailsPage({Key? key, required this.warningUID})
-    : super(key: key);
+  const WarningDetailsPage({
+    Key? key,
+    required this.warningUID,
+    required this.warningReport,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => getIt<WarningDetailsBloc>()
         ..add(WarningDetailsEvent.loadWarningDetails(warningUID: warningUID)),
-      child: _WarningDetailsPageContent(warningUID: warningUID),
+      child: _WarningDetailsPageContent(
+        warningUID: warningUID,
+        warningReport: warningReport,
+      ),
     );
   }
 }
 
 class _WarningDetailsPageContent extends StatelessWidget {
   final String warningUID;
+  final Warning warningReport;
 
-  const _WarningDetailsPageContent({Key? key, required this.warningUID})
-    : super(key: key);
+  const _WarningDetailsPageContent({
+    Key? key,
+    required this.warningUID,
+    required this.warningReport,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -324,7 +336,8 @@ class _WarningDetailsPageContent extends StatelessWidget {
                                           ),
                                           child: Center(
                                             child: Text(
-                                              warning.workScope?.code ?? 'R00',
+                                              warningReport.workScope?.code ??
+                                                  'R00',
                                               style: TextStyle(
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold,
@@ -342,7 +355,7 @@ class _WarningDetailsPageContent extends StatelessWidget {
 
                                         Expanded(
                                           child: Text(
-                                            'workscope name',
+                                            warningReport.workScope?.name ?? '',
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               fontSize:
@@ -374,7 +387,7 @@ class _WarningDetailsPageContent extends StatelessWidget {
                                     titleDetails:
                                         DateFormat('d MMM yyyy hh:mma').format(
                                           DateTime.parse(
-                                            '2025-09-22T20:01:55.752Z',
+                                            warningReport.createdAt.toString(),
                                           ).toLocal(),
                                         ),
                                     icon: Icons.calendar_month,
@@ -393,7 +406,8 @@ class _WarningDetailsPageContent extends StatelessWidget {
 
                                   ThemeListTileWidget(
                                     title: 'Reporter',
-                                    titleDetails: 'null',
+                                    titleDetails:
+                                        warningReport.createdBy?.fullName ?? '',
                                     icon: Icons.person_pin,
                                   ),
                                 ],
@@ -443,8 +457,9 @@ class _WarningDetailsPageContent extends StatelessWidget {
                               child: Column(
                                 children: [
                                   ThemeListTileWidget(
-                                    title: 'districtName null',
-                                    titleDetails: 'roadNo roadName null',
+                                    title: warningReport.road?.stateName ?? '',
+                                    titleDetails:
+                                        '${warningReport.road?.roadNo} ${warningReport.road?.name}',
                                     icon: Icons.location_pin,
                                     isChevron: false,
                                   ),
@@ -453,7 +468,8 @@ class _WarningDetailsPageContent extends StatelessWidget {
 
                                   ThemeListTileWidget(
                                     title: 'Section',
-                                    titleDetails: 'null',
+                                    titleDetails:
+                                        warningReport.fromSection ?? '',
                                     icon: Icons.swap_calls,
                                     isChevron: false,
                                   ),

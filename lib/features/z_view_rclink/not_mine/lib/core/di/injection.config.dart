@@ -148,24 +148,40 @@ import '../../features/warnings/data/datasources/warning_categories_remote_datas
     as _i224;
 import '../../features/warnings/data/datasources/warnings_api_service.dart'
     as _i863;
+import '../../features/warnings/data/datasources/warnings_local_datasource.dart'
+    as _i256;
 import '../../features/warnings/data/datasources/warnings_remote_datasource.dart'
     as _i820;
+import '../../features/warnings/data/repositories/create_warnings_repository_impl.dart'
+    as _i636;
 import '../../features/warnings/data/repositories/warning_categories_repository_impl.dart'
     as _i16;
-import '../../features/warnings/data/repositories/warnings_repository_impl.dart'
-    as _i1073;
+import '../../features/warnings/data/repositories/warning_repository_impl.dart'
+    as _i194;
 import '../../features/warnings/domain/repositories/warning_categories_repository.dart'
     as _i720;
+import '../../features/warnings/domain/repositories/warning_repository.dart'
+    as _i157;
 import '../../features/warnings/domain/repositories/warnings_repository.dart'
     as _i568;
+import '../../features/warnings/domain/usecases/clear_warning_cache_usecase.dart'
+    as _i161;
 import '../../features/warnings/domain/usecases/create_report_warning_usecase.dart'
     as _i284;
 import '../../features/warnings/domain/usecases/get_warning_categories_usecase.dart'
     as _i1062;
-import '../../features/warnings/presentation/bloc/create_warning_bloc.dart'
-    as _i112;
-import '../../features/warnings/presentation/bloc/warning_categories_bloc.dart'
-    as _i119;
+import '../../features/warnings/domain/usecases/get_warnings_by_uid_usecase.dart'
+    as _i980;
+import '../../features/warnings/domain/usecases/get_warnings_usecase.dart'
+    as _i696;
+import '../../features/warnings/presentation/bloc/create_warning/create_warning_bloc.dart'
+    as _i838;
+import '../../features/warnings/presentation/bloc/warning_categories/warning_categories_bloc.dart'
+    as _i1051;
+import '../../features/warnings/presentation/bloc/warning_details/warning_details_bloc.dart'
+    as _i205;
+import '../../features/warnings/presentation/bloc/warning_view/warning_bloc.dart'
+    as _i261;
 import '../../features/work_scope/data/datasources/work_scope_api_service.dart'
     as _i468;
 import '../../features/work_scope/data/datasources/work_scope_local_datasource.dart'
@@ -281,17 +297,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i538.DailyReportApiService>(
       () => _i538.DailyReportApiService.new(gh<_i361.Dio>()),
     );
-    gh.factory<_i178.CompanyApiService>(
-      () => _i178.CompanyApiService.new(gh<_i361.Dio>()),
-    );
     gh.factory<_i51.WarningCategoriesApiService>(
       () => _i51.WarningCategoriesApiService.new(gh<_i361.Dio>()),
     );
     gh.factory<_i863.WarningsApiService>(
       () => _i863.WarningsApiService.new(gh<_i361.Dio>()),
     );
+    gh.factory<_i178.CompanyApiService>(
+      () => _i178.CompanyApiService.new(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i432.PermissionRemoteDataSource>(
       () => _i432.PermissionRemoteDataSourceImpl(gh<_i1020.RoleApiService>()),
+    );
+    gh.lazySingleton<_i256.WarningsLocalDataSource>(
+      () => _i256.WarningsLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
     gh.lazySingleton<_i999.PermissionRepository>(
       () => _i806.PermissionRepositoryImpl(
@@ -486,6 +505,22 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i157.RefreshTokenUseCase>(
       () => _i157.RefreshTokenUseCase(gh<_i787.AuthRepository>()),
     );
+    gh.lazySingleton<_i157.WarningRepository>(
+      () => _i194.WarningRepositoryImpl(
+        gh<_i820.WarningsRemoteDataSource>(),
+        gh<_i256.WarningsLocalDataSource>(),
+        gh<_i426.CompanyBloc>(),
+      ),
+    );
+    gh.lazySingleton<_i980.GetWarningByUidUseCase>(
+      () => _i980.GetWarningByUidUseCase(gh<_i157.WarningRepository>()),
+    );
+    gh.lazySingleton<_i161.ClearWarningCacheUseCase>(
+      () => _i161.ClearWarningCacheUseCase(gh<_i157.WarningRepository>()),
+    );
+    gh.lazySingleton<_i696.GetWarningsUseCase>(
+      () => _i696.GetWarningsUseCase(gh<_i157.WarningRepository>()),
+    );
     gh.factory<_i11.UpdateDailyReportUseCase>(
       () => _i11.UpdateDailyReportUseCase(gh<_i819.DailyReportRepository>()),
     );
@@ -514,6 +549,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i720.WarningCategoriesRepository>(),
       ),
     );
+    gh.lazySingleton<_i568.WarningsRepository>(
+      () => _i636.WarningsRepositoryImpl(
+        gh<_i820.WarningsRemoteDataSource>(),
+        gh<_i426.CompanyBloc>(),
+      ),
+    );
     gh.lazySingleton<_i266.DailyReportViewBloc>(
       () => _i266.DailyReportViewBloc(
         gh<_i908.GetDailyReportsUseCase>(),
@@ -522,14 +563,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i464.DailyReportLocalDataSource>(),
       ),
     );
-    gh.lazySingleton<_i119.WarningCategoriesBloc>(
-      () =>
-          _i119.WarningCategoriesBloc(gh<_i1062.GetWarningCategoriesUseCase>()),
-    );
-    gh.lazySingleton<_i568.WarningsRepository>(
-      () => _i1073.WarningsRepositoryImpl(
-        gh<_i820.WarningsRemoteDataSource>(),
-        gh<_i426.CompanyBloc>(),
+    gh.lazySingleton<_i1051.WarningCategoriesBloc>(
+      () => _i1051.WarningCategoriesBloc(
+        gh<_i1062.GetWarningCategoriesUseCase>(),
       ),
     );
     gh.factory<_i337.ContractorRelationRepository>(
@@ -542,8 +578,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i284.CreateReportWarningUseCase>(
       () => _i284.CreateReportWarningUseCase(gh<_i568.WarningsRepository>()),
     );
-    gh.factory<_i112.CreateWarningBloc>(
-      () => _i112.CreateWarningBloc(gh<_i284.CreateReportWarningUseCase>()),
+    gh.factory<_i838.CreateWarningBloc>(
+      () => _i838.CreateWarningBloc(gh<_i284.CreateReportWarningUseCase>()),
+    );
+    gh.factory<_i261.WarningBloc>(
+      () => _i261.WarningBloc(
+        gh<_i696.GetWarningsUseCase>(),
+        gh<_i161.ClearWarningCacheUseCase>(),
+      ),
+    );
+    gh.factory<_i205.WarningDetailsBloc>(
+      () => _i205.WarningDetailsBloc(
+        gh<_i980.GetWarningByUidUseCase>(),
+        gh<_i426.CompanyBloc>(),
+      ),
     );
     gh.factory<_i79.ClearContractorRelationCacheUseCase>(
       () => _i79.ClearContractorRelationCacheUseCase(

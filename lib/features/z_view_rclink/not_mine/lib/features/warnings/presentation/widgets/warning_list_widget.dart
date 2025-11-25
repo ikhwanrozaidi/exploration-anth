@@ -72,8 +72,10 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                WarningDetailsPage(warningUID: widget.warning.uid),
+            builder: (context) => WarningDetailsPage(
+              warningUID: widget.warning.uid,
+              warningReport: widget.warning,
+            ),
           ),
         );
 
@@ -335,7 +337,7 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
 
                 SizedBox(width: 12),
                 Text(
-                  'null',
+                  widget.warning.fromSection ?? '',
                   // widget.report.fromSection != null &&
                   //         widget.report.toSection != null
                   //     ? '${double.tryParse(widget.report.fromSection!)?.toStringAsFixed(2) ?? widget.report.fromSection} - ${double.tryParse(widget.report.toSection!)?.toStringAsFixed(2) ?? widget.report.toSection}'

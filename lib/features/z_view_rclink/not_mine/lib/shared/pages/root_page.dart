@@ -57,6 +57,7 @@ class _RootPageState extends State<RootPage> {
     final flavorConfig = FlavorConfig.instance;
 
     return Scaffold(
+      backgroundColor: Colors.white,
       // appBar: AppBar(
       //   title: Text(flavorConfig.appTitle),
       //   centerTitle: true,
@@ -114,28 +115,28 @@ class _RootPageState extends State<RootPage> {
         },
       ),
 
-      floatingActionButton: Container(
-        width: 70,
-        height: ResponsiveHelper.getHeight(context, 0.07),
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: LinearGradient(
-            colors: [Color.fromARGB(255, 135, 167, 247), primaryColor],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      floatingActionButton: SizedBox(
+        width: 56,
+        height: 56,
         child: FloatingActionButton(
           onPressed: () {
             showShortcutSelection(context: context);
           },
-          elevation: 0,
+          elevation: 3.0,
           backgroundColor: Colors.transparent,
           shape: const CircleBorder(),
-          child: Icon(
-            Icons.add,
-            color: Colors.white,
-            size: ResponsiveHelper.iconSize(context, base: 30),
+          child: Container(
+            width: 56,
+            height: 56,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                colors: [Color.fromARGB(255, 135, 167, 247), primaryColor],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+            ),
+            child: const Icon(Icons.add, color: Colors.white, size: 28),
           ),
         ),
       ),
@@ -183,42 +184,64 @@ class _CustomBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.only(right: 20, left: 20, bottom: 20, top: 10),
-      decoration: const BoxDecoration(color: Colors.white),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _NavBarItem(
-            imagePath: 'assets/images/icons/icon_home.png',
-            selectedImagePath: 'assets/images/icons/icon_home_selected.png',
-            label: 'Home',
-            isSelected: selectedIndex == 0,
-            onTap: () => onTap(0),
-          ),
-          _NavBarItem(
-            imagePath: 'assets/images/icons/icon_program.png',
-            selectedImagePath: 'assets/images/icons/icon_program_selected.png',
-            label: 'Program',
-            isSelected: selectedIndex == 1,
-            onTap: () => onTap(1),
-          ),
-          const SizedBox(width: 30),
-          _NavBarItem(
-            imagePath: 'assets/images/icons/icon_warning.png',
-            selectedImagePath: 'assets/images/icons/icon_warning_selected.png',
-            label: 'Warning',
-            isSelected: selectedIndex == 3,
-            onTap: () => onTap(3),
-          ),
-          _NavBarItem(
-            imagePath: 'assets/images/icons/icon_user.png',
-            selectedImagePath: 'assets/images/icons/icon_user_selected.png',
-            label: 'Profile',
-            isSelected: selectedIndex == 4,
-            onTap: () => onTap(4),
-          ),
-        ],
+    return BottomAppBar(
+      notchMargin: 8.0,
+      color: Colors.white,
+      elevation: 8.0,
+      child: SizedBox(
+        height: 100,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _NavBarItem(
+                    imagePath: 'assets/images/icons/icon_home.png',
+                    selectedImagePath:
+                        'assets/images/icons/icon_home_selected.png',
+                    label: 'Home',
+                    isSelected: selectedIndex == 0,
+                    onTap: () => onTap(0),
+                  ),
+                  _NavBarItem(
+                    imagePath: 'assets/images/icons/icon_program.png',
+                    selectedImagePath:
+                        'assets/images/icons/icon_program_selected.png',
+                    label: 'Program',
+                    isSelected: selectedIndex == 1,
+                    onTap: () => onTap(1),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 80), // Space for FAB notch
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _NavBarItem(
+                    imagePath: 'assets/images/icons/icon_warning.png',
+                    selectedImagePath:
+                        'assets/images/icons/icon_warning_selected.png',
+                    label: 'Warning',
+                    isSelected: selectedIndex == 3,
+                    onTap: () => onTap(3),
+                  ),
+                  _NavBarItem(
+                    imagePath: 'assets/images/icons/icon_user.png',
+                    selectedImagePath:
+                        'assets/images/icons/icon_user_selected.png',
+                    label: 'Profile',
+                    isSelected: selectedIndex == 4,
+                    onTap: () => onTap(4),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -437,9 +437,12 @@ class Files extends Table with SyncableTable {
   // Multi-tenant & context fields
   IntColumn get companyID => integer()();
   TextColumn get contextType => text()(); // 'daily_report', 'disaster', etc.
-  TextColumn get contextField => text().nullable()(); // 'before_image', 'after_image', etc.
-  IntColumn get dailyReportID => integer().nullable()(); // FK to DailyReports (numeric ID)
-  TextColumn get dailyReportUID => text().nullable()(); // FK to DailyReports (UID-based, more reliable)
+  TextColumn get contextField =>
+      text().nullable()(); // 'before_image', 'after_image', etc.
+  IntColumn get dailyReportID =>
+      integer().nullable()(); // FK to DailyReports (numeric ID)
+  TextColumn get dailyReportUID =>
+      text().nullable()(); // FK to DailyReports (UID-based, more reliable)
 
   // Metadata
   IntColumn get uploadedByID => integer()();
@@ -458,7 +461,9 @@ class Files extends Table with SyncableTable {
 // Daily Reports table
 @DataClassName('DailyReportRecord')
 class DailyReports extends Table with SyncableTable {
-  IntColumn get id => integer().nullable().autoIncrement()(); // Primary key - Server ID (NULL during draft)
+  IntColumn get id => integer()
+      .nullable()
+      .autoIncrement()(); // Primary key - Server ID (NULL during draft)
   TextColumn get uid => text()(); // Business UUID
   TextColumn get name => text()();
   TextColumn get notes => text().nullable()();
@@ -510,6 +515,7 @@ class DailyReports extends Table with SyncableTable {
   TextColumn get companyData => text().nullable()();
   TextColumn get equipmentsData => text().nullable()();
   TextColumn get reportQuantitiesData => text().nullable()();
+  TextColumn get warningData => text().nullable()();
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -621,7 +627,8 @@ class WarningCategories extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UID for API lookups
   TextColumn get name => text()(); // Category name
-  TextColumn get warningType => text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING
+  TextColumn get warningType =>
+      text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -638,10 +645,12 @@ class WarningReasons extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UID for API lookups
   TextColumn get name => text()(); // Reason name
-  TextColumn get warningType => text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING
+  TextColumn get warningType =>
+      text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING
   IntColumn get categoryID => integer()(); // Foreign key to WarningCategories
   IntColumn get workScopeID => integer()(); // Foreign key to WorkScopes
-  BoolColumn get requiresAction => boolean().withDefault(const Constant(true))();
+  BoolColumn get requiresAction =>
+      boolean().withDefault(const Constant(true))();
   BoolColumn get isActive => boolean().withDefault(const Constant(true))();
   IntColumn get displayOrder => integer().withDefault(const Constant(0))();
   DateTimeColumn get createdAt => dateTime()();
@@ -652,7 +661,11 @@ class WarningReasons extends Table with SyncableTable {
 
   @override
   List<Set<Column>> get uniqueKeys => [
-    {workScopeID, warningType, name}, // Unique name per work scope and warning type
+    {
+      workScopeID,
+      warningType,
+      name,
+    }, // Unique name per work scope and warning type
   ];
 }
 
@@ -660,11 +673,13 @@ class WarningReasons extends Table with SyncableTable {
 /// Main table for storing warnings with offline/draft support
 @DataClassName('WarningRecord')
 class Warnings extends Table with SyncableTable {
-  IntColumn get id => integer().nullable().autoIncrement()(); // NULL during draft
+  IntColumn get id =>
+      integer().nullable().autoIncrement()(); // NULL during draft
   TextColumn get uid => text()(); // Business UID for API lookups
 
   // Warning type discriminator
-  TextColumn get warningType => text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING
+  TextColumn get warningType =>
+      text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING
 
   // Optional linkage (null for SITE_WARNING)
   IntColumn get dailyReportID => integer().nullable()();
@@ -680,7 +695,8 @@ class Warnings extends Table with SyncableTable {
   TextColumn get toSection => text()();
 
   // Completion tracking
-  BoolColumn get requiresAction => boolean().withDefault(const Constant(true))();
+  BoolColumn get requiresAction =>
+      boolean().withDefault(const Constant(true))();
   BoolColumn get isResolved => boolean().withDefault(const Constant(false))();
   IntColumn get resolvedByID => integer().nullable()();
   DateTimeColumn get resolvedAt => dateTime().nullable()();
@@ -699,12 +715,18 @@ class Warnings extends Table with SyncableTable {
   DateTimeColumn get updatedAt => dateTime()();
 
   // Cached JSON data for nested relationships and warning items
-  TextColumn get warningItemsData => text().nullable()(); // JSON array: List<WarningItem>
+  TextColumn get warningItemsData =>
+      text().nullable()(); // JSON array: List<WarningItem>
   TextColumn get roadData => text().nullable()(); // JSON: RoadResponse
-  TextColumn get workScopeData => text().nullable()(); // JSON: WorkScopeResponse
+  TextColumn get workScopeData =>
+      text().nullable()(); // JSON: WorkScopeResponse
   TextColumn get companyData => text().nullable()(); // JSON: CompanyResponse
-  TextColumn get createdByData => text().nullable()(); // JSON: CreatedByResponse
-  TextColumn get resolvedByData => text().nullable()(); // JSON: CreatedByResponse
+  TextColumn get createdByData =>
+      text().nullable()(); // JSON: CreatedByResponse
+  TextColumn get resolvedByData =>
+      text().nullable()(); // JSON: CreatedByResponse
+  TextColumn get dailyReportData =>
+      text().nullable()(); // JSON: DailyReportResponse
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -748,7 +770,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 20; // Added Warning tables (WarningCategories, WarningReasons, Warnings)
+  int get schemaVersion => 22; // Added dailyReportData column to Warnings table
 
   @override
   MigrationStrategy get migration {
@@ -1074,11 +1096,17 @@ class AppDatabase extends _$AppDatabase {
         },
         from15To16: (m, schema) async {
           // Migration from version 15 to 16: Add createdByData to DailyReports table
-          await m.addColumn(schema.dailyReports, schema.dailyReports.createdByData);
+          await m.addColumn(
+            schema.dailyReports,
+            schema.dailyReports.createdByData,
+          );
         },
         from16To17: (m, schema) async {
           // Migration from version 16 to 17: Add companyData to DailyReports table
-          await m.addColumn(schema.dailyReports, schema.dailyReports.companyData);
+          await m.addColumn(
+            schema.dailyReports,
+            schema.dailyReports.companyData,
+          );
         },
         from17To18: (m, schema) async {
           // Migration from version 17 to 18:
@@ -1086,9 +1114,7 @@ class AppDatabase extends _$AppDatabase {
           // 2. Add Files.dailyReportUID column for UID-based FK
 
           // Check if dailyReportUID column already exists
-          final result = await customSelect(
-            "PRAGMA table_info('files')",
-          ).get();
+          final result = await customSelect("PRAGMA table_info('files')").get();
 
           final existingColumns = result
               .map((row) => row.data['name'] as String)
@@ -1132,7 +1158,9 @@ class AppDatabase extends _$AppDatabase {
             )
           ''');
 
-          print('✅ Migration 18→19: Removed duplicate images and added UNIQUE constraint');
+          print(
+            '✅ Migration 18→19: Removed duplicate images and added UNIQUE constraint',
+          );
         },
         from19To20: (m, schema) async {
           // Migration from version 19 to 20:
@@ -1147,7 +1175,35 @@ class AppDatabase extends _$AppDatabase {
           // Create Warnings table
           await m.createTable(schema.warnings);
 
-          print('✅ Migration 19→20: Created Warning tables (WarningCategories, WarningReasons, Warnings)');
+          print(
+            '✅ Migration 19→20: Created Warning tables (WarningCategories, WarningReasons, Warnings)',
+          );
+        },
+        from20To21: (m, schema) async {
+          // Migration from version 20 to 21:
+          // Add warningData column to DailyReports table
+
+          await m.addColumn(
+            schema.dailyReports,
+            schema.dailyReports.warningData,
+          );
+
+          print(
+            '✅ Migration 20→21: Added warningData column to DailyReports table',
+          );
+        },
+        from21To22: (m, schema) async {
+          // Migration from version 21 to 22:
+          // Add dailyReportData column to Warnings table
+
+          await m.addColumn(
+            schema.warnings,
+            schema.warnings.dailyReportData,
+          );
+
+          print(
+            '✅ Migration 21→22: Added dailyReportData column to Warnings table',
+          );
         },
       ),
       beforeOpen: (details) async {

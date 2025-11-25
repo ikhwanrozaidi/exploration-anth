@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 
 import 'package:rclink_app/features/company/presentation/bloc/company_bloc.dart';
 
@@ -19,6 +20,7 @@ import '../../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../../../shared/widgets/gallery/gallery_widget.dart';
 import '../../../../../shared/widgets/gallery/models/gallery_image.dart';
 import '../../../../../shared/widgets/gallery/models/gallery_result.dart';
+import '../../../../../shared/widgets/gallery/service/permission_service.dart';
 import '../../../../company/presentation/bloc/company_state.dart';
 import '../../bloc/daily_report_create/daily_report_create_bloc.dart';
 import '../../bloc/daily_report_create/daily_report_create_event.dart';
@@ -43,6 +45,10 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
 
   // Debounce timer for auto-save to prevent race conditions
   Timer? _autoSaveDebounce;
+
+  // GPS fetching state for background location retrieval
+  Position? _lastKnownPosition;
+  bool _isFetchingGPS = false;
 
   @override
   void initState() {
@@ -69,6 +75,56 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
         );
       }
     });
+  }
+
+  /// Start GPS fetching in the background without blocking UI
+  /// This allows camera to open immediately while location is being retrieved
+  /// GPS coordinates are saved to both images and the daily report form
+  Future<void> _startBackgroundGPSFetch() async {
+    // Prevent multiple concurrent GPS fetches
+    if (_isFetchingGPS) {
+      print('⚠️ GPS fetch already in progress, skipping...');
+      return;
+    }
+
+    setState(() => _isFetchingGPS = true);
+    print('📍 Starting background GPS fetch...');
+
+    try {
+      final position = await PermissionService.getCurrentLocation();
+
+      if (position != null && mounted) {
+        setState(() {
+          _lastKnownPosition = position;
+        });
+
+        print('✅ GPS location acquired: ${position.latitude}, ${position.longitude}');
+
+        // Update daily report form with GPS coordinates
+        _dailyReportCreateBloc.add(
+          UpdateFieldValue(
+            fieldKey: 'longitude',
+            value: position.longitude.toString(),
+          ),
+        );
+        _dailyReportCreateBloc.add(
+          UpdateFieldValue(
+            fieldKey: 'latitude',
+            value: position.latitude.toString(),
+          ),
+        );
+
+        print('📍 GPS coordinates saved to daily report form');
+      } else {
+        print('⚠️ GPS location unavailable');
+      }
+    } catch (e) {
+      print('❌ GPS fetch error: $e');
+    } finally {
+      if (mounted) {
+        setState(() => _isFetchingGPS = false);
+      }
+    }
   }
 
   @override
@@ -749,6 +805,10 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                   (list) => list.isNotEmpty,
                                 ),
                                 onTap: () async {
+                                  // Start GPS fetching in background (non-blocking)
+                                  // This allows camera to open immediately while location is retrieved
+                                  _startBackgroundGPSFetch();
+
                                   // Convert conditionSnapshots from Map<String, List<Map>> to Map<String, List<GalleryImage>>
                                   final initialTabImages = conditionSnapshots
                                       .map((tab, images) {
@@ -770,7 +830,7 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                           builder: (context) => GalleryWidget(
                                             title: 'Condition Snapshot',
                                             inputProgress: true,
-                                            pinPointFirst: true,
+                                            pinPointFirst: false, // ✅ Camera opens immediately!
                                             maxImages: 10,
                                             minimumImage: 4,
                                             tabLock: true,
@@ -789,8 +849,28 @@ class _DraftDailyReportPageState extends State<DraftDailyReportPage> {
                                     final snapshotsData =
                                         <String, List<Map<String, dynamic>>>{};
 
+                                    // Attach GPS coordinates from background fetch to images that don't have them
                                     result.tabImages!.forEach((tab, images) {
-                                      snapshotsData[tab] = images
+                                      final imagesWithGPS = images.map((img) {
+                                        // If image already has GPS coordinates, keep them
+                                        if (img.latitude != null && img.longitude != null) {
+                                          return img;
+                                        }
+
+                                        // Otherwise, attach GPS from background fetch if available
+                                        if (_lastKnownPosition != null) {
+                                          print('📍 Attaching GPS to image: ${_lastKnownPosition!.latitude}, ${_lastKnownPosition!.longitude}');
+                                          return img.copyWith(
+                                            latitude: _lastKnownPosition!.latitude,
+                                            longitude: _lastKnownPosition!.longitude,
+                                          );
+                                        }
+
+                                        // No GPS available
+                                        return img;
+                                      }).toList();
+
+                                      snapshotsData[tab] = imagesWithGPS
                                           .map((img) => img.toJson())
                                           .toList();
                                     });

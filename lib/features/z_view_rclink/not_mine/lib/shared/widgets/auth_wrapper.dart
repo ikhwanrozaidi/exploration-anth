@@ -15,8 +15,8 @@ import '../../features/rbac/presentation/bloc/rbac_bloc.dart';
 import '../../features/rbac/presentation/bloc/rbac_state.dart';
 import '../../features/road/presentation/bloc/road_bloc.dart';
 import '../../features/road/presentation/bloc/road_event.dart';
-import '../../features/warnings/presentation/bloc/warning_categories_bloc.dart';
-import '../../features/warnings/presentation/bloc/warning_categories_event.dart';
+import '../../features/warnings/presentation/bloc/warning_categories/warning_categories_bloc.dart';
+import '../../features/warnings/presentation/bloc/warning_categories/warning_categories_event.dart';
 import '../../features/work_scope/presentation/bloc/work_scope_bloc.dart';
 import '../../features/work_scope/presentation/bloc/work_scope_event.dart';
 import '../pages/root_page.dart';
@@ -45,7 +45,9 @@ class _AuthWrapperState extends State<AuthWrapper> {
         // No side effects - just logging for diagnostics
       },
       buildWhen: (previous, current) {
-        print('🎨 AuthWrapper: buildWhen called - previous: $previous, current: $current');
+        print(
+          '🎨 AuthWrapper: buildWhen called - previous: $previous, current: $current',
+        );
         return true; // Always rebuild (same as default behavior)
       },
       builder: (context, authState) {
@@ -55,7 +57,9 @@ class _AuthWrapperState extends State<AuthWrapper> {
             print('🎨 AuthWrapper: Handling initial state');
             // Trigger auth check after the widget tree is built
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              print('🎨 AuthWrapper: PostFrameCallback executing - triggering CheckAuthStatus');
+              print(
+                '🎨 AuthWrapper: PostFrameCallback executing - triggering CheckAuthStatus',
+              );
               context.read<AuthBloc>().add(CheckAuthStatus());
             });
             print('🎨 AuthWrapper: Returning _SplashScreen');
