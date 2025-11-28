@@ -6,6 +6,7 @@ import 'report_quantity.dart';
 import 'work_scope_response.dart';
 import 'road_response.dart';
 import 'created_by_response.dart';
+import 'warning_response.dart';
 
 class DailyReport extends Equatable {
   final int? id; // Nullable - NULL during draft, set from server on first sync
@@ -38,6 +39,7 @@ class DailyReport extends Equatable {
   final List<DailyReportEquipment>? equipments;
   final List<ReportQuantity>? reportQuantities;
   final List<FileEntity>? files;
+  final WarningResponse? warning;
 
   const DailyReport({
     required this.id,
@@ -69,6 +71,7 @@ class DailyReport extends Equatable {
     this.equipments,
     required this.reportQuantities,
     this.files,
+    this.warning,
   });
 
   @override
@@ -102,5 +105,6 @@ class DailyReport extends Equatable {
     equipments,
     reportQuantities,
     files,
+    warning,
   ];
 }

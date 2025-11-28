@@ -1,607 +1,844 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:iconify_flutter/icons/material_symbols.dart';
-import 'package:iconify_flutter/icons/uil.dart';
-import '../../../../core/dio/injection.dart';
-import '../../../../shared/utils/string_formatter.dart';
+import 'package:rclink_app/features/disaster/presentation/pages/disaster_page.dart';
+import 'package:rclink_app/features/inspection/presentation/pages/inspection_page.dart';
+import '../../../../core/di/injection.dart';
+import '../../../../core/network/connectivity_service.dart';
+import '../../../../shared/helper/navigation_helper.dart';
+import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
-import '../bloc/dashboard_bloc.dart';
-import '../bloc/dashboard_event.dart';
-import '../bloc/dashboard_state.dart';
 
-class DashboardPage extends StatelessWidget {
-  const DashboardPage({super.key});
+import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../contractor_relation/presentation/bloc/contractor_relation_bloc.dart';
+import '../../../contractor_relation/presentation/bloc/contractor_relation_event.dart';
+import '../../../contractor_relation/presentation/bloc/contractor_relation_state.dart';
+import '../../../contractor_relation/presentation/widgets/show_contractor_relation_selection.dart';
+import '../../../daily_report/presentation/pages/daily_report_page.dart';
+import '../../../locale/presentation/pages/localization_debug_page.dart';
+import '../../../road/presentation/bloc/road_bloc.dart';
+import '../../../road/presentation/bloc/road_event.dart';
+import '../../../warnings/presentation/bloc/warning_categories/warning_categories_bloc.dart';
+import '../../../warnings/presentation/bloc/warning_categories/warning_categories_event.dart';
+import '../../../work_scope/presentation/bloc/work_scope_bloc.dart';
+import '../../../work_scope/presentation/bloc/work_scope_event.dart';
+import '../widgets/animated_connection_status_widget.dart';
+import '../widgets/listingitem_widget.dart';
+
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          getIt<DashboardBloc>()..add(const LoadDashboardData()),
-      child: const DashboardView(),
-    );
-  }
+  State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class DashboardView extends StatelessWidget {
-  const DashboardView({super.key});
+class _DashboardPageState extends State<DashboardPage> {
+  List<String> warningLists = ['1', '2', '3'];
+  int actionCount = 108;
+
+  late final ConnectivityService _connectivityService;
+  bool _isConnected = false;
+  StreamSubscription<bool>? _connectivitySubscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _connectivityService = getIt<ConnectivityService>();
+    _isConnected = _connectivityService.isCurrentlyConnected;
+
+    print('🌐 Initial connectivity status: $_isConnected');
+
+    _connectivitySubscription = _connectivityService.connectivityStream.listen((
+      isConnected,
+    ) {
+      setState(() {
+        _isConnected = isConnected;
+      });
+    });
+
+    // context.read<ContractorRelationBloc>().add(const LoadContractorRelation());
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: backgroundColor,
-      child: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 10,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Image.asset(
-                        'assets/images/gatepay-logo.png',
-                        width: 40,
-                        height: 40,
-                        fit: BoxFit.cover,
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        'Gatepay',
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 77, 191, 232),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        style: IconButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: primaryColor,
-                          padding: const EdgeInsets.all(5),
-                        ),
-                        onPressed: () {
-                          print("Add button clicked");
-                        },
-                        icon: Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: const Icon(
-                            Icons.qr_code_scanner_sharp,
-                            color: Colors.black,
-                            size: 25,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 8),
-                      IconButton(
-                        style: IconButton.styleFrom(
-                          shape: const CircleBorder(),
-                          backgroundColor: Colors.white,
-                          padding: const EdgeInsets.all(5),
-                        ),
-                        onPressed: () {
-                          print("Delete button clicked");
-                        },
-                        icon: Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: const Icon(
-                            Icons.person_outline,
-                            color: Colors.black,
-                            size: 25,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: BlocBuilder<DashboardBloc, DashboardState>(
-                builder: (context, state) {
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      context.read<DashboardBloc>().add(
-                        const RefreshDashboardData(),
-                      );
-                    },
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(16),
-                      child: _buildContent(context, state),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    print('🌐 Current build - isConnected: $_isConnected');
 
-  Widget _buildContent(BuildContext context, DashboardState state) {
-    // Dashboard Loading
-    if (state is DashboardLoading) {
-      return const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Loading dashboard data...'),
-          ],
-        ),
-      );
-    }
+    return BlocListener<ContractorRelationBloc, ContractorRelationState>(
+      listener: (context, contractorState) {
+        if (contractorState is ContractorRelationLoaded &&
+            contractorState.selectedContractor != null) {
+          context.read<WorkScopeBloc>().add(
+            const WorkScopeEvent.loadWorkScopes(forceRefresh: true),
+          );
 
-    // Dashboard Error
-    if (state is DashboardError) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.error_outline, size: 64, color: Colors.red),
-            const SizedBox(height: 16),
-            Text(
-              'Error loading dashboard',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              state.message,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ],
-        ),
-      );
-    }
+          context.read<RoadBloc>().add(
+            const RoadEvent.loadProvinces(forceRefresh: true),
+          );
 
-    // Dashboard Loaded
-    if (state is DashboardLoaded) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildUserDetailCard(state.userDetail),
-          const SizedBox(height: 16),
-
-          Container(
-            width: double.infinity,
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              gradient: LinearGradient(
-                colors: [
-                  Color.fromARGB(255, 0, 69, 129),
-                  Color.fromARGB(255, 77, 191, 232),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+          context.read<WarningCategoriesBloc>().add(
+            const WarningCategoriesEvent.loadCategories(forceRefresh: true),
+          );
+        }
+      },
+      child: Scaffold(
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color.fromARGB(255, 135, 167, 247), primaryColor],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
+          ),
+          child: SafeArea(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Buy and sell your things \nwith Gatepay',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16,
-                  ),
-                ),
-                SizedBox(height: 20),
-                TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    foregroundColor: Colors.black87,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 40,
-                      vertical: 8,
-                    ),
-                  ),
-                  child: Text(
-                    'Explore',
-                    style: GoogleFonts.poppins(color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-          ),
+                SizedBox(height: ResponsiveHelper.getHeight(context, 0.02)),
 
-          SizedBox(height: 16),
-          _buildOnholdBalanceCard(state.onholdBalance),
-
-          SizedBox(height: 30),
-          Padding(
-            padding: const EdgeInsets.only(left: 20.0),
-            child: Text(
-              'In & Out Transaction',
-              style: GoogleFonts.poppins(
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
-              ),
-            ),
-          ),
-          SizedBox(height: 16),
-          _buildTransactionsCard(state.onholdTransactions),
-
-          SizedBox(height: 100),
-        ],
-      );
-    }
-
-    // Dashboard PartialLoad
-    if (state is DashboardPartialLoaded) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (state.error != null)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: Colors.orange.shade100,
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.orange),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.warning, color: Colors.orange),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Text(
-                      'Some data failed to load: ${state.error}',
-                      style: const TextStyle(color: Colors.orange),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-          if (state.userDetail != null) ...[
-            _buildUserDetailCard(state.userDetail!),
-            const SizedBox(height: 16),
-          ],
-          if (state.onholdBalance != null) ...[
-            _buildOnholdBalanceCard(state.onholdBalance!),
-            const SizedBox(height: 16),
-          ],
-          if (state.onholdTransactions != null) ...[
-            _buildTransactionsCard(state.onholdTransactions!),
-          ],
-        ],
-      );
-    }
-
-    return const Center(child: Text('No data available'));
-  }
-
-  Widget _buildUserDetailCard(userDetail) {
-    return Container(
-      padding: EdgeInsets.all(3),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color.fromARGB(255, 77, 191, 232),
-            Color.fromARGB(255, 0, 104, 195),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(11),
-        ),
-        padding: EdgeInsets.symmetric(vertical: 30, horizontal: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              'Total Balance',
-              style: GoogleFonts.poppins(
-                color: Colors.grey.shade400,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "RM ${formatCurrency(userDetail.balance)}",
-                  style: GoogleFonts.poppins(
-                    fontSize: 25,
-                    fontWeight: FontWeight.w600,
-                    color: Color.fromARGB(255, 48, 158, 218),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    color: primaryColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.add, size: 16, color: Colors.black),
-                ),
-              ],
-            ),
-            Divider(thickness: 2, color: Colors.grey.shade200, height: 50),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _quickAction(
-                  icon: MaterialSymbols.add_circle_outline_rounded,
-                  title: 'Topup',
-                  onTap: () {},
-                ),
-                _quickAction(
-                  icon: Uil.money_stack,
-                  title: 'Request',
-                  onTap: () {},
-                ),
-                _quickAction(
-                  icon: Uil.money_withdraw,
-                  title: 'Withdraw',
-                  onTap: () {},
-                ),
-                _quickAction(
-                  icon: Uil.transaction,
-                  title: 'Transfer',
-                  onTap: () {},
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildOnholdBalanceCard(onholdBalance) {
-    return Column(
-      children: [
-        Container(
-          padding: EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100),
-            color: Colors.white,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  SizedBox(width: 10),
-                  Icon(
-                    Icons.trending_up,
-                    color: Color.fromARGB(255, 0, 213, 53),
-                  ),
-                  SizedBox(width: 15),
-                  Text(
-                    'Awaiting Payment',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  gradient: LinearGradient(
-                    colors: [
-                      Color.fromARGB(255, 77, 191, 232),
-                      Color.fromARGB(255, 0, 203, 162),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Text(
-                  '+RM ${formatCurrency(onholdBalance.awaiting)}',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 10),
-        Container(
-          padding: EdgeInsets.all(15),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100),
-            color: Colors.white,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  SizedBox(width: 10),
-                  Icon(Icons.trending_down, color: red),
-                  SizedBox(width: 15),
-                  Text(
-                    'Withheld Payment',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 13,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(100),
-                  gradient: LinearGradient(
-                    colors: [
-                      Color.fromARGB(255, 77, 191, 232),
-                      Color.fromARGB(255, 216, 144, 0),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                ),
-                child: Text(
-                  '-RM ${formatCurrency(onholdBalance.withheld)}',
-                  style: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w500,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTransactionsCard(List transactions) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 25, horizontal: 20),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: Container(
-        child: transactions.isEmpty
-            ? Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: Text('No on-hold transactions'),
-                ),
-              )
-            : ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: transactions.length,
-                separatorBuilder: (context, index) =>
-                    const SizedBox(height: 18),
-                itemBuilder: (context, index) {
-                  final transaction = transactions[index];
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Padding(
+                  padding: ResponsiveHelper.padding(context, horizontal: 30),
+                  child: Column(
                     children: [
+                      // Header with logo and toggle
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Color.fromARGB(255, 77, 191, 232),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              Icons.flight_class_outlined,
-                              size: 25,
-                              color: Colors.white,
-                            ),
+                          Image.asset(
+                            'assets/images/rclink_logo.png',
+                            height: ResponsiveHelper.getHeight(context, 0.035),
+                            fit: BoxFit.contain,
                           ),
-                          SizedBox(width: 15),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+
+                          AnimatedConnectionStatus(
+                            isConnected: _isConnected,
+                            greenAccent: greenAccent,
+                          ),
+                        ],
+                      ),
+
+                      SizedBox(height: ResponsiveHelper.spacing(context, 20)),
+
+                      // Search Button
+                      BlocBuilder<
+                        ContractorRelationBloc,
+                        ContractorRelationState
+                      >(
+                        builder: (context, contractorState) {
+                          final isLoading =
+                              contractorState is ContractorRelationLoading;
+
+                          // Determine selected contractor (if any)
+                          final selectedContractor = contractorState.maybeWhen(
+                            loaded: (contractors, selectedContractor) =>
+                                selectedContractor,
+                            orElse: () => null,
+                          );
+
+                          // Determine if second button should be shown
+                          final shouldShowSecondButton =
+                              contractorState is! ContractorRelationFailure &&
+                              selectedContractor != null;
+
+                          return Row(
                             children: [
-                              Text(
-                                transaction.productName,
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
+                              // --- First Expanded: Search Button ---
+                              Expanded(
+                                child: TextButton(
+                                  style: TextButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: shouldShowSecondButton
+                                          ? ResponsiveHelper.borderRadius(
+                                              context,
+                                              topLeft: 50,
+                                              bottomLeft: 50,
+                                            )
+                                          : ResponsiveHelper.borderRadius(
+                                              context,
+                                              topLeft: 50,
+                                              bottomLeft: 50,
+                                              topRight: 50,
+                                              bottomRight: 50,
+                                            ),
+                                    ),
+                                    backgroundColor: Colors.white.withOpacity(
+                                      0.6,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    CustomSnackBar.show(
+                                      context,
+                                      'This feature is coming soon...',
+                                      type: SnackBarType.comingsoon,
+                                    );
+                                  },
+                                  child: Padding(
+                                    padding: ResponsiveHelper.padding(
+                                      context,
+                                      horizontal: 20,
+                                      vertical: 13,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.search,
+                                          size: ResponsiveHelper.iconSize(
+                                            context,
+                                            base: 25,
+                                          ),
+                                          color: Colors.black.withOpacity(0.6),
+                                        ),
+                                        SizedBox(
+                                          width: ResponsiveHelper.spacing(
+                                            context,
+                                            10,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Search Report',
+                                                style: TextStyle(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize:
+                                                      ResponsiveHelper.fontSize(
+                                                        context,
+                                                        base: 12,
+                                                      ),
+                                                ),
+                                              ),
+                                              Text(
+                                                'By district or contractor',
+                                                style: TextStyle(
+                                                  color: Colors.black
+                                                      .withOpacity(0.7),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  fontSize:
+                                                      ResponsiveHelper.fontSize(
+                                                        context,
+                                                        base: 12,
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
-                              Text(
-                                '${transaction.senderId} • ${transaction.createdAt}',
-                                style: GoogleFonts.poppins(
-                                  fontSize: 10,
-                                  color: Colors.black,
+
+                              // --- Conditionally show second Expanded: Contractor Button ---
+                              if (shouldShowSecondButton)
+                                Expanded(
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            ResponsiveHelper.borderRadius(
+                                              context,
+                                              topRight: 50,
+                                              bottomRight: 50,
+                                            ),
+                                      ),
+                                      backgroundColor: Colors.white.withOpacity(
+                                        0.6,
+                                      ),
+                                    ),
+                                    onPressed: isLoading
+                                        ? null
+                                        : () {
+                                            showContractorRelationSelection(
+                                              context: context,
+                                              state: contractorState,
+                                              onContractorSelected: (selectedData) {
+                                                context
+                                                    .read<
+                                                      ContractorRelationBloc
+                                                    >()
+                                                    .add(
+                                                      SelectContractorRelation(
+                                                        selectedData['companyReportToUID'],
+                                                      ),
+                                                    );
+                                              },
+                                            );
+                                          },
+                                    child: Padding(
+                                      padding: ResponsiveHelper.padding(
+                                        context,
+                                        horizontal: 20,
+                                        vertical: 13,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          isLoading
+                                              ? SizedBox(
+                                                  width:
+                                                      ResponsiveHelper.iconSize(
+                                                        context,
+                                                        base: 25,
+                                                      ),
+                                                  height:
+                                                      ResponsiveHelper.iconSize(
+                                                        context,
+                                                        base: 25,
+                                                      ),
+                                                  child: CircularProgressIndicator(
+                                                    strokeWidth: 2,
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                          Color
+                                                        >(
+                                                          Colors.black
+                                                              .withOpacity(0.6),
+                                                        ),
+                                                  ),
+                                                )
+                                              : Icon(
+                                                  Icons.note_alt_outlined,
+                                                  size:
+                                                      ResponsiveHelper.iconSize(
+                                                        context,
+                                                        base: 25,
+                                                      ),
+                                                  color: Colors.black
+                                                      .withOpacity(0.6),
+                                                ),
+                                          SizedBox(
+                                            width: ResponsiveHelper.spacing(
+                                              context,
+                                              10,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Report to',
+                                                  style: TextStyle(
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    color: Colors.black,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize:
+                                                        ResponsiveHelper.fontSize(
+                                                          context,
+                                                          base: 12,
+                                                        ),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  isLoading
+                                                      ? 'Loading...'
+                                                      : selectedContractor
+                                                                ?.name ??
+                                                            'Company name',
+                                                  style: TextStyle(
+                                                    color: isLoading
+                                                        ? Colors.black
+                                                              .withOpacity(0.5)
+                                                        : Colors.black
+                                                              .withOpacity(0.7),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    fontSize:
+                                                        ResponsiveHelper.fontSize(
+                                                          context,
+                                                          base: 12,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+
+                      SizedBox(height: ResponsiveHelper.spacing(context, 10)),
+
+                      // Listing Section
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: ResponsiveHelper.padding(
+                              context,
+                              left: 10,
+                            ),
+                            child: Text(
+                              'Listing',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: ResponsiveHelper.fontSize(
+                                  context,
+                                  base: 15,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          SizedBox(
+                            height: ResponsiveHelper.spacing(context, 10),
+                          ),
+
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: ListingItem(
+                                  isBlack: false,
+                                  image: 'assets/images/icons/daily_report.png',
+                                  label: 'Daily\nReport',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DailyReportPage(),
+                                      ),
+                                    );
+
+                                    // context.push(AppRoutePath.dailyReport);
+
+                                    // CustomSnackBar.show(
+                                    //   context,
+                                    //   'This feature is in update...',
+                                    //   type: SnackBarType.comingsoon,
+                                    // );
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: ListingItem(
+                                  isBlack: false,
+                                  image: 'assets/images/icons/inspection.png',
+                                  label: 'Inspection',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => InspectionPage(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: ListingItem(
+                                  isBlack: false,
+                                  image: 'assets/images/icons/site_warning.png',
+                                  label: 'Site\nWarning',
+                                  onTap: () {
+                                    NavigationHelper().switchToTab(3);
+
+                                    // print('Site Warning tapped');
+                                    // CustomSnackBar.show(
+                                    //   context,
+                                    //   'This feature is coming soon...',
+                                    //   type: SnackBarType.comingsoon,
+                                    // );
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: ListingItem(
+                                  isBlack: false,
+                                  image: 'assets/images/icons/program.png',
+                                  label: 'Program',
+                                  onTap: () {
+                                    NavigationHelper().switchToTab(1);
+
+                                    // print('Program tapped');
+                                    // CustomSnackBar.show(
+                                    //   context,
+                                    //   'This feature is coming soon...',
+                                    //   type: SnackBarType.comingsoon,
+                                    // );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(
+                            height: ResponsiveHelper.spacing(context, 15),
+                          ),
+
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: ListingItem(
+                                  isBlack: false,
+                                  image: 'assets/images/icons/toolbox.png',
+                                  label: 'Toolbox',
+                                  onTap: () {
+                                    print('Toolbox tapped');
+                                    CustomSnackBar.show(
+                                      context,
+                                      'This feature is coming soon...',
+                                      type: SnackBarType.comingsoon,
+                                    );
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: ListingItem(
+                                  isBlack: false,
+                                  image: 'assets/images/icons/disaster.png',
+                                  label: 'Disaster',
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DisasterPage(),
+                                      ),
+                                    );
+
+                                    // CustomSnackBar.show(
+                                    //   context,
+                                    //   'This feature is coming soon...',
+                                    //   type: SnackBarType.comingsoon,
+                                    // );
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: ListingItem(
+                                  isBlack: false,
+                                  image: 'assets/images/icons/periodic.png',
+                                  label: 'Periodic',
+                                  onTap: () {
+                                    print('Periodic tapped');
+                                    CustomSnackBar.show(
+                                      context,
+                                      'This feature is coming soon...',
+                                      type: SnackBarType.comingsoon,
+                                    );
+                                  },
+                                ),
+                              ),
+                              Expanded(
+                                child: ListingItem(
+                                  isBlack: false,
+                                  image: 'assets/images/icons/others.png',
+                                  label: 'Others',
+                                  onTap: () {
+                                    // Navigator.push(
+                                    //   context,
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) =>
+                                    //         LocalizationTestPage(),
+                                    //   ),
+                                    // );
+
+                                    // print('Others tapped');
+                                    CustomSnackBar.show(
+                                      context,
+                                      'This feature is coming soon...',
+                                      type: SnackBarType.comingsoon,
+                                    );
+                                  },
                                 ),
                               ),
                             ],
                           ),
                         ],
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            '-RM ${formatCurrency(transaction.amount)}',
-                            style: GoogleFonts.poppins(
-                              fontWeight: FontWeight.w500,
-                              color: red,
+
+                      SizedBox(height: ResponsiveHelper.spacing(context, 25)),
+
+                      // Action Required Section
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 400),
+                        curve: Curves.easeInOut,
+                        height: warningLists.isNotEmpty ? null : 0,
+                        child: AnimatedOpacity(
+                          duration: Duration(milliseconds: 300),
+                          opacity: warningLists.isNotEmpty ? 1.0 : 0.0,
+                          child: GestureDetector(
+                            onTap: () {
+                              CustomSnackBar.show(
+                                context,
+                                'This feature is coming soon...',
+                                type: SnackBarType.comingsoon,
+                              );
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                bottom: warningLists.isNotEmpty
+                                    ? ResponsiveHelper.spacing(context, 10)
+                                    : 0,
+                              ),
+                              padding: ResponsiveHelper.padding(
+                                context,
+                                vertical: 15,
+                                horizontal: 15,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: ResponsiveHelper.borderRadius(
+                                  context,
+                                  all: 15,
+                                ),
+                                color: Colors.white.withOpacity(0.5),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          padding: ResponsiveHelper.padding(
+                                            context,
+                                            vertical: 10,
+                                            horizontal: 15,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                ResponsiveHelper.borderRadius(
+                                                  context,
+                                                  all: 15,
+                                                ),
+                                          ),
+                                          child: Center(
+                                            child: AnimatedSwitcher(
+                                              duration: Duration(
+                                                milliseconds: 300,
+                                              ),
+                                              child: Text(
+                                                '$actionCount',
+                                                key: ValueKey(actionCount),
+                                                style: TextStyle(
+                                                  fontSize:
+                                                      ResponsiveHelper.fontSize(
+                                                        context,
+                                                        base: 20,
+                                                      ),
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: ResponsiveHelper.spacing(
+                                            context,
+                                            15,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Instructions',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize:
+                                                      ResponsiveHelper.fontSize(
+                                                        context,
+                                                        base: 15,
+                                                      ),
+                                                ),
+                                              ),
+                                              Text(
+                                                'Please complete it promptly',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize:
+                                                      ResponsiveHelper.fontSize(
+                                                        context,
+                                                        base: 12,
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.keyboard_arrow_right,
+                                    color: Colors.white,
+                                    size: ResponsiveHelper.iconSize(
+                                      context,
+                                      base: 24,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
+                        ),
+                      ),
+                      SizedBox(height: ResponsiveHelper.spacing(context, 10)),
+                    ],
+                  ),
+                ),
+
+                // Report Section - Now with Expanded for flexible height
+                Expanded(
+                  child: AnimatedContainer(
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.easeInOutCubic,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: ResponsiveHelper.borderRadius(
+                        context,
+                        topLeft: 24,
+                        topRight: 24,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 10,
+                          offset: Offset(0, -2),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: ResponsiveHelper.padding(context, all: 20),
+                      child: ListView(
+                        children: [
                           Text(
-                            'ONHOLD',
-                            style: GoogleFonts.poppins(
-                              fontSize: 10,
-                              color: onholdOrange,
+                            'Report',
+                            style: TextStyle(
+                              fontSize: ResponsiveHelper.fontSize(
+                                context,
+                                base: 15,
+                              ),
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
                             ),
+                          ),
+                          SizedBox(
+                            height: ResponsiveHelper.spacing(context, 10),
+                          ),
+
+                          GridView.count(
+                            padding: EdgeInsets.zero,
+                            crossAxisCount: ResponsiveHelper.adaptive(
+                              context,
+                              mobile: 3,
+                              tablet: 4,
+                              desktop: 6,
+                            ),
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            mainAxisSpacing: ResponsiveHelper.spacing(
+                              context,
+                              5,
+                            ),
+                            crossAxisSpacing: ResponsiveHelper.spacing(
+                              context,
+                              5,
+                            ),
+                            childAspectRatio: ResponsiveHelper.adaptive(
+                              context,
+                              mobile: 1.4,
+                              tablet: 1.3,
+                              desktop: 1.2,
+                            ),
+                            children: [
+                              ListingItem(
+                                isBlack: true,
+                                image: 'assets/images/icons/jkr.png',
+                                label: 'JKR Report',
+                                onTap: () {
+                                  print('JKR Report tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
+                                },
+                              ),
+                              ListingItem(
+                                isBlack: true,
+                                image: 'assets/images/icons/monthly_report.png',
+                                label: 'Monthly Report',
+                                onTap: () {
+                                  print('Monthly Report tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
+                                },
+                              ),
+                              ListingItem(
+                                isBlack: true,
+                                image: 'assets/images/icons/statistic.png',
+                                label: 'Statistic',
+                                onTap: () {
+                                  print('Statistic tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
+                                },
+                              ),
+                              ListingItem(
+                                isBlack: true,
+                                image: 'assets/images/icons/hotmix_request.png',
+                                label: 'Hotmix Request',
+                                onTap: () {
+                                  print('Hotmix Request tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
-                  );
-                },
-              ),
-      ),
-    );
-  }
-
-  Widget _quickAction({
-    required String icon,
-    required String title,
-    VoidCallback? onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade100,
-              shape: BoxShape.circle,
-            ),
-            child: Iconify(icon, size: 30, color: Colors.grey.shade600),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.black87,
-              fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
+        ),
       ),
     );
   }

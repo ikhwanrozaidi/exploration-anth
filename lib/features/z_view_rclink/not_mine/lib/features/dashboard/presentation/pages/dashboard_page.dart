@@ -574,139 +574,138 @@ class _DashboardPageState extends State<DashboardPage> {
 
                       SizedBox(height: ResponsiveHelper.spacing(context, 25)),
 
-                      // // Action Required Section
-                      //
-                      // AnimatedContainer(
-                      //   duration: Duration(milliseconds: 400),
-                      //   curve: Curves.easeInOut,
-                      //   height: warningLists.isNotEmpty ? null : 0,
-                      //   child: AnimatedOpacity(
-                      //     duration: Duration(milliseconds: 300),
-                      //     opacity: warningLists.isNotEmpty ? 1.0 : 0.0,
-                      //     child: GestureDetector(
-                      //       onTap: () {
-                      //         CustomSnackBar.show(
-                      //           context,
-                      //           'This feature is coming soon...',
-                      //           type: SnackBarType.comingsoon,
-                      //         );
-                      //       },
-                      //       child: Container(
-                      //         margin: EdgeInsets.only(
-                      //           bottom: warningLists.isNotEmpty
-                      //               ? ResponsiveHelper.spacing(context, 10)
-                      //               : 0,
-                      //         ),
-                      //         padding: ResponsiveHelper.padding(
-                      //           context,
-                      //           vertical: 15,
-                      //           horizontal: 15,
-                      //         ),
-                      //         decoration: BoxDecoration(
-                      //           borderRadius: ResponsiveHelper.borderRadius(
-                      //             context,
-                      //             all: 15,
-                      //           ),
-                      //           color: Colors.white.withOpacity(0.5),
-                      //         ),
-                      //         child: Row(
-                      //           mainAxisAlignment:
-                      //               MainAxisAlignment.spaceAround,
-                      //           children: [
-                      //             Expanded(
-                      //               child: Row(
-                      //                 children: [
-                      //                   Container(
-                      //                     padding: ResponsiveHelper.padding(
-                      //                       context,
-                      //                       vertical: 10,
-                      //                       horizontal: 15,
-                      //                     ),
-                      //                     decoration: BoxDecoration(
-                      //                       color: Colors.white,
-                      //                       borderRadius:
-                      //                           ResponsiveHelper.borderRadius(
-                      //                             context,
-                      //                             all: 15,
-                      //                           ),
-                      //                     ),
-                      //                     child: Center(
-                      //                       child: AnimatedSwitcher(
-                      //                         duration: Duration(
-                      //                           milliseconds: 300,
-                      //                         ),
-                      //                         child: Text(
-                      //                           '$actionCount',
-                      //                           key: ValueKey(actionCount),
-                      //                           style: TextStyle(
-                      //                             fontSize:
-                      //                                 ResponsiveHelper.fontSize(
-                      //                                   context,
-                      //                                   base: 20,
-                      //                                 ),
-                      //                             color: Colors.red,
-                      //                             fontWeight: FontWeight.bold,
-                      //                           ),
-                      //                         ),
-                      //                       ),
-                      //                     ),
-                      //                   ),
-                      //                   SizedBox(
-                      //                     width: ResponsiveHelper.spacing(
-                      //                       context,
-                      //                       15,
-                      //                     ),
-                      //                   ),
-                      //                   Expanded(
-                      //                     child: Column(
-                      //                       crossAxisAlignment:
-                      //                           CrossAxisAlignment.start,
-                      //                       children: [
-                      //                         Text(
-                      //                           'Action Required',
-                      //                           style: TextStyle(
-                      //                             color: Colors.white,
-                      //                             fontWeight: FontWeight.bold,
-                      //                             fontSize:
-                      //                                 ResponsiveHelper.fontSize(
-                      //                                   context,
-                      //                                   base: 15,
-                      //                                 ),
-                      //                           ),
-                      //                         ),
-                      //                         Text(
-                      //                           'Please complete it promptly',
-                      //                           overflow: TextOverflow.ellipsis,
-                      //                           style: TextStyle(
-                      //                             color: Colors.white,
-                      //                             fontWeight: FontWeight.w500,
-                      //                             fontSize:
-                      //                                 ResponsiveHelper.fontSize(
-                      //                                   context,
-                      //                                   base: 12,
-                      //                                 ),
-                      //                           ),
-                      //                         ),
-                      //                       ],
-                      //                     ),
-                      //                   ),
-                      //                 ],
-                      //               ),
-                      //             ),
-                      //             Icon(
-                      //               Icons.keyboard_arrow_right,
-                      //               color: Colors.white,
-                      //               size: ResponsiveHelper.iconSize(
-                      //                 context,
-                      //                 base: 24,
-                      //               ),
-                      //             ),
-                      //           ],
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
+                      // Action Required Section
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 400),
+                        curve: Curves.easeInOut,
+                        height: warningLists.isNotEmpty ? null : 0,
+                        child: AnimatedOpacity(
+                          duration: Duration(milliseconds: 300),
+                          opacity: warningLists.isNotEmpty ? 1.0 : 0.0,
+                          child: GestureDetector(
+                            onTap: () {
+                              CustomSnackBar.show(
+                                context,
+                                'This feature is coming soon...',
+                                type: SnackBarType.comingsoon,
+                              );
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                bottom: warningLists.isNotEmpty
+                                    ? ResponsiveHelper.spacing(context, 10)
+                                    : 0,
+                              ),
+                              padding: ResponsiveHelper.padding(
+                                context,
+                                vertical: 15,
+                                horizontal: 15,
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius: ResponsiveHelper.borderRadius(
+                                  context,
+                                  all: 15,
+                                ),
+                                color: Colors.white.withOpacity(0.5),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          padding: ResponsiveHelper.padding(
+                                            context,
+                                            vertical: 10,
+                                            horizontal: 15,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                ResponsiveHelper.borderRadius(
+                                                  context,
+                                                  all: 15,
+                                                ),
+                                          ),
+                                          child: Center(
+                                            child: AnimatedSwitcher(
+                                              duration: Duration(
+                                                milliseconds: 300,
+                                              ),
+                                              child: Text(
+                                                '$actionCount',
+                                                key: ValueKey(actionCount),
+                                                style: TextStyle(
+                                                  fontSize:
+                                                      ResponsiveHelper.fontSize(
+                                                        context,
+                                                        base: 20,
+                                                      ),
+                                                  color: Colors.red,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: ResponsiveHelper.spacing(
+                                            context,
+                                            15,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                'Instructions',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize:
+                                                      ResponsiveHelper.fontSize(
+                                                        context,
+                                                        base: 15,
+                                                      ),
+                                                ),
+                                              ),
+                                              Text(
+                                                'Please complete it promptly',
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize:
+                                                      ResponsiveHelper.fontSize(
+                                                        context,
+                                                        base: 12,
+                                                      ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Icon(
+                                    Icons.keyboard_arrow_right,
+                                    color: Colors.white,
+                                    size: ResponsiveHelper.iconSize(
+                                      context,
+                                      base: 24,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                       SizedBox(height: ResponsiveHelper.spacing(context, 10)),
                     ],
                   ),
@@ -718,7 +717,6 @@ class _DashboardPageState extends State<DashboardPage> {
                     duration: Duration(milliseconds: 500),
                     curve: Curves.easeInOutCubic,
                     width: double.infinity,
-                    // Removed height: double.infinity - Expanded handles this now
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: ResponsiveHelper.borderRadius(
@@ -736,8 +734,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                     child: Padding(
                       padding: ResponsiveHelper.padding(context, all: 20),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: ListView(
                         children: [
                           Text(
                             'Report',
@@ -753,88 +750,85 @@ class _DashboardPageState extends State<DashboardPage> {
                           SizedBox(
                             height: ResponsiveHelper.spacing(context, 10),
                           ),
-                          Expanded(
-                            child: GridView.count(
-                              padding: EdgeInsets.zero,
-                              crossAxisCount: ResponsiveHelper.adaptive(
-                                context,
-                                mobile: 3,
-                                tablet: 4,
-                                desktop: 6,
-                              ),
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              mainAxisSpacing: ResponsiveHelper.spacing(
-                                context,
-                                5,
-                              ),
-                              crossAxisSpacing: ResponsiveHelper.spacing(
-                                context,
-                                5,
-                              ),
-                              childAspectRatio: ResponsiveHelper.adaptive(
-                                context,
-                                mobile: 1.4,
-                                tablet: 1.3,
-                                desktop: 1.2,
-                              ),
-                              children: [
-                                ListingItem(
-                                  isBlack: true,
-                                  image: 'assets/images/icons/jkr.png',
-                                  label: 'JKR Report',
-                                  onTap: () {
-                                    print('JKR Report tapped');
-                                    CustomSnackBar.show(
-                                      context,
-                                      'This feature is coming soon...',
-                                      type: SnackBarType.comingsoon,
-                                    );
-                                  },
-                                ),
-                                ListingItem(
-                                  isBlack: true,
-                                  image:
-                                      'assets/images/icons/monthly_report.png',
-                                  label: 'Monthly Report',
-                                  onTap: () {
-                                    print('Monthly Report tapped');
-                                    CustomSnackBar.show(
-                                      context,
-                                      'This feature is coming soon...',
-                                      type: SnackBarType.comingsoon,
-                                    );
-                                  },
-                                ),
-                                ListingItem(
-                                  isBlack: true,
-                                  image: 'assets/images/icons/statistic.png',
-                                  label: 'Statistic',
-                                  onTap: () {
-                                    print('Statistic tapped');
-                                    CustomSnackBar.show(
-                                      context,
-                                      'This feature is coming soon...',
-                                      type: SnackBarType.comingsoon,
-                                    );
-                                  },
-                                ),
-                                ListingItem(
-                                  isBlack: true,
-                                  image:
-                                      'assets/images/icons/hotmix_request.png',
-                                  label: 'Hotmix Request',
-                                  onTap: () {
-                                    print('Hotmix Request tapped');
-                                    CustomSnackBar.show(
-                                      context,
-                                      'This feature is coming soon...',
-                                      type: SnackBarType.comingsoon,
-                                    );
-                                  },
-                                ),
-                              ],
+
+                          GridView.count(
+                            padding: EdgeInsets.zero,
+                            crossAxisCount: ResponsiveHelper.adaptive(
+                              context,
+                              mobile: 3,
+                              tablet: 4,
+                              desktop: 6,
                             ),
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            mainAxisSpacing: ResponsiveHelper.spacing(
+                              context,
+                              5,
+                            ),
+                            crossAxisSpacing: ResponsiveHelper.spacing(
+                              context,
+                              5,
+                            ),
+                            childAspectRatio: ResponsiveHelper.adaptive(
+                              context,
+                              mobile: 1.4,
+                              tablet: 1.3,
+                              desktop: 1.2,
+                            ),
+                            children: [
+                              ListingItem(
+                                isBlack: true,
+                                image: 'assets/images/icons/jkr.png',
+                                label: 'JKR Report',
+                                onTap: () {
+                                  print('JKR Report tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
+                                },
+                              ),
+                              ListingItem(
+                                isBlack: true,
+                                image: 'assets/images/icons/monthly_report.png',
+                                label: 'Monthly Report',
+                                onTap: () {
+                                  print('Monthly Report tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
+                                },
+                              ),
+                              ListingItem(
+                                isBlack: true,
+                                image: 'assets/images/icons/statistic.png',
+                                label: 'Statistic',
+                                onTap: () {
+                                  print('Statistic tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
+                                },
+                              ),
+                              ListingItem(
+                                isBlack: true,
+                                image: 'assets/images/icons/hotmix_request.png',
+                                label: 'Hotmix Request',
+                                onTap: () {
+                                  print('Hotmix Request tapped');
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
+                                },
+                              ),
+                            ],
                           ),
                         ],
                       ),

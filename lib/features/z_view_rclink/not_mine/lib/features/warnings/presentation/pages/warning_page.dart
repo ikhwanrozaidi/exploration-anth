@@ -18,6 +18,7 @@ import '../bloc/warning_view/warning_bloc.dart';
 import '../bloc/warning_view/warning_event.dart';
 import '../bloc/warning_view/warning_state.dart';
 import '../widgets/warning_list_widget.dart';
+import 'warning_creation_page.dart';
 
 class WarningPage extends StatelessWidget {
   const WarningPage({Key? key}) : super(key: key);
@@ -41,7 +42,7 @@ class _WarningPageContent extends StatefulWidget {
 class _WarningPageContentState extends State<_WarningPageContent> {
   int selectedMonth = DateTime.now().month;
   int selectedYear = DateTime.now().year;
-  String _currentTab = 'Site Warning';
+  String _currentTab = 'Reports';
   int _currentTabIndex = 1;
   late ScrollController _scrollController;
   bool _isLoadingMore = false;
@@ -190,22 +191,90 @@ class _WarningPageContentState extends State<_WarningPageContent> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: ResponsiveHelper.getHeight(context, 0.03)),
+              SizedBox(height: ResponsiveHelper.getHeight(context, 0.02)),
 
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 30),
-                child: Text(
-                  'Warning',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: ResponsiveHelper.fontSize(context, base: 18),
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Warning',
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        fontSize: ResponsiveHelper.fontSize(context, base: 18),
+                      ),
+                    ),
+                    _currentTabIndex == 1
+                        ? Row(
+                            children: [
+                              TextButton(
+                                onPressed: () {},
+
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: primaryColor,
+                                  side: BorderSide(
+                                    color: Colors.amber.shade800,
+                                    width: 1.5,
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 20,
+                                    vertical: 5,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Draft',
+                                  style: TextStyle(
+                                    color: Colors.amber.shade800,
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox(width: 5),
+
+                              IconButton(
+                                style: IconButton.styleFrom(
+                                  shape: const CircleBorder(),
+                                  backgroundColor: Colors.white,
+                                  padding: ResponsiveHelper.padding(
+                                    context,
+                                    all: 5,
+                                  ),
+                                ),
+                                onPressed: () {
+                                  // Navigate to creation page with isNewDraft flag
+                                  // This will trigger draft mode and auto-save
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          WarningCreationPage(isNewDraft: true),
+                                    ),
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.add,
+                                  color: primaryColor,
+                                  size: ResponsiveHelper.iconSize(
+                                    context,
+                                    base: 20,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        : SizedBox(height: 48), // measured. not a good approach
+                  ],
                 ),
               ),
 
-              SizedBox(height: 30),
+              SizedBox(height: 20),
 
               Expanded(
                 child: Container(

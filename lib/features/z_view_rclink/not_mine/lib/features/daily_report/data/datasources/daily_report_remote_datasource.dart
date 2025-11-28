@@ -130,6 +130,7 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
             'files',
             'company',
             'createdBy',
+            'warning',
           ]);
 
       if (response.statusCode >= 200 && response.statusCode < 300) {

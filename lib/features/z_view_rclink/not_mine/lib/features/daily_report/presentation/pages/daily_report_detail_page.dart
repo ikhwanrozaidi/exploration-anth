@@ -5,7 +5,9 @@ import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_state.dart';
+import '../../../warnings/data/mapper/warning_response_to_warning_mapper.dart';
 import '../../../warnings/presentation/pages/warning_report_review_page.dart';
+import '../../../warnings/presentation/widgets/expandable_warning_card.dart';
 import '../../domain/entities/daily_report.dart';
 import '../bloc/daily_report_view/daily_report_view_bloc.dart';
 import '../bloc/daily_report_view/daily_report_view_event.dart';
@@ -75,7 +77,7 @@ class _DailyReportDetailPageContentState
             DailyReportViewEvent.loadDailyReportById(
               companyUID: selectedCompany.uid,
               dailyReportUID: _currentReport.uid,
-              forceRefresh: forceRefresh,
+              forceRefresh: true,
             ),
           );
         }
@@ -135,6 +137,7 @@ class _DailyReportDetailPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('Warning: ${report.warning}');
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -250,17 +253,26 @@ class _DailyReportDetailPageView extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              // Report Review Card
-              DailyReportDetailReviewCard(
-                onLike: () => print("Like button clicked"),
-                onDislike: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        WarningReportReviewPage(report: report),
+              // Warning Card or Report Review Card
+              if (report.warning != null)
+                // Show expandable warning card if warning exists
+                ExpandableWarningCard(
+                  warning: WarningResponseToWarningMapper.fromWarningResponse(
+                    report.warning!,
+                  ),
+                )
+              else
+                // Show review card if no warning exists
+                DailyReportDetailReviewCard(
+                  onLike: () => print("Like button clicked"),
+                  onDislike: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          WarningReportReviewPage(report: report),
+                    ),
                   ),
                 ),
-              ),
 
               const SizedBox(height: 20),
 

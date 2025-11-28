@@ -50,13 +50,16 @@ class CompanyConfirmationContent extends StatelessWidget {
                     color: primaryShade,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    size: ResponsiveHelper.iconSize(context, base: 15),
-                    color: primaryColor,
+                  child: Center(
+                    child: Icon(
+                      Icons.arrow_back_ios_new,
+                      size: ResponsiveHelper.iconSize(context, base: 15),
+                      color: primaryColor,
+                    ),
                   ),
                 ),
               ),
+
               SizedBox(width: ResponsiveHelper.adaptive(context, mobile: 15)),
 
               Text(

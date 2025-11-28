@@ -7,6 +7,7 @@ import 'report_quantities_model.dart';
 import 'work_scope_response_model.dart';
 import 'road_response_model.dart';
 import 'created_by_response_model.dart';
+import 'warning_response_model.dart';
 
 part 'daily_report_model.freezed.dart';
 part 'daily_report_model.g.dart';
@@ -63,6 +64,7 @@ abstract class DailyReportModel with _$DailyReportModel {
     List<DailyReportEquipmentModel>? equipments,
     List<ReportQuantitiesModel>? reportQuantities,
     List<FileModel>? files,
+    WarningResponseModel? warning,
 
     // Sync fields
     @Default(false) bool isSynced,
@@ -108,6 +110,7 @@ abstract class DailyReportModel with _$DailyReportModel {
       reportQuantities:
           reportQuantities?.map((q) => q.toEntity()).toList() ?? [],
       files: files?.map((f) => f.toEntity()).toList(),
+      warning: warning?.toEntity(),
     );
   }
 }

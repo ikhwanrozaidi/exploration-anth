@@ -4,6 +4,7 @@ import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/divider_config.dart';
 import '../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../../shared/widgets/theme_listtile_widget.dart';
+import '../widgets/details_of_work_widget.dart';
 import '../widgets/program_details_overview_widget.dart';
 
 class ProgramDetailsPage extends StatefulWidget {
@@ -350,16 +351,15 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                           onTap: (selectedOption) {
                                             switch (selectedOption) {
                                               case 'Details of Work':
-                                                // Navigator.push(
-                                                //   context,
-                                                //   MaterialPageRoute(
-                                                //     builder: (context) =>
-                                                //         RouteEditPage(
-                                                //           report: widget
-                                                //               .report,
-                                                //         ),
-                                                //   ),
-                                                // );
+                                                Navigator.pop(context);
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DetailsOfWorkProgramWidget(),
+                                                  ),
+                                                );
+
                                                 break;
                                               case 'Note':
                                                 // Navigator.push(
@@ -420,10 +420,22 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                                   child: Icon(
                                                     Icons.delete,
                                                     color: Colors.red.shade400,
+                                                    size:
+                                                        ResponsiveHelper.iconSize(
+                                                          context,
+                                                          base: 20,
+                                                        ),
                                                   ),
                                                 ),
                                               ),
-                                              const SizedBox(width: 20),
+
+                                              SizedBox(
+                                                width: ResponsiveHelper.spacing(
+                                                  context,
+                                                  15,
+                                                ),
+                                              ),
+
                                               Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -434,7 +446,7 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                                       fontSize:
                                                           ResponsiveHelper.fontSize(
                                                             context,
-                                                            base: 14,
+                                                            base: 12,
                                                           ),
                                                       fontWeight:
                                                           FontWeight.w600,
@@ -448,7 +460,7 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                                       fontSize:
                                                           ResponsiveHelper.fontSize(
                                                             context,
-                                                            base: 12,
+                                                            base: 11,
                                                           ),
                                                       color:
                                                           Colors.red.shade400,
@@ -470,6 +482,10 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                             child: Icon(
                                               Icons.chevron_right_rounded,
                                               color: Colors.red.shade400,
+                                              size: ResponsiveHelper.iconSize(
+                                                context,
+                                                base: 20,
+                                              ),
                                             ),
                                           ),
                                         ],

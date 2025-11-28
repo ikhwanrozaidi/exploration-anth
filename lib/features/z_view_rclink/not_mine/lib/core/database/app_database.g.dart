@@ -23844,9 +23844,9 @@ class $WarningsTable extends Warnings
   late final GeneratedColumn<String> fromSection = GeneratedColumn<String>(
     'from_section',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _toSectionMeta = const VerificationMeta(
     'toSection',
@@ -23855,9 +23855,9 @@ class $WarningsTable extends Warnings
   late final GeneratedColumn<String> toSection = GeneratedColumn<String>(
     'to_section',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _requiresActionMeta = const VerificationMeta(
     'requiresAction',
@@ -24065,6 +24065,17 @@ class $WarningsTable extends Warnings
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _filesDataMeta = const VerificationMeta(
+    'filesData',
+  );
+  @override
+  late final GeneratedColumn<String> filesData = GeneratedColumn<String>(
+    'files_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     isSynced,
@@ -24101,6 +24112,7 @@ class $WarningsTable extends Warnings
     createdByData,
     resolvedByData,
     dailyReportData,
+    filesData,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -24231,16 +24243,12 @@ class $WarningsTable extends Warnings
           _fromSectionMeta,
         ),
       );
-    } else if (isInserting) {
-      context.missing(_fromSectionMeta);
     }
     if (data.containsKey('to_section')) {
       context.handle(
         _toSectionMeta,
         toSection.isAcceptableOrUnknown(data['to_section']!, _toSectionMeta),
       );
-    } else if (isInserting) {
-      context.missing(_toSectionMeta);
     }
     if (data.containsKey('requires_action')) {
       context.handle(
@@ -24389,6 +24397,12 @@ class $WarningsTable extends Warnings
         ),
       );
     }
+    if (data.containsKey('files_data')) {
+      context.handle(
+        _filesDataMeta,
+        filesData.isAcceptableOrUnknown(data['files_data']!, _filesDataMeta),
+      );
+    }
     return context;
   }
 
@@ -24461,11 +24475,11 @@ class $WarningsTable extends Warnings
       fromSection: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}from_section'],
-      )!,
+      ),
       toSection: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}to_section'],
-      )!,
+      ),
       requiresAction: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}requires_action'],
@@ -24538,6 +24552,10 @@ class $WarningsTable extends Warnings
         DriftSqlType.string,
         data['${effectivePrefix}daily_report_data'],
       ),
+      filesData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}files_data'],
+      ),
     );
   }
 
@@ -24562,8 +24580,8 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
   final int roadID;
   final int workScopeID;
   final int? contractRelationID;
-  final String fromSection;
-  final String toSection;
+  final String? fromSection;
+  final String? toSection;
   final bool requiresAction;
   final bool isResolved;
   final int? resolvedByID;
@@ -24582,6 +24600,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
   final String? createdByData;
   final String? resolvedByData;
   final String? dailyReportData;
+  final String? filesData;
   const WarningRecord({
     required this.isSynced,
     this.deletedAt,
@@ -24597,8 +24616,8 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     required this.roadID,
     required this.workScopeID,
     this.contractRelationID,
-    required this.fromSection,
-    required this.toSection,
+    this.fromSection,
+    this.toSection,
     required this.requiresAction,
     required this.isResolved,
     this.resolvedByID,
@@ -24617,6 +24636,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     this.createdByData,
     this.resolvedByData,
     this.dailyReportData,
+    this.filesData,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -24649,8 +24669,12 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     if (!nullToAbsent || contractRelationID != null) {
       map['contract_relation_i_d'] = Variable<int>(contractRelationID);
     }
-    map['from_section'] = Variable<String>(fromSection);
-    map['to_section'] = Variable<String>(toSection);
+    if (!nullToAbsent || fromSection != null) {
+      map['from_section'] = Variable<String>(fromSection);
+    }
+    if (!nullToAbsent || toSection != null) {
+      map['to_section'] = Variable<String>(toSection);
+    }
     map['requires_action'] = Variable<bool>(requiresAction);
     map['is_resolved'] = Variable<bool>(isResolved);
     if (!nullToAbsent || resolvedByID != null) {
@@ -24695,6 +24719,9 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     if (!nullToAbsent || dailyReportData != null) {
       map['daily_report_data'] = Variable<String>(dailyReportData);
     }
+    if (!nullToAbsent || filesData != null) {
+      map['files_data'] = Variable<String>(filesData);
+    }
     return map;
   }
 
@@ -24726,8 +24753,12 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       contractRelationID: contractRelationID == null && nullToAbsent
           ? const Value.absent()
           : Value(contractRelationID),
-      fromSection: Value(fromSection),
-      toSection: Value(toSection),
+      fromSection: fromSection == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fromSection),
+      toSection: toSection == null && nullToAbsent
+          ? const Value.absent()
+          : Value(toSection),
       requiresAction: Value(requiresAction),
       isResolved: Value(isResolved),
       resolvedByID: resolvedByID == null && nullToAbsent
@@ -24772,6 +24803,9 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       dailyReportData: dailyReportData == null && nullToAbsent
           ? const Value.absent()
           : Value(dailyReportData),
+      filesData: filesData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(filesData),
     );
   }
 
@@ -24795,8 +24829,8 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       roadID: serializer.fromJson<int>(json['roadID']),
       workScopeID: serializer.fromJson<int>(json['workScopeID']),
       contractRelationID: serializer.fromJson<int?>(json['contractRelationID']),
-      fromSection: serializer.fromJson<String>(json['fromSection']),
-      toSection: serializer.fromJson<String>(json['toSection']),
+      fromSection: serializer.fromJson<String?>(json['fromSection']),
+      toSection: serializer.fromJson<String?>(json['toSection']),
       requiresAction: serializer.fromJson<bool>(json['requiresAction']),
       isResolved: serializer.fromJson<bool>(json['isResolved']),
       resolvedByID: serializer.fromJson<int?>(json['resolvedByID']),
@@ -24815,6 +24849,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       createdByData: serializer.fromJson<String?>(json['createdByData']),
       resolvedByData: serializer.fromJson<String?>(json['resolvedByData']),
       dailyReportData: serializer.fromJson<String?>(json['dailyReportData']),
+      filesData: serializer.fromJson<String?>(json['filesData']),
     );
   }
   @override
@@ -24835,8 +24870,8 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       'roadID': serializer.toJson<int>(roadID),
       'workScopeID': serializer.toJson<int>(workScopeID),
       'contractRelationID': serializer.toJson<int?>(contractRelationID),
-      'fromSection': serializer.toJson<String>(fromSection),
-      'toSection': serializer.toJson<String>(toSection),
+      'fromSection': serializer.toJson<String?>(fromSection),
+      'toSection': serializer.toJson<String?>(toSection),
       'requiresAction': serializer.toJson<bool>(requiresAction),
       'isResolved': serializer.toJson<bool>(isResolved),
       'resolvedByID': serializer.toJson<int?>(resolvedByID),
@@ -24855,6 +24890,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       'createdByData': serializer.toJson<String?>(createdByData),
       'resolvedByData': serializer.toJson<String?>(resolvedByData),
       'dailyReportData': serializer.toJson<String?>(dailyReportData),
+      'filesData': serializer.toJson<String?>(filesData),
     };
   }
 
@@ -24873,8 +24909,8 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     int? roadID,
     int? workScopeID,
     Value<int?> contractRelationID = const Value.absent(),
-    String? fromSection,
-    String? toSection,
+    Value<String?> fromSection = const Value.absent(),
+    Value<String?> toSection = const Value.absent(),
     bool? requiresAction,
     bool? isResolved,
     Value<int?> resolvedByID = const Value.absent(),
@@ -24893,6 +24929,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     Value<String?> createdByData = const Value.absent(),
     Value<String?> resolvedByData = const Value.absent(),
     Value<String?> dailyReportData = const Value.absent(),
+    Value<String?> filesData = const Value.absent(),
   }) => WarningRecord(
     isSynced: isSynced ?? this.isSynced,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
@@ -24914,8 +24951,8 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     contractRelationID: contractRelationID.present
         ? contractRelationID.value
         : this.contractRelationID,
-    fromSection: fromSection ?? this.fromSection,
-    toSection: toSection ?? this.toSection,
+    fromSection: fromSection.present ? fromSection.value : this.fromSection,
+    toSection: toSection.present ? toSection.value : this.toSection,
     requiresAction: requiresAction ?? this.requiresAction,
     isResolved: isResolved ?? this.isResolved,
     resolvedByID: resolvedByID.present ? resolvedByID.value : this.resolvedByID,
@@ -24946,6 +24983,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     dailyReportData: dailyReportData.present
         ? dailyReportData.value
         : this.dailyReportData,
+    filesData: filesData.present ? filesData.value : this.filesData,
   );
   WarningRecord copyWithCompanion(WarningsCompanion data) {
     return WarningRecord(
@@ -25025,6 +25063,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       dailyReportData: data.dailyReportData.present
           ? data.dailyReportData.value
           : this.dailyReportData,
+      filesData: data.filesData.present ? data.filesData.value : this.filesData,
     );
   }
 
@@ -25064,7 +25103,8 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
           ..write('companyData: $companyData, ')
           ..write('createdByData: $createdByData, ')
           ..write('resolvedByData: $resolvedByData, ')
-          ..write('dailyReportData: $dailyReportData')
+          ..write('dailyReportData: $dailyReportData, ')
+          ..write('filesData: $filesData')
           ..write(')'))
         .toString();
   }
@@ -25105,6 +25145,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     createdByData,
     resolvedByData,
     dailyReportData,
+    filesData,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -25143,7 +25184,8 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
           other.companyData == this.companyData &&
           other.createdByData == this.createdByData &&
           other.resolvedByData == this.resolvedByData &&
-          other.dailyReportData == this.dailyReportData);
+          other.dailyReportData == this.dailyReportData &&
+          other.filesData == this.filesData);
 }
 
 class WarningsCompanion extends UpdateCompanion<WarningRecord> {
@@ -25161,8 +25203,8 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
   final Value<int> roadID;
   final Value<int> workScopeID;
   final Value<int?> contractRelationID;
-  final Value<String> fromSection;
-  final Value<String> toSection;
+  final Value<String?> fromSection;
+  final Value<String?> toSection;
   final Value<bool> requiresAction;
   final Value<bool> isResolved;
   final Value<int?> resolvedByID;
@@ -25181,6 +25223,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
   final Value<String?> createdByData;
   final Value<String?> resolvedByData;
   final Value<String?> dailyReportData;
+  final Value<String?> filesData;
   const WarningsCompanion({
     this.isSynced = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -25216,6 +25259,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     this.createdByData = const Value.absent(),
     this.resolvedByData = const Value.absent(),
     this.dailyReportData = const Value.absent(),
+    this.filesData = const Value.absent(),
   });
   WarningsCompanion.insert({
     this.isSynced = const Value.absent(),
@@ -25232,8 +25276,8 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     required int roadID,
     required int workScopeID,
     this.contractRelationID = const Value.absent(),
-    required String fromSection,
-    required String toSection,
+    this.fromSection = const Value.absent(),
+    this.toSection = const Value.absent(),
     this.requiresAction = const Value.absent(),
     this.isResolved = const Value.absent(),
     this.resolvedByID = const Value.absent(),
@@ -25252,13 +25296,12 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     this.createdByData = const Value.absent(),
     this.resolvedByData = const Value.absent(),
     this.dailyReportData = const Value.absent(),
+    this.filesData = const Value.absent(),
   }) : uid = Value(uid),
        warningType = Value(warningType),
        companyID = Value(companyID),
        roadID = Value(roadID),
        workScopeID = Value(workScopeID),
-       fromSection = Value(fromSection),
-       toSection = Value(toSection),
        createdByID = Value(createdByID),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
@@ -25297,6 +25340,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     Expression<String>? createdByData,
     Expression<String>? resolvedByData,
     Expression<String>? dailyReportData,
+    Expression<String>? filesData,
   }) {
     return RawValuesInsertable({
       if (isSynced != null) 'is_synced': isSynced,
@@ -25334,6 +25378,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
       if (createdByData != null) 'created_by_data': createdByData,
       if (resolvedByData != null) 'resolved_by_data': resolvedByData,
       if (dailyReportData != null) 'daily_report_data': dailyReportData,
+      if (filesData != null) 'files_data': filesData,
     });
   }
 
@@ -25352,8 +25397,8 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     Value<int>? roadID,
     Value<int>? workScopeID,
     Value<int?>? contractRelationID,
-    Value<String>? fromSection,
-    Value<String>? toSection,
+    Value<String?>? fromSection,
+    Value<String?>? toSection,
     Value<bool>? requiresAction,
     Value<bool>? isResolved,
     Value<int?>? resolvedByID,
@@ -25372,6 +25417,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     Value<String?>? createdByData,
     Value<String?>? resolvedByData,
     Value<String?>? dailyReportData,
+    Value<String?>? filesData,
   }) {
     return WarningsCompanion(
       isSynced: isSynced ?? this.isSynced,
@@ -25408,6 +25454,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
       createdByData: createdByData ?? this.createdByData,
       resolvedByData: resolvedByData ?? this.resolvedByData,
       dailyReportData: dailyReportData ?? this.dailyReportData,
+      filesData: filesData ?? this.filesData,
     );
   }
 
@@ -25516,6 +25563,9 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     if (dailyReportData.present) {
       map['daily_report_data'] = Variable<String>(dailyReportData.value);
     }
+    if (filesData.present) {
+      map['files_data'] = Variable<String>(filesData.value);
+    }
     return map;
   }
 
@@ -25555,7 +25605,8 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
           ..write('companyData: $companyData, ')
           ..write('createdByData: $createdByData, ')
           ..write('resolvedByData: $resolvedByData, ')
-          ..write('dailyReportData: $dailyReportData')
+          ..write('dailyReportData: $dailyReportData, ')
+          ..write('filesData: $filesData')
           ..write(')'))
         .toString();
   }
@@ -36514,8 +36565,8 @@ typedef $$WarningsTableCreateCompanionBuilder =
       required int roadID,
       required int workScopeID,
       Value<int?> contractRelationID,
-      required String fromSection,
-      required String toSection,
+      Value<String?> fromSection,
+      Value<String?> toSection,
       Value<bool> requiresAction,
       Value<bool> isResolved,
       Value<int?> resolvedByID,
@@ -36534,6 +36585,7 @@ typedef $$WarningsTableCreateCompanionBuilder =
       Value<String?> createdByData,
       Value<String?> resolvedByData,
       Value<String?> dailyReportData,
+      Value<String?> filesData,
     });
 typedef $$WarningsTableUpdateCompanionBuilder =
     WarningsCompanion Function({
@@ -36551,8 +36603,8 @@ typedef $$WarningsTableUpdateCompanionBuilder =
       Value<int> roadID,
       Value<int> workScopeID,
       Value<int?> contractRelationID,
-      Value<String> fromSection,
-      Value<String> toSection,
+      Value<String?> fromSection,
+      Value<String?> toSection,
       Value<bool> requiresAction,
       Value<bool> isResolved,
       Value<int?> resolvedByID,
@@ -36571,6 +36623,7 @@ typedef $$WarningsTableUpdateCompanionBuilder =
       Value<String?> createdByData,
       Value<String?> resolvedByData,
       Value<String?> dailyReportData,
+      Value<String?> filesData,
     });
 
 class $$WarningsTableFilterComposer
@@ -36749,6 +36802,11 @@ class $$WarningsTableFilterComposer
 
   ColumnFilters<String> get dailyReportData => $composableBuilder(
     column: $table.dailyReportData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filesData => $composableBuilder(
+    column: $table.filesData,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -36931,6 +36989,11 @@ class $$WarningsTableOrderingComposer
     column: $table.dailyReportData,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get filesData => $composableBuilder(
+    column: $table.filesData,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$WarningsTableAnnotationComposer
@@ -37085,6 +37148,9 @@ class $$WarningsTableAnnotationComposer
     column: $table.dailyReportData,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get filesData =>
+      $composableBuilder(column: $table.filesData, builder: (column) => column);
 }
 
 class $$WarningsTableTableManager
@@ -37132,8 +37198,8 @@ class $$WarningsTableTableManager
                 Value<int> roadID = const Value.absent(),
                 Value<int> workScopeID = const Value.absent(),
                 Value<int?> contractRelationID = const Value.absent(),
-                Value<String> fromSection = const Value.absent(),
-                Value<String> toSection = const Value.absent(),
+                Value<String?> fromSection = const Value.absent(),
+                Value<String?> toSection = const Value.absent(),
                 Value<bool> requiresAction = const Value.absent(),
                 Value<bool> isResolved = const Value.absent(),
                 Value<int?> resolvedByID = const Value.absent(),
@@ -37152,6 +37218,7 @@ class $$WarningsTableTableManager
                 Value<String?> createdByData = const Value.absent(),
                 Value<String?> resolvedByData = const Value.absent(),
                 Value<String?> dailyReportData = const Value.absent(),
+                Value<String?> filesData = const Value.absent(),
               }) => WarningsCompanion(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -37187,6 +37254,7 @@ class $$WarningsTableTableManager
                 createdByData: createdByData,
                 resolvedByData: resolvedByData,
                 dailyReportData: dailyReportData,
+                filesData: filesData,
               ),
           createCompanionCallback:
               ({
@@ -37204,8 +37272,8 @@ class $$WarningsTableTableManager
                 required int roadID,
                 required int workScopeID,
                 Value<int?> contractRelationID = const Value.absent(),
-                required String fromSection,
-                required String toSection,
+                Value<String?> fromSection = const Value.absent(),
+                Value<String?> toSection = const Value.absent(),
                 Value<bool> requiresAction = const Value.absent(),
                 Value<bool> isResolved = const Value.absent(),
                 Value<int?> resolvedByID = const Value.absent(),
@@ -37224,6 +37292,7 @@ class $$WarningsTableTableManager
                 Value<String?> createdByData = const Value.absent(),
                 Value<String?> resolvedByData = const Value.absent(),
                 Value<String?> dailyReportData = const Value.absent(),
+                Value<String?> filesData = const Value.absent(),
               }) => WarningsCompanion.insert(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -37259,6 +37328,7 @@ class $$WarningsTableTableManager
                 createdByData: createdByData,
                 resolvedByData: resolvedByData,
                 dailyReportData: dailyReportData,
+                filesData: filesData,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

@@ -691,8 +691,8 @@ class Warnings extends Table with SyncableTable {
   IntColumn get contractRelationID => integer().nullable()();
 
   // Section information (stored as text for flexibility)
-  TextColumn get fromSection => text()();
-  TextColumn get toSection => text()();
+  TextColumn get fromSection => text().nullable()();
+  TextColumn get toSection => text().nullable()();
 
   // Completion tracking
   BoolColumn get requiresAction =>
@@ -727,6 +727,7 @@ class Warnings extends Table with SyncableTable {
       text().nullable()(); // JSON: CreatedByResponse
   TextColumn get dailyReportData =>
       text().nullable()(); // JSON: DailyReportResponse
+  TextColumn get filesData => text().nullable()(); // JSON: files data
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -770,7 +771,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 22; // Added dailyReportData column to Warnings table
+  int get schemaVersion => 23; // Alter warning tables
 
   @override
   MigrationStrategy get migration {
@@ -1196,13 +1197,62 @@ class AppDatabase extends _$AppDatabase {
           // Migration from version 21 to 22:
           // Add dailyReportData column to Warnings table
 
-          await m.addColumn(
-            schema.warnings,
-            schema.warnings.dailyReportData,
-          );
+          await m.addColumn(schema.warnings, schema.warnings.dailyReportData);
 
           print(
             '✅ Migration 21→22: Added dailyReportData column to Warnings table',
+          );
+        },
+        from22To23: (m, schema) async {
+          // Migration from version 22 to 23:
+          // 1. Make fromSection and toSection nullable in Warnings table
+          // 2. Add filesData column to Warnings table
+
+          // SQLite doesn't support altering column nullability directly
+          // We need to recreate the table
+
+          // Disable foreign keys temporarily
+          await customStatement('PRAGMA foreign_keys = OFF');
+
+          // Rename existing table
+          await customStatement('ALTER TABLE warnings RENAME TO warnings_old');
+
+          // Create new table with new schema
+          await m.createTable(schema.warnings);
+
+          // Copy data from old table to new table
+          // fromSection and toSection will automatically become nullable
+          await customStatement('''
+            INSERT INTO warnings (
+              id, uid, warning_type, daily_report_i_d, company_i_d, road_i_d,
+              work_scope_i_d, contract_relation_i_d, from_section, to_section,
+              requires_action, is_resolved, resolved_by_i_d, resolved_at,
+              resolution_notes, longitude, latitude, description, created_by_i_d,
+              created_at, updated_at, is_synced, deleted_at, sync_action,
+              sync_retry_count, sync_error, last_sync_attempt, warning_items_data,
+              road_data, work_scope_data, company_data, created_by_data,
+              resolved_by_data, daily_report_data
+            )
+            SELECT 
+              id, uid, warning_type, daily_report_i_d, company_i_d, road_i_d,
+              work_scope_i_d, contract_relation_i_d, from_section, to_section,
+              requires_action, is_resolved, resolved_by_i_d, resolved_at,
+              resolution_notes, longitude, latitude, description, created_by_i_d,
+              created_at, updated_at, is_synced, deleted_at, sync_action,
+              sync_retry_count, sync_error, last_sync_attempt, warning_items_data,
+              road_data, work_scope_data, company_data, created_by_data,
+              resolved_by_data, daily_report_data
+            FROM warnings_old
+          ''');
+
+          // Drop old table
+          await customStatement('DROP TABLE warnings_old');
+
+          // Re-enable foreign keys
+          await customStatement('PRAGMA foreign_keys = ON');
+
+          print(
+            '✅ Migration 22→23: Made fromSection/toSection nullable and added filesData column to Warnings table',
           );
         },
       ),

@@ -43,7 +43,7 @@ class CompanySelectionContent extends StatelessWidget {
             'Choose Company to Manage',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: ResponsiveHelper.fontSize(context, base: 24),
+              fontSize: ResponsiveHelper.fontSize(context, base: 20),
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
@@ -130,7 +130,7 @@ class CompanySelectionContent extends StatelessWidget {
                 ),
                 width: ResponsiveHelper.adaptive(
                   context,
-                  mobile: 350,
+                  mobile: 300,
                   tablet: 400,
                   desktop: 450,
                 ),

@@ -60,6 +60,9 @@ _DailyReportModel _$DailyReportModelFromJson(
   files: (json['files'] as List<dynamic>?)
       ?.map((e) => FileModel.fromJson(e as Map<String, dynamic>))
       .toList(),
+  warning: json['warning'] == null
+      ? null
+      : WarningResponseModel.fromJson(json['warning'] as Map<String, dynamic>),
   isSynced: json['isSynced'] as bool? ?? false,
   deletedAt: json['deletedAt'] == null
       ? null
@@ -103,6 +106,7 @@ Map<String, dynamic> _$DailyReportModelToJson(_DailyReportModel instance) =>
       'equipments': instance.equipments,
       'reportQuantities': instance.reportQuantities,
       'files': instance.files,
+      'warning': instance.warning,
       'isSynced': instance.isSynced,
       'deletedAt': instance.deletedAt?.toIso8601String(),
       'syncAction': instance.syncAction,

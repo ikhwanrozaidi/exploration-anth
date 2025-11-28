@@ -116,8 +116,8 @@ class _RootPageState extends State<RootPage> {
       ),
 
       floatingActionButton: SizedBox(
-        width: 56,
-        height: 56,
+        width: 65,
+        height: 65,
         child: FloatingActionButton(
           onPressed: () {
             showShortcutSelection(context: context);
@@ -126,8 +126,8 @@ class _RootPageState extends State<RootPage> {
           backgroundColor: Colors.transparent,
           shape: const CircleBorder(),
           child: Container(
-            width: 56,
-            height: 56,
+            width: 65,
+            height: 65,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               gradient: LinearGradient(
@@ -189,7 +189,7 @@ class _CustomBottomNavigationBar extends StatelessWidget {
       color: Colors.white,
       elevation: 8.0,
       child: SizedBox(
-        height: 100,
+        height: 70,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -216,7 +216,9 @@ class _CustomBottomNavigationBar extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 80), // Space for FAB notch
+
+            const SizedBox(width: 60),
+
             Expanded(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -267,14 +269,14 @@ class _NavBarItem extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(vertical: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
               isSelected ? selectedImagePath : imagePath,
-              width: 24,
-              height: ResponsiveHelper.getHeight(context, 0.025),
+              width: 22,
+              height: 22,
             ),
             const SizedBox(height: 4),
             Text(

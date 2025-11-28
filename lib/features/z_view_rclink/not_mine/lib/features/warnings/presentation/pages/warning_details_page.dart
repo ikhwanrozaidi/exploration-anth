@@ -6,6 +6,7 @@ import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/divider_config.dart';
 import '../../../../shared/widgets/theme_listtile_widget.dart';
+import '../../../daily_report/presentation/widgets/report_detail/daily_report_detail_quantity_card.dart';
 import '../../domain/entities/warning.dart';
 import '../bloc/warning_details/warning_details_bloc.dart';
 import '../bloc/warning_details/warning_details_event.dart';
@@ -575,14 +576,16 @@ class _WarningDetailsPageContent extends StatelessWidget {
 
                       SizedBox(height: 20),
 
-                      // // Quantities
-                      // if (report.reportQuantities != null &&
-                      //     report.reportQuantities!.isNotEmpty)
-                      //   ...report.reportQuantities!.map((reportQuantity) {
-                      //     return DailyReportDetailQuantityCard(
-                      //       reportQuantity: reportQuantity,
-                      //     );
-                      //   }),
+                      // Quantities
+                      if (warning.dailyReport?.reportQuantities != null &&
+                          warning.dailyReport!.reportQuantities!.isNotEmpty)
+                        ...warning.dailyReport!.reportQuantities.map((
+                          reportQuantity,
+                        ) {
+                          return DailyReportDetailQuantityCard(
+                            reportQuantity: reportQuantity,
+                          );
+                        }),
 
                       // SizedBox(height: 20),
 

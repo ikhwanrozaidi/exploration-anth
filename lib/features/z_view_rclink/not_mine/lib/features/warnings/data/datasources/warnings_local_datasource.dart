@@ -162,10 +162,8 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
       roadID: Value(warning.roadID),
       workScopeID: Value(warning.workScopeID),
       contractRelationID: Value(warning.contractRelationID),
-
-      /// ------ Need to migrate database
-      // fromSection: Value(warning.fromSection),
-      // toSection: Value(warning.toSection),
+      fromSection: Value(warning.fromSection),
+      toSection: Value(warning.toSection),
       requiresAction: Value(warning.requiresAction),
       isResolved: Value(warning.isResolved),
       resolvedByID: Value(warning.resolvedByID),
@@ -184,9 +182,7 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
       workScopeData: Value(workScopeData),
       createdByData: Value(createdByData),
       resolvedByData: Value(resolvedByData),
-
-      /// ------ Need to migrate database
-      // filesData: Value(filesData),
+      filesData: Value(filesData),
       dailyReportData: Value(dailyReportData),
       isSynced: const Value(true),
     );
