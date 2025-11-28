@@ -454,7 +454,7 @@ class _WarningPageState extends State<WarningPage> {
       }
     ],
 
-    
+
     "dailyReport": {
       "id": 84,
       "uid": "22dd83f1-ad8c-4b88-86f6-7b562cb56fa4",
@@ -506,6 +506,7 @@ class _WarningPageState extends State<WarningPage> {
           }
         }
       ],
+
       "reportQuantities": [
         {
           "quantityType": {
@@ -596,6 +597,8 @@ class _WarningPageState extends State<WarningPage> {
             }
           ]
         },
+
+        
         {
           "quantityType": {
             "name": "Memotong Rumput",
