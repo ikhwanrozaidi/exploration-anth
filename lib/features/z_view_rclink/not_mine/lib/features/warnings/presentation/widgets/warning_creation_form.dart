@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:rclink_app/shared/utils/theme.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/widgets/custom_tab_widget.dart';
+import '../../../road/domain/entities/road_entity.dart';
 import '../../../road/presentation/helper/road_level.dart';
 import '../../../road/presentation/helper/road_selection_result.dart';
 import '../../../road/presentation/pages/road_field_tile.dart';
@@ -9,11 +10,14 @@ import '../../../work_scope/presentation/pages/work_scope_field_tile.dart';
 
 /// Form container with all selection fields
 class WarningCreationForm extends StatefulWidget {
-  final ValueChanged<bool>?
-  onValidationChanged; // Callback for validation state
+  final ValueChanged<bool>? onValidationChanged;
+  final ValueChanged<Map<String, dynamic>>? onDataChanged;
 
-  const WarningCreationForm({Key? key, this.onValidationChanged})
-    : super(key: key);
+  const WarningCreationForm({
+    Key? key,
+    this.onValidationChanged,
+    this.onDataChanged,
+  }) : super(key: key);
 
   @override
   State<WarningCreationForm> createState() => _WarningCreationFormState();
@@ -33,11 +37,13 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
   double? _roadSectionFinish;
 
   // Form field values
-  String? selectedScopeUID;
+  String? selectedScopeID;
   String? selectedLocationDisplay;
   String? selectedSectionValue;
   String? selectedSectionStartValue;
   String? selectedSectionEndValue;
+  String? selectedScopeName;
+  Road? selectedRoad;
 
   @override
   void dispose() {
@@ -49,7 +55,7 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
 
   // Check if form is valid
   bool get _isFormValid {
-    final hasScopeSelected = selectedScopeUID != null;
+    final hasScopeSelected = selectedScopeID != null;
     final hasLocationSelected = selectedLocationDisplay != null;
 
     bool hasSectionValue;
@@ -73,6 +79,20 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
     }
   }
 
+  void _notifyDataChanged() {
+    if (widget.onDataChanged != null) {
+      widget.onDataChanged!({
+        'scopeID': selectedScopeID,
+        'scopeName': selectedScopeName,
+        'road': selectedRoad,
+        'isRangeMode': _isRangeMode,
+        'sectionSingle': _isRangeMode ? null : _sectionController.text,
+        'sectionStart': _isRangeMode ? _sectionStartController.text : null,
+        'sectionEnd': _isRangeMode ? _sectionEndController.text : null,
+      });
+    }
+  }
+
   void _toggleSectionMode() {
     FocusScope.of(context).unfocus();
 
@@ -90,6 +110,7 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
     });
 
     _notifyValidationChanged();
+    _notifyDataChanged();
   }
 
   void _validateSingleSection(String value) {
@@ -234,10 +255,12 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
                 );
 
                 setState(() {
-                  selectedScopeUID = selectedData['uid'];
+                  selectedScopeID = selectedData['id'];
+                  selectedScopeName = selectedData['name'];
                 });
 
                 _notifyValidationChanged();
+                _notifyDataChanged();
               },
             ),
 
@@ -254,6 +277,7 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
                       ? '${result.selectedRoad!.name!} (${result.selectedRoad!.roadNo!})'
                       : result.selectedRoad!.name!;
 
+                  selectedRoad = result.selectedRoad;
                   _roadSectionStart = result.selectedRoad?.sectionStart;
                   _roadSectionFinish = result.selectedRoad?.sectionFinish;
 
@@ -265,6 +289,7 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
                 });
 
                 _notifyValidationChanged();
+                _notifyDataChanged();
               },
             ),
 
@@ -374,19 +399,6 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
                                       ? _buildRangeSectionInputs()
                                       : _buildSingleSectionInput(),
 
-                                  // if (_errorMessage != null) ...[
-                                  //   const SizedBox(height: 5),
-                                  //   Text(
-                                  //     _errorMessage!,
-                                  //     style: TextStyle(
-                                  //       color: Colors.red,
-                                  //       fontSize: ResponsiveHelper.fontSize(
-                                  //         context,
-                                  //         base: 11,
-                                  //       ),
-                                  //     ),
-                                  //   ),
-                                  // ],
                                   if (_roadSectionStart != null &&
                                       _roadSectionFinish != null) ...[
                                     const SizedBox(height: 5),
@@ -427,6 +439,7 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
       controller: _sectionController,
       onChanged: (value) {
         _validateSingleSection(value);
+        _notifyDataChanged();
         print('Single section: $value');
       },
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -467,6 +480,7 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
             controller: _sectionStartController,
             onChanged: (value) {
               _validateRangeSection();
+              _notifyDataChanged();
               print('Section start: $value');
             },
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -519,6 +533,7 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
             controller: _sectionEndController,
             onChanged: (value) {
               _validateRangeSection();
+              _notifyDataChanged();
               print('Section end: $value');
             },
             keyboardType: const TextInputType.numberWithOptions(decimal: true),

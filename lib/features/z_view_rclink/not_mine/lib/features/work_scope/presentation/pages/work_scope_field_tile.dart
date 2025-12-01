@@ -47,6 +47,7 @@ class WorkScopeFieldTile extends StatefulWidget {
 class _WorkScopeFieldTileState extends State<WorkScopeFieldTile> {
   String selectedScopeDisplay = '';
   String? selectedScopeUID;
+  String? selectedScopeID;
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +79,7 @@ class _WorkScopeFieldTileState extends State<WorkScopeFieldTile> {
                 setState(() {
                   selectedScopeDisplay = selectedData['displayText'];
                   selectedScopeUID = selectedData['uid'];
+                  selectedScopeID = selectedData['id'].toString();
                 });
 
                 widget.onScopeSelected?.call(selectedData);

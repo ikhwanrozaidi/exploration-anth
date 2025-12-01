@@ -54,6 +54,7 @@ void showWorkScopeSelection({
 
       // Prepare data to pass back to caller
       final Map<String, dynamic> selectedData = {
+        'id': selectedScope.id.toString(),
         'uid': selectedScope.uid,
         'displayText': selectedName,
         'code': selectedScope.code,

@@ -42,7 +42,7 @@ class CustomFieldTile extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(bottom: 20),
+        margin: EdgeInsets.only(bottom: 15),
         padding: ResponsiveHelper.padding(
           context,
           horizontal: 15,
@@ -69,7 +69,10 @@ class CustomFieldTile extends StatelessWidget {
                     child: Center(
                       child: icon == null
                           ? SizedBox(
-                              height: 22,
+                              height: ResponsiveHelper.iconSize(
+                                context,
+                                base: 15,
+                              ),
                               child: Image.asset(
                                 imageIcon ?? '',
                                 fit: BoxFit.contain,
@@ -78,19 +81,21 @@ class CustomFieldTile extends StatelessWidget {
                           : Icon(icon, color: iconColor ?? primaryColor),
                     ),
                   ),
+
                   const SizedBox(width: 20),
+
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
                           title,
-                          style: TextStyle(fontSize: 14, color: Colors.black),
+                          style: TextStyle(fontSize: 12, color: Colors.black),
                         ),
                         Text(
                           displayText,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 13,
                             fontWeight: FontWeight.w700,
                             color: isFilled
                                 ? const Color.fromARGB(255, 46, 232, 142)
@@ -113,6 +118,7 @@ class CustomFieldTile extends StatelessWidget {
               child: Icon(
                 Icons.chevron_right_rounded,
                 color: iconColor ?? Theme.of(context).primaryColor,
+                size: ResponsiveHelper.iconSize(context, base: 20),
               ),
             ),
           ],

@@ -4,6 +4,7 @@ import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../road/domain/entities/road_entity.dart';
 import '../widgets/warning_creation_form.dart';
+import 'warning_draft_page.dart';
 
 class WarningCreationPage extends StatefulWidget {
   final String? draftUID; // Optional draft UID for editing drafts
@@ -20,11 +21,15 @@ class WarningCreationPage extends StatefulWidget {
 }
 
 class _WarningCreationPageState extends State<WarningCreationPage> {
-  String? selectedWorkScopeUID;
-  String? selectedWorkScopeCode;
-  String? selectedWorkScopeName;
-
   bool _isFormValid = false;
+
+  String? _scopeID;
+  String? _scopeName;
+  Road? _road;
+  bool _isRangeMode = false;
+  String? _sectionSingle;
+  String? _sectionStart;
+  String? _sectionEnd;
 
   @override
   void dispose() {
@@ -136,13 +141,67 @@ class _WarningCreationPageState extends State<WarningCreationPage> {
                                 _isFormValid = isValid;
                               });
                             },
+                            onDataChanged: (data) {
+                              setState(() {
+                                _scopeID = data['scopeID'] as String?;
+                                _scopeName = data['scopeName'] as String?;
+                                _road = data['road'] as Road?;
+                                _isRangeMode =
+                                    data['isRangeMode'] as bool? ?? false;
+                                _sectionSingle =
+                                    data['sectionSingle'] as String?;
+                                _sectionStart = data['sectionStart'] as String?;
+                                _sectionEnd = data['sectionEnd'] as String?;
+                              });
+                            },
                           ),
                         ),
 
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: _isFormValid ? () {} : null,
+                            onPressed: _isFormValid
+                                ? () {
+                                    if (_scopeID == null ||
+                                        _scopeID!.isEmpty ||
+                                        _scopeName == null ||
+                                        _scopeName!.isEmpty ||
+                                        _road == null) {
+                                      return;
+                                    }
+
+                                    final String startSection = _isRangeMode
+                                        ? (_sectionStart ?? '')
+                                        : (_sectionSingle ?? '');
+
+                                    final String? endSection = _isRangeMode
+                                        ? _sectionEnd
+                                        : null;
+
+                                    if (startSection.isEmpty) {
+                                      return;
+                                    }
+
+                                    if (_isRangeMode &&
+                                        (endSection == null ||
+                                            endSection.isEmpty)) {
+                                      return;
+                                    }
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => WarningDraftPage(
+                                          scopeID: _scopeID!,
+                                          scopeName: _scopeName!,
+                                          road: _road!,
+                                          startSection: startSection,
+                                          endSection: endSection,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                : null,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: primaryColor,
                               disabledBackgroundColor: Colors.grey[300],
