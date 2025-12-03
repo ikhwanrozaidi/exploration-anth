@@ -49,4 +49,8 @@ abstract class SiteWarningDraftEvent with _$SiteWarningDraftEvent {
   const factory SiteWarningDraftEvent.submitWarning({
     required String companyUID,
   }) = SubmitWarning;
+
+  const factory SiteWarningDraftEvent.loadDraftList({
+    required String companyUID,
+  }) = LoadDraftList;
 }

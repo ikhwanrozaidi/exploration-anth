@@ -55,7 +55,7 @@ extension SiteWarningDraftEventPatterns on SiteWarningDraftEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InitializeDraft value)?  initializeDraft,TResult Function( UpdateLocation value)?  updateLocation,TResult Function( UpdateContractor value)?  updateContractor,TResult Function( UpdateWarningReasons value)?  updateWarningReasons,TResult Function( UpdateDescription value)?  updateDescription,TResult Function( AutoSaveDraft value)?  autoSaveDraft,TResult Function( LoadExistingDraft value)?  loadExistingDraft,TResult Function( DeleteDraft value)?  deleteDraft,TResult Function( SubmitWarning value)?  submitWarning,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InitializeDraft value)?  initializeDraft,TResult Function( UpdateLocation value)?  updateLocation,TResult Function( UpdateContractor value)?  updateContractor,TResult Function( UpdateWarningReasons value)?  updateWarningReasons,TResult Function( UpdateDescription value)?  updateDescription,TResult Function( AutoSaveDraft value)?  autoSaveDraft,TResult Function( LoadExistingDraft value)?  loadExistingDraft,TResult Function( DeleteDraft value)?  deleteDraft,TResult Function( SubmitWarning value)?  submitWarning,TResult Function( LoadDraftList value)?  loadDraftList,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
@@ -67,7 +67,8 @@ return updateDescription(_that);case AutoSaveDraft() when autoSaveDraft != null:
 return autoSaveDraft(_that);case LoadExistingDraft() when loadExistingDraft != null:
 return loadExistingDraft(_that);case DeleteDraft() when deleteDraft != null:
 return deleteDraft(_that);case SubmitWarning() when submitWarning != null:
-return submitWarning(_that);case _:
+return submitWarning(_that);case LoadDraftList() when loadDraftList != null:
+return loadDraftList(_that);case _:
   return orElse();
 
 }
@@ -85,7 +86,7 @@ return submitWarning(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InitializeDraft value)  initializeDraft,required TResult Function( UpdateLocation value)  updateLocation,required TResult Function( UpdateContractor value)  updateContractor,required TResult Function( UpdateWarningReasons value)  updateWarningReasons,required TResult Function( UpdateDescription value)  updateDescription,required TResult Function( AutoSaveDraft value)  autoSaveDraft,required TResult Function( LoadExistingDraft value)  loadExistingDraft,required TResult Function( DeleteDraft value)  deleteDraft,required TResult Function( SubmitWarning value)  submitWarning,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InitializeDraft value)  initializeDraft,required TResult Function( UpdateLocation value)  updateLocation,required TResult Function( UpdateContractor value)  updateContractor,required TResult Function( UpdateWarningReasons value)  updateWarningReasons,required TResult Function( UpdateDescription value)  updateDescription,required TResult Function( AutoSaveDraft value)  autoSaveDraft,required TResult Function( LoadExistingDraft value)  loadExistingDraft,required TResult Function( DeleteDraft value)  deleteDraft,required TResult Function( SubmitWarning value)  submitWarning,required TResult Function( LoadDraftList value)  loadDraftList,}){
 final _that = this;
 switch (_that) {
 case InitializeDraft():
@@ -97,7 +98,8 @@ return updateDescription(_that);case AutoSaveDraft():
 return autoSaveDraft(_that);case LoadExistingDraft():
 return loadExistingDraft(_that);case DeleteDraft():
 return deleteDraft(_that);case SubmitWarning():
-return submitWarning(_that);case _:
+return submitWarning(_that);case LoadDraftList():
+return loadDraftList(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -114,7 +116,7 @@ return submitWarning(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InitializeDraft value)?  initializeDraft,TResult? Function( UpdateLocation value)?  updateLocation,TResult? Function( UpdateContractor value)?  updateContractor,TResult? Function( UpdateWarningReasons value)?  updateWarningReasons,TResult? Function( UpdateDescription value)?  updateDescription,TResult? Function( AutoSaveDraft value)?  autoSaveDraft,TResult? Function( LoadExistingDraft value)?  loadExistingDraft,TResult? Function( DeleteDraft value)?  deleteDraft,TResult? Function( SubmitWarning value)?  submitWarning,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InitializeDraft value)?  initializeDraft,TResult? Function( UpdateLocation value)?  updateLocation,TResult? Function( UpdateContractor value)?  updateContractor,TResult? Function( UpdateWarningReasons value)?  updateWarningReasons,TResult? Function( UpdateDescription value)?  updateDescription,TResult? Function( AutoSaveDraft value)?  autoSaveDraft,TResult? Function( LoadExistingDraft value)?  loadExistingDraft,TResult? Function( DeleteDraft value)?  deleteDraft,TResult? Function( SubmitWarning value)?  submitWarning,TResult? Function( LoadDraftList value)?  loadDraftList,}){
 final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
@@ -126,7 +128,8 @@ return updateDescription(_that);case AutoSaveDraft() when autoSaveDraft != null:
 return autoSaveDraft(_that);case LoadExistingDraft() when loadExistingDraft != null:
 return loadExistingDraft(_that);case DeleteDraft() when deleteDraft != null:
 return deleteDraft(_that);case SubmitWarning() when submitWarning != null:
-return submitWarning(_that);case _:
+return submitWarning(_that);case LoadDraftList() when loadDraftList != null:
+return loadDraftList(_that);case _:
   return null;
 
 }
@@ -143,7 +146,7 @@ return submitWarning(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)?  initializeDraft,TResult Function( double latitude,  double longitude)?  updateLocation,TResult Function( ContractorRelation contractor)?  updateContractor,TResult Function( List<String> warningReasonUIDs)?  updateWarningReasons,TResult Function( String description)?  updateDescription,TResult Function()?  autoSaveDraft,TResult Function( String draftUID)?  loadExistingDraft,TResult Function( String draftUID)?  deleteDraft,TResult Function( String companyUID)?  submitWarning,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)?  initializeDraft,TResult Function( double latitude,  double longitude)?  updateLocation,TResult Function( ContractorRelation contractor)?  updateContractor,TResult Function( List<String> warningReasonUIDs)?  updateWarningReasons,TResult Function( String description)?  updateDescription,TResult Function()?  autoSaveDraft,TResult Function( String draftUID)?  loadExistingDraft,TResult Function( String draftUID)?  deleteDraft,TResult Function( String companyUID)?  submitWarning,TResult Function( String companyUID)?  loadDraftList,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
 return initializeDraft(_that.companyUID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection);case UpdateLocation() when updateLocation != null:
@@ -154,7 +157,8 @@ return updateDescription(_that.description);case AutoSaveDraft() when autoSaveDr
 return autoSaveDraft();case LoadExistingDraft() when loadExistingDraft != null:
 return loadExistingDraft(_that.draftUID);case DeleteDraft() when deleteDraft != null:
 return deleteDraft(_that.draftUID);case SubmitWarning() when submitWarning != null:
-return submitWarning(_that.companyUID);case _:
+return submitWarning(_that.companyUID);case LoadDraftList() when loadDraftList != null:
+return loadDraftList(_that.companyUID);case _:
   return orElse();
 
 }
@@ -172,7 +176,7 @@ return submitWarning(_that.companyUID);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)  initializeDraft,required TResult Function( double latitude,  double longitude)  updateLocation,required TResult Function( ContractorRelation contractor)  updateContractor,required TResult Function( List<String> warningReasonUIDs)  updateWarningReasons,required TResult Function( String description)  updateDescription,required TResult Function()  autoSaveDraft,required TResult Function( String draftUID)  loadExistingDraft,required TResult Function( String draftUID)  deleteDraft,required TResult Function( String companyUID)  submitWarning,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)  initializeDraft,required TResult Function( double latitude,  double longitude)  updateLocation,required TResult Function( ContractorRelation contractor)  updateContractor,required TResult Function( List<String> warningReasonUIDs)  updateWarningReasons,required TResult Function( String description)  updateDescription,required TResult Function()  autoSaveDraft,required TResult Function( String draftUID)  loadExistingDraft,required TResult Function( String draftUID)  deleteDraft,required TResult Function( String companyUID)  submitWarning,required TResult Function( String companyUID)  loadDraftList,}) {final _that = this;
 switch (_that) {
 case InitializeDraft():
 return initializeDraft(_that.companyUID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection);case UpdateLocation():
@@ -183,7 +187,8 @@ return updateDescription(_that.description);case AutoSaveDraft():
 return autoSaveDraft();case LoadExistingDraft():
 return loadExistingDraft(_that.draftUID);case DeleteDraft():
 return deleteDraft(_that.draftUID);case SubmitWarning():
-return submitWarning(_that.companyUID);case _:
+return submitWarning(_that.companyUID);case LoadDraftList():
+return loadDraftList(_that.companyUID);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,7 +205,7 @@ return submitWarning(_that.companyUID);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)?  initializeDraft,TResult? Function( double latitude,  double longitude)?  updateLocation,TResult? Function( ContractorRelation contractor)?  updateContractor,TResult? Function( List<String> warningReasonUIDs)?  updateWarningReasons,TResult? Function( String description)?  updateDescription,TResult? Function()?  autoSaveDraft,TResult? Function( String draftUID)?  loadExistingDraft,TResult? Function( String draftUID)?  deleteDraft,TResult? Function( String companyUID)?  submitWarning,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)?  initializeDraft,TResult? Function( double latitude,  double longitude)?  updateLocation,TResult? Function( ContractorRelation contractor)?  updateContractor,TResult? Function( List<String> warningReasonUIDs)?  updateWarningReasons,TResult? Function( String description)?  updateDescription,TResult? Function()?  autoSaveDraft,TResult? Function( String draftUID)?  loadExistingDraft,TResult? Function( String draftUID)?  deleteDraft,TResult? Function( String companyUID)?  submitWarning,TResult? Function( String companyUID)?  loadDraftList,}) {final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
 return initializeDraft(_that.companyUID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection);case UpdateLocation() when updateLocation != null:
@@ -211,7 +216,8 @@ return updateDescription(_that.description);case AutoSaveDraft() when autoSaveDr
 return autoSaveDraft();case LoadExistingDraft() when loadExistingDraft != null:
 return loadExistingDraft(_that.draftUID);case DeleteDraft() when deleteDraft != null:
 return deleteDraft(_that.draftUID);case SubmitWarning() when submitWarning != null:
-return submitWarning(_that.companyUID);case _:
+return submitWarning(_that.companyUID);case LoadDraftList() when loadDraftList != null:
+return loadDraftList(_that.companyUID);case _:
   return null;
 
 }
@@ -789,6 +795,72 @@ class _$SubmitWarningCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? companyUID = null,}) {
   return _then(SubmitWarning(
+companyUID: null == companyUID ? _self.companyUID : companyUID // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class LoadDraftList implements SiteWarningDraftEvent {
+  const LoadDraftList({required this.companyUID});
+  
+
+ final  String companyUID;
+
+/// Create a copy of SiteWarningDraftEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LoadDraftListCopyWith<LoadDraftList> get copyWith => _$LoadDraftListCopyWithImpl<LoadDraftList>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadDraftList&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,companyUID);
+
+@override
+String toString() {
+  return 'SiteWarningDraftEvent.loadDraftList(companyUID: $companyUID)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LoadDraftListCopyWith<$Res> implements $SiteWarningDraftEventCopyWith<$Res> {
+  factory $LoadDraftListCopyWith(LoadDraftList value, $Res Function(LoadDraftList) _then) = _$LoadDraftListCopyWithImpl;
+@useResult
+$Res call({
+ String companyUID
+});
+
+
+
+
+}
+/// @nodoc
+class _$LoadDraftListCopyWithImpl<$Res>
+    implements $LoadDraftListCopyWith<$Res> {
+  _$LoadDraftListCopyWithImpl(this._self, this._then);
+
+  final LoadDraftList _self;
+  final $Res Function(LoadDraftList) _then;
+
+/// Create a copy of SiteWarningDraftEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? companyUID = null,}) {
+  return _then(LoadDraftList(
 companyUID: null == companyUID ? _self.companyUID : companyUID // ignore: cast_nullable_to_non_nullable
 as String,
   ));

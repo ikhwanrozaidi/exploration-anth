@@ -30,9 +30,9 @@ class WarningRepositoryImpl
     DatabaseService databaseService,
     ImageLocalDataSource imageLocalDataSource,
   ) : super(
-          databaseService: databaseService,
-          imageLocalDataSource: imageLocalDataSource,
-        );
+        databaseService: databaseService,
+        imageLocalDataSource: imageLocalDataSource,
+      );
 
   @override
   Future<Either<Failure, List<Warning>>> getWarnings({
@@ -178,15 +178,18 @@ class WarningRepositoryImpl
           print('🟢 [WarningRepository] Executing local update...');
           // Step 1: Update locally with optimistic response
           // Get the cached warning first
-          final cachedWarning =
-              await _localDataSource.getCachedWarningByUid(warningUID);
+          final cachedWarning = await _localDataSource.getCachedWarningByUid(
+            warningUID,
+          );
 
           if (cachedWarning == null) {
             print('❌ [WarningRepository] Warning not found in cache');
             throw Exception('Warning not found locally');
           }
 
-          print('🟢 [WarningRepository] Found cached warning, updating item...');
+          print(
+            '🟢 [WarningRepository] Found cached warning, updating item...',
+          );
 
           // Mark the specific item as completed
           final updatedWarningItems = cachedWarning.warningItems.map((item) {
@@ -214,7 +217,9 @@ class WarningRepositoryImpl
           // Cache the updated warning
           await _localDataSource.cacheSingleWarning(updatedWarning);
 
-          print('🟢 [WarningRepository] Local update complete, returning entity');
+          print(
+            '🟢 [WarningRepository] Local update complete, returning entity',
+          );
           return updatedWarning.toEntity();
         },
         remote: () {
@@ -254,6 +259,23 @@ class WarningRepositoryImpl
       return const Right(null);
     } catch (e) {
       return Left(CacheFailure('Failed to clear cache: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Warning>?>> getDraftWarnings(
+    String companyUID,
+  ) async {
+    try {
+      final drafts = await _localDataSource.getDraftWarnings(companyUID);
+
+      if (drafts == null) {
+        return const Right(null);
+      }
+
+      return Right(drafts.map((model) => model.toEntity()).toList());
+    } catch (e) {
+      return Left(CacheFailure(e.toString()));
     }
   }
 }

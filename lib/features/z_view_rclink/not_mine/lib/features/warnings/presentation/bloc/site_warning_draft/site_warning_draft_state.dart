@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../contractor_relation/domain/entities/contractor_relation_entity.dart';
 import '../../../../road/domain/entities/road_entity.dart';
+import '../../../domain/entities/warning.dart';
 
 part 'site_warning_draft_state.freezed.dart';
 
@@ -35,6 +36,10 @@ abstract class SiteWarningDraftState with _$SiteWarningDraftState {
     required Failure failure,
     SiteWarningDraftData? draftData,
   }) = SiteWarningDraftError;
+
+  const factory SiteWarningDraftState.draftListLoaded({
+    required List<Warning> drafts,
+  }) = SiteWarningDraftListLoaded;
 }
 
 // Data class to hold all warning draft fields

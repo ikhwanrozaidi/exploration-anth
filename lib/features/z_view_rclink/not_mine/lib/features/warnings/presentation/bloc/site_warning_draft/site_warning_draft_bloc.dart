@@ -2,7 +2,11 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../../core/di/injection.dart';
 import '../../../../../core/errors/failures.dart';
+import '../../../../company/presentation/bloc/company_bloc.dart';
+import '../../../../company/presentation/bloc/company_state.dart';
+import '../../../../road/domain/entities/road_entity.dart';
 import '../../../data/datasources/warnings_local_datasource.dart';
 import '../../../data/models/create_warning_model.dart';
 import 'site_warning_draft_event.dart';
@@ -36,6 +40,7 @@ class SiteWarningDraftBloc
 
     // Submission
     on<SubmitWarning>(_onSubmitWarning);
+    on<LoadDraftList>(_onLoadDraftList);
   }
 
   @override
@@ -45,29 +50,15 @@ class SiteWarningDraftBloc
   }
 
   // ------------------------------------------------------- Helper
-  SiteWarningDraftData _getCurrentDraftData() {
+  SiteWarningDraftData? _getCurrentDraftDataOrNull() {
     return state.maybeMap(
       editing: (state) => state.draftData,
       autoSaving: (state) => state.draftData,
       autoSaved: (state) => state.draftData,
       submitting: (state) => state.draftData,
       submitted: (state) => state.draftData,
-      error: (state) =>
-          state.draftData ??
-          const SiteWarningDraftData(
-            companyUID: '',
-            scopeUID: '',
-            scopeName: '',
-            road: null as dynamic,
-            startSection: '',
-          ),
-      orElse: () => const SiteWarningDraftData(
-        companyUID: '',
-        scopeUID: '',
-        scopeName: '',
-        road: null as dynamic,
-        startSection: '',
-      ),
+      error: (state) => state.draftData,
+      orElse: () => null,
     );
   }
 
@@ -112,7 +103,7 @@ class SiteWarningDraftBloc
       print('❌ Error creating draft: $e');
       emit(
         SiteWarningDraftState.error(
-          failure: Failure(message: 'Failed to create draft: $e'),
+          failure: ServerFailure('Failed to create draft: $e'),
         ),
       );
     }
@@ -136,27 +127,101 @@ class SiteWarningDraftBloc
         print('❌ Draft not found: ${event.draftUID}');
         emit(
           SiteWarningDraftState.error(
-            failure: Failure(message: 'Draft not found'),
+            failure: ServerFailure('Draft not found'),
           ),
         );
         return;
       }
 
-      // TODO: Convert WarningModel to SiteWarningDraftData
-      // This requires mapping the model fields back to draft data
       print('✅ Draft loaded: ${event.draftUID}');
 
-      // For now, emit error - we'll implement loading later
-      emit(
-        SiteWarningDraftState.error(
-          failure: Failure(message: 'Draft loading not implemented yet'),
-        ),
+      // Get work scope UID and name from the model
+      String workScopeUID = '';
+      String workScopeName = '';
+      if (draftWarning.workScope != null) {
+        workScopeUID = draftWarning.workScope!.uid;
+        workScopeName = draftWarning.workScope!.name;
+      }
+
+      // Convert road from RoadResponseModel to Road entity
+      Road road;
+      if (draftWarning.road != null) {
+        road = Road(
+          id: 0, // RoadResponseModel doesn't have id, only uid
+          uid: draftWarning.road!.uid,
+          name: draftWarning.road!.name,
+          roadNo: draftWarning.road!.roadNo,
+          sectionStart: null,
+          sectionFinish: null,
+          mainCategory: null,
+          secondaryCategory: null,
+          district: null,
+          createdAt: DateTime.now().toString(),
+          updatedAt: DateTime.now().toString(),
+        );
+      } else {
+        // Create empty road as fallback
+        road = Road(
+          id: 0,
+          uid: '',
+          name: 'Unknown Road',
+          roadNo: null,
+          sectionStart: null,
+          sectionFinish: null,
+          mainCategory: null,
+          secondaryCategory: null,
+          district: null,
+          createdAt: DateTime.now().toString(),
+          updatedAt: DateTime.now().toString(),
+        );
+      }
+
+      // Parse warning items to get reason UIDs
+      List<String> warningReasonUIDs = [];
+      if (draftWarning.warningItems.isNotEmpty) {
+        warningReasonUIDs = draftWarning.warningItems
+            .where((item) => item.warningReason != null)
+            .map((item) => item.warningReason!.uid)
+            .toList();
+      }
+
+      // Get company UID from company bloc
+      final companyState = getIt<CompanyBloc>().state;
+      String companyUID = '';
+      if (companyState is CompanyLoaded &&
+          companyState.selectedCompany != null) {
+        companyUID = companyState.selectedCompany!.uid;
+      }
+
+      // Create draft data from loaded warning
+      final draftData = SiteWarningDraftData(
+        draftUID: draftWarning.uid,
+        isDraftMode: true,
+        companyUID: companyUID,
+        scopeUID: workScopeUID,
+        scopeName: workScopeName,
+        road: road,
+        startSection: draftWarning.fromSection ?? '',
+        endSection: draftWarning.toSection,
+        latitude: draftWarning.latitude != null
+            ? double.tryParse(draftWarning.latitude!)
+            : null,
+        longitude: draftWarning.longitude != null
+            ? double.tryParse(draftWarning.longitude!)
+            : null,
+        contractor: null, // TODO: Load contractor from contractRelationID
+        warningReasonUIDs: warningReasonUIDs,
+        description: draftWarning.description ?? '',
       );
+
+      emit(SiteWarningDraftState.editing(draftData: draftData));
+
+      print('✅ Draft data loaded into state');
     } catch (e) {
       print('❌ Error loading draft: $e');
       emit(
         SiteWarningDraftState.error(
-          failure: Failure(message: 'Failed to load draft: $e'),
+          failure: ServerFailure('Failed to load draft: $e'),
         ),
       );
     }
@@ -185,7 +250,8 @@ class SiteWarningDraftBloc
     UpdateLocation event,
     Emitter<SiteWarningDraftState> emit,
   ) async {
-    final currentData = _getCurrentDraftData();
+    final currentData = _getCurrentDraftDataOrNull();
+    if (currentData == null) return;
 
     final updatedData = currentData.copyWith(
       latitude: event.latitude,
@@ -203,7 +269,8 @@ class SiteWarningDraftBloc
     UpdateContractor event,
     Emitter<SiteWarningDraftState> emit,
   ) async {
-    final currentData = _getCurrentDraftData();
+    final currentData = _getCurrentDraftDataOrNull();
+    if (currentData == null) return;
 
     final updatedData = currentData.copyWith(contractor: event.contractor);
 
@@ -218,7 +285,8 @@ class SiteWarningDraftBloc
     UpdateWarningReasons event,
     Emitter<SiteWarningDraftState> emit,
   ) async {
-    final currentData = _getCurrentDraftData();
+    final currentData = _getCurrentDraftDataOrNull();
+    if (currentData == null) return;
 
     final updatedData = currentData.copyWith(
       warningReasonUIDs: event.warningReasonUIDs,
@@ -235,7 +303,8 @@ class SiteWarningDraftBloc
     UpdateDescription event,
     Emitter<SiteWarningDraftState> emit,
   ) async {
-    final currentData = _getCurrentDraftData();
+    final currentData = _getCurrentDraftDataOrNull();
+    if (currentData == null) return;
 
     final updatedData = currentData.copyWith(description: event.description);
 
@@ -252,7 +321,9 @@ class SiteWarningDraftBloc
     Emitter<SiteWarningDraftState> emit,
   ) async {
     try {
-      final currentData = _getCurrentDraftData();
+      final currentData = _getCurrentDraftDataOrNull();
+      if (currentData == null) return;
+
       final draftUID = currentData.draftUID;
 
       print('🔍 [AUTO-SAVE DEBUG] Current state draft UID: $draftUID');
@@ -270,7 +341,7 @@ class SiteWarningDraftBloc
 
       // Convert draft data to CreateWarningModel
       final createModel = CreateWarningModel(
-        roadUID: currentData.road.uid,
+        roadUID: currentData.road.uid ?? '',
         workScopeUID: currentData.scopeUID,
         fromSection: double.tryParse(currentData.startSection),
         toSection: currentData.endSection != null
@@ -301,8 +372,10 @@ class SiteWarningDraftBloc
       print('❌ Error auto-saving draft: $e');
       // Don't emit error state for auto-save failures
       // Just log and continue
-      final currentData = _getCurrentDraftData();
-      emit(SiteWarningDraftState.editing(draftData: currentData));
+      final currentData = _getCurrentDraftDataOrNull();
+      if (currentData != null) {
+        emit(SiteWarningDraftState.editing(draftData: currentData));
+      }
     }
   }
 
@@ -312,7 +385,9 @@ class SiteWarningDraftBloc
     Emitter<SiteWarningDraftState> emit,
   ) async {
     try {
-      final currentData = _getCurrentDraftData();
+      final currentData = _getCurrentDraftDataOrNull();
+      if (currentData == null) return;
+
       final draftUID = currentData.draftUID;
 
       print('📤 Submitting warning: $draftUID');
@@ -334,11 +409,43 @@ class SiteWarningDraftBloc
       emit(SiteWarningDraftState.submitted(draftData: currentData));
     } catch (e) {
       print('❌ Error submitting warning: $e');
-      final currentData = _getCurrentDraftData();
+      final currentData = _getCurrentDraftDataOrNull();
       emit(
         SiteWarningDraftState.error(
-          failure: Failure(message: 'Failed to submit warning: $e'),
+          failure: ServerFailure('Failed to submit warning: $e'),
           draftData: currentData,
+        ),
+      );
+    }
+  }
+
+  /// Load list of draft warnings
+  Future<void> _onLoadDraftList(
+    LoadDraftList event,
+    Emitter<SiteWarningDraftState> emit,
+  ) async {
+    try {
+      print('📂 Loading draft list for company: ${event.companyUID}');
+
+      emit(const SiteWarningDraftState.loading());
+
+      final drafts = await _localDataSource.getDraftWarnings(event.companyUID);
+
+      if (drafts == null || drafts.isEmpty) {
+        print('📭 No drafts found');
+        emit(const SiteWarningDraftState.draftListLoaded(drafts: []));
+        return;
+      }
+
+      print('✅ Loaded ${drafts.length} drafts');
+
+      final draftEntities = drafts.map((model) => model.toEntity()).toList();
+      emit(SiteWarningDraftState.draftListLoaded(drafts: draftEntities));
+    } catch (e) {
+      print('❌ Error loading draft list: $e');
+      emit(
+        SiteWarningDraftState.error(
+          failure: ServerFailure('Failed to load drafts: $e'),
         ),
       );
     }

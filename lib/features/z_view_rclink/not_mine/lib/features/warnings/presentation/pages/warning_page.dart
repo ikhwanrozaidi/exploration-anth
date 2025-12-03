@@ -17,6 +17,7 @@ import '../../domain/entities/warning_type.dart';
 import '../bloc/warning_view/warning_bloc.dart';
 import '../bloc/warning_view/warning_event.dart';
 import '../bloc/warning_view/warning_state.dart';
+import '../widgets/view_sitewarning_draft_page.dart';
 import '../widgets/warning_list_widget.dart';
 import 'warning_creation_page.dart';
 
@@ -211,7 +212,15 @@ class _WarningPageContentState extends State<_WarningPageContent> {
                         ? Row(
                             children: [
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          ViewSitewarningDraftPage(),
+                                    ),
+                                  );
+                                },
 
                                 style: TextButton.styleFrom(
                                   backgroundColor: Colors.white,

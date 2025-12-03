@@ -27,6 +27,7 @@ abstract class WarningsLocalDataSource {
     CreateWarningModel data,
   );
   Future<void> deleteDraftWarning(String draftUID);
+  Future<List<WarningModel>?> getDraftWarnings(String companyUID);
 }
 
 @LazySingleton(as: WarningsLocalDataSource)
@@ -438,6 +439,8 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
   ) async {
     try {
       print('💾 Updating draft warning: $draftUID');
+      print('   Road UID: ${data.roadUID}');
+      print('   Work Scope UID: ${data.workScopeUID}');
 
       // Get road ID from roadUID
       final roadRecord = await (_database.select(
@@ -445,17 +448,16 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
       )..where((tbl) => tbl.uid.equals(data.roadUID))).getSingleOrNull();
 
       if (roadRecord == null) {
-        throw Exception('Road not found');
+        throw Exception('Road not found: ${data.roadUID}');
       }
+      print('✅ Road found: ${roadRecord.name} (ID: ${roadRecord.id})');
 
-      // Get work scope ID from workScopeUID
-      final workScopeRecord = await (_database.select(
-        _database.workScopes,
-      )..where((tbl) => tbl.uid.equals(data.workScopeUID))).getSingleOrNull();
-
-      if (workScopeRecord == null) {
-        throw Exception('Work scope not found');
-      }
+      // For work scope, we DON'T require it to be in cache
+      // We'll store the UID and use it directly for API submission
+      // The work scope ID in the database is just for local reference
+      print(
+        '⚠️ Skipping work scope database lookup - will use UID for API submission',
+      );
 
       // Get contractor relation ID if provided
       int? contractRelationID;
@@ -465,6 +467,9 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
                   ..where((tbl) => tbl.uid.equals(data.contractRelationUID!)))
                 .getSingleOrNull();
         contractRelationID = contractRelationRecord?.id;
+        if (contractRelationID != null) {
+          print('✅ Contractor relation found (ID: $contractRelationID)');
+        }
       }
 
       // Convert warning reason UIDs to warning items JSON
@@ -474,6 +479,49 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
             .map((uid) => {'warningReasonUID': uid})
             .toList();
         warningItemsJson = jsonEncode(warningItems);
+        print(
+          '✅ Warning items JSON created: ${data.warningReasonUIDs.length} items',
+        );
+      }
+
+      // Store work scope UID in JSON for API submission
+      final workScopeDataJson = jsonEncode({
+        'uid': data.workScopeUID,
+        'name': '', // We don't have the name, will be filled on load if needed
+      });
+
+      // Store road data as JSON for display
+      final roadDataJson = jsonEncode({
+        'uid': roadRecord.uid,
+        'name': roadRecord.name,
+        'roadNo': roadRecord.roadNo,
+      });
+
+      // Get company data
+      final companyRecord =
+          await (_database.select(_database.companies)..where(
+                (tbl) => tbl.uid.equals(draftUID.split('-').first),
+              )) // This won't work, need companyUID
+              .getSingleOrNull();
+
+      // For now, we'll fetch company from the warning record
+      final existingWarning = await (_database.select(
+        _database.warnings,
+      )..where((tbl) => tbl.uid.equals(draftUID))).getSingleOrNull();
+
+      String? companyDataJson;
+      if (existingWarning != null) {
+        final company =
+            await (_database.select(_database.companies)
+                  ..where((tbl) => tbl.id.equals(existingWarning.companyID)))
+                .getSingleOrNull();
+
+        if (company != null) {
+          companyDataJson = jsonEncode({
+            'uid': company.uid,
+            'name': company.name,
+          });
+        }
       }
 
       // Update draft warning
@@ -482,7 +530,7 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
       )..where((tbl) => tbl.uid.equals(draftUID))).write(
         WarningsCompanion(
           roadID: Value(roadRecord.id),
-          workScopeID: Value(workScopeRecord.id),
+          workScopeID: const Value(0), // Placeholder - not used for submission
           contractRelationID: Value(contractRelationID),
           fromSection: Value(data.fromSection?.toString()),
           toSection: Value(data.toSection?.toString()),
@@ -492,7 +540,10 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
           warningItemsData: Value(warningItemsJson),
           requiresAction: Value(data.requiresAction ?? true),
           updatedAt: Value(DateTime.now()),
-          status: const Value('DRAFT'), // Ensure status remains DRAFT
+          status: const Value('DRAFT'),
+          workScopeData: Value(workScopeDataJson), // Store UID for submission
+          roadData: Value(roadDataJson), // Store for display
+          companyData: Value(companyDataJson), // Store for display
         ),
       );
 
@@ -516,6 +567,77 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
     } catch (e) {
       print('❌ Error deleting draft warning: $e');
       rethrow;
+    }
+  }
+
+  @override
+  Future<List<WarningModel>?> getDraftWarnings(String companyUID) async {
+    try {
+      print('📂 Loading draft warnings for company: $companyUID');
+
+      // Get company record
+      final companyRecord = await (_database.select(
+        _database.companies,
+      )..where((tbl) => tbl.uid.equals(companyUID))).getSingleOrNull();
+
+      if (companyRecord == null) {
+        print('❌ Company not found: $companyUID');
+        return null;
+      }
+
+      print('✅ Company found: ${companyRecord.name} (ID: ${companyRecord.id})');
+
+      // Debug: Query ALL warnings for this company to see what's in the database
+      final allRecords =
+          await (_database.select(_database.warnings)
+                ..where((tbl) => tbl.companyID.equals(companyRecord.id))
+                ..orderBy([(tbl) => OrderingTerm.desc(tbl.updatedAt)]))
+              .get();
+
+      print(
+        '🔍 [DEBUG] Total warnings for company ${companyRecord.id}: ${allRecords.length}',
+      );
+      for (final record in allRecords) {
+        print(
+          '  - UID: ${record.uid}, status: ${record.status}, id: ${record.id}, deletedAt: ${record.deletedAt}',
+        );
+      }
+
+      // Query for draft warnings only (status = 'DRAFT' and id is NULL)
+      // Query for draft warnings only (status = 'DRAFT')
+      final query = _database.select(_database.warnings)
+        ..where(
+          (tbl) =>
+              tbl.companyID.equals(companyRecord.id) &
+              tbl.status.equals('DRAFT') &
+              tbl.deletedAt.isNull(),
+        )
+        ..orderBy([(tbl) => OrderingTerm.desc(tbl.updatedAt)]);
+
+      final records = await query.get();
+
+      print('📊 Found ${records.length} draft warnings');
+      for (final record in records) {
+        print(
+          '  - Draft: ${record.uid}, status: ${record.status}, id: ${record.id}',
+        );
+      }
+
+      if (records.isEmpty) {
+        print('📭 No draft warnings found');
+        return null;
+      }
+
+      print('✅ Found ${records.length} draft warnings');
+
+      final warnings = await Future.wait(
+        records.map((record) => _convertRecordToModel(record)),
+      );
+
+      return warnings;
+    } catch (e) {
+      print('❌ Error getting draft warnings: $e');
+      return null;
     }
   }
 }

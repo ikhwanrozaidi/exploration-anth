@@ -55,7 +55,7 @@ extension SiteWarningDraftStatePatterns on SiteWarningDraftState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SiteWarningDraftInitial value)?  initial,TResult Function( SiteWarningDraftLoading value)?  loading,TResult Function( SiteWarningDraftEditing value)?  editing,TResult Function( SiteWarningDraftAutoSaving value)?  autoSaving,TResult Function( SiteWarningDraftAutoSaved value)?  autoSaved,TResult Function( SiteWarningDraftSubmitting value)?  submitting,TResult Function( SiteWarningDraftSubmitted value)?  submitted,TResult Function( SiteWarningDraftError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( SiteWarningDraftInitial value)?  initial,TResult Function( SiteWarningDraftLoading value)?  loading,TResult Function( SiteWarningDraftEditing value)?  editing,TResult Function( SiteWarningDraftAutoSaving value)?  autoSaving,TResult Function( SiteWarningDraftAutoSaved value)?  autoSaved,TResult Function( SiteWarningDraftSubmitting value)?  submitting,TResult Function( SiteWarningDraftSubmitted value)?  submitted,TResult Function( SiteWarningDraftError value)?  error,TResult Function( SiteWarningDraftListLoaded value)?  draftListLoaded,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case SiteWarningDraftInitial() when initial != null:
@@ -66,7 +66,8 @@ return autoSaving(_that);case SiteWarningDraftAutoSaved() when autoSaved != null
 return autoSaved(_that);case SiteWarningDraftSubmitting() when submitting != null:
 return submitting(_that);case SiteWarningDraftSubmitted() when submitted != null:
 return submitted(_that);case SiteWarningDraftError() when error != null:
-return error(_that);case _:
+return error(_that);case SiteWarningDraftListLoaded() when draftListLoaded != null:
+return draftListLoaded(_that);case _:
   return orElse();
 
 }
@@ -84,7 +85,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SiteWarningDraftInitial value)  initial,required TResult Function( SiteWarningDraftLoading value)  loading,required TResult Function( SiteWarningDraftEditing value)  editing,required TResult Function( SiteWarningDraftAutoSaving value)  autoSaving,required TResult Function( SiteWarningDraftAutoSaved value)  autoSaved,required TResult Function( SiteWarningDraftSubmitting value)  submitting,required TResult Function( SiteWarningDraftSubmitted value)  submitted,required TResult Function( SiteWarningDraftError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( SiteWarningDraftInitial value)  initial,required TResult Function( SiteWarningDraftLoading value)  loading,required TResult Function( SiteWarningDraftEditing value)  editing,required TResult Function( SiteWarningDraftAutoSaving value)  autoSaving,required TResult Function( SiteWarningDraftAutoSaved value)  autoSaved,required TResult Function( SiteWarningDraftSubmitting value)  submitting,required TResult Function( SiteWarningDraftSubmitted value)  submitted,required TResult Function( SiteWarningDraftError value)  error,required TResult Function( SiteWarningDraftListLoaded value)  draftListLoaded,}){
 final _that = this;
 switch (_that) {
 case SiteWarningDraftInitial():
@@ -95,7 +96,8 @@ return autoSaving(_that);case SiteWarningDraftAutoSaved():
 return autoSaved(_that);case SiteWarningDraftSubmitting():
 return submitting(_that);case SiteWarningDraftSubmitted():
 return submitted(_that);case SiteWarningDraftError():
-return error(_that);case _:
+return error(_that);case SiteWarningDraftListLoaded():
+return draftListLoaded(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -112,7 +114,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SiteWarningDraftInitial value)?  initial,TResult? Function( SiteWarningDraftLoading value)?  loading,TResult? Function( SiteWarningDraftEditing value)?  editing,TResult? Function( SiteWarningDraftAutoSaving value)?  autoSaving,TResult? Function( SiteWarningDraftAutoSaved value)?  autoSaved,TResult? Function( SiteWarningDraftSubmitting value)?  submitting,TResult? Function( SiteWarningDraftSubmitted value)?  submitted,TResult? Function( SiteWarningDraftError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( SiteWarningDraftInitial value)?  initial,TResult? Function( SiteWarningDraftLoading value)?  loading,TResult? Function( SiteWarningDraftEditing value)?  editing,TResult? Function( SiteWarningDraftAutoSaving value)?  autoSaving,TResult? Function( SiteWarningDraftAutoSaved value)?  autoSaved,TResult? Function( SiteWarningDraftSubmitting value)?  submitting,TResult? Function( SiteWarningDraftSubmitted value)?  submitted,TResult? Function( SiteWarningDraftError value)?  error,TResult? Function( SiteWarningDraftListLoaded value)?  draftListLoaded,}){
 final _that = this;
 switch (_that) {
 case SiteWarningDraftInitial() when initial != null:
@@ -123,7 +125,8 @@ return autoSaving(_that);case SiteWarningDraftAutoSaved() when autoSaved != null
 return autoSaved(_that);case SiteWarningDraftSubmitting() when submitting != null:
 return submitting(_that);case SiteWarningDraftSubmitted() when submitted != null:
 return submitted(_that);case SiteWarningDraftError() when error != null:
-return error(_that);case _:
+return error(_that);case SiteWarningDraftListLoaded() when draftListLoaded != null:
+return draftListLoaded(_that);case _:
   return null;
 
 }
@@ -140,7 +143,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( SiteWarningDraftData draftData)?  editing,TResult Function( SiteWarningDraftData draftData)?  autoSaving,TResult Function( SiteWarningDraftData draftData)?  autoSaved,TResult Function( SiteWarningDraftData draftData)?  submitting,TResult Function( SiteWarningDraftData draftData)?  submitted,TResult Function( Failure failure,  SiteWarningDraftData? draftData)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( SiteWarningDraftData draftData)?  editing,TResult Function( SiteWarningDraftData draftData)?  autoSaving,TResult Function( SiteWarningDraftData draftData)?  autoSaved,TResult Function( SiteWarningDraftData draftData)?  submitting,TResult Function( SiteWarningDraftData draftData)?  submitted,TResult Function( Failure failure,  SiteWarningDraftData? draftData)?  error,TResult Function( List<Warning> drafts)?  draftListLoaded,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SiteWarningDraftInitial() when initial != null:
 return initial();case SiteWarningDraftLoading() when loading != null:
@@ -150,7 +153,8 @@ return autoSaving(_that.draftData);case SiteWarningDraftAutoSaved() when autoSav
 return autoSaved(_that.draftData);case SiteWarningDraftSubmitting() when submitting != null:
 return submitting(_that.draftData);case SiteWarningDraftSubmitted() when submitted != null:
 return submitted(_that.draftData);case SiteWarningDraftError() when error != null:
-return error(_that.failure,_that.draftData);case _:
+return error(_that.failure,_that.draftData);case SiteWarningDraftListLoaded() when draftListLoaded != null:
+return draftListLoaded(_that.drafts);case _:
   return orElse();
 
 }
@@ -168,7 +172,7 @@ return error(_that.failure,_that.draftData);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( SiteWarningDraftData draftData)  editing,required TResult Function( SiteWarningDraftData draftData)  autoSaving,required TResult Function( SiteWarningDraftData draftData)  autoSaved,required TResult Function( SiteWarningDraftData draftData)  submitting,required TResult Function( SiteWarningDraftData draftData)  submitted,required TResult Function( Failure failure,  SiteWarningDraftData? draftData)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( SiteWarningDraftData draftData)  editing,required TResult Function( SiteWarningDraftData draftData)  autoSaving,required TResult Function( SiteWarningDraftData draftData)  autoSaved,required TResult Function( SiteWarningDraftData draftData)  submitting,required TResult Function( SiteWarningDraftData draftData)  submitted,required TResult Function( Failure failure,  SiteWarningDraftData? draftData)  error,required TResult Function( List<Warning> drafts)  draftListLoaded,}) {final _that = this;
 switch (_that) {
 case SiteWarningDraftInitial():
 return initial();case SiteWarningDraftLoading():
@@ -178,7 +182,8 @@ return autoSaving(_that.draftData);case SiteWarningDraftAutoSaved():
 return autoSaved(_that.draftData);case SiteWarningDraftSubmitting():
 return submitting(_that.draftData);case SiteWarningDraftSubmitted():
 return submitted(_that.draftData);case SiteWarningDraftError():
-return error(_that.failure,_that.draftData);case _:
+return error(_that.failure,_that.draftData);case SiteWarningDraftListLoaded():
+return draftListLoaded(_that.drafts);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,7 +200,7 @@ return error(_that.failure,_that.draftData);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( SiteWarningDraftData draftData)?  editing,TResult? Function( SiteWarningDraftData draftData)?  autoSaving,TResult? Function( SiteWarningDraftData draftData)?  autoSaved,TResult? Function( SiteWarningDraftData draftData)?  submitting,TResult? Function( SiteWarningDraftData draftData)?  submitted,TResult? Function( Failure failure,  SiteWarningDraftData? draftData)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( SiteWarningDraftData draftData)?  editing,TResult? Function( SiteWarningDraftData draftData)?  autoSaving,TResult? Function( SiteWarningDraftData draftData)?  autoSaved,TResult? Function( SiteWarningDraftData draftData)?  submitting,TResult? Function( SiteWarningDraftData draftData)?  submitted,TResult? Function( Failure failure,  SiteWarningDraftData? draftData)?  error,TResult? Function( List<Warning> drafts)?  draftListLoaded,}) {final _that = this;
 switch (_that) {
 case SiteWarningDraftInitial() when initial != null:
 return initial();case SiteWarningDraftLoading() when loading != null:
@@ -205,7 +210,8 @@ return autoSaving(_that.draftData);case SiteWarningDraftAutoSaved() when autoSav
 return autoSaved(_that.draftData);case SiteWarningDraftSubmitting() when submitting != null:
 return submitting(_that.draftData);case SiteWarningDraftSubmitted() when submitted != null:
 return submitted(_that.draftData);case SiteWarningDraftError() when error != null:
-return error(_that.failure,_that.draftData);case _:
+return error(_that.failure,_that.draftData);case SiteWarningDraftListLoaded() when draftListLoaded != null:
+return draftListLoaded(_that.drafts);case _:
   return null;
 
 }
@@ -730,6 +736,78 @@ $SiteWarningDraftDataCopyWith<$Res>? get draftData {
     return _then(_self.copyWith(draftData: value));
   });
 }
+}
+
+/// @nodoc
+
+
+class SiteWarningDraftListLoaded implements SiteWarningDraftState {
+  const SiteWarningDraftListLoaded({required final  List<Warning> drafts}): _drafts = drafts;
+  
+
+ final  List<Warning> _drafts;
+ List<Warning> get drafts {
+  if (_drafts is EqualUnmodifiableListView) return _drafts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_drafts);
+}
+
+
+/// Create a copy of SiteWarningDraftState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SiteWarningDraftListLoadedCopyWith<SiteWarningDraftListLoaded> get copyWith => _$SiteWarningDraftListLoadedCopyWithImpl<SiteWarningDraftListLoaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SiteWarningDraftListLoaded&&const DeepCollectionEquality().equals(other._drafts, _drafts));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_drafts));
+
+@override
+String toString() {
+  return 'SiteWarningDraftState.draftListLoaded(drafts: $drafts)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SiteWarningDraftListLoadedCopyWith<$Res> implements $SiteWarningDraftStateCopyWith<$Res> {
+  factory $SiteWarningDraftListLoadedCopyWith(SiteWarningDraftListLoaded value, $Res Function(SiteWarningDraftListLoaded) _then) = _$SiteWarningDraftListLoadedCopyWithImpl;
+@useResult
+$Res call({
+ List<Warning> drafts
+});
+
+
+
+
+}
+/// @nodoc
+class _$SiteWarningDraftListLoadedCopyWithImpl<$Res>
+    implements $SiteWarningDraftListLoadedCopyWith<$Res> {
+  _$SiteWarningDraftListLoadedCopyWithImpl(this._self, this._then);
+
+  final SiteWarningDraftListLoaded _self;
+  final $Res Function(SiteWarningDraftListLoaded) _then;
+
+/// Create a copy of SiteWarningDraftState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? drafts = null,}) {
+  return _then(SiteWarningDraftListLoaded(
+drafts: null == drafts ? _self._drafts : drafts // ignore: cast_nullable_to_non_nullable
+as List<Warning>,
+  ));
+}
+
+
 }
 
 /// @nodoc

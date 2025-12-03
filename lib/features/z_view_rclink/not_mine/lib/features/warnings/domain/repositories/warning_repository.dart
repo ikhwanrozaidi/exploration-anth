@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
+import '../../data/models/create_report_warning_model.dart';
 import '../entities/warning.dart';
 
 abstract class WarningRepository {
@@ -40,6 +41,8 @@ abstract class WarningRepository {
     required String itemUID,
     String? notes,
   });
+
+  Future<Either<Failure, List<Warning>?>> getDraftWarnings(String companyUID);
 
   /// Clear cache
   Future<Either<Failure, void>> clearCache();
