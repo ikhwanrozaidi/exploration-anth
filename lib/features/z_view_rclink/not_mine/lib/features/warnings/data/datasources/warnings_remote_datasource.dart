@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../models/create_report_warning_model.dart';
+import '../models/resolve_warning_item_dto.dart';
 import '../models/warning_filter_model.dart';
 import '../models/warning_list_response_model.dart';
 import '../models/warning_model.dart';
@@ -34,6 +35,14 @@ abstract class WarningsRemoteDataSource {
   Future<Either<Failure, WarningModel>> getWarningById({
     required String companyUID,
     required String uid,
+  });
+
+  // RESOLVE Warning Item
+  Future<Either<Failure, WarningModel>> resolveWarningItem({
+    required String companyUID,
+    required String warningUID,
+    required String itemUID,
+    String? notes,
   });
 }
 
@@ -150,6 +159,7 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
           'files',
           'createdBy',
           'company',
+          'warningItems.warningReason.category',
         ],
       );
 
@@ -158,6 +168,7 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         print('✅ Total Warnings: ${response.data.length}');
 
+        // Sort warning items by createdAt descending (newest first)
         return Right(response.data);
       } else {
         print('❌ RemoteDataSource: API returned error - ${response.message}');
@@ -191,6 +202,7 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
       ]);
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
+        // Sort warning items by createdAt descending (newest first)
         return Right(response.data!);
       } else {
         print('❌ RemoteDataSource: API returned error - ${response.message}');
@@ -208,6 +220,106 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
       return Left(NetworkFailure('Network error: ${e.message}'));
     } catch (e) {
       print('❌ RemoteDataSource: Unexpected error - $e');
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  /// RESOLVE Warning Item
+  @override
+  Future<Either<Failure, WarningModel>> resolveWarningItem({
+    required String companyUID,
+    required String warningUID,
+    required String itemUID,
+    String? notes,
+  }) async {
+    print('🟡 [WarningsRemoteDataSource] resolveWarningItem called');
+    try {
+      final dto = ResolveWarningItemDto(notes: notes);
+      print('🟡 [WarningsRemoteDataSource] Making API call...');
+
+      final response = await _apiService.resolveWarningItem(
+        companyUID,
+        warningUID,
+        itemUID,
+        dto,
+      );
+
+      print(
+        '🟡 [WarningsRemoteDataSource] API response received, status: ${response.statusCode}',
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        if (response.data != null) {
+          print(
+            '✅ [WarningsRemoteDataSource] Success! Returning updated warning',
+          );
+          // Sort warning items by createdAt descending (newest first)
+          return Right(response.data!);
+        } else {
+          print('❌ [WarningsRemoteDataSource] No data in response');
+          return const Left(ServerFailure('No data returned from server'));
+        }
+      } else {
+        print(
+          '❌ [WarningsRemoteDataSource] Bad status code: ${response.statusCode}',
+        );
+        return Left(
+          ServerFailure(
+            response.message ?? 'Failed to resolve warning item',
+            statusCode: response.statusCode,
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      print('❌ [WarningsRemoteDataSource] DioException: ${e.message}');
+      // Handle specific HTTP status codes
+      if (e.response?.statusCode == 401) {
+        return const Left(UnauthorizedFailure());
+      }
+
+      if (e.response?.statusCode == 403) {
+        return const Left(ForbiddenFailure());
+      }
+
+      if (e.response?.statusCode == 404) {
+        return const Left(NotFoundFailure());
+      }
+
+      if (e.response?.statusCode == 400 || e.response?.statusCode == 422) {
+        final errorMessage = e.response?.data is Map
+            ? (e.response?.data['message'] ?? 'Invalid data provided')
+            : 'Invalid data provided';
+        return Left(ValidationFailure(errorMessage));
+      }
+
+      // Network/timeout errors
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        return const Left(TimeoutFailure());
+      }
+
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.unknown) {
+        return Left(
+          NetworkFailure(
+            'Network error: ${e.message ?? "Please check your connection"}',
+          ),
+        );
+      }
+
+      // Server error (5xx)
+      if (e.response?.statusCode != null && e.response!.statusCode! >= 500) {
+        return Left(
+          ServerFailure(
+            'Server error: ${e.response?.data?['message'] ?? e.message}',
+            statusCode: e.response?.statusCode,
+          ),
+        );
+      }
+
+      return Left(NetworkFailure('Network error: ${e.message}'));
+    } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
   }

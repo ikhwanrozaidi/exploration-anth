@@ -1,0 +1,156 @@
+import 'package:equatable/equatable.dart';
+
+class Company extends Equatable {
+  final int id;
+  final String uid;
+  final String name;
+  final String regNo;
+  final String cidbNo;
+  final String address;
+  final String postalCode;
+  final String city;
+  final String state;
+  final String country;
+  final String phone;
+  final String email;
+  final String? website;
+  final String companyType;
+  final bool bumiputera;
+  final String? einvoiceTinNo;
+  final DateTime? registrationDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final int ownerID;
+  final AdminRole? adminRole;
+  final int adminCount;
+  final String? defaultBankAcc;
+  final String? defaultBankAccType;
+
+  const Company({
+    required this.id,
+    required this.uid,
+    required this.name,
+    required this.regNo,
+    required this.cidbNo,
+    required this.address,
+    required this.postalCode,
+    required this.city,
+    required this.state,
+    required this.country,
+    required this.phone,
+    required this.email,
+    this.website,
+    required this.companyType,
+    required this.bumiputera,
+    this.einvoiceTinNo,
+    this.registrationDate,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.ownerID,
+    this.adminRole,
+    required this.adminCount,
+    this.defaultBankAcc,
+    this.defaultBankAccType,
+  });
+
+  @override
+  List<Object?> get props => [
+    id,
+    uid,
+    name,
+    regNo,
+    cidbNo,
+    address,
+    postalCode,
+    city,
+    state,
+    country,
+    phone,
+    email,
+    website,
+    companyType,
+    bumiputera,
+    einvoiceTinNo,
+    registrationDate,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    ownerID,
+    adminRole,
+    adminCount,
+    defaultBankAcc,
+    defaultBankAccType,
+  ];
+
+  Company copyWith({
+    int? id,
+    String? uid,
+    String? name,
+    String? regNo,
+    String? cidbNo,
+    String? address,
+    String? postalCode,
+    String? city,
+    String? state,
+    String? country,
+    String? phone,
+    String? email,
+    String? website,
+    String? companyType,
+    bool? bumiputera,
+    String? einvoiceTinNo,
+    DateTime? registrationDate,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    DateTime? deletedAt,
+    int? ownerID,
+    AdminRole? adminRole,
+    int? adminCount,
+    String? defaultBankAcc,
+    String? defaultBankAccType,
+  }) {
+    return Company(
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      regNo: regNo ?? this.regNo,
+      cidbNo: cidbNo ?? this.cidbNo,
+      address: address ?? this.address,
+      postalCode: postalCode ?? this.postalCode,
+      city: city ?? this.city,
+      state: state ?? this.state,
+      country: country ?? this.country,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
+      website: website ?? this.website,
+      companyType: companyType ?? this.companyType,
+      bumiputera: bumiputera ?? this.bumiputera,
+      einvoiceTinNo: einvoiceTinNo ?? this.einvoiceTinNo,
+      registrationDate: registrationDate ?? this.registrationDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      ownerID: ownerID ?? this.ownerID,
+      adminRole: adminRole ?? this.adminRole,
+      adminCount: adminCount ?? this.adminCount,
+      defaultBankAcc: defaultBankAcc ?? this.defaultBankAcc,
+      defaultBankAccType: defaultBankAccType ?? this.defaultBankAccType,
+    );
+  }
+}
+
+class AdminRole extends Equatable {
+  final String uid;
+  final String name;
+
+  const AdminRole({required this.uid, required this.name});
+
+  @override
+  List<Object?> get props => [uid, name];
+
+  AdminRole copyWith({String? uid, String? name}) {
+    return AdminRole(uid: uid ?? this.uid, name: name ?? this.name);
+  }
+}

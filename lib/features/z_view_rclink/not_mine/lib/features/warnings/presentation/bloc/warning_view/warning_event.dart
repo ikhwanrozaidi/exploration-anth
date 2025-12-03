@@ -46,5 +46,12 @@ class WarningEvent with _$WarningEvent {
     bool? requiresAction,
   }) = RefreshWarnings;
 
+  const factory WarningEvent.resolveWarningItem({
+    required String companyUID,
+    required String warningUID,
+    required String itemUID,
+    String? notes,
+  }) = ResolveWarningItem;
+
   const factory WarningEvent.clearWarningCache() = ClearWarningCache;
 }

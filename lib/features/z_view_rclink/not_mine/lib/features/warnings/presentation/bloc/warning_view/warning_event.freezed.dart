@@ -55,13 +55,14 @@ extension WarningEventPatterns on WarningEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadWarnings value)?  loadWarnings,TResult Function( LoadMoreWarnings value)?  loadMoreWarnings,TResult Function( RefreshWarnings value)?  refreshWarnings,TResult Function( ClearWarningCache value)?  clearWarningCache,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadWarnings value)?  loadWarnings,TResult Function( LoadMoreWarnings value)?  loadMoreWarnings,TResult Function( RefreshWarnings value)?  refreshWarnings,TResult Function( ResolveWarningItem value)?  resolveWarningItem,TResult Function( ClearWarningCache value)?  clearWarningCache,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadWarnings() when loadWarnings != null:
 return loadWarnings(_that);case LoadMoreWarnings() when loadMoreWarnings != null:
 return loadMoreWarnings(_that);case RefreshWarnings() when refreshWarnings != null:
-return refreshWarnings(_that);case ClearWarningCache() when clearWarningCache != null:
+return refreshWarnings(_that);case ResolveWarningItem() when resolveWarningItem != null:
+return resolveWarningItem(_that);case ClearWarningCache() when clearWarningCache != null:
 return clearWarningCache(_that);case _:
   return orElse();
 
@@ -80,13 +81,14 @@ return clearWarningCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadWarnings value)  loadWarnings,required TResult Function( LoadMoreWarnings value)  loadMoreWarnings,required TResult Function( RefreshWarnings value)  refreshWarnings,required TResult Function( ClearWarningCache value)  clearWarningCache,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadWarnings value)  loadWarnings,required TResult Function( LoadMoreWarnings value)  loadMoreWarnings,required TResult Function( RefreshWarnings value)  refreshWarnings,required TResult Function( ResolveWarningItem value)  resolveWarningItem,required TResult Function( ClearWarningCache value)  clearWarningCache,}){
 final _that = this;
 switch (_that) {
 case LoadWarnings():
 return loadWarnings(_that);case LoadMoreWarnings():
 return loadMoreWarnings(_that);case RefreshWarnings():
-return refreshWarnings(_that);case ClearWarningCache():
+return refreshWarnings(_that);case ResolveWarningItem():
+return resolveWarningItem(_that);case ClearWarningCache():
 return clearWarningCache(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +106,14 @@ return clearWarningCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadWarnings value)?  loadWarnings,TResult? Function( LoadMoreWarnings value)?  loadMoreWarnings,TResult? Function( RefreshWarnings value)?  refreshWarnings,TResult? Function( ClearWarningCache value)?  clearWarningCache,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadWarnings value)?  loadWarnings,TResult? Function( LoadMoreWarnings value)?  loadMoreWarnings,TResult? Function( RefreshWarnings value)?  refreshWarnings,TResult? Function( ResolveWarningItem value)?  resolveWarningItem,TResult? Function( ClearWarningCache value)?  clearWarningCache,}){
 final _that = this;
 switch (_that) {
 case LoadWarnings() when loadWarnings != null:
 return loadWarnings(_that);case LoadMoreWarnings() when loadMoreWarnings != null:
 return loadMoreWarnings(_that);case RefreshWarnings() when refreshWarnings != null:
-return refreshWarnings(_that);case ClearWarningCache() when clearWarningCache != null:
+return refreshWarnings(_that);case ResolveWarningItem() when resolveWarningItem != null:
+return resolveWarningItem(_that);case ClearWarningCache() when clearWarningCache != null:
 return clearWarningCache(_that);case _:
   return null;
 
@@ -128,12 +131,13 @@ return clearWarningCache(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)?  loadWarnings,TResult Function( String companyUID,  int nextPage,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)?  loadMoreWarnings,TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)?  refreshWarnings,TResult Function()?  clearWarningCache,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)?  loadWarnings,TResult Function( String companyUID,  int nextPage,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)?  loadMoreWarnings,TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)?  refreshWarnings,TResult Function( String companyUID,  String warningUID,  String itemUID,  String? notes)?  resolveWarningItem,TResult Function()?  clearWarningCache,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadWarnings() when loadWarnings != null:
 return loadWarnings(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.warningType,_that.roadUID,_that.workScopeUID,_that.contractRelationUID,_that.dailyReportUID,_that.isResolved,_that.requiresAction);case LoadMoreWarnings() when loadMoreWarnings != null:
 return loadMoreWarnings(_that.companyUID,_that.nextPage,_that.limit,_that.sortOrder,_that.warningType,_that.roadUID,_that.workScopeUID,_that.contractRelationUID,_that.dailyReportUID,_that.isResolved,_that.requiresAction);case RefreshWarnings() when refreshWarnings != null:
-return refreshWarnings(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.warningType,_that.roadUID,_that.workScopeUID,_that.contractRelationUID,_that.dailyReportUID,_that.isResolved,_that.requiresAction);case ClearWarningCache() when clearWarningCache != null:
+return refreshWarnings(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.warningType,_that.roadUID,_that.workScopeUID,_that.contractRelationUID,_that.dailyReportUID,_that.isResolved,_that.requiresAction);case ResolveWarningItem() when resolveWarningItem != null:
+return resolveWarningItem(_that.companyUID,_that.warningUID,_that.itemUID,_that.notes);case ClearWarningCache() when clearWarningCache != null:
 return clearWarningCache();case _:
   return orElse();
 
@@ -152,12 +156,13 @@ return clearWarningCache();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)  loadWarnings,required TResult Function( String companyUID,  int nextPage,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)  loadMoreWarnings,required TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)  refreshWarnings,required TResult Function()  clearWarningCache,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)  loadWarnings,required TResult Function( String companyUID,  int nextPage,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)  loadMoreWarnings,required TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)  refreshWarnings,required TResult Function( String companyUID,  String warningUID,  String itemUID,  String? notes)  resolveWarningItem,required TResult Function()  clearWarningCache,}) {final _that = this;
 switch (_that) {
 case LoadWarnings():
 return loadWarnings(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.warningType,_that.roadUID,_that.workScopeUID,_that.contractRelationUID,_that.dailyReportUID,_that.isResolved,_that.requiresAction);case LoadMoreWarnings():
 return loadMoreWarnings(_that.companyUID,_that.nextPage,_that.limit,_that.sortOrder,_that.warningType,_that.roadUID,_that.workScopeUID,_that.contractRelationUID,_that.dailyReportUID,_that.isResolved,_that.requiresAction);case RefreshWarnings():
-return refreshWarnings(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.warningType,_that.roadUID,_that.workScopeUID,_that.contractRelationUID,_that.dailyReportUID,_that.isResolved,_that.requiresAction);case ClearWarningCache():
+return refreshWarnings(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.warningType,_that.roadUID,_that.workScopeUID,_that.contractRelationUID,_that.dailyReportUID,_that.isResolved,_that.requiresAction);case ResolveWarningItem():
+return resolveWarningItem(_that.companyUID,_that.warningUID,_that.itemUID,_that.notes);case ClearWarningCache():
 return clearWarningCache();case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +180,13 @@ return clearWarningCache();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int page,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)?  loadWarnings,TResult? Function( String companyUID,  int nextPage,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)?  loadMoreWarnings,TResult? Function( String companyUID,  int page,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)?  refreshWarnings,TResult? Function()?  clearWarningCache,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int page,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)?  loadWarnings,TResult? Function( String companyUID,  int nextPage,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)?  loadMoreWarnings,TResult? Function( String companyUID,  int page,  int limit,  String sortOrder,  List<String>? warningType,  String? roadUID,  String? workScopeUID,  String? contractRelationUID,  String? dailyReportUID,  bool? isResolved,  bool? requiresAction)?  refreshWarnings,TResult? Function( String companyUID,  String warningUID,  String itemUID,  String? notes)?  resolveWarningItem,TResult? Function()?  clearWarningCache,}) {final _that = this;
 switch (_that) {
 case LoadWarnings() when loadWarnings != null:
 return loadWarnings(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.warningType,_that.roadUID,_that.workScopeUID,_that.contractRelationUID,_that.dailyReportUID,_that.isResolved,_that.requiresAction);case LoadMoreWarnings() when loadMoreWarnings != null:
 return loadMoreWarnings(_that.companyUID,_that.nextPage,_that.limit,_that.sortOrder,_that.warningType,_that.roadUID,_that.workScopeUID,_that.contractRelationUID,_that.dailyReportUID,_that.isResolved,_that.requiresAction);case RefreshWarnings() when refreshWarnings != null:
-return refreshWarnings(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.warningType,_that.roadUID,_that.workScopeUID,_that.contractRelationUID,_that.dailyReportUID,_that.isResolved,_that.requiresAction);case ClearWarningCache() when clearWarningCache != null:
+return refreshWarnings(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.warningType,_that.roadUID,_that.workScopeUID,_that.contractRelationUID,_that.dailyReportUID,_that.isResolved,_that.requiresAction);case ResolveWarningItem() when resolveWarningItem != null:
+return resolveWarningItem(_that.companyUID,_that.warningUID,_that.itemUID,_that.notes);case ClearWarningCache() when clearWarningCache != null:
 return clearWarningCache();case _:
   return null;
 
@@ -465,6 +471,78 @@ as String?,dailyReportUID: freezed == dailyReportUID ? _self.dailyReportUID : da
 as String?,isResolved: freezed == isResolved ? _self.isResolved : isResolved // ignore: cast_nullable_to_non_nullable
 as bool?,requiresAction: freezed == requiresAction ? _self.requiresAction : requiresAction // ignore: cast_nullable_to_non_nullable
 as bool?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ResolveWarningItem implements WarningEvent {
+  const ResolveWarningItem({required this.companyUID, required this.warningUID, required this.itemUID, this.notes});
+  
+
+ final  String companyUID;
+ final  String warningUID;
+ final  String itemUID;
+ final  String? notes;
+
+/// Create a copy of WarningEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ResolveWarningItemCopyWith<ResolveWarningItem> get copyWith => _$ResolveWarningItemCopyWithImpl<ResolveWarningItem>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ResolveWarningItem&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID)&&(identical(other.warningUID, warningUID) || other.warningUID == warningUID)&&(identical(other.itemUID, itemUID) || other.itemUID == itemUID)&&(identical(other.notes, notes) || other.notes == notes));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,companyUID,warningUID,itemUID,notes);
+
+@override
+String toString() {
+  return 'WarningEvent.resolveWarningItem(companyUID: $companyUID, warningUID: $warningUID, itemUID: $itemUID, notes: $notes)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ResolveWarningItemCopyWith<$Res> implements $WarningEventCopyWith<$Res> {
+  factory $ResolveWarningItemCopyWith(ResolveWarningItem value, $Res Function(ResolveWarningItem) _then) = _$ResolveWarningItemCopyWithImpl;
+@useResult
+$Res call({
+ String companyUID, String warningUID, String itemUID, String? notes
+});
+
+
+
+
+}
+/// @nodoc
+class _$ResolveWarningItemCopyWithImpl<$Res>
+    implements $ResolveWarningItemCopyWith<$Res> {
+  _$ResolveWarningItemCopyWithImpl(this._self, this._then);
+
+  final ResolveWarningItem _self;
+  final $Res Function(ResolveWarningItem) _then;
+
+/// Create a copy of WarningEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? companyUID = null,Object? warningUID = null,Object? itemUID = null,Object? notes = freezed,}) {
+  return _then(ResolveWarningItem(
+companyUID: null == companyUID ? _self.companyUID : companyUID // ignore: cast_nullable_to_non_nullable
+as String,warningUID: null == warningUID ? _self.warningUID : warningUID // ignore: cast_nullable_to_non_nullable
+as String,itemUID: null == itemUID ? _self.itemUID : itemUID // ignore: cast_nullable_to_non_nullable
+as String,notes: freezed == notes ? _self.notes : notes // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

@@ -485,6 +485,80 @@ class _WarningPageContentState extends State<_WarningPageContent> {
               },
             );
           },
+          resolvingItem: (warnings, currentPage, hasMore, resolvingItemUID) {
+            // Show same as loaded state while resolving
+            final filteredWarnings = _filterWarningsByTab(warnings);
+
+            if (filteredWarnings.isEmpty) {
+              return _buildEmptyState();
+            }
+
+            return RefreshIndicator(
+              onRefresh: _onRefresh,
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.only(top: 10),
+                itemCount: filteredWarnings.length + (hasMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index == filteredWarnings.length) {
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(
+                          child: Lottie.asset(
+                            'assets/lottie/blue_loading.json',
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  final warning = filteredWarnings[index];
+                  return WarningProgramListWidget(warning: warning);
+                },
+              ),
+            );
+          },
+          itemResolved: (warnings, currentPage, hasMore, resolvedItemUID) {
+            // Show same as loaded state after resolving
+            final filteredWarnings = _filterWarningsByTab(warnings);
+
+            if (filteredWarnings.isEmpty) {
+              return _buildEmptyState();
+            }
+
+            return RefreshIndicator(
+              onRefresh: _onRefresh,
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.only(top: 10),
+                itemCount: filteredWarnings.length + (hasMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index == filteredWarnings.length) {
+                    return Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Center(
+                          child: Lottie.asset(
+                            'assets/lottie/blue_loading.json',
+                            width: 200,
+                            height: 200,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  final warning = filteredWarnings[index];
+                  return WarningProgramListWidget(warning: warning);
+                },
+              ),
+            );
+          },
           error: (failure, cachedWarnings) {
             if (cachedWarnings != null && cachedWarnings.isNotEmpty) {
               // Filter warnings based on current tab

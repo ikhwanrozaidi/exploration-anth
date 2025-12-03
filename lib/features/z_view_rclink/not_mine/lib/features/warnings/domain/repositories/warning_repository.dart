@@ -33,6 +33,14 @@ abstract class WarningRepository {
     String? description,
   });
 
+  /// Resolve a warning item
+  Future<Either<Failure, Warning>> resolveWarningItem({
+    required String companyUID,
+    required String warningUID,
+    required String itemUID,
+    String? notes,
+  });
+
   /// Clear cache
   Future<Either<Failure, void>> clearCache();
 }

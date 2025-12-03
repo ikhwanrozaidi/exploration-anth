@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
+import 'package:uuid/uuid.dart';
 import '../../../../core/database/app_database.dart';
+import '../models/create_warning_model.dart';
 import '../models/warning_daily_report_model.dart';
 import '../models/warning_model.dart';
 import '../models/warning_item_model.dart';
@@ -18,6 +20,13 @@ abstract class WarningsLocalDataSource {
   Future<void> cacheWarnings(List<WarningModel> warnings);
   Future<void> cacheSingleWarning(WarningModel warning);
   Future<void> clearCache();
+
+  Future<WarningModel> createDraftWarningLocal(String companyUID);
+  Future<void> updateDraftWarningLocal(
+    String draftUID,
+    CreateWarningModel data,
+  );
+  Future<void> deleteDraftWarning(String draftUID);
 }
 
 @LazySingleton(as: WarningsLocalDataSource)
@@ -51,6 +60,7 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
     }
   }
 
+  // Existing
   @override
   Future<WarningModel?> getCachedWarningByUid(String uid) async {
     try {
@@ -187,7 +197,16 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
       isSynced: const Value(true),
     );
 
-    await _database.into(_database.warnings).insertOnConflictUpdate(companion);
+    await _database
+        .into(_database.warnings)
+        .insert(
+          companion,
+          mode: InsertMode.insertOrReplace,
+          onConflict: DoUpdate(
+            (_) => companion,
+            target: [_database.warnings.uid],
+          ),
+        );
   }
 
   /// Helper method to convert WarningRecord to WarningModel
@@ -329,6 +348,174 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
       await _database.delete(_database.warnings).go();
     } catch (e) {
       print('Error clearing warnings cache: $e');
+    }
+  }
+
+  @override
+  Future<WarningModel> createDraftWarningLocal(String companyUID) async {
+    try {
+      final uuid = const Uuid().v4();
+      final now = DateTime.now();
+
+      // Get company ID from companyUID
+      final companyRecord = await (_database.select(
+        _database.companies,
+      )..where((tbl) => tbl.uid.equals(companyUID))).getSingleOrNull();
+
+      if (companyRecord == null) {
+        throw Exception('Company not found');
+      }
+
+      // Create minimal draft warning with NULL id
+      await _database
+          .into(_database.warnings)
+          .insert(
+            WarningsCompanion(
+              id: const Value.absent(), // NULL for draft
+              uid: Value(uuid),
+              warningType: const Value('SITE_WARNING'),
+              status: const Value('DRAFT'),
+              dailyReportID: const Value.absent(),
+              companyID: Value(companyRecord.id),
+              roadID: const Value(0), // Placeholder, will be updated
+              workScopeID: const Value(0), // Placeholder, will be updated
+              contractRelationID: const Value.absent(),
+              fromSection: const Value.absent(),
+              toSection: const Value.absent(),
+              requiresAction: const Value(true),
+              isResolved: const Value(false),
+              resolvedByID: const Value.absent(),
+              resolvedAt: const Value.absent(),
+              resolutionNotes: const Value.absent(),
+              longitude: const Value.absent(),
+              latitude: const Value.absent(),
+              description: const Value.absent(),
+              createdByID: Value(0), // Placeholder
+              createdAt: Value(now),
+              updatedAt: Value(now),
+              isSynced: const Value(false),
+            ),
+          );
+
+      print('✅ Draft warning created: $uuid');
+
+      // Return the created draft as a model
+      return WarningModel(
+        id: null, // Draft has no ID
+        uid: uuid,
+        warningType: 'SITE_WARNING',
+        dailyReportID: null,
+        companyID: companyRecord.id,
+        roadID: 0,
+        workScopeID: 0,
+        contractRelationID: null,
+        fromSection: null,
+        toSection: null,
+        warningItems: [],
+        requiresAction: true,
+        isResolved: false,
+        resolvedByID: null,
+        resolvedAt: null,
+        resolutionNotes: null,
+        longitude: null,
+        latitude: null,
+        description: null,
+        createdByID: 0,
+        createdAt: now,
+        updatedAt: now,
+        deletedAt: null,
+      );
+    } catch (e) {
+      print('❌ Error creating draft warning: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateDraftWarningLocal(
+    String draftUID,
+    CreateWarningModel data,
+  ) async {
+    try {
+      print('💾 Updating draft warning: $draftUID');
+
+      // Get road ID from roadUID
+      final roadRecord = await (_database.select(
+        _database.roads,
+      )..where((tbl) => tbl.uid.equals(data.roadUID))).getSingleOrNull();
+
+      if (roadRecord == null) {
+        throw Exception('Road not found');
+      }
+
+      // Get work scope ID from workScopeUID
+      final workScopeRecord = await (_database.select(
+        _database.workScopes,
+      )..where((tbl) => tbl.uid.equals(data.workScopeUID))).getSingleOrNull();
+
+      if (workScopeRecord == null) {
+        throw Exception('Work scope not found');
+      }
+
+      // Get contractor relation ID if provided
+      int? contractRelationID;
+      if (data.contractRelationUID != null) {
+        final contractRelationRecord =
+            await (_database.select(_database.contractorRelations)
+                  ..where((tbl) => tbl.uid.equals(data.contractRelationUID!)))
+                .getSingleOrNull();
+        contractRelationID = contractRelationRecord?.id;
+      }
+
+      // Convert warning reason UIDs to warning items JSON
+      String? warningItemsJson;
+      if (data.warningReasonUIDs.isNotEmpty) {
+        final warningItems = data.warningReasonUIDs
+            .map((uid) => {'warningReasonUID': uid})
+            .toList();
+        warningItemsJson = jsonEncode(warningItems);
+      }
+
+      // Update draft warning
+      await (_database.update(
+        _database.warnings,
+      )..where((tbl) => tbl.uid.equals(draftUID))).write(
+        WarningsCompanion(
+          roadID: Value(roadRecord.id),
+          workScopeID: Value(workScopeRecord.id),
+          contractRelationID: Value(contractRelationID),
+          fromSection: Value(data.fromSection?.toString()),
+          toSection: Value(data.toSection?.toString()),
+          longitude: Value(data.longitude?.toString()),
+          latitude: Value(data.latitude?.toString()),
+          description: Value(data.description),
+          warningItemsData: Value(warningItemsJson),
+          requiresAction: Value(data.requiresAction ?? true),
+          updatedAt: Value(DateTime.now()),
+          status: const Value('DRAFT'), // Ensure status remains DRAFT
+        ),
+      );
+
+      print('✅ Draft warning updated: $draftUID');
+    } catch (e) {
+      print('❌ Error updating draft warning: $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteDraftWarning(String draftUID) async {
+    try {
+      print('🗑️ Deleting draft warning: $draftUID');
+
+      await (_database.delete(
+        _database.warnings,
+      )..where((tbl) => tbl.uid.equals(draftUID))).go();
+
+      print('✅ Draft warning deleted: $draftUID');
+    } catch (e) {
+      print('❌ Error deleting draft warning: $e');
+      rethrow;
     }
   }
 }

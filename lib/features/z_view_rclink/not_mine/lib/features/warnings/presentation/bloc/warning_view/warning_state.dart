@@ -22,6 +22,20 @@ class WarningState with _$WarningState {
     required int currentPage,
   }) = WarningLoadingMore;
 
+  const factory WarningState.resolvingItem({
+    required List<Warning> warnings,
+    required int currentPage,
+    required bool hasMore,
+    required String resolvingItemUID,
+  }) = WarningResolvingItem;
+
+  const factory WarningState.itemResolved({
+    required List<Warning> warnings,
+    required int currentPage,
+    required bool hasMore,
+    required String resolvedItemUID,
+  }) = WarningItemResolved;
+
   const factory WarningState.error({
     required Failure failure,
     List<Warning>? cachedWarnings,

@@ -55,14 +55,16 @@ extension WarningStatePatterns on WarningState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( WarningInitial value)?  initial,TResult Function( WarningLoading value)?  loading,TResult Function( WarningLoaded value)?  loaded,TResult Function( WarningLoadingMore value)?  loadingMore,TResult Function( WarningError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( WarningInitial value)?  initial,TResult Function( WarningLoading value)?  loading,TResult Function( WarningLoaded value)?  loaded,TResult Function( WarningLoadingMore value)?  loadingMore,TResult Function( WarningResolvingItem value)?  resolvingItem,TResult Function( WarningItemResolved value)?  itemResolved,TResult Function( WarningError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case WarningInitial() when initial != null:
 return initial(_that);case WarningLoading() when loading != null:
 return loading(_that);case WarningLoaded() when loaded != null:
 return loaded(_that);case WarningLoadingMore() when loadingMore != null:
-return loadingMore(_that);case WarningError() when error != null:
+return loadingMore(_that);case WarningResolvingItem() when resolvingItem != null:
+return resolvingItem(_that);case WarningItemResolved() when itemResolved != null:
+return itemResolved(_that);case WarningError() when error != null:
 return error(_that);case _:
   return orElse();
 
@@ -81,14 +83,16 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( WarningInitial value)  initial,required TResult Function( WarningLoading value)  loading,required TResult Function( WarningLoaded value)  loaded,required TResult Function( WarningLoadingMore value)  loadingMore,required TResult Function( WarningError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( WarningInitial value)  initial,required TResult Function( WarningLoading value)  loading,required TResult Function( WarningLoaded value)  loaded,required TResult Function( WarningLoadingMore value)  loadingMore,required TResult Function( WarningResolvingItem value)  resolvingItem,required TResult Function( WarningItemResolved value)  itemResolved,required TResult Function( WarningError value)  error,}){
 final _that = this;
 switch (_that) {
 case WarningInitial():
 return initial(_that);case WarningLoading():
 return loading(_that);case WarningLoaded():
 return loaded(_that);case WarningLoadingMore():
-return loadingMore(_that);case WarningError():
+return loadingMore(_that);case WarningResolvingItem():
+return resolvingItem(_that);case WarningItemResolved():
+return itemResolved(_that);case WarningError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -106,14 +110,16 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( WarningInitial value)?  initial,TResult? Function( WarningLoading value)?  loading,TResult? Function( WarningLoaded value)?  loaded,TResult? Function( WarningLoadingMore value)?  loadingMore,TResult? Function( WarningError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( WarningInitial value)?  initial,TResult? Function( WarningLoading value)?  loading,TResult? Function( WarningLoaded value)?  loaded,TResult? Function( WarningLoadingMore value)?  loadingMore,TResult? Function( WarningResolvingItem value)?  resolvingItem,TResult? Function( WarningItemResolved value)?  itemResolved,TResult? Function( WarningError value)?  error,}){
 final _that = this;
 switch (_that) {
 case WarningInitial() when initial != null:
 return initial(_that);case WarningLoading() when loading != null:
 return loading(_that);case WarningLoaded() when loaded != null:
 return loaded(_that);case WarningLoadingMore() when loadingMore != null:
-return loadingMore(_that);case WarningError() when error != null:
+return loadingMore(_that);case WarningResolvingItem() when resolvingItem != null:
+return resolvingItem(_that);case WarningItemResolved() when itemResolved != null:
+return itemResolved(_that);case WarningError() when error != null:
 return error(_that);case _:
   return null;
 
@@ -131,13 +137,15 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Warning> warnings,  int currentPage,  bool hasMore,  bool isLoadingMore)?  loaded,TResult Function( List<Warning> warnings,  int currentPage)?  loadingMore,TResult Function( Failure failure,  List<Warning>? cachedWarnings)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Warning> warnings,  int currentPage,  bool hasMore,  bool isLoadingMore)?  loaded,TResult Function( List<Warning> warnings,  int currentPage)?  loadingMore,TResult Function( List<Warning> warnings,  int currentPage,  bool hasMore,  String resolvingItemUID)?  resolvingItem,TResult Function( List<Warning> warnings,  int currentPage,  bool hasMore,  String resolvedItemUID)?  itemResolved,TResult Function( Failure failure,  List<Warning>? cachedWarnings)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case WarningInitial() when initial != null:
 return initial();case WarningLoading() when loading != null:
 return loading();case WarningLoaded() when loaded != null:
 return loaded(_that.warnings,_that.currentPage,_that.hasMore,_that.isLoadingMore);case WarningLoadingMore() when loadingMore != null:
-return loadingMore(_that.warnings,_that.currentPage);case WarningError() when error != null:
+return loadingMore(_that.warnings,_that.currentPage);case WarningResolvingItem() when resolvingItem != null:
+return resolvingItem(_that.warnings,_that.currentPage,_that.hasMore,_that.resolvingItemUID);case WarningItemResolved() when itemResolved != null:
+return itemResolved(_that.warnings,_that.currentPage,_that.hasMore,_that.resolvedItemUID);case WarningError() when error != null:
 return error(_that.failure,_that.cachedWarnings);case _:
   return orElse();
 
@@ -156,13 +164,15 @@ return error(_that.failure,_that.cachedWarnings);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Warning> warnings,  int currentPage,  bool hasMore,  bool isLoadingMore)  loaded,required TResult Function( List<Warning> warnings,  int currentPage)  loadingMore,required TResult Function( Failure failure,  List<Warning>? cachedWarnings)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Warning> warnings,  int currentPage,  bool hasMore,  bool isLoadingMore)  loaded,required TResult Function( List<Warning> warnings,  int currentPage)  loadingMore,required TResult Function( List<Warning> warnings,  int currentPage,  bool hasMore,  String resolvingItemUID)  resolvingItem,required TResult Function( List<Warning> warnings,  int currentPage,  bool hasMore,  String resolvedItemUID)  itemResolved,required TResult Function( Failure failure,  List<Warning>? cachedWarnings)  error,}) {final _that = this;
 switch (_that) {
 case WarningInitial():
 return initial();case WarningLoading():
 return loading();case WarningLoaded():
 return loaded(_that.warnings,_that.currentPage,_that.hasMore,_that.isLoadingMore);case WarningLoadingMore():
-return loadingMore(_that.warnings,_that.currentPage);case WarningError():
+return loadingMore(_that.warnings,_that.currentPage);case WarningResolvingItem():
+return resolvingItem(_that.warnings,_that.currentPage,_that.hasMore,_that.resolvingItemUID);case WarningItemResolved():
+return itemResolved(_that.warnings,_that.currentPage,_that.hasMore,_that.resolvedItemUID);case WarningError():
 return error(_that.failure,_that.cachedWarnings);case _:
   throw StateError('Unexpected subclass');
 
@@ -180,13 +190,15 @@ return error(_that.failure,_that.cachedWarnings);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Warning> warnings,  int currentPage,  bool hasMore,  bool isLoadingMore)?  loaded,TResult? Function( List<Warning> warnings,  int currentPage)?  loadingMore,TResult? Function( Failure failure,  List<Warning>? cachedWarnings)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Warning> warnings,  int currentPage,  bool hasMore,  bool isLoadingMore)?  loaded,TResult? Function( List<Warning> warnings,  int currentPage)?  loadingMore,TResult? Function( List<Warning> warnings,  int currentPage,  bool hasMore,  String resolvingItemUID)?  resolvingItem,TResult? Function( List<Warning> warnings,  int currentPage,  bool hasMore,  String resolvedItemUID)?  itemResolved,TResult? Function( Failure failure,  List<Warning>? cachedWarnings)?  error,}) {final _that = this;
 switch (_that) {
 case WarningInitial() when initial != null:
 return initial();case WarningLoading() when loading != null:
 return loading();case WarningLoaded() when loaded != null:
 return loaded(_that.warnings,_that.currentPage,_that.hasMore,_that.isLoadingMore);case WarningLoadingMore() when loadingMore != null:
-return loadingMore(_that.warnings,_that.currentPage);case WarningError() when error != null:
+return loadingMore(_that.warnings,_that.currentPage);case WarningResolvingItem() when resolvingItem != null:
+return resolvingItem(_that.warnings,_that.currentPage,_that.hasMore,_that.resolvingItemUID);case WarningItemResolved() when itemResolved != null:
+return itemResolved(_that.warnings,_that.currentPage,_that.hasMore,_that.resolvedItemUID);case WarningError() when error != null:
 return error(_that.failure,_that.cachedWarnings);case _:
   return null;
 
@@ -405,6 +417,162 @@ class _$WarningLoadingMoreCopyWithImpl<$Res>
 warnings: null == warnings ? _self._warnings : warnings // ignore: cast_nullable_to_non_nullable
 as List<Warning>,currentPage: null == currentPage ? _self.currentPage : currentPage // ignore: cast_nullable_to_non_nullable
 as int,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class WarningResolvingItem implements WarningState {
+  const WarningResolvingItem({required final  List<Warning> warnings, required this.currentPage, required this.hasMore, required this.resolvingItemUID}): _warnings = warnings;
+  
+
+ final  List<Warning> _warnings;
+ List<Warning> get warnings {
+  if (_warnings is EqualUnmodifiableListView) return _warnings;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_warnings);
+}
+
+ final  int currentPage;
+ final  bool hasMore;
+ final  String resolvingItemUID;
+
+/// Create a copy of WarningState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WarningResolvingItemCopyWith<WarningResolvingItem> get copyWith => _$WarningResolvingItemCopyWithImpl<WarningResolvingItem>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WarningResolvingItem&&const DeepCollectionEquality().equals(other._warnings, _warnings)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&(identical(other.resolvingItemUID, resolvingItemUID) || other.resolvingItemUID == resolvingItemUID));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_warnings),currentPage,hasMore,resolvingItemUID);
+
+@override
+String toString() {
+  return 'WarningState.resolvingItem(warnings: $warnings, currentPage: $currentPage, hasMore: $hasMore, resolvingItemUID: $resolvingItemUID)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $WarningResolvingItemCopyWith<$Res> implements $WarningStateCopyWith<$Res> {
+  factory $WarningResolvingItemCopyWith(WarningResolvingItem value, $Res Function(WarningResolvingItem) _then) = _$WarningResolvingItemCopyWithImpl;
+@useResult
+$Res call({
+ List<Warning> warnings, int currentPage, bool hasMore, String resolvingItemUID
+});
+
+
+
+
+}
+/// @nodoc
+class _$WarningResolvingItemCopyWithImpl<$Res>
+    implements $WarningResolvingItemCopyWith<$Res> {
+  _$WarningResolvingItemCopyWithImpl(this._self, this._then);
+
+  final WarningResolvingItem _self;
+  final $Res Function(WarningResolvingItem) _then;
+
+/// Create a copy of WarningState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? warnings = null,Object? currentPage = null,Object? hasMore = null,Object? resolvingItemUID = null,}) {
+  return _then(WarningResolvingItem(
+warnings: null == warnings ? _self._warnings : warnings // ignore: cast_nullable_to_non_nullable
+as List<Warning>,currentPage: null == currentPage ? _self.currentPage : currentPage // ignore: cast_nullable_to_non_nullable
+as int,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
+as bool,resolvingItemUID: null == resolvingItemUID ? _self.resolvingItemUID : resolvingItemUID // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class WarningItemResolved implements WarningState {
+  const WarningItemResolved({required final  List<Warning> warnings, required this.currentPage, required this.hasMore, required this.resolvedItemUID}): _warnings = warnings;
+  
+
+ final  List<Warning> _warnings;
+ List<Warning> get warnings {
+  if (_warnings is EqualUnmodifiableListView) return _warnings;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_warnings);
+}
+
+ final  int currentPage;
+ final  bool hasMore;
+ final  String resolvedItemUID;
+
+/// Create a copy of WarningState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WarningItemResolvedCopyWith<WarningItemResolved> get copyWith => _$WarningItemResolvedCopyWithImpl<WarningItemResolved>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WarningItemResolved&&const DeepCollectionEquality().equals(other._warnings, _warnings)&&(identical(other.currentPage, currentPage) || other.currentPage == currentPage)&&(identical(other.hasMore, hasMore) || other.hasMore == hasMore)&&(identical(other.resolvedItemUID, resolvedItemUID) || other.resolvedItemUID == resolvedItemUID));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_warnings),currentPage,hasMore,resolvedItemUID);
+
+@override
+String toString() {
+  return 'WarningState.itemResolved(warnings: $warnings, currentPage: $currentPage, hasMore: $hasMore, resolvedItemUID: $resolvedItemUID)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $WarningItemResolvedCopyWith<$Res> implements $WarningStateCopyWith<$Res> {
+  factory $WarningItemResolvedCopyWith(WarningItemResolved value, $Res Function(WarningItemResolved) _then) = _$WarningItemResolvedCopyWithImpl;
+@useResult
+$Res call({
+ List<Warning> warnings, int currentPage, bool hasMore, String resolvedItemUID
+});
+
+
+
+
+}
+/// @nodoc
+class _$WarningItemResolvedCopyWithImpl<$Res>
+    implements $WarningItemResolvedCopyWith<$Res> {
+  _$WarningItemResolvedCopyWithImpl(this._self, this._then);
+
+  final WarningItemResolved _self;
+  final $Res Function(WarningItemResolved) _then;
+
+/// Create a copy of WarningState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? warnings = null,Object? currentPage = null,Object? hasMore = null,Object? resolvedItemUID = null,}) {
+  return _then(WarningItemResolved(
+warnings: null == warnings ? _self._warnings : warnings // ignore: cast_nullable_to_non_nullable
+as List<Warning>,currentPage: null == currentPage ? _self.currentPage : currentPage // ignore: cast_nullable_to_non_nullable
+as int,hasMore: null == hasMore ? _self.hasMore : hasMore // ignore: cast_nullable_to_non_nullable
+as bool,resolvedItemUID: null == resolvedItemUID ? _self.resolvedItemUID : resolvedItemUID // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 
