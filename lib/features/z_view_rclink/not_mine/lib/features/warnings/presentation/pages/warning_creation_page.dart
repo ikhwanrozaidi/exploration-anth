@@ -194,7 +194,8 @@ class _WarningCreationPageState extends State<WarningCreationPage> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) => WarningDraftPage(
-                                          scopeID: _scopeID!,
+                                          scopeID: int.parse(_scopeID!),
+                                          scopeUID: _scopeUID,
                                           scopeName: _scopeName!,
                                           road: _road!,
                                           startSection: startSection,

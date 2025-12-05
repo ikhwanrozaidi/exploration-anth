@@ -23,7 +23,13 @@ abstract class WarningsLocalDataSource {
   Future<void> cacheSingleWarning(WarningModel warning);
   Future<void> clearCache();
 
-  Future<WarningModel> createDraftWarningLocal(String companyUID);
+  Future<WarningModel> createDraftWarningLocal({
+    required String companyUID,
+    required String roadUID,
+    required String workScopeUID,
+    required double fromSection,
+    double? toSection,
+  });
   Future<void> updateDraftWarningLocal(
     String draftUID,
     CreateWarningModel data,
@@ -355,35 +361,85 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
   }
 
   @override
-  Future<WarningModel> createDraftWarningLocal(String companyUID) async {
+  Future<WarningModel> createDraftWarningLocal({
+    required String companyUID,
+    required String roadUID,
+    required String workScopeUID,
+    required double fromSection,
+    double? toSection,
+  }) async {
     try {
       final uuid = const Uuid().v4();
-      final now = DateTime.now();
+      print('📝 Creating draft warning with UID: $uuid');
 
-      // Get company ID from companyUID
+      // Get company record
       final companyRecord = await (_database.select(
         _database.companies,
-      )..where((tbl) => tbl.uid.equals(companyUID))).getSingleOrNull();
+      )..where((tbl) => tbl.uid.equals(companyUID))).getSingle();
 
-      if (companyRecord == null) {
-        throw Exception('Company not found');
+      print('✅ Company found: ${companyRecord.name} (ID: ${companyRecord.id})');
+
+      // Get road ID from roadUID - MUST exist
+      final roadRecord = await (_database.select(
+        _database.roads,
+      )..where((tbl) => tbl.uid.equals(roadUID))).getSingleOrNull();
+
+      if (roadRecord == null) {
+        throw Exception('Road not found: $roadUID');
       }
+      print('✅ Road found: ${roadRecord.name} (ID: ${roadRecord.id})');
+
+      // Get work scope ID from workScopeUID - MUST exist
+      final workScopeRecord = await (_database.select(
+        _database.workScopes,
+      )..where((tbl) => tbl.uid.equals(workScopeUID))).getSingleOrNull();
+
+      if (workScopeRecord == null) {
+        throw Exception('Work scope not found: $workScopeUID');
+      }
+      print(
+        '✅ Work scope found: ${workScopeRecord.name} (ID: ${workScopeRecord.id})',
+      );
+
+      final now = DateTime.now();
+
+      // Prepare JSON data for storage
+      final workScopeDataJson = jsonEncode({
+        'uid': workScopeUID,
+        'name': workScopeRecord.name,
+        'code': workScopeRecord.code,
+      });
+
+      final roadDataJson = jsonEncode({
+        'uid': roadUID,
+        'name': roadRecord.name,
+        'roadNo': roadRecord.roadNo,
+      });
+
+      final companyDataJson = jsonEncode({
+        'uid': companyRecord.uid,
+        'name': companyRecord.name,
+      });
 
       await _database
           .into(_database.warnings)
           .insert(
             WarningsCompanion(
-              id: const Value.absent(),
+              id: const Value.absent(), // NULL for draft
               uid: Value(uuid),
               warningType: const Value('SITE_WARNING'),
               status: const Value('DRAFT'),
               dailyReportID: const Value.absent(),
               companyID: Value(companyRecord.id),
-              roadID: const Value.absent(),
-              workScopeID: const Value.absent(),
+              roadID: Value(roadRecord.id),
+              workScopeID: Value(workScopeRecord.id),
               contractRelationID: const Value.absent(),
-              fromSection: const Value.absent(),
-              toSection: const Value.absent(),
+              fromSection: Value(
+                fromSection.toString(),
+              ), // ✅ Set from parameter
+              toSection: Value(
+                toSection?.toString(),
+              ), // ✅ Set from parameter (nullable)
               requiresAction: const Value(true),
               isResolved: const Value(false),
               resolvedByID: const Value.absent(),
@@ -396,37 +452,24 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
               createdAt: Value(now),
               updatedAt: Value(now),
               isSynced: const Value(false),
+              workScopeData: Value(workScopeDataJson),
+              roadData: Value(roadDataJson),
+              companyData: Value(companyDataJson),
             ),
           );
 
-      print('✅ Draft warning created: $uuid');
+      print('✅ Draft warning created in database: $uuid');
 
-      // Return the created draft as a model
-      return WarningModel(
-        id: null, // Draft has no ID
-        uid: uuid,
-        warningType: 'SITE_WARNING',
-        dailyReportID: null,
-        companyID: companyRecord.id,
-        roadID: 0,
-        workScopeID: 0,
-        contractRelationID: null,
-        fromSection: null,
-        toSection: null,
-        warningItems: [],
-        requiresAction: true,
-        isResolved: false,
-        resolvedByID: null,
-        resolvedAt: null,
-        resolutionNotes: null,
-        longitude: null,
-        latitude: null,
-        description: null,
-        createdByID: 0,
-        createdAt: now,
-        updatedAt: now,
-        deletedAt: null,
-      );
+      // Fetch the created record and convert to model
+      final createdRecord = await (_database.select(
+        _database.warnings,
+      )..where((tbl) => tbl.uid.equals(uuid))).getSingle();
+
+      final warningModel = await _convertRecordToModel(createdRecord);
+
+      print('✅ Draft warning model returned: ${warningModel.uid}');
+
+      return warningModel;
     } catch (e) {
       print('❌ Error creating draft warning: $e');
       rethrow;

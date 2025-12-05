@@ -31,7 +31,8 @@ import '../../../../shared/widgets/flexible_bottomsheet.dart';
 
 class WarningDraftPage extends StatefulWidget {
   final String? draftUID;
-  final String? scopeID;
+  final int? scopeID;
+  final String? scopeUID;
   final String? scopeName;
   final Road? road;
   final String? startSection;
@@ -41,6 +42,7 @@ class WarningDraftPage extends StatefulWidget {
     super.key,
     this.draftUID,
     this.scopeID,
+    this.scopeUID,
     this.scopeName,
     this.road,
     this.startSection,
@@ -95,7 +97,8 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
       _siteWarningDraftBloc.add(
         SiteWarningDraftEvent.initializeDraft(
           companyUID: companyState.selectedCompany!.uid,
-          scopeUID: widget.scopeID!,
+          scopeID: widget.scopeID!,
+          scopeUID: widget.scopeUID!,
           scopeName: widget.scopeName!,
           road: widget.road!,
           startSection: widget.startSection!,

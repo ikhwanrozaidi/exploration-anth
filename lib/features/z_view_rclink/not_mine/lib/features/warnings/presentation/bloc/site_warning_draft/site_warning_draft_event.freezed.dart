@@ -146,10 +146,10 @@ return loadDraftList(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)?  initializeDraft,TResult Function( double latitude,  double longitude)?  updateLocation,TResult Function( ContractorRelation contractor)?  updateContractor,TResult Function( List<String> warningReasonUIDs)?  updateWarningReasons,TResult Function( String description)?  updateDescription,TResult Function()?  autoSaveDraft,TResult Function( String draftUID)?  loadExistingDraft,TResult Function( String draftUID)?  deleteDraft,TResult Function( String companyUID)?  submitWarning,TResult Function( String companyUID)?  loadDraftList,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int scopeID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)?  initializeDraft,TResult Function( double latitude,  double longitude)?  updateLocation,TResult Function( ContractorRelation contractor)?  updateContractor,TResult Function( List<String> warningReasonUIDs)?  updateWarningReasons,TResult Function( String description)?  updateDescription,TResult Function()?  autoSaveDraft,TResult Function( String draftUID)?  loadExistingDraft,TResult Function( String draftUID)?  deleteDraft,TResult Function( String companyUID)?  submitWarning,TResult Function( String companyUID)?  loadDraftList,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
-return initializeDraft(_that.companyUID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection);case UpdateLocation() when updateLocation != null:
+return initializeDraft(_that.companyUID,_that.scopeID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection);case UpdateLocation() when updateLocation != null:
 return updateLocation(_that.latitude,_that.longitude);case UpdateContractor() when updateContractor != null:
 return updateContractor(_that.contractor);case UpdateWarningReasons() when updateWarningReasons != null:
 return updateWarningReasons(_that.warningReasonUIDs);case UpdateDescription() when updateDescription != null:
@@ -176,10 +176,10 @@ return loadDraftList(_that.companyUID);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)  initializeDraft,required TResult Function( double latitude,  double longitude)  updateLocation,required TResult Function( ContractorRelation contractor)  updateContractor,required TResult Function( List<String> warningReasonUIDs)  updateWarningReasons,required TResult Function( String description)  updateDescription,required TResult Function()  autoSaveDraft,required TResult Function( String draftUID)  loadExistingDraft,required TResult Function( String draftUID)  deleteDraft,required TResult Function( String companyUID)  submitWarning,required TResult Function( String companyUID)  loadDraftList,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int scopeID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)  initializeDraft,required TResult Function( double latitude,  double longitude)  updateLocation,required TResult Function( ContractorRelation contractor)  updateContractor,required TResult Function( List<String> warningReasonUIDs)  updateWarningReasons,required TResult Function( String description)  updateDescription,required TResult Function()  autoSaveDraft,required TResult Function( String draftUID)  loadExistingDraft,required TResult Function( String draftUID)  deleteDraft,required TResult Function( String companyUID)  submitWarning,required TResult Function( String companyUID)  loadDraftList,}) {final _that = this;
 switch (_that) {
 case InitializeDraft():
-return initializeDraft(_that.companyUID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection);case UpdateLocation():
+return initializeDraft(_that.companyUID,_that.scopeID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection);case UpdateLocation():
 return updateLocation(_that.latitude,_that.longitude);case UpdateContractor():
 return updateContractor(_that.contractor);case UpdateWarningReasons():
 return updateWarningReasons(_that.warningReasonUIDs);case UpdateDescription():
@@ -205,10 +205,10 @@ return loadDraftList(_that.companyUID);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)?  initializeDraft,TResult? Function( double latitude,  double longitude)?  updateLocation,TResult? Function( ContractorRelation contractor)?  updateContractor,TResult? Function( List<String> warningReasonUIDs)?  updateWarningReasons,TResult? Function( String description)?  updateDescription,TResult? Function()?  autoSaveDraft,TResult? Function( String draftUID)?  loadExistingDraft,TResult? Function( String draftUID)?  deleteDraft,TResult? Function( String companyUID)?  submitWarning,TResult? Function( String companyUID)?  loadDraftList,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int scopeID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)?  initializeDraft,TResult? Function( double latitude,  double longitude)?  updateLocation,TResult? Function( ContractorRelation contractor)?  updateContractor,TResult? Function( List<String> warningReasonUIDs)?  updateWarningReasons,TResult? Function( String description)?  updateDescription,TResult? Function()?  autoSaveDraft,TResult? Function( String draftUID)?  loadExistingDraft,TResult? Function( String draftUID)?  deleteDraft,TResult? Function( String companyUID)?  submitWarning,TResult? Function( String companyUID)?  loadDraftList,}) {final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
-return initializeDraft(_that.companyUID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection);case UpdateLocation() when updateLocation != null:
+return initializeDraft(_that.companyUID,_that.scopeID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection);case UpdateLocation() when updateLocation != null:
 return updateLocation(_that.latitude,_that.longitude);case UpdateContractor() when updateContractor != null:
 return updateContractor(_that.contractor);case UpdateWarningReasons() when updateWarningReasons != null:
 return updateWarningReasons(_that.warningReasonUIDs);case UpdateDescription() when updateDescription != null:
@@ -229,10 +229,11 @@ return loadDraftList(_that.companyUID);case _:
 
 
 class InitializeDraft implements SiteWarningDraftEvent {
-  const InitializeDraft({required this.companyUID, required this.scopeUID, required this.scopeName, required this.road, required this.startSection, this.endSection});
+  const InitializeDraft({required this.companyUID, required this.scopeID, required this.scopeUID, required this.scopeName, required this.road, required this.startSection, this.endSection});
   
 
  final  String companyUID;
+ final  int scopeID;
  final  String scopeUID;
  final  String scopeName;
  final  Road road;
@@ -249,16 +250,16 @@ $InitializeDraftCopyWith<InitializeDraft> get copyWith => _$InitializeDraftCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is InitializeDraft&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID)&&(identical(other.scopeUID, scopeUID) || other.scopeUID == scopeUID)&&(identical(other.scopeName, scopeName) || other.scopeName == scopeName)&&(identical(other.road, road) || other.road == road)&&(identical(other.startSection, startSection) || other.startSection == startSection)&&(identical(other.endSection, endSection) || other.endSection == endSection));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InitializeDraft&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID)&&(identical(other.scopeID, scopeID) || other.scopeID == scopeID)&&(identical(other.scopeUID, scopeUID) || other.scopeUID == scopeUID)&&(identical(other.scopeName, scopeName) || other.scopeName == scopeName)&&(identical(other.road, road) || other.road == road)&&(identical(other.startSection, startSection) || other.startSection == startSection)&&(identical(other.endSection, endSection) || other.endSection == endSection));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,companyUID,scopeUID,scopeName,road,startSection,endSection);
+int get hashCode => Object.hash(runtimeType,companyUID,scopeID,scopeUID,scopeName,road,startSection,endSection);
 
 @override
 String toString() {
-  return 'SiteWarningDraftEvent.initializeDraft(companyUID: $companyUID, scopeUID: $scopeUID, scopeName: $scopeName, road: $road, startSection: $startSection, endSection: $endSection)';
+  return 'SiteWarningDraftEvent.initializeDraft(companyUID: $companyUID, scopeID: $scopeID, scopeUID: $scopeUID, scopeName: $scopeName, road: $road, startSection: $startSection, endSection: $endSection)';
 }
 
 
@@ -269,7 +270,7 @@ abstract mixin class $InitializeDraftCopyWith<$Res> implements $SiteWarningDraft
   factory $InitializeDraftCopyWith(InitializeDraft value, $Res Function(InitializeDraft) _then) = _$InitializeDraftCopyWithImpl;
 @useResult
 $Res call({
- String companyUID, String scopeUID, String scopeName, Road road, String startSection, String? endSection
+ String companyUID, int scopeID, String scopeUID, String scopeName, Road road, String startSection, String? endSection
 });
 
 
@@ -286,10 +287,11 @@ class _$InitializeDraftCopyWithImpl<$Res>
 
 /// Create a copy of SiteWarningDraftEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? companyUID = null,Object? scopeUID = null,Object? scopeName = null,Object? road = null,Object? startSection = null,Object? endSection = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? companyUID = null,Object? scopeID = null,Object? scopeUID = null,Object? scopeName = null,Object? road = null,Object? startSection = null,Object? endSection = freezed,}) {
   return _then(InitializeDraft(
 companyUID: null == companyUID ? _self.companyUID : companyUID // ignore: cast_nullable_to_non_nullable
-as String,scopeUID: null == scopeUID ? _self.scopeUID : scopeUID // ignore: cast_nullable_to_non_nullable
+as String,scopeID: null == scopeID ? _self.scopeID : scopeID // ignore: cast_nullable_to_non_nullable
+as int,scopeUID: null == scopeUID ? _self.scopeUID : scopeUID // ignore: cast_nullable_to_non_nullable
 as String,scopeName: null == scopeName ? _self.scopeName : scopeName // ignore: cast_nullable_to_non_nullable
 as String,road: null == road ? _self.road : road // ignore: cast_nullable_to_non_nullable
 as Road,startSection: null == startSection ? _self.startSection : startSection // ignore: cast_nullable_to_non_nullable

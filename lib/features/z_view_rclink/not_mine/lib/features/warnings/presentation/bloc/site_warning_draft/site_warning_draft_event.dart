@@ -9,6 +9,7 @@ abstract class SiteWarningDraftEvent with _$SiteWarningDraftEvent {
   // Draft initialization
   const factory SiteWarningDraftEvent.initializeDraft({
     required String companyUID,
+    required int scopeID,
     required String scopeUID,
     required String scopeName,
     required Road road,

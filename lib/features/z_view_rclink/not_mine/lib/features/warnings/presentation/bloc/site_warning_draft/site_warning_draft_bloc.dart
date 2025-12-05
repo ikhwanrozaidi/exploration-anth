@@ -72,11 +72,48 @@ class SiteWarningDraftBloc
     try {
       print('📝 Creating new draft warning for company: ${event.companyUID}');
 
+      // Validate required fields
+      if (event.road.uid == null) {
+        emit(
+          SiteWarningDraftState.error(
+            failure: ServerFailure('Road UID is required'),
+          ),
+        );
+        return;
+      }
+
+      if (event.scopeUID.isEmpty) {
+        emit(
+          SiteWarningDraftState.error(
+            failure: ServerFailure('Work scope UID is required'),
+          ),
+        );
+        return;
+      }
+
       emit(const SiteWarningDraftState.loading());
 
-      // Create draft in local database
+      final fromSectionValue = double.tryParse(event.startSection);
+      final toSectionValue = event.endSection != null
+          ? double.tryParse(event.endSection!)
+          : null;
+
+      if (fromSectionValue == null) {
+        emit(
+          SiteWarningDraftState.error(
+            failure: ServerFailure('Invalid start section value'),
+          ),
+        );
+        return;
+      }
+
+      // Create draft in local database with initial data
       final draftWarning = await _localDataSource.createDraftWarningLocal(
-        event.companyUID,
+        companyUID: event.companyUID,
+        roadUID: event.road.uid!,
+        workScopeUID: event.scopeUID,
+        fromSection: fromSectionValue,
+        toSection: toSectionValue,
       );
 
       print('✅ Draft warning created with UID: ${draftWarning.uid}');
@@ -86,6 +123,7 @@ class SiteWarningDraftBloc
         draftUID: draftWarning.uid,
         isDraftMode: true,
         companyUID: event.companyUID,
+        scopeID: event.scopeID,
         scopeUID: event.scopeUID,
         scopeName: event.scopeName,
         road: event.road,
@@ -198,6 +236,7 @@ class SiteWarningDraftBloc
         draftUID: draftWarning.uid,
         isDraftMode: true,
         companyUID: companyUID,
+        scopeID: draftWarning.workScopeID,
         scopeUID: workScopeUID,
         scopeName: workScopeName,
         road: road,

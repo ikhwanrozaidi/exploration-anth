@@ -52,6 +52,7 @@ abstract class SiteWarningDraftData with _$SiteWarningDraftData {
 
     // Required fields from initialization
     required String companyUID,
+    required int scopeID,
     required String scopeUID,
     required String scopeName,
     required Road road,

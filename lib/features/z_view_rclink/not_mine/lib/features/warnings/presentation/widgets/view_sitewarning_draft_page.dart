@@ -72,6 +72,7 @@ class _ViewSitewarningDraftPageState extends State<ViewSitewarningDraftPage> {
 
     final startSection = draft.fromSection ?? '';
     final endSection = draft.toSection;
+    final scopeID = draft.workScopeID;
 
     // Navigate to WarningDraftPage with draft UID AND all required data
     final result = await Navigator.push(
@@ -79,7 +80,8 @@ class _ViewSitewarningDraftPageState extends State<ViewSitewarningDraftPage> {
       MaterialPageRoute(
         builder: (context) => WarningDraftPage(
           draftUID: draft.uid,
-          scopeID: scopeUID,
+          scopeID: scopeID,
+          scopeUID: scopeUID,
           scopeName: scopeName,
           road: road,
           startSection: startSection,

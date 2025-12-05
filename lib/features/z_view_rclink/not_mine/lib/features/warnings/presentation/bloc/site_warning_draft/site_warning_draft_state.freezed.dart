@@ -815,7 +815,7 @@ mixin _$SiteWarningDraftData {
 
 // Draft metadata
  String? get draftUID; bool get isDraftMode;// Required fields from initialization
- String get companyUID; String get scopeUID; String get scopeName; Road get road; String get startSection; String? get endSection;// Optional fields
+ String get companyUID; int get scopeID; String get scopeUID; String get scopeName; Road get road; String get startSection; String? get endSection;// Optional fields
  double? get latitude; double? get longitude; ContractorRelation? get contractor; List<String> get warningReasonUIDs; String get description;
 /// Create a copy of SiteWarningDraftData
 /// with the given fields replaced by the non-null parameter values.
@@ -827,16 +827,16 @@ $SiteWarningDraftDataCopyWith<SiteWarningDraftData> get copyWith => _$SiteWarnin
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SiteWarningDraftData&&(identical(other.draftUID, draftUID) || other.draftUID == draftUID)&&(identical(other.isDraftMode, isDraftMode) || other.isDraftMode == isDraftMode)&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID)&&(identical(other.scopeUID, scopeUID) || other.scopeUID == scopeUID)&&(identical(other.scopeName, scopeName) || other.scopeName == scopeName)&&(identical(other.road, road) || other.road == road)&&(identical(other.startSection, startSection) || other.startSection == startSection)&&(identical(other.endSection, endSection) || other.endSection == endSection)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.contractor, contractor) || other.contractor == contractor)&&const DeepCollectionEquality().equals(other.warningReasonUIDs, warningReasonUIDs)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SiteWarningDraftData&&(identical(other.draftUID, draftUID) || other.draftUID == draftUID)&&(identical(other.isDraftMode, isDraftMode) || other.isDraftMode == isDraftMode)&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID)&&(identical(other.scopeID, scopeID) || other.scopeID == scopeID)&&(identical(other.scopeUID, scopeUID) || other.scopeUID == scopeUID)&&(identical(other.scopeName, scopeName) || other.scopeName == scopeName)&&(identical(other.road, road) || other.road == road)&&(identical(other.startSection, startSection) || other.startSection == startSection)&&(identical(other.endSection, endSection) || other.endSection == endSection)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.contractor, contractor) || other.contractor == contractor)&&const DeepCollectionEquality().equals(other.warningReasonUIDs, warningReasonUIDs)&&(identical(other.description, description) || other.description == description));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,draftUID,isDraftMode,companyUID,scopeUID,scopeName,road,startSection,endSection,latitude,longitude,contractor,const DeepCollectionEquality().hash(warningReasonUIDs),description);
+int get hashCode => Object.hash(runtimeType,draftUID,isDraftMode,companyUID,scopeID,scopeUID,scopeName,road,startSection,endSection,latitude,longitude,contractor,const DeepCollectionEquality().hash(warningReasonUIDs),description);
 
 @override
 String toString() {
-  return 'SiteWarningDraftData(draftUID: $draftUID, isDraftMode: $isDraftMode, companyUID: $companyUID, scopeUID: $scopeUID, scopeName: $scopeName, road: $road, startSection: $startSection, endSection: $endSection, latitude: $latitude, longitude: $longitude, contractor: $contractor, warningReasonUIDs: $warningReasonUIDs, description: $description)';
+  return 'SiteWarningDraftData(draftUID: $draftUID, isDraftMode: $isDraftMode, companyUID: $companyUID, scopeID: $scopeID, scopeUID: $scopeUID, scopeName: $scopeName, road: $road, startSection: $startSection, endSection: $endSection, latitude: $latitude, longitude: $longitude, contractor: $contractor, warningReasonUIDs: $warningReasonUIDs, description: $description)';
 }
 
 
@@ -847,7 +847,7 @@ abstract mixin class $SiteWarningDraftDataCopyWith<$Res>  {
   factory $SiteWarningDraftDataCopyWith(SiteWarningDraftData value, $Res Function(SiteWarningDraftData) _then) = _$SiteWarningDraftDataCopyWithImpl;
 @useResult
 $Res call({
- String? draftUID, bool isDraftMode, String companyUID, String scopeUID, String scopeName, Road road, String startSection, String? endSection, double? latitude, double? longitude, ContractorRelation? contractor, List<String> warningReasonUIDs, String description
+ String? draftUID, bool isDraftMode, String companyUID, int scopeID, String scopeUID, String scopeName, Road road, String startSection, String? endSection, double? latitude, double? longitude, ContractorRelation? contractor, List<String> warningReasonUIDs, String description
 });
 
 
@@ -864,12 +864,13 @@ class _$SiteWarningDraftDataCopyWithImpl<$Res>
 
 /// Create a copy of SiteWarningDraftData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? draftUID = freezed,Object? isDraftMode = null,Object? companyUID = null,Object? scopeUID = null,Object? scopeName = null,Object? road = null,Object? startSection = null,Object? endSection = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? contractor = freezed,Object? warningReasonUIDs = null,Object? description = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? draftUID = freezed,Object? isDraftMode = null,Object? companyUID = null,Object? scopeID = null,Object? scopeUID = null,Object? scopeName = null,Object? road = null,Object? startSection = null,Object? endSection = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? contractor = freezed,Object? warningReasonUIDs = null,Object? description = null,}) {
   return _then(_self.copyWith(
 draftUID: freezed == draftUID ? _self.draftUID : draftUID // ignore: cast_nullable_to_non_nullable
 as String?,isDraftMode: null == isDraftMode ? _self.isDraftMode : isDraftMode // ignore: cast_nullable_to_non_nullable
 as bool,companyUID: null == companyUID ? _self.companyUID : companyUID // ignore: cast_nullable_to_non_nullable
-as String,scopeUID: null == scopeUID ? _self.scopeUID : scopeUID // ignore: cast_nullable_to_non_nullable
+as String,scopeID: null == scopeID ? _self.scopeID : scopeID // ignore: cast_nullable_to_non_nullable
+as int,scopeUID: null == scopeUID ? _self.scopeUID : scopeUID // ignore: cast_nullable_to_non_nullable
 as String,scopeName: null == scopeName ? _self.scopeName : scopeName // ignore: cast_nullable_to_non_nullable
 as String,road: null == road ? _self.road : road // ignore: cast_nullable_to_non_nullable
 as Road,startSection: null == startSection ? _self.startSection : startSection // ignore: cast_nullable_to_non_nullable
@@ -964,10 +965,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? draftUID,  bool isDraftMode,  String companyUID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection,  double? latitude,  double? longitude,  ContractorRelation? contractor,  List<String> warningReasonUIDs,  String description)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? draftUID,  bool isDraftMode,  String companyUID,  int scopeID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection,  double? latitude,  double? longitude,  ContractorRelation? contractor,  List<String> warningReasonUIDs,  String description)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SiteWarningDraftData() when $default != null:
-return $default(_that.draftUID,_that.isDraftMode,_that.companyUID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection,_that.latitude,_that.longitude,_that.contractor,_that.warningReasonUIDs,_that.description);case _:
+return $default(_that.draftUID,_that.isDraftMode,_that.companyUID,_that.scopeID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection,_that.latitude,_that.longitude,_that.contractor,_that.warningReasonUIDs,_that.description);case _:
   return orElse();
 
 }
@@ -985,10 +986,10 @@ return $default(_that.draftUID,_that.isDraftMode,_that.companyUID,_that.scopeUID
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? draftUID,  bool isDraftMode,  String companyUID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection,  double? latitude,  double? longitude,  ContractorRelation? contractor,  List<String> warningReasonUIDs,  String description)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? draftUID,  bool isDraftMode,  String companyUID,  int scopeID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection,  double? latitude,  double? longitude,  ContractorRelation? contractor,  List<String> warningReasonUIDs,  String description)  $default,) {final _that = this;
 switch (_that) {
 case _SiteWarningDraftData():
-return $default(_that.draftUID,_that.isDraftMode,_that.companyUID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection,_that.latitude,_that.longitude,_that.contractor,_that.warningReasonUIDs,_that.description);case _:
+return $default(_that.draftUID,_that.isDraftMode,_that.companyUID,_that.scopeID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection,_that.latitude,_that.longitude,_that.contractor,_that.warningReasonUIDs,_that.description);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1005,10 +1006,10 @@ return $default(_that.draftUID,_that.isDraftMode,_that.companyUID,_that.scopeUID
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? draftUID,  bool isDraftMode,  String companyUID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection,  double? latitude,  double? longitude,  ContractorRelation? contractor,  List<String> warningReasonUIDs,  String description)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? draftUID,  bool isDraftMode,  String companyUID,  int scopeID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection,  double? latitude,  double? longitude,  ContractorRelation? contractor,  List<String> warningReasonUIDs,  String description)?  $default,) {final _that = this;
 switch (_that) {
 case _SiteWarningDraftData() when $default != null:
-return $default(_that.draftUID,_that.isDraftMode,_that.companyUID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection,_that.latitude,_that.longitude,_that.contractor,_that.warningReasonUIDs,_that.description);case _:
+return $default(_that.draftUID,_that.isDraftMode,_that.companyUID,_that.scopeID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection,_that.latitude,_that.longitude,_that.contractor,_that.warningReasonUIDs,_that.description);case _:
   return null;
 
 }
@@ -1020,7 +1021,7 @@ return $default(_that.draftUID,_that.isDraftMode,_that.companyUID,_that.scopeUID
 
 
 class _SiteWarningDraftData implements SiteWarningDraftData {
-  const _SiteWarningDraftData({this.draftUID, this.isDraftMode = false, required this.companyUID, required this.scopeUID, required this.scopeName, required this.road, required this.startSection, this.endSection, this.latitude, this.longitude, this.contractor, final  List<String> warningReasonUIDs = const [], this.description = ''}): _warningReasonUIDs = warningReasonUIDs;
+  const _SiteWarningDraftData({this.draftUID, this.isDraftMode = false, required this.companyUID, required this.scopeID, required this.scopeUID, required this.scopeName, required this.road, required this.startSection, this.endSection, this.latitude, this.longitude, this.contractor, final  List<String> warningReasonUIDs = const [], this.description = ''}): _warningReasonUIDs = warningReasonUIDs;
   
 
 // Draft metadata
@@ -1028,6 +1029,7 @@ class _SiteWarningDraftData implements SiteWarningDraftData {
 @override@JsonKey() final  bool isDraftMode;
 // Required fields from initialization
 @override final  String companyUID;
+@override final  int scopeID;
 @override final  String scopeUID;
 @override final  String scopeName;
 @override final  Road road;
@@ -1056,16 +1058,16 @@ _$SiteWarningDraftDataCopyWith<_SiteWarningDraftData> get copyWith => __$SiteWar
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SiteWarningDraftData&&(identical(other.draftUID, draftUID) || other.draftUID == draftUID)&&(identical(other.isDraftMode, isDraftMode) || other.isDraftMode == isDraftMode)&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID)&&(identical(other.scopeUID, scopeUID) || other.scopeUID == scopeUID)&&(identical(other.scopeName, scopeName) || other.scopeName == scopeName)&&(identical(other.road, road) || other.road == road)&&(identical(other.startSection, startSection) || other.startSection == startSection)&&(identical(other.endSection, endSection) || other.endSection == endSection)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.contractor, contractor) || other.contractor == contractor)&&const DeepCollectionEquality().equals(other._warningReasonUIDs, _warningReasonUIDs)&&(identical(other.description, description) || other.description == description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SiteWarningDraftData&&(identical(other.draftUID, draftUID) || other.draftUID == draftUID)&&(identical(other.isDraftMode, isDraftMode) || other.isDraftMode == isDraftMode)&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID)&&(identical(other.scopeID, scopeID) || other.scopeID == scopeID)&&(identical(other.scopeUID, scopeUID) || other.scopeUID == scopeUID)&&(identical(other.scopeName, scopeName) || other.scopeName == scopeName)&&(identical(other.road, road) || other.road == road)&&(identical(other.startSection, startSection) || other.startSection == startSection)&&(identical(other.endSection, endSection) || other.endSection == endSection)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.contractor, contractor) || other.contractor == contractor)&&const DeepCollectionEquality().equals(other._warningReasonUIDs, _warningReasonUIDs)&&(identical(other.description, description) || other.description == description));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,draftUID,isDraftMode,companyUID,scopeUID,scopeName,road,startSection,endSection,latitude,longitude,contractor,const DeepCollectionEquality().hash(_warningReasonUIDs),description);
+int get hashCode => Object.hash(runtimeType,draftUID,isDraftMode,companyUID,scopeID,scopeUID,scopeName,road,startSection,endSection,latitude,longitude,contractor,const DeepCollectionEquality().hash(_warningReasonUIDs),description);
 
 @override
 String toString() {
-  return 'SiteWarningDraftData(draftUID: $draftUID, isDraftMode: $isDraftMode, companyUID: $companyUID, scopeUID: $scopeUID, scopeName: $scopeName, road: $road, startSection: $startSection, endSection: $endSection, latitude: $latitude, longitude: $longitude, contractor: $contractor, warningReasonUIDs: $warningReasonUIDs, description: $description)';
+  return 'SiteWarningDraftData(draftUID: $draftUID, isDraftMode: $isDraftMode, companyUID: $companyUID, scopeID: $scopeID, scopeUID: $scopeUID, scopeName: $scopeName, road: $road, startSection: $startSection, endSection: $endSection, latitude: $latitude, longitude: $longitude, contractor: $contractor, warningReasonUIDs: $warningReasonUIDs, description: $description)';
 }
 
 
@@ -1076,7 +1078,7 @@ abstract mixin class _$SiteWarningDraftDataCopyWith<$Res> implements $SiteWarnin
   factory _$SiteWarningDraftDataCopyWith(_SiteWarningDraftData value, $Res Function(_SiteWarningDraftData) _then) = __$SiteWarningDraftDataCopyWithImpl;
 @override @useResult
 $Res call({
- String? draftUID, bool isDraftMode, String companyUID, String scopeUID, String scopeName, Road road, String startSection, String? endSection, double? latitude, double? longitude, ContractorRelation? contractor, List<String> warningReasonUIDs, String description
+ String? draftUID, bool isDraftMode, String companyUID, int scopeID, String scopeUID, String scopeName, Road road, String startSection, String? endSection, double? latitude, double? longitude, ContractorRelation? contractor, List<String> warningReasonUIDs, String description
 });
 
 
@@ -1093,12 +1095,13 @@ class __$SiteWarningDraftDataCopyWithImpl<$Res>
 
 /// Create a copy of SiteWarningDraftData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? draftUID = freezed,Object? isDraftMode = null,Object? companyUID = null,Object? scopeUID = null,Object? scopeName = null,Object? road = null,Object? startSection = null,Object? endSection = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? contractor = freezed,Object? warningReasonUIDs = null,Object? description = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? draftUID = freezed,Object? isDraftMode = null,Object? companyUID = null,Object? scopeID = null,Object? scopeUID = null,Object? scopeName = null,Object? road = null,Object? startSection = null,Object? endSection = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? contractor = freezed,Object? warningReasonUIDs = null,Object? description = null,}) {
   return _then(_SiteWarningDraftData(
 draftUID: freezed == draftUID ? _self.draftUID : draftUID // ignore: cast_nullable_to_non_nullable
 as String?,isDraftMode: null == isDraftMode ? _self.isDraftMode : isDraftMode // ignore: cast_nullable_to_non_nullable
 as bool,companyUID: null == companyUID ? _self.companyUID : companyUID // ignore: cast_nullable_to_non_nullable
-as String,scopeUID: null == scopeUID ? _self.scopeUID : scopeUID // ignore: cast_nullable_to_non_nullable
+as String,scopeID: null == scopeID ? _self.scopeID : scopeID // ignore: cast_nullable_to_non_nullable
+as int,scopeUID: null == scopeUID ? _self.scopeUID : scopeUID // ignore: cast_nullable_to_non_nullable
 as String,scopeName: null == scopeName ? _self.scopeName : scopeName // ignore: cast_nullable_to_non_nullable
 as String,road: null == road ? _self.road : road // ignore: cast_nullable_to_non_nullable
 as Road,startSection: null == startSection ? _self.startSection : startSection // ignore: cast_nullable_to_non_nullable
