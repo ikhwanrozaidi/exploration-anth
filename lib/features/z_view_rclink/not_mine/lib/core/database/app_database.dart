@@ -729,9 +729,50 @@ class Warnings extends Table with SyncableTable {
       text().nullable()(); // JSON: DailyReportResponse
   TextColumn get filesData => text().nullable()(); // JSON: files data
 
+  TextColumn get status => text().withDefault(
+    const Constant('SUBMITTED'),
+  )(); // 'DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'REVISION_REQUESTED'
+
   @override
   List<Set<Column>> get uniqueKeys => [
     {uid},
+  ];
+}
+
+// Contractor Relations table
+@DataClassName('ContractorRelationRecord')
+class ContractorRelations extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  TextColumn get name => text()();
+  TextColumn get regNo => text().nullable()();
+  TextColumn get cidbNo => text().nullable()();
+  TextColumn get address => text().nullable()();
+  TextColumn get postalCode => text().nullable()();
+  TextColumn get city => text().nullable()();
+  TextColumn get state => text().nullable()();
+  TextColumn get country => text().nullable()();
+  TextColumn get phone => text().nullable()();
+  TextColumn get email => text().nullable()();
+  TextColumn get website => text().nullable()();
+  TextColumn get companyType =>
+      text().nullable()(); // PRIVATE_LIMITED_COMPANY, etc.
+  BoolColumn get bumiputera => boolean().nullable()();
+  TextColumn get einvoiceTinNo => text().nullable()();
+  DateTimeColumn get registrationDate => dateTime().nullable()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+  IntColumn get ownerID => integer()();
+  TextColumn get defaultBankAcc => text().nullable()();
+  TextColumn get defaultBankAccType => text().nullable()(); // AMBANK, etc.
+  BoolColumn get isSelf => boolean().nullable()();
+  TextColumn get contractRelationUID => text().nullable()();
+  TextColumn get relationStatus => text().nullable()(); // ACTIVE, etc.
+  TextColumn get relationRole => text().nullable()(); // CONTRACTOR, etc.
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
   ];
 }
 
@@ -765,13 +806,14 @@ class Warnings extends Table with SyncableTable {
     WarningCategories,
     WarningReasons,
     Warnings,
+    ContractorRelations,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 23; // Alter warning tables
+  int get schemaVersion => 25; // add ContractorRelation table after migrating Warning Tables for DRAFT
 
   @override
   MigrationStrategy get migration {
@@ -1254,6 +1296,22 @@ class AppDatabase extends _$AppDatabase {
           print(
             '✅ Migration 22→23: Made fromSection/toSection nullable and added filesData column to Warnings table',
           );
+        },
+        from23To24: (m, schema) async {
+          // Migration from version 23 to 24:
+          // Add status column to Warnings table
+
+          await m.addColumn(schema.warnings, schema.warnings.status);
+
+          print('✅ Migration 23→24: Added status column to Warnings table');
+        },
+        from24To25: (m, schema) async {
+          // Migration from version 24 to 25:
+          // Add ContractorRelations table
+
+          await m.createTable(schema.contractorRelations);
+
+          print('✅ Migration 24→25: Added ContractorRelations table');
         },
       ),
       beforeOpen: (details) async {

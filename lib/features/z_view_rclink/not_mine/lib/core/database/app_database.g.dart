@@ -24076,6 +24076,16 @@ class $WarningsTable extends Warnings
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('SUBMITTED'),
+  );
   @override
   List<GeneratedColumn> get $columns => [
     isSynced,
@@ -24113,6 +24123,7 @@ class $WarningsTable extends Warnings
     resolvedByData,
     dailyReportData,
     filesData,
+    status,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -24403,6 +24414,12 @@ class $WarningsTable extends Warnings
         filesData.isAcceptableOrUnknown(data['files_data']!, _filesDataMeta),
       );
     }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
     return context;
   }
 
@@ -24556,6 +24573,10 @@ class $WarningsTable extends Warnings
         DriftSqlType.string,
         data['${effectivePrefix}files_data'],
       ),
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
     );
   }
 
@@ -24601,6 +24622,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
   final String? resolvedByData;
   final String? dailyReportData;
   final String? filesData;
+  final String status;
   const WarningRecord({
     required this.isSynced,
     this.deletedAt,
@@ -24637,6 +24659,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     this.resolvedByData,
     this.dailyReportData,
     this.filesData,
+    required this.status,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -24722,6 +24745,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     if (!nullToAbsent || filesData != null) {
       map['files_data'] = Variable<String>(filesData);
     }
+    map['status'] = Variable<String>(status);
     return map;
   }
 
@@ -24806,6 +24830,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       filesData: filesData == null && nullToAbsent
           ? const Value.absent()
           : Value(filesData),
+      status: Value(status),
     );
   }
 
@@ -24850,6 +24875,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       resolvedByData: serializer.fromJson<String?>(json['resolvedByData']),
       dailyReportData: serializer.fromJson<String?>(json['dailyReportData']),
       filesData: serializer.fromJson<String?>(json['filesData']),
+      status: serializer.fromJson<String>(json['status']),
     );
   }
   @override
@@ -24891,6 +24917,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       'resolvedByData': serializer.toJson<String?>(resolvedByData),
       'dailyReportData': serializer.toJson<String?>(dailyReportData),
       'filesData': serializer.toJson<String?>(filesData),
+      'status': serializer.toJson<String>(status),
     };
   }
 
@@ -24930,6 +24957,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     Value<String?> resolvedByData = const Value.absent(),
     Value<String?> dailyReportData = const Value.absent(),
     Value<String?> filesData = const Value.absent(),
+    String? status,
   }) => WarningRecord(
     isSynced: isSynced ?? this.isSynced,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
@@ -24984,6 +25012,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
         ? dailyReportData.value
         : this.dailyReportData,
     filesData: filesData.present ? filesData.value : this.filesData,
+    status: status ?? this.status,
   );
   WarningRecord copyWithCompanion(WarningsCompanion data) {
     return WarningRecord(
@@ -25064,6 +25093,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
           ? data.dailyReportData.value
           : this.dailyReportData,
       filesData: data.filesData.present ? data.filesData.value : this.filesData,
+      status: data.status.present ? data.status.value : this.status,
     );
   }
 
@@ -25104,7 +25134,8 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
           ..write('createdByData: $createdByData, ')
           ..write('resolvedByData: $resolvedByData, ')
           ..write('dailyReportData: $dailyReportData, ')
-          ..write('filesData: $filesData')
+          ..write('filesData: $filesData, ')
+          ..write('status: $status')
           ..write(')'))
         .toString();
   }
@@ -25146,6 +25177,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     resolvedByData,
     dailyReportData,
     filesData,
+    status,
   ]);
   @override
   bool operator ==(Object other) =>
@@ -25185,7 +25217,8 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
           other.createdByData == this.createdByData &&
           other.resolvedByData == this.resolvedByData &&
           other.dailyReportData == this.dailyReportData &&
-          other.filesData == this.filesData);
+          other.filesData == this.filesData &&
+          other.status == this.status);
 }
 
 class WarningsCompanion extends UpdateCompanion<WarningRecord> {
@@ -25224,6 +25257,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
   final Value<String?> resolvedByData;
   final Value<String?> dailyReportData;
   final Value<String?> filesData;
+  final Value<String> status;
   const WarningsCompanion({
     this.isSynced = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -25260,6 +25294,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     this.resolvedByData = const Value.absent(),
     this.dailyReportData = const Value.absent(),
     this.filesData = const Value.absent(),
+    this.status = const Value.absent(),
   });
   WarningsCompanion.insert({
     this.isSynced = const Value.absent(),
@@ -25297,6 +25332,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     this.resolvedByData = const Value.absent(),
     this.dailyReportData = const Value.absent(),
     this.filesData = const Value.absent(),
+    this.status = const Value.absent(),
   }) : uid = Value(uid),
        warningType = Value(warningType),
        companyID = Value(companyID),
@@ -25341,6 +25377,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     Expression<String>? resolvedByData,
     Expression<String>? dailyReportData,
     Expression<String>? filesData,
+    Expression<String>? status,
   }) {
     return RawValuesInsertable({
       if (isSynced != null) 'is_synced': isSynced,
@@ -25379,6 +25416,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
       if (resolvedByData != null) 'resolved_by_data': resolvedByData,
       if (dailyReportData != null) 'daily_report_data': dailyReportData,
       if (filesData != null) 'files_data': filesData,
+      if (status != null) 'status': status,
     });
   }
 
@@ -25418,6 +25456,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     Value<String?>? resolvedByData,
     Value<String?>? dailyReportData,
     Value<String?>? filesData,
+    Value<String>? status,
   }) {
     return WarningsCompanion(
       isSynced: isSynced ?? this.isSynced,
@@ -25455,6 +25494,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
       resolvedByData: resolvedByData ?? this.resolvedByData,
       dailyReportData: dailyReportData ?? this.dailyReportData,
       filesData: filesData ?? this.filesData,
+      status: status ?? this.status,
     );
   }
 
@@ -25566,6 +25606,9 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     if (filesData.present) {
       map['files_data'] = Variable<String>(filesData.value);
     }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
     return map;
   }
 
@@ -25606,7 +25649,1764 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
           ..write('createdByData: $createdByData, ')
           ..write('resolvedByData: $resolvedByData, ')
           ..write('dailyReportData: $dailyReportData, ')
-          ..write('filesData: $filesData')
+          ..write('filesData: $filesData, ')
+          ..write('status: $status')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ContractorRelationsTable extends ContractorRelations
+    with TableInfo<$ContractorRelationsTable, ContractorRelationRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ContractorRelationsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _regNoMeta = const VerificationMeta('regNo');
+  @override
+  late final GeneratedColumn<String> regNo = GeneratedColumn<String>(
+    'reg_no',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cidbNoMeta = const VerificationMeta('cidbNo');
+  @override
+  late final GeneratedColumn<String> cidbNo = GeneratedColumn<String>(
+    'cidb_no',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _addressMeta = const VerificationMeta(
+    'address',
+  );
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+    'address',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _postalCodeMeta = const VerificationMeta(
+    'postalCode',
+  );
+  @override
+  late final GeneratedColumn<String> postalCode = GeneratedColumn<String>(
+    'postal_code',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _cityMeta = const VerificationMeta('city');
+  @override
+  late final GeneratedColumn<String> city = GeneratedColumn<String>(
+    'city',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _stateMeta = const VerificationMeta('state');
+  @override
+  late final GeneratedColumn<String> state = GeneratedColumn<String>(
+    'state',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _countryMeta = const VerificationMeta(
+    'country',
+  );
+  @override
+  late final GeneratedColumn<String> country = GeneratedColumn<String>(
+    'country',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _phoneMeta = const VerificationMeta('phone');
+  @override
+  late final GeneratedColumn<String> phone = GeneratedColumn<String>(
+    'phone',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+    'email',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _websiteMeta = const VerificationMeta(
+    'website',
+  );
+  @override
+  late final GeneratedColumn<String> website = GeneratedColumn<String>(
+    'website',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _companyTypeMeta = const VerificationMeta(
+    'companyType',
+  );
+  @override
+  late final GeneratedColumn<String> companyType = GeneratedColumn<String>(
+    'company_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _bumiputeraMeta = const VerificationMeta(
+    'bumiputera',
+  );
+  @override
+  late final GeneratedColumn<bool> bumiputera = GeneratedColumn<bool>(
+    'bumiputera',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("bumiputera" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _einvoiceTinNoMeta = const VerificationMeta(
+    'einvoiceTinNo',
+  );
+  @override
+  late final GeneratedColumn<String> einvoiceTinNo = GeneratedColumn<String>(
+    'einvoice_tin_no',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _registrationDateMeta = const VerificationMeta(
+    'registrationDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> registrationDate =
+      GeneratedColumn<DateTime>(
+        'registration_date',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _ownerIDMeta = const VerificationMeta(
+    'ownerID',
+  );
+  @override
+  late final GeneratedColumn<int> ownerID = GeneratedColumn<int>(
+    'owner_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _defaultBankAccMeta = const VerificationMeta(
+    'defaultBankAcc',
+  );
+  @override
+  late final GeneratedColumn<String> defaultBankAcc = GeneratedColumn<String>(
+    'default_bank_acc',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _defaultBankAccTypeMeta =
+      const VerificationMeta('defaultBankAccType');
+  @override
+  late final GeneratedColumn<String> defaultBankAccType =
+      GeneratedColumn<String>(
+        'default_bank_acc_type',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _isSelfMeta = const VerificationMeta('isSelf');
+  @override
+  late final GeneratedColumn<bool> isSelf = GeneratedColumn<bool>(
+    'is_self',
+    aliasedName,
+    true,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_self" IN (0, 1))',
+    ),
+  );
+  static const VerificationMeta _contractRelationUIDMeta =
+      const VerificationMeta('contractRelationUID');
+  @override
+  late final GeneratedColumn<String> contractRelationUID =
+      GeneratedColumn<String>(
+        'contract_relation_u_i_d',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _relationStatusMeta = const VerificationMeta(
+    'relationStatus',
+  );
+  @override
+  late final GeneratedColumn<String> relationStatus = GeneratedColumn<String>(
+    'relation_status',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _relationRoleMeta = const VerificationMeta(
+    'relationRole',
+  );
+  @override
+  late final GeneratedColumn<String> relationRole = GeneratedColumn<String>(
+    'relation_role',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    regNo,
+    cidbNo,
+    address,
+    postalCode,
+    city,
+    state,
+    country,
+    phone,
+    email,
+    website,
+    companyType,
+    bumiputera,
+    einvoiceTinNo,
+    registrationDate,
+    createdAt,
+    updatedAt,
+    ownerID,
+    defaultBankAcc,
+    defaultBankAccType,
+    isSelf,
+    contractRelationUID,
+    relationStatus,
+    relationRole,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'contractor_relations';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ContractorRelationRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('reg_no')) {
+      context.handle(
+        _regNoMeta,
+        regNo.isAcceptableOrUnknown(data['reg_no']!, _regNoMeta),
+      );
+    }
+    if (data.containsKey('cidb_no')) {
+      context.handle(
+        _cidbNoMeta,
+        cidbNo.isAcceptableOrUnknown(data['cidb_no']!, _cidbNoMeta),
+      );
+    }
+    if (data.containsKey('address')) {
+      context.handle(
+        _addressMeta,
+        address.isAcceptableOrUnknown(data['address']!, _addressMeta),
+      );
+    }
+    if (data.containsKey('postal_code')) {
+      context.handle(
+        _postalCodeMeta,
+        postalCode.isAcceptableOrUnknown(data['postal_code']!, _postalCodeMeta),
+      );
+    }
+    if (data.containsKey('city')) {
+      context.handle(
+        _cityMeta,
+        city.isAcceptableOrUnknown(data['city']!, _cityMeta),
+      );
+    }
+    if (data.containsKey('state')) {
+      context.handle(
+        _stateMeta,
+        state.isAcceptableOrUnknown(data['state']!, _stateMeta),
+      );
+    }
+    if (data.containsKey('country')) {
+      context.handle(
+        _countryMeta,
+        country.isAcceptableOrUnknown(data['country']!, _countryMeta),
+      );
+    }
+    if (data.containsKey('phone')) {
+      context.handle(
+        _phoneMeta,
+        phone.isAcceptableOrUnknown(data['phone']!, _phoneMeta),
+      );
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+        _emailMeta,
+        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
+      );
+    }
+    if (data.containsKey('website')) {
+      context.handle(
+        _websiteMeta,
+        website.isAcceptableOrUnknown(data['website']!, _websiteMeta),
+      );
+    }
+    if (data.containsKey('company_type')) {
+      context.handle(
+        _companyTypeMeta,
+        companyType.isAcceptableOrUnknown(
+          data['company_type']!,
+          _companyTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('bumiputera')) {
+      context.handle(
+        _bumiputeraMeta,
+        bumiputera.isAcceptableOrUnknown(data['bumiputera']!, _bumiputeraMeta),
+      );
+    }
+    if (data.containsKey('einvoice_tin_no')) {
+      context.handle(
+        _einvoiceTinNoMeta,
+        einvoiceTinNo.isAcceptableOrUnknown(
+          data['einvoice_tin_no']!,
+          _einvoiceTinNoMeta,
+        ),
+      );
+    }
+    if (data.containsKey('registration_date')) {
+      context.handle(
+        _registrationDateMeta,
+        registrationDate.isAcceptableOrUnknown(
+          data['registration_date']!,
+          _registrationDateMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('owner_i_d')) {
+      context.handle(
+        _ownerIDMeta,
+        ownerID.isAcceptableOrUnknown(data['owner_i_d']!, _ownerIDMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_ownerIDMeta);
+    }
+    if (data.containsKey('default_bank_acc')) {
+      context.handle(
+        _defaultBankAccMeta,
+        defaultBankAcc.isAcceptableOrUnknown(
+          data['default_bank_acc']!,
+          _defaultBankAccMeta,
+        ),
+      );
+    }
+    if (data.containsKey('default_bank_acc_type')) {
+      context.handle(
+        _defaultBankAccTypeMeta,
+        defaultBankAccType.isAcceptableOrUnknown(
+          data['default_bank_acc_type']!,
+          _defaultBankAccTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_self')) {
+      context.handle(
+        _isSelfMeta,
+        isSelf.isAcceptableOrUnknown(data['is_self']!, _isSelfMeta),
+      );
+    }
+    if (data.containsKey('contract_relation_u_i_d')) {
+      context.handle(
+        _contractRelationUIDMeta,
+        contractRelationUID.isAcceptableOrUnknown(
+          data['contract_relation_u_i_d']!,
+          _contractRelationUIDMeta,
+        ),
+      );
+    }
+    if (data.containsKey('relation_status')) {
+      context.handle(
+        _relationStatusMeta,
+        relationStatus.isAcceptableOrUnknown(
+          data['relation_status']!,
+          _relationStatusMeta,
+        ),
+      );
+    }
+    if (data.containsKey('relation_role')) {
+      context.handle(
+        _relationRoleMeta,
+        relationRole.isAcceptableOrUnknown(
+          data['relation_role']!,
+          _relationRoleMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  ContractorRelationRecord map(
+    Map<String, dynamic> data, {
+    String? tablePrefix,
+  }) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ContractorRelationRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      regNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}reg_no'],
+      ),
+      cidbNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}cidb_no'],
+      ),
+      address: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}address'],
+      ),
+      postalCode: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}postal_code'],
+      ),
+      city: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}city'],
+      ),
+      state: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}state'],
+      ),
+      country: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}country'],
+      ),
+      phone: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}phone'],
+      ),
+      email: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}email'],
+      ),
+      website: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}website'],
+      ),
+      companyType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}company_type'],
+      ),
+      bumiputera: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}bumiputera'],
+      ),
+      einvoiceTinNo: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}einvoice_tin_no'],
+      ),
+      registrationDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}registration_date'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      ownerID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}owner_i_d'],
+      )!,
+      defaultBankAcc: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}default_bank_acc'],
+      ),
+      defaultBankAccType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}default_bank_acc_type'],
+      ),
+      isSelf: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_self'],
+      ),
+      contractRelationUID: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}contract_relation_u_i_d'],
+      ),
+      relationStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}relation_status'],
+      ),
+      relationRole: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}relation_role'],
+      ),
+    );
+  }
+
+  @override
+  $ContractorRelationsTable createAlias(String alias) {
+    return $ContractorRelationsTable(attachedDatabase, alias);
+  }
+}
+
+class ContractorRelationRecord extends DataClass
+    implements Insertable<ContractorRelationRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final String name;
+  final String? regNo;
+  final String? cidbNo;
+  final String? address;
+  final String? postalCode;
+  final String? city;
+  final String? state;
+  final String? country;
+  final String? phone;
+  final String? email;
+  final String? website;
+  final String? companyType;
+  final bool? bumiputera;
+  final String? einvoiceTinNo;
+  final DateTime? registrationDate;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final int ownerID;
+  final String? defaultBankAcc;
+  final String? defaultBankAccType;
+  final bool? isSelf;
+  final String? contractRelationUID;
+  final String? relationStatus;
+  final String? relationRole;
+  const ContractorRelationRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.name,
+    this.regNo,
+    this.cidbNo,
+    this.address,
+    this.postalCode,
+    this.city,
+    this.state,
+    this.country,
+    this.phone,
+    this.email,
+    this.website,
+    this.companyType,
+    this.bumiputera,
+    this.einvoiceTinNo,
+    this.registrationDate,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.ownerID,
+    this.defaultBankAcc,
+    this.defaultBankAccType,
+    this.isSelf,
+    this.contractRelationUID,
+    this.relationStatus,
+    this.relationRole,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || regNo != null) {
+      map['reg_no'] = Variable<String>(regNo);
+    }
+    if (!nullToAbsent || cidbNo != null) {
+      map['cidb_no'] = Variable<String>(cidbNo);
+    }
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || postalCode != null) {
+      map['postal_code'] = Variable<String>(postalCode);
+    }
+    if (!nullToAbsent || city != null) {
+      map['city'] = Variable<String>(city);
+    }
+    if (!nullToAbsent || state != null) {
+      map['state'] = Variable<String>(state);
+    }
+    if (!nullToAbsent || country != null) {
+      map['country'] = Variable<String>(country);
+    }
+    if (!nullToAbsent || phone != null) {
+      map['phone'] = Variable<String>(phone);
+    }
+    if (!nullToAbsent || email != null) {
+      map['email'] = Variable<String>(email);
+    }
+    if (!nullToAbsent || website != null) {
+      map['website'] = Variable<String>(website);
+    }
+    if (!nullToAbsent || companyType != null) {
+      map['company_type'] = Variable<String>(companyType);
+    }
+    if (!nullToAbsent || bumiputera != null) {
+      map['bumiputera'] = Variable<bool>(bumiputera);
+    }
+    if (!nullToAbsent || einvoiceTinNo != null) {
+      map['einvoice_tin_no'] = Variable<String>(einvoiceTinNo);
+    }
+    if (!nullToAbsent || registrationDate != null) {
+      map['registration_date'] = Variable<DateTime>(registrationDate);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    map['owner_i_d'] = Variable<int>(ownerID);
+    if (!nullToAbsent || defaultBankAcc != null) {
+      map['default_bank_acc'] = Variable<String>(defaultBankAcc);
+    }
+    if (!nullToAbsent || defaultBankAccType != null) {
+      map['default_bank_acc_type'] = Variable<String>(defaultBankAccType);
+    }
+    if (!nullToAbsent || isSelf != null) {
+      map['is_self'] = Variable<bool>(isSelf);
+    }
+    if (!nullToAbsent || contractRelationUID != null) {
+      map['contract_relation_u_i_d'] = Variable<String>(contractRelationUID);
+    }
+    if (!nullToAbsent || relationStatus != null) {
+      map['relation_status'] = Variable<String>(relationStatus);
+    }
+    if (!nullToAbsent || relationRole != null) {
+      map['relation_role'] = Variable<String>(relationRole);
+    }
+    return map;
+  }
+
+  ContractorRelationsCompanion toCompanion(bool nullToAbsent) {
+    return ContractorRelationsCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      name: Value(name),
+      regNo: regNo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(regNo),
+      cidbNo: cidbNo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(cidbNo),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      postalCode: postalCode == null && nullToAbsent
+          ? const Value.absent()
+          : Value(postalCode),
+      city: city == null && nullToAbsent ? const Value.absent() : Value(city),
+      state: state == null && nullToAbsent
+          ? const Value.absent()
+          : Value(state),
+      country: country == null && nullToAbsent
+          ? const Value.absent()
+          : Value(country),
+      phone: phone == null && nullToAbsent
+          ? const Value.absent()
+          : Value(phone),
+      email: email == null && nullToAbsent
+          ? const Value.absent()
+          : Value(email),
+      website: website == null && nullToAbsent
+          ? const Value.absent()
+          : Value(website),
+      companyType: companyType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(companyType),
+      bumiputera: bumiputera == null && nullToAbsent
+          ? const Value.absent()
+          : Value(bumiputera),
+      einvoiceTinNo: einvoiceTinNo == null && nullToAbsent
+          ? const Value.absent()
+          : Value(einvoiceTinNo),
+      registrationDate: registrationDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(registrationDate),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      ownerID: Value(ownerID),
+      defaultBankAcc: defaultBankAcc == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultBankAcc),
+      defaultBankAccType: defaultBankAccType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultBankAccType),
+      isSelf: isSelf == null && nullToAbsent
+          ? const Value.absent()
+          : Value(isSelf),
+      contractRelationUID: contractRelationUID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contractRelationUID),
+      relationStatus: relationStatus == null && nullToAbsent
+          ? const Value.absent()
+          : Value(relationStatus),
+      relationRole: relationRole == null && nullToAbsent
+          ? const Value.absent()
+          : Value(relationRole),
+    );
+  }
+
+  factory ContractorRelationRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ContractorRelationRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      name: serializer.fromJson<String>(json['name']),
+      regNo: serializer.fromJson<String?>(json['regNo']),
+      cidbNo: serializer.fromJson<String?>(json['cidbNo']),
+      address: serializer.fromJson<String?>(json['address']),
+      postalCode: serializer.fromJson<String?>(json['postalCode']),
+      city: serializer.fromJson<String?>(json['city']),
+      state: serializer.fromJson<String?>(json['state']),
+      country: serializer.fromJson<String?>(json['country']),
+      phone: serializer.fromJson<String?>(json['phone']),
+      email: serializer.fromJson<String?>(json['email']),
+      website: serializer.fromJson<String?>(json['website']),
+      companyType: serializer.fromJson<String?>(json['companyType']),
+      bumiputera: serializer.fromJson<bool?>(json['bumiputera']),
+      einvoiceTinNo: serializer.fromJson<String?>(json['einvoiceTinNo']),
+      registrationDate: serializer.fromJson<DateTime?>(
+        json['registrationDate'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      ownerID: serializer.fromJson<int>(json['ownerID']),
+      defaultBankAcc: serializer.fromJson<String?>(json['defaultBankAcc']),
+      defaultBankAccType: serializer.fromJson<String?>(
+        json['defaultBankAccType'],
+      ),
+      isSelf: serializer.fromJson<bool?>(json['isSelf']),
+      contractRelationUID: serializer.fromJson<String?>(
+        json['contractRelationUID'],
+      ),
+      relationStatus: serializer.fromJson<String?>(json['relationStatus']),
+      relationRole: serializer.fromJson<String?>(json['relationRole']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'name': serializer.toJson<String>(name),
+      'regNo': serializer.toJson<String?>(regNo),
+      'cidbNo': serializer.toJson<String?>(cidbNo),
+      'address': serializer.toJson<String?>(address),
+      'postalCode': serializer.toJson<String?>(postalCode),
+      'city': serializer.toJson<String?>(city),
+      'state': serializer.toJson<String?>(state),
+      'country': serializer.toJson<String?>(country),
+      'phone': serializer.toJson<String?>(phone),
+      'email': serializer.toJson<String?>(email),
+      'website': serializer.toJson<String?>(website),
+      'companyType': serializer.toJson<String?>(companyType),
+      'bumiputera': serializer.toJson<bool?>(bumiputera),
+      'einvoiceTinNo': serializer.toJson<String?>(einvoiceTinNo),
+      'registrationDate': serializer.toJson<DateTime?>(registrationDate),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'ownerID': serializer.toJson<int>(ownerID),
+      'defaultBankAcc': serializer.toJson<String?>(defaultBankAcc),
+      'defaultBankAccType': serializer.toJson<String?>(defaultBankAccType),
+      'isSelf': serializer.toJson<bool?>(isSelf),
+      'contractRelationUID': serializer.toJson<String?>(contractRelationUID),
+      'relationStatus': serializer.toJson<String?>(relationStatus),
+      'relationRole': serializer.toJson<String?>(relationRole),
+    };
+  }
+
+  ContractorRelationRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    String? name,
+    Value<String?> regNo = const Value.absent(),
+    Value<String?> cidbNo = const Value.absent(),
+    Value<String?> address = const Value.absent(),
+    Value<String?> postalCode = const Value.absent(),
+    Value<String?> city = const Value.absent(),
+    Value<String?> state = const Value.absent(),
+    Value<String?> country = const Value.absent(),
+    Value<String?> phone = const Value.absent(),
+    Value<String?> email = const Value.absent(),
+    Value<String?> website = const Value.absent(),
+    Value<String?> companyType = const Value.absent(),
+    Value<bool?> bumiputera = const Value.absent(),
+    Value<String?> einvoiceTinNo = const Value.absent(),
+    Value<DateTime?> registrationDate = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? ownerID,
+    Value<String?> defaultBankAcc = const Value.absent(),
+    Value<String?> defaultBankAccType = const Value.absent(),
+    Value<bool?> isSelf = const Value.absent(),
+    Value<String?> contractRelationUID = const Value.absent(),
+    Value<String?> relationStatus = const Value.absent(),
+    Value<String?> relationRole = const Value.absent(),
+  }) => ContractorRelationRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    name: name ?? this.name,
+    regNo: regNo.present ? regNo.value : this.regNo,
+    cidbNo: cidbNo.present ? cidbNo.value : this.cidbNo,
+    address: address.present ? address.value : this.address,
+    postalCode: postalCode.present ? postalCode.value : this.postalCode,
+    city: city.present ? city.value : this.city,
+    state: state.present ? state.value : this.state,
+    country: country.present ? country.value : this.country,
+    phone: phone.present ? phone.value : this.phone,
+    email: email.present ? email.value : this.email,
+    website: website.present ? website.value : this.website,
+    companyType: companyType.present ? companyType.value : this.companyType,
+    bumiputera: bumiputera.present ? bumiputera.value : this.bumiputera,
+    einvoiceTinNo: einvoiceTinNo.present
+        ? einvoiceTinNo.value
+        : this.einvoiceTinNo,
+    registrationDate: registrationDate.present
+        ? registrationDate.value
+        : this.registrationDate,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    ownerID: ownerID ?? this.ownerID,
+    defaultBankAcc: defaultBankAcc.present
+        ? defaultBankAcc.value
+        : this.defaultBankAcc,
+    defaultBankAccType: defaultBankAccType.present
+        ? defaultBankAccType.value
+        : this.defaultBankAccType,
+    isSelf: isSelf.present ? isSelf.value : this.isSelf,
+    contractRelationUID: contractRelationUID.present
+        ? contractRelationUID.value
+        : this.contractRelationUID,
+    relationStatus: relationStatus.present
+        ? relationStatus.value
+        : this.relationStatus,
+    relationRole: relationRole.present ? relationRole.value : this.relationRole,
+  );
+  ContractorRelationRecord copyWithCompanion(
+    ContractorRelationsCompanion data,
+  ) {
+    return ContractorRelationRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      name: data.name.present ? data.name.value : this.name,
+      regNo: data.regNo.present ? data.regNo.value : this.regNo,
+      cidbNo: data.cidbNo.present ? data.cidbNo.value : this.cidbNo,
+      address: data.address.present ? data.address.value : this.address,
+      postalCode: data.postalCode.present
+          ? data.postalCode.value
+          : this.postalCode,
+      city: data.city.present ? data.city.value : this.city,
+      state: data.state.present ? data.state.value : this.state,
+      country: data.country.present ? data.country.value : this.country,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      email: data.email.present ? data.email.value : this.email,
+      website: data.website.present ? data.website.value : this.website,
+      companyType: data.companyType.present
+          ? data.companyType.value
+          : this.companyType,
+      bumiputera: data.bumiputera.present
+          ? data.bumiputera.value
+          : this.bumiputera,
+      einvoiceTinNo: data.einvoiceTinNo.present
+          ? data.einvoiceTinNo.value
+          : this.einvoiceTinNo,
+      registrationDate: data.registrationDate.present
+          ? data.registrationDate.value
+          : this.registrationDate,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      ownerID: data.ownerID.present ? data.ownerID.value : this.ownerID,
+      defaultBankAcc: data.defaultBankAcc.present
+          ? data.defaultBankAcc.value
+          : this.defaultBankAcc,
+      defaultBankAccType: data.defaultBankAccType.present
+          ? data.defaultBankAccType.value
+          : this.defaultBankAccType,
+      isSelf: data.isSelf.present ? data.isSelf.value : this.isSelf,
+      contractRelationUID: data.contractRelationUID.present
+          ? data.contractRelationUID.value
+          : this.contractRelationUID,
+      relationStatus: data.relationStatus.present
+          ? data.relationStatus.value
+          : this.relationStatus,
+      relationRole: data.relationRole.present
+          ? data.relationRole.value
+          : this.relationRole,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ContractorRelationRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('regNo: $regNo, ')
+          ..write('cidbNo: $cidbNo, ')
+          ..write('address: $address, ')
+          ..write('postalCode: $postalCode, ')
+          ..write('city: $city, ')
+          ..write('state: $state, ')
+          ..write('country: $country, ')
+          ..write('phone: $phone, ')
+          ..write('email: $email, ')
+          ..write('website: $website, ')
+          ..write('companyType: $companyType, ')
+          ..write('bumiputera: $bumiputera, ')
+          ..write('einvoiceTinNo: $einvoiceTinNo, ')
+          ..write('registrationDate: $registrationDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('ownerID: $ownerID, ')
+          ..write('defaultBankAcc: $defaultBankAcc, ')
+          ..write('defaultBankAccType: $defaultBankAccType, ')
+          ..write('isSelf: $isSelf, ')
+          ..write('contractRelationUID: $contractRelationUID, ')
+          ..write('relationStatus: $relationStatus, ')
+          ..write('relationRole: $relationRole')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    name,
+    regNo,
+    cidbNo,
+    address,
+    postalCode,
+    city,
+    state,
+    country,
+    phone,
+    email,
+    website,
+    companyType,
+    bumiputera,
+    einvoiceTinNo,
+    registrationDate,
+    createdAt,
+    updatedAt,
+    ownerID,
+    defaultBankAcc,
+    defaultBankAccType,
+    isSelf,
+    contractRelationUID,
+    relationStatus,
+    relationRole,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ContractorRelationRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.name == this.name &&
+          other.regNo == this.regNo &&
+          other.cidbNo == this.cidbNo &&
+          other.address == this.address &&
+          other.postalCode == this.postalCode &&
+          other.city == this.city &&
+          other.state == this.state &&
+          other.country == this.country &&
+          other.phone == this.phone &&
+          other.email == this.email &&
+          other.website == this.website &&
+          other.companyType == this.companyType &&
+          other.bumiputera == this.bumiputera &&
+          other.einvoiceTinNo == this.einvoiceTinNo &&
+          other.registrationDate == this.registrationDate &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.ownerID == this.ownerID &&
+          other.defaultBankAcc == this.defaultBankAcc &&
+          other.defaultBankAccType == this.defaultBankAccType &&
+          other.isSelf == this.isSelf &&
+          other.contractRelationUID == this.contractRelationUID &&
+          other.relationStatus == this.relationStatus &&
+          other.relationRole == this.relationRole);
+}
+
+class ContractorRelationsCompanion
+    extends UpdateCompanion<ContractorRelationRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<String> name;
+  final Value<String?> regNo;
+  final Value<String?> cidbNo;
+  final Value<String?> address;
+  final Value<String?> postalCode;
+  final Value<String?> city;
+  final Value<String?> state;
+  final Value<String?> country;
+  final Value<String?> phone;
+  final Value<String?> email;
+  final Value<String?> website;
+  final Value<String?> companyType;
+  final Value<bool?> bumiputera;
+  final Value<String?> einvoiceTinNo;
+  final Value<DateTime?> registrationDate;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> ownerID;
+  final Value<String?> defaultBankAcc;
+  final Value<String?> defaultBankAccType;
+  final Value<bool?> isSelf;
+  final Value<String?> contractRelationUID;
+  final Value<String?> relationStatus;
+  final Value<String?> relationRole;
+  const ContractorRelationsCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.name = const Value.absent(),
+    this.regNo = const Value.absent(),
+    this.cidbNo = const Value.absent(),
+    this.address = const Value.absent(),
+    this.postalCode = const Value.absent(),
+    this.city = const Value.absent(),
+    this.state = const Value.absent(),
+    this.country = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.email = const Value.absent(),
+    this.website = const Value.absent(),
+    this.companyType = const Value.absent(),
+    this.bumiputera = const Value.absent(),
+    this.einvoiceTinNo = const Value.absent(),
+    this.registrationDate = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.ownerID = const Value.absent(),
+    this.defaultBankAcc = const Value.absent(),
+    this.defaultBankAccType = const Value.absent(),
+    this.isSelf = const Value.absent(),
+    this.contractRelationUID = const Value.absent(),
+    this.relationStatus = const Value.absent(),
+    this.relationRole = const Value.absent(),
+  });
+  ContractorRelationsCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required String name,
+    this.regNo = const Value.absent(),
+    this.cidbNo = const Value.absent(),
+    this.address = const Value.absent(),
+    this.postalCode = const Value.absent(),
+    this.city = const Value.absent(),
+    this.state = const Value.absent(),
+    this.country = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.email = const Value.absent(),
+    this.website = const Value.absent(),
+    this.companyType = const Value.absent(),
+    this.bumiputera = const Value.absent(),
+    this.einvoiceTinNo = const Value.absent(),
+    this.registrationDate = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    required int ownerID,
+    this.defaultBankAcc = const Value.absent(),
+    this.defaultBankAccType = const Value.absent(),
+    this.isSelf = const Value.absent(),
+    this.contractRelationUID = const Value.absent(),
+    this.relationStatus = const Value.absent(),
+    this.relationRole = const Value.absent(),
+  }) : uid = Value(uid),
+       name = Value(name),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       ownerID = Value(ownerID);
+  static Insertable<ContractorRelationRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<String>? name,
+    Expression<String>? regNo,
+    Expression<String>? cidbNo,
+    Expression<String>? address,
+    Expression<String>? postalCode,
+    Expression<String>? city,
+    Expression<String>? state,
+    Expression<String>? country,
+    Expression<String>? phone,
+    Expression<String>? email,
+    Expression<String>? website,
+    Expression<String>? companyType,
+    Expression<bool>? bumiputera,
+    Expression<String>? einvoiceTinNo,
+    Expression<DateTime>? registrationDate,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? ownerID,
+    Expression<String>? defaultBankAcc,
+    Expression<String>? defaultBankAccType,
+    Expression<bool>? isSelf,
+    Expression<String>? contractRelationUID,
+    Expression<String>? relationStatus,
+    Expression<String>? relationRole,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (name != null) 'name': name,
+      if (regNo != null) 'reg_no': regNo,
+      if (cidbNo != null) 'cidb_no': cidbNo,
+      if (address != null) 'address': address,
+      if (postalCode != null) 'postal_code': postalCode,
+      if (city != null) 'city': city,
+      if (state != null) 'state': state,
+      if (country != null) 'country': country,
+      if (phone != null) 'phone': phone,
+      if (email != null) 'email': email,
+      if (website != null) 'website': website,
+      if (companyType != null) 'company_type': companyType,
+      if (bumiputera != null) 'bumiputera': bumiputera,
+      if (einvoiceTinNo != null) 'einvoice_tin_no': einvoiceTinNo,
+      if (registrationDate != null) 'registration_date': registrationDate,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (ownerID != null) 'owner_i_d': ownerID,
+      if (defaultBankAcc != null) 'default_bank_acc': defaultBankAcc,
+      if (defaultBankAccType != null)
+        'default_bank_acc_type': defaultBankAccType,
+      if (isSelf != null) 'is_self': isSelf,
+      if (contractRelationUID != null)
+        'contract_relation_u_i_d': contractRelationUID,
+      if (relationStatus != null) 'relation_status': relationStatus,
+      if (relationRole != null) 'relation_role': relationRole,
+    });
+  }
+
+  ContractorRelationsCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<String>? name,
+    Value<String?>? regNo,
+    Value<String?>? cidbNo,
+    Value<String?>? address,
+    Value<String?>? postalCode,
+    Value<String?>? city,
+    Value<String?>? state,
+    Value<String?>? country,
+    Value<String?>? phone,
+    Value<String?>? email,
+    Value<String?>? website,
+    Value<String?>? companyType,
+    Value<bool?>? bumiputera,
+    Value<String?>? einvoiceTinNo,
+    Value<DateTime?>? registrationDate,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? ownerID,
+    Value<String?>? defaultBankAcc,
+    Value<String?>? defaultBankAccType,
+    Value<bool?>? isSelf,
+    Value<String?>? contractRelationUID,
+    Value<String?>? relationStatus,
+    Value<String?>? relationRole,
+  }) {
+    return ContractorRelationsCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      regNo: regNo ?? this.regNo,
+      cidbNo: cidbNo ?? this.cidbNo,
+      address: address ?? this.address,
+      postalCode: postalCode ?? this.postalCode,
+      city: city ?? this.city,
+      state: state ?? this.state,
+      country: country ?? this.country,
+      phone: phone ?? this.phone,
+      email: email ?? this.email,
+      website: website ?? this.website,
+      companyType: companyType ?? this.companyType,
+      bumiputera: bumiputera ?? this.bumiputera,
+      einvoiceTinNo: einvoiceTinNo ?? this.einvoiceTinNo,
+      registrationDate: registrationDate ?? this.registrationDate,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      ownerID: ownerID ?? this.ownerID,
+      defaultBankAcc: defaultBankAcc ?? this.defaultBankAcc,
+      defaultBankAccType: defaultBankAccType ?? this.defaultBankAccType,
+      isSelf: isSelf ?? this.isSelf,
+      contractRelationUID: contractRelationUID ?? this.contractRelationUID,
+      relationStatus: relationStatus ?? this.relationStatus,
+      relationRole: relationRole ?? this.relationRole,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (regNo.present) {
+      map['reg_no'] = Variable<String>(regNo.value);
+    }
+    if (cidbNo.present) {
+      map['cidb_no'] = Variable<String>(cidbNo.value);
+    }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (postalCode.present) {
+      map['postal_code'] = Variable<String>(postalCode.value);
+    }
+    if (city.present) {
+      map['city'] = Variable<String>(city.value);
+    }
+    if (state.present) {
+      map['state'] = Variable<String>(state.value);
+    }
+    if (country.present) {
+      map['country'] = Variable<String>(country.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (website.present) {
+      map['website'] = Variable<String>(website.value);
+    }
+    if (companyType.present) {
+      map['company_type'] = Variable<String>(companyType.value);
+    }
+    if (bumiputera.present) {
+      map['bumiputera'] = Variable<bool>(bumiputera.value);
+    }
+    if (einvoiceTinNo.present) {
+      map['einvoice_tin_no'] = Variable<String>(einvoiceTinNo.value);
+    }
+    if (registrationDate.present) {
+      map['registration_date'] = Variable<DateTime>(registrationDate.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (ownerID.present) {
+      map['owner_i_d'] = Variable<int>(ownerID.value);
+    }
+    if (defaultBankAcc.present) {
+      map['default_bank_acc'] = Variable<String>(defaultBankAcc.value);
+    }
+    if (defaultBankAccType.present) {
+      map['default_bank_acc_type'] = Variable<String>(defaultBankAccType.value);
+    }
+    if (isSelf.present) {
+      map['is_self'] = Variable<bool>(isSelf.value);
+    }
+    if (contractRelationUID.present) {
+      map['contract_relation_u_i_d'] = Variable<String>(
+        contractRelationUID.value,
+      );
+    }
+    if (relationStatus.present) {
+      map['relation_status'] = Variable<String>(relationStatus.value);
+    }
+    if (relationRole.present) {
+      map['relation_role'] = Variable<String>(relationRole.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ContractorRelationsCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('name: $name, ')
+          ..write('regNo: $regNo, ')
+          ..write('cidbNo: $cidbNo, ')
+          ..write('address: $address, ')
+          ..write('postalCode: $postalCode, ')
+          ..write('city: $city, ')
+          ..write('state: $state, ')
+          ..write('country: $country, ')
+          ..write('phone: $phone, ')
+          ..write('email: $email, ')
+          ..write('website: $website, ')
+          ..write('companyType: $companyType, ')
+          ..write('bumiputera: $bumiputera, ')
+          ..write('einvoiceTinNo: $einvoiceTinNo, ')
+          ..write('registrationDate: $registrationDate, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('ownerID: $ownerID, ')
+          ..write('defaultBankAcc: $defaultBankAcc, ')
+          ..write('defaultBankAccType: $defaultBankAccType, ')
+          ..write('isSelf: $isSelf, ')
+          ..write('contractRelationUID: $contractRelationUID, ')
+          ..write('relationStatus: $relationStatus, ')
+          ..write('relationRole: $relationRole')
           ..write(')'))
         .toString();
   }
@@ -25655,6 +27455,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $WarningCategoriesTable(this);
   late final $WarningReasonsTable warningReasons = $WarningReasonsTable(this);
   late final $WarningsTable warnings = $WarningsTable(this);
+  late final $ContractorRelationsTable contractorRelations =
+      $ContractorRelationsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -25688,6 +27490,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     warningCategories,
     warningReasons,
     warnings,
+    contractorRelations,
   ];
 }
 
@@ -36586,6 +38389,7 @@ typedef $$WarningsTableCreateCompanionBuilder =
       Value<String?> resolvedByData,
       Value<String?> dailyReportData,
       Value<String?> filesData,
+      Value<String> status,
     });
 typedef $$WarningsTableUpdateCompanionBuilder =
     WarningsCompanion Function({
@@ -36624,6 +38428,7 @@ typedef $$WarningsTableUpdateCompanionBuilder =
       Value<String?> resolvedByData,
       Value<String?> dailyReportData,
       Value<String?> filesData,
+      Value<String> status,
     });
 
 class $$WarningsTableFilterComposer
@@ -36807,6 +38612,11 @@ class $$WarningsTableFilterComposer
 
   ColumnFilters<String> get filesData => $composableBuilder(
     column: $table.filesData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -36994,6 +38804,11 @@ class $$WarningsTableOrderingComposer
     column: $table.filesData,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$WarningsTableAnnotationComposer
@@ -37151,6 +38966,9 @@ class $$WarningsTableAnnotationComposer
 
   GeneratedColumn<String> get filesData =>
       $composableBuilder(column: $table.filesData, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
 }
 
 class $$WarningsTableTableManager
@@ -37219,6 +39037,7 @@ class $$WarningsTableTableManager
                 Value<String?> resolvedByData = const Value.absent(),
                 Value<String?> dailyReportData = const Value.absent(),
                 Value<String?> filesData = const Value.absent(),
+                Value<String> status = const Value.absent(),
               }) => WarningsCompanion(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -37255,6 +39074,7 @@ class $$WarningsTableTableManager
                 resolvedByData: resolvedByData,
                 dailyReportData: dailyReportData,
                 filesData: filesData,
+                status: status,
               ),
           createCompanionCallback:
               ({
@@ -37293,6 +39113,7 @@ class $$WarningsTableTableManager
                 Value<String?> resolvedByData = const Value.absent(),
                 Value<String?> dailyReportData = const Value.absent(),
                 Value<String?> filesData = const Value.absent(),
+                Value<String> status = const Value.absent(),
               }) => WarningsCompanion.insert(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -37329,6 +39150,7 @@ class $$WarningsTableTableManager
                 resolvedByData: resolvedByData,
                 dailyReportData: dailyReportData,
                 filesData: filesData,
+                status: status,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -37353,6 +39175,755 @@ typedef $$WarningsTableProcessedTableManager =
         BaseReferences<_$AppDatabase, $WarningsTable, WarningRecord>,
       ),
       WarningRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$ContractorRelationsTableCreateCompanionBuilder =
+    ContractorRelationsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required String name,
+      Value<String?> regNo,
+      Value<String?> cidbNo,
+      Value<String?> address,
+      Value<String?> postalCode,
+      Value<String?> city,
+      Value<String?> state,
+      Value<String?> country,
+      Value<String?> phone,
+      Value<String?> email,
+      Value<String?> website,
+      Value<String?> companyType,
+      Value<bool?> bumiputera,
+      Value<String?> einvoiceTinNo,
+      Value<DateTime?> registrationDate,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      required int ownerID,
+      Value<String?> defaultBankAcc,
+      Value<String?> defaultBankAccType,
+      Value<bool?> isSelf,
+      Value<String?> contractRelationUID,
+      Value<String?> relationStatus,
+      Value<String?> relationRole,
+    });
+typedef $$ContractorRelationsTableUpdateCompanionBuilder =
+    ContractorRelationsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<String> name,
+      Value<String?> regNo,
+      Value<String?> cidbNo,
+      Value<String?> address,
+      Value<String?> postalCode,
+      Value<String?> city,
+      Value<String?> state,
+      Value<String?> country,
+      Value<String?> phone,
+      Value<String?> email,
+      Value<String?> website,
+      Value<String?> companyType,
+      Value<bool?> bumiputera,
+      Value<String?> einvoiceTinNo,
+      Value<DateTime?> registrationDate,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> ownerID,
+      Value<String?> defaultBankAcc,
+      Value<String?> defaultBankAccType,
+      Value<bool?> isSelf,
+      Value<String?> contractRelationUID,
+      Value<String?> relationStatus,
+      Value<String?> relationRole,
+    });
+
+class $$ContractorRelationsTableFilterComposer
+    extends Composer<_$AppDatabase, $ContractorRelationsTable> {
+  $$ContractorRelationsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get regNo => $composableBuilder(
+    column: $table.regNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get cidbNo => $composableBuilder(
+    column: $table.cidbNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get postalCode => $composableBuilder(
+    column: $table.postalCode,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get city => $composableBuilder(
+    column: $table.city,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get country => $composableBuilder(
+    column: $table.country,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get website => $composableBuilder(
+    column: $table.website,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get companyType => $composableBuilder(
+    column: $table.companyType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get bumiputera => $composableBuilder(
+    column: $table.bumiputera,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get einvoiceTinNo => $composableBuilder(
+    column: $table.einvoiceTinNo,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get registrationDate => $composableBuilder(
+    column: $table.registrationDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get ownerID => $composableBuilder(
+    column: $table.ownerID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get defaultBankAcc => $composableBuilder(
+    column: $table.defaultBankAcc,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get defaultBankAccType => $composableBuilder(
+    column: $table.defaultBankAccType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isSelf => $composableBuilder(
+    column: $table.isSelf,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contractRelationUID => $composableBuilder(
+    column: $table.contractRelationUID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get relationStatus => $composableBuilder(
+    column: $table.relationStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get relationRole => $composableBuilder(
+    column: $table.relationRole,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ContractorRelationsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ContractorRelationsTable> {
+  $$ContractorRelationsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get regNo => $composableBuilder(
+    column: $table.regNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get cidbNo => $composableBuilder(
+    column: $table.cidbNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get postalCode => $composableBuilder(
+    column: $table.postalCode,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get city => $composableBuilder(
+    column: $table.city,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get state => $composableBuilder(
+    column: $table.state,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get country => $composableBuilder(
+    column: $table.country,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get email => $composableBuilder(
+    column: $table.email,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get website => $composableBuilder(
+    column: $table.website,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get companyType => $composableBuilder(
+    column: $table.companyType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get bumiputera => $composableBuilder(
+    column: $table.bumiputera,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get einvoiceTinNo => $composableBuilder(
+    column: $table.einvoiceTinNo,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get registrationDate => $composableBuilder(
+    column: $table.registrationDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get ownerID => $composableBuilder(
+    column: $table.ownerID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get defaultBankAcc => $composableBuilder(
+    column: $table.defaultBankAcc,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get defaultBankAccType => $composableBuilder(
+    column: $table.defaultBankAccType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isSelf => $composableBuilder(
+    column: $table.isSelf,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contractRelationUID => $composableBuilder(
+    column: $table.contractRelationUID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get relationStatus => $composableBuilder(
+    column: $table.relationStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get relationRole => $composableBuilder(
+    column: $table.relationRole,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ContractorRelationsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ContractorRelationsTable> {
+  $$ContractorRelationsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get regNo =>
+      $composableBuilder(column: $table.regNo, builder: (column) => column);
+
+  GeneratedColumn<String> get cidbNo =>
+      $composableBuilder(column: $table.cidbNo, builder: (column) => column);
+
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumn<String> get postalCode => $composableBuilder(
+    column: $table.postalCode,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get city =>
+      $composableBuilder(column: $table.city, builder: (column) => column);
+
+  GeneratedColumn<String> get state =>
+      $composableBuilder(column: $table.state, builder: (column) => column);
+
+  GeneratedColumn<String> get country =>
+      $composableBuilder(column: $table.country, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get email =>
+      $composableBuilder(column: $table.email, builder: (column) => column);
+
+  GeneratedColumn<String> get website =>
+      $composableBuilder(column: $table.website, builder: (column) => column);
+
+  GeneratedColumn<String> get companyType => $composableBuilder(
+    column: $table.companyType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get bumiputera => $composableBuilder(
+    column: $table.bumiputera,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get einvoiceTinNo => $composableBuilder(
+    column: $table.einvoiceTinNo,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get registrationDate => $composableBuilder(
+    column: $table.registrationDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<int> get ownerID =>
+      $composableBuilder(column: $table.ownerID, builder: (column) => column);
+
+  GeneratedColumn<String> get defaultBankAcc => $composableBuilder(
+    column: $table.defaultBankAcc,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get defaultBankAccType => $composableBuilder(
+    column: $table.defaultBankAccType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isSelf =>
+      $composableBuilder(column: $table.isSelf, builder: (column) => column);
+
+  GeneratedColumn<String> get contractRelationUID => $composableBuilder(
+    column: $table.contractRelationUID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get relationStatus => $composableBuilder(
+    column: $table.relationStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get relationRole => $composableBuilder(
+    column: $table.relationRole,
+    builder: (column) => column,
+  );
+}
+
+class $$ContractorRelationsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ContractorRelationsTable,
+          ContractorRelationRecord,
+          $$ContractorRelationsTableFilterComposer,
+          $$ContractorRelationsTableOrderingComposer,
+          $$ContractorRelationsTableAnnotationComposer,
+          $$ContractorRelationsTableCreateCompanionBuilder,
+          $$ContractorRelationsTableUpdateCompanionBuilder,
+          (
+            ContractorRelationRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $ContractorRelationsTable,
+              ContractorRelationRecord
+            >,
+          ),
+          ContractorRelationRecord,
+          PrefetchHooks Function()
+        > {
+  $$ContractorRelationsTableTableManager(
+    _$AppDatabase db,
+    $ContractorRelationsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ContractorRelationsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ContractorRelationsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$ContractorRelationsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> regNo = const Value.absent(),
+                Value<String?> cidbNo = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> postalCode = const Value.absent(),
+                Value<String?> city = const Value.absent(),
+                Value<String?> state = const Value.absent(),
+                Value<String?> country = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> email = const Value.absent(),
+                Value<String?> website = const Value.absent(),
+                Value<String?> companyType = const Value.absent(),
+                Value<bool?> bumiputera = const Value.absent(),
+                Value<String?> einvoiceTinNo = const Value.absent(),
+                Value<DateTime?> registrationDate = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> ownerID = const Value.absent(),
+                Value<String?> defaultBankAcc = const Value.absent(),
+                Value<String?> defaultBankAccType = const Value.absent(),
+                Value<bool?> isSelf = const Value.absent(),
+                Value<String?> contractRelationUID = const Value.absent(),
+                Value<String?> relationStatus = const Value.absent(),
+                Value<String?> relationRole = const Value.absent(),
+              }) => ContractorRelationsCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                regNo: regNo,
+                cidbNo: cidbNo,
+                address: address,
+                postalCode: postalCode,
+                city: city,
+                state: state,
+                country: country,
+                phone: phone,
+                email: email,
+                website: website,
+                companyType: companyType,
+                bumiputera: bumiputera,
+                einvoiceTinNo: einvoiceTinNo,
+                registrationDate: registrationDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                ownerID: ownerID,
+                defaultBankAcc: defaultBankAcc,
+                defaultBankAccType: defaultBankAccType,
+                isSelf: isSelf,
+                contractRelationUID: contractRelationUID,
+                relationStatus: relationStatus,
+                relationRole: relationRole,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required String name,
+                Value<String?> regNo = const Value.absent(),
+                Value<String?> cidbNo = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> postalCode = const Value.absent(),
+                Value<String?> city = const Value.absent(),
+                Value<String?> state = const Value.absent(),
+                Value<String?> country = const Value.absent(),
+                Value<String?> phone = const Value.absent(),
+                Value<String?> email = const Value.absent(),
+                Value<String?> website = const Value.absent(),
+                Value<String?> companyType = const Value.absent(),
+                Value<bool?> bumiputera = const Value.absent(),
+                Value<String?> einvoiceTinNo = const Value.absent(),
+                Value<DateTime?> registrationDate = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                required int ownerID,
+                Value<String?> defaultBankAcc = const Value.absent(),
+                Value<String?> defaultBankAccType = const Value.absent(),
+                Value<bool?> isSelf = const Value.absent(),
+                Value<String?> contractRelationUID = const Value.absent(),
+                Value<String?> relationStatus = const Value.absent(),
+                Value<String?> relationRole = const Value.absent(),
+              }) => ContractorRelationsCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                name: name,
+                regNo: regNo,
+                cidbNo: cidbNo,
+                address: address,
+                postalCode: postalCode,
+                city: city,
+                state: state,
+                country: country,
+                phone: phone,
+                email: email,
+                website: website,
+                companyType: companyType,
+                bumiputera: bumiputera,
+                einvoiceTinNo: einvoiceTinNo,
+                registrationDate: registrationDate,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                ownerID: ownerID,
+                defaultBankAcc: defaultBankAcc,
+                defaultBankAccType: defaultBankAccType,
+                isSelf: isSelf,
+                contractRelationUID: contractRelationUID,
+                relationStatus: relationStatus,
+                relationRole: relationRole,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ContractorRelationsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ContractorRelationsTable,
+      ContractorRelationRecord,
+      $$ContractorRelationsTableFilterComposer,
+      $$ContractorRelationsTableOrderingComposer,
+      $$ContractorRelationsTableAnnotationComposer,
+      $$ContractorRelationsTableCreateCompanionBuilder,
+      $$ContractorRelationsTableUpdateCompanionBuilder,
+      (
+        ContractorRelationRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $ContractorRelationsTable,
+          ContractorRelationRecord
+        >,
+      ),
+      ContractorRelationRecord,
       PrefetchHooks Function()
     >;
 
@@ -37418,4 +39989,6 @@ class $AppDatabaseManager {
       $$WarningReasonsTableTableManager(_db, _db.warningReasons);
   $$WarningsTableTableManager get warnings =>
       $$WarningsTableTableManager(_db, _db.warnings);
+  $$ContractorRelationsTableTableManager get contractorRelations =>
+      $$ContractorRelationsTableTableManager(_db, _db.contractorRelations);
 }
