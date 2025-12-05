@@ -21,9 +21,9 @@ class Warning extends Equatable {
   final int? dailyReportID;
 
   // Core data - foreign keys
-  final int companyID;
-  final int roadID;
-  final int workScopeID;
+  final int? companyID;
+  final int? roadID;
+  final int? workScopeID;
   final int? contractRelationID; // Optional for in-house work
 
   // Section information
@@ -49,7 +49,7 @@ class Warning extends Equatable {
   final String? description;
 
   // Creation tracking
-  final int createdByID;
+  final int? createdByID;
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime? deletedAt;
@@ -68,9 +68,9 @@ class Warning extends Equatable {
     required this.uid,
     required this.warningType,
     this.dailyReportID,
-    required this.companyID,
-    required this.roadID,
-    required this.workScopeID,
+    this.companyID,
+    this.roadID,
+    this.workScopeID,
     this.contractRelationID,
     required this.fromSection,
     required this.toSection,
@@ -84,7 +84,7 @@ class Warning extends Equatable {
     this.longitude,
     this.latitude,
     this.description,
-    required this.createdByID,
+    this.createdByID,
     required this.createdAt,
     required this.updatedAt,
     this.deletedAt,

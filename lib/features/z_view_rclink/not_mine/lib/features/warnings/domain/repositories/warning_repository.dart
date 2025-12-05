@@ -26,13 +26,13 @@ abstract class WarningRepository {
     bool forceRefresh = false,
   });
 
-  /// Create a warning from a daily report
-  Future<Either<Failure, Warning>> createReportWarning({
-    required String companyUID,
-    required String dailyReportUID,
-    required List<String> warningReasonUIDs,
-    String? description,
-  });
+  // /// Create a warning from a daily report
+  // Future<Either<Failure, Warning>> createReportWarning({
+  //   required String companyUID,
+  //   required String dailyReportUID,
+  //   required List<String> warningReasonUIDs,
+  //   String? description,
+  // });
 
   /// Resolve a warning item
   Future<Either<Failure, Warning>> resolveWarningItem({

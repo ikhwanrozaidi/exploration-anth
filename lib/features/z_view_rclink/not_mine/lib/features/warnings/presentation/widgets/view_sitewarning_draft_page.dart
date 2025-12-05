@@ -56,7 +56,7 @@ class _ViewSitewarningDraftPageState extends State<ViewSitewarningDraftPage> {
     Road? road;
     if (draft.road != null) {
       road = Road(
-        id: 0, // RoadResponse doesn't have id
+        id: null,
         uid: draft.road!.uid,
         name: draft.road!.name,
         roadNo: draft.road!.roadNo,

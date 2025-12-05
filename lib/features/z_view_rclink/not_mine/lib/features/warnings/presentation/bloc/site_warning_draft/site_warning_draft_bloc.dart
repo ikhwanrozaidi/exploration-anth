@@ -144,10 +144,10 @@ class SiteWarningDraftBloc
       }
 
       // Convert road from RoadResponseModel to Road entity
-      Road road;
+      Road? road;
       if (draftWarning.road != null) {
         road = Road(
-          id: 0, // RoadResponseModel doesn't have id, only uid
+          id: null,
           uid: draftWarning.road!.uid,
           name: draftWarning.road!.name,
           roadNo: draftWarning.road!.roadNo,

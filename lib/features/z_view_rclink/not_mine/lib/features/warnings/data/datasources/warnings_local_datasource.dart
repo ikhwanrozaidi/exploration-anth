@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
@@ -367,19 +369,18 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
         throw Exception('Company not found');
       }
 
-      // Create minimal draft warning with NULL id
       await _database
           .into(_database.warnings)
           .insert(
             WarningsCompanion(
-              id: const Value.absent(), // NULL for draft
+              id: const Value.absent(),
               uid: Value(uuid),
               warningType: const Value('SITE_WARNING'),
               status: const Value('DRAFT'),
               dailyReportID: const Value.absent(),
               companyID: Value(companyRecord.id),
-              roadID: const Value(0), // Placeholder, will be updated
-              workScopeID: const Value(0), // Placeholder, will be updated
+              roadID: const Value.absent(),
+              workScopeID: const Value.absent(),
               contractRelationID: const Value.absent(),
               fromSection: const Value.absent(),
               toSection: const Value.absent(),
@@ -391,7 +392,7 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
               longitude: const Value.absent(),
               latitude: const Value.absent(),
               description: const Value.absent(),
-              createdByID: Value(0), // Placeholder
+              createdByID: const Value.absent(),
               createdAt: Value(now),
               updatedAt: Value(now),
               isSynced: const Value(false),
@@ -442,7 +443,7 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
       print('   Road UID: ${data.roadUID}');
       print('   Work Scope UID: ${data.workScopeUID}');
 
-      // Get road ID from roadUID
+      // Get road ID from roadUID - MUST exist
       final roadRecord = await (_database.select(
         _database.roads,
       )..where((tbl) => tbl.uid.equals(data.roadUID))).getSingleOrNull();
@@ -452,14 +453,19 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
       }
       print('✅ Road found: ${roadRecord.name} (ID: ${roadRecord.id})');
 
-      // For work scope, we DON'T require it to be in cache
-      // We'll store the UID and use it directly for API submission
-      // The work scope ID in the database is just for local reference
+      // Get work scope ID from workScopeUID - MUST exist
+      final workScopeRecord = await (_database.select(
+        _database.workScopes,
+      )..where((tbl) => tbl.uid.equals(data.workScopeUID))).getSingleOrNull();
+
+      if (workScopeRecord == null) {
+        throw Exception('Work scope not found: ${data.workScopeUID}');
+      }
       print(
-        '⚠️ Skipping work scope database lookup - will use UID for API submission',
+        '✅ Work scope found: ${workScopeRecord.name} (ID: ${workScopeRecord.id})',
       );
 
-      // Get contractor relation ID if provided
+      // Get contractor relation ID if provided (optional)
       int? contractRelationID;
       if (data.contractRelationUID != null) {
         final contractRelationRecord =
@@ -469,81 +475,76 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
         contractRelationID = contractRelationRecord?.id;
         if (contractRelationID != null) {
           print('✅ Contractor relation found (ID: $contractRelationID)');
+        } else {
+          print(
+            '⚠️ Contractor relation not found in cache: ${data.contractRelationUID}',
+          );
         }
       }
 
       // Convert warning reason UIDs to warning items JSON
-      String? warningItemsJson;
+      String? warningItemsData;
       if (data.warningReasonUIDs.isNotEmpty) {
-        final warningItems = data.warningReasonUIDs
-            .map((uid) => {'warningReasonUID': uid})
-            .toList();
-        warningItemsJson = jsonEncode(warningItems);
-        print(
-          '✅ Warning items JSON created: ${data.warningReasonUIDs.length} items',
-        );
+        final warningItems = data.warningReasonUIDs.map((reasonUID) {
+          return {
+            'uid': const Uuid().v4(),
+            'warningReasonUID': reasonUID,
+            'isCompleted': false,
+            'completedAt': null,
+            'notes': null,
+          };
+        }).toList();
+        warningItemsData = jsonEncode(warningItems);
       }
 
-      // Store work scope UID in JSON for API submission
+      // Get company record for storing company data
+      final draftWarning = await (_database.select(
+        _database.warnings,
+      )..where((tbl) => tbl.uid.equals(draftUID))).getSingle();
+      final companyRecord = await (_database.select(
+        _database.companies,
+      )..where((tbl) => tbl.id.equals(draftWarning.companyID))).getSingle();
+
+      // Prepare JSON data for storage
       final workScopeDataJson = jsonEncode({
         'uid': data.workScopeUID,
-        'name': '', // We don't have the name, will be filled on load if needed
+        'name': workScopeRecord.name,
+        'code': workScopeRecord.code,
       });
 
-      // Store road data as JSON for display
       final roadDataJson = jsonEncode({
-        'uid': roadRecord.uid,
+        'uid': data.roadUID,
         'name': roadRecord.name,
         'roadNo': roadRecord.roadNo,
       });
 
-      // Get company data
-      final companyRecord =
-          await (_database.select(_database.companies)..where(
-                (tbl) => tbl.uid.equals(draftUID.split('-').first),
-              )) // This won't work, need companyUID
-              .getSingleOrNull();
+      final companyDataJson = jsonEncode({
+        'uid': companyRecord.uid,
+        'name': companyRecord.name,
+      });
 
-      // For now, we'll fetch company from the warning record
-      final existingWarning = await (_database.select(
-        _database.warnings,
-      )..where((tbl) => tbl.uid.equals(draftUID))).getSingleOrNull();
-
-      String? companyDataJson;
-      if (existingWarning != null) {
-        final company =
-            await (_database.select(_database.companies)
-                  ..where((tbl) => tbl.id.equals(existingWarning.companyID)))
-                .getSingleOrNull();
-
-        if (company != null) {
-          companyDataJson = jsonEncode({
-            'uid': company.uid,
-            'name': company.name,
-          });
-        }
-      }
-
-      // Update draft warning
+      // Update draft warning with all data
       await (_database.update(
         _database.warnings,
       )..where((tbl) => tbl.uid.equals(draftUID))).write(
         WarningsCompanion(
           roadID: Value(roadRecord.id),
-          workScopeID: const Value(0), // Placeholder - not used for submission
+          workScopeID: Value(workScopeRecord.id),
           contractRelationID: Value(contractRelationID),
-          fromSection: Value(data.fromSection?.toString()),
-          toSection: Value(data.toSection?.toString()),
-          longitude: Value(data.longitude?.toString()),
+          fromSection: Value(data.fromSection.toString()),
+          toSection: Value(data.toSection.toString()),
           latitude: Value(data.latitude?.toString()),
+          longitude: Value(data.longitude?.toString()),
           description: Value(data.description),
-          warningItemsData: Value(warningItemsJson),
-          requiresAction: Value(data.requiresAction ?? true),
+          warningItemsData: Value(warningItemsData),
+          requiresAction: Value(
+            data.warningReasonUIDs.isNotEmpty ? true : false,
+          ),
           updatedAt: Value(DateTime.now()),
           status: const Value('DRAFT'),
-          workScopeData: Value(workScopeDataJson), // Store UID for submission
-          roadData: Value(roadDataJson), // Store for display
-          companyData: Value(companyDataJson), // Store for display
+          workScopeData: Value(workScopeDataJson),
+          roadData: Value(roadDataJson),
+          companyData: Value(companyDataJson),
         ),
       );
 
