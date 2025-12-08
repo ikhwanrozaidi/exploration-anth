@@ -1,6 +1,9 @@
+// lib/main.dart - Fixed flavor initialization
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:gatepay_app/features/transactionboard/presentation/bloc/transaction_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'core/config/flavor_config.dart';
 import 'core/dio/injection.dart';
 
@@ -14,15 +17,15 @@ import 'features/auth/presentation/bloc/auth_bloc.dart';
 // Add login and onboarding blocs
 import 'features/login/presentation/bloc/login_bloc.dart';
 import 'features/onboarding/presentation/bloc/onboarding_bloc.dart';
-import 'features/pay_boarding/features/escrow_pay/presentation/bloc/escrow_pay_bloc.dart';
-import 'features/pay_boarding/features/qr_pay/presentation/bloc/qrpay_bloc.dart';
-import 'features/pay_boarding/presentation/bloc/pay_boarding_bloc.dart';
 import 'features/transactionboard/features/ongoing/presentation/bloc/ongoing_bloc.dart';
 import 'routes/app_router.dart';
 
+// This will be called from flavor-specific main files
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await configureDependencies();
+
+  // Don't configure dependencies here - they should be configured
+  // in the flavor-specific main files before calling this main()
 
   runApp(
     MultiBlocProvider(
@@ -42,18 +45,6 @@ Future<void> main() async {
         ),
         BlocProvider<OngoingBloc>(
           create: (context) => getIt<OngoingBloc>(),
-          lazy: true,
-        ),
-        BlocProvider<PayBoardingBloc>(
-          create: (context) => getIt<PayBoardingBloc>(),
-          lazy: true,
-        ),
-        BlocProvider<EscrowpayBloc>(
-          create: (context) => getIt<EscrowpayBloc>(),
-          lazy: true,
-        ),
-        BlocProvider<QrpayBloc>(
-          create: (context) => getIt<QrpayBloc>(),
           lazy: true,
         ),
       ],
@@ -78,7 +69,16 @@ class MyApp extends StatelessWidget {
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
             useMaterial3: true,
           ),
-
+          builder: (context, child) {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                textTheme: GoogleFonts.poppinsTextTheme(
+                  Theme.of(context).textTheme,
+                ),
+              ),
+              child: child!,
+            );
+          },
           // Localization
           locale: localeState.locale,
           localizationsDelegates: [

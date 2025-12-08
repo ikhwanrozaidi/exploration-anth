@@ -1,15 +1,7 @@
+// lib/features/pay_boarding/presentation/pages/pay_boarding_page.dart
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gatepay_app/features/pay_boarding/features/qr_pay/presentation/pages/qrpay_page.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/dio/injection.dart';
 import '../../../../shared/utils/theme.dart';
-import '../../features/escrow_pay/presentation/pages/escrow_pay_page.dart';
-import '../bloc/pay_boarding_bloc.dart';
-import '../bloc/pay_boarding_event.dart';
-import '../bloc/pay_boarding_state.dart';
-import 'widgets/payment_info_section.dart';
-import 'widgets/payment_method_card.dart';
 
 class PayBoardingPage extends StatelessWidget {
   final String? title;
@@ -18,11 +10,7 @@ class PayBoardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          getIt<PayBoardingBloc>()..add(const LoadPayBoarding()),
-      child: const PayBoardingView(),
-    );
+    return const PayBoardingView();
   }
 }
 
@@ -38,33 +26,11 @@ class PayBoardingView extends StatelessWidget {
           style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18),
         ),
       ),
-      body: BlocConsumer<PayBoardingBloc, PayBoardingState>(
-        listener: (context, state) {
-          if (state is PayBoardingError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is PayBoardingLoaded) {
-            return _buildLoadedContent(context, state);
-          } else if (state is PayBoardingLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is PayBoardingError) {
-            return _buildErrorContent(context, state.message);
-          } else {
-            return _buildErrorContent(context, 'Something went wrong');
-          }
-        },
-      ),
+      body: _buildContent(context),
     );
   }
 
-  Widget _buildLoadedContent(BuildContext context, PayBoardingLoaded state) {
+  Widget _buildContent(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
 
     return SafeArea(
@@ -95,11 +61,11 @@ class PayBoardingView extends StatelessWidget {
 
                 // Payment Method Cards
                 Row(
-                  children: state.availableMethods.map((method) {
+                  children: _availableMethods.map((method) {
                     return Expanded(
                       child: Padding(
                         padding: EdgeInsets.only(
-                          right: method == state.availableMethods.last ? 0 : 20,
+                          right: method == _availableMethods.last ? 0 : 20,
                         ),
                         child: PaymentMethodCard(
                           method: method,
@@ -113,7 +79,7 @@ class PayBoardingView extends StatelessWidget {
                 const SizedBox(height: 60),
 
                 // Payment Information Section
-                PaymentInfoSection(availableMethods: state.availableMethods),
+                PaymentInfoSection(availableMethods: _availableMethods),
               ],
             ),
           ),
@@ -122,63 +88,226 @@ class PayBoardingView extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorContent(BuildContext context, String message) {
-    return LayoutBuilder(
-      builder: (context, cons) {
-        return ListView(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20.0),
-              constraints: BoxConstraints(minHeight: cons.maxHeight),
-              child: Center(
-                child: GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).clearSnackBars();
-                    context.read<PayBoardingBloc>().add(
-                      const LoadPayBoarding(),
-                    );
-                  },
-                  child: const Chip(
-                    label: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.refresh, color: Colors.white),
-                        SizedBox(width: 10),
-                        Text(
-                          'Try again',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ],
-                    ),
-                    backgroundColor: tPrimaryColor,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _onMethodSelected(BuildContext context, PaymentMethodType methodType) {
-    // Update selected method in BLoC
-    context.read<PayBoardingBloc>().add(SelectPaymentMethod(methodType));
-
-    // Navigate to appropriate page
     Widget targetPage;
     switch (methodType) {
       case PaymentMethodType.qrCode:
-        targetPage = const QrpayPage();
+        // targetPage = const QrpayPage();
         break;
       case PaymentMethodType.escrow:
-        targetPage = const EscrowpayPage();
+        // targetPage = const EscrowpayPage();
         break;
     }
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => targetPage),
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => targetPage),
+    // );
+  }
+}
+
+// Payment Method Card Widget
+class PaymentMethodCard extends StatelessWidget {
+  final PaymentMethod method;
+  final VoidCallback onTap;
+
+  const PaymentMethodCard({
+    super.key,
+    required this.method,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: method.isEnabled ? onTap : null,
+      child: Container(
+        padding: const EdgeInsets.all(15),
+        decoration: BoxDecoration(
+          color: method.isEnabled ? tPrimaryColorShade4 : Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: 80.0,
+              height: 80.0,
+              decoration: BoxDecoration(
+                color: method.isEnabled
+                    ? tPrimaryColorShade2
+                    : Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: method.imagePath != null
+                    ? Image.asset(
+                        method.imagePath!,
+                        width: 40,
+                        height: 40,
+                        color: method.isEnabled ? null : Colors.grey,
+                      )
+                    : Icon(
+                        _getIconForMethod(method.type),
+                        size: 40,
+                        color: method.isEnabled
+                            ? tPrimaryColorShade3
+                            : Colors.grey,
+                      ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              method.title,
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w500,
+                color: method.isEnabled ? Colors.black : Colors.grey,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  IconData _getIconForMethod(PaymentMethodType type) {
+    switch (type) {
+      case PaymentMethodType.qrCode:
+        return Icons.qr_code;
+      case PaymentMethodType.escrow:
+        return Icons.security;
+    }
+  }
+}
+
+// Payment Info Section Widget
+class PaymentInfoSection extends StatelessWidget {
+  final List<PaymentMethod> availableMethods;
+
+  const PaymentInfoSection({super.key, required this.availableMethods});
+
+  @override
+  Widget build(BuildContext context) {
+    final w = MediaQuery.of(context).size.width;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Quick Catch-up!',
+          style: GoogleFonts.poppins(
+            fontWeight: FontWeight.w500,
+            color: Colors.grey,
+            fontSize: w * 0.035,
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        ...availableMethods.asMap().entries.map((entry) {
+          final index = entry.key + 1;
+          final method = entry.value;
+
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '$index. ${method.title}',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey,
+                    fontSize: w * 0.035,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                ...method.features.map(
+                  (feature) => _buildFeatureBullet(feature, w),
+                ),
+              ],
+            ),
+          );
+        }).toList(),
+      ],
+    );
+  }
+
+  Widget _buildFeatureBullet(String feature, double w) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(width: 20),
+          Text(
+            '•',
+            style: GoogleFonts.poppins(color: Colors.grey, fontSize: w * 0.035),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              feature,
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.w500,
+                color: Colors.grey,
+                fontSize: w * 0.035,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
+
+// Data Models
+enum PaymentMethodType { qrCode, escrow }
+
+class PaymentMethod {
+  final PaymentMethodType type;
+  final String title;
+  final String description;
+  final String? imagePath;
+  final bool isEnabled;
+  final List<String> features;
+
+  const PaymentMethod({
+    required this.type,
+    required this.title,
+    required this.description,
+    this.imagePath,
+    this.isEnabled = true,
+    this.features = const [],
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PaymentMethod &&
+          runtimeType == other.runtimeType &&
+          type == other.type;
+
+  @override
+  int get hashCode => type.hashCode;
+}
+
+// Mock available payment methods
+final _availableMethods = [
+  const PaymentMethod(
+    type: PaymentMethodType.qrCode,
+    title: 'QR Code',
+    description: 'Quick and easy QR code payments',
+    features: [
+      'Direct bank account transaction (Note: Scam can occur)',
+      'Scan seller\'s QR Code for escrow transaction',
+    ],
+  ),
+  const PaymentMethod(
+    type: PaymentMethodType.escrow,
+    title: 'Escrow',
+    description: 'Secure escrow transactions',
+    features: [
+      'Create your own escrow transaction to any sellers with GatePay account',
+      'Full protection for both buyer and seller',
+    ],
+  ),
+];

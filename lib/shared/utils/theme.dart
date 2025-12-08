@@ -1,6 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+const boldColor = Color.fromARGB(255, 0, 69, 129);
+const primaryColor = Color.fromARGB(255, 81, 209, 255);
+const passiveColor = Color.fromARGB(255, 68, 115, 155);
+const backgroundColor = Color.fromARGB(255, 243, 243, 243);
+const red = Color.fromARGB(255, 255, 0, 0);
+const onholdOrange = Color.fromARGB(255, 230, 153, 0);
+const green = Color.fromARGB(255, 0, 213, 53);
+
 const tPrimaryColor = Color.fromARGB(255, 34, 134, 196);
 const tPrimaryBackground = Color.fromARGB(255, 224, 247, 255);
 
@@ -24,9 +32,7 @@ const tSecondaryFont = 'Poppins';
 
 //LIGHT-THEME
 ThemeData get kAppLightTheme {
-  ThemeData base = ThemeData.light(
-    useMaterial3: true,
-  );
+  ThemeData base = ThemeData.light(useMaterial3: true);
   return base.copyWith(
     // splashColor: Colors.transparent,
     primaryColor: tPrimaryColor,
@@ -41,14 +47,13 @@ ThemeData get kAppLightTheme {
       base.inputDecorationTheme,
       buildTextTheme(base.textTheme),
     ),
-    iconTheme: const IconThemeData(
-      color: tColorDisplayText,
-    ),
+    iconTheme: const IconThemeData(color: tColorDisplayText),
     elevatedButtonTheme: buildElevatedButtonTheme(),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: ButtonStyle(
         shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0))),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
+        ),
       ),
     ),
     dialogTheme: buildDiaLogTheme(),
@@ -73,56 +78,51 @@ ThemeData get kAppLightTheme {
     datePickerTheme: buildDatePickerTheme(),
     snackBarTheme: const SnackBarThemeData(backgroundColor: tPrimaryColor),
     chipTheme: const ChipThemeData(
-      side: BorderSide(
-        color: Colors.transparent,
-      ),
-      iconTheme: IconThemeData(
-        color: tColorDisplayText,
-      ),
+      side: BorderSide(color: Colors.transparent),
+      iconTheme: IconThemeData(color: tColorDisplayText),
     ),
-    bottomNavigationBarTheme:
-        buildBottomNavBarTheme(base.bottomNavigationBarTheme),
-    popupMenuTheme: PopupMenuThemeData(
-      color: base.colorScheme.background,
+    bottomNavigationBarTheme: buildBottomNavBarTheme(
+      base.bottomNavigationBarTheme,
     ),
+    popupMenuTheme: PopupMenuThemeData(color: base.colorScheme.background),
   );
 }
 
 //TO SWITCH THEME
 buildSwitchTheme() {
   return SwitchThemeData(
-    thumbColor: MaterialStateProperty.resolveWith<Color?>(
-      (Set<MaterialState> states) {
-        if (states.contains(MaterialState.selected)) {
-          return tPrimaryColor;
-        }
-        return Colors.grey;
-      },
-    ),
-    overlayColor: MaterialStateProperty.resolveWith<Color?>(
-      (Set<MaterialState> states) {
-        if (!states.contains(MaterialState.selected)) {
-          return Colors.grey;
-        }
+    thumbColor: MaterialStateProperty.resolveWith<Color?>((
+      Set<MaterialState> states,
+    ) {
+      if (states.contains(MaterialState.selected)) {
         return tPrimaryColor;
-      },
-    ),
-    trackOutlineColor: MaterialStateProperty.resolveWith<Color?>(
-      (Set<MaterialState> states) {
-        if (!states.contains(MaterialState.selected)) {
-          return tGreyShade5;
-        }
-        return tSecondaryColor;
-      },
-    ),
-    trackColor: MaterialStateProperty.resolveWith<Color?>(
-      (Set<MaterialState> states) {
-        if (!states.contains(MaterialState.selected)) {
-          return tGreyShade5;
-        }
-        return tSecondaryColor;
-      },
-    ),
+      }
+      return Colors.grey;
+    }),
+    overlayColor: MaterialStateProperty.resolveWith<Color?>((
+      Set<MaterialState> states,
+    ) {
+      if (!states.contains(MaterialState.selected)) {
+        return Colors.grey;
+      }
+      return tPrimaryColor;
+    }),
+    trackOutlineColor: MaterialStateProperty.resolveWith<Color?>((
+      Set<MaterialState> states,
+    ) {
+      if (!states.contains(MaterialState.selected)) {
+        return tGreyShade5;
+      }
+      return tSecondaryColor;
+    }),
+    trackColor: MaterialStateProperty.resolveWith<Color?>((
+      Set<MaterialState> states,
+    ) {
+      if (!states.contains(MaterialState.selected)) {
+        return tGreyShade5;
+      }
+      return tSecondaryColor;
+    }),
   );
 }
 
@@ -130,18 +130,14 @@ buildSwitchTheme() {
 buildBottomNavBarTheme(BottomNavigationBarThemeData base) {
   return base.copyWith(
     backgroundColor: Colors.white,
-    unselectedIconTheme: const IconThemeData(
-      color: tColorDisplayText,
-    ),
+    unselectedIconTheme: const IconThemeData(color: tColorDisplayText),
     unselectedItemColor: tColorDisplayText,
   );
 }
 
 final kDropDownInputDecoration = InputDecoration(
   suffixIcon: const Icon(Icons.arrow_drop_down),
-  suffixIconConstraints: BoxConstraints.tight(
-    const Size(48, 18),
-  ),
+  suffixIconConstraints: BoxConstraints.tight(const Size(48, 18)),
 );
 
 //TEXT-THEME
@@ -182,18 +178,10 @@ TextTheme buildTextTheme(TextTheme base) {
           fontWeight: FontWeight.w400,
           fontFamily: tPrimaryFont,
         ),
-        titleSmall: base.titleSmall?.copyWith(
-          fontFamily: tPrimaryFont,
-        ),
-        bodyLarge: base.bodyLarge?.copyWith(
-          fontFamily: tPrimaryFont,
-        ),
-        bodyMedium: base.bodyMedium?.copyWith(
-          fontFamily: tPrimaryFont,
-        ),
-        bodySmall: base.bodySmall?.copyWith(
-          fontFamily: tPrimaryFont,
-        ),
+        titleSmall: base.titleSmall?.copyWith(fontFamily: tPrimaryFont),
+        bodyLarge: base.bodyLarge?.copyWith(fontFamily: tPrimaryFont),
+        bodyMedium: base.bodyMedium?.copyWith(fontFamily: tPrimaryFont),
+        bodySmall: base.bodySmall?.copyWith(fontFamily: tPrimaryFont),
         labelLarge: base.labelLarge?.copyWith(
           fontWeight: FontWeight.w700,
           fontFamily: tPrimaryFont,
@@ -221,10 +209,7 @@ buildAppBarTheme() {
     color: Colors.white,
     scrolledUnderElevation: 0,
     elevation: 0,
-    titleTextStyle: TextStyle(
-      fontWeight: FontWeight.w600,
-      color: tGreyShade4,
-    ),
+    titleTextStyle: TextStyle(fontWeight: FontWeight.w600, color: tGreyShade4),
     iconTheme: IconThemeData(color: tGreyShade2),
   );
 }
@@ -237,9 +222,7 @@ buildElevatedButtonTheme() {
       foregroundColor: Colors.white,
       minimumSize: const Size(double.infinity, 53),
       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     ),
   );
 }
@@ -248,9 +231,7 @@ buildElevatedButtonTheme() {
 buildDiaLogTheme() {
   return const DialogTheme(
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.all(
-        Radius.circular(15),
-      ),
+      borderRadius: BorderRadius.all(Radius.circular(15)),
     ),
   );
 }
@@ -291,18 +272,14 @@ buildToolTipTheme() {
   return const TooltipThemeData(
     decoration: BoxDecoration(
       color: tPrimaryColor,
-      borderRadius: BorderRadius.all(
-        Radius.circular(5),
-      ),
+      borderRadius: BorderRadius.all(Radius.circular(5)),
     ),
   );
 }
 
 //DON'T KNOW
 buildIconTheme(IconThemeData base) {
-  return base.copyWith(
-    color: tColorDisplayText,
-  );
+  return base.copyWith(color: tColorDisplayText);
 }
 
 //DON'T KNOW
@@ -310,19 +287,19 @@ InputDecorationTheme buildInputDecorationTheme(
   InputDecorationTheme base,
   TextTheme baseTextTheme,
 ) {
-  const borderSide = BorderSide(
-    color: tGreyShade1,
-  );
+  const borderSide = BorderSide(color: tGreyShade1);
   final inputBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(10),
-    borderSide: const BorderSide(
-      color: tGreyShade1,
-    ),
+    borderSide: const BorderSide(color: tGreyShade1),
   );
   return base.copyWith(
     // contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-    contentPadding:
-        const EdgeInsets.only(left: 12, top: 12, bottom: 12, right: 12),
+    contentPadding: const EdgeInsets.only(
+      left: 12,
+      top: 12,
+      bottom: 12,
+      right: 12,
+    ),
     border: inputBorder,
     hintStyle: const TextStyle(color: tGreyShade1),
     enabledBorder: inputBorder,
@@ -330,15 +307,11 @@ InputDecorationTheme buildInputDecorationTheme(
       borderSide: borderSide.copyWith(color: tGreyShade1),
     ),
     errorBorder: inputBorder.copyWith(
-      borderSide: borderSide.copyWith(
-        color: Colors.red,
-      ),
+      borderSide: borderSide.copyWith(color: Colors.red),
     ),
     errorMaxLines: 2,
     focusedBorder: inputBorder.copyWith(
-      borderSide: borderSide.copyWith(
-        color: tPrimaryColor,
-      ),
+      borderSide: borderSide.copyWith(color: tPrimaryColor),
     ),
     isDense: true,
     filled: true,

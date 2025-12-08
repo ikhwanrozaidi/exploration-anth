@@ -6,9 +6,9 @@ plugins {
 }
 
 android {
-    namespace = "com.rclink.rclink_app"
+    namespace = "com.example.gatepay_app"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"  // Updated to fix the NDK version issue
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.rclink.rclink_app"
+        applicationId = "com.example.gatepay_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
@@ -30,29 +30,11 @@ android {
         versionName = flutter.versionName
     }
 
-    flavorDimensions += "environment"
-    productFlavors {
-        create("development") {
-            dimension = "environment"
-            applicationId = "com.rclink.rclink_app.dev"
-            versionNameSuffix = "-dev"
-            resValue("string", "app_name", "RCLink (Dev)")
-        }
-        create("staging") {
-            dimension = "environment"
-            applicationId = "com.rclink.rclink_app.staging"
-            versionNameSuffix = "-staging"
-            resValue("string", "app_name", "RCLink (Staging)")
-        }
-        create("production") {
-            dimension = "environment"
-            applicationId = "com.rclink.rclink_app"
-            resValue("string", "app_name", "RCLink")
-        }
-    }
-
     buildTypes {
         release {
+            // Temporarily disable obfuscation to debug blank screen
+            isMinifyEnabled = false
+            isShrinkResources = false
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")

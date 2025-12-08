@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gatepay_app/shared/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconify_flutter/icons/arcticons.dart';
+import 'package:iconify_flutter/icons/bx.dart';
+import 'package:iconify_flutter/icons/ic.dart';
+import 'package:iconify_flutter/icons/material_symbols.dart';
+import 'package:iconify_flutter/icons/wpf.dart';
 import '../../../../core/dio/injection.dart';
-import '../../../../shared/utils/build_loading_indicator.dart';
-import '../../../../shared/utils/theme.dart';
 import '../bloc/profile_bloc.dart';
 import '../bloc/profile_event.dart';
 import '../bloc/profile_state.dart';
-import 'widgets/profile_header.dart';
+
+// Icon
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/lucide.dart';
+import 'package:iconify_flutter/icons/radix_icons.dart';
+import 'package:iconify_flutter/icons/akar_icons.dart';
 
 class ProfilePage extends StatelessWidget {
-  final String? title;
-  
-  const ProfilePage({
-    super.key,
-    this.title,
-  });
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<ProfileBloc>()..add(const LoadUserProfile()),
+      create: (context) => getIt<ProfileBloc>()..add(const LoadUserSettings()),
       child: const ProfileView(),
     );
   }
@@ -31,269 +35,477 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocConsumer<ProfileBloc, ProfileState>(
-        listener: (context, state) {
-          if (state is ProfileLoggedOut) {
-            // Navigate to login page
-            Navigator.of(context).pushNamedAndRemoveUntil(
-              '/login', // Replace with your login route
-              (Route<dynamic> route) => false,
-            );
-          } else if (state is ProfileError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message),
-                backgroundColor: Colors.red,
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is ProfileLoaded) {
-            return _buildLoadedContent(context, state);
-          } else if (state is ProfileLoading) {
-            return Center(
-              child: buildLoadingIndicator(
-                blur: 0,
-                isCentered: true,
-              ),
-            );
-          } else if (state is ProfileError) {
-            return _buildErrorContent(context, state.message);
-          } else {
-            return _buildErrorContent(context, 'Something went wrong');
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildLoadedContent(BuildContext context, ProfileLoaded state) {
-    final w = MediaQuery.of(context).size.width;
-    
-    return SingleChildScrollView(
+    return Material(
+      color: backgroundColor,
       child: SafeArea(
         child: Column(
           children: [
-            // Header
-            ProfileHeader(
-              userData: state.userData,
-              onEditPressed: () {
-                // TODO: Navigate to edit profile page
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Edit profile coming soon')),
-                );
-              },
-            ),
-            
-            const SizedBox(height: 20),
-            Divider(color: Colors.grey.shade300),
-            const SizedBox(height: 40),
-            
-            // Verification Section
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                decoration: BoxDecoration(
-                  color: tPrimaryColorShade2,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Get account verification now?',
-                      style: GoogleFonts.poppins(
-                        fontSize: w * 0.035,
-                        color: tPrimaryColorShade3,
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // TODO: Navigate to verification page
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Verification coming soon')),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: tPrimaryColorShade3,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 15,
-                        ),
-                        minimumSize: const Size(64, 30),
-                        visualDensity: VisualDensity.compact,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                      ),
-                      child: const Text(
-                        'Verify',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 10,
               ),
-            ),
-            
-            const SizedBox(height: 40),
-            
-            // Settings Section
-            ProfileSettingsSection(
-              twoFactorEnabled: state.twoFactorEnabled,
-              biometricEnabled: state.biometricEnabled,
-              onTwoFactorChanged: (value) {
-                context.read<ProfileBloc>().add(ToggleTwoFactorAuth(value));
-              },
-              onBiometricChanged: (value) {
-                context.read<ProfileBloc>().add(ToggleBiometricAuth(value));
-              },
-              onChangePasswordTap: () {
-                // TODO: Navigate to change password page
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Change password coming soon')),
-                );
-              },
-              onNotificationSettingsTap: () {
-                // TODO: Navigate to notification settings page
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Notification settings coming soon')),
-                );
-              },
-              onAboutTap: () {
-                // TODO: Navigate to about page
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('About page coming soon')),
-                );
-              },
-            ),
-            
-            const SizedBox(height: 20),
-            Divider(color: Colors.grey.shade300),
-            const SizedBox(height: 40),
-            
-            // Support and Logout Section
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ProfileMenuItem(
-                    icon: Icons.headset_mic_outlined,
-                    title: 'Contact Our Agent',
-                    onTap: () {
-                      // TODO: Navigate to contact support page
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Contact support coming soon')),
-                      );
-                    },
+                  Text(
+                    'Profile',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                  
-                  ProfileMenuItem(
-                    icon: Icons.power_settings_new,
-                    title: 'Log Out',
-                    iconColor: Colors.red,
-                    titleColor: Colors.red,
-                    onTap: () {
-                      _showLogoutDialog(context);
+                  TextButton(
+                    onPressed: () {
+                      print('Profile button pressed');
                     },
+                    style: TextButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 15,
+                        vertical: 10,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      elevation: 2,
+                      shadowColor: Colors.black26,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Ikhwan Rozaidi',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Container(
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: backgroundColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Iconify(
+                            RadixIcons.person,
+                            size: 20,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
-            
-            const SizedBox(height: 40),
-            const Text('Powered by BerryPay'),
-            const SizedBox(height: 40),
+
+            Expanded(
+              child: BlocBuilder<ProfileBloc, ProfileState>(
+                builder: (context, state) {
+                  if (state is ProfileLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (state is ProfileError) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.error_outline,
+                            size: 64,
+                            color: Colors.red[300],
+                          ),
+                          const SizedBox(height: 16),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 32),
+                            child: Text(
+                              state.message,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          ElevatedButton(
+                            onPressed: () {
+                              context.read<ProfileBloc>().add(
+                                const LoadUserSettings(),
+                              );
+                            },
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (state is ProfileLoaded) {
+                    final userSettings = state.userSettings;
+
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        context.read<ProfileBloc>().add(
+                          const RefreshUserSettings(),
+                        );
+                      },
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 25,
+                                horizontal: 20,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Container(
+                                        width: 80,
+                                        height: 80,
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          color: backgroundColor,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.person_outline,
+                                          size: 20,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      SizedBox(width: 25),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            userSettings.fullName,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          Text(
+                                            userSettings.fullName,
+                                            style: GoogleFonts.poppins(
+                                              fontSize: 12,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+
+                                          SizedBox(height: 10),
+                                          TextButton(
+                                            onPressed: () {},
+                                            style: TextButton.styleFrom(
+                                              backgroundColor: Color.fromARGB(
+                                                255,
+                                                7,
+                                                246,
+                                                226,
+                                              ),
+                                              foregroundColor: Colors.black,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 12,
+                                                    vertical: 6,
+                                                  ),
+                                              minimumSize: Size.zero,
+                                              tapTargetSize:
+                                                  MaterialTapTargetSize
+                                                      .shrinkWrap,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(25),
+                                              ),
+                                              elevation: 2,
+                                              shadowColor: Colors.black26,
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Icon(
+                                                  Icons.person_outline,
+                                                  size: 15,
+                                                  color: Colors.black,
+                                                ),
+                                                const SizedBox(width: 6),
+                                                Text(
+                                                  'Verified',
+                                                  style: GoogleFonts.poppins(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+
+                                  Container(
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: backgroundColor,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: const Icon(
+                                      Icons.mode_edit_outlined,
+                                      size: 20,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: 30),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: Text(
+                                'Account details',
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(height: 16),
+
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 20,
+                                horizontal: 25,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                children: [
+                                  _buildAccountDetailsTile(
+                                    AkarIcons.person,
+                                    "Personal Info",
+                                    () {},
+                                  ),
+                                  _buildAccountDetailsTile(
+                                    MaterialSymbols.password_rounded,
+                                    "Change Password",
+                                    () {},
+                                  ),
+                                  _buildAccountDetailsTile(
+                                    Arcticons.i_2fas_auth,
+                                    "Two Factor Authentication",
+                                    () {},
+                                  ),
+                                  _buildAccountDetailsTile(
+                                    MaterialSymbols.fingerprint_outline,
+                                    "Biometric Authentication",
+                                    () {},
+                                  ),
+                                  _buildAccountDetailsTile(
+                                    Ic.outline_notifications_active,
+                                    "Notification Settings",
+                                    () {},
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              color: backgroundColor,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Iconify(
+                                              Lucide.activity,
+                                              size: 20,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          SizedBox(width: 20),
+                                          Text('About'),
+                                        ],
+                                      ),
+
+                                      Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 18,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: 30),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 20.0),
+                              child: Text(
+                                'Help and Support',
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(height: 16),
+
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 20,
+                                horizontal: 25,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Column(
+                                children: [
+                                  _buildAccountDetailsTile(
+                                    Bx.support,
+                                    "Contact Our Support",
+                                    () {},
+                                  ),
+                                  _buildAccountDetailsTile(
+                                    Wpf.faq,
+                                    "FAQ",
+                                    () {},
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.all(10),
+                                            decoration: BoxDecoration(
+                                              color: backgroundColor,
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Iconify(
+                                              Ic.round_log_out,
+                                              size: 20,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          SizedBox(width: 20),
+                                          Text('Log Out'),
+                                        ],
+                                      ),
+
+                                      Icon(
+                                        Icons.arrow_forward_ios_rounded,
+                                        size: 18,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            SizedBox(height: 100),
+
+                            if (state.isFromCache) ...[
+                              const SizedBox(height: 16),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.orange[100],
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: Colors.orange[300]!,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.offline_pin,
+                                      color: Colors.orange[700],
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        'Showing cached data. Pull to refresh when online.',
+                                        style: TextStyle(
+                                          color: Colors.orange[700],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  return const Center(child: Text('No data available'));
+                },
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildErrorContent(BuildContext context, String message) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+  Widget _buildAccountDetailsTile(
+    String icon,
+    String title,
+    VoidCallback onTap,
+  ) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Icon(
-              Icons.error_outline,
-              size: 80,
-              color: Colors.grey.shade400,
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Oops! Something went wrong',
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.poppins(
-                color: Colors.grey.shade600,
-              ),
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () {
-                context.read<ProfileBloc>().add(const LoadUserProfile());
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: tPrimaryColor,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 30,
-                  vertical: 15,
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: backgroundColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Iconify(icon, size: 20, color: Colors.black),
                 ),
-              ),
-              child: const Text(
-                'Try Again',
-                style: TextStyle(color: Colors.white),
-              ),
+                SizedBox(width: 20),
+                Text(title),
+              ],
             ),
+
+            Icon(Icons.arrow_forward_ios_rounded, size: 18),
           ],
         ),
-      ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Logout'),
-          content: const Text('Are you sure you want to logout?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                context.read<ProfileBloc>().add(const LogoutUser());
-              },
-              child: const Text(
-                'Logout',
-                style: TextStyle(color: Colors.red),
-              ),
-            ),
-          ],
-        );
-      },
+        Divider(height: 40, thickness: 1, color: backgroundColor),
+      ],
     );
   }
 }

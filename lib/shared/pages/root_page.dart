@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gatepay_app/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:gatepay_app/features/inbox/presentation/pages/inbox_page.dart';
+import 'package:gatepay_app/features/profile/presentation/pages/profile_page.dart';
+import 'package:gatepay_app/shared/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import '../../core/config/flavor_config.dart';
-import '../../features/dashboard/presentation/pages/dashboard_page.dart';
-import '../../features/inbox/presentation/pages/inbox_page.dart';
-import '../../features/locale/presentation/bloc/locale_bloc.dart';
-import '../../features/locale/presentation/bloc/locale_event.dart';
-import '../../features/locale/presentation/bloc/locale_state.dart';
 import '../../features/locale/presentation/widgets/app_localization.dart';
-import '../../features/pay_boarding/presentation/pages/pay_boarding_page.dart';
-import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/transactionboard/presentation/pages/transactionboard_page.dart';
+
+// icons
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/bi.dart';
+import 'package:iconify_flutter/icons/bx.dart';
+import 'package:iconify_flutter/icons/octicon.dart';
+
 import 'home_page.dart';
 
-/// RootPage manages the main app navigation and pages for authenticated users
-/// Now using AppDrawer design structure
 class RootPage extends StatefulWidget {
   const RootPage({super.key});
 
@@ -22,181 +24,159 @@ class RootPage extends StatefulWidget {
   State<RootPage> createState() => _RootPageState();
 }
 
-class _RootPageState extends State<RootPage> {
+class _RootPageState extends State<RootPage> with TickerProviderStateMixin {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   int selectedBottomMenuIndex = 0;
   bool showBottomBar = true;
+  late PageController _pageController;
+  late AnimationController _animationController;
 
-  // Define your main app pages here (same as AppDrawer structure)
   List<Widget> pages = <Widget>[
-    const DashboardPage(), // Dashboard/Home content
-    const TransactionboardPage(), // Transaction page (similar to TransactionboardPage)
-    const PayBoardingPage(), // Payment page (similar to PayBoardingPage)
-    const InboxPage(), // Inbox page
-    const ProfilePage(), // Profile page
+    const DashboardPage(),
+    const TransactionBoardPage(),
+    const InboxPage(),
+    const ProfilePage(),
   ];
 
-  // Define colors (you can move these to a theme file later)
-  static const Color tPrimaryColor = Color(0xFF1976D2); // Blue
-  static const Color tPrimaryColorShade1 = Color(0xFF42A5F5);
-  static const Color tPrimaryColorShade3 = Color(0xFF0D47A1);
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: selectedBottomMenuIndex);
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _animationController.dispose();
+    super.dispose();
+  }
 
   void onTap(int value) {
     if (!mounted) return;
 
-    if (value == 2) {
-      // Special handling for Pay button - navigate to payment page
-      Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => const PayBoardingPage(),
-      ));
-    } else {
-      setState(() {
-        selectedBottomMenuIndex = value;
-      });
-    }
-  }
+    setState(() {
+      selectedBottomMenuIndex = value;
+    });
 
-  Color getIconColor(int index) {
-    return selectedBottomMenuIndex == index
-        ? tPrimaryColor
-        : tPrimaryColorShade1.withOpacity(0.3);
+    // Animate to the selected page with smooth transition
+    _pageController.animateToPage(
+      value,
+      duration: const Duration(milliseconds: 400),
+      curve: Curves.easeInOutCubic,
+    );
+
+    // Trigger animation for nav bar
+    _animationController.forward().then((_) {
+      _animationController.reverse();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     final flavorConfig = FlavorConfig.instance;
+    final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       drawerEnableOpenDragGesture: false,
       key: scaffoldKey,
-      // appBar: AppBar(
-      //   title: Text(flavorConfig.appTitle),
-      //   centerTitle: true,
-      //   backgroundColor: Colors.white,
-      //   foregroundColor: Colors.black,
-      //   elevation: 0,
-      //   actions: [
-      //     // Language selector
-      //     BlocBuilder<LocaleBloc, LocaleState>(
-      //       builder: (context, state) {
-      //         return PopupMenuButton<Locale>(
-      //           icon: const Icon(Icons.language),
-      //           onSelected: (Locale locale) {
-      //             context.read<LocaleBloc>().add(ChangeLocale(locale));
-      //           },
-      //           itemBuilder: (BuildContext context) {
-      //             return LocaleState.supportedLocales.map((Locale locale) {
-      //               return PopupMenuItem<Locale>(
-      //                 value: locale,
-      //                 child: Row(
-      //                   mainAxisSize: MainAxisSize.min,
-      //                   children: [
-      //                     Text(
-      //                       LocaleState.languageFlags[locale.languageCode] ??
-      //                           '🇺🇸',
-      //                       style: const TextStyle(fontSize: 16),
-      //                     ),
-      //                     const SizedBox(width: 8),
-      //                     Text(
-      //                       LocaleState.languageNames[locale.languageCode] ??
-      //                           'English',
-      //                       style: const TextStyle(fontSize: 14),
-      //                     ),
-      //                   ],
-      //                 ),
-      //               );
-      //             }).toList();
-      //           },
-      //         );
-      //       },
-      //     ),
+      backgroundColor: const Color(0xFFF8FAFC),
+      body: Stack(
+        children: [
+          // PageView for smooth transitions between pages
+          PageView(
+            controller: _pageController,
+            onPageChanged: (index) {
+              setState(() {
+                selectedBottomMenuIndex = index;
+              });
+            },
+            children: pages,
+          ),
 
-      //     // Logout button
-      //     IconButton(
-      //       icon: const Icon(Icons.logout),
-      //       onPressed: () => _showLogoutDialog(context),
-      //     ),
-      //   ],
-      // ),
-      body: pages[selectedBottomMenuIndex],
-      bottomNavigationBar: showBottomBar
-          ? BottomAppBar(
-              color: Colors.white,
-              elevation: 3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  // Home/Dashboard
-                  IconButton(
-                    icon: Icon(
-                      selectedBottomMenuIndex == 0
-                          ? Icons.grid_view_rounded
-                          : Icons.grid_view,
-                      color: getIconColor(0),
-                    ),
-                    onPressed: () => onTap(0),
-                  ),
-                  // Transactions
-                  IconButton(
-                    icon: Icon(
-                      selectedBottomMenuIndex == 1
-                          ? Icons.donut_small
-                          : Icons.donut_small_outlined,
-                      color: getIconColor(1),
-                    ),
-                    onPressed: () => onTap(1),
-                  ),
-                  // Pay Button (Special styling)
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: tPrimaryColorShade3,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 10,
-                        horizontal: 20,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                    ),
-                    onPressed: () => onTap(2),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.payment, color: Colors.white),
-                        const SizedBox(width: 5),
-                        Text(
-                          'Pay',
-                          style: GoogleFonts.inter(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Inbox
-                  IconButton(
-                    icon: Icon(
-                      selectedBottomMenuIndex == 3
-                          ? Icons.inbox
-                          : Icons.inbox_outlined,
-                      color: getIconColor(3),
-                    ),
-                    onPressed: () => onTap(3),
-                  ),
-                  // Profile
-                  IconButton(
-                    icon: Icon(
-                      selectedBottomMenuIndex == 4
-                          ? Icons.person
-                          : Icons.person_outlined,
-                      color: getIconColor(4),
-                    ),
-                    onPressed: () => onTap(4),
+          if (showBottomBar)
+            Positioned(
+              bottom: 50,
+              left: 0,
+              right: 0,
+              child: _buildFloatingNavBar(width),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFloatingNavBar(w) {
+    return Center(
+      child: AnimatedBuilder(
+        animation: _animationController,
+        builder: (context, child) {
+          return Transform.scale(
+            scale: 1.0 + (_animationController.value * 0.05),
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 80),
+              height: w * 0.16,
+              decoration: BoxDecoration(
+                color: boldColor,
+                borderRadius: BorderRadius.circular(35),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 20 + (_animationController.value * 5),
+                    offset: const Offset(0, 10),
                   ),
                 ],
               ),
-            )
-          : null,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildNavItem(index: 0, icon: Octicon.home_16, w: w),
+                  _buildNavItem(index: 1, icon: Bx.money, w: w),
+                  _buildNavItem(index: 2, icon: Octicon.inbox_16, w: w),
+                  _buildNavItem(index: 3, icon: Bi.person_circle, w: w),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildNavItem({
+    required int index,
+    required String icon,
+    required double w,
+  }) {
+    final isSelected = selectedBottomMenuIndex == index;
+
+    return GestureDetector(
+      onTap: () => onTap(index),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOutCubic,
+        width: w * 0.11,
+        height: w * 0.11,
+        decoration: BoxDecoration(
+          color: isSelected ? primaryColor : Colors.transparent,
+          shape: BoxShape.circle,
+        ),
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 300),
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return ScaleTransition(scale: animation, child: child);
+          },
+          child: Iconify(
+            icon,
+            key: ValueKey(isSelected),
+            color: isSelected ? Colors.white : passiveColor,
+            size: isSelected ? w * 0.065 : w * 0.06,
+          ),
+        ),
+      ),
     );
   }
 
@@ -207,24 +187,42 @@ class _RootPageState extends State<RootPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(localization.auth('logout')),
-          content: Text(localization.auth('logoutConfirmation')),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Text(
+            localization.auth('logout'),
+            style: GoogleFonts.inter(fontWeight: FontWeight.w600),
+          ),
+          content: Text(
+            localization.auth('logoutConfirmation'),
+            style: GoogleFonts.inter(),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(localization.shared('cancel')),
+              child: Text(
+                localization.shared('cancel'),
+                style: GoogleFonts.inter(color: Colors.grey[600]),
+              ),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                // TODO: Implement actual logout
-                // Navigate back to login or onboarding
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/login',
-                  (route) => false,
-                );
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil('/login', (route) => false);
               },
-              child: Text(localization.auth('logout')),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: boldColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              child: Text(
+                localization.auth('logout'),
+                style: GoogleFonts.inter(color: Colors.white),
+              ),
             ),
           ],
         );

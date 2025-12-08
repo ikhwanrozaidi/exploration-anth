@@ -121,7 +121,7 @@ final dummyUserDetail = UserDetail(
   email: "test@test.dev",
   verify: "true",
   gatePoint: "000",
-  balance: "1234.45",
+  balance: "510.00",
   vaccount: " ",
 );
 final dummyTransactions = <OnholdTransaction>[

@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import '../../domain/entities/user_settings_entity.dart';
 
 abstract class ProfileState extends Equatable {
   const ProfileState();
@@ -16,28 +17,18 @@ class ProfileLoading extends ProfileState {
 }
 
 class ProfileLoaded extends ProfileState {
-  final Map<String, dynamic> userData;
-  final bool twoFactorEnabled;
-  final bool biometricEnabled;
+  final UserSettings userSettings;
+  final bool isFromCache;
 
-  const ProfileLoaded({
-    required this.userData,
-    this.twoFactorEnabled = false,
-    this.biometricEnabled = false,
-  });
+  const ProfileLoaded({required this.userSettings, this.isFromCache = false});
 
   @override
-  List<Object?> get props => [userData, twoFactorEnabled, biometricEnabled];
+  List<Object?> get props => [userSettings, isFromCache];
 
-  ProfileLoaded copyWith({
-    Map<String, dynamic>? userData,
-    bool? twoFactorEnabled,
-    bool? biometricEnabled,
-  }) {
+  ProfileLoaded copyWith({UserSettings? userSettings, bool? isFromCache}) {
     return ProfileLoaded(
-      userData: userData ?? this.userData,
-      twoFactorEnabled: twoFactorEnabled ?? this.twoFactorEnabled,
-      biometricEnabled: biometricEnabled ?? this.biometricEnabled,
+      userSettings: userSettings ?? this.userSettings,
+      isFromCache: isFromCache ?? this.isFromCache,
     );
   }
 }
@@ -49,8 +40,4 @@ class ProfileError extends ProfileState {
 
   @override
   List<Object> get props => [message];
-}
-
-class ProfileLoggedOut extends ProfileState {
-  const ProfileLoggedOut();
 }

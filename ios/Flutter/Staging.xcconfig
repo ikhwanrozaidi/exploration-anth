@@ -1,5 +1,0 @@
-#include "Generated.xcconfig"
-
-PRODUCT_BUNDLE_IDENTIFIER = com.rclink.rclink_app.staging
-PRODUCT_NAME = RCLink (Staging)
-ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon 

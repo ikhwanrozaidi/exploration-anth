@@ -1,7 +1,9 @@
 // lib/shared/widgets/auth_wrapper.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:gatepay_app/features/dashboard/presentation/pages/dashboard_page.dart';
+import 'package:gatepay_app/features/inbox/presentation/pages/inbox_page.dart';
+import 'package:gatepay_app/features/transactionboard/presentation/pages/transactionboard_page.dart';
 import '../../features/login/presentation/bloc/login_bloc.dart';
 import '../../features/login/presentation/bloc/login_event.dart';
 import '../../features/login/presentation/bloc/login_state.dart';
@@ -31,7 +33,8 @@ class AuthWrapper extends StatelessWidget {
           otpRequired: (email, message) => const LoginPage(),
           authenticated: (authResult, admin) => const RootPage(),
           success: (admin) => const RootPage(),
-          unauthenticated: () => const DashboardPage(),
+          // Unauthenticate
+          unauthenticated: () => const RootPage(),
           loggedOut: () => const OnboardingPage(),
           failure: (message) => const OnboardingPage(),
           forgotPasswordOtpRequired: (email, message) => const LoginPage(),

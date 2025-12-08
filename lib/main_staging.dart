@@ -6,7 +6,7 @@ Future<void> main() async {
   FlavorConfig(
     flavor: Flavor.staging,
     appTitle: 'Gatepay Staging',
-    apiBaseUrl: 'https://bluh.sgate.dev',
+    apiBaseUrl: 'https://secure.gatepay.dev',
     debugShowCheckedModeBanner: true,
   );
 
