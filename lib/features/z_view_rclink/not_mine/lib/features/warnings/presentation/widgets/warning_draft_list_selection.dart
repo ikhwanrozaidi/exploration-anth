@@ -32,7 +32,6 @@ class _WarningDraftListSelectionState extends State<WarningDraftListSelection> {
     _selectedReasonUIDs = Set.from(widget.initialSelectedUIDs);
   }
 
-  /// Filter categories to only show reasons matching the work scope ID
   List<WarningCategoryWithReasons> get _filteredCategories {
     if (widget.workScopeID == null) {
       return widget.categories;
@@ -40,12 +39,10 @@ class _WarningDraftListSelectionState extends State<WarningDraftListSelection> {
 
     return widget.categories
         .map((categoryWithReasons) {
-          // Filter reasons to only include those matching the work scope ID
           final filteredReasons = categoryWithReasons.reasons
               .where((reason) => reason.workScopeID == widget.workScopeID)
               .toList();
 
-          // Return a new WarningCategoryWithReasons with filtered reasons
           return WarningCategoryWithReasons(
             category: categoryWithReasons.category,
             reasons: filteredReasons,
@@ -159,7 +156,6 @@ class _WarningDraftListSelectionState extends State<WarningDraftListSelection> {
                               ),
                               child: Row(
                                 children: [
-                                  // Expand/collapse icon
                                   Icon(
                                     isExpanded
                                         ? Icons.keyboard_arrow_down
@@ -204,7 +200,6 @@ class _WarningDraftListSelectionState extends State<WarningDraftListSelection> {
                                     ),
                                   ),
 
-                                  // Selected count badge
                                   if (selectedCount > 0)
                                     Container(
                                       padding: EdgeInsets.symmetric(
@@ -232,7 +227,6 @@ class _WarningDraftListSelectionState extends State<WarningDraftListSelection> {
                             ),
                           ),
 
-                          // Reasons list (expanded)
                           if (isExpanded)
                             Container(
                               color: Colors.grey.shade50,

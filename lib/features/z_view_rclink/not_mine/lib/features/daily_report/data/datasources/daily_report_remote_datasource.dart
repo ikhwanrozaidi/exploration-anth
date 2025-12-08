@@ -7,6 +7,7 @@ import '../models/create_daily_report_model.dart';
 import '../models/update_daily_report_model.dart';
 import '../models/daily_report_model.dart';
 import '../models/daily_report_filter_model.dart';
+import '../models/approve_daily_report_dto.dart';
 
 abstract class DailyReportRemoteDataSource {
   Future<Either<Failure, List<DailyReportModel>>> getDailyReports({
@@ -36,6 +37,12 @@ abstract class DailyReportRemoteDataSource {
     required String companyUID,
     required String dailyReportUID,
     required UpdateDailyReportModel data,
+  });
+
+  Future<Either<Failure, DailyReportModel>> approveDailyReport({
+    required String companyUID,
+    required String dailyReportUID,
+    required String reviewComment,
   });
 
   // Future<Either<Failure, List<RoadModel>>> getRoadsByDistrictName(
@@ -229,6 +236,102 @@ class DailyReportRemoteDataSourceImpl implements DailyReportRemoteDataSource {
       return Left(NetworkFailure('Network error: ${e.message}'));
     } catch (e) {
       print('❌ RemoteDataSource: Update unexpected error - $e');
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, DailyReportModel>> approveDailyReport({
+    required String companyUID,
+    required String dailyReportUID,
+    required String reviewComment,
+  }) async {
+    print('🟡 [DailyReportRemoteDataSource] approveDailyReport called');
+    try {
+      final dto = ApproveDailyReportDto(reviewComment: reviewComment);
+      print('🟡 [DailyReportRemoteDataSource] Making API call...');
+
+      final response = await _apiService.approveDailyReport(
+        companyUID,
+        dailyReportUID,
+        dto,
+      );
+
+      print(
+        '🟡 [DailyReportRemoteDataSource] API response received, status: ${response.statusCode}',
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        if (response.data != null) {
+          print(
+            '✅ [DailyReportRemoteDataSource] Success! Returning updated report',
+          );
+          return Right(response.data!);
+        } else {
+          print('❌ [DailyReportRemoteDataSource] No data in response');
+          return const Left(ServerFailure('No data returned from server'));
+        }
+      } else {
+        print(
+          '❌ [DailyReportRemoteDataSource] Bad status code: ${response.statusCode}',
+        );
+        return Left(
+          ServerFailure(
+            response.message ?? 'Failed to approve daily report',
+            statusCode: response.statusCode,
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      print('❌ [DailyReportRemoteDataSource] DioException: ${e.message}');
+      // Handle specific HTTP status codes
+      if (e.response?.statusCode == 401) {
+        return const Left(UnauthorizedFailure());
+      }
+
+      if (e.response?.statusCode == 403) {
+        return const Left(ForbiddenFailure());
+      }
+
+      if (e.response?.statusCode == 404) {
+        return const Left(NotFoundFailure());
+      }
+
+      if (e.response?.statusCode == 400 || e.response?.statusCode == 422) {
+        final errorMessage = e.response?.data is Map
+            ? (e.response?.data['message'] ?? 'Invalid data provided')
+            : 'Invalid data provided';
+        return Left(ValidationFailure(errorMessage));
+      }
+
+      // Network/timeout errors
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        return const Left(TimeoutFailure());
+      }
+
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.unknown) {
+        return Left(
+          NetworkFailure(
+            'Network error: ${e.message ?? "Please check your connection"}',
+          ),
+        );
+      }
+
+      // Server error (5xx)
+      if (e.response?.statusCode != null && e.response!.statusCode! >= 500) {
+        return Left(
+          ServerFailure(
+            'Server error: ${e.response?.data?['message'] ?? e.message}',
+            statusCode: e.response?.statusCode,
+          ),
+        );
+      }
+
+      return Left(NetworkFailure('Network error: ${e.message}'));
+    } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }
   }

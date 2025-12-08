@@ -1,3 +1,4 @@
+import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/database/app_database.dart';
@@ -24,13 +25,11 @@ class ContractorRelationLocalDataSourceImpl
     // print('⚠️ ContractorRelation: Database caching not implemented yet');
     // return null;
 
-    /* 
-    // UNCOMMENT WHEN DATABASE TABLE IS READY
-    
     try {
-      final contractorRecords =
-          await _database.select(_database.contractors).get();
-      
+      final contractorRecords = await _database
+          .select(_database.contractorRelations)
+          .get();
+
       if (contractorRecords.isEmpty) {
         return null;
       }
@@ -39,7 +38,7 @@ class ContractorRelationLocalDataSourceImpl
 
       for (final record in contractorRecords) {
         contractors.add(
-          ContractorRelationModel(  // ← Create MODEL, not entity
+          ContractorRelationModel(
             id: record.id,
             uid: record.uid,
             name: record.name,
@@ -74,28 +73,26 @@ class ContractorRelationLocalDataSourceImpl
       print('❌ Error loading cached contractors: $e');
       return null;
     }
-    */
   }
 
   @override
   Future<void> saveLocal(List<ContractorRelationModel> contractors) async {
-    // TODO: Implement database caching when table is ready
-    print(
-      '⚠️ ContractorRelation: Skipping cache save (${contractors.length} contractors)',
-    );
-    print('   Database table not implemented yet');
-    return;
+    // // TODO: Implement database caching when table is ready
+    // print(
+    //   '⚠️ ContractorRelation: Skipping cache save (${contractors.length} contractors)',
+    // );
+    // print('   Database table not implemented yet');
+    // return;
 
-    /* 
-    // UNCOMMENT WHEN DATABASE TABLE IS READY
-    
     try {
       await _database.transaction(() async {
-        await _database.delete(_database.contractors).go();
+        await _database.delete(_database.contractorRelations).go();
 
         for (final contractor in contractors) {
-          await _database.into(_database.contractors).insertOnConflictUpdate(
-                ContractorsCompanion(
+          await _database
+              .into(_database.contractorRelations)
+              .insertOnConflictUpdate(
+                ContractorRelationsCompanion(
                   id: Value(contractor.id),
                   uid: Value(contractor.uid),
                   name: Value(contractor.name),
@@ -113,10 +110,10 @@ class ContractorRelationLocalDataSourceImpl
                   bumiputera: Value(contractor.bumiputera),
                   einvoiceTinNo: Value(contractor.einvoiceTinNo),
                   registrationDate: Value(contractor.registrationDate),
-                  createdAt: Value(contractor.createdAt),
-                  updatedAt: Value(contractor.updatedAt),
+                  createdAt: Value(contractor.createdAt ?? DateTime.now()),
+                  updatedAt: Value(contractor.updatedAt ?? DateTime.now()),
                   deletedAt: Value(contractor.deletedAt),
-                  ownerID: Value(contractor.ownerID),
+                  ownerID: Value(contractor.ownerID ?? 0),
                   defaultBankAcc: Value(contractor.defaultBankAcc),
                   defaultBankAccType: Value(contractor.defaultBankAccType),
                   isSelf: Value(contractor.isSelf),
@@ -131,24 +128,19 @@ class ContractorRelationLocalDataSourceImpl
     } catch (e) {
       print('❌ Error caching contractors: $e');
     }
-    */
   }
 
   @override
   Future<void> clearCache() async {
-    print('⚠️ ContractorRelation: Skipping cache clear');
-    print('   Database table not implemented yet');
-    return;
+    // print('⚠️ ContractorRelation: Skipping cache clear');
+    // print('   Database table not implemented yet');
+    // return;
 
-    /* 
-    // UNCOMMENT WHEN DATABASE TABLE IS READY
-    
     try {
-      await _database.delete(_database.contractors).go();
+      await _database.delete(_database.contractorRelations).go();
       print('✅ Contractor cache cleared from database');
     } catch (e) {
       print('❌ Error clearing contractor cache: $e');
     }
-    */
   }
 }

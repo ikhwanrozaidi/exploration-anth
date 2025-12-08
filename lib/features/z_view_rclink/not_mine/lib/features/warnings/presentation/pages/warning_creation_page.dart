@@ -7,8 +7,8 @@ import '../widgets/warning_creation_form.dart';
 import 'warning_draft_page.dart';
 
 class WarningCreationPage extends StatefulWidget {
-  final String? draftUID; // Optional draft UID for editing drafts
-  final bool isNewDraft; // If true, will auto-initialize a draft
+  final String? draftUID;
+  final bool isNewDraft;
 
   const WarningCreationPage({
     super.key,

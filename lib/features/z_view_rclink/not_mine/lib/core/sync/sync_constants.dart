@@ -38,7 +38,9 @@ enum SyncEntityType {
   district,
   province,
   equipment,
-  quantity;
+  quantity,
+  warning,
+  warningItem;
 
   /// Convert to string for database storage (snake_case)
   String get value {
@@ -61,6 +63,10 @@ enum SyncEntityType {
         return 'equipment';
       case SyncEntityType.quantity:
         return 'quantity';
+      case SyncEntityType.warning:
+        return 'warning';
+      case SyncEntityType.warningItem:
+        return 'warning_item';
     }
   }
 

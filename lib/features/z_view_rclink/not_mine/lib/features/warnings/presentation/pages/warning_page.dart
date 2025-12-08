@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:rclink_app/shared/widgets/coming_soon_overlay.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
-import '../../../../shared/widgets/month_filter_widget.dart';
 import '../../../../shared/widgets/custom_tab_widget.dart';
 import '../../../../shared/widgets/year_filter_widget.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
@@ -257,8 +255,6 @@ class _WarningPageContentState extends State<_WarningPageContent> {
                                   ),
                                 ),
                                 onPressed: () {
-                                  // Navigate to creation page with isNewDraft flag
-                                  // This will trigger draft mode and auto-save
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -382,7 +378,6 @@ class _WarningPageContentState extends State<_WarningPageContent> {
                               print(
                                 'Tab changed to: $tabLabel (index: $index)',
                               );
-                              // Load warnings for the new tab
                               _loadWarnings();
                             },
                             tabContents: [
@@ -495,7 +490,6 @@ class _WarningPageContentState extends State<_WarningPageContent> {
             );
           },
           resolvingItem: (warnings, currentPage, hasMore, resolvingItemUID) {
-            // Show same as loaded state while resolving
             final filteredWarnings = _filterWarningsByTab(warnings);
 
             if (filteredWarnings.isEmpty) {
@@ -532,7 +526,6 @@ class _WarningPageContentState extends State<_WarningPageContent> {
             );
           },
           itemResolved: (warnings, currentPage, hasMore, resolvedItemUID) {
-            // Show same as loaded state after resolving
             final filteredWarnings = _filterWarningsByTab(warnings);
 
             if (filteredWarnings.isEmpty) {
@@ -570,7 +563,6 @@ class _WarningPageContentState extends State<_WarningPageContent> {
           },
           error: (failure, cachedWarnings) {
             if (cachedWarnings != null && cachedWarnings.isNotEmpty) {
-              // Filter warnings based on current tab
               final filteredWarnings = _filterWarningsByTab(cachedWarnings);
 
               if (filteredWarnings.isEmpty) {

@@ -41,6 +41,8 @@ ContractorRelation _$ContractorRelationFromJson(Map<String, dynamic> json) =>
       defaultBankAccType: json['defaultBankAccType'] as String?,
       isSelf: json['isSelf'] as bool?,
       contractRelationUID: json['contractRelationUID'] as String?,
+      relationStatus: json['relationStatus'] as String?,
+      relationRole: json['relationRole'] as String?,
     );
 
 Map<String, dynamic> _$ContractorRelationToJson(ContractorRelation instance) =>
@@ -70,4 +72,6 @@ Map<String, dynamic> _$ContractorRelationToJson(ContractorRelation instance) =>
       'defaultBankAccType': instance.defaultBankAccType,
       'isSelf': instance.isSelf,
       'contractRelationUID': instance.contractRelationUID,
+      'relationStatus': instance.relationStatus,
+      'relationRole': instance.relationRole,
     };

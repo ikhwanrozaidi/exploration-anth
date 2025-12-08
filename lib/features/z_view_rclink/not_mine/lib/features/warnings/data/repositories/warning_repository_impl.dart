@@ -64,7 +64,6 @@ class WarningRepositoryImpl
 
     return remoteResult.fold(
       (failure) async {
-        // Offline-first: fallback to local data source on remote failure
         final localWarnings = await _localDataSource.getCachedWarnings(
           companyUID,
         );
@@ -76,7 +75,6 @@ class WarningRepositoryImpl
         return Left(failure);
       },
       (models) async {
-        // Cache in background without blocking UI update
         unawaited(_localDataSource.cacheWarnings(models));
 
         return Right(models.map((model) => model.toEntity()).toList());
@@ -91,7 +89,6 @@ class WarningRepositoryImpl
     bool forceRefresh = false,
   }) async {
     try {
-      // Try to get from cache first if not forcing refresh
       if (!forceRefresh) {
         final cachedWarning = await _localDataSource.getCachedWarningByUid(uid);
         if (cachedWarning != null) {
@@ -99,7 +96,6 @@ class WarningRepositoryImpl
         }
       }
 
-      // Fetch from remote
       final remoteResult = await _remoteDataSource.getWarningById(
         companyUID: companyUID,
         uid: uid,
@@ -107,7 +103,6 @@ class WarningRepositoryImpl
 
       return remoteResult.fold(
         (failure) async {
-          // On failure, try cache as fallback
           final cachedWarning = await _localDataSource.getCachedWarningByUid(
             uid,
           );
@@ -117,7 +112,6 @@ class WarningRepositoryImpl
           return Left(failure);
         },
         (model) async {
-          // Cache the fetched model
           await _localDataSource.cacheSingleWarning(model);
           return Right(model.toEntity());
         },

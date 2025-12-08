@@ -30,6 +30,8 @@ class ContractorRelation extends Equatable {
   final String? defaultBankAccType;
   final bool? isSelf;
   final String? contractRelationUID;
+  final String? relationStatus;
+  final String? relationRole;
 
   const ContractorRelation({
     required this.id,
@@ -57,6 +59,8 @@ class ContractorRelation extends Equatable {
     this.defaultBankAccType,
     this.isSelf,
     this.contractRelationUID,
+    this.relationStatus,
+    this.relationRole,
   });
 
   @override
@@ -86,6 +90,8 @@ class ContractorRelation extends Equatable {
     defaultBankAccType,
     isSelf,
     contractRelationUID,
+    relationStatus,
+    relationRole,
   ];
 
   factory ContractorRelation.fromJson(Map<String, dynamic> json) =>

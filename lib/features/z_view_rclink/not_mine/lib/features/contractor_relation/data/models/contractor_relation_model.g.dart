@@ -42,6 +42,8 @@ _ContractorRelationModel _$ContractorRelationModelFromJson(
   defaultBankAccType: json['defaultBankAccType'] as String?,
   isSelf: json['isSelf'] as bool?,
   contractRelationUID: json['contractRelationUID'] as String?,
+  relationStatus: json['relationStatus'] as String?,
+  relationRole: json['relationRole'] as String?,
 );
 
 Map<String, dynamic> _$ContractorRelationModelToJson(
@@ -72,4 +74,6 @@ Map<String, dynamic> _$ContractorRelationModelToJson(
   'defaultBankAccType': instance.defaultBankAccType,
   'isSelf': instance.isSelf,
   'contractRelationUID': instance.contractRelationUID,
+  'relationStatus': instance.relationStatus,
+  'relationRole': instance.relationRole,
 };

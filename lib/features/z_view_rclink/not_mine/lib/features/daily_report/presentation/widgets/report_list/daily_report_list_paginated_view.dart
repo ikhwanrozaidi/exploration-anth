@@ -184,6 +184,9 @@ class _DailyReportPaginatedListState extends State<DailyReportPaginatedList> {
           detailLoading: () => const SizedBox.shrink(),
           detailLoaded: (report) => const SizedBox.shrink(),
           detailFailure: (message) => const SizedBox.shrink(),
+          approving: (report) => const SizedBox.shrink(),
+          approved: (report) => const SizedBox.shrink(),
+          approvalFailure: (message, report) => const SizedBox.shrink(),
           roadsLoading: () => const Center(child: CircularProgressIndicator()),
           roadsLoaded: (roads, selectedRoad, currentSection, sectionError) =>
               const SizedBox.shrink(),

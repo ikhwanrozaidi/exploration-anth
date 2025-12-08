@@ -17,7 +17,7 @@ mixin _$WarningModel {
 
  int? get id;// Nullable for draft state
  String get uid; String get warningType;// Stored as string in API/DB
- int? get dailyReportID; int get companyID; int get roadID; int get workScopeID; int? get contractRelationID; String? get fromSection; String? get toSection; List<WarningItemModel> get warningItems; WarningDailyReportModel? get dailyReport; bool get requiresAction; bool get isResolved; int? get resolvedByID; DateTime? get resolvedAt; String? get resolutionNotes; String? get longitude; String? get latitude; String? get description; int get createdByID; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt;// Nested/expanded entities
+ int? get dailyReportID; int get companyID; int get roadID; int get workScopeID; int? get contractRelationID; String? get fromSection; String? get toSection; List<WarningItemModel> get warningItems; WarningDailyReportModel? get dailyReport; bool get requiresAction; bool get isResolved; int? get resolvedByID; DateTime? get resolvedAt; String? get resolutionNotes; String? get longitude; String? get latitude; String? get description; int? get createdByID; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt;// Nested/expanded entities
  List<FileModel>? get files; CompanyResponseModel? get company; RoadResponseModel? get road; WorkScopeResponseModel? get workScope; CreatedByResponseModel? get createdBy; CreatedByResponseModel? get resolvedBy;
 /// Create a copy of WarningModel
 /// with the given fields replaced by the non-null parameter values.
@@ -51,7 +51,7 @@ abstract mixin class $WarningModelCopyWith<$Res>  {
   factory $WarningModelCopyWith(WarningModel value, $Res Function(WarningModel) _then) = _$WarningModelCopyWithImpl;
 @useResult
 $Res call({
- int? id, String uid, String warningType, int? dailyReportID, int companyID, int roadID, int workScopeID, int? contractRelationID, String? fromSection, String? toSection, List<WarningItemModel> warningItems, WarningDailyReportModel? dailyReport, bool requiresAction, bool isResolved, int? resolvedByID, DateTime? resolvedAt, String? resolutionNotes, String? longitude, String? latitude, String? description, int createdByID, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, List<FileModel>? files, CompanyResponseModel? company, RoadResponseModel? road, WorkScopeResponseModel? workScope, CreatedByResponseModel? createdBy, CreatedByResponseModel? resolvedBy
+ int? id, String uid, String warningType, int? dailyReportID, int companyID, int roadID, int workScopeID, int? contractRelationID, String? fromSection, String? toSection, List<WarningItemModel> warningItems, WarningDailyReportModel? dailyReport, bool requiresAction, bool isResolved, int? resolvedByID, DateTime? resolvedAt, String? resolutionNotes, String? longitude, String? latitude, String? description, int? createdByID, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, List<FileModel>? files, CompanyResponseModel? company, RoadResponseModel? road, WorkScopeResponseModel? workScope, CreatedByResponseModel? createdBy, CreatedByResponseModel? resolvedBy
 });
 
 
@@ -68,7 +68,7 @@ class _$WarningModelCopyWithImpl<$Res>
 
 /// Create a copy of WarningModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? uid = null,Object? warningType = null,Object? dailyReportID = freezed,Object? companyID = null,Object? roadID = null,Object? workScopeID = null,Object? contractRelationID = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? warningItems = null,Object? dailyReport = freezed,Object? requiresAction = null,Object? isResolved = null,Object? resolvedByID = freezed,Object? resolvedAt = freezed,Object? resolutionNotes = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? description = freezed,Object? createdByID = null,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? files = freezed,Object? company = freezed,Object? road = freezed,Object? workScope = freezed,Object? createdBy = freezed,Object? resolvedBy = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? uid = null,Object? warningType = null,Object? dailyReportID = freezed,Object? companyID = null,Object? roadID = null,Object? workScopeID = null,Object? contractRelationID = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? warningItems = null,Object? dailyReport = freezed,Object? requiresAction = null,Object? isResolved = null,Object? resolvedByID = freezed,Object? resolvedAt = freezed,Object? resolutionNotes = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? description = freezed,Object? createdByID = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? files = freezed,Object? company = freezed,Object? road = freezed,Object? workScope = freezed,Object? createdBy = freezed,Object? resolvedBy = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -90,8 +90,8 @@ as DateTime?,resolutionNotes: freezed == resolutionNotes ? _self.resolutionNotes
 as String?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,createdByID: null == createdByID ? _self.createdByID : createdByID // ignore: cast_nullable_to_non_nullable
-as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String?,createdByID: freezed == createdByID ? _self.createdByID : createdByID // ignore: cast_nullable_to_non_nullable
+as int?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,files: freezed == files ? _self.files : files // ignore: cast_nullable_to_non_nullable
@@ -257,7 +257,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String uid,  String warningType,  int? dailyReportID,  int companyID,  int roadID,  int workScopeID,  int? contractRelationID,  String? fromSection,  String? toSection,  List<WarningItemModel> warningItems,  WarningDailyReportModel? dailyReport,  bool requiresAction,  bool isResolved,  int? resolvedByID,  DateTime? resolvedAt,  String? resolutionNotes,  String? longitude,  String? latitude,  String? description,  int createdByID,  DateTime createdAt,  DateTime updatedAt,  DateTime? deletedAt,  List<FileModel>? files,  CompanyResponseModel? company,  RoadResponseModel? road,  WorkScopeResponseModel? workScope,  CreatedByResponseModel? createdBy,  CreatedByResponseModel? resolvedBy)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String uid,  String warningType,  int? dailyReportID,  int companyID,  int roadID,  int workScopeID,  int? contractRelationID,  String? fromSection,  String? toSection,  List<WarningItemModel> warningItems,  WarningDailyReportModel? dailyReport,  bool requiresAction,  bool isResolved,  int? resolvedByID,  DateTime? resolvedAt,  String? resolutionNotes,  String? longitude,  String? latitude,  String? description,  int? createdByID,  DateTime createdAt,  DateTime updatedAt,  DateTime? deletedAt,  List<FileModel>? files,  CompanyResponseModel? company,  RoadResponseModel? road,  WorkScopeResponseModel? workScope,  CreatedByResponseModel? createdBy,  CreatedByResponseModel? resolvedBy)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WarningModel() when $default != null:
 return $default(_that.id,_that.uid,_that.warningType,_that.dailyReportID,_that.companyID,_that.roadID,_that.workScopeID,_that.contractRelationID,_that.fromSection,_that.toSection,_that.warningItems,_that.dailyReport,_that.requiresAction,_that.isResolved,_that.resolvedByID,_that.resolvedAt,_that.resolutionNotes,_that.longitude,_that.latitude,_that.description,_that.createdByID,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.files,_that.company,_that.road,_that.workScope,_that.createdBy,_that.resolvedBy);case _:
@@ -278,7 +278,7 @@ return $default(_that.id,_that.uid,_that.warningType,_that.dailyReportID,_that.c
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String uid,  String warningType,  int? dailyReportID,  int companyID,  int roadID,  int workScopeID,  int? contractRelationID,  String? fromSection,  String? toSection,  List<WarningItemModel> warningItems,  WarningDailyReportModel? dailyReport,  bool requiresAction,  bool isResolved,  int? resolvedByID,  DateTime? resolvedAt,  String? resolutionNotes,  String? longitude,  String? latitude,  String? description,  int createdByID,  DateTime createdAt,  DateTime updatedAt,  DateTime? deletedAt,  List<FileModel>? files,  CompanyResponseModel? company,  RoadResponseModel? road,  WorkScopeResponseModel? workScope,  CreatedByResponseModel? createdBy,  CreatedByResponseModel? resolvedBy)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String uid,  String warningType,  int? dailyReportID,  int companyID,  int roadID,  int workScopeID,  int? contractRelationID,  String? fromSection,  String? toSection,  List<WarningItemModel> warningItems,  WarningDailyReportModel? dailyReport,  bool requiresAction,  bool isResolved,  int? resolvedByID,  DateTime? resolvedAt,  String? resolutionNotes,  String? longitude,  String? latitude,  String? description,  int? createdByID,  DateTime createdAt,  DateTime updatedAt,  DateTime? deletedAt,  List<FileModel>? files,  CompanyResponseModel? company,  RoadResponseModel? road,  WorkScopeResponseModel? workScope,  CreatedByResponseModel? createdBy,  CreatedByResponseModel? resolvedBy)  $default,) {final _that = this;
 switch (_that) {
 case _WarningModel():
 return $default(_that.id,_that.uid,_that.warningType,_that.dailyReportID,_that.companyID,_that.roadID,_that.workScopeID,_that.contractRelationID,_that.fromSection,_that.toSection,_that.warningItems,_that.dailyReport,_that.requiresAction,_that.isResolved,_that.resolvedByID,_that.resolvedAt,_that.resolutionNotes,_that.longitude,_that.latitude,_that.description,_that.createdByID,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.files,_that.company,_that.road,_that.workScope,_that.createdBy,_that.resolvedBy);case _:
@@ -298,7 +298,7 @@ return $default(_that.id,_that.uid,_that.warningType,_that.dailyReportID,_that.c
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String uid,  String warningType,  int? dailyReportID,  int companyID,  int roadID,  int workScopeID,  int? contractRelationID,  String? fromSection,  String? toSection,  List<WarningItemModel> warningItems,  WarningDailyReportModel? dailyReport,  bool requiresAction,  bool isResolved,  int? resolvedByID,  DateTime? resolvedAt,  String? resolutionNotes,  String? longitude,  String? latitude,  String? description,  int createdByID,  DateTime createdAt,  DateTime updatedAt,  DateTime? deletedAt,  List<FileModel>? files,  CompanyResponseModel? company,  RoadResponseModel? road,  WorkScopeResponseModel? workScope,  CreatedByResponseModel? createdBy,  CreatedByResponseModel? resolvedBy)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String uid,  String warningType,  int? dailyReportID,  int companyID,  int roadID,  int workScopeID,  int? contractRelationID,  String? fromSection,  String? toSection,  List<WarningItemModel> warningItems,  WarningDailyReportModel? dailyReport,  bool requiresAction,  bool isResolved,  int? resolvedByID,  DateTime? resolvedAt,  String? resolutionNotes,  String? longitude,  String? latitude,  String? description,  int? createdByID,  DateTime createdAt,  DateTime updatedAt,  DateTime? deletedAt,  List<FileModel>? files,  CompanyResponseModel? company,  RoadResponseModel? road,  WorkScopeResponseModel? workScope,  CreatedByResponseModel? createdBy,  CreatedByResponseModel? resolvedBy)?  $default,) {final _that = this;
 switch (_that) {
 case _WarningModel() when $default != null:
 return $default(_that.id,_that.uid,_that.warningType,_that.dailyReportID,_that.companyID,_that.roadID,_that.workScopeID,_that.contractRelationID,_that.fromSection,_that.toSection,_that.warningItems,_that.dailyReport,_that.requiresAction,_that.isResolved,_that.resolvedByID,_that.resolvedAt,_that.resolutionNotes,_that.longitude,_that.latitude,_that.description,_that.createdByID,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.files,_that.company,_that.road,_that.workScope,_that.createdBy,_that.resolvedBy);case _:
@@ -313,7 +313,7 @@ return $default(_that.id,_that.uid,_that.warningType,_that.dailyReportID,_that.c
 @JsonSerializable()
 
 class _WarningModel extends WarningModel {
-  const _WarningModel({this.id, required this.uid, required this.warningType, this.dailyReportID, required this.companyID, required this.roadID, required this.workScopeID, this.contractRelationID, this.fromSection, this.toSection, final  List<WarningItemModel> warningItems = const [], this.dailyReport, this.requiresAction = true, this.isResolved = false, this.resolvedByID, this.resolvedAt, this.resolutionNotes, this.longitude, this.latitude, this.description, required this.createdByID, required this.createdAt, required this.updatedAt, this.deletedAt, final  List<FileModel>? files, this.company, this.road, this.workScope, this.createdBy, this.resolvedBy}): _warningItems = warningItems,_files = files,super._();
+  const _WarningModel({this.id, required this.uid, required this.warningType, this.dailyReportID, required this.companyID, required this.roadID, required this.workScopeID, this.contractRelationID, this.fromSection, this.toSection, final  List<WarningItemModel> warningItems = const [], this.dailyReport, this.requiresAction = true, this.isResolved = false, this.resolvedByID, this.resolvedAt, this.resolutionNotes, this.longitude, this.latitude, this.description, this.createdByID, required this.createdAt, required this.updatedAt, this.deletedAt, final  List<FileModel>? files, this.company, this.road, this.workScope, this.createdBy, this.resolvedBy}): _warningItems = warningItems,_files = files,super._();
   factory _WarningModel.fromJson(Map<String, dynamic> json) => _$WarningModelFromJson(json);
 
 @override final  int? id;
@@ -344,7 +344,7 @@ class _WarningModel extends WarningModel {
 @override final  String? longitude;
 @override final  String? latitude;
 @override final  String? description;
-@override final  int createdByID;
+@override final  int? createdByID;
 @override final  DateTime createdAt;
 @override final  DateTime updatedAt;
 @override final  DateTime? deletedAt;
@@ -398,7 +398,7 @@ abstract mixin class _$WarningModelCopyWith<$Res> implements $WarningModelCopyWi
   factory _$WarningModelCopyWith(_WarningModel value, $Res Function(_WarningModel) _then) = __$WarningModelCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, String uid, String warningType, int? dailyReportID, int companyID, int roadID, int workScopeID, int? contractRelationID, String? fromSection, String? toSection, List<WarningItemModel> warningItems, WarningDailyReportModel? dailyReport, bool requiresAction, bool isResolved, int? resolvedByID, DateTime? resolvedAt, String? resolutionNotes, String? longitude, String? latitude, String? description, int createdByID, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, List<FileModel>? files, CompanyResponseModel? company, RoadResponseModel? road, WorkScopeResponseModel? workScope, CreatedByResponseModel? createdBy, CreatedByResponseModel? resolvedBy
+ int? id, String uid, String warningType, int? dailyReportID, int companyID, int roadID, int workScopeID, int? contractRelationID, String? fromSection, String? toSection, List<WarningItemModel> warningItems, WarningDailyReportModel? dailyReport, bool requiresAction, bool isResolved, int? resolvedByID, DateTime? resolvedAt, String? resolutionNotes, String? longitude, String? latitude, String? description, int? createdByID, DateTime createdAt, DateTime updatedAt, DateTime? deletedAt, List<FileModel>? files, CompanyResponseModel? company, RoadResponseModel? road, WorkScopeResponseModel? workScope, CreatedByResponseModel? createdBy, CreatedByResponseModel? resolvedBy
 });
 
 
@@ -415,7 +415,7 @@ class __$WarningModelCopyWithImpl<$Res>
 
 /// Create a copy of WarningModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? uid = null,Object? warningType = null,Object? dailyReportID = freezed,Object? companyID = null,Object? roadID = null,Object? workScopeID = null,Object? contractRelationID = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? warningItems = null,Object? dailyReport = freezed,Object? requiresAction = null,Object? isResolved = null,Object? resolvedByID = freezed,Object? resolvedAt = freezed,Object? resolutionNotes = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? description = freezed,Object? createdByID = null,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? files = freezed,Object? company = freezed,Object? road = freezed,Object? workScope = freezed,Object? createdBy = freezed,Object? resolvedBy = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? uid = null,Object? warningType = null,Object? dailyReportID = freezed,Object? companyID = null,Object? roadID = null,Object? workScopeID = null,Object? contractRelationID = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? warningItems = null,Object? dailyReport = freezed,Object? requiresAction = null,Object? isResolved = null,Object? resolvedByID = freezed,Object? resolvedAt = freezed,Object? resolutionNotes = freezed,Object? longitude = freezed,Object? latitude = freezed,Object? description = freezed,Object? createdByID = freezed,Object? createdAt = null,Object? updatedAt = null,Object? deletedAt = freezed,Object? files = freezed,Object? company = freezed,Object? road = freezed,Object? workScope = freezed,Object? createdBy = freezed,Object? resolvedBy = freezed,}) {
   return _then(_WarningModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int?,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -437,8 +437,8 @@ as DateTime?,resolutionNotes: freezed == resolutionNotes ? _self.resolutionNotes
 as String?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,createdByID: null == createdByID ? _self.createdByID : createdByID // ignore: cast_nullable_to_non_nullable
-as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as String?,createdByID: freezed == createdByID ? _self.createdByID : createdByID // ignore: cast_nullable_to_non_nullable
+as int?,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,files: freezed == files ? _self._files : files // ignore: cast_nullable_to_non_nullable

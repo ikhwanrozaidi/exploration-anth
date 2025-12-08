@@ -112,6 +112,8 @@ class SyncService {
         case SyncEntityType.province:
         case SyncEntityType.equipment:
         case SyncEntityType.quantity:
+        case SyncEntityType.warning:
+        case SyncEntityType.warningItem:
           print('⚠️ Sync handler not implemented for: ${entityType.value}');
           return;
       }

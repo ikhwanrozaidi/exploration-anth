@@ -23962,9 +23962,9 @@ class $WarningsTable extends Warnings
   late final GeneratedColumn<int> createdByID = GeneratedColumn<int>(
     'created_by_i_d',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
@@ -24329,8 +24329,6 @@ class $WarningsTable extends Warnings
           _createdByIDMeta,
         ),
       );
-    } else if (isInserting) {
-      context.missing(_createdByIDMeta);
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -24532,7 +24530,7 @@ class $WarningsTable extends Warnings
       createdByID: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}created_by_i_d'],
-      )!,
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -24611,7 +24609,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
   final String? longitude;
   final String? latitude;
   final String? description;
-  final int createdByID;
+  final int? createdByID;
   final DateTime createdAt;
   final DateTime updatedAt;
   final String? warningItemsData;
@@ -24648,7 +24646,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     this.longitude,
     this.latitude,
     this.description,
-    required this.createdByID,
+    this.createdByID,
     required this.createdAt,
     required this.updatedAt,
     this.warningItemsData,
@@ -24718,7 +24716,9 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
     }
-    map['created_by_i_d'] = Variable<int>(createdByID);
+    if (!nullToAbsent || createdByID != null) {
+      map['created_by_i_d'] = Variable<int>(createdByID);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     map['updated_at'] = Variable<DateTime>(updatedAt);
     if (!nullToAbsent || warningItemsData != null) {
@@ -24803,7 +24803,9 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
-      createdByID: Value(createdByID),
+      createdByID: createdByID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdByID),
       createdAt: Value(createdAt),
       updatedAt: Value(updatedAt),
       warningItemsData: warningItemsData == null && nullToAbsent
@@ -24864,7 +24866,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       longitude: serializer.fromJson<String?>(json['longitude']),
       latitude: serializer.fromJson<String?>(json['latitude']),
       description: serializer.fromJson<String?>(json['description']),
-      createdByID: serializer.fromJson<int>(json['createdByID']),
+      createdByID: serializer.fromJson<int?>(json['createdByID']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       warningItemsData: serializer.fromJson<String?>(json['warningItemsData']),
@@ -24906,7 +24908,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
       'longitude': serializer.toJson<String?>(longitude),
       'latitude': serializer.toJson<String?>(latitude),
       'description': serializer.toJson<String?>(description),
-      'createdByID': serializer.toJson<int>(createdByID),
+      'createdByID': serializer.toJson<int?>(createdByID),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'warningItemsData': serializer.toJson<String?>(warningItemsData),
@@ -24946,7 +24948,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     Value<String?> longitude = const Value.absent(),
     Value<String?> latitude = const Value.absent(),
     Value<String?> description = const Value.absent(),
-    int? createdByID,
+    Value<int?> createdByID = const Value.absent(),
     DateTime? createdAt,
     DateTime? updatedAt,
     Value<String?> warningItemsData = const Value.absent(),
@@ -24991,7 +24993,7 @@ class WarningRecord extends DataClass implements Insertable<WarningRecord> {
     longitude: longitude.present ? longitude.value : this.longitude,
     latitude: latitude.present ? latitude.value : this.latitude,
     description: description.present ? description.value : this.description,
-    createdByID: createdByID ?? this.createdByID,
+    createdByID: createdByID.present ? createdByID.value : this.createdByID,
     createdAt: createdAt ?? this.createdAt,
     updatedAt: updatedAt ?? this.updatedAt,
     warningItemsData: warningItemsData.present
@@ -25246,7 +25248,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
   final Value<String?> longitude;
   final Value<String?> latitude;
   final Value<String?> description;
-  final Value<int> createdByID;
+  final Value<int?> createdByID;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
   final Value<String?> warningItemsData;
@@ -25321,7 +25323,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     this.longitude = const Value.absent(),
     this.latitude = const Value.absent(),
     this.description = const Value.absent(),
-    required int createdByID,
+    this.createdByID = const Value.absent(),
     required DateTime createdAt,
     required DateTime updatedAt,
     this.warningItemsData = const Value.absent(),
@@ -25338,7 +25340,6 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
        companyID = Value(companyID),
        roadID = Value(roadID),
        workScopeID = Value(workScopeID),
-       createdByID = Value(createdByID),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt);
   static Insertable<WarningRecord> custom({
@@ -25445,7 +25446,7 @@ class WarningsCompanion extends UpdateCompanion<WarningRecord> {
     Value<String?>? longitude,
     Value<String?>? latitude,
     Value<String?>? description,
-    Value<int>? createdByID,
+    Value<int?>? createdByID,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
     Value<String?>? warningItemsData,
@@ -38378,7 +38379,7 @@ typedef $$WarningsTableCreateCompanionBuilder =
       Value<String?> longitude,
       Value<String?> latitude,
       Value<String?> description,
-      required int createdByID,
+      Value<int?> createdByID,
       required DateTime createdAt,
       required DateTime updatedAt,
       Value<String?> warningItemsData,
@@ -38417,7 +38418,7 @@ typedef $$WarningsTableUpdateCompanionBuilder =
       Value<String?> longitude,
       Value<String?> latitude,
       Value<String?> description,
-      Value<int> createdByID,
+      Value<int?> createdByID,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
       Value<String?> warningItemsData,
@@ -39026,7 +39027,7 @@ class $$WarningsTableTableManager
                 Value<String?> longitude = const Value.absent(),
                 Value<String?> latitude = const Value.absent(),
                 Value<String?> description = const Value.absent(),
-                Value<int> createdByID = const Value.absent(),
+                Value<int?> createdByID = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<String?> warningItemsData = const Value.absent(),
@@ -39102,7 +39103,7 @@ class $$WarningsTableTableManager
                 Value<String?> longitude = const Value.absent(),
                 Value<String?> latitude = const Value.absent(),
                 Value<String?> description = const Value.absent(),
-                required int createdByID,
+                Value<int?> createdByID = const Value.absent(),
                 required DateTime createdAt,
                 required DateTime updatedAt,
                 Value<String?> warningItemsData = const Value.absent(),

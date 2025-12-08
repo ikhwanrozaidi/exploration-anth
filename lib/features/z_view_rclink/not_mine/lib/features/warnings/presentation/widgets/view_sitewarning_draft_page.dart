@@ -50,9 +50,8 @@ class _ViewSitewarningDraftPageState extends State<ViewSitewarningDraftPage> {
   void _onDraftTapped(Warning draft) async {
     // Extract data from draft for navigation
     final scopeUID = draft.workScope?.uid ?? '';
-    final scopeName = draft.workScope?.name ?? 'Unknown Scope';
+    final scopeName = draft.workScope?.name ?? '';
 
-    // Convert RoadResponse to Road entity
     Road? road;
     if (draft.road != null) {
       road = Road(
@@ -91,9 +90,7 @@ class _ViewSitewarningDraftPageState extends State<ViewSitewarningDraftPage> {
     );
 
     // Reload drafts if draft was submitted/deleted
-    if (result == true) {
-      _loadDrafts();
-    }
+    _loadDrafts();
   }
 
   void _onDeleteDraft(Warning draft) {
@@ -252,7 +249,6 @@ class _ViewSitewarningDraftPageState extends State<ViewSitewarningDraftPage> {
                 ],
               ),
             ),
-            // Ignore other states
             editing: (draftData) => const SizedBox(),
             autoSaving: (draftData) => const SizedBox(),
             autoSaved: (draftData) => const SizedBox(),
@@ -278,7 +274,6 @@ class _DraftWarningCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Format date
     final updatedDate = DateFormat('d MMM yyyy, HH:mm').format(draft.updatedAt);
 
     return GestureDetector(

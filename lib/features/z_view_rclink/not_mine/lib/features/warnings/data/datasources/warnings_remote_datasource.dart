@@ -76,7 +76,6 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
         );
       }
     } on DioException catch (e) {
-      // Handle specific HTTP status codes
       if (e.response?.statusCode == 401) {
         return const Left(UnauthorizedFailure());
       }
@@ -96,7 +95,6 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
         return Left(ValidationFailure(errorMessage));
       }
 
-      // Network/timeout errors
       if (e.type == DioExceptionType.connectionTimeout ||
           e.type == DioExceptionType.receiveTimeout ||
           e.type == DioExceptionType.sendTimeout) {
@@ -112,7 +110,6 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
         );
       }
 
-      // Server error (5xx)
       if (e.response?.statusCode != null && e.response!.statusCode! >= 500) {
         return Left(
           ServerFailure(
@@ -168,7 +165,6 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
       if (response.statusCode >= 200 && response.statusCode < 300) {
         print('✅ Total Warnings: ${response.data.length}');
 
-        // Sort warning items by createdAt descending (newest first)
         return Right(response.data);
       } else {
         print('❌ RemoteDataSource: API returned error - ${response.message}');
@@ -202,7 +198,6 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
       ]);
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        // Sort warning items by createdAt descending (newest first)
         return Right(response.data!);
       } else {
         print('❌ RemoteDataSource: API returned error - ${response.message}');

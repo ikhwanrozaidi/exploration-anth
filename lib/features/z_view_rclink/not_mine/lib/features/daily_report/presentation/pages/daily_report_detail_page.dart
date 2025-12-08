@@ -20,6 +20,8 @@ import '../widgets/report_detail/daily_report_detail_location_card.dart';
 import '../widgets/report_detail/daily_report_detail_overview_card.dart';
 import '../widgets/report_detail/daily_report_detail_quantity_card.dart';
 import '../widgets/report_detail/daily_report_detail_review_card.dart';
+import '../widgets/report_detail/approve_daily_report_dialog.dart';
+import '../widgets/report_detail/daily_report_approval_info_card.dart';
 
 /// Wrapper widget that provides BLoC and passes initial report
 class DailyReportDetailPage extends StatelessWidget {
@@ -106,6 +108,29 @@ class _DailyReportDetailPageContentState
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text('Failed to refresh: $message'),
+                backgroundColor: Colors.red.shade400,
+              ),
+            );
+          },
+          approved: (report) {
+            // Update current report with approved data
+            setState(() => _currentReport = report);
+
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text('Report approved successfully'),
+                backgroundColor: Colors.green.shade600,
+              ),
+            );
+
+            // Refresh report details to show updated approval info
+            _fetchFreshData(forceRefresh: true);
+          },
+          approvalFailure: (message, report) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Failed to approve: $message'),
                 backgroundColor: Colors.red.shade400,
               ),
             );
@@ -253,6 +278,9 @@ class _DailyReportDetailPageView extends StatelessWidget {
 
               const SizedBox(height: 20),
 
+              // Approval Info Card (show if approved)
+              DailyReportApprovalInfoCard(report: report),
+
               // Warning Card or Report Review Card
               if (report.warning != null)
                 // Show expandable warning card if warning exists
@@ -261,10 +289,32 @@ class _DailyReportDetailPageView extends StatelessWidget {
                     report.warning!,
                   ),
                 )
-              else
-                // Show review card if no warning exists
+              else if (report.approvedAt == null)
+                // Show review card if no warning exists and not yet approved
                 DailyReportDetailReviewCard(
-                  onLike: () => print("Like button clicked"),
+                  onLike: () async {
+                    // Show approval dialog
+                    final reviewComment = await showApproveDailyReportDialog(context);
+
+                    if (reviewComment != null && context.mounted) {
+                      // Get company UID
+                      final companyState = context.read<CompanyBloc>().state;
+                      companyState.whenOrNull(
+                        loaded: (companies, selectedCompany) {
+                          if (selectedCompany != null) {
+                            // Dispatch approve event
+                            context.read<DailyReportViewBloc>().add(
+                              DailyReportViewEvent.approveDailyReport(
+                                companyUID: selectedCompany.uid,
+                                dailyReportUID: report.uid,
+                                reviewComment: reviewComment,
+                              ),
+                            );
+                          }
+                        },
+                      );
+                    }
+                  },
                   onDislike: () => Navigator.push(
                     context,
                     MaterialPageRoute(

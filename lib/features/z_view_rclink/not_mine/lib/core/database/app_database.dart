@@ -710,7 +710,7 @@ class Warnings extends Table with SyncableTable {
   TextColumn get description => text().nullable()();
 
   // Creation tracking
-  IntColumn get createdByID => integer()();
+  IntColumn get createdByID => integer().nullable()();
   DateTimeColumn get createdAt => dateTime()();
   DateTimeColumn get updatedAt => dateTime()();
 
@@ -813,7 +813,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 25; // add ContractorRelation table after migrating Warning Tables for DRAFT
+  int get schemaVersion => 26; // createdByID to null
 
   @override
   MigrationStrategy get migration {
@@ -1312,6 +1312,53 @@ class AppDatabase extends _$AppDatabase {
           await m.createTable(schema.contractorRelations);
 
           print('✅ Migration 24→25: Added ContractorRelations table');
+        },
+        from25To26: (m, schema) async {
+          // Migration from version 25 to 26:
+          // Make createdByID nullable in Warnings table for offline draft support
+
+          // Disable foreign keys temporarily
+          await customStatement('PRAGMA foreign_keys = OFF');
+
+          // Rename existing table
+          await customStatement('ALTER TABLE warnings RENAME TO warnings_old');
+
+          // Create new table with nullable createdByID
+          await m.createTable(schema.warnings);
+
+          // Copy data from old table to new table
+          await customStatement('''
+            INSERT INTO warnings (
+              id, uid, warning_type, daily_report_i_d, company_i_d, road_i_d,
+              work_scope_i_d, contract_relation_i_d, from_section, to_section,
+              requires_action, is_resolved, resolved_by_i_d, resolved_at,
+              resolution_notes, longitude, latitude, description, created_by_i_d,
+              created_at, updated_at, is_synced, deleted_at, sync_action,
+              sync_retry_count, sync_error, last_sync_attempt, warning_items_data,
+              road_data, work_scope_data, company_data, created_by_data,
+              resolved_by_data, files_data, daily_report_data, status
+            )
+            SELECT 
+              id, uid, warning_type, daily_report_i_d, company_i_d, road_i_d,
+              work_scope_i_d, contract_relation_i_d, from_section, to_section,
+              requires_action, is_resolved, resolved_by_i_d, resolved_at,
+              resolution_notes, longitude, latitude, description, created_by_i_d,
+              created_at, updated_at, is_synced, deleted_at, sync_action,
+              sync_retry_count, sync_error, last_sync_attempt, warning_items_data,
+              road_data, work_scope_data, company_data, created_by_data,
+              resolved_by_data, files_data, daily_report_data, status
+            FROM warnings_old
+          ''');
+
+          // Drop old table
+          await customStatement('DROP TABLE warnings_old');
+
+          // Re-enable foreign keys
+          await customStatement('PRAGMA foreign_keys = ON');
+
+          print(
+            '✅ Migration 25→26: Made createdByID nullable in Warnings table for draft support',
+          );
         },
       ),
       beforeOpen: (details) async {

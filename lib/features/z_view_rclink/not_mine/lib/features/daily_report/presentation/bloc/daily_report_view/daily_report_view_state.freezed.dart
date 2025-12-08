@@ -55,7 +55,7 @@ extension DailyReportViewStatePatterns on DailyReportViewState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DailyReportViewInitial value)?  initial,TResult Function( DailyReportViewLoading value)?  loading,TResult Function( DailyReportViewLoaded value)?  loaded,TResult Function( DailyReportViewFailure value)?  failure,TResult Function( DailyReportViewDetailLoading value)?  detailLoading,TResult Function( DailyReportViewDetailLoaded value)?  detailLoaded,TResult Function( DailyReportViewDetailFailure value)?  detailFailure,TResult Function( RoadsLoading value)?  roadsLoading,TResult Function( RoadsLoaded value)?  roadsLoaded,TResult Function( RoadsFailure value)?  roadsFailure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( DailyReportViewInitial value)?  initial,TResult Function( DailyReportViewLoading value)?  loading,TResult Function( DailyReportViewLoaded value)?  loaded,TResult Function( DailyReportViewFailure value)?  failure,TResult Function( DailyReportViewDetailLoading value)?  detailLoading,TResult Function( DailyReportViewDetailLoaded value)?  detailLoaded,TResult Function( DailyReportViewDetailFailure value)?  detailFailure,TResult Function( DailyReportViewApproving value)?  approving,TResult Function( DailyReportViewApproved value)?  approved,TResult Function( DailyReportViewApprovalFailure value)?  approvalFailure,TResult Function( RoadsLoading value)?  roadsLoading,TResult Function( RoadsLoaded value)?  roadsLoaded,TResult Function( RoadsFailure value)?  roadsFailure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case DailyReportViewInitial() when initial != null:
@@ -65,7 +65,10 @@ return loaded(_that);case DailyReportViewFailure() when failure != null:
 return failure(_that);case DailyReportViewDetailLoading() when detailLoading != null:
 return detailLoading(_that);case DailyReportViewDetailLoaded() when detailLoaded != null:
 return detailLoaded(_that);case DailyReportViewDetailFailure() when detailFailure != null:
-return detailFailure(_that);case RoadsLoading() when roadsLoading != null:
+return detailFailure(_that);case DailyReportViewApproving() when approving != null:
+return approving(_that);case DailyReportViewApproved() when approved != null:
+return approved(_that);case DailyReportViewApprovalFailure() when approvalFailure != null:
+return approvalFailure(_that);case RoadsLoading() when roadsLoading != null:
 return roadsLoading(_that);case RoadsLoaded() when roadsLoaded != null:
 return roadsLoaded(_that);case RoadsFailure() when roadsFailure != null:
 return roadsFailure(_that);case _:
@@ -86,7 +89,7 @@ return roadsFailure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DailyReportViewInitial value)  initial,required TResult Function( DailyReportViewLoading value)  loading,required TResult Function( DailyReportViewLoaded value)  loaded,required TResult Function( DailyReportViewFailure value)  failure,required TResult Function( DailyReportViewDetailLoading value)  detailLoading,required TResult Function( DailyReportViewDetailLoaded value)  detailLoaded,required TResult Function( DailyReportViewDetailFailure value)  detailFailure,required TResult Function( RoadsLoading value)  roadsLoading,required TResult Function( RoadsLoaded value)  roadsLoaded,required TResult Function( RoadsFailure value)  roadsFailure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( DailyReportViewInitial value)  initial,required TResult Function( DailyReportViewLoading value)  loading,required TResult Function( DailyReportViewLoaded value)  loaded,required TResult Function( DailyReportViewFailure value)  failure,required TResult Function( DailyReportViewDetailLoading value)  detailLoading,required TResult Function( DailyReportViewDetailLoaded value)  detailLoaded,required TResult Function( DailyReportViewDetailFailure value)  detailFailure,required TResult Function( DailyReportViewApproving value)  approving,required TResult Function( DailyReportViewApproved value)  approved,required TResult Function( DailyReportViewApprovalFailure value)  approvalFailure,required TResult Function( RoadsLoading value)  roadsLoading,required TResult Function( RoadsLoaded value)  roadsLoaded,required TResult Function( RoadsFailure value)  roadsFailure,}){
 final _that = this;
 switch (_that) {
 case DailyReportViewInitial():
@@ -96,7 +99,10 @@ return loaded(_that);case DailyReportViewFailure():
 return failure(_that);case DailyReportViewDetailLoading():
 return detailLoading(_that);case DailyReportViewDetailLoaded():
 return detailLoaded(_that);case DailyReportViewDetailFailure():
-return detailFailure(_that);case RoadsLoading():
+return detailFailure(_that);case DailyReportViewApproving():
+return approving(_that);case DailyReportViewApproved():
+return approved(_that);case DailyReportViewApprovalFailure():
+return approvalFailure(_that);case RoadsLoading():
 return roadsLoading(_that);case RoadsLoaded():
 return roadsLoaded(_that);case RoadsFailure():
 return roadsFailure(_that);case _:
@@ -116,7 +122,7 @@ return roadsFailure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DailyReportViewInitial value)?  initial,TResult? Function( DailyReportViewLoading value)?  loading,TResult? Function( DailyReportViewLoaded value)?  loaded,TResult? Function( DailyReportViewFailure value)?  failure,TResult? Function( DailyReportViewDetailLoading value)?  detailLoading,TResult? Function( DailyReportViewDetailLoaded value)?  detailLoaded,TResult? Function( DailyReportViewDetailFailure value)?  detailFailure,TResult? Function( RoadsLoading value)?  roadsLoading,TResult? Function( RoadsLoaded value)?  roadsLoaded,TResult? Function( RoadsFailure value)?  roadsFailure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( DailyReportViewInitial value)?  initial,TResult? Function( DailyReportViewLoading value)?  loading,TResult? Function( DailyReportViewLoaded value)?  loaded,TResult? Function( DailyReportViewFailure value)?  failure,TResult? Function( DailyReportViewDetailLoading value)?  detailLoading,TResult? Function( DailyReportViewDetailLoaded value)?  detailLoaded,TResult? Function( DailyReportViewDetailFailure value)?  detailFailure,TResult? Function( DailyReportViewApproving value)?  approving,TResult? Function( DailyReportViewApproved value)?  approved,TResult? Function( DailyReportViewApprovalFailure value)?  approvalFailure,TResult? Function( RoadsLoading value)?  roadsLoading,TResult? Function( RoadsLoaded value)?  roadsLoaded,TResult? Function( RoadsFailure value)?  roadsFailure,}){
 final _that = this;
 switch (_that) {
 case DailyReportViewInitial() when initial != null:
@@ -126,7 +132,10 @@ return loaded(_that);case DailyReportViewFailure() when failure != null:
 return failure(_that);case DailyReportViewDetailLoading() when detailLoading != null:
 return detailLoading(_that);case DailyReportViewDetailLoaded() when detailLoaded != null:
 return detailLoaded(_that);case DailyReportViewDetailFailure() when detailFailure != null:
-return detailFailure(_that);case RoadsLoading() when roadsLoading != null:
+return detailFailure(_that);case DailyReportViewApproving() when approving != null:
+return approving(_that);case DailyReportViewApproved() when approved != null:
+return approved(_that);case DailyReportViewApprovalFailure() when approvalFailure != null:
+return approvalFailure(_that);case RoadsLoading() when roadsLoading != null:
 return roadsLoading(_that);case RoadsLoaded() when roadsLoaded != null:
 return roadsLoaded(_that);case RoadsFailure() when roadsFailure != null:
 return roadsFailure(_that);case _:
@@ -146,7 +155,7 @@ return roadsFailure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<DailyReport> reports,  int currentPage,  bool hasMore,  bool isLoadingMore,  String? searchQuery,  int selectedTabIndex)?  loaded,TResult Function( String message)?  failure,TResult Function()?  detailLoading,TResult Function( DailyReport report)?  detailLoaded,TResult Function( String message)?  detailFailure,TResult Function()?  roadsLoading,TResult Function( List<Road> roads,  Road? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult Function( String message)?  roadsFailure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<DailyReport> reports,  int currentPage,  bool hasMore,  bool isLoadingMore,  String? searchQuery,  int selectedTabIndex)?  loaded,TResult Function( String message)?  failure,TResult Function()?  detailLoading,TResult Function( DailyReport report)?  detailLoaded,TResult Function( String message)?  detailFailure,TResult Function( DailyReport report)?  approving,TResult Function( DailyReport report)?  approved,TResult Function( String message,  DailyReport? report)?  approvalFailure,TResult Function()?  roadsLoading,TResult Function( List<Road> roads,  Road? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult Function( String message)?  roadsFailure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case DailyReportViewInitial() when initial != null:
 return initial();case DailyReportViewLoading() when loading != null:
@@ -155,7 +164,10 @@ return loaded(_that.reports,_that.currentPage,_that.hasMore,_that.isLoadingMore,
 return failure(_that.message);case DailyReportViewDetailLoading() when detailLoading != null:
 return detailLoading();case DailyReportViewDetailLoaded() when detailLoaded != null:
 return detailLoaded(_that.report);case DailyReportViewDetailFailure() when detailFailure != null:
-return detailFailure(_that.message);case RoadsLoading() when roadsLoading != null:
+return detailFailure(_that.message);case DailyReportViewApproving() when approving != null:
+return approving(_that.report);case DailyReportViewApproved() when approved != null:
+return approved(_that.report);case DailyReportViewApprovalFailure() when approvalFailure != null:
+return approvalFailure(_that.message,_that.report);case RoadsLoading() when roadsLoading != null:
 return roadsLoading();case RoadsLoaded() when roadsLoaded != null:
 return roadsLoaded(_that.roads,_that.selectedRoad,_that.currentSection,_that.sectionError);case RoadsFailure() when roadsFailure != null:
 return roadsFailure(_that.message);case _:
@@ -176,7 +188,7 @@ return roadsFailure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<DailyReport> reports,  int currentPage,  bool hasMore,  bool isLoadingMore,  String? searchQuery,  int selectedTabIndex)  loaded,required TResult Function( String message)  failure,required TResult Function()  detailLoading,required TResult Function( DailyReport report)  detailLoaded,required TResult Function( String message)  detailFailure,required TResult Function()  roadsLoading,required TResult Function( List<Road> roads,  Road? selectedRoad,  String? currentSection,  String? sectionError)  roadsLoaded,required TResult Function( String message)  roadsFailure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<DailyReport> reports,  int currentPage,  bool hasMore,  bool isLoadingMore,  String? searchQuery,  int selectedTabIndex)  loaded,required TResult Function( String message)  failure,required TResult Function()  detailLoading,required TResult Function( DailyReport report)  detailLoaded,required TResult Function( String message)  detailFailure,required TResult Function( DailyReport report)  approving,required TResult Function( DailyReport report)  approved,required TResult Function( String message,  DailyReport? report)  approvalFailure,required TResult Function()  roadsLoading,required TResult Function( List<Road> roads,  Road? selectedRoad,  String? currentSection,  String? sectionError)  roadsLoaded,required TResult Function( String message)  roadsFailure,}) {final _that = this;
 switch (_that) {
 case DailyReportViewInitial():
 return initial();case DailyReportViewLoading():
@@ -185,7 +197,10 @@ return loaded(_that.reports,_that.currentPage,_that.hasMore,_that.isLoadingMore,
 return failure(_that.message);case DailyReportViewDetailLoading():
 return detailLoading();case DailyReportViewDetailLoaded():
 return detailLoaded(_that.report);case DailyReportViewDetailFailure():
-return detailFailure(_that.message);case RoadsLoading():
+return detailFailure(_that.message);case DailyReportViewApproving():
+return approving(_that.report);case DailyReportViewApproved():
+return approved(_that.report);case DailyReportViewApprovalFailure():
+return approvalFailure(_that.message,_that.report);case RoadsLoading():
 return roadsLoading();case RoadsLoaded():
 return roadsLoaded(_that.roads,_that.selectedRoad,_that.currentSection,_that.sectionError);case RoadsFailure():
 return roadsFailure(_that.message);case _:
@@ -205,7 +220,7 @@ return roadsFailure(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<DailyReport> reports,  int currentPage,  bool hasMore,  bool isLoadingMore,  String? searchQuery,  int selectedTabIndex)?  loaded,TResult? Function( String message)?  failure,TResult? Function()?  detailLoading,TResult? Function( DailyReport report)?  detailLoaded,TResult? Function( String message)?  detailFailure,TResult? Function()?  roadsLoading,TResult? Function( List<Road> roads,  Road? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult? Function( String message)?  roadsFailure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<DailyReport> reports,  int currentPage,  bool hasMore,  bool isLoadingMore,  String? searchQuery,  int selectedTabIndex)?  loaded,TResult? Function( String message)?  failure,TResult? Function()?  detailLoading,TResult? Function( DailyReport report)?  detailLoaded,TResult? Function( String message)?  detailFailure,TResult? Function( DailyReport report)?  approving,TResult? Function( DailyReport report)?  approved,TResult? Function( String message,  DailyReport? report)?  approvalFailure,TResult? Function()?  roadsLoading,TResult? Function( List<Road> roads,  Road? selectedRoad,  String? currentSection,  String? sectionError)?  roadsLoaded,TResult? Function( String message)?  roadsFailure,}) {final _that = this;
 switch (_that) {
 case DailyReportViewInitial() when initial != null:
 return initial();case DailyReportViewLoading() when loading != null:
@@ -214,7 +229,10 @@ return loaded(_that.reports,_that.currentPage,_that.hasMore,_that.isLoadingMore,
 return failure(_that.message);case DailyReportViewDetailLoading() when detailLoading != null:
 return detailLoading();case DailyReportViewDetailLoaded() when detailLoaded != null:
 return detailLoaded(_that.report);case DailyReportViewDetailFailure() when detailFailure != null:
-return detailFailure(_that.message);case RoadsLoading() when roadsLoading != null:
+return detailFailure(_that.message);case DailyReportViewApproving() when approving != null:
+return approving(_that.report);case DailyReportViewApproved() when approved != null:
+return approved(_that.report);case DailyReportViewApprovalFailure() when approvalFailure != null:
+return approvalFailure(_that.message,_that.report);case RoadsLoading() when roadsLoading != null:
 return roadsLoading();case RoadsLoaded() when roadsLoaded != null:
 return roadsLoaded(_that.roads,_that.selectedRoad,_that.currentSection,_that.sectionError);case RoadsFailure() when roadsFailure != null:
 return roadsFailure(_that.message);case _:
@@ -595,6 +613,206 @@ class _$DailyReportViewDetailFailureCopyWithImpl<$Res>
   return _then(DailyReportViewDetailFailure(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class DailyReportViewApproving implements DailyReportViewState {
+  const DailyReportViewApproving({required this.report});
+  
+
+ final  DailyReport report;
+
+/// Create a copy of DailyReportViewState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DailyReportViewApprovingCopyWith<DailyReportViewApproving> get copyWith => _$DailyReportViewApprovingCopyWithImpl<DailyReportViewApproving>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyReportViewApproving&&(identical(other.report, report) || other.report == report));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,report);
+
+@override
+String toString() {
+  return 'DailyReportViewState.approving(report: $report)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $DailyReportViewApprovingCopyWith<$Res> implements $DailyReportViewStateCopyWith<$Res> {
+  factory $DailyReportViewApprovingCopyWith(DailyReportViewApproving value, $Res Function(DailyReportViewApproving) _then) = _$DailyReportViewApprovingCopyWithImpl;
+@useResult
+$Res call({
+ DailyReport report
+});
+
+
+
+
+}
+/// @nodoc
+class _$DailyReportViewApprovingCopyWithImpl<$Res>
+    implements $DailyReportViewApprovingCopyWith<$Res> {
+  _$DailyReportViewApprovingCopyWithImpl(this._self, this._then);
+
+  final DailyReportViewApproving _self;
+  final $Res Function(DailyReportViewApproving) _then;
+
+/// Create a copy of DailyReportViewState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? report = null,}) {
+  return _then(DailyReportViewApproving(
+report: null == report ? _self.report : report // ignore: cast_nullable_to_non_nullable
+as DailyReport,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class DailyReportViewApproved implements DailyReportViewState {
+  const DailyReportViewApproved({required this.report});
+  
+
+ final  DailyReport report;
+
+/// Create a copy of DailyReportViewState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DailyReportViewApprovedCopyWith<DailyReportViewApproved> get copyWith => _$DailyReportViewApprovedCopyWithImpl<DailyReportViewApproved>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyReportViewApproved&&(identical(other.report, report) || other.report == report));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,report);
+
+@override
+String toString() {
+  return 'DailyReportViewState.approved(report: $report)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $DailyReportViewApprovedCopyWith<$Res> implements $DailyReportViewStateCopyWith<$Res> {
+  factory $DailyReportViewApprovedCopyWith(DailyReportViewApproved value, $Res Function(DailyReportViewApproved) _then) = _$DailyReportViewApprovedCopyWithImpl;
+@useResult
+$Res call({
+ DailyReport report
+});
+
+
+
+
+}
+/// @nodoc
+class _$DailyReportViewApprovedCopyWithImpl<$Res>
+    implements $DailyReportViewApprovedCopyWith<$Res> {
+  _$DailyReportViewApprovedCopyWithImpl(this._self, this._then);
+
+  final DailyReportViewApproved _self;
+  final $Res Function(DailyReportViewApproved) _then;
+
+/// Create a copy of DailyReportViewState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? report = null,}) {
+  return _then(DailyReportViewApproved(
+report: null == report ? _self.report : report // ignore: cast_nullable_to_non_nullable
+as DailyReport,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class DailyReportViewApprovalFailure implements DailyReportViewState {
+  const DailyReportViewApprovalFailure({required this.message, this.report});
+  
+
+ final  String message;
+ final  DailyReport? report;
+
+/// Create a copy of DailyReportViewState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DailyReportViewApprovalFailureCopyWith<DailyReportViewApprovalFailure> get copyWith => _$DailyReportViewApprovalFailureCopyWithImpl<DailyReportViewApprovalFailure>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DailyReportViewApprovalFailure&&(identical(other.message, message) || other.message == message)&&(identical(other.report, report) || other.report == report));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,message,report);
+
+@override
+String toString() {
+  return 'DailyReportViewState.approvalFailure(message: $message, report: $report)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $DailyReportViewApprovalFailureCopyWith<$Res> implements $DailyReportViewStateCopyWith<$Res> {
+  factory $DailyReportViewApprovalFailureCopyWith(DailyReportViewApprovalFailure value, $Res Function(DailyReportViewApprovalFailure) _then) = _$DailyReportViewApprovalFailureCopyWithImpl;
+@useResult
+$Res call({
+ String message, DailyReport? report
+});
+
+
+
+
+}
+/// @nodoc
+class _$DailyReportViewApprovalFailureCopyWithImpl<$Res>
+    implements $DailyReportViewApprovalFailureCopyWith<$Res> {
+  _$DailyReportViewApprovalFailureCopyWithImpl(this._self, this._then);
+
+  final DailyReportViewApprovalFailure _self;
+  final $Res Function(DailyReportViewApprovalFailure) _then;
+
+/// Create a copy of DailyReportViewState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = null,Object? report = freezed,}) {
+  return _then(DailyReportViewApprovalFailure(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,report: freezed == report ? _self.report : report // ignore: cast_nullable_to_non_nullable
+as DailyReport?,
   ));
 }
 

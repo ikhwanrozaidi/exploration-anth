@@ -35,6 +35,8 @@ abstract class ContractorRelationModel with _$ContractorRelationModel {
     String? defaultBankAccType,
     bool? isSelf,
     String? contractRelationUID,
+    String? relationStatus,
+    String? relationRole,
   }) = _ContractorRelationModel;
 
   factory ContractorRelationModel.fromJson(Map<String, dynamic> json) =>
@@ -67,6 +69,8 @@ abstract class ContractorRelationModel with _$ContractorRelationModel {
       defaultBankAccType: defaultBankAccType,
       isSelf: isSelf,
       contractRelationUID: contractRelationUID,
+      relationStatus: relationStatus,
+      relationRole: relationRole,
     );
   }
 
@@ -97,6 +101,8 @@ abstract class ContractorRelationModel with _$ContractorRelationModel {
       defaultBankAccType: entity.defaultBankAccType,
       isSelf: entity.isSelf,
       contractRelationUID: entity.contractRelationUID,
+      relationStatus: entity.relationStatus,
+      relationRole: entity.relationRole,
     );
   }
 }

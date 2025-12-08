@@ -55,7 +55,7 @@ extension DailyReportViewEventPatterns on DailyReportViewEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadDailyReports value)?  loadDailyReports,TResult Function( LoadMoreDailyReports value)?  loadMoreDailyReports,TResult Function( LoadDailyReportById value)?  loadDailyReportById,TResult Function( ChangeTab value)?  changeTab,TResult Function( LoadDraftReports value)?  loadDraftReports,TResult Function( ClearDailyReportCache value)?  clearCache,TResult Function( LoadRoadsForEdit value)?  loadRoadsForEdit,TResult Function( SelectRoadForEdit value)?  selectRoadForEdit,TResult Function( UpdateSectionForEdit value)?  updateSectionForEdit,TResult Function( ClearRoadEditData value)?  clearRoadEditData,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadDailyReports value)?  loadDailyReports,TResult Function( LoadMoreDailyReports value)?  loadMoreDailyReports,TResult Function( LoadDailyReportById value)?  loadDailyReportById,TResult Function( ChangeTab value)?  changeTab,TResult Function( LoadDraftReports value)?  loadDraftReports,TResult Function( ClearDailyReportCache value)?  clearCache,TResult Function( ApproveDailyReport value)?  approveDailyReport,TResult Function( LoadRoadsForEdit value)?  loadRoadsForEdit,TResult Function( SelectRoadForEdit value)?  selectRoadForEdit,TResult Function( UpdateSectionForEdit value)?  updateSectionForEdit,TResult Function( ClearRoadEditData value)?  clearRoadEditData,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case LoadDailyReports() when loadDailyReports != null:
@@ -64,7 +64,8 @@ return loadMoreDailyReports(_that);case LoadDailyReportById() when loadDailyRepo
 return loadDailyReportById(_that);case ChangeTab() when changeTab != null:
 return changeTab(_that);case LoadDraftReports() when loadDraftReports != null:
 return loadDraftReports(_that);case ClearDailyReportCache() when clearCache != null:
-return clearCache(_that);case LoadRoadsForEdit() when loadRoadsForEdit != null:
+return clearCache(_that);case ApproveDailyReport() when approveDailyReport != null:
+return approveDailyReport(_that);case LoadRoadsForEdit() when loadRoadsForEdit != null:
 return loadRoadsForEdit(_that);case SelectRoadForEdit() when selectRoadForEdit != null:
 return selectRoadForEdit(_that);case UpdateSectionForEdit() when updateSectionForEdit != null:
 return updateSectionForEdit(_that);case ClearRoadEditData() when clearRoadEditData != null:
@@ -86,7 +87,7 @@ return clearRoadEditData(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadDailyReports value)  loadDailyReports,required TResult Function( LoadMoreDailyReports value)  loadMoreDailyReports,required TResult Function( LoadDailyReportById value)  loadDailyReportById,required TResult Function( ChangeTab value)  changeTab,required TResult Function( LoadDraftReports value)  loadDraftReports,required TResult Function( ClearDailyReportCache value)  clearCache,required TResult Function( LoadRoadsForEdit value)  loadRoadsForEdit,required TResult Function( SelectRoadForEdit value)  selectRoadForEdit,required TResult Function( UpdateSectionForEdit value)  updateSectionForEdit,required TResult Function( ClearRoadEditData value)  clearRoadEditData,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadDailyReports value)  loadDailyReports,required TResult Function( LoadMoreDailyReports value)  loadMoreDailyReports,required TResult Function( LoadDailyReportById value)  loadDailyReportById,required TResult Function( ChangeTab value)  changeTab,required TResult Function( LoadDraftReports value)  loadDraftReports,required TResult Function( ClearDailyReportCache value)  clearCache,required TResult Function( ApproveDailyReport value)  approveDailyReport,required TResult Function( LoadRoadsForEdit value)  loadRoadsForEdit,required TResult Function( SelectRoadForEdit value)  selectRoadForEdit,required TResult Function( UpdateSectionForEdit value)  updateSectionForEdit,required TResult Function( ClearRoadEditData value)  clearRoadEditData,}){
 final _that = this;
 switch (_that) {
 case LoadDailyReports():
@@ -95,7 +96,8 @@ return loadMoreDailyReports(_that);case LoadDailyReportById():
 return loadDailyReportById(_that);case ChangeTab():
 return changeTab(_that);case LoadDraftReports():
 return loadDraftReports(_that);case ClearDailyReportCache():
-return clearCache(_that);case LoadRoadsForEdit():
+return clearCache(_that);case ApproveDailyReport():
+return approveDailyReport(_that);case LoadRoadsForEdit():
 return loadRoadsForEdit(_that);case SelectRoadForEdit():
 return selectRoadForEdit(_that);case UpdateSectionForEdit():
 return updateSectionForEdit(_that);case ClearRoadEditData():
@@ -116,7 +118,7 @@ return clearRoadEditData(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadDailyReports value)?  loadDailyReports,TResult? Function( LoadMoreDailyReports value)?  loadMoreDailyReports,TResult? Function( LoadDailyReportById value)?  loadDailyReportById,TResult? Function( ChangeTab value)?  changeTab,TResult? Function( LoadDraftReports value)?  loadDraftReports,TResult? Function( ClearDailyReportCache value)?  clearCache,TResult? Function( LoadRoadsForEdit value)?  loadRoadsForEdit,TResult? Function( SelectRoadForEdit value)?  selectRoadForEdit,TResult? Function( UpdateSectionForEdit value)?  updateSectionForEdit,TResult? Function( ClearRoadEditData value)?  clearRoadEditData,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadDailyReports value)?  loadDailyReports,TResult? Function( LoadMoreDailyReports value)?  loadMoreDailyReports,TResult? Function( LoadDailyReportById value)?  loadDailyReportById,TResult? Function( ChangeTab value)?  changeTab,TResult? Function( LoadDraftReports value)?  loadDraftReports,TResult? Function( ClearDailyReportCache value)?  clearCache,TResult? Function( ApproveDailyReport value)?  approveDailyReport,TResult? Function( LoadRoadsForEdit value)?  loadRoadsForEdit,TResult? Function( SelectRoadForEdit value)?  selectRoadForEdit,TResult? Function( UpdateSectionForEdit value)?  updateSectionForEdit,TResult? Function( ClearRoadEditData value)?  clearRoadEditData,}){
 final _that = this;
 switch (_that) {
 case LoadDailyReports() when loadDailyReports != null:
@@ -125,7 +127,8 @@ return loadMoreDailyReports(_that);case LoadDailyReportById() when loadDailyRepo
 return loadDailyReportById(_that);case ChangeTab() when changeTab != null:
 return changeTab(_that);case LoadDraftReports() when loadDraftReports != null:
 return loadDraftReports(_that);case ClearDailyReportCache() when clearCache != null:
-return clearCache(_that);case LoadRoadsForEdit() when loadRoadsForEdit != null:
+return clearCache(_that);case ApproveDailyReport() when approveDailyReport != null:
+return approveDailyReport(_that);case LoadRoadsForEdit() when loadRoadsForEdit != null:
 return loadRoadsForEdit(_that);case SelectRoadForEdit() when selectRoadForEdit != null:
 return selectRoadForEdit(_that);case UpdateSectionForEdit() when updateSectionForEdit != null:
 return updateSectionForEdit(_that);case ClearRoadEditData() when clearRoadEditData != null:
@@ -146,7 +149,7 @@ return clearRoadEditData(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh,  String? search,  String? roadUid,  String? workScopeUid,  String? contractorUid,  String? fromDate,  String? toDate)?  loadDailyReports,TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  String? search)?  loadMoreDailyReports,TResult Function( String companyUID,  String dailyReportUID,  bool forceRefresh)?  loadDailyReportById,TResult Function( int tabIndex,  String companyUID)?  changeTab,TResult Function( String companyUID)?  loadDraftReports,TResult Function()?  clearCache,TResult Function( String districtName,  bool forceRefresh)?  loadRoadsForEdit,TResult Function( Road selectedRoad)?  selectRoadForEdit,TResult Function( String section)?  updateSectionForEdit,TResult Function()?  clearRoadEditData,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh,  String? search,  String? roadUid,  String? workScopeUid,  String? contractorUid,  String? fromDate,  String? toDate)?  loadDailyReports,TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  String? search)?  loadMoreDailyReports,TResult Function( String companyUID,  String dailyReportUID,  bool forceRefresh)?  loadDailyReportById,TResult Function( int tabIndex,  String companyUID)?  changeTab,TResult Function( String companyUID)?  loadDraftReports,TResult Function()?  clearCache,TResult Function( String companyUID,  String dailyReportUID,  String reviewComment)?  approveDailyReport,TResult Function( String districtName,  bool forceRefresh)?  loadRoadsForEdit,TResult Function( Road selectedRoad)?  selectRoadForEdit,TResult Function( String section)?  updateSectionForEdit,TResult Function()?  clearRoadEditData,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoadDailyReports() when loadDailyReports != null:
 return loadDailyReports(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.forceRefresh,_that.search,_that.roadUid,_that.workScopeUid,_that.contractorUid,_that.fromDate,_that.toDate);case LoadMoreDailyReports() when loadMoreDailyReports != null:
@@ -154,7 +157,8 @@ return loadMoreDailyReports(_that.companyUID,_that.page,_that.limit,_that.sortOr
 return loadDailyReportById(_that.companyUID,_that.dailyReportUID,_that.forceRefresh);case ChangeTab() when changeTab != null:
 return changeTab(_that.tabIndex,_that.companyUID);case LoadDraftReports() when loadDraftReports != null:
 return loadDraftReports(_that.companyUID);case ClearDailyReportCache() when clearCache != null:
-return clearCache();case LoadRoadsForEdit() when loadRoadsForEdit != null:
+return clearCache();case ApproveDailyReport() when approveDailyReport != null:
+return approveDailyReport(_that.companyUID,_that.dailyReportUID,_that.reviewComment);case LoadRoadsForEdit() when loadRoadsForEdit != null:
 return loadRoadsForEdit(_that.districtName,_that.forceRefresh);case SelectRoadForEdit() when selectRoadForEdit != null:
 return selectRoadForEdit(_that.selectedRoad);case UpdateSectionForEdit() when updateSectionForEdit != null:
 return updateSectionForEdit(_that.section);case ClearRoadEditData() when clearRoadEditData != null:
@@ -176,7 +180,7 @@ return clearRoadEditData();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh,  String? search,  String? roadUid,  String? workScopeUid,  String? contractorUid,  String? fromDate,  String? toDate)  loadDailyReports,required TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  String? search)  loadMoreDailyReports,required TResult Function( String companyUID,  String dailyReportUID,  bool forceRefresh)  loadDailyReportById,required TResult Function( int tabIndex,  String companyUID)  changeTab,required TResult Function( String companyUID)  loadDraftReports,required TResult Function()  clearCache,required TResult Function( String districtName,  bool forceRefresh)  loadRoadsForEdit,required TResult Function( Road selectedRoad)  selectRoadForEdit,required TResult Function( String section)  updateSectionForEdit,required TResult Function()  clearRoadEditData,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh,  String? search,  String? roadUid,  String? workScopeUid,  String? contractorUid,  String? fromDate,  String? toDate)  loadDailyReports,required TResult Function( String companyUID,  int page,  int limit,  String sortOrder,  String? search)  loadMoreDailyReports,required TResult Function( String companyUID,  String dailyReportUID,  bool forceRefresh)  loadDailyReportById,required TResult Function( int tabIndex,  String companyUID)  changeTab,required TResult Function( String companyUID)  loadDraftReports,required TResult Function()  clearCache,required TResult Function( String companyUID,  String dailyReportUID,  String reviewComment)  approveDailyReport,required TResult Function( String districtName,  bool forceRefresh)  loadRoadsForEdit,required TResult Function( Road selectedRoad)  selectRoadForEdit,required TResult Function( String section)  updateSectionForEdit,required TResult Function()  clearRoadEditData,}) {final _that = this;
 switch (_that) {
 case LoadDailyReports():
 return loadDailyReports(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.forceRefresh,_that.search,_that.roadUid,_that.workScopeUid,_that.contractorUid,_that.fromDate,_that.toDate);case LoadMoreDailyReports():
@@ -184,7 +188,8 @@ return loadMoreDailyReports(_that.companyUID,_that.page,_that.limit,_that.sortOr
 return loadDailyReportById(_that.companyUID,_that.dailyReportUID,_that.forceRefresh);case ChangeTab():
 return changeTab(_that.tabIndex,_that.companyUID);case LoadDraftReports():
 return loadDraftReports(_that.companyUID);case ClearDailyReportCache():
-return clearCache();case LoadRoadsForEdit():
+return clearCache();case ApproveDailyReport():
+return approveDailyReport(_that.companyUID,_that.dailyReportUID,_that.reviewComment);case LoadRoadsForEdit():
 return loadRoadsForEdit(_that.districtName,_that.forceRefresh);case SelectRoadForEdit():
 return selectRoadForEdit(_that.selectedRoad);case UpdateSectionForEdit():
 return updateSectionForEdit(_that.section);case ClearRoadEditData():
@@ -205,7 +210,7 @@ return clearRoadEditData();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh,  String? search,  String? roadUid,  String? workScopeUid,  String? contractorUid,  String? fromDate,  String? toDate)?  loadDailyReports,TResult? Function( String companyUID,  int page,  int limit,  String sortOrder,  String? search)?  loadMoreDailyReports,TResult? Function( String companyUID,  String dailyReportUID,  bool forceRefresh)?  loadDailyReportById,TResult? Function( int tabIndex,  String companyUID)?  changeTab,TResult? Function( String companyUID)?  loadDraftReports,TResult? Function()?  clearCache,TResult? Function( String districtName,  bool forceRefresh)?  loadRoadsForEdit,TResult? Function( Road selectedRoad)?  selectRoadForEdit,TResult? Function( String section)?  updateSectionForEdit,TResult? Function()?  clearRoadEditData,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int page,  int limit,  String sortOrder,  bool forceRefresh,  String? search,  String? roadUid,  String? workScopeUid,  String? contractorUid,  String? fromDate,  String? toDate)?  loadDailyReports,TResult? Function( String companyUID,  int page,  int limit,  String sortOrder,  String? search)?  loadMoreDailyReports,TResult? Function( String companyUID,  String dailyReportUID,  bool forceRefresh)?  loadDailyReportById,TResult? Function( int tabIndex,  String companyUID)?  changeTab,TResult? Function( String companyUID)?  loadDraftReports,TResult? Function()?  clearCache,TResult? Function( String companyUID,  String dailyReportUID,  String reviewComment)?  approveDailyReport,TResult? Function( String districtName,  bool forceRefresh)?  loadRoadsForEdit,TResult? Function( Road selectedRoad)?  selectRoadForEdit,TResult? Function( String section)?  updateSectionForEdit,TResult? Function()?  clearRoadEditData,}) {final _that = this;
 switch (_that) {
 case LoadDailyReports() when loadDailyReports != null:
 return loadDailyReports(_that.companyUID,_that.page,_that.limit,_that.sortOrder,_that.forceRefresh,_that.search,_that.roadUid,_that.workScopeUid,_that.contractorUid,_that.fromDate,_that.toDate);case LoadMoreDailyReports() when loadMoreDailyReports != null:
@@ -213,7 +218,8 @@ return loadMoreDailyReports(_that.companyUID,_that.page,_that.limit,_that.sortOr
 return loadDailyReportById(_that.companyUID,_that.dailyReportUID,_that.forceRefresh);case ChangeTab() when changeTab != null:
 return changeTab(_that.tabIndex,_that.companyUID);case LoadDraftReports() when loadDraftReports != null:
 return loadDraftReports(_that.companyUID);case ClearDailyReportCache() when clearCache != null:
-return clearCache();case LoadRoadsForEdit() when loadRoadsForEdit != null:
+return clearCache();case ApproveDailyReport() when approveDailyReport != null:
+return approveDailyReport(_that.companyUID,_that.dailyReportUID,_that.reviewComment);case LoadRoadsForEdit() when loadRoadsForEdit != null:
 return loadRoadsForEdit(_that.districtName,_that.forceRefresh);case SelectRoadForEdit() when selectRoadForEdit != null:
 return selectRoadForEdit(_that.selectedRoad);case UpdateSectionForEdit() when updateSectionForEdit != null:
 return updateSectionForEdit(_that.section);case ClearRoadEditData() when clearRoadEditData != null:
@@ -620,6 +626,76 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class ApproveDailyReport implements DailyReportViewEvent {
+  const ApproveDailyReport({required this.companyUID, required this.dailyReportUID, required this.reviewComment});
+  
+
+ final  String companyUID;
+ final  String dailyReportUID;
+ final  String reviewComment;
+
+/// Create a copy of DailyReportViewEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ApproveDailyReportCopyWith<ApproveDailyReport> get copyWith => _$ApproveDailyReportCopyWithImpl<ApproveDailyReport>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ApproveDailyReport&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID)&&(identical(other.dailyReportUID, dailyReportUID) || other.dailyReportUID == dailyReportUID)&&(identical(other.reviewComment, reviewComment) || other.reviewComment == reviewComment));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,companyUID,dailyReportUID,reviewComment);
+
+@override
+String toString() {
+  return 'DailyReportViewEvent.approveDailyReport(companyUID: $companyUID, dailyReportUID: $dailyReportUID, reviewComment: $reviewComment)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ApproveDailyReportCopyWith<$Res> implements $DailyReportViewEventCopyWith<$Res> {
+  factory $ApproveDailyReportCopyWith(ApproveDailyReport value, $Res Function(ApproveDailyReport) _then) = _$ApproveDailyReportCopyWithImpl;
+@useResult
+$Res call({
+ String companyUID, String dailyReportUID, String reviewComment
+});
+
+
+
+
+}
+/// @nodoc
+class _$ApproveDailyReportCopyWithImpl<$Res>
+    implements $ApproveDailyReportCopyWith<$Res> {
+  _$ApproveDailyReportCopyWithImpl(this._self, this._then);
+
+  final ApproveDailyReport _self;
+  final $Res Function(ApproveDailyReport) _then;
+
+/// Create a copy of DailyReportViewEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? companyUID = null,Object? dailyReportUID = null,Object? reviewComment = null,}) {
+  return _then(ApproveDailyReport(
+companyUID: null == companyUID ? _self.companyUID : companyUID // ignore: cast_nullable_to_non_nullable
+as String,dailyReportUID: null == dailyReportUID ? _self.dailyReportUID : dailyReportUID // ignore: cast_nullable_to_non_nullable
+as String,reviewComment: null == reviewComment ? _self.reviewComment : reviewComment // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

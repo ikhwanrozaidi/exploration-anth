@@ -6,6 +6,7 @@ import '../models/create_daily_report_model.dart';
 import '../models/update_daily_report_model.dart';
 import '../models/daily_report_filter_model.dart';
 import '../models/daily_report_response_model.dart';
+import '../models/approve_daily_report_dto.dart';
 import '../../../../shared/models/api_response.dart';
 import '../../../../core/sync/models/file_response_dto.dart';
 
@@ -57,5 +58,13 @@ abstract class DailyReportApiService {
     @Part(name: 'INPROGRESS_IMAGE') List<MultipartFile>? inprogressImages,
     @Part(name: 'AFTER_IMAGE') List<MultipartFile>? afterImages,
     @Part(name: 'WORKERS_IMAGE') List<MultipartFile>? workersImages,
+  );
+
+  /// Approve a daily report
+  @PATCH('/companies/{companyUID}/daily-reports/{dailyReportUID}/approve')
+  Future<ApiResponse<DailyReportModel>> approveDailyReport(
+    @Path('companyUID') String companyUID,
+    @Path('dailyReportUID') String dailyReportUID,
+    @Body() ApproveDailyReportDto dto,
   );
 }

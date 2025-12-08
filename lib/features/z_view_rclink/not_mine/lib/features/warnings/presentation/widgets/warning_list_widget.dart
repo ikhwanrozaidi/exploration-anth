@@ -152,7 +152,7 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
                                     );
                                   },
                                 ),
-                                // Dark gradient overlay
+
                                 Container(
                                   decoration: BoxDecoration(
                                     gradient: LinearGradient(
@@ -225,7 +225,7 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
 
                               //Scope Code
                               child: Text(
-                                widget.warning.workScope!.code ?? '',
+                                widget.warning.workScope?.code ?? '',
                                 style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.bold,
@@ -260,7 +260,6 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
                           ],
                         ),
 
-                        // Page indicators (show only when 2+ images)
                         if (imageFiles.length > 1)
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -320,7 +319,7 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
                       ),
                       Text(
                         '${widget.warning.road!.roadNo} ${widget.warning.road!.name}',
-                        // '${widget.report.road!.roadNo.toString()} - ${widget.report.road!.name.toString()}',
+
                         overflow: TextOverflow.ellipsis,
                       ),
                     ],

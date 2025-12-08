@@ -1,10 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import 'package:rclink_app/features/daily_report/domain/entities/daily_report.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../data/datasources/daily_report_local_datasource.dart';
 import '../../../domain/usecases/get_daily_report_usecase.dart';
 import '../../../domain/usecases/get_daily_report_by_id_usecase.dart';
 import '../../../domain/usecases/clear_daily_report_cache_usecase.dart';
+import '../../../domain/usecases/approve_daily_report_usecase.dart';
 import 'daily_report_view_event.dart';
 import 'daily_report_view_state.dart';
 
@@ -14,12 +16,14 @@ class DailyReportViewBloc
   final GetDailyReportsUseCase _getDailyReportsUseCase;
   final GetDailyReportByIdUseCase _getDailyReportByIdUseCase;
   final ClearDailyReportCacheUseCase _clearDailyReportCacheUseCase;
+  final ApproveDailyReportUseCase _approveDailyReportUseCase;
   final DailyReportLocalDataSource _localDataSource;
 
   DailyReportViewBloc(
     this._getDailyReportsUseCase,
     this._getDailyReportByIdUseCase,
     this._clearDailyReportCacheUseCase,
+    this._approveDailyReportUseCase,
     this._localDataSource,
   ) : super(const DailyReportViewInitial()) {
     on<LoadDailyReports>(_onLoadDailyReports);
@@ -28,6 +32,7 @@ class DailyReportViewBloc
     on<ChangeTab>(_onChangeTab);
     on<LoadDraftReports>(_onLoadDraftReports);
     on<ClearDailyReportCache>(_onClearCache);
+    on<ApproveDailyReport>(_onApproveDailyReport);
 
     // on<LoadRoadsForEdit>(_onLoadRoadsForEdit);
     on<SelectRoadForEdit>(_onSelectRoadForEdit);
@@ -148,6 +153,57 @@ class DailyReportViewBloc
       (failure) => emit(DailyReportViewFailure(_mapFailureToMessage(failure))),
       (_) {
         emit(const DailyReportViewInitial());
+      },
+    );
+  }
+
+  Future<void> _onApproveDailyReport(
+    ApproveDailyReport event,
+    Emitter<DailyReportViewState> emit,
+  ) async {
+    print('🔵 [DailyReportViewBloc] _onApproveDailyReport called');
+
+    final currentState = state;
+
+    // Get current report from state
+    DailyReport? currentReport;
+    if (currentState is DailyReportViewDetailLoaded) {
+      currentReport = currentState.report;
+    }
+
+    // Emit approving state if we have a report
+    if (currentReport != null) {
+      print('🔵 [DailyReportViewBloc] Emitting approving state...');
+      emit(DailyReportViewApproving(report: currentReport));
+    }
+
+    final params = ApproveDailyReportParams(
+      companyUID: event.companyUID,
+      dailyReportUID: event.dailyReportUID,
+      reviewComment: event.reviewComment,
+    );
+
+    print('🔵 [DailyReportViewBloc] Calling use case...');
+    final result = await _approveDailyReportUseCase(params);
+    print(
+      '🔵 [DailyReportViewBloc] Use case returned: ${result.isRight() ? "Success" : "Failure"}',
+    );
+
+    result.fold(
+      (failure) {
+        print(
+          '❌ [DailyReportViewBloc] Approval failed: ${_mapFailureToMessage(failure)}',
+        );
+        emit(
+          DailyReportViewApprovalFailure(
+            message: _mapFailureToMessage(failure),
+            report: currentReport,
+          ),
+        );
+      },
+      (approvedReport) {
+        print('✅ [DailyReportViewBloc] Approval succeeded!');
+        emit(DailyReportViewApproved(report: approvedReport));
       },
     );
   }

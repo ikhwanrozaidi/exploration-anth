@@ -38,7 +38,7 @@ _WarningModel _$WarningModelFromJson(Map<String, dynamic> json) =>
       longitude: json['longitude'] as String?,
       latitude: json['latitude'] as String?,
       description: json['description'] as String?,
-      createdByID: (json['createdByID'] as num).toInt(),
+      createdByID: (json['createdByID'] as num?)?.toInt(),
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       deletedAt: json['deletedAt'] == null

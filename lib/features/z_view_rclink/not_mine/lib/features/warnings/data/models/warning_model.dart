@@ -18,9 +18,9 @@ abstract class WarningModel with _$WarningModel {
   const WarningModel._();
 
   const factory WarningModel({
-    int? id, // Nullable for draft state
+    int? id,
     required String uid,
-    required String warningType, // Stored as string in API/DB
+    required String warningType,
     int? dailyReportID,
     required int companyID,
     required int roadID,
@@ -38,11 +38,10 @@ abstract class WarningModel with _$WarningModel {
     String? longitude,
     String? latitude,
     String? description,
-    required int createdByID,
+    int? createdByID,
     required DateTime createdAt,
     required DateTime updatedAt,
     DateTime? deletedAt,
-    // Nested/expanded entities
     List<FileModel>? files,
     CompanyResponseModel? company,
     RoadResponseModel? road,

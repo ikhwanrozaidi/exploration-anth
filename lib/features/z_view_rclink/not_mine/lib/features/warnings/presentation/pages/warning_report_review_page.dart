@@ -30,18 +30,13 @@ class WarningReportReviewPage extends StatefulWidget {
 class _WarningReportReviewPageState extends State<WarningReportReviewPage> {
   final TextEditingController _notesController = TextEditingController();
   final FocusNode _notesFocusNode = FocusNode();
-
-  // Dynamic state management
-  // Map<categoryUID, Set<reasonUID>> for tracking selected warnings per category
   final Map<String, Set<String>> _selectedWarningsByCategory = {};
 
-  // Set of expanded category UIDs
   final Set<String> _expandedCategories = {};
 
   @override
   void initState() {
     super.initState();
-    // Trigger load if categories are not already loaded
     final state = context.read<WarningCategoriesBloc>().state;
     if (state is WarningCategoriesInitial) {
       context.read<WarningCategoriesBloc>().add(
@@ -72,7 +67,6 @@ class _WarningReportReviewPageState extends State<WarningReportReviewPage> {
     );
   }
 
-  /// Maps category names to appropriate icons
   IconData _getIconForCategory(String categoryName) {
     final normalizedName = categoryName.toLowerCase();
 
@@ -89,14 +83,13 @@ class _WarningReportReviewPageState extends State<WarningReportReviewPage> {
       return Icons.shield_outlined;
     }
 
-    // Default icon
     return Icons.warning_outlined;
   }
 
   Widget _buildWarningSection({
     required String categoryUID,
     required String categoryName,
-    required List<Map<String, String>> reasons, // List of {uid, name}
+    required List<Map<String, String>> reasons,
   }) {
     final icon = _getIconForCategory(categoryName);
     final isExpanded = _expandedCategories.contains(categoryUID);
@@ -521,14 +514,12 @@ class _WarningReportReviewPageState extends State<WarningReportReviewPage> {
                                     );
                                   }
 
-                                  // Build category sections with filtered reasons
                                   final categoryWidgets = <Widget>[];
 
                                   for (final catWithReasons
                                       in reportCategories) {
                                     final category = catWithReasons.category;
 
-                                    // Filter reasons by work scope ID
                                     final filteredReasons = catWithReasons
                                         .reasons
                                         .where(
@@ -541,7 +532,6 @@ class _WarningReportReviewPageState extends State<WarningReportReviewPage> {
                                         )
                                         .toList();
 
-                                    // Only show category if it has reasons for this work scope
                                     if (filteredReasons.isNotEmpty) {
                                       categoryWidgets.add(
                                         Column(
@@ -558,7 +548,6 @@ class _WarningReportReviewPageState extends State<WarningReportReviewPage> {
                                     }
                                   }
 
-                                  // If no categories have reasons for this work scope
                                   if (categoryWidgets.isEmpty) {
                                     return Padding(
                                       padding: const EdgeInsets.symmetric(
@@ -749,7 +738,6 @@ class _WarningReportReviewPageState extends State<WarningReportReviewPage> {
                             return ElevatedButton(
                               onPressed: (_hasSelectedWarnings && !isLoading)
                                   ? () {
-                                      // Flatten all selected reason UIDs into a single list
                                       final allReasonUIDs =
                                           _selectedWarningsByCategory.values
                                               .expand(
@@ -757,7 +745,6 @@ class _WarningReportReviewPageState extends State<WarningReportReviewPage> {
                                               )
                                               .toList();
 
-                                      // Dispatch BLoC event to create warning
                                       context.read<CreateWarningBloc>().add(
                                         CreateWarningEvent.createWarning(
                                           dailyReportUID: widget.report.uid,

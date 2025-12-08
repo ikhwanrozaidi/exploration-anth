@@ -44,6 +44,12 @@ class DailyReportViewEvent with _$DailyReportViewEvent {
 
   const factory DailyReportViewEvent.clearCache() = ClearDailyReportCache;
 
+  const factory DailyReportViewEvent.approveDailyReport({
+    required String companyUID,
+    required String dailyReportUID,
+    required String reviewComment,
+  }) = ApproveDailyReport;
+
   // Route Edit Events
   const factory DailyReportViewEvent.loadRoadsForEdit({
     required String districtName,

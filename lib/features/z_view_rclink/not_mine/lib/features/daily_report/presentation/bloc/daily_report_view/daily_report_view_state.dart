@@ -27,6 +27,18 @@ class DailyReportViewState with _$DailyReportViewState {
   const factory DailyReportViewState.detailFailure(String message) =
       DailyReportViewDetailFailure;
 
+  // Approval States
+  const factory DailyReportViewState.approving({
+    required DailyReport report,
+  }) = DailyReportViewApproving;
+  const factory DailyReportViewState.approved({
+    required DailyReport report,
+  }) = DailyReportViewApproved;
+  const factory DailyReportViewState.approvalFailure({
+    required String message,
+    DailyReport? report,
+  }) = DailyReportViewApprovalFailure;
+
   // Route Edit States
   const factory DailyReportViewState.roadsLoading() = RoadsLoading;
 

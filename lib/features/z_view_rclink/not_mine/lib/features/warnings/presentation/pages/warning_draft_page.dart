@@ -70,11 +70,9 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
   void initState() {
     super.initState();
 
-    // Initialize blocs
     _siteWarningDraftBloc = getIt<SiteWarningDraftBloc>();
     _companyBloc = getIt<CompanyBloc>();
 
-    // Check if loading existing draft or creating new one
     if (widget.draftUID != null) {
       _loadExistingDraft();
     } else {
@@ -114,29 +112,28 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
     super.dispose();
   }
 
-  /// Debounced auto-save to prevent race conditions
-  void _triggerAutoSave() {
-    _autoSaveDebounce?.cancel();
-    _autoSaveDebounce = Timer(const Duration(milliseconds: 500), () {
-      _siteWarningDraftBloc.add(const SiteWarningDraftEvent.autoSaveDraft());
-    });
-  }
+  // void _triggerAutoSave() {
+  //   _autoSaveDebounce?.cancel();
+  //   _autoSaveDebounce = Timer(const Duration(milliseconds: 500), () {
+  //     _siteWarningDraftBloc.add(const SiteWarningDraftEvent.autoSaveDraft());
+  //   });
+  // }
 
-  void _getWorkScopeID() {
-    final state = context.read<WarningCategoriesBloc>().state;
-    state.whenOrNull(
-      loaded: (categories) {
-        for (var catWithReasons in categories) {
-          for (var reason in catWithReasons.reasons) {
-            setState(() {
-              _workScopeID = reason.workScopeID;
-            });
-            return;
-          }
-        }
-      },
-    );
-  }
+  // void _getWorkScopeID() {
+  //   final state = context.read<WarningCategoriesBloc>().state;
+  //   state.whenOrNull(
+  //     loaded: (categories) {
+  //       for (var catWithReasons in categories) {
+  //         for (var reason in catWithReasons.reasons) {
+  //           setState(() {
+  //             _workScopeID = reason.workScopeID;
+  //           });
+  //           return;
+  //         }
+  //       }
+  //     },
+  //   );
+  // }
 
   Future<void> _getCurrentLocation() async {
     setState(() {
@@ -144,7 +141,6 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
     });
 
     try {
-      // Check if location services are enabled
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         if (mounted) {
@@ -159,7 +155,6 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
         return;
       }
 
-      // Check location permissions
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
@@ -187,7 +182,6 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
         return;
       }
 
-      // Get current position
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
@@ -279,7 +273,7 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
               'Warning submitted successfully!',
               // backgroundColor: Colors.green,
             );
-            Navigator.pop(context, true); // Return to previous page
+            Navigator.pop(context, true);
           },
           error: (failure, draftData) {
             CustomSnackBar.show(
@@ -425,7 +419,7 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                       children: [
                         SizedBox(height: 10),
 
-                        // Scope of Work (keep existing code but add null safety)
+                        // Scope of Work
                         if (widget.scopeID != null) ...[
                           Padding(
                             padding: ResponsiveHelper.padding(
@@ -488,7 +482,7 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                           dividerConfig(),
                         ],
 
-                        // Location (add null safety)
+                        // Location
                         if (widget.road != null) ...[
                           Padding(
                             padding: ResponsiveHelper.padding(
@@ -547,7 +541,7 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                           dividerConfig(),
                         ],
 
-                        // Section (add null safety)
+                        // Section
                         if (widget.startSection != null) ...[
                           Padding(
                             padding: ResponsiveHelper.padding(

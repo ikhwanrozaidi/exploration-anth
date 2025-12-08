@@ -153,7 +153,6 @@ class _WarningDetailsPageContent extends StatelessWidget {
                           style: const TextStyle(color: Colors.white),
                         ),
                       ),
-                      // Show cachedWarning data
                     ],
                   );
                 }

@@ -24,15 +24,15 @@ class ExpandableWarningCard extends StatefulWidget {
 
 class _ExpandableWarningCardState extends State<ExpandableWarningCard> {
   bool isExpanded = false;
-  Set<String> resolvingItems = {}; // Track which items are being resolved
-  late Warning currentWarning; // Local copy of warning that gets updated
-  late WarningBloc _warningBloc; // Store BLoC reference
+  Set<String> resolvingItems = {};
+  late Warning currentWarning;
+  late WarningBloc _warningBloc;
 
   @override
   void initState() {
     super.initState();
-    currentWarning = widget.warning; // Initialize with prop
-    _warningBloc = getIt<WarningBloc>(); // Get BLoC instance once
+    currentWarning = widget.warning;
+    _warningBloc = getIt<WarningBloc>();
     print(
       '🔴 [ExpandableWarningCard] initState - BLoC instance: ${_warningBloc.hashCode}',
     );
@@ -41,14 +41,13 @@ class _ExpandableWarningCardState extends State<ExpandableWarningCard> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<WarningBloc, WarningState>(
-      bloc: _warningBloc, // Use stored BLoC instance
+      bloc: _warningBloc,
       listener: (context, state) {
         print(
           '🔴 [ExpandableWarningCard] BLoC state changed: ${state.runtimeType}',
         );
 
         if (state is WarningItemResolved || state is WarningLoaded) {
-          // Update local warning copy with latest from BLoC
           Warning? updatedWarning;
 
           if (state is WarningItemResolved) {

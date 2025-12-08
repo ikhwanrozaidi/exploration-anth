@@ -6,7 +6,6 @@ part 'site_warning_draft_event.freezed.dart';
 
 @freezed
 abstract class SiteWarningDraftEvent with _$SiteWarningDraftEvent {
-  // Draft initialization
   const factory SiteWarningDraftEvent.initializeDraft({
     required String companyUID,
     required int scopeID,
@@ -17,7 +16,6 @@ abstract class SiteWarningDraftEvent with _$SiteWarningDraftEvent {
     String? endSection,
   }) = InitializeDraft;
 
-  // Field updates
   const factory SiteWarningDraftEvent.updateLocation({
     required double latitude,
     required double longitude,

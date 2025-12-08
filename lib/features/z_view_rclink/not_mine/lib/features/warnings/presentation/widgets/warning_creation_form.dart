@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:rclink_app/shared/utils/theme.dart';
 import '../../../../shared/utils/responsive_helper.dart';
-import '../../../../shared/widgets/custom_tab_widget.dart';
 import '../../../road/domain/entities/road_entity.dart';
 import '../../../road/presentation/helper/road_level.dart';
 import '../../../road/presentation/helper/road_selection_result.dart';
 import '../../../road/presentation/pages/road_field_tile.dart';
 import '../../../work_scope/presentation/pages/work_scope_field_tile.dart';
 
-/// Form container with all selection fields
 class WarningCreationForm extends StatefulWidget {
   final ValueChanged<bool>? onValidationChanged;
   final ValueChanged<Map<String, dynamic>>? onDataChanged;
@@ -32,11 +30,9 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
   bool _hasError = false;
   String? _errorMessage;
 
-  // Store the road section range
   double? _roadSectionStart;
   double? _roadSectionFinish;
 
-  // Form field values
   String? selectedScopeID;
   String? selectedScopeUID;
   String? selectedScopeName;
@@ -54,7 +50,6 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
     super.dispose();
   }
 
-  // Check if form is valid
   bool get _isFormValid {
     final hasScopeSelected = selectedScopeID != null;
     final hasLocationSelected = selectedLocationDisplay != null;
@@ -243,7 +238,6 @@ class _WarningCreationFormState extends State<WarningCreationForm> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Unfocus when tapping outside text fields
         FocusScope.of(context).unfocus();
       },
       child: SingleChildScrollView(

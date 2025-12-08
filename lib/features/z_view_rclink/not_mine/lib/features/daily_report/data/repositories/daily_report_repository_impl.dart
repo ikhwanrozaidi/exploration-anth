@@ -133,6 +133,73 @@ class DailyReportRepositoryImpl
   }
 
   @override
+  Future<Either<Failure, DailyReport>> approveDailyReport({
+    required String companyUID,
+    required String dailyReportUID,
+    required String reviewComment,
+  }) async {
+    print('🟢 [DailyReportRepository] approveDailyReport called');
+    try {
+      // Use base class executeOptimistic with automatic SyncQueue fallback
+      return await executeOptimistic<DailyReport, DailyReportModel>(
+        local: () async {
+          print('🟢 [DailyReportRepository] Executing local update...');
+          // Get the cached report first
+          final cachedReport = await _localDataSource.getCachedDailyReportByUid(
+            dailyReportUID,
+          );
+
+          if (cachedReport == null) {
+            print('❌ [DailyReportRepository] Report not found in cache');
+            throw Exception('Report not found locally');
+          }
+
+          print('🟢 [DailyReportRepository] Found cached report, updating approval data...');
+
+          // Update the report with approval data
+          final updatedReport = cachedReport.copyWith(
+            approvedAt: DateTime.now(),
+            // Store review comment in rejectionReason field for now
+            // Backend will handle proper storage
+            rejectionReason: reviewComment,
+          );
+
+          // Cache the updated report
+          await _localDataSource.cacheSingleDailyReport(updatedReport);
+
+          print('🟢 [DailyReportRepository] Local update complete, returning entity');
+          return updatedReport.toEntity();
+        },
+        remote: () {
+          print('🟢 [DailyReportRepository] Executing remote call...');
+          return _remoteDataSource.approveDailyReport(
+            companyUID: companyUID,
+            dailyReportUID: dailyReportUID,
+            reviewComment: reviewComment,
+          );
+        },
+        onSyncSuccess: (serverModel, tempUID) async {
+          print('✅ [DailyReportRepository] Remote sync successful, updating cache');
+          // Update local DB with server data
+          await _localDataSource.cacheSingleDailyReport(serverModel);
+        },
+        entityType: SyncEntityType.dailyReport,
+        action: SyncAction.update,
+        payload: {
+          'companyUID': companyUID,
+          'dailyReportUID': dailyReportUID,
+          'reviewComment': reviewComment,
+          'action': 'approve',
+        },
+        priority: 8, // High priority - user-triggered action
+      );
+    } catch (e) {
+      print('❌ [DailyReportRepository] Exception: $e');
+      return Left(CacheFailure('Failed to approve daily report: $e'));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> clearCache() async {
     try {
       await _localDataSource.clearCache();

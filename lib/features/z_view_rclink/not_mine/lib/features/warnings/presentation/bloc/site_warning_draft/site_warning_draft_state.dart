@@ -42,15 +42,12 @@ abstract class SiteWarningDraftState with _$SiteWarningDraftState {
   }) = SiteWarningDraftListLoaded;
 }
 
-// Data class to hold all warning draft fields
 @freezed
 abstract class SiteWarningDraftData with _$SiteWarningDraftData {
   const factory SiteWarningDraftData({
-    // Draft metadata
     String? draftUID,
     @Default(false) bool isDraftMode,
 
-    // Required fields from initialization
     required String companyUID,
     required int scopeID,
     required String scopeUID,
@@ -59,7 +56,6 @@ abstract class SiteWarningDraftData with _$SiteWarningDraftData {
     required String startSection,
     String? endSection,
 
-    // Optional fields
     double? latitude,
     double? longitude,
     ContractorRelation? contractor,

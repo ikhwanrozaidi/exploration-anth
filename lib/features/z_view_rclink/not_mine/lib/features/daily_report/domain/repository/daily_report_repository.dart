@@ -39,5 +39,11 @@ abstract class DailyReportRepository {
     Map<ImageContextField, List<String>>? images,
   });
 
+  Future<Either<Failure, DailyReport>> approveDailyReport({
+    required String companyUID,
+    required String dailyReportUID,
+    required String reviewComment,
+  });
+
   Future<Either<Failure, void>> clearCache();
 }

@@ -215,6 +215,40 @@ class _DailyReportApiService implements DailyReportApiService {
     return _value;
   }
 
+  @override
+  Future<ApiResponse<DailyReportModel>> approveDailyReport(
+    String companyUID,
+    String dailyReportUID,
+    ApproveDailyReportDto dto,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = dto;
+    final _options = _setStreamType<ApiResponse<DailyReportModel>>(
+      Options(method: 'PATCH', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/companies/${companyUID}/daily-reports/${dailyReportUID}/approve',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late ApiResponse<DailyReportModel> _value;
+    try {
+      _value = ApiResponse<DailyReportModel>.fromJson(
+        _result.data!,
+        (json) => DailyReportModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

@@ -812,6 +812,12 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent>
                       SliverToBoxAdapter(child: SizedBox.shrink()),
                   detailFailure: (message) =>
                       SliverToBoxAdapter(child: SizedBox.shrink()),
+                  approving: (report) =>
+                      SliverToBoxAdapter(child: SizedBox.shrink()),
+                  approved: (report) =>
+                      SliverToBoxAdapter(child: SizedBox.shrink()),
+                  approvalFailure: (message, report) =>
+                      SliverToBoxAdapter(child: SizedBox.shrink()),
                   roadsLoading: () =>
                       SliverToBoxAdapter(child: SizedBox.shrink()),
                   roadsLoaded:
