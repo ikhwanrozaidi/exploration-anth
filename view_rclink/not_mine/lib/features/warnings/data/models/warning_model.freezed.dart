@@ -15,10 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WarningModel {
 
- int? get id;// Nullable for draft state
- String get uid; String get warningType;// Stored as string in API/DB
- int? get dailyReportID; int get companyID; int get roadID; int get workScopeID; int? get contractRelationID; String? get fromSection; String? get toSection; List<WarningItemModel> get warningItems; WarningDailyReportModel? get dailyReport; bool get requiresAction; bool get isResolved; int? get resolvedByID; DateTime? get resolvedAt; String? get resolutionNotes; String? get longitude; String? get latitude; String? get description; int? get createdByID; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt;// Nested/expanded entities
- List<FileModel>? get files; CompanyResponseModel? get company; RoadResponseModel? get road; WorkScopeResponseModel? get workScope; CreatedByResponseModel? get createdBy; CreatedByResponseModel? get resolvedBy;
+ int? get id; String get uid; String get warningType; int? get dailyReportID; int get companyID; int get roadID; int get workScopeID; int? get contractRelationID; String? get fromSection; String? get toSection; List<WarningItemModel> get warningItems; WarningDailyReportModel? get dailyReport; bool get requiresAction; bool get isResolved; int? get resolvedByID; DateTime? get resolvedAt; String? get resolutionNotes; String? get longitude; String? get latitude; String? get description; int? get createdByID; DateTime get createdAt; DateTime get updatedAt; DateTime? get deletedAt; List<FileModel>? get files; CompanyResponseModel? get company; RoadResponseModel? get road; WorkScopeResponseModel? get workScope; CreatedByResponseModel? get createdBy; CreatedByResponseModel? get resolvedBy;
 /// Create a copy of WarningModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -317,10 +314,8 @@ class _WarningModel extends WarningModel {
   factory _WarningModel.fromJson(Map<String, dynamic> json) => _$WarningModelFromJson(json);
 
 @override final  int? id;
-// Nullable for draft state
 @override final  String uid;
 @override final  String warningType;
-// Stored as string in API/DB
 @override final  int? dailyReportID;
 @override final  int companyID;
 @override final  int roadID;
@@ -348,9 +343,7 @@ class _WarningModel extends WarningModel {
 @override final  DateTime createdAt;
 @override final  DateTime updatedAt;
 @override final  DateTime? deletedAt;
-// Nested/expanded entities
  final  List<FileModel>? _files;
-// Nested/expanded entities
 @override List<FileModel>? get files {
   final value = _files;
   if (value == null) return null;

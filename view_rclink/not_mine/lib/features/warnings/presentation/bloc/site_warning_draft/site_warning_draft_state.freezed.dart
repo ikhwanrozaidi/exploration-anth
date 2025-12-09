@@ -813,10 +813,7 @@ as List<Warning>,
 /// @nodoc
 mixin _$SiteWarningDraftData {
 
-// Draft metadata
- String? get draftUID; bool get isDraftMode;// Required fields from initialization
- String get companyUID; int get scopeID; String get scopeUID; String get scopeName; Road get road; String get startSection; String? get endSection;// Optional fields
- double? get latitude; double? get longitude; ContractorRelation? get contractor; List<String> get warningReasonUIDs; String get description;
+ String? get draftUID; bool get isDraftMode; String get companyUID; int get scopeID; String get scopeUID; String get scopeName; Road get road; String get startSection; String? get endSection; double? get latitude; double? get longitude; ContractorRelation? get contractor; List<String> get warningReasonUIDs; String get description;
 /// Create a copy of SiteWarningDraftData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1024,10 +1021,8 @@ class _SiteWarningDraftData implements SiteWarningDraftData {
   const _SiteWarningDraftData({this.draftUID, this.isDraftMode = false, required this.companyUID, required this.scopeID, required this.scopeUID, required this.scopeName, required this.road, required this.startSection, this.endSection, this.latitude, this.longitude, this.contractor, final  List<String> warningReasonUIDs = const [], this.description = ''}): _warningReasonUIDs = warningReasonUIDs;
   
 
-// Draft metadata
 @override final  String? draftUID;
 @override@JsonKey() final  bool isDraftMode;
-// Required fields from initialization
 @override final  String companyUID;
 @override final  int scopeID;
 @override final  String scopeUID;
@@ -1035,7 +1030,6 @@ class _SiteWarningDraftData implements SiteWarningDraftData {
 @override final  Road road;
 @override final  String startSection;
 @override final  String? endSection;
-// Optional fields
 @override final  double? latitude;
 @override final  double? longitude;
 @override final  ContractorRelation? contractor;

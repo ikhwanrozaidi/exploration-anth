@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../models/create_report_warning_model.dart';
+import '../models/create_warning_model.dart';
 import '../models/resolve_warning_item_dto.dart';
 import '../models/warning_filter_model.dart';
 import '../models/warning_list_response_model.dart';
@@ -43,6 +44,12 @@ abstract class WarningsRemoteDataSource {
     required String warningUID,
     required String itemUID,
     String? notes,
+  });
+
+  // CREATE Site Warning
+  Future<Either<Failure, WarningModel>> createSiteWarning({
+    required CreateWarningModel data,
+    required String companyUID,
   });
 }
 
@@ -156,7 +163,7 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
           'files',
           'createdBy',
           'company',
-          'warningItems.warningReason.category',
+          // 'warningItems.warningReason.category',
         ],
       );
 
@@ -314,6 +321,81 @@ class WarningsRemoteDataSourceImpl implements WarningsRemoteDataSource {
       }
 
       return Left(NetworkFailure('Network error: ${e.message}'));
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  /// CREATE Site Warning
+  @override
+  Future<Either<Failure, WarningModel>> createSiteWarning({
+    required CreateWarningModel data,
+    required String companyUID,
+  }) async {
+    try {
+      final response = await _apiService.createSiteWarning(companyUID, data);
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        if (response.data != null) {
+          return Right(response.data!);
+        } else {
+          return const Left(ServerFailure('No data returned from server'));
+        }
+      } else {
+        return Left(
+          ServerFailure(
+            response.message ?? 'Failed to create site warning',
+            statusCode: response.statusCode,
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 401) {
+        return const Left(UnauthorizedFailure());
+      }
+
+      if (e.response?.statusCode == 403) {
+        return const Left(ForbiddenFailure());
+      }
+
+      if (e.response?.statusCode == 404) {
+        return const Left(NotFoundFailure());
+      }
+
+      if (e.response?.statusCode == 400 || e.response?.statusCode == 422) {
+        final errorMessage = e.response?.data is Map
+            ? (e.response?.data['message'] ?? 'Invalid data provided')
+            : 'Invalid data provided';
+        return Left(ValidationFailure(errorMessage));
+      }
+
+      // Network/timeout errors
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.receiveTimeout ||
+          e.type == DioExceptionType.sendTimeout) {
+        return const Left(TimeoutFailure());
+      }
+
+      if (e.type == DioExceptionType.connectionError ||
+          e.type == DioExceptionType.unknown) {
+        return Left(
+          NetworkFailure(
+            'Network error: ${e.message ?? "Please check your connection"}',
+          ),
+        );
+      }
+
+      // Server error (5xx)
+      if (e.response?.statusCode != null && e.response!.statusCode! >= 500) {
+        return Left(
+          ServerFailure(
+            'Server error: ${e.response?.data?['message'] ?? "Server unavailable"}',
+            statusCode: e.response?.statusCode,
+          ),
+        );
+      }
+
+      return Left(ServerFailure('Unexpected error: ${e.message}'));
     } catch (e) {
       return Left(ServerFailure('Unexpected error: $e'));
     }

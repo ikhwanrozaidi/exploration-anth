@@ -6,8 +6,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lottie/lottie.dart';
 import 'package:rclink_app/shared/utils/theme.dart';
 
-import '../../../../../../../lib/features/z_view_rclink/not_mine/core/utils/cache_managers.dart';
-import '../../../../../../../lib/features/z_view_rclink/not_mine/shared/utils/responsive_helper.dart';
+import '../../../../../core/utils/cache_managers.dart';
+import '../../../../../shared/utils/responsive_helper.dart';
 import '../../domain/entities/warning.dart';
 import '../pages/warning_details_page.dart';
 

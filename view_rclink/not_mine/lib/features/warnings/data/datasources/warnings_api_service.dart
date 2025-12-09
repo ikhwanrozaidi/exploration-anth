@@ -4,6 +4,7 @@ import 'package:rclink_app/features/warnings/data/models/warning_filter_model.da
 import 'package:retrofit/retrofit.dart';
 import '../../../../shared/models/api_response.dart';
 import '../models/create_report_warning_model.dart';
+import '../models/create_warning_model.dart';
 import '../models/resolve_warning_item_dto.dart';
 import '../models/warning_list_response_model.dart';
 import '../models/warning_model.dart';
@@ -45,5 +46,12 @@ abstract class WarningsApiService {
     @Path('warningUID') String warningUID,
     @Path('itemUID') String itemUID,
     @Body() ResolveWarningItemDto dto,
+  );
+
+  /// Create a warning from site inspection
+  @POST('/companies/{companyUID}/warnings/site')
+  Future<ApiResponse<WarningModel>> createSiteWarning(
+    @Path('companyUID') String companyUID,
+    @Body() CreateWarningModel data,
   );
 }

@@ -13,6 +13,7 @@ import '../../domain/repositories/warning_repository.dart';
 import '../datasources/warnings_local_datasource.dart';
 import '../datasources/warnings_remote_datasource.dart';
 import '../models/create_report_warning_model.dart';
+import '../models/create_warning_model.dart';
 import '../models/warning_model.dart';
 
 @LazySingleton(as: WarningRepository)
@@ -270,6 +271,48 @@ class WarningRepositoryImpl
       return Right(drafts.map((model) => model.toEntity()).toList());
     } catch (e) {
       return Left(CacheFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Warning>> createSiteWarning({
+    required CreateWarningModel data,
+    required String companyUID,
+  }) async {
+    try {
+      // Use base class executeOptimistic with automatic SyncQueue fallback
+      return await executeOptimistic<Warning, WarningModel>(
+        local: () async {
+          // Step 1: Create locally with temp UID
+          final localWarning = await _localDataSource.createSiteWarningLocal(
+            data,
+            companyUID,
+          );
+
+          print('✅ Local site warning created: ${localWarning.uid}');
+          return localWarning.toEntity();
+        },
+        remote: () => _remoteDataSource.createSiteWarning(
+          data: data,
+          companyUID: companyUID,
+        ),
+        onSyncSuccess: (serverModel, tempUID) async {
+          print('✅ Site warning synced successfully, updating local DB');
+          // Update local DB with server data
+          await _localDataSource.cacheSingleWarning(serverModel);
+
+          // Remove the temp UID entry if it exists
+          if (tempUID != serverModel.uid) {
+            await _localDataSource.deleteWarningByUID(tempUID);
+          }
+        },
+        entityType: SyncEntityType.warning,
+        action: SyncAction.create,
+        payload: {...data.toJson(), 'companyUID': companyUID},
+        priority: 10, // High priority - user-triggered creation
+      );
+    } catch (e) {
+      return Left(CacheFailure('Failed to create site warning: $e'));
     }
   }
 }

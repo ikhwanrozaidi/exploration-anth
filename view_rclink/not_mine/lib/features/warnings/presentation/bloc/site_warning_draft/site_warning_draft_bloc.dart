@@ -9,6 +9,7 @@ import '../../../../company/presentation/bloc/company_state.dart';
 import '../../../../road/domain/entities/road_entity.dart';
 import '../../../data/datasources/warnings_local_datasource.dart';
 import '../../../data/models/create_warning_model.dart';
+import '../../../domain/usecases/create_site_warning_usecase.dart';
 import 'site_warning_draft_event.dart';
 import 'site_warning_draft_state.dart';
 
@@ -16,10 +17,11 @@ import 'site_warning_draft_state.dart';
 class SiteWarningDraftBloc
     extends Bloc<SiteWarningDraftEvent, SiteWarningDraftState> {
   final WarningsLocalDataSource _localDataSource;
+  final CreateSiteWarningUseCase _createSiteWarningUseCase;
 
   Timer? _autoSaveTimer;
 
-  SiteWarningDraftBloc(this._localDataSource)
+  SiteWarningDraftBloc(this._localDataSource, this._createSiteWarningUseCase)
     : super(const SiteWarningDraftState.initial()) {
     on<InitializeDraft>(_onInitializeDraft);
 
@@ -403,26 +405,68 @@ class SiteWarningDraftBloc
 
       emit(SiteWarningDraftState.submitting(draftData: currentData));
 
-      // TODO: Implement submission logic
-      // 1. Convert draft to CreateWarningModel
-      // 2. Call API to submit
-      // 3. Update local database with server response
-      // 4. Delete draft
+      // Step 1: Build the CreateWarningModel
+      final createModel = CreateWarningModel(
+        roadUID: currentData.road.uid ?? '',
+        workScopeUID: currentData.scopeUID,
+        fromSection: double.tryParse(currentData.startSection),
+        toSection: currentData.endSection != null
+            ? double.tryParse(currentData.endSection!)
+            : null,
+        contractRelationUID: currentData.contractor?.contractRelationUID,
+        warningReasonUIDs: currentData.warningReasonUIDs,
+        description: currentData.description.isEmpty
+            ? null
+            : currentData.description,
+        longitude: currentData.longitude,
+        latitude: currentData.latitude,
+        requiresAction: true,
+      );
 
-      await Future.delayed(const Duration(seconds: 2));
-
-      print('✅ Warning submitted successfully');
-
-      emit(SiteWarningDraftState.submitted(draftData: currentData));
-    } catch (e) {
-      print('❌ Error submitting warning: $e');
-      final currentData = _getCurrentDraftDataOrNull();
-      emit(
-        SiteWarningDraftState.error(
-          failure: ServerFailure('Failed to submit warning: $e'),
-          draftData: currentData,
+      // Step 2: Call use case to create site warning
+      final result = await _createSiteWarningUseCase(
+        CreateSiteWarningParams(
+          data: createModel,
+          companyUID: event.companyUID,
         ),
       );
+
+      // Step 3: Handle result
+      await result.fold(
+        (failure) async {
+          print('❌ Failed to submit warning: ${failure.message}');
+          emit(
+            SiteWarningDraftState.error(
+              failure: ServerFailure(failure.message),
+              draftData: currentData,
+            ),
+          );
+        },
+        (warning) async {
+          print('✅ Warning submitted successfully: ${warning.uid}');
+
+          // Step 4: Delete the draft after successful submission
+          if (draftUID != null) {
+            await _localDataSource.deleteWarningByUID(draftUID);
+            print('🗑️ Draft deleted: $draftUID');
+          }
+
+          // Emit submitted with the draft data (not Warning entity)
+          emit(SiteWarningDraftState.submitted(draftData: currentData));
+        },
+      );
+    } catch (e) {
+      print('❌ Error submitting warning: $e');
+
+      final currentData = _getCurrentDraftDataOrNull();
+      if (currentData != null) {
+        emit(
+          SiteWarningDraftState.error(
+            failure: ServerFailure('Failed to submit warning: $e'),
+            draftData: currentData,
+          ),
+        );
+      }
     }
   }
 

@@ -10,7 +10,7 @@ import '../../domain/entities/warning_item.dart';
 import '../bloc/warning_view/warning_bloc.dart';
 import '../bloc/warning_view/warning_event.dart';
 import '../bloc/warning_view/warning_state.dart';
-import 'show_status_selection.dart';
+import '../widgets/show_status_selection.dart';
 
 class ExpandableWarningCard extends StatefulWidget {
   final Warning warning;

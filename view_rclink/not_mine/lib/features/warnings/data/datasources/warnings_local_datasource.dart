@@ -34,6 +34,13 @@ abstract class WarningsLocalDataSource {
   );
   Future<void> deleteDraftWarning(String draftUID);
   Future<List<WarningModel>?> getDraftWarnings(String companyUID);
+
+  Future<WarningModel> createSiteWarningLocal(
+    CreateWarningModel data,
+    String companyUID,
+  );
+
+  Future<void> deleteWarningByUID(String uid);
 }
 
 @LazySingleton(as: WarningsLocalDataSource)
@@ -606,6 +613,177 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
     } catch (e) {
       print('❌ Error getting draft warnings: $e');
       return null;
+    }
+  }
+
+  @override
+  Future<WarningModel> createSiteWarningLocal(
+    CreateWarningModel data,
+    String companyUID,
+  ) async {
+    return await _database.transaction(() async {
+      try {
+        // Generate temp UID
+        final tempUID = const Uuid().v4();
+        final now = DateTime.now();
+
+        // Validate company exists
+        final company = await (_database.select(
+          _database.companies,
+        )..where((tbl) => tbl.uid.equals(companyUID))).getSingleOrNull();
+
+        if (company == null) {
+          throw Exception('Company not found: $companyUID');
+        }
+
+        // Get work scope and road records
+        final workScope = await (_database.select(
+          _database.workScopes,
+        )..where((tbl) => tbl.uid.equals(data.workScopeUID))).getSingleOrNull();
+
+        final road = await (_database.select(
+          _database.roads,
+        )..where((tbl) => tbl.uid.equals(data.roadUID))).getSingleOrNull();
+
+        if (workScope == null || road == null) {
+          throw Exception('Work scope or road not found');
+        }
+
+        // Get contract relation ID if provided
+        int? contractRelationID;
+        if (data.contractRelationUID != null) {
+          final contractRelation =
+              await (_database.select(_database.contractorRelations)..where(
+                    (tbl) => tbl.contractRelationUID.equals(
+                      data.contractRelationUID!,
+                    ),
+                  ))
+                  .getSingleOrNull();
+
+          if (contractRelation != null) {
+            contractRelationID = contractRelation.id;
+          }
+        }
+
+        // Build warning items JSON data with FULL WarningItemModel structure
+        String? warningItemsData;
+        if (data.warningReasonUIDs.isNotEmpty) {
+          final warningItems = <Map<String, dynamic>>[];
+
+          for (final reasonUID in data.warningReasonUIDs) {
+            // Get the reason record to get its ID
+            final reasonRecord = await (_database.select(
+              _database.warningReasons,
+            )..where((tbl) => tbl.uid.equals(reasonUID))).getSingleOrNull();
+
+            if (reasonRecord != null) {
+              warningItems.add({
+                'id': 0, // Temp ID, will be replaced by server
+                'uid': const Uuid().v4(),
+                'warningID': 0, // Temp ID, will be replaced by server
+                'warningReasonID': reasonRecord.id,
+                'notes': data.description,
+                'isCompleted': false,
+                'completedAt': null,
+                'createdAt': now.toIso8601String(),
+                'updatedAt': now.toIso8601String(),
+                'warningReason': null,
+              });
+            }
+          }
+
+          if (warningItems.isNotEmpty) {
+            warningItemsData = jsonEncode(warningItems);
+          }
+        }
+
+        // Build work scope JSON data
+        final workScopeDataJson = jsonEncode({
+          'uid': data.workScopeUID,
+          'name': workScope.name,
+          'code': workScope.code,
+        });
+
+        // Build road JSON data
+        final roadDataJson = jsonEncode({
+          'uid': data.roadUID,
+          'name': road.name,
+          'roadNo': road.roadNo,
+        });
+
+        // Build company JSON data
+        final companyDataJson = jsonEncode({
+          'uid': company.uid,
+          'name': company.name,
+        });
+
+        // Insert into database with temp UID
+        await _database
+            .into(_database.warnings)
+            .insert(
+              WarningsCompanion(
+                uid: Value(tempUID),
+                warningType: const Value('SITE_WARNING'),
+                companyID: Value(company.id),
+                roadID: Value(road.id),
+                workScopeID: Value(workScope.id),
+                contractRelationID: contractRelationID != null
+                    ? Value(contractRelationID)
+                    : const Value.absent(),
+                fromSection: data.fromSection != null
+                    ? Value(data.fromSection.toString())
+                    : const Value.absent(),
+                toSection: data.toSection != null
+                    ? Value(data.toSection.toString())
+                    : const Value.absent(),
+                description: data.description != null
+                    ? Value(data.description)
+                    : const Value.absent(),
+                longitude: data.longitude != null
+                    ? Value(data.longitude.toString())
+                    : const Value.absent(),
+                latitude: data.latitude != null
+                    ? Value(data.latitude.toString())
+                    : const Value.absent(),
+                requiresAction: Value(data.requiresAction ?? true),
+                isResolved: const Value(false),
+                createdAt: Value(now),
+                updatedAt: Value(now),
+                warningItemsData: Value(warningItemsData),
+                workScopeData: Value(workScopeDataJson),
+                roadData: Value(roadDataJson),
+                companyData: Value(companyDataJson),
+                status: const Value('SUBMITTED'),
+                isSynced: const Value(false),
+              ),
+            );
+
+        print('✅ Created local site warning with temp UID: $tempUID');
+
+        // Return the warning model
+        final createdWarning = await getCachedWarningByUid(tempUID);
+        if (createdWarning == null) {
+          throw Exception('Failed to retrieve created warning');
+        }
+
+        return createdWarning;
+      } catch (e) {
+        print('❌ Error creating local site warning: $e');
+        rethrow;
+      }
+    });
+  }
+
+  @override
+  Future<void> deleteWarningByUID(String uid) async {
+    try {
+      await (_database.delete(
+        _database.warnings,
+      )..where((tbl) => tbl.uid.equals(uid))).go();
+
+      print('✅ Deleted warning with UID: $uid');
+    } catch (e) {
+      print('❌ Error deleting warning: $e');
     }
   }
 }
