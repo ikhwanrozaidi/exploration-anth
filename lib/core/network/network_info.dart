@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:injectable/injectable.dart';
 
@@ -8,23 +7,13 @@ abstract class NetworkInfo {
 
 @LazySingleton(as: NetworkInfo)
 class NetworkInfoImpl implements NetworkInfo {
-  final Connectivity connectivity;
+  final Connectivity _connectivity;
 
-  NetworkInfoImpl(this.connectivity);
+  NetworkInfoImpl(this._connectivity);
 
   @override
   Future<bool> get isConnected async {
-    try {
-      final connectivityResult = await connectivity.checkConnectivity();
-      if (connectivityResult.contains(ConnectivityResult.none)) {
-        return false;
-      }
-
-      // Additional check to ensure actual internet connectivity
-      final result = await InternetAddress.lookup('google.com');
-      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-    } catch (_) {
-      return false;
-    }
+    final result = await _connectivity.checkConnectivity();
+    return result != ConnectivityResult.none;
   }
 }

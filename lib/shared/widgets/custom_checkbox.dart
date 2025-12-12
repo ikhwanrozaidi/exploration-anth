@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'theme.dart';
+import '../utils/theme.dart';
 
 class CustomCheckbox extends StatefulWidget {
   final bool value;
   final ValueChanged<bool?>? onChanged;
 
-  const CustomCheckbox({
-    Key? key,
-    required this.value,
-    required this.onChanged,
-  }) : super(key: key);
+  const CustomCheckbox({Key? key, required this.value, required this.onChanged})
+    : super(key: key);
 
   @override
   _CustomCheckboxState createState() => _CustomCheckboxState();
@@ -35,17 +32,10 @@ class _CustomCheckboxState extends State<CustomCheckbox> {
           decoration: BoxDecoration(
             color: widget.value ? tPrimaryColor : tPrimaryColorShade2,
             borderRadius: BorderRadius.circular(6),
-            border: Border.all(
-              color: tPrimaryColor,
-              width: 2,
-            ),
+            border: Border.all(color: tPrimaryColor, width: 2),
           ),
           child: widget.value
-              ? Icon(
-                  Icons.check,
-                  size: 20,
-                  color: Colors.white,
-                )
+              ? Icon(Icons.check, size: 20, color: Colors.white)
               : null,
         ),
       ),

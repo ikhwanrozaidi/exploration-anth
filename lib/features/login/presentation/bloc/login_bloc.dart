@@ -10,7 +10,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LoginUseCase _loginUseCase;
   final VerifyOtpUseCase _verifyOtpUseCase;
   final LogoutUseCase _logoutUseCase;
-  final GetStoredAdminUseCase _getStoredAdminUseCase;
+  final GetStoredUserUseCase _getStoredUserUseCase;
   final RefreshTokenUseCase _refreshTokenUseCase;
   final ForgotPasswordUseCase _forgotPasswordUseCase;
   final VerifyOtpForgotUseCase _verifyOtpForgotUseCase;
@@ -25,12 +25,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     this._loginUseCase,
     this._verifyOtpUseCase,
     this._logoutUseCase,
-    this._getStoredAdminUseCase,
+    this._getStoredUserUseCase,
     this._refreshTokenUseCase,
     this._forgotPasswordUseCase,
     this._verifyOtpForgotUseCase,
     this._changePasswordUseCase,
-    // Comment out these for now
     this._storeCredentialsUseCase,
     this._getStoredCredentialsUseCase,
   ) : super(const LoginInitial()) {
@@ -51,18 +50,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async {
     emit(const LoginLoading());
 
-    final result = await _loginUseCase(LoginParams(event.email, event.password));
+    final result = await _loginUseCase(
+      LoginParams(event.email, event.password),
+    );
 
     result.fold(
       (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
       (message) {
         _currentEmail = event.email; // Store email for OTP verification
-        
+
         // Store credentials if rememberMe is true
         if (event.rememberMe) {
           add(LoginStoreCredentials(event.email, event.password));
         }
-        
+
         emit(LoginOtpRequired(event.email, message));
       },
     );
@@ -76,21 +77,22 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       // For now, we'll skip this functionality until DI is set up
       // You can uncomment this once you add the use cases to DI
-      
+
       final result = await _getStoredCredentialsUseCase();
-      
+
       result.fold(
         (failure) => {}, // Ignore errors, just don't load credentials
         (credentials) {
           if (credentials != null) {
-            emit(LoginCredentialsLoaded(
-              credentials['email']!,
-              credentials['password']!,
-            ));
+            emit(
+              LoginCredentialsLoaded(
+                credentials['email']!,
+                credentials['password']!,
+              ),
+            );
           }
         },
       );
-      
     } catch (e) {
       // Ignore errors for now
     }
@@ -103,29 +105,31 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     // Temporarily disabled until use cases are set up
     try {
       // For now, we'll skip this functionality until DI is set up
-      
+
       await _storeCredentialsUseCase(
         StoreCredentialsParams(event.email, event.password),
       );
-      
     } catch (e) {
       // Ignore errors for now
     }
   }
-  
+
   Future<void> _onOtpSubmitted(
     LoginOtpSubmitted event,
     Emitter<LoginState> emit,
   ) async {
     emit(const LoginLoading());
 
-    final result = await _verifyOtpUseCase(VerifyOtpParams(event.email, event.otp));
+    final result = await _verifyOtpUseCase(
+      VerifyOtpParams(event.email, event.otp),
+    );
 
     result.fold(
       (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
-      (authData) {
-        final (authResult, admin) = authData;
-        emit(LoginAuthenticated(authResult, admin));
+      (data) {
+        final (authResult, user) = data;
+
+        emit(LoginSuccess(user));
       },
     );
   }
@@ -136,18 +140,25 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async {
     emit(const LoginLoading());
 
-    final result = await _getStoredAdminUseCase();
+    try {
+      final result = await _getStoredUserUseCase();
 
-    result.fold(
-      (failure) => emit(const LoginUnauthenticated()),
-      (admin) {
-        if (admin != null) {
-          emit(LoginSuccess(admin));
-        } else {
+      result.fold(
+        (failure) {
           emit(const LoginUnauthenticated());
-        }
-      },
-    );
+        },
+        (user) {
+          if (user != null) {
+            emit(LoginSuccess(user));
+          } else {
+            emit(const LoginUnauthenticated());
+          }
+        },
+      );
+    } catch (e) {
+      print('Error in CheckAuthStatus: $e');
+      emit(const LoginUnauthenticated());
+    }
   }
 
   Future<void> _onLogoutRequested(
@@ -161,7 +172,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     result.fold(
       (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
       (_) {
-        _currentEmail = null;
         emit(const LoginLoggedOut());
       },
     );
@@ -173,7 +183,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async {
     emit(const LoginLoading());
 
-    final result = await _forgotPasswordUseCase(ForgotPasswordParams(event.email));
+    final result = await _forgotPasswordUseCase(
+      ForgotPasswordParams(event.email),
+    );
 
     result.fold(
       (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),

@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gatepay_app/features/escrowpay/presentation/pages/escrowpay_page.dart';
 import 'package:gatepay_app/shared/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/dio/injection.dart';
+import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/string_formatter.dart';
 import '../../../pay_boarding/presentation/pages/pay_boarding_page.dart';
 import '../bloc/transaction_bloc.dart';

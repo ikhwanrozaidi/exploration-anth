@@ -22,11 +22,11 @@ mixin SyncableTable on Table {
   DateTimeColumn get lastSyncAttempt => dateTime().nullable()();
 }
 
-// Admins table for authentication
-@DataClassName('AdminRecord')
-class Admins extends Table with SyncableTable {
-  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
-  TextColumn get uid => text()(); // Business UUID - unique for public lookup
+// User account record
+@DataClassName('UserRecord')
+class Users extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get uid => text()();
   TextColumn get phone => text()();
   TextColumn get firstName => text().nullable()();
   TextColumn get lastName => text().nullable()();
@@ -36,8 +36,8 @@ class Admins extends Table with SyncableTable {
 
   @override
   List<Set<Column>> get uniqueKeys => [
-    {uid}, // UID must be unique for public lookup
-    {phone}, // Phone must be unique
+    {uid},
+    {phone},
   ];
 }
 
@@ -62,23 +62,7 @@ class Admins extends Table with SyncableTable {
 //   ];
 // }
 
-// Sync queue for offline operations
-@DataClassName('SyncQueueRecord')
-class SyncQueue extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get entityType => text()(); // 'admin', 'device', etc.
-  TextColumn get entityUid => text()(); // UID of the entity
-  TextColumn get action => text()(); // 'create', 'update', 'delete'
-  TextColumn get payload => text().nullable()(); // JSON payload
-  IntColumn get priority => integer().withDefault(const Constant(0))();
-  IntColumn get retryCount => integer().withDefault(const Constant(0))();
-  TextColumn get error => text().nullable()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get scheduledAt => dateTime().nullable()();
-  BoolColumn get isProcessed => boolean().withDefault(const Constant(false))();
-}
-
-@DriftDatabase(tables: [Admins, SyncQueue])
+@DriftDatabase(tables: [Users])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 

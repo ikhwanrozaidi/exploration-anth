@@ -1,10 +1,11 @@
+// lib/features/user/domain/entities/user.dart
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'admin.g.dart';
+part 'user.g.dart';
 
 @JsonSerializable()
-class Admin extends Equatable {
+class User extends Equatable {
   final int id;
   final String uid;
   final String phone;
@@ -14,7 +15,7 @@ class Admin extends Equatable {
   final DateTime updatedAt;
   final DateTime createdAt;
 
-  const Admin({
+  const User({
     required this.id,
     required this.uid,
     required this.phone,
@@ -25,7 +26,10 @@ class Admin extends Equatable {
     required this.createdAt,
   });
 
-  Admin copyWith({
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  Map<String, dynamic> toJson() => _$UserToJson(this);
+
+  User copyWith({
     int? id,
     String? uid,
     String? phone,
@@ -35,7 +39,7 @@ class Admin extends Equatable {
     DateTime? updatedAt,
     DateTime? createdAt,
   }) {
-    return Admin(
+    return User(
       id: id ?? this.id,
       uid: uid ?? this.uid,
       phone: phone ?? this.phone,
@@ -48,9 +52,10 @@ class Admin extends Equatable {
   }
 
   String get fullName {
-    final first = firstName ?? '';
-    final last = lastName ?? '';
-    return '$first $last'.trim();
+    if (firstName == null && lastName == null) return 'User';
+    if (firstName == null) return lastName!;
+    if (lastName == null) return firstName!;
+    return '$firstName $lastName';
   }
 
   @override
@@ -64,7 +69,4 @@ class Admin extends Equatable {
     updatedAt,
     createdAt,
   ];
-
-  factory Admin.fromJson(Map<String, dynamic> json) => _$AdminFromJson(json);
-  Map<String, dynamic> toJson() => _$AdminToJson(this);
 }

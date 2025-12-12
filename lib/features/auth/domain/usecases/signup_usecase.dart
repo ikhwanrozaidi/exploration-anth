@@ -1,11 +1,13 @@
 // lib/features/auth/domain/usecases/signup_usecase.dart
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/auth_result.dart';
 import '../repositories/auth_repository.dart';
 
+@injectable
 class SignUpUseCase implements UseCase<AuthResult, SignUpParams> {
   final AuthRepository repository;
 
@@ -15,7 +17,9 @@ class SignUpUseCase implements UseCase<AuthResult, SignUpParams> {
   Future<Either<Failure, AuthResult>> call(SignUpParams params) async {
     // Validate input
     if (params.email.isEmpty || params.password.isEmpty) {
-      return const Left(ValidationFailure('Email and password cannot be empty'));
+      return const Left(
+        ValidationFailure('Email and password cannot be empty'),
+      );
     }
 
     if (!_isValidEmail(params.email)) {
@@ -23,7 +27,9 @@ class SignUpUseCase implements UseCase<AuthResult, SignUpParams> {
     }
 
     if (params.password.length < 6) {
-      return const Left(ValidationFailure('Password must be at least 6 characters'));
+      return const Left(
+        ValidationFailure('Password must be at least 6 characters'),
+      );
     }
 
     return await repository.signUp(
@@ -38,6 +44,7 @@ class SignUpUseCase implements UseCase<AuthResult, SignUpParams> {
   }
 }
 
+@injectable
 class CheckEmailExistsUseCase implements UseCase<bool, CheckEmailParams> {
   final AuthRepository repository;
 

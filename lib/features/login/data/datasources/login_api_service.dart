@@ -20,7 +20,7 @@ abstract class LoginApiService {
   factory LoginApiService(Dio dio) = _LoginApiService;
 
   // Login with email and password
-  @POST('/auth/login')
+  @POST('/auth/sign-in')
   Future<ApiResponse<LoginResponseModel>> login({
     @Body() required LoginRequestModel data,
   });

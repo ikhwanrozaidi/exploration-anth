@@ -5,7 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gatepay_app/features/transactionboard/presentation/bloc/transaction_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'core/config/flavor_config.dart';
-import 'core/dio/injection.dart';
+import 'core/di/injection.dart';
 
 import 'features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'features/locale/presentation/bloc/locale_bloc.dart';

@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'admin_model.dart';
+part of 'user_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_AdminModel _$AdminModelFromJson(Map<String, dynamic> json) => _AdminModel(
+_UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   id: (json['id'] as num).toInt(),
   uid: json['uid'] as String,
   phone: json['phone'] as String,
@@ -17,7 +17,7 @@ _AdminModel _$AdminModelFromJson(Map<String, dynamic> json) => _AdminModel(
   createdAt: DateTime.parse(json['createdAt'] as String),
 );
 
-Map<String, dynamic> _$AdminModelToJson(_AdminModel instance) =>
+Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'uid': instance.uid,

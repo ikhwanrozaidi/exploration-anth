@@ -1,10 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/create_payment_request.dart';
 import '../repository/escrowpay_repository.dart';
 
+@injectable
 class CreatePaymentUseCase implements UseCase<String, CreatePaymentParams> {
   final EscrowpayRepository repository;
 

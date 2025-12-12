@@ -1,17 +1,11 @@
-// lib/shared/widgets/auth_wrapper.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gatepay_app/features/dashboard/presentation/pages/dashboard_page.dart';
-import 'package:gatepay_app/features/inbox/presentation/pages/inbox_page.dart';
-import 'package:gatepay_app/features/transactionboard/presentation/pages/transactionboard_page.dart';
 import '../../features/login/presentation/bloc/login_bloc.dart';
 import '../../features/login/presentation/bloc/login_event.dart';
 import '../../features/login/presentation/bloc/login_state.dart';
-import '../../features/login/presentation/pages/login_page.dart';
 import '../../features/onboarding/presentation/pages/onboarding_pages.dart';
 import '../pages/root_page.dart';
 
-/// AuthWrapper decides what to show based on authentication state
 class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
 
@@ -26,20 +20,30 @@ class AuthWrapper extends StatelessWidget {
             return const _SplashScreen();
           },
           credentialsLoaded: (email, password) {
-            // Handle credentials loaded - usually just show login page
-            return const LoginPage(); // or whatever you want to show
+            // Show loading while credentials are being processed
+            return const _LoadingScreen();
           },
           loading: () => const _LoadingScreen(),
-          otpRequired: (email, message) => const LoginPage(),
+          otpRequired: (email, message) {
+            // Stay on current page - OTP dialog will show
+            return const _LoadingScreen();
+          },
           authenticated: (authResult, admin) => const RootPage(),
           success: (admin) => const RootPage(),
-          // Unauthenticate
-          unauthenticated: () => const RootPage(),
-          loggedOut: () => const OnboardingPage(),
+          unauthenticated: () =>
+              const OnboardingPage(), // ✅ FIXED: Show onboarding, not RootPage
+          loggedOut: () =>
+              const OnboardingPage(), // ✅ User logged out - show onboarding
           failure: (message) => const OnboardingPage(),
-          forgotPasswordOtpRequired: (email, message) => const LoginPage(),
-          changePasswordRequired: (email, message) => const LoginPage(),
-          passwordChanged: (message) => const LoginPage(),
+          forgotPasswordOtpRequired: (email, message) {
+            // Stay on current page - forgot password flow
+            return const _LoadingScreen();
+          },
+          changePasswordRequired: (email, message) {
+            // Stay on current page - change password flow
+            return const _LoadingScreen();
+          },
+          passwordChanged: (message) => const OnboardingPage(),
         );
       },
     );

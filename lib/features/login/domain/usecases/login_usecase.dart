@@ -1,14 +1,16 @@
 // lib/features/auth/domain/usecases/login_usecase.dart
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:gatepay_app/features/user/domain/entities/user.dart';
+import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../../../auth/domain/entities/auth_result.dart';
 import '../repositories/login_repository.dart';
-import '../../../admin/domain/entities/admin.dart';
 
 export 'credential_usecase.dart';
 
+@injectable
 class LoginUseCase implements UseCase<String, LoginParams> {
   final LoginRepository repository;
 
@@ -18,7 +20,9 @@ class LoginUseCase implements UseCase<String, LoginParams> {
   Future<Either<Failure, String>> call(LoginParams params) async {
     // Validate email and password
     if (params.email.isEmpty || params.password.isEmpty) {
-      return const Left(ValidationFailure('Email and password cannot be empty'));
+      return const Left(
+        ValidationFailure('Email and password cannot be empty'),
+      );
     }
 
     if (!_isValidEmail(params.email)) {
@@ -33,13 +37,16 @@ class LoginUseCase implements UseCase<String, LoginParams> {
   }
 }
 
-class VerifyOtpUseCase implements UseCase<(AuthResult, Admin), VerifyOtpParams> {
+@injectable
+class VerifyOtpUseCase implements UseCase<(AuthResult, User), VerifyOtpParams> {
   final LoginRepository repository;
 
   VerifyOtpUseCase(this.repository);
 
   @override
-  Future<Either<Failure, (AuthResult, Admin)>> call(VerifyOtpParams params) async {
+  Future<Either<Failure, (AuthResult, User)>> call(
+    VerifyOtpParams params,
+  ) async {
     if (params.email.isEmpty || params.otp.isEmpty) {
       return const Left(ValidationFailure('Email and OTP cannot be empty'));
     }
@@ -52,6 +59,7 @@ class VerifyOtpUseCase implements UseCase<(AuthResult, Admin), VerifyOtpParams> 
   }
 }
 
+@injectable
 class LogoutUseCase implements UseCaseNoParams<void> {
   final LoginRepository repository;
 
@@ -63,28 +71,31 @@ class LogoutUseCase implements UseCaseNoParams<void> {
   }
 }
 
-class GetStoredAdminUseCase implements UseCaseNoParams<Admin?> {
+@injectable
+class GetStoredUserUseCase implements UseCaseNoParams<User?> {
   final LoginRepository repository;
 
-  GetStoredAdminUseCase(this.repository);
+  GetStoredUserUseCase(this.repository);
 
   @override
-  Future<Either<Failure, Admin?>> call() async {
-    return await repository.getStoredAdmin();
+  Future<Either<Failure, User?>> call() async {
+    return await repository.getStoredUser();
   }
 }
 
-class RefreshTokenUseCase implements UseCaseNoParams<(AuthResult, Admin)> {
+@injectable
+class RefreshTokenUseCase implements UseCaseNoParams<(AuthResult, User)> {
   final LoginRepository repository;
 
   RefreshTokenUseCase(this.repository);
 
   @override
-  Future<Either<Failure, (AuthResult, Admin)>> call() async {
+  Future<Either<Failure, (AuthResult, User)>> call() async {
     return await repository.refreshToken();
   }
 }
 
+@injectable
 class ForgotPasswordUseCase implements UseCase<String, ForgotPasswordParams> {
   final LoginRepository repository;
 
@@ -108,6 +119,7 @@ class ForgotPasswordUseCase implements UseCase<String, ForgotPasswordParams> {
   }
 }
 
+@injectable
 class VerifyOtpForgotUseCase implements UseCase<String, VerifyOtpForgotParams> {
   final LoginRepository repository;
 
@@ -123,6 +135,7 @@ class VerifyOtpForgotUseCase implements UseCase<String, VerifyOtpForgotParams> {
   }
 }
 
+@injectable
 class ChangePasswordUseCase implements UseCase<String, ChangePasswordParams> {
   final LoginRepository repository;
 
@@ -131,18 +144,24 @@ class ChangePasswordUseCase implements UseCase<String, ChangePasswordParams> {
   @override
   Future<Either<Failure, String>> call(ChangePasswordParams params) async {
     if (params.email.isEmpty || params.newPassword.isEmpty) {
-      return const Left(ValidationFailure('Email and new password cannot be empty'));
+      return const Left(
+        ValidationFailure('Email and new password cannot be empty'),
+      );
     }
 
     if (params.newPassword.length < 6) {
-      return const Left(ValidationFailure('Password must be at least 6 characters'));
+      return const Left(
+        ValidationFailure('Password must be at least 6 characters'),
+      );
     }
 
     return await repository.changePassword(params.email, params.newPassword);
   }
 }
 
-class StoreLoginCredentialsUseCase implements UseCase<void, StoreCredentialsParams> {
+@injectable
+class StoreLoginCredentialsUseCase
+    implements UseCase<void, StoreCredentialsParams> {
   final LoginRepository repository;
 
   StoreLoginCredentialsUseCase(this.repository);
@@ -150,14 +169,21 @@ class StoreLoginCredentialsUseCase implements UseCase<void, StoreCredentialsPara
   @override
   Future<Either<Failure, void>> call(StoreCredentialsParams params) async {
     if (params.email.isEmpty || params.password.isEmpty) {
-      return const Left(ValidationFailure('Email and password cannot be empty'));
+      return const Left(
+        ValidationFailure('Email and password cannot be empty'),
+      );
     }
 
-    return await repository.storeLoginCredentials(params.email, params.password);
+    return await repository.storeLoginCredentials(
+      params.email,
+      params.password,
+    );
   }
 }
 
-class GetStoredCredentialsUseCase implements UseCaseNoParams<Map<String, String>?> {
+@injectable
+class GetStoredCredentialsUseCase
+    implements UseCaseNoParams<Map<String, String>?> {
   final LoginRepository repository;
 
   GetStoredCredentialsUseCase(this.repository);

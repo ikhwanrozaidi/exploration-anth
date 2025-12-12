@@ -7,7 +7,9 @@ import 'package:iconify_flutter/icons/bx.dart';
 import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
-import '../../../../core/dio/injection.dart';
+import '../../../../core/di/injection.dart';
+import '../../../login/presentation/bloc/login_bloc.dart';
+import '../../../login/presentation/bloc/login_event.dart';
 import '../bloc/profile_bloc.dart';
 import '../bloc/profile_event.dart';
 import '../bloc/profile_state.dart';
@@ -32,6 +34,48 @@ class ProfilePage extends StatelessWidget {
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Text(
+          'Log Out',
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
+        content: Text(
+          'Are you sure you want to log out?',
+          style: GoogleFonts.poppins(),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(
+              'Cancel',
+              style: GoogleFonts.poppins(color: Colors.grey[600]),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              context.read<LoginBloc>().add(const LoginLogoutRequested());
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            child: Text(
+              'Log Out',
+              style: GoogleFonts.poppins(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -394,34 +438,58 @@ class ProfileView extends StatelessWidget {
                                     "FAQ",
                                     () {},
                                   ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
+
+                                  // Add this to your logout button section
+                                  InkWell(
+                                    onTap: () => _showLogoutDialog(context),
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 12,
+                                        horizontal: 16,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                          color: Colors.grey.shade300,
+                                        ),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Container(
-                                            padding: EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
-                                              color: backgroundColor,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: Iconify(
-                                              Ic.round_log_out,
-                                              size: 20,
-                                              color: Colors.black,
-                                            ),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                padding: EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.red.shade50,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Iconify(
+                                                  Ic.round_log_out,
+                                                  size: 20,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                              SizedBox(width: 20),
+                                              Text(
+                                                'Log Out',
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 16,
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          SizedBox(width: 20),
-                                          Text('Log Out'),
+                                          Icon(
+                                            Icons.arrow_forward_ios_rounded,
+                                            size: 18,
+                                            color: Colors.red,
+                                          ),
                                         ],
                                       ),
-
-                                      Icon(
-                                        Icons.arrow_forward_ios_rounded,
-                                        size: 18,
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ],
                               ),

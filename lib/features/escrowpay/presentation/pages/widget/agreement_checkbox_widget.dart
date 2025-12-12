@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../../../../shared/utils/custom_checkbox.dart';
+import '../../../../../shared/widgets/custom_checkbox.dart';
 
 class AgreementCheckbox extends StatelessWidget {
   final bool isChecked;

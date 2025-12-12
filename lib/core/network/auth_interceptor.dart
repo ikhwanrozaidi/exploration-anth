@@ -1,75 +1,104 @@
-import 'dart:io';
+// lib/core/network/auth_interceptor.dart
+import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-
+import 'package:synchronized/synchronized.dart';
 import '../service/secure_storage_service.dart';
 
-@injectable
+@lazySingleton
 class AuthInterceptor extends Interceptor {
   final Dio _dio;
   final SecureStorageService _secureStorage;
-  
+  final Lock _lock = Lock();
+
+  // Token refresh state
+  bool _isRefreshing = false;
+  Completer<void>? _refreshCompleter;
+
   AuthInterceptor(this._dio, this._secureStorage);
 
   @override
-  void onRequest(
+  Future<void> onRequest(
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    // Skip auth for certain endpoints
+    // Skip authentication for public endpoints
     if (_shouldSkipAuth(options.path)) {
       return handler.next(options);
     }
 
-    try {
-      final accessToken = await _getAccessToken();
-      if (accessToken != null) {
-        options.headers['Authorization'] = 'Bearer $accessToken';
-      }
-    } catch (e) {
-      // Continue without token if there's an error getting it
-      print('Error getting access token: $e');
+    // Get access token
+    final accessToken = await _getAccessToken();
+
+    if (accessToken != null) {
+      options.headers['Authorization'] = 'Bearer $accessToken';
     }
 
     handler.next(options);
   }
 
   @override
-  void onResponse(Response response, ResponseInterceptorHandler handler) {
-    handler.next(response);
-  }
-
-  @override
-  void onError(DioException err, ErrorInterceptorHandler handler) async {
-    // Handle 401 Unauthorized errors
+  Future<void> onError(
+    DioException err,
+    ErrorInterceptorHandler handler,
+  ) async {
+    // Handle 401 Unauthorized - token expired
     if (err.response?.statusCode == 401) {
-      try {
-        final newAccessToken = await _refreshToken();
-        if (newAccessToken != null) {
-          // Retry the original request with new token
-          final requestOptions = err.requestOptions;
-          requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
-          
-          try {
-            final response = await _dio.fetch(requestOptions);
-            return handler.resolve(response);
-          } catch (e) {
-            // If retry fails, continue with original error
-            return handler.next(err);
-          }
-        } else {
-          // No refresh token or refresh failed, clear tokens and continue with error
-          await _clearTokens();
+      // Don't retry if it's already a refresh token request
+      if (err.requestOptions.path.contains('/auth/refresh-token')) {
+        await _clearTokens();
+        return handler.next(err);
+      }
+
+      // Try to refresh token
+      final newAccessToken = await _refreshTokenWithLock();
+
+      if (newAccessToken != null) {
+        // Retry the original request with new token
+        try {
+          final options = err.requestOptions;
+          options.headers['Authorization'] = 'Bearer $newAccessToken';
+
+          final response = await _dio.fetch(options);
+          return handler.resolve(response);
+        } catch (e) {
           return handler.next(err);
         }
-      } catch (e) {
-        // Refresh token process failed, clear tokens and continue with error
+      } else {
+        // Refresh failed - clear tokens
         await _clearTokens();
         return handler.next(err);
       }
     }
 
     handler.next(err);
+  }
+
+  /// Refresh token with lock to prevent multiple simultaneous refresh attempts
+  Future<String?> _refreshTokenWithLock() async {
+    return await _lock.synchronized(() async {
+      // If already refreshing, wait for it to complete
+      if (_isRefreshing && _refreshCompleter != null) {
+        await _refreshCompleter!.future;
+        return await _getAccessToken();
+      }
+
+      // Start refreshing
+      _isRefreshing = true;
+      _refreshCompleter = Completer<void>();
+
+      try {
+        final newToken = await _refreshToken();
+        _refreshCompleter?.complete();
+        return newToken;
+      } catch (e) {
+        _refreshCompleter?.completeError(e);
+        return null;
+      } finally {
+        _isRefreshing = false;
+        _refreshCompleter = null;
+      }
+    });
   }
 
   /// Get stored access token
@@ -95,7 +124,8 @@ class AuthInterceptor extends Interceptor {
   /// Store new access token
   Future<void> _storeAccessToken(String token) async {
     try {
-      final refreshToken = await _secureStorage.getRefreshToken();
+      final refreshToken = await _getRefreshToken();
+
       if (refreshToken != null) {
         await _secureStorage.storeTokens(
           accessToken: token,
@@ -110,7 +140,8 @@ class AuthInterceptor extends Interceptor {
   /// Store new refresh token
   Future<void> _storeRefreshToken(String token) async {
     try {
-      final accessToken = await _secureStorage.getAccessToken();
+      final accessToken = await _getAccessToken();
+
       if (accessToken != null) {
         await _secureStorage.storeTokens(
           accessToken: accessToken,
@@ -142,32 +173,29 @@ class AuthInterceptor extends Interceptor {
       // Create a new Dio instance without interceptors to avoid infinite loop
       final refreshDio = Dio();
       refreshDio.options.baseUrl = _dio.options.baseUrl;
-      
+
       final response = await refreshDio.post(
         '/auth/refresh-token',
-        data: {
-          'refreshToken': refreshToken,
-        },
-        options: Options(
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        ),
+        data: {'refreshToken': refreshToken},
+        options: Options(headers: {'Content-Type': 'application/json'}),
       );
 
       if (response.statusCode == 200 && response.data != null) {
         final data = response.data;
-        
+
         // Handle different possible response structures
         String? newAccessToken;
         String? newRefreshToken;
 
         if (data is Map<String, dynamic>) {
           // Check if response is wrapped in ApiResponse structure
-          if (data.containsKey('data') && data['data'] is Map<String, dynamic>) {
+          if (data.containsKey('data') &&
+              data['data'] is Map<String, dynamic>) {
             final responseData = data['data'] as Map<String, dynamic>;
-            newAccessToken = responseData['accessToken'] ?? responseData['access_token'];
-            newRefreshToken = responseData['refreshToken'] ?? responseData['refresh_token'];
+            newAccessToken =
+                responseData['accessToken'] ?? responseData['access_token'];
+            newRefreshToken =
+                responseData['refreshToken'] ?? responseData['refresh_token'];
           } else {
             // Direct response structure
             newAccessToken = data['accessToken'] ?? data['access_token'];
@@ -177,12 +205,12 @@ class AuthInterceptor extends Interceptor {
 
         if (newAccessToken != null) {
           await _storeAccessToken(newAccessToken);
-          
+
           // Store new refresh token if provided
           if (newRefreshToken != null) {
             await _storeRefreshToken(newRefreshToken);
           }
-          
+
           return newAccessToken;
         }
       }

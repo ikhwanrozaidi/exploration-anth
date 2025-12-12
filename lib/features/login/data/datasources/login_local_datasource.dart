@@ -1,20 +1,22 @@
+// lib/features/login/data/datasources/login_local_datasource.dart
 import 'package:dartz/dartz.dart';
+import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/auth_interceptor.dart';
 import '../../../../core/service/secure_storage_service.dart';
 import '../../../auth/domain/entities/auth_result.dart';
-import '../../../admin/domain/entities/admin.dart';
+import '../../../user/domain/entities/user.dart';
 
 abstract class LoginLocalDataSource {
   Future<Either<Failure, void>> storeAuthResult(
     AuthResult authResult,
-    Admin admin,
+    User user,
   );
   Future<Either<Failure, String?>> getAccessToken();
   Future<Either<Failure, String?>> getRefreshToken();
-  Future<Either<Failure, Admin?>> getStoredAdmin();
+  Future<Either<Failure, User?>> getStoredUser();
   Future<Either<Failure, void>> clearAuthData();
 
   Future<Either<Failure, void>> storeLoginCredentials(
@@ -41,7 +43,7 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   @override
   Future<Either<Failure, void>> storeAuthResult(
     AuthResult authResult,
-    Admin admin,
+    User user,
   ) async {
     try {
       // Store tokens securely
@@ -56,10 +58,21 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
         refreshToken: authResult.refreshToken,
       );
 
-      // Store admin in database
+      // Store user in database
       await _database
-          .into(_database.admins)
-          .insertOnConflictUpdate(admin.toCompanion(isSynced: true));
+          .into(_database.users)
+          .insertOnConflictUpdate(
+            UsersCompanion.insert(
+              id: Value(user.id),
+              uid: user.uid,
+              phone: user.phone,
+              firstName: Value(user.firstName),
+              lastName: Value(user.lastName),
+              email: Value(user.email),
+              updatedAt: user.updatedAt,
+              createdAt: user.createdAt,
+            ),
+          );
 
       return const Right(null);
     } catch (e) {
@@ -88,16 +101,34 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   }
 
   @override
-  Future<Either<Failure, Admin?>> getStoredAdmin() async {
+  Future<Either<Failure, User?>> getStoredUser() async {
     try {
-      final query = _database.select(_database.admins)
-        ..where((a) => a.deletedAt.isNull())
+      // ✅ FIXED: Changed from db.admins to db.users
+      final query = _database.select(_database.users)
+        ..where((u) => u.deletedAt.isNull())
         ..limit(1);
 
-      final result = await query.getSingleOrNull();
-      return Right(result?.toEntity());
+      final record = await query.getSingleOrNull();
+
+      if (record == null) {
+        return const Right(null);
+      }
+
+      // Convert database record to User entity
+      final user = User(
+        id: record.id,
+        uid: record.uid,
+        phone: record.phone,
+        firstName: record.firstName,
+        lastName: record.lastName,
+        email: record.email,
+        updatedAt: record.updatedAt,
+        createdAt: record.createdAt,
+      );
+
+      return Right(user);
     } catch (e) {
-      return Left(CacheFailure('Failed to get stored admin: ${e.toString()}'));
+      return Left(CacheFailure('Failed to get stored user: ${e.toString()}'));
     }
   }
 
@@ -113,8 +144,9 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
       // Clear tokens from auth interceptor
       await _authInterceptor.clearAllTokens();
 
-      // Clear admin data from database
-      await _database.delete(_database.admins).go();
+      // ✅ FIXED: Changed from db.admins to db.users
+      // Clear user data from database
+      await _database.delete(_database.users).go();
 
       return const Right(null);
     } catch (e) {

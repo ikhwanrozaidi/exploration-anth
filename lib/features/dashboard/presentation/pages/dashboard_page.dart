@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/uil.dart';
-import '../../../../core/dio/injection.dart';
+import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/string_formatter.dart';
 import '../../../../shared/utils/theme.dart';
 import '../bloc/dashboard_bloc.dart';

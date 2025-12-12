@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../../core/dio/injection.dart';
+import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/theme.dart';
 import '../bloc/escrowpay_bloc.dart';
 import '../bloc/escrowpay_event.dart';

@@ -3,11 +3,11 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
-class $AdminsTable extends Admins with TableInfo<$AdminsTable, AdminRecord> {
+class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $AdminsTable(this.attachedDatabase, [this._alias]);
+  $UsersTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _isSyncedMeta = const VerificationMeta(
     'isSynced',
   );
@@ -185,10 +185,10 @@ class $AdminsTable extends Admins with TableInfo<$AdminsTable, AdminRecord> {
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'admins';
+  static const String $name = 'users';
   @override
   VerificationContext validateIntegrity(
-    Insertable<AdminRecord> instance, {
+    Insertable<UserRecord> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -299,9 +299,9 @@ class $AdminsTable extends Admins with TableInfo<$AdminsTable, AdminRecord> {
     {phone},
   ];
   @override
-  AdminRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+  UserRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return AdminRecord(
+    return UserRecord(
       isSynced: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}is_synced'],
@@ -362,12 +362,12 @@ class $AdminsTable extends Admins with TableInfo<$AdminsTable, AdminRecord> {
   }
 
   @override
-  $AdminsTable createAlias(String alias) {
-    return $AdminsTable(attachedDatabase, alias);
+  $UsersTable createAlias(String alias) {
+    return $UsersTable(attachedDatabase, alias);
   }
 }
 
-class AdminRecord extends DataClass implements Insertable<AdminRecord> {
+class UserRecord extends DataClass implements Insertable<UserRecord> {
   final bool isSynced;
   final DateTime? deletedAt;
   final String? syncAction;
@@ -382,7 +382,7 @@ class AdminRecord extends DataClass implements Insertable<AdminRecord> {
   final String? email;
   final DateTime updatedAt;
   final DateTime createdAt;
-  const AdminRecord({
+  const UserRecord({
     required this.isSynced,
     this.deletedAt,
     this.syncAction,
@@ -432,8 +432,8 @@ class AdminRecord extends DataClass implements Insertable<AdminRecord> {
     return map;
   }
 
-  AdminsCompanion toCompanion(bool nullToAbsent) {
-    return AdminsCompanion(
+  UsersCompanion toCompanion(bool nullToAbsent) {
+    return UsersCompanion(
       isSynced: Value(isSynced),
       deletedAt: deletedAt == null && nullToAbsent
           ? const Value.absent()
@@ -465,12 +465,12 @@ class AdminRecord extends DataClass implements Insertable<AdminRecord> {
     );
   }
 
-  factory AdminRecord.fromJson(
+  factory UserRecord.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return AdminRecord(
+    return UserRecord(
       isSynced: serializer.fromJson<bool>(json['isSynced']),
       deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
       syncAction: serializer.fromJson<String?>(json['syncAction']),
@@ -508,7 +508,7 @@ class AdminRecord extends DataClass implements Insertable<AdminRecord> {
     };
   }
 
-  AdminRecord copyWith({
+  UserRecord copyWith({
     bool? isSynced,
     Value<DateTime?> deletedAt = const Value.absent(),
     Value<String?> syncAction = const Value.absent(),
@@ -523,7 +523,7 @@ class AdminRecord extends DataClass implements Insertable<AdminRecord> {
     Value<String?> email = const Value.absent(),
     DateTime? updatedAt,
     DateTime? createdAt,
-  }) => AdminRecord(
+  }) => UserRecord(
     isSynced: isSynced ?? this.isSynced,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
     syncAction: syncAction.present ? syncAction.value : this.syncAction,
@@ -541,8 +541,8 @@ class AdminRecord extends DataClass implements Insertable<AdminRecord> {
     updatedAt: updatedAt ?? this.updatedAt,
     createdAt: createdAt ?? this.createdAt,
   );
-  AdminRecord copyWithCompanion(AdminsCompanion data) {
-    return AdminRecord(
+  UserRecord copyWithCompanion(UsersCompanion data) {
+    return UserRecord(
       isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
       syncAction: data.syncAction.present
@@ -568,7 +568,7 @@ class AdminRecord extends DataClass implements Insertable<AdminRecord> {
 
   @override
   String toString() {
-    return (StringBuffer('AdminRecord(')
+    return (StringBuffer('UserRecord(')
           ..write('isSynced: $isSynced, ')
           ..write('deletedAt: $deletedAt, ')
           ..write('syncAction: $syncAction, ')
@@ -607,7 +607,7 @@ class AdminRecord extends DataClass implements Insertable<AdminRecord> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is AdminRecord &&
+      (other is UserRecord &&
           other.isSynced == this.isSynced &&
           other.deletedAt == this.deletedAt &&
           other.syncAction == this.syncAction &&
@@ -624,7 +624,7 @@ class AdminRecord extends DataClass implements Insertable<AdminRecord> {
           other.createdAt == this.createdAt);
 }
 
-class AdminsCompanion extends UpdateCompanion<AdminRecord> {
+class UsersCompanion extends UpdateCompanion<UserRecord> {
   final Value<bool> isSynced;
   final Value<DateTime?> deletedAt;
   final Value<String?> syncAction;
@@ -639,7 +639,7 @@ class AdminsCompanion extends UpdateCompanion<AdminRecord> {
   final Value<String?> email;
   final Value<DateTime> updatedAt;
   final Value<DateTime> createdAt;
-  const AdminsCompanion({
+  const UsersCompanion({
     this.isSynced = const Value.absent(),
     this.deletedAt = const Value.absent(),
     this.syncAction = const Value.absent(),
@@ -655,7 +655,7 @@ class AdminsCompanion extends UpdateCompanion<AdminRecord> {
     this.updatedAt = const Value.absent(),
     this.createdAt = const Value.absent(),
   });
-  AdminsCompanion.insert({
+  UsersCompanion.insert({
     this.isSynced = const Value.absent(),
     this.deletedAt = const Value.absent(),
     this.syncAction = const Value.absent(),
@@ -674,7 +674,7 @@ class AdminsCompanion extends UpdateCompanion<AdminRecord> {
        phone = Value(phone),
        updatedAt = Value(updatedAt),
        createdAt = Value(createdAt);
-  static Insertable<AdminRecord> custom({
+  static Insertable<UserRecord> custom({
     Expression<bool>? isSynced,
     Expression<DateTime>? deletedAt,
     Expression<String>? syncAction,
@@ -708,7 +708,7 @@ class AdminsCompanion extends UpdateCompanion<AdminRecord> {
     });
   }
 
-  AdminsCompanion copyWith({
+  UsersCompanion copyWith({
     Value<bool>? isSynced,
     Value<DateTime?>? deletedAt,
     Value<String?>? syncAction,
@@ -724,7 +724,7 @@ class AdminsCompanion extends UpdateCompanion<AdminRecord> {
     Value<DateTime>? updatedAt,
     Value<DateTime>? createdAt,
   }) {
-    return AdminsCompanion(
+    return UsersCompanion(
       isSynced: isSynced ?? this.isSynced,
       deletedAt: deletedAt ?? this.deletedAt,
       syncAction: syncAction ?? this.syncAction,
@@ -792,7 +792,7 @@ class AdminsCompanion extends UpdateCompanion<AdminRecord> {
 
   @override
   String toString() {
-    return (StringBuffer('AdminsCompanion(')
+    return (StringBuffer('UsersCompanion(')
           ..write('isSynced: $isSynced, ')
           ..write('deletedAt: $deletedAt, ')
           ..write('syncAction: $syncAction, ')
@@ -812,676 +812,19 @@ class AdminsCompanion extends UpdateCompanion<AdminRecord> {
   }
 }
 
-class $SyncQueueTable extends SyncQueue
-    with TableInfo<$SyncQueueTable, SyncQueueRecord> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $SyncQueueTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-    'id',
-    aliasedName,
-    false,
-    hasAutoIncrement: true,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
-  );
-  static const VerificationMeta _entityTypeMeta = const VerificationMeta(
-    'entityType',
-  );
-  @override
-  late final GeneratedColumn<String> entityType = GeneratedColumn<String>(
-    'entity_type',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _entityUidMeta = const VerificationMeta(
-    'entityUid',
-  );
-  @override
-  late final GeneratedColumn<String> entityUid = GeneratedColumn<String>(
-    'entity_uid',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _actionMeta = const VerificationMeta('action');
-  @override
-  late final GeneratedColumn<String> action = GeneratedColumn<String>(
-    'action',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _payloadMeta = const VerificationMeta(
-    'payload',
-  );
-  @override
-  late final GeneratedColumn<String> payload = GeneratedColumn<String>(
-    'payload',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _priorityMeta = const VerificationMeta(
-    'priority',
-  );
-  @override
-  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
-    'priority',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
-  static const VerificationMeta _retryCountMeta = const VerificationMeta(
-    'retryCount',
-  );
-  @override
-  late final GeneratedColumn<int> retryCount = GeneratedColumn<int>(
-    'retry_count',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
-  static const VerificationMeta _errorMeta = const VerificationMeta('error');
-  @override
-  late final GeneratedColumn<String> error = GeneratedColumn<String>(
-    'error',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _scheduledAtMeta = const VerificationMeta(
-    'scheduledAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> scheduledAt = GeneratedColumn<DateTime>(
-    'scheduled_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _isProcessedMeta = const VerificationMeta(
-    'isProcessed',
-  );
-  @override
-  late final GeneratedColumn<bool> isProcessed = GeneratedColumn<bool>(
-    'is_processed',
-    aliasedName,
-    false,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_processed" IN (0, 1))',
-    ),
-    defaultValue: const Constant(false),
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    entityType,
-    entityUid,
-    action,
-    payload,
-    priority,
-    retryCount,
-    error,
-    createdAt,
-    scheduledAt,
-    isProcessed,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'sync_queue';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<SyncQueueRecord> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('entity_type')) {
-      context.handle(
-        _entityTypeMeta,
-        entityType.isAcceptableOrUnknown(data['entity_type']!, _entityTypeMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_entityTypeMeta);
-    }
-    if (data.containsKey('entity_uid')) {
-      context.handle(
-        _entityUidMeta,
-        entityUid.isAcceptableOrUnknown(data['entity_uid']!, _entityUidMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_entityUidMeta);
-    }
-    if (data.containsKey('action')) {
-      context.handle(
-        _actionMeta,
-        action.isAcceptableOrUnknown(data['action']!, _actionMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_actionMeta);
-    }
-    if (data.containsKey('payload')) {
-      context.handle(
-        _payloadMeta,
-        payload.isAcceptableOrUnknown(data['payload']!, _payloadMeta),
-      );
-    }
-    if (data.containsKey('priority')) {
-      context.handle(
-        _priorityMeta,
-        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
-      );
-    }
-    if (data.containsKey('retry_count')) {
-      context.handle(
-        _retryCountMeta,
-        retryCount.isAcceptableOrUnknown(data['retry_count']!, _retryCountMeta),
-      );
-    }
-    if (data.containsKey('error')) {
-      context.handle(
-        _errorMeta,
-        error.isAcceptableOrUnknown(data['error']!, _errorMeta),
-      );
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
-    }
-    if (data.containsKey('scheduled_at')) {
-      context.handle(
-        _scheduledAtMeta,
-        scheduledAt.isAcceptableOrUnknown(
-          data['scheduled_at']!,
-          _scheduledAtMeta,
-        ),
-      );
-    }
-    if (data.containsKey('is_processed')) {
-      context.handle(
-        _isProcessedMeta,
-        isProcessed.isAcceptableOrUnknown(
-          data['is_processed']!,
-          _isProcessedMeta,
-        ),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  SyncQueueRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return SyncQueueRecord(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}id'],
-      )!,
-      entityType: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}entity_type'],
-      )!,
-      entityUid: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}entity_uid'],
-      )!,
-      action: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}action'],
-      )!,
-      payload: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}payload'],
-      ),
-      priority: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}priority'],
-      )!,
-      retryCount: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}retry_count'],
-      )!,
-      error: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}error'],
-      ),
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      scheduledAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}scheduled_at'],
-      ),
-      isProcessed: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_processed'],
-      )!,
-    );
-  }
-
-  @override
-  $SyncQueueTable createAlias(String alias) {
-    return $SyncQueueTable(attachedDatabase, alias);
-  }
-}
-
-class SyncQueueRecord extends DataClass implements Insertable<SyncQueueRecord> {
-  final int id;
-  final String entityType;
-  final String entityUid;
-  final String action;
-  final String? payload;
-  final int priority;
-  final int retryCount;
-  final String? error;
-  final DateTime createdAt;
-  final DateTime? scheduledAt;
-  final bool isProcessed;
-  const SyncQueueRecord({
-    required this.id,
-    required this.entityType,
-    required this.entityUid,
-    required this.action,
-    this.payload,
-    required this.priority,
-    required this.retryCount,
-    this.error,
-    required this.createdAt,
-    this.scheduledAt,
-    required this.isProcessed,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['entity_type'] = Variable<String>(entityType);
-    map['entity_uid'] = Variable<String>(entityUid);
-    map['action'] = Variable<String>(action);
-    if (!nullToAbsent || payload != null) {
-      map['payload'] = Variable<String>(payload);
-    }
-    map['priority'] = Variable<int>(priority);
-    map['retry_count'] = Variable<int>(retryCount);
-    if (!nullToAbsent || error != null) {
-      map['error'] = Variable<String>(error);
-    }
-    map['created_at'] = Variable<DateTime>(createdAt);
-    if (!nullToAbsent || scheduledAt != null) {
-      map['scheduled_at'] = Variable<DateTime>(scheduledAt);
-    }
-    map['is_processed'] = Variable<bool>(isProcessed);
-    return map;
-  }
-
-  SyncQueueCompanion toCompanion(bool nullToAbsent) {
-    return SyncQueueCompanion(
-      id: Value(id),
-      entityType: Value(entityType),
-      entityUid: Value(entityUid),
-      action: Value(action),
-      payload: payload == null && nullToAbsent
-          ? const Value.absent()
-          : Value(payload),
-      priority: Value(priority),
-      retryCount: Value(retryCount),
-      error: error == null && nullToAbsent
-          ? const Value.absent()
-          : Value(error),
-      createdAt: Value(createdAt),
-      scheduledAt: scheduledAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(scheduledAt),
-      isProcessed: Value(isProcessed),
-    );
-  }
-
-  factory SyncQueueRecord.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return SyncQueueRecord(
-      id: serializer.fromJson<int>(json['id']),
-      entityType: serializer.fromJson<String>(json['entityType']),
-      entityUid: serializer.fromJson<String>(json['entityUid']),
-      action: serializer.fromJson<String>(json['action']),
-      payload: serializer.fromJson<String?>(json['payload']),
-      priority: serializer.fromJson<int>(json['priority']),
-      retryCount: serializer.fromJson<int>(json['retryCount']),
-      error: serializer.fromJson<String?>(json['error']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      scheduledAt: serializer.fromJson<DateTime?>(json['scheduledAt']),
-      isProcessed: serializer.fromJson<bool>(json['isProcessed']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'entityType': serializer.toJson<String>(entityType),
-      'entityUid': serializer.toJson<String>(entityUid),
-      'action': serializer.toJson<String>(action),
-      'payload': serializer.toJson<String?>(payload),
-      'priority': serializer.toJson<int>(priority),
-      'retryCount': serializer.toJson<int>(retryCount),
-      'error': serializer.toJson<String?>(error),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'scheduledAt': serializer.toJson<DateTime?>(scheduledAt),
-      'isProcessed': serializer.toJson<bool>(isProcessed),
-    };
-  }
-
-  SyncQueueRecord copyWith({
-    int? id,
-    String? entityType,
-    String? entityUid,
-    String? action,
-    Value<String?> payload = const Value.absent(),
-    int? priority,
-    int? retryCount,
-    Value<String?> error = const Value.absent(),
-    DateTime? createdAt,
-    Value<DateTime?> scheduledAt = const Value.absent(),
-    bool? isProcessed,
-  }) => SyncQueueRecord(
-    id: id ?? this.id,
-    entityType: entityType ?? this.entityType,
-    entityUid: entityUid ?? this.entityUid,
-    action: action ?? this.action,
-    payload: payload.present ? payload.value : this.payload,
-    priority: priority ?? this.priority,
-    retryCount: retryCount ?? this.retryCount,
-    error: error.present ? error.value : this.error,
-    createdAt: createdAt ?? this.createdAt,
-    scheduledAt: scheduledAt.present ? scheduledAt.value : this.scheduledAt,
-    isProcessed: isProcessed ?? this.isProcessed,
-  );
-  SyncQueueRecord copyWithCompanion(SyncQueueCompanion data) {
-    return SyncQueueRecord(
-      id: data.id.present ? data.id.value : this.id,
-      entityType: data.entityType.present
-          ? data.entityType.value
-          : this.entityType,
-      entityUid: data.entityUid.present ? data.entityUid.value : this.entityUid,
-      action: data.action.present ? data.action.value : this.action,
-      payload: data.payload.present ? data.payload.value : this.payload,
-      priority: data.priority.present ? data.priority.value : this.priority,
-      retryCount: data.retryCount.present
-          ? data.retryCount.value
-          : this.retryCount,
-      error: data.error.present ? data.error.value : this.error,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      scheduledAt: data.scheduledAt.present
-          ? data.scheduledAt.value
-          : this.scheduledAt,
-      isProcessed: data.isProcessed.present
-          ? data.isProcessed.value
-          : this.isProcessed,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('SyncQueueRecord(')
-          ..write('id: $id, ')
-          ..write('entityType: $entityType, ')
-          ..write('entityUid: $entityUid, ')
-          ..write('action: $action, ')
-          ..write('payload: $payload, ')
-          ..write('priority: $priority, ')
-          ..write('retryCount: $retryCount, ')
-          ..write('error: $error, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('scheduledAt: $scheduledAt, ')
-          ..write('isProcessed: $isProcessed')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    id,
-    entityType,
-    entityUid,
-    action,
-    payload,
-    priority,
-    retryCount,
-    error,
-    createdAt,
-    scheduledAt,
-    isProcessed,
-  );
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is SyncQueueRecord &&
-          other.id == this.id &&
-          other.entityType == this.entityType &&
-          other.entityUid == this.entityUid &&
-          other.action == this.action &&
-          other.payload == this.payload &&
-          other.priority == this.priority &&
-          other.retryCount == this.retryCount &&
-          other.error == this.error &&
-          other.createdAt == this.createdAt &&
-          other.scheduledAt == this.scheduledAt &&
-          other.isProcessed == this.isProcessed);
-}
-
-class SyncQueueCompanion extends UpdateCompanion<SyncQueueRecord> {
-  final Value<int> id;
-  final Value<String> entityType;
-  final Value<String> entityUid;
-  final Value<String> action;
-  final Value<String?> payload;
-  final Value<int> priority;
-  final Value<int> retryCount;
-  final Value<String?> error;
-  final Value<DateTime> createdAt;
-  final Value<DateTime?> scheduledAt;
-  final Value<bool> isProcessed;
-  const SyncQueueCompanion({
-    this.id = const Value.absent(),
-    this.entityType = const Value.absent(),
-    this.entityUid = const Value.absent(),
-    this.action = const Value.absent(),
-    this.payload = const Value.absent(),
-    this.priority = const Value.absent(),
-    this.retryCount = const Value.absent(),
-    this.error = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.scheduledAt = const Value.absent(),
-    this.isProcessed = const Value.absent(),
-  });
-  SyncQueueCompanion.insert({
-    this.id = const Value.absent(),
-    required String entityType,
-    required String entityUid,
-    required String action,
-    this.payload = const Value.absent(),
-    this.priority = const Value.absent(),
-    this.retryCount = const Value.absent(),
-    this.error = const Value.absent(),
-    required DateTime createdAt,
-    this.scheduledAt = const Value.absent(),
-    this.isProcessed = const Value.absent(),
-  }) : entityType = Value(entityType),
-       entityUid = Value(entityUid),
-       action = Value(action),
-       createdAt = Value(createdAt);
-  static Insertable<SyncQueueRecord> custom({
-    Expression<int>? id,
-    Expression<String>? entityType,
-    Expression<String>? entityUid,
-    Expression<String>? action,
-    Expression<String>? payload,
-    Expression<int>? priority,
-    Expression<int>? retryCount,
-    Expression<String>? error,
-    Expression<DateTime>? createdAt,
-    Expression<DateTime>? scheduledAt,
-    Expression<bool>? isProcessed,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (entityType != null) 'entity_type': entityType,
-      if (entityUid != null) 'entity_uid': entityUid,
-      if (action != null) 'action': action,
-      if (payload != null) 'payload': payload,
-      if (priority != null) 'priority': priority,
-      if (retryCount != null) 'retry_count': retryCount,
-      if (error != null) 'error': error,
-      if (createdAt != null) 'created_at': createdAt,
-      if (scheduledAt != null) 'scheduled_at': scheduledAt,
-      if (isProcessed != null) 'is_processed': isProcessed,
-    });
-  }
-
-  SyncQueueCompanion copyWith({
-    Value<int>? id,
-    Value<String>? entityType,
-    Value<String>? entityUid,
-    Value<String>? action,
-    Value<String?>? payload,
-    Value<int>? priority,
-    Value<int>? retryCount,
-    Value<String?>? error,
-    Value<DateTime>? createdAt,
-    Value<DateTime?>? scheduledAt,
-    Value<bool>? isProcessed,
-  }) {
-    return SyncQueueCompanion(
-      id: id ?? this.id,
-      entityType: entityType ?? this.entityType,
-      entityUid: entityUid ?? this.entityUid,
-      action: action ?? this.action,
-      payload: payload ?? this.payload,
-      priority: priority ?? this.priority,
-      retryCount: retryCount ?? this.retryCount,
-      error: error ?? this.error,
-      createdAt: createdAt ?? this.createdAt,
-      scheduledAt: scheduledAt ?? this.scheduledAt,
-      isProcessed: isProcessed ?? this.isProcessed,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (entityType.present) {
-      map['entity_type'] = Variable<String>(entityType.value);
-    }
-    if (entityUid.present) {
-      map['entity_uid'] = Variable<String>(entityUid.value);
-    }
-    if (action.present) {
-      map['action'] = Variable<String>(action.value);
-    }
-    if (payload.present) {
-      map['payload'] = Variable<String>(payload.value);
-    }
-    if (priority.present) {
-      map['priority'] = Variable<int>(priority.value);
-    }
-    if (retryCount.present) {
-      map['retry_count'] = Variable<int>(retryCount.value);
-    }
-    if (error.present) {
-      map['error'] = Variable<String>(error.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (scheduledAt.present) {
-      map['scheduled_at'] = Variable<DateTime>(scheduledAt.value);
-    }
-    if (isProcessed.present) {
-      map['is_processed'] = Variable<bool>(isProcessed.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('SyncQueueCompanion(')
-          ..write('id: $id, ')
-          ..write('entityType: $entityType, ')
-          ..write('entityUid: $entityUid, ')
-          ..write('action: $action, ')
-          ..write('payload: $payload, ')
-          ..write('priority: $priority, ')
-          ..write('retryCount: $retryCount, ')
-          ..write('error: $error, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('scheduledAt: $scheduledAt, ')
-          ..write('isProcessed: $isProcessed')
-          ..write(')'))
-        .toString();
-  }
-}
-
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
-  late final $AdminsTable admins = $AdminsTable(this);
-  late final $SyncQueueTable syncQueue = $SyncQueueTable(this);
+  late final $UsersTable users = $UsersTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [admins, syncQueue];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [users];
 }
 
-typedef $$AdminsTableCreateCompanionBuilder =
-    AdminsCompanion Function({
+typedef $$UsersTableCreateCompanionBuilder =
+    UsersCompanion Function({
       Value<bool> isSynced,
       Value<DateTime?> deletedAt,
       Value<String?> syncAction,
@@ -1497,8 +840,8 @@ typedef $$AdminsTableCreateCompanionBuilder =
       required DateTime updatedAt,
       required DateTime createdAt,
     });
-typedef $$AdminsTableUpdateCompanionBuilder =
-    AdminsCompanion Function({
+typedef $$UsersTableUpdateCompanionBuilder =
+    UsersCompanion Function({
       Value<bool> isSynced,
       Value<DateTime?> deletedAt,
       Value<String?> syncAction,
@@ -1515,9 +858,8 @@ typedef $$AdminsTableUpdateCompanionBuilder =
       Value<DateTime> createdAt,
     });
 
-class $$AdminsTableFilterComposer
-    extends Composer<_$AppDatabase, $AdminsTable> {
-  $$AdminsTableFilterComposer({
+class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
+  $$UsersTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1595,9 +937,9 @@ class $$AdminsTableFilterComposer
   );
 }
 
-class $$AdminsTableOrderingComposer
-    extends Composer<_$AppDatabase, $AdminsTable> {
-  $$AdminsTableOrderingComposer({
+class $$UsersTableOrderingComposer
+    extends Composer<_$AppDatabase, $UsersTable> {
+  $$UsersTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1675,9 +1017,9 @@ class $$AdminsTableOrderingComposer
   );
 }
 
-class $$AdminsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $AdminsTable> {
-  $$AdminsTableAnnotationComposer({
+class $$UsersTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UsersTable> {
+  $$UsersTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -1733,35 +1075,32 @@ class $$AdminsTableAnnotationComposer
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
 }
 
-class $$AdminsTableTableManager
+class $$UsersTableTableManager
     extends
         RootTableManager<
           _$AppDatabase,
-          $AdminsTable,
-          AdminRecord,
-          $$AdminsTableFilterComposer,
-          $$AdminsTableOrderingComposer,
-          $$AdminsTableAnnotationComposer,
-          $$AdminsTableCreateCompanionBuilder,
-          $$AdminsTableUpdateCompanionBuilder,
-          (
-            AdminRecord,
-            BaseReferences<_$AppDatabase, $AdminsTable, AdminRecord>,
-          ),
-          AdminRecord,
+          $UsersTable,
+          UserRecord,
+          $$UsersTableFilterComposer,
+          $$UsersTableOrderingComposer,
+          $$UsersTableAnnotationComposer,
+          $$UsersTableCreateCompanionBuilder,
+          $$UsersTableUpdateCompanionBuilder,
+          (UserRecord, BaseReferences<_$AppDatabase, $UsersTable, UserRecord>),
+          UserRecord,
           PrefetchHooks Function()
         > {
-  $$AdminsTableTableManager(_$AppDatabase db, $AdminsTable table)
+  $$UsersTableTableManager(_$AppDatabase db, $UsersTable table)
     : super(
         TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$AdminsTableFilterComposer($db: db, $table: table),
+              $$UsersTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$AdminsTableOrderingComposer($db: db, $table: table),
+              $$UsersTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$AdminsTableAnnotationComposer($db: db, $table: table),
+              $$UsersTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
                 Value<bool> isSynced = const Value.absent(),
@@ -1778,7 +1117,7 @@ class $$AdminsTableTableManager
                 Value<String?> email = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
-              }) => AdminsCompanion(
+              }) => UsersCompanion(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
                 syncAction: syncAction,
@@ -1810,7 +1149,7 @@ class $$AdminsTableTableManager
                 Value<String?> email = const Value.absent(),
                 required DateTime updatedAt,
                 required DateTime createdAt,
-              }) => AdminsCompanion.insert(
+              }) => UsersCompanion.insert(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
                 syncAction: syncAction,
@@ -1834,342 +1173,24 @@ class $$AdminsTableTableManager
       );
 }
 
-typedef $$AdminsTableProcessedTableManager =
+typedef $$UsersTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
-      $AdminsTable,
-      AdminRecord,
-      $$AdminsTableFilterComposer,
-      $$AdminsTableOrderingComposer,
-      $$AdminsTableAnnotationComposer,
-      $$AdminsTableCreateCompanionBuilder,
-      $$AdminsTableUpdateCompanionBuilder,
-      (AdminRecord, BaseReferences<_$AppDatabase, $AdminsTable, AdminRecord>),
-      AdminRecord,
-      PrefetchHooks Function()
-    >;
-typedef $$SyncQueueTableCreateCompanionBuilder =
-    SyncQueueCompanion Function({
-      Value<int> id,
-      required String entityType,
-      required String entityUid,
-      required String action,
-      Value<String?> payload,
-      Value<int> priority,
-      Value<int> retryCount,
-      Value<String?> error,
-      required DateTime createdAt,
-      Value<DateTime?> scheduledAt,
-      Value<bool> isProcessed,
-    });
-typedef $$SyncQueueTableUpdateCompanionBuilder =
-    SyncQueueCompanion Function({
-      Value<int> id,
-      Value<String> entityType,
-      Value<String> entityUid,
-      Value<String> action,
-      Value<String?> payload,
-      Value<int> priority,
-      Value<int> retryCount,
-      Value<String?> error,
-      Value<DateTime> createdAt,
-      Value<DateTime?> scheduledAt,
-      Value<bool> isProcessed,
-    });
-
-class $$SyncQueueTableFilterComposer
-    extends Composer<_$AppDatabase, $SyncQueueTable> {
-  $$SyncQueueTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get entityType => $composableBuilder(
-    column: $table.entityType,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get entityUid => $composableBuilder(
-    column: $table.entityUid,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get action => $composableBuilder(
-    column: $table.action,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get payload => $composableBuilder(
-    column: $table.payload,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get priority => $composableBuilder(
-    column: $table.priority,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get retryCount => $composableBuilder(
-    column: $table.retryCount,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get error => $composableBuilder(
-    column: $table.error,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get scheduledAt => $composableBuilder(
-    column: $table.scheduledAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<bool> get isProcessed => $composableBuilder(
-    column: $table.isProcessed,
-    builder: (column) => ColumnFilters(column),
-  );
-}
-
-class $$SyncQueueTableOrderingComposer
-    extends Composer<_$AppDatabase, $SyncQueueTable> {
-  $$SyncQueueTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<int> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get entityType => $composableBuilder(
-    column: $table.entityType,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get entityUid => $composableBuilder(
-    column: $table.entityUid,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get action => $composableBuilder(
-    column: $table.action,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get payload => $composableBuilder(
-    column: $table.payload,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get priority => $composableBuilder(
-    column: $table.priority,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get retryCount => $composableBuilder(
-    column: $table.retryCount,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get error => $composableBuilder(
-    column: $table.error,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get scheduledAt => $composableBuilder(
-    column: $table.scheduledAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<bool> get isProcessed => $composableBuilder(
-    column: $table.isProcessed,
-    builder: (column) => ColumnOrderings(column),
-  );
-}
-
-class $$SyncQueueTableAnnotationComposer
-    extends Composer<_$AppDatabase, $SyncQueueTable> {
-  $$SyncQueueTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<int> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get entityType => $composableBuilder(
-    column: $table.entityType,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get entityUid =>
-      $composableBuilder(column: $table.entityUid, builder: (column) => column);
-
-  GeneratedColumn<String> get action =>
-      $composableBuilder(column: $table.action, builder: (column) => column);
-
-  GeneratedColumn<String> get payload =>
-      $composableBuilder(column: $table.payload, builder: (column) => column);
-
-  GeneratedColumn<int> get priority =>
-      $composableBuilder(column: $table.priority, builder: (column) => column);
-
-  GeneratedColumn<int> get retryCount => $composableBuilder(
-    column: $table.retryCount,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get error =>
-      $composableBuilder(column: $table.error, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get scheduledAt => $composableBuilder(
-    column: $table.scheduledAt,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<bool> get isProcessed => $composableBuilder(
-    column: $table.isProcessed,
-    builder: (column) => column,
-  );
-}
-
-class $$SyncQueueTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $SyncQueueTable,
-          SyncQueueRecord,
-          $$SyncQueueTableFilterComposer,
-          $$SyncQueueTableOrderingComposer,
-          $$SyncQueueTableAnnotationComposer,
-          $$SyncQueueTableCreateCompanionBuilder,
-          $$SyncQueueTableUpdateCompanionBuilder,
-          (
-            SyncQueueRecord,
-            BaseReferences<_$AppDatabase, $SyncQueueTable, SyncQueueRecord>,
-          ),
-          SyncQueueRecord,
-          PrefetchHooks Function()
-        > {
-  $$SyncQueueTableTableManager(_$AppDatabase db, $SyncQueueTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$SyncQueueTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$SyncQueueTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$SyncQueueTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                Value<String> entityType = const Value.absent(),
-                Value<String> entityUid = const Value.absent(),
-                Value<String> action = const Value.absent(),
-                Value<String?> payload = const Value.absent(),
-                Value<int> priority = const Value.absent(),
-                Value<int> retryCount = const Value.absent(),
-                Value<String?> error = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime?> scheduledAt = const Value.absent(),
-                Value<bool> isProcessed = const Value.absent(),
-              }) => SyncQueueCompanion(
-                id: id,
-                entityType: entityType,
-                entityUid: entityUid,
-                action: action,
-                payload: payload,
-                priority: priority,
-                retryCount: retryCount,
-                error: error,
-                createdAt: createdAt,
-                scheduledAt: scheduledAt,
-                isProcessed: isProcessed,
-              ),
-          createCompanionCallback:
-              ({
-                Value<int> id = const Value.absent(),
-                required String entityType,
-                required String entityUid,
-                required String action,
-                Value<String?> payload = const Value.absent(),
-                Value<int> priority = const Value.absent(),
-                Value<int> retryCount = const Value.absent(),
-                Value<String?> error = const Value.absent(),
-                required DateTime createdAt,
-                Value<DateTime?> scheduledAt = const Value.absent(),
-                Value<bool> isProcessed = const Value.absent(),
-              }) => SyncQueueCompanion.insert(
-                id: id,
-                entityType: entityType,
-                entityUid: entityUid,
-                action: action,
-                payload: payload,
-                priority: priority,
-                retryCount: retryCount,
-                error: error,
-                createdAt: createdAt,
-                scheduledAt: scheduledAt,
-                isProcessed: isProcessed,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
-              .toList(),
-          prefetchHooksCallback: null,
-        ),
-      );
-}
-
-typedef $$SyncQueueTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $SyncQueueTable,
-      SyncQueueRecord,
-      $$SyncQueueTableFilterComposer,
-      $$SyncQueueTableOrderingComposer,
-      $$SyncQueueTableAnnotationComposer,
-      $$SyncQueueTableCreateCompanionBuilder,
-      $$SyncQueueTableUpdateCompanionBuilder,
-      (
-        SyncQueueRecord,
-        BaseReferences<_$AppDatabase, $SyncQueueTable, SyncQueueRecord>,
-      ),
-      SyncQueueRecord,
+      $UsersTable,
+      UserRecord,
+      $$UsersTableFilterComposer,
+      $$UsersTableOrderingComposer,
+      $$UsersTableAnnotationComposer,
+      $$UsersTableCreateCompanionBuilder,
+      $$UsersTableUpdateCompanionBuilder,
+      (UserRecord, BaseReferences<_$AppDatabase, $UsersTable, UserRecord>),
+      UserRecord,
       PrefetchHooks Function()
     >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
-  $$AdminsTableTableManager get admins =>
-      $$AdminsTableTableManager(_db, _db.admins);
-  $$SyncQueueTableTableManager get syncQueue =>
-      $$SyncQueueTableTableManager(_db, _db.syncQueue);
+  $$UsersTableTableManager get users =>
+      $$UsersTableTableManager(_db, _db.users);
 }

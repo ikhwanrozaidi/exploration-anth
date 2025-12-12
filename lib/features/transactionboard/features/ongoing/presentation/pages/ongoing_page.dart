@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
-import '../../../../../../core/dio/injection.dart';
-import '../../../../../../shared/utils/build_loading_indicator.dart';
+import '../../../../../../core/di/injection.dart';
+import '../../../../../../shared/widgets/build_loading_indicator.dart';
 import '../../../../../../shared/utils/theme.dart';
 import '../bloc/ongoing_bloc.dart';
 import '../bloc/ongoing_event.dart';
@@ -11,16 +11,14 @@ import '../bloc/ongoing_state.dart';
 
 class OngoingPage extends StatelessWidget {
   final String? title;
-  
-  const OngoingPage({
-    super.key,
-    this.title,
-  });
+
+  const OngoingPage({super.key, this.title});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<OngoingBloc>()..add(const LoadOngoingTransactions()),
+      create: (context) =>
+          getIt<OngoingBloc>()..add(const LoadOngoingTransactions()),
       child: const OngoingView(),
     );
   }
@@ -38,10 +36,7 @@ class OngoingView extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Ongoing',
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.w600,
-            fontSize: 18,
-          ),
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600, fontSize: 18),
         ),
       ),
       body: BlocBuilder<OngoingBloc, OngoingState>(
@@ -50,10 +45,7 @@ class OngoingView extends StatelessWidget {
             return _buildLoadedContent(w, h);
           } else if (state is OngoingLoading) {
             return Center(
-              child: buildLoadingIndicator(
-                blur: 0,
-                isCentered: true,
-              ),
+              child: buildLoadingIndicator(blur: 0, isCentered: true),
             );
           } else if (state is OngoingError) {
             return _buildErrorContent(w, h, state.message, context);
@@ -127,9 +119,9 @@ class OngoingView extends StatelessWidget {
                                 ),
                               ),
                             ],
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -189,9 +181,9 @@ class OngoingView extends StatelessWidget {
                                 ),
                               ),
                             ],
-                          )
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -211,7 +203,12 @@ class OngoingView extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorContent(double w, double h, String message, BuildContext context) {
+  Widget _buildErrorContent(
+    double w,
+    double h,
+    String message,
+    BuildContext context,
+  ) {
     return LayoutBuilder(
       builder: (context, cons) {
         return Container(
@@ -248,28 +245,33 @@ class OngoingView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 15.0),
                   child: Text(
-                    message.isNotEmpty 
-                        ? message 
+                    message.isNotEmpty
+                        ? message
                         : 'Please check your internet connection and try again',
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      color: Colors.grey,
-                    ),
+                    style: GoogleFonts.poppins(color: Colors.grey),
                   ),
                 ),
                 const SizedBox(height: 40),
                 GestureDetector(
                   onTap: () async {
                     ScaffoldMessenger.of(context).clearSnackBars();
-                    context.read<OngoingBloc>().add(const LoadOngoingTransactions());
+                    context.read<OngoingBloc>().add(
+                      const LoadOngoingTransactions(),
+                    );
                   },
                   child: ElevatedButton(
                     onPressed: () {
-                      context.read<OngoingBloc>().add(const LoadOngoingTransactions());
+                      context.read<OngoingBloc>().add(
+                        const LoadOngoingTransactions(),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: tPrimaryColorShade3,
-                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 20,
+                      ),
                       minimumSize: const Size(64, 30),
                       visualDensity: VisualDensity.compact,
                       shape: RoundedRectangleBorder(
@@ -278,9 +280,7 @@ class OngoingView extends StatelessWidget {
                     ),
                     child: Text(
                       'Try again',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                      ),
+                      style: GoogleFonts.poppins(color: Colors.white),
                     ),
                   ),
                 ),

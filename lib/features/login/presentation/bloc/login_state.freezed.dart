@@ -152,14 +152,14 @@ return credentialsLoaded(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String email,  String message)?  otpRequired,TResult Function( AuthResult authResult,  Admin admin)?  authenticated,TResult Function( Admin admin)?  success,TResult Function()?  unauthenticated,TResult Function()?  loggedOut,TResult Function( String message)?  failure,TResult Function( String email,  String message)?  forgotPasswordOtpRequired,TResult Function( String email,  String message)?  changePasswordRequired,TResult Function( String message)?  passwordChanged,TResult Function( String email,  String password)?  credentialsLoaded,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( String email,  String message)?  otpRequired,TResult Function( AuthResult authResult,  User user)?  authenticated,TResult Function( User user)?  success,TResult Function()?  unauthenticated,TResult Function()?  loggedOut,TResult Function( String message)?  failure,TResult Function( String email,  String message)?  forgotPasswordOtpRequired,TResult Function( String email,  String message)?  changePasswordRequired,TResult Function( String message)?  passwordChanged,TResult Function( String email,  String password)?  credentialsLoaded,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case LoginInitial() when initial != null:
 return initial();case LoginLoading() when loading != null:
 return loading();case LoginOtpRequired() when otpRequired != null:
 return otpRequired(_that.email,_that.message);case LoginAuthenticated() when authenticated != null:
-return authenticated(_that.authResult,_that.admin);case LoginSuccess() when success != null:
-return success(_that.admin);case LoginUnauthenticated() when unauthenticated != null:
+return authenticated(_that.authResult,_that.user);case LoginSuccess() when success != null:
+return success(_that.user);case LoginUnauthenticated() when unauthenticated != null:
 return unauthenticated();case LoginLoggedOut() when loggedOut != null:
 return loggedOut();case LoginFailure() when failure != null:
 return failure(_that.message);case LoginForgotPasswordOtpRequired() when forgotPasswordOtpRequired != null:
@@ -184,14 +184,14 @@ return credentialsLoaded(_that.email,_that.password);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String email,  String message)  otpRequired,required TResult Function( AuthResult authResult,  Admin admin)  authenticated,required TResult Function( Admin admin)  success,required TResult Function()  unauthenticated,required TResult Function()  loggedOut,required TResult Function( String message)  failure,required TResult Function( String email,  String message)  forgotPasswordOtpRequired,required TResult Function( String email,  String message)  changePasswordRequired,required TResult Function( String message)  passwordChanged,required TResult Function( String email,  String password)  credentialsLoaded,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( String email,  String message)  otpRequired,required TResult Function( AuthResult authResult,  User user)  authenticated,required TResult Function( User user)  success,required TResult Function()  unauthenticated,required TResult Function()  loggedOut,required TResult Function( String message)  failure,required TResult Function( String email,  String message)  forgotPasswordOtpRequired,required TResult Function( String email,  String message)  changePasswordRequired,required TResult Function( String message)  passwordChanged,required TResult Function( String email,  String password)  credentialsLoaded,}) {final _that = this;
 switch (_that) {
 case LoginInitial():
 return initial();case LoginLoading():
 return loading();case LoginOtpRequired():
 return otpRequired(_that.email,_that.message);case LoginAuthenticated():
-return authenticated(_that.authResult,_that.admin);case LoginSuccess():
-return success(_that.admin);case LoginUnauthenticated():
+return authenticated(_that.authResult,_that.user);case LoginSuccess():
+return success(_that.user);case LoginUnauthenticated():
 return unauthenticated();case LoginLoggedOut():
 return loggedOut();case LoginFailure():
 return failure(_that.message);case LoginForgotPasswordOtpRequired():
@@ -215,14 +215,14 @@ return credentialsLoaded(_that.email,_that.password);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String email,  String message)?  otpRequired,TResult? Function( AuthResult authResult,  Admin admin)?  authenticated,TResult? Function( Admin admin)?  success,TResult? Function()?  unauthenticated,TResult? Function()?  loggedOut,TResult? Function( String message)?  failure,TResult? Function( String email,  String message)?  forgotPasswordOtpRequired,TResult? Function( String email,  String message)?  changePasswordRequired,TResult? Function( String message)?  passwordChanged,TResult? Function( String email,  String password)?  credentialsLoaded,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( String email,  String message)?  otpRequired,TResult? Function( AuthResult authResult,  User user)?  authenticated,TResult? Function( User user)?  success,TResult? Function()?  unauthenticated,TResult? Function()?  loggedOut,TResult? Function( String message)?  failure,TResult? Function( String email,  String message)?  forgotPasswordOtpRequired,TResult? Function( String email,  String message)?  changePasswordRequired,TResult? Function( String message)?  passwordChanged,TResult? Function( String email,  String password)?  credentialsLoaded,}) {final _that = this;
 switch (_that) {
 case LoginInitial() when initial != null:
 return initial();case LoginLoading() when loading != null:
 return loading();case LoginOtpRequired() when otpRequired != null:
 return otpRequired(_that.email,_that.message);case LoginAuthenticated() when authenticated != null:
-return authenticated(_that.authResult,_that.admin);case LoginSuccess() when success != null:
-return success(_that.admin);case LoginUnauthenticated() when unauthenticated != null:
+return authenticated(_that.authResult,_that.user);case LoginSuccess() when success != null:
+return success(_that.user);case LoginUnauthenticated() when unauthenticated != null:
 return unauthenticated();case LoginLoggedOut() when loggedOut != null:
 return loggedOut();case LoginFailure() when failure != null:
 return failure(_that.message);case LoginForgotPasswordOtpRequired() when forgotPasswordOtpRequired != null:
@@ -373,11 +373,11 @@ as String,
 
 
 class LoginAuthenticated implements LoginState {
-  const LoginAuthenticated(this.authResult, this.admin);
+  const LoginAuthenticated(this.authResult, this.user);
   
 
  final  AuthResult authResult;
- final  Admin admin;
+ final  User user;
 
 /// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
@@ -389,16 +389,16 @@ $LoginAuthenticatedCopyWith<LoginAuthenticated> get copyWith => _$LoginAuthentic
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginAuthenticated&&(identical(other.authResult, authResult) || other.authResult == authResult)&&(identical(other.admin, admin) || other.admin == admin));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginAuthenticated&&(identical(other.authResult, authResult) || other.authResult == authResult)&&(identical(other.user, user) || other.user == user));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,authResult,admin);
+int get hashCode => Object.hash(runtimeType,authResult,user);
 
 @override
 String toString() {
-  return 'LoginState.authenticated(authResult: $authResult, admin: $admin)';
+  return 'LoginState.authenticated(authResult: $authResult, user: $user)';
 }
 
 
@@ -409,7 +409,7 @@ abstract mixin class $LoginAuthenticatedCopyWith<$Res> implements $LoginStateCop
   factory $LoginAuthenticatedCopyWith(LoginAuthenticated value, $Res Function(LoginAuthenticated) _then) = _$LoginAuthenticatedCopyWithImpl;
 @useResult
 $Res call({
- AuthResult authResult, Admin admin
+ AuthResult authResult, User user
 });
 
 
@@ -426,11 +426,11 @@ class _$LoginAuthenticatedCopyWithImpl<$Res>
 
 /// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? authResult = null,Object? admin = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? authResult = null,Object? user = null,}) {
   return _then(LoginAuthenticated(
 null == authResult ? _self.authResult : authResult // ignore: cast_nullable_to_non_nullable
-as AuthResult,null == admin ? _self.admin : admin // ignore: cast_nullable_to_non_nullable
-as Admin,
+as AuthResult,null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as User,
   ));
 }
 
@@ -441,10 +441,10 @@ as Admin,
 
 
 class LoginSuccess implements LoginState {
-  const LoginSuccess(this.admin);
+  const LoginSuccess(this.user);
   
 
- final  Admin admin;
+ final  User user;
 
 /// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
@@ -456,16 +456,16 @@ $LoginSuccessCopyWith<LoginSuccess> get copyWith => _$LoginSuccessCopyWithImpl<L
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginSuccess&&(identical(other.admin, admin) || other.admin == admin));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoginSuccess&&(identical(other.user, user) || other.user == user));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,admin);
+int get hashCode => Object.hash(runtimeType,user);
 
 @override
 String toString() {
-  return 'LoginState.success(admin: $admin)';
+  return 'LoginState.success(user: $user)';
 }
 
 
@@ -476,7 +476,7 @@ abstract mixin class $LoginSuccessCopyWith<$Res> implements $LoginStateCopyWith<
   factory $LoginSuccessCopyWith(LoginSuccess value, $Res Function(LoginSuccess) _then) = _$LoginSuccessCopyWithImpl;
 @useResult
 $Res call({
- Admin admin
+ User user
 });
 
 
@@ -493,10 +493,10 @@ class _$LoginSuccessCopyWithImpl<$Res>
 
 /// Create a copy of LoginState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? admin = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
   return _then(LoginSuccess(
-null == admin ? _self.admin : admin // ignore: cast_nullable_to_non_nullable
-as Admin,
+null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as User,
   ));
 }
 

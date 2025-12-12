@@ -10,17 +10,17 @@ _LoginResponseModel _$LoginResponseModelFromJson(Map<String, dynamic> json) =>
     _LoginResponseModel(
       accessToken: json['accessToken'] as String,
       refreshToken: json['refreshToken'] as String,
-      admin: AdminModel.fromJson(json['admin'] as Map<String, dynamic>),
+      user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$LoginResponseModelToJson(_LoginResponseModel instance) =>
     <String, dynamic>{
       'accessToken': instance.accessToken,
       'refreshToken': instance.refreshToken,
-      'admin': instance.admin,
+      'user': instance.user,
     };
 
-_AdminModel _$AdminModelFromJson(Map<String, dynamic> json) => _AdminModel(
+_UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   id: (json['id'] as num).toInt(),
   uid: json['uid'] as String,
   phone: json['phone'] as String,
@@ -31,7 +31,7 @@ _AdminModel _$AdminModelFromJson(Map<String, dynamic> json) => _AdminModel(
   createdAt: DateTime.parse(json['createdAt'] as String),
 );
 
-Map<String, dynamic> _$AdminModelToJson(_AdminModel instance) =>
+Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'uid': instance.uid,

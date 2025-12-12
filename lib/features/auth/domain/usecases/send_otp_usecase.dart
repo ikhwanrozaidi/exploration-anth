@@ -1,10 +1,12 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/otp_response.dart';
 import '../repositories/auth_repository.dart';
 
+@injectable
 class SendOtpUseCase implements UseCase<OtpResponse, SendOtpParams> {
   final AuthRepository repository;
 

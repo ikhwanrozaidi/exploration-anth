@@ -10,9 +10,14 @@ class AuthResult extends Equatable {
 
   const AuthResult({required this.accessToken, required this.refreshToken});
 
-  @override
-  List<Object?> get props => [accessToken, refreshToken];
+  // Add fromJson factory
+  factory AuthResult.fromJson(Map<String, dynamic> json) =>
+      _$AuthResultFromJson(json);
 
+  // Add toJson method
+  Map<String, dynamic> toJson() => _$AuthResultToJson(this);
+
+  // Add copyWith for convenience
   AuthResult copyWith({String? accessToken, String? refreshToken}) {
     return AuthResult(
       accessToken: accessToken ?? this.accessToken,
@@ -20,7 +25,6 @@ class AuthResult extends Equatable {
     );
   }
 
-  factory AuthResult.fromJson(Map<String, dynamic> json) =>
-      _$AuthResultFromJson(json);
-  Map<String, dynamic> toJson() => _$AuthResultToJson(this);
+  @override
+  List<Object?> get props => [accessToken, refreshToken];
 }
