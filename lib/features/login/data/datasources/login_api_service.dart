@@ -3,7 +3,9 @@ import 'package:retrofit/retrofit.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../shared/models/api_response.dart';
 
+import '../../../auth/domain/entities/auth_result.dart';
 import '../models/login_request_model.dart';
+import '../models/verify_otp_request_model.dart';
 // import '../models/verify_otp_request_model.dart';
 // import '../models/login_response_model.dart';
 // import '../models/verify_otp_response_model.dart';
@@ -21,31 +23,15 @@ abstract class LoginApiService {
 
   // Login with email and password
   @POST('/auth/sign-in')
-  Future<ApiResponse<LoginResponseModel>> login({
-    @Body() required LoginRequestModel data,
-  });
+  Future<ApiResponse<String>> signIn({@Body() required LoginRequestModel data});
 
-  // Verify OTP after login
   @POST('/auth/verify-otp')
-  Future<ApiResponse<VerifyOtpResponseModel>> verifyOtp({
+  Future<ApiResponse<AuthResult>> verifyOtp({
     @Body() required VerifyOtpRequestModel data,
   });
 
-  // Forgot password
-  @POST('/auth/forgot-password')
-  Future<ApiResponse<LoginResponseModel>> forgotPassword({
-    @Body() required ForgotPasswordRequestModel data,
-  });
-
-  // Verify OTP for forgot password
-  @POST('/auth/verify-otp-forgot')
-  Future<ApiResponse<dynamic>> verifyOtpForgot({
-    @Body() required VerifyOtpForgotRequestModel data,
-  });
-
-  // Change password
-  @POST('/auth/change-password')
-  Future<ApiResponse<dynamic>> changePassword({
-    @Body() required ChangePasswordRequestModel data,
+  @POST('/auth/refresh-token')
+  Future<ApiResponse<AuthResult>> refreshToken({
+    @Body() required Map<String, dynamic> data,
   });
 }

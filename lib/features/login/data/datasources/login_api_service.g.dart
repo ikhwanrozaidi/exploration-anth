@@ -18,29 +18,27 @@ class _LoginApiService implements LoginApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ApiResponse<LoginResponseModel>> login({
-    required LoginRequestModel data,
-  }) async {
+  Future<ApiResponse<String>> signIn({required LoginRequestModel data}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = data;
-    final _options = _setStreamType<ApiResponse<LoginResponseModel>>(
+    final _options = _setStreamType<ApiResponse<String>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/auth/login',
+            '/auth/sign-in',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<LoginResponseModel> _value;
+    late ApiResponse<String> _value;
     try {
-      _value = ApiResponse<LoginResponseModel>.fromJson(
+      _value = ApiResponse<String>.fromJson(
         _result.data!,
-        (json) => LoginResponseModel.fromJson(json as Map<String, dynamic>),
+        (json) => json as String,
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
@@ -50,14 +48,14 @@ class _LoginApiService implements LoginApiService {
   }
 
   @override
-  Future<ApiResponse<VerifyOtpResponseModel>> verifyOtp({
+  Future<ApiResponse<AuthResult>> verifyOtp({
     required VerifyOtpRequestModel data,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = data;
-    final _options = _setStreamType<ApiResponse<VerifyOtpResponseModel>>(
+    final _options = _setStreamType<ApiResponse<AuthResult>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -68,11 +66,11 @@ class _LoginApiService implements LoginApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<VerifyOtpResponseModel> _value;
+    late ApiResponse<AuthResult> _value;
     try {
-      _value = ApiResponse<VerifyOtpResponseModel>.fromJson(
+      _value = ApiResponse<AuthResult>.fromJson(
         _result.data!,
-        (json) => VerifyOtpResponseModel.fromJson(json as Map<String, dynamic>),
+        (json) => AuthResult.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
@@ -82,93 +80,30 @@ class _LoginApiService implements LoginApiService {
   }
 
   @override
-  Future<ApiResponse<LoginResponseModel>> forgotPassword({
-    required ForgotPasswordRequestModel data,
+  Future<ApiResponse<AuthResult>> refreshToken({
+    required Map<String, dynamic> data,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = data;
-    final _options = _setStreamType<ApiResponse<LoginResponseModel>>(
+    final _data = <String, dynamic>{};
+    _data.addAll(data);
+    final _options = _setStreamType<ApiResponse<AuthResult>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/auth/forgot-password',
+            '/auth/refresh-token',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<LoginResponseModel> _value;
+    late ApiResponse<AuthResult> _value;
     try {
-      _value = ApiResponse<LoginResponseModel>.fromJson(
+      _value = ApiResponse<AuthResult>.fromJson(
         _result.data!,
-        (json) => LoginResponseModel.fromJson(json as Map<String, dynamic>),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<ApiResponse<dynamic>> verifyOtpForgot({
-    required VerifyOtpForgotRequestModel data,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = data;
-    final _options = _setStreamType<ApiResponse<dynamic>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/auth/verify-otp-forgot',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<dynamic> _value;
-    try {
-      _value = ApiResponse<dynamic>.fromJson(
-        _result.data!,
-        (json) => json as dynamic,
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<ApiResponse<dynamic>> changePassword({
-    required ChangePasswordRequestModel data,
-  }) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = data;
-    final _options = _setStreamType<ApiResponse<dynamic>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/auth/change-password',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<dynamic> _value;
-    try {
-      _value = ApiResponse<dynamic>.fromJson(
-        _result.data!,
-        (json) => json as dynamic,
+        (json) => AuthResult.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

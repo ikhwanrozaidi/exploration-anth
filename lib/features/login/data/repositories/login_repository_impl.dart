@@ -1,9 +1,8 @@
-// lib/features/auth/data/repositories/login_repository_impl.dart
 import 'package:dartz/dartz.dart';
-import 'package:gatepay_app/core/service/secure_storage_service.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/network_info.dart';
+import '../../../../core/service/secure_storage_service.dart';
 import '../../../auth/domain/entities/auth_result.dart';
 import '../../../user/domain/entities/user.dart';
 import '../../domain/repositories/login_repository.dart';
@@ -24,6 +23,8 @@ class LoginRepositoryImpl implements LoginRepository {
     this._secureStorage,
   );
 
+  // ==================== LOGIN ====================
+
   @override
   Future<Either<Failure, String>> login(String email, String password) async {
     final isConnected = await _networkInfo.isConnected;
@@ -31,12 +32,10 @@ class LoginRepositoryImpl implements LoginRepository {
       return const Left(ConnectionFailure());
     }
 
-    final result = await _remoteDataSource.login(email, password);
-    return result.fold(
-      (failure) => Left(failure),
-      (response) => Right(response.message),
-    );
+    return await _remoteDataSource.login(email, password);
   }
+
+  // ==================== VERIFY OTP ====================
 
   @override
   Future<Either<Failure, (AuthResult, User)>> verifyOtp(
@@ -49,71 +48,56 @@ class LoginRepositoryImpl implements LoginRepository {
     }
 
     final result = await _remoteDataSource.verifyOtp(email, otp);
-    return await result.fold((failure) => Left(failure), (response) async {
-      // Create AuthResult and User from response
-      final authResult = AuthResult(
-        accessToken: response.accesstoken,
-        refreshToken: response.refreshToken,
-      );
 
-      // Create user with the ID from response
-      final user = User(
-        id: int.tryParse(response.id) ?? 0,
-        uid: response.id,
-        phone: email, // Using email as phone for now
-        email: email,
-        firstName: null,
-        lastName: null,
-        updatedAt: DateTime.now(),
-        createdAt: DateTime.now(),
-      );
+    return result.fold((failure) => Left(failure), (data) async {
+      final (authResult, user) = data;
 
-      // Store auth result locally
+      // Store auth result with expiry timestamps + user data
       await _localDataSource.storeAuthResult(authResult, user);
 
       return Right((authResult, user));
     });
   }
 
-  @override
-  Future<Either<Failure, String>> forgotPassword(String email) async {
-    final isConnected = await _networkInfo.isConnected;
-    if (!isConnected) {
-      return const Left(ConnectionFailure());
-    }
+  // ==================== FORGOT PASSWORD ====================
 
-    final result = await _remoteDataSource.forgotPassword(email);
-    return result.fold(
-      (failure) => Left(failure),
-      (response) => Right(response.message),
-    );
-  }
+  // @override
+  // Future<Either<Failure, String>> forgotPassword(String email) async {
+  //   final isConnected = await _networkInfo.isConnected;
+  //   if (!isConnected) {
+  //     return const Left(ConnectionFailure());
+  //   }
 
-  @override
-  Future<Either<Failure, String>> verifyOtpForgot(
-    String email,
-    String otpForgot,
-  ) async {
-    final isConnected = await _networkInfo.isConnected;
-    if (!isConnected) {
-      return const Left(ConnectionFailure());
-    }
+  //   return await _remoteDataSource.forgotPassword(email);
+  // }
 
-    return await _remoteDataSource.verifyOtpForgot(email, otpForgot);
-  }
+  // @override
+  // Future<Either<Failure, String>> verifyOtpForgot(
+  //   String email,
+  //   String otpForgot,
+  // ) async {
+  //   final isConnected = await _networkInfo.isConnected;
+  //   if (!isConnected) {
+  //     return const Left(ConnectionFailure());
+  //   }
 
-  @override
-  Future<Either<Failure, String>> changePassword(
-    String email,
-    String newPassword,
-  ) async {
-    final isConnected = await _networkInfo.isConnected;
-    if (!isConnected) {
-      return const Left(ConnectionFailure());
-    }
+  //   return await _remoteDataSource.verifyOtpForgot(email, otpForgot);
+  // }
 
-    return await _remoteDataSource.changePassword(email, newPassword);
-  }
+  // @override
+  // Future<Either<Failure, String>> changePassword(
+  //   String email,
+  //   String newPassword,
+  // ) async {
+  //   final isConnected = await _networkInfo.isConnected;
+  //   if (!isConnected) {
+  //     return const Left(ConnectionFailure());
+  //   }
+
+  //   return await _remoteDataSource.changePassword(email, newPassword);
+  // }
+
+  // ==================== REFRESH TOKEN ====================
 
   @override
   Future<Either<Failure, (AuthResult, User)>> refreshToken() async {
@@ -122,12 +106,28 @@ class LoginRepositoryImpl implements LoginRepository {
       return const Left(ConnectionFailure());
     }
 
-    return Left(ServerFailure('Refresh token not implemented'));
+    // Get refresh token from local storage
+    final refreshTokenResult = await _localDataSource.getRefreshToken();
+
+    return await refreshTokenResult.fold((failure) => Left(failure), (
+      refreshToken,
+    ) async {
+      if (refreshToken == null || refreshToken.isEmpty) {
+        return const Left(CacheFailure('No refresh token found'));
+      }
+
+      // Call refresh token API
+      // TODO: Implement when backend refresh token endpoint is ready
+      return const Left(ServerFailure('Refresh token not implemented'));
+    });
   }
+
+  // ==================== LOGOUT ====================
 
   @override
   Future<Either<Failure, void>> logout() async {
     try {
+      // Clear all auth data (tokens + user + credentials)
       await _localDataSource.clearAuthData();
 
       return const Right(null);
@@ -135,6 +135,8 @@ class LoginRepositoryImpl implements LoginRepository {
       return Left(CacheFailure('Failed to logout: ${e.toString()}'));
     }
   }
+
+  // ==================== GET STORED DATA ====================
 
   @override
   Future<Either<Failure, User?>> getStoredUser() async {
@@ -150,6 +152,8 @@ class LoginRepositoryImpl implements LoginRepository {
   Future<Either<Failure, String?>> getRefreshToken() async {
     return await _localDataSource.getRefreshToken();
   }
+
+  // ==================== REMEMBER ME ====================
 
   @override
   Future<Either<Failure, void>> storeLoginCredentials(

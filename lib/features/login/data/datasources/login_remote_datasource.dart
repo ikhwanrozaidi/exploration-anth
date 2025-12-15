@@ -1,23 +1,30 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
-import 'login_api_service.dart';
+import '../../../auth/domain/entities/auth_result.dart';
+import '../../../user/domain/entities/user.dart';
 import '../models/login_request_model.dart';
-
-// import '../models/verify_otp_request_model.dart';
-// import '../models/login_response_model.dart';
-// import '../models/verify_otp_response_model.dart';
-// import '../models/forgot_password_request_model.dart';
-// import '../models/verify_otp_forgot_request_model.dart';
-// import '../models/change_password_request_model.dart';
+import '../models/verify_otp_request_model.dart';
+import 'login_api_service.dart';
 
 abstract class LoginRemoteDataSource {
-  Future<Either<Failure, LoginResponseModel>> login(String email, String password);
-  Future<Either<Failure, VerifyOtpResponseModel>> verifyOtp(String email, String otp);
-  Future<Either<Failure, LoginResponseModel>> forgotPassword(String email);
-  Future<Either<Failure, String>> verifyOtpForgot(String email, String otpForgot);
-  Future<Either<Failure, String>> changePassword(String email, String newPassword);
-  Future<Either<Failure, (VerifyOtpResponseModel, String)>> refreshToken();
+  Future<Either<Failure, String>> login(String email, String password);
+  Future<Either<Failure, (AuthResult, User)>> verifyOtp(
+    String email,
+    String otp,
+  );
+
+  /// Haven't got the apis yet...
+  ///
+  // Future<Either<Failure, String>> forgotPassword(String email);
+  // Future<Either<Failure, String>> verifyOtpForgot(
+  //   String email,
+  //   String otpForgot,
+  // );
+  // Future<Either<Failure, String>> changePassword(
+  //   String email,
+  //   String newPassword,
+  // );
 }
 
 @LazySingleton(as: LoginRemoteDataSource)
@@ -27,103 +34,129 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
   LoginRemoteDataSourceImpl(this._apiService);
 
   @override
-  Future<Either<Failure, LoginResponseModel>> login(String email, String password) async {
+  Future<Either<Failure, String>> login(String email, String password) async {
     try {
-      final request = LoginRequestModel(email: email, password: password);
-      final response = await _apiService.login(data: request);
+      final response = await _apiService.signIn(
+        data: LoginRequestModel(email: email, password: password),
+      );
+
+      if (response.isSuccess && response.message.isNotEmpty) {
+        return Right(response.message); // "OTP sent successfully"
+      } else {
+        return Left(
+          ServerFailure(
+            response.message.isEmpty ? 'Login failed' : response.message,
+            statusCode: response.statusCode,
+          ),
+        );
+      }
+    } catch (e) {
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, (AuthResult, User)>> verifyOtp(
+    String email,
+    String otp,
+  ) async {
+    try {
+      final response = await _apiService.verifyOtp(
+        data: VerifyOtpRequestModel(email: email, otp: otp),
+      );
 
       if (response.isSuccess && response.data != null) {
-        return Right(response.data!);
+        final authResult = response.data!;
+
+        // Create user from response (you may need to fetch user details separately)
+        // For now, creating a basic user with email
+        final user = User(
+          id: 1, // Will be replaced with actual user ID from backend
+          uid: email, // Temporary UID
+          phone: email,
+          email: email,
+          firstName: null,
+          lastName: null,
+          updatedAt: DateTime.now(),
+          createdAt: DateTime.now(),
+        );
+
+        return Right((authResult, user));
       } else {
         return Left(
-          ServerFailure(response.message, statusCode: response.statusCode),
+          ServerFailure(
+            response.message.isEmpty
+                ? 'OTP verification failed'
+                : response.message,
+            statusCode: response.statusCode,
+          ),
         );
       }
     } catch (e) {
-      return Left(ServerFailure('Login failed: ${e.toString()}'));
+      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }
 
-  @override
-  Future<Either<Failure, VerifyOtpResponseModel>> verifyOtp(String email, String otp) async {
-    try {
-      final request = VerifyOtpRequestModel(email: email, otp: otp);
-      final response = await _apiService.verifyOtp(data: request);
+  // @override
+  // Future<Either<Failure, String>> forgotPassword(String email) async {
+  //   try {
+  //     final response = await _apiService.forgotPassword(
+  //       data: ForgotPasswordRequestModel(email: email),
+  //     );
 
-      if (response.isSuccess && response.data != null) {
-        return Right(response.data!);
-      } else {
-        return Left(
-          ServerFailure(response.message, statusCode: response.statusCode),
-        );
-      }
-    } catch (e) {
-      return Left(ServerFailure('OTP verification failed: ${e.toString()}'));
-    }
-  }
+  //     if (response.isSuccess) {
+  //       return Right(response.message);
+  //     } else {
+  //       return Left(
+  //         ServerFailure(response.message, statusCode: response.statusCode),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+  //   }
+  // }
 
-  @override
-  Future<Either<Failure, LoginResponseModel>> forgotPassword(String email) async {
-    try {
-      final request = ForgotPasswordRequestModel(email: email);
-      final response = await _apiService.forgotPassword(data: request);
+  // @override
+  // Future<Either<Failure, String>> verifyOtpForgot(
+  //   String email,
+  //   String otpForgot,
+  // ) async {
+  //   try {
+  //     final response = await _apiService.verifyOtpForgot(
+  //       data: {'email': email, 'otp': otpForgot},
+  //     );
 
-      if (response.isSuccess && response.data != null) {
-        return Right(response.data!);
-      } else {
-        return Left(
-          ServerFailure(response.message, statusCode: response.statusCode),
-        );
-      }
-    } catch (e) {
-      return Left(ServerFailure('Forgot password failed: ${e.toString()}'));
-    }
-  }
+  //     if (response.isSuccess) {
+  //       return Right(response.message);
+  //     } else {
+  //       return Left(
+  //         ServerFailure(response.message, statusCode: response.statusCode),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+  //   }
+  // }
 
-  @override
-  Future<Either<Failure, String>> verifyOtpForgot(String email, String otpForgot) async {
-    try {
-      final request = VerifyOtpForgotRequestModel(email: email, otpForgot: otpForgot);
-      final response = await _apiService.verifyOtpForgot(data: request);
+  // @override
+  // Future<Either<Failure, String>> changePassword(
+  //   String email,
+  //   String newPassword,
+  // ) async {
+  //   try {
+  //     final response = await _apiService.changePassword(
+  //       data: {'email': email, 'newPassword': newPassword},
+  //     );
 
-      if (response.isSuccess) {
-        return Right(response.message);
-      } else {
-        return Left(
-          ServerFailure(response.message, statusCode: response.statusCode),
-        );
-      }
-    } catch (e) {
-      return Left(ServerFailure('OTP verification failed: ${e.toString()}'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, String>> changePassword(String email, String newPassword) async {
-    try {
-      final request = ChangePasswordRequestModel(email: email, newPassword: newPassword);
-      final response = await _apiService.changePassword(data: request);
-
-      if (response.isSuccess) {
-        return Right(response.message);
-      } else {
-        return Left(
-          ServerFailure(response.message, statusCode: response.statusCode),
-        );
-      }
-    } catch (e) {
-      return Left(ServerFailure('Change password failed: ${e.toString()}'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, (VerifyOtpResponseModel, String)>> refreshToken() async {
-    try {
-      // TODO: Implement refresh token logic
-      // This would typically use a stored refresh token to get new access token
-      return Left(ServerFailure('Refresh token not implemented'));
-    } catch (e) {
-      return Left(ServerFailure('Refresh token failed: ${e.toString()}'));
-    }
-  }
+  //     if (response.isSuccess) {
+  //       return Right(response.message);
+  //     } else {
+  //       return Left(
+  //         ServerFailure(response.message, statusCode: response.statusCode),
+  //       );
+  //     }
+  //   } catch (e) {
+  //     return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+  //   }
+  // }
 }

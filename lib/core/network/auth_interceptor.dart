@@ -31,6 +31,8 @@ class AuthInterceptor extends Interceptor {
     final accessToken = await _getAccessToken();
 
     if (accessToken != null) {
+      // TODO: Check if token is expired and refresh if needed
+      // For now, AuthInterceptor handles this via 401 error
       options.headers['Authorization'] = 'Bearer $accessToken';
     }
 

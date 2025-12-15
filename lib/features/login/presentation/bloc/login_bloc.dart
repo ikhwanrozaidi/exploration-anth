@@ -1,7 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
+import '../../domain/usecases/get_stored_user_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
+import '../../domain/usecases/logout_usecase.dart';
+import '../../domain/usecases/refresh_token_usecase.dart';
+import '../../domain/usecases/verify_otp_usecase.dart';
 import 'login_event.dart';
 import 'login_state.dart';
 
@@ -12,14 +16,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final LogoutUseCase _logoutUseCase;
   final GetStoredUserUseCase _getStoredUserUseCase;
   final RefreshTokenUseCase _refreshTokenUseCase;
-  final ForgotPasswordUseCase _forgotPasswordUseCase;
-  final VerifyOtpForgotUseCase _verifyOtpForgotUseCase;
-  final ChangePasswordUseCase _changePasswordUseCase;
-  // Comment out these for now since they're not in DI yet
+
   final StoreLoginCredentialsUseCase _storeCredentialsUseCase;
   final GetStoredCredentialsUseCase _getStoredCredentialsUseCase;
 
-  String? _currentEmail; // Store email for OTP verification
+  String? _currentEmail;
 
   LoginBloc(
     this._loginUseCase,
@@ -27,19 +28,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     this._logoutUseCase,
     this._getStoredUserUseCase,
     this._refreshTokenUseCase,
-    this._forgotPasswordUseCase,
-    this._verifyOtpForgotUseCase,
-    this._changePasswordUseCase,
     this._storeCredentialsUseCase,
     this._getStoredCredentialsUseCase,
   ) : super(const LoginInitial()) {
     on<LoginSubmitted>(_onLoginSubmitted);
     on<LoginOtpSubmitted>(_onOtpSubmitted);
+
     on<LoginCheckAuthStatus>(_onCheckAuthStatus);
     on<LoginLogoutRequested>(_onLogoutRequested);
-    on<LoginForgotPasswordRequested>(_onForgotPasswordRequested);
-    on<LoginForgotOtpSubmitted>(_onForgotOtpSubmitted);
-    on<LoginChangePasswordRequested>(_onChangePasswordRequested);
+
+    // FORGOT PASSWORD
+    //
+    // on<LoginForgotPasswordRequested>(_onForgotPasswordRequested);
+    // on<LoginForgotOtpSubmitted>(_onForgotOtpSubmitted);
+    // on<LoginChangePasswordRequested>(_onChangePasswordRequested);
+
     on<LoginLoadSavedCredentials>(_onLoadSavedCredentials);
     on<LoginStoreCredentials>(_onStoreCredentials);
   }
@@ -177,60 +180,60 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     );
   }
 
-  Future<void> _onForgotPasswordRequested(
-    LoginForgotPasswordRequested event,
-    Emitter<LoginState> emit,
-  ) async {
-    emit(const LoginLoading());
+  // Future<void> _onForgotPasswordRequested(
+  //   LoginForgotPasswordRequested event,
+  //   Emitter<LoginState> emit,
+  // ) async {
+  //   emit(const LoginLoading());
 
-    final result = await _forgotPasswordUseCase(
-      ForgotPasswordParams(event.email),
-    );
+  //   final result = await _forgotPasswordUseCase(
+  //     ForgotPasswordParams(event.email),
+  //   );
 
-    result.fold(
-      (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
-      (message) {
-        _currentEmail = event.email;
-        emit(LoginForgotPasswordOtpRequired(event.email, message));
-      },
-    );
-  }
+  //   result.fold(
+  //     (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
+  //     (message) {
+  //       _currentEmail = event.email;
+  //       emit(LoginForgotPasswordOtpRequired(event.email, message));
+  //     },
+  //   );
+  // }
 
-  Future<void> _onForgotOtpSubmitted(
-    LoginForgotOtpSubmitted event,
-    Emitter<LoginState> emit,
-  ) async {
-    emit(const LoginLoading());
+  // Future<void> _onForgotOtpSubmitted(
+  //   LoginForgotOtpSubmitted event,
+  //   Emitter<LoginState> emit,
+  // ) async {
+  //   emit(const LoginLoading());
 
-    final result = await _verifyOtpForgotUseCase(
-      VerifyOtpForgotParams(event.email, event.otpForgot),
-    );
+  //   final result = await _verifyOtpForgotUseCase(
+  //     VerifyOtpForgotParams(event.email, event.otpForgot),
+  //   );
 
-    result.fold(
-      (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
-      (message) {
-        emit(LoginChangePasswordRequired(event.email, message));
-      },
-    );
-  }
+  //   result.fold(
+  //     (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
+  //     (message) {
+  //       emit(LoginChangePasswordRequired(event.email, message));
+  //     },
+  //   );
+  // }
 
-  Future<void> _onChangePasswordRequested(
-    LoginChangePasswordRequested event,
-    Emitter<LoginState> emit,
-  ) async {
-    emit(const LoginLoading());
+  // Future<void> _onChangePasswordRequested(
+  //   LoginChangePasswordRequested event,
+  //   Emitter<LoginState> emit,
+  // ) async {
+  //   emit(const LoginLoading());
 
-    final result = await _changePasswordUseCase(
-      ChangePasswordParams(event.email, event.newPassword),
-    );
+  //   final result = await _changePasswordUseCase(
+  //     ChangePasswordParams(event.email, event.newPassword),
+  //   );
 
-    result.fold(
-      (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
-      (message) {
-        emit(LoginPasswordChanged(message));
-      },
-    );
-  }
+  //   result.fold(
+  //     (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
+  //     (message) {
+  //       emit(LoginPasswordChanged(message));
+  //     },
+  //   );
+  // }
 
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {

@@ -86,7 +86,16 @@ import '../../features/login/data/repositories/login_repository_impl.dart'
 import '../../features/login/domain/repositories/login_repository.dart'
     as _i902;
 import '../../features/login/domain/usecases/credential_usecase.dart' as _i443;
+import '../../features/login/domain/usecases/get_store_credential_usecase.dart'
+    as _i547;
+import '../../features/login/domain/usecases/get_stored_user_usecase.dart'
+    as _i489;
 import '../../features/login/domain/usecases/login_usecase.dart' as _i420;
+import '../../features/login/domain/usecases/logout_usecase.dart' as _i611;
+import '../../features/login/domain/usecases/refresh_token_usecase.dart'
+    as _i1051;
+import '../../features/login/domain/usecases/store_login_usecase.dart' as _i320;
+import '../../features/login/domain/usecases/verify_otp_usecase.dart' as _i285;
 import '../../features/login/presentation/bloc/login_bloc.dart' as _i664;
 import '../../features/onboarding/presentation/bloc/onboarding_bloc.dart'
     as _i792;
@@ -328,38 +337,29 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i420.LoginUseCase>(
       () => _i420.LoginUseCase(gh<_i902.LoginRepository>()),
     );
-    gh.factory<_i420.VerifyOtpUseCase>(
-      () => _i420.VerifyOtpUseCase(gh<_i902.LoginRepository>()),
-    );
-    gh.factory<_i420.LogoutUseCase>(
-      () => _i420.LogoutUseCase(gh<_i902.LoginRepository>()),
-    );
-    gh.factory<_i420.GetStoredUserUseCase>(
-      () => _i420.GetStoredUserUseCase(gh<_i902.LoginRepository>()),
-    );
-    gh.factory<_i420.RefreshTokenUseCase>(
-      () => _i420.RefreshTokenUseCase(gh<_i902.LoginRepository>()),
-    );
-    gh.factory<_i420.ForgotPasswordUseCase>(
-      () => _i420.ForgotPasswordUseCase(gh<_i902.LoginRepository>()),
-    );
-    gh.factory<_i420.VerifyOtpForgotUseCase>(
-      () => _i420.VerifyOtpForgotUseCase(gh<_i902.LoginRepository>()),
-    );
-    gh.factory<_i420.ChangePasswordUseCase>(
-      () => _i420.ChangePasswordUseCase(gh<_i902.LoginRepository>()),
-    );
-    gh.factory<_i420.StoreLoginCredentialsUseCase>(
-      () => _i420.StoreLoginCredentialsUseCase(gh<_i902.LoginRepository>()),
-    );
-    gh.factory<_i420.GetStoredCredentialsUseCase>(
-      () => _i420.GetStoredCredentialsUseCase(gh<_i902.LoginRepository>()),
-    );
     gh.factory<_i443.StoreLoginCredentialsUseCase>(
       () => _i443.StoreLoginCredentialsUseCase(gh<_i902.LoginRepository>()),
     );
     gh.factory<_i443.GetStoredCredentialsUseCase>(
       () => _i443.GetStoredCredentialsUseCase(gh<_i902.LoginRepository>()),
+    );
+    gh.factory<_i1051.RefreshTokenUseCase>(
+      () => _i1051.RefreshTokenUseCase(gh<_i902.LoginRepository>()),
+    );
+    gh.factory<_i547.GetStoredCredentialsUseCase>(
+      () => _i547.GetStoredCredentialsUseCase(gh<_i902.LoginRepository>()),
+    );
+    gh.factory<_i611.LogoutUseCase>(
+      () => _i611.LogoutUseCase(gh<_i902.LoginRepository>()),
+    );
+    gh.factory<_i489.GetStoredUserUseCase>(
+      () => _i489.GetStoredUserUseCase(gh<_i902.LoginRepository>()),
+    );
+    gh.factory<_i320.StoreLoginCredentialsUseCase>(
+      () => _i320.StoreLoginCredentialsUseCase(gh<_i902.LoginRepository>()),
+    );
+    gh.factory<_i285.VerifyOtpUseCase>(
+      () => _i285.VerifyOtpUseCase(gh<_i902.LoginRepository>()),
     );
     gh.factory<_i57.SignUpUseCase>(
       () => _i57.SignUpUseCase(gh<_i787.AuthRepository>()),
@@ -386,13 +386,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i664.LoginBloc>(
       () => _i664.LoginBloc(
         gh<_i420.LoginUseCase>(),
-        gh<_i420.VerifyOtpUseCase>(),
-        gh<_i420.LogoutUseCase>(),
-        gh<_i420.GetStoredUserUseCase>(),
-        gh<_i420.RefreshTokenUseCase>(),
-        gh<_i420.ForgotPasswordUseCase>(),
-        gh<_i420.VerifyOtpForgotUseCase>(),
-        gh<_i420.ChangePasswordUseCase>(),
+        gh<_i285.VerifyOtpUseCase>(),
+        gh<_i611.LogoutUseCase>(),
+        gh<_i489.GetStoredUserUseCase>(),
+        gh<_i1051.RefreshTokenUseCase>(),
         gh<_i420.StoreLoginCredentialsUseCase>(),
         gh<_i420.GetStoredCredentialsUseCase>(),
       ),

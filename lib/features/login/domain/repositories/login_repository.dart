@@ -15,16 +15,18 @@ abstract class LoginRepository {
   Future<Either<Failure, String?>> getAccessToken();
   Future<Either<Failure, String?>> getRefreshToken();
 
+  /// Not yet have the apis...
+  ///
   // Forgot password functionality
-  Future<Either<Failure, String>> forgotPassword(String email);
-  Future<Either<Failure, String>> verifyOtpForgot(
-    String email,
-    String otpForgot,
-  );
-  Future<Either<Failure, String>> changePassword(
-    String email,
-    String newPassword,
-  );
+  // Future<Either<Failure, String>> forgotPassword(String email);
+  // Future<Either<Failure, String>> verifyOtpForgot(
+  //   String email,
+  //   String otpForgot,
+  // );
+  // Future<Either<Failure, String>> changePassword(
+  //   String email,
+  //   String newPassword,
+  // );
 
   Future<Either<Failure, void>> storeLoginCredentials(
     String email,
