@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/sync/sync_constants.dart';
 import '../../data/models/create_report_warning_model.dart';
 import '../../data/models/create_warning_model.dart';
 import '../entities/warning.dart';
@@ -48,9 +49,11 @@ abstract class WarningRepository {
   /// Clear cache
   Future<Either<Failure, void>> clearCache();
 
-  /// Create warning from site inspection with offline support
+  /// Create warning from site inspection with offline support and image upload
   Future<Either<Failure, Warning>> createSiteWarning({
     required CreateWarningModel data,
     required String companyUID,
+    Map<ImageContextField, List<String>>? images,
+    String? adminUID,
   });
 }

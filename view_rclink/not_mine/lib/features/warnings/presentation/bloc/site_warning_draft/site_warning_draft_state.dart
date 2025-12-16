@@ -61,5 +61,6 @@ abstract class SiteWarningDraftData with _$SiteWarningDraftData {
     ContractorRelation? contractor,
     @Default([]) List<String> warningReasonUIDs,
     @Default('') String description,
+    @Default([]) List<String> warningImages,
   }) = _SiteWarningDraftData;
 }

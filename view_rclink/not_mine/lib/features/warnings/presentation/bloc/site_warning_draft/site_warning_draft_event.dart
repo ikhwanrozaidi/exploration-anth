@@ -33,6 +33,10 @@ abstract class SiteWarningDraftEvent with _$SiteWarningDraftEvent {
     required String description,
   }) = UpdateDescription;
 
+  const factory SiteWarningDraftEvent.updateWarningImages({
+    required List<String> warningImages,
+  }) = UpdateWarningImages;
+
   // Auto-save
   const factory SiteWarningDraftEvent.autoSaveDraft() = AutoSaveDraft;
 

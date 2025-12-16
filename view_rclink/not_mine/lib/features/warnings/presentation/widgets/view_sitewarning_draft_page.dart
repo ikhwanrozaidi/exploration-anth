@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/responsive_helper.dart';
@@ -48,7 +49,6 @@ class _ViewSitewarningDraftPageState extends State<ViewSitewarningDraftPage> {
   }
 
   void _onDraftTapped(Warning draft) async {
-    // Extract data from draft for navigation
     final scopeUID = draft.workScope?.uid ?? '';
     final scopeName = draft.workScope?.name ?? '';
 
@@ -73,7 +73,6 @@ class _ViewSitewarningDraftPageState extends State<ViewSitewarningDraftPage> {
     final endSection = draft.toSection;
     final scopeID = draft.workScopeID;
 
-    // Navigate to WarningDraftPage with draft UID AND all required data
     final result = await Navigator.push(
       context,
       MaterialPageRoute(
@@ -154,35 +153,17 @@ class _ViewSitewarningDraftPageState extends State<ViewSitewarningDraftPage> {
               if (drafts.isEmpty) {
                 return Center(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.inbox_outlined,
-                        size: 80,
-                        color: Colors.grey.shade400,
+                      SizedBox(height: 100),
+                      Lottie.asset(
+                        'assets/lottie/no_record.json',
+                        width: 200,
+                        height: 200,
+                        fit: BoxFit.contain,
                       ),
-                      const SizedBox(height: 20),
                       Text(
-                        'No draft warnings',
-                        style: TextStyle(
-                          fontSize: ResponsiveHelper.fontSize(
-                            context,
-                            base: 16,
-                          ),
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        'Create a new warning to see it here',
-                        style: TextStyle(
-                          fontSize: ResponsiveHelper.fontSize(
-                            context,
-                            base: 14,
-                          ),
-                          color: Colors.grey.shade500,
-                        ),
+                        'No warning draft found',
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
                       ),
                     ],
                   ),

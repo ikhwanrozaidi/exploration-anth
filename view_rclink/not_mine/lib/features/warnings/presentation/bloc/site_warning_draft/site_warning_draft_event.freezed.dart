@@ -55,7 +55,7 @@ extension SiteWarningDraftEventPatterns on SiteWarningDraftEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InitializeDraft value)?  initializeDraft,TResult Function( UpdateLocation value)?  updateLocation,TResult Function( UpdateContractor value)?  updateContractor,TResult Function( UpdateWarningReasons value)?  updateWarningReasons,TResult Function( UpdateDescription value)?  updateDescription,TResult Function( AutoSaveDraft value)?  autoSaveDraft,TResult Function( LoadExistingDraft value)?  loadExistingDraft,TResult Function( DeleteDraft value)?  deleteDraft,TResult Function( SubmitWarning value)?  submitWarning,TResult Function( LoadDraftList value)?  loadDraftList,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InitializeDraft value)?  initializeDraft,TResult Function( UpdateLocation value)?  updateLocation,TResult Function( UpdateContractor value)?  updateContractor,TResult Function( UpdateWarningReasons value)?  updateWarningReasons,TResult Function( UpdateDescription value)?  updateDescription,TResult Function( UpdateWarningImages value)?  updateWarningImages,TResult Function( AutoSaveDraft value)?  autoSaveDraft,TResult Function( LoadExistingDraft value)?  loadExistingDraft,TResult Function( DeleteDraft value)?  deleteDraft,TResult Function( SubmitWarning value)?  submitWarning,TResult Function( LoadDraftList value)?  loadDraftList,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
@@ -63,7 +63,8 @@ return initializeDraft(_that);case UpdateLocation() when updateLocation != null:
 return updateLocation(_that);case UpdateContractor() when updateContractor != null:
 return updateContractor(_that);case UpdateWarningReasons() when updateWarningReasons != null:
 return updateWarningReasons(_that);case UpdateDescription() when updateDescription != null:
-return updateDescription(_that);case AutoSaveDraft() when autoSaveDraft != null:
+return updateDescription(_that);case UpdateWarningImages() when updateWarningImages != null:
+return updateWarningImages(_that);case AutoSaveDraft() when autoSaveDraft != null:
 return autoSaveDraft(_that);case LoadExistingDraft() when loadExistingDraft != null:
 return loadExistingDraft(_that);case DeleteDraft() when deleteDraft != null:
 return deleteDraft(_that);case SubmitWarning() when submitWarning != null:
@@ -86,7 +87,7 @@ return loadDraftList(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InitializeDraft value)  initializeDraft,required TResult Function( UpdateLocation value)  updateLocation,required TResult Function( UpdateContractor value)  updateContractor,required TResult Function( UpdateWarningReasons value)  updateWarningReasons,required TResult Function( UpdateDescription value)  updateDescription,required TResult Function( AutoSaveDraft value)  autoSaveDraft,required TResult Function( LoadExistingDraft value)  loadExistingDraft,required TResult Function( DeleteDraft value)  deleteDraft,required TResult Function( SubmitWarning value)  submitWarning,required TResult Function( LoadDraftList value)  loadDraftList,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InitializeDraft value)  initializeDraft,required TResult Function( UpdateLocation value)  updateLocation,required TResult Function( UpdateContractor value)  updateContractor,required TResult Function( UpdateWarningReasons value)  updateWarningReasons,required TResult Function( UpdateDescription value)  updateDescription,required TResult Function( UpdateWarningImages value)  updateWarningImages,required TResult Function( AutoSaveDraft value)  autoSaveDraft,required TResult Function( LoadExistingDraft value)  loadExistingDraft,required TResult Function( DeleteDraft value)  deleteDraft,required TResult Function( SubmitWarning value)  submitWarning,required TResult Function( LoadDraftList value)  loadDraftList,}){
 final _that = this;
 switch (_that) {
 case InitializeDraft():
@@ -94,7 +95,8 @@ return initializeDraft(_that);case UpdateLocation():
 return updateLocation(_that);case UpdateContractor():
 return updateContractor(_that);case UpdateWarningReasons():
 return updateWarningReasons(_that);case UpdateDescription():
-return updateDescription(_that);case AutoSaveDraft():
+return updateDescription(_that);case UpdateWarningImages():
+return updateWarningImages(_that);case AutoSaveDraft():
 return autoSaveDraft(_that);case LoadExistingDraft():
 return loadExistingDraft(_that);case DeleteDraft():
 return deleteDraft(_that);case SubmitWarning():
@@ -116,7 +118,7 @@ return loadDraftList(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InitializeDraft value)?  initializeDraft,TResult? Function( UpdateLocation value)?  updateLocation,TResult? Function( UpdateContractor value)?  updateContractor,TResult? Function( UpdateWarningReasons value)?  updateWarningReasons,TResult? Function( UpdateDescription value)?  updateDescription,TResult? Function( AutoSaveDraft value)?  autoSaveDraft,TResult? Function( LoadExistingDraft value)?  loadExistingDraft,TResult? Function( DeleteDraft value)?  deleteDraft,TResult? Function( SubmitWarning value)?  submitWarning,TResult? Function( LoadDraftList value)?  loadDraftList,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InitializeDraft value)?  initializeDraft,TResult? Function( UpdateLocation value)?  updateLocation,TResult? Function( UpdateContractor value)?  updateContractor,TResult? Function( UpdateWarningReasons value)?  updateWarningReasons,TResult? Function( UpdateDescription value)?  updateDescription,TResult? Function( UpdateWarningImages value)?  updateWarningImages,TResult? Function( AutoSaveDraft value)?  autoSaveDraft,TResult? Function( LoadExistingDraft value)?  loadExistingDraft,TResult? Function( DeleteDraft value)?  deleteDraft,TResult? Function( SubmitWarning value)?  submitWarning,TResult? Function( LoadDraftList value)?  loadDraftList,}){
 final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
@@ -124,7 +126,8 @@ return initializeDraft(_that);case UpdateLocation() when updateLocation != null:
 return updateLocation(_that);case UpdateContractor() when updateContractor != null:
 return updateContractor(_that);case UpdateWarningReasons() when updateWarningReasons != null:
 return updateWarningReasons(_that);case UpdateDescription() when updateDescription != null:
-return updateDescription(_that);case AutoSaveDraft() when autoSaveDraft != null:
+return updateDescription(_that);case UpdateWarningImages() when updateWarningImages != null:
+return updateWarningImages(_that);case AutoSaveDraft() when autoSaveDraft != null:
 return autoSaveDraft(_that);case LoadExistingDraft() when loadExistingDraft != null:
 return loadExistingDraft(_that);case DeleteDraft() when deleteDraft != null:
 return deleteDraft(_that);case SubmitWarning() when submitWarning != null:
@@ -146,14 +149,15 @@ return loadDraftList(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int scopeID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)?  initializeDraft,TResult Function( double latitude,  double longitude)?  updateLocation,TResult Function( ContractorRelation contractor)?  updateContractor,TResult Function( List<String> warningReasonUIDs)?  updateWarningReasons,TResult Function( String description)?  updateDescription,TResult Function()?  autoSaveDraft,TResult Function( String draftUID)?  loadExistingDraft,TResult Function( String draftUID)?  deleteDraft,TResult Function( String companyUID)?  submitWarning,TResult Function( String companyUID)?  loadDraftList,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int scopeID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)?  initializeDraft,TResult Function( double latitude,  double longitude)?  updateLocation,TResult Function( ContractorRelation contractor)?  updateContractor,TResult Function( List<String> warningReasonUIDs)?  updateWarningReasons,TResult Function( String description)?  updateDescription,TResult Function( List<String> warningImages)?  updateWarningImages,TResult Function()?  autoSaveDraft,TResult Function( String draftUID)?  loadExistingDraft,TResult Function( String draftUID)?  deleteDraft,TResult Function( String companyUID)?  submitWarning,TResult Function( String companyUID)?  loadDraftList,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
 return initializeDraft(_that.companyUID,_that.scopeID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection);case UpdateLocation() when updateLocation != null:
 return updateLocation(_that.latitude,_that.longitude);case UpdateContractor() when updateContractor != null:
 return updateContractor(_that.contractor);case UpdateWarningReasons() when updateWarningReasons != null:
 return updateWarningReasons(_that.warningReasonUIDs);case UpdateDescription() when updateDescription != null:
-return updateDescription(_that.description);case AutoSaveDraft() when autoSaveDraft != null:
+return updateDescription(_that.description);case UpdateWarningImages() when updateWarningImages != null:
+return updateWarningImages(_that.warningImages);case AutoSaveDraft() when autoSaveDraft != null:
 return autoSaveDraft();case LoadExistingDraft() when loadExistingDraft != null:
 return loadExistingDraft(_that.draftUID);case DeleteDraft() when deleteDraft != null:
 return deleteDraft(_that.draftUID);case SubmitWarning() when submitWarning != null:
@@ -176,14 +180,15 @@ return loadDraftList(_that.companyUID);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int scopeID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)  initializeDraft,required TResult Function( double latitude,  double longitude)  updateLocation,required TResult Function( ContractorRelation contractor)  updateContractor,required TResult Function( List<String> warningReasonUIDs)  updateWarningReasons,required TResult Function( String description)  updateDescription,required TResult Function()  autoSaveDraft,required TResult Function( String draftUID)  loadExistingDraft,required TResult Function( String draftUID)  deleteDraft,required TResult Function( String companyUID)  submitWarning,required TResult Function( String companyUID)  loadDraftList,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int scopeID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)  initializeDraft,required TResult Function( double latitude,  double longitude)  updateLocation,required TResult Function( ContractorRelation contractor)  updateContractor,required TResult Function( List<String> warningReasonUIDs)  updateWarningReasons,required TResult Function( String description)  updateDescription,required TResult Function( List<String> warningImages)  updateWarningImages,required TResult Function()  autoSaveDraft,required TResult Function( String draftUID)  loadExistingDraft,required TResult Function( String draftUID)  deleteDraft,required TResult Function( String companyUID)  submitWarning,required TResult Function( String companyUID)  loadDraftList,}) {final _that = this;
 switch (_that) {
 case InitializeDraft():
 return initializeDraft(_that.companyUID,_that.scopeID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection);case UpdateLocation():
 return updateLocation(_that.latitude,_that.longitude);case UpdateContractor():
 return updateContractor(_that.contractor);case UpdateWarningReasons():
 return updateWarningReasons(_that.warningReasonUIDs);case UpdateDescription():
-return updateDescription(_that.description);case AutoSaveDraft():
+return updateDescription(_that.description);case UpdateWarningImages():
+return updateWarningImages(_that.warningImages);case AutoSaveDraft():
 return autoSaveDraft();case LoadExistingDraft():
 return loadExistingDraft(_that.draftUID);case DeleteDraft():
 return deleteDraft(_that.draftUID);case SubmitWarning():
@@ -205,14 +210,15 @@ return loadDraftList(_that.companyUID);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int scopeID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)?  initializeDraft,TResult? Function( double latitude,  double longitude)?  updateLocation,TResult? Function( ContractorRelation contractor)?  updateContractor,TResult? Function( List<String> warningReasonUIDs)?  updateWarningReasons,TResult? Function( String description)?  updateDescription,TResult? Function()?  autoSaveDraft,TResult? Function( String draftUID)?  loadExistingDraft,TResult? Function( String draftUID)?  deleteDraft,TResult? Function( String companyUID)?  submitWarning,TResult? Function( String companyUID)?  loadDraftList,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int scopeID,  String scopeUID,  String scopeName,  Road road,  String startSection,  String? endSection)?  initializeDraft,TResult? Function( double latitude,  double longitude)?  updateLocation,TResult? Function( ContractorRelation contractor)?  updateContractor,TResult? Function( List<String> warningReasonUIDs)?  updateWarningReasons,TResult? Function( String description)?  updateDescription,TResult? Function( List<String> warningImages)?  updateWarningImages,TResult? Function()?  autoSaveDraft,TResult? Function( String draftUID)?  loadExistingDraft,TResult? Function( String draftUID)?  deleteDraft,TResult? Function( String companyUID)?  submitWarning,TResult? Function( String companyUID)?  loadDraftList,}) {final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
 return initializeDraft(_that.companyUID,_that.scopeID,_that.scopeUID,_that.scopeName,_that.road,_that.startSection,_that.endSection);case UpdateLocation() when updateLocation != null:
 return updateLocation(_that.latitude,_that.longitude);case UpdateContractor() when updateContractor != null:
 return updateContractor(_that.contractor);case UpdateWarningReasons() when updateWarningReasons != null:
 return updateWarningReasons(_that.warningReasonUIDs);case UpdateDescription() when updateDescription != null:
-return updateDescription(_that.description);case AutoSaveDraft() when autoSaveDraft != null:
+return updateDescription(_that.description);case UpdateWarningImages() when updateWarningImages != null:
+return updateWarningImages(_that.warningImages);case AutoSaveDraft() when autoSaveDraft != null:
 return autoSaveDraft();case LoadExistingDraft() when loadExistingDraft != null:
 return loadExistingDraft(_that.draftUID);case DeleteDraft() when deleteDraft != null:
 return deleteDraft(_that.draftUID);case SubmitWarning() when submitWarning != null:
@@ -569,6 +575,78 @@ class _$UpdateDescriptionCopyWithImpl<$Res>
   return _then(UpdateDescription(
 description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class UpdateWarningImages implements SiteWarningDraftEvent {
+  const UpdateWarningImages({required final  List<String> warningImages}): _warningImages = warningImages;
+  
+
+ final  List<String> _warningImages;
+ List<String> get warningImages {
+  if (_warningImages is EqualUnmodifiableListView) return _warningImages;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_warningImages);
+}
+
+
+/// Create a copy of SiteWarningDraftEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$UpdateWarningImagesCopyWith<UpdateWarningImages> get copyWith => _$UpdateWarningImagesCopyWithImpl<UpdateWarningImages>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdateWarningImages&&const DeepCollectionEquality().equals(other._warningImages, _warningImages));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_warningImages));
+
+@override
+String toString() {
+  return 'SiteWarningDraftEvent.updateWarningImages(warningImages: $warningImages)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $UpdateWarningImagesCopyWith<$Res> implements $SiteWarningDraftEventCopyWith<$Res> {
+  factory $UpdateWarningImagesCopyWith(UpdateWarningImages value, $Res Function(UpdateWarningImages) _then) = _$UpdateWarningImagesCopyWithImpl;
+@useResult
+$Res call({
+ List<String> warningImages
+});
+
+
+
+
+}
+/// @nodoc
+class _$UpdateWarningImagesCopyWithImpl<$Res>
+    implements $UpdateWarningImagesCopyWith<$Res> {
+  _$UpdateWarningImagesCopyWithImpl(this._self, this._then);
+
+  final UpdateWarningImages _self;
+  final $Res Function(UpdateWarningImages) _then;
+
+/// Create a copy of SiteWarningDraftEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? warningImages = null,}) {
+  return _then(UpdateWarningImages(
+warningImages: null == warningImages ? _self._warningImages : warningImages // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

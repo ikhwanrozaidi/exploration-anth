@@ -9,6 +9,9 @@ import '../../../../../shared/widgets/divider_config.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../shared/widgets/flexible_bottomsheet.dart';
+import '../../../../shared/widgets/gallery/gallery_widget.dart';
+import '../../../../shared/widgets/gallery/models/gallery_image.dart';
+import '../../../../shared/widgets/gallery/models/gallery_result.dart';
 import '../../../../shared/widgets/location_map_widget.dart';
 import '../../../../shared/widgets/location_picker/editable_location_map_widget.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
@@ -738,15 +741,86 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                         ),
 
                         // Photos
-                        CustomFieldTile(
-                          icon: Icons.camera_alt_rounded,
-                          title: 'Photos',
-                          titleDetails: 'Take picture of site',
-                          // isFilled: selectedEquipment.isNotEmpty,
-                          onTap: () {
-                            print('Photos pressed');
+                        // Photos
+                        BlocBuilder<
+                          SiteWarningDraftBloc,
+                          SiteWarningDraftState
+                        >(
+                          bloc: _siteWarningDraftBloc,
+                          builder: (context, draftState) {
+                            final warningImages = draftState.maybeWhen(
+                              editing: (draftData) => draftData.warningImages,
+                              autoSaving: (draftData) =>
+                                  draftData.warningImages,
+                              autoSaved: (draftData) => draftData.warningImages,
+                              submitting: (draftData) =>
+                                  draftData.warningImages,
+                              orElse: () => <String>[],
+                            );
+
+                            return CustomFieldTile(
+                              icon: Icons.camera_alt_rounded,
+                              title: 'Photos',
+                              titleDetails: warningImages.isEmpty
+                                  ? 'Take picture of site (min. 2 images)'
+                                  : '${warningImages.length} image${warningImages.length > 1 ? 's' : ''} added',
+                              isFilled: warningImages.length >= 2,
+                              onTap: () async {
+                                print('📷 Opening gallery for warning images');
+
+                                // Convert existing image paths to GalleryImage objects
+                                final initialImages = warningImages
+                                    .map(
+                                      (path) => GalleryImage(
+                                        path: path,
+                                        capturedAt: DateTime.now(),
+                                      ),
+                                    )
+                                    .toList();
+
+                                final result = await Navigator.push<GalleryResult>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => GalleryWidget(
+                                      title: 'Warning Photos',
+                                      inputProgress: false,
+                                      pinPointFirst: false,
+                                      maxImages: 6,
+                                      minimumImage: 2,
+                                      tabLock: false,
+                                      pictures: warningImages,
+                                      onImagesChanged: (result) {
+                                        print(
+                                          '🔄 onImagesChanged callback: ${result.images?.length ?? 0} images',
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                );
+
+                                if (result != null && result.images != null) {
+                                  print(
+                                    '✅ Gallery result: ${result.images!.length} images',
+                                  );
+
+                                  // Extract image paths from GalleryImage objects
+                                  final imagePaths = result.images!
+                                      .map((img) => img.path)
+                                      .toList();
+
+                                  // Update BLoC with new images
+                                  _siteWarningDraftBloc.add(
+                                    SiteWarningDraftEvent.updateWarningImages(
+                                      warningImages: imagePaths,
+                                    ),
+                                  );
+                                } else {
+                                  print('⚠️ No result or images is null');
+                                }
+                              },
+                              isRequired: true,
+                            );
                           },
-                          isRequired: true,
                         ),
 
                         SizedBox(height: 60),

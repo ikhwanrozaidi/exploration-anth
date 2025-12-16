@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:rclink_app/features/warnings/presentation/widgets/no_access.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/responsive_helper.dart';
@@ -10,6 +11,9 @@ import '../../../../shared/widgets/custom_tab_widget.dart';
 import '../../../../shared/widgets/year_filter_widget.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_state.dart';
+import '../../../rbac/domain/constants/permission_codes.dart';
+import '../../../rbac/presentation/bloc/rbac_bloc.dart';
+import '../../../rbac/presentation/bloc/rbac_state.dart';
 import '../../domain/entities/warning.dart';
 import '../../domain/entities/warning_type.dart';
 import '../bloc/warning_view/warning_bloc.dart';
@@ -176,225 +180,249 @@ class _WarningPageContentState extends State<_WarningPageContent> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color.fromARGB(255, 135, 167, 247), primaryColor],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            stops: [0.0, 0.2],
-          ),
-        ),
-        child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: ResponsiveHelper.getHeight(context, 0.02)),
+    return BlocBuilder<RbacBloc, RbacState>(
+      builder: (context, rbacState) {
+        final hasPermission = rbacState.hasPermission(
+          PermissionCodes.WARNING_VIEW,
+        );
 
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Warning',
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: ResponsiveHelper.fontSize(context, base: 18),
-                      ),
-                    ),
-                    _currentTabIndex == 1
-                        ? Row(
-                            children: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          ViewSitewarningDraftPage(),
-                                    ),
-                                  );
-                                },
-
-                                style: TextButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  foregroundColor: primaryColor,
-                                  side: BorderSide(
-                                    color: Colors.amber.shade800,
-                                    width: 1.5,
-                                  ),
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                    vertical: 5,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Draft',
-                                  style: TextStyle(
-                                    color: Colors.amber.shade800,
-                                  ),
-                                ),
-                              ),
-
-                              SizedBox(width: 5),
-
-                              IconButton(
-                                style: IconButton.styleFrom(
-                                  shape: const CircleBorder(),
-                                  backgroundColor: Colors.white,
-                                  padding: ResponsiveHelper.padding(
-                                    context,
-                                    all: 5,
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          WarningCreationPage(isNewDraft: true),
-                                    ),
-                                  );
-                                },
-                                icon: Icon(
-                                  Icons.add,
-                                  color: primaryColor,
-                                  size: ResponsiveHelper.iconSize(
-                                    context,
-                                    base: 20,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        : SizedBox(height: 48), // measured. not a good approach
-                  ],
+        return Scaffold(
+          body: NoAccessOverlay(
+            showOverlay: !hasPermission,
+            backButton: true,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color.fromARGB(255, 135, 167, 247), primaryColor],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.0, 0.2],
                 ),
               ),
+              child: SafeArea(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: ResponsiveHelper.getHeight(context, 0.02)),
 
-              SizedBox(height: 20),
-
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 10,
-                        offset: Offset(0, -2),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      top: 15,
-                      right: 15,
-                      left: 15,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 10),
-
-                        YearFilter(
-                          onYearSelected: (from, to) {
-                            print('From: $from, To: $to');
-                            // TODO: Implement year filtering with API
-                          },
-                          primaryColor: primaryColor,
-                        ),
-
-                        SizedBox(height: 20),
-
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            padding: EdgeInsets.zero,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Warning',
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                              fontSize: ResponsiveHelper.fontSize(
+                                context,
+                                base: 18,
+                              ),
                             ),
-                            backgroundColor: Colors.grey.shade200,
                           ),
-                          onPressed: () {
-                            CustomSnackBar.show(
-                              context,
-                              'This feature is coming soon...',
-                              type: SnackBarType.comingsoon,
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 11,
-                              horizontal: 25,
-                            ),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.search,
-                                  size: 30,
-                                  color: Colors.black.withOpacity(0.5),
-                                ),
-                                SizedBox(width: 20),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                          _currentTabIndex == 1
+                              ? Row(
                                   children: [
-                                    Text(
-                                      'Search contractor or district',
-                                      style: TextStyle(
-                                        color: Colors.black.withOpacity(0.5),
-                                        fontSize: 13,
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ViewSitewarningDraftPage(),
+                                          ),
+                                        );
+                                      },
+
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                        foregroundColor: primaryColor,
+                                        side: BorderSide(
+                                          color: Colors.amber.shade800,
+                                          width: 1.5,
+                                        ),
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 20,
+                                          vertical: 5,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Draft',
+                                        style: TextStyle(
+                                          color: Colors.amber.shade800,
+                                        ),
+                                      ),
+                                    ),
+
+                                    SizedBox(width: 5),
+
+                                    IconButton(
+                                      style: IconButton.styleFrom(
+                                        shape: const CircleBorder(),
+                                        backgroundColor: Colors.white,
+                                        padding: ResponsiveHelper.padding(
+                                          context,
+                                          all: 5,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                WarningCreationPage(
+                                                  isNewDraft: true,
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                      icon: Icon(
+                                        Icons.add,
+                                        color: primaryColor,
+                                        size: ResponsiveHelper.iconSize(
+                                          context,
+                                          base: 20,
+                                        ),
                                       ),
                                     ),
                                   ],
-                                ),
-                              ],
-                            ),
+                                )
+                              : SizedBox(
+                                  height: 48,
+                                ), // measured. not a good approach
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 20),
+
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(24),
+                            topRight: Radius.circular(24),
                           ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 10,
+                              offset: Offset(0, -2),
+                            ),
+                          ],
                         ),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 15,
+                            right: 15,
+                            left: 15,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(height: 10),
 
-                        SizedBox(height: 20),
+                              YearFilter(
+                                onYearSelected: (from, to) {
+                                  print('From: $from, To: $to');
+                                  // TODO: Implement year filtering with API
+                                },
+                                primaryColor: primaryColor,
+                              ),
 
-                        Expanded(
-                          child: CustomTabWidget(
-                            tabs: const ['Reports', 'Site Warning'],
-                            initialIndex: 1,
-                            onTabChanged: (index, tabLabel) {
-                              setState(() {
-                                _currentTab = tabLabel;
-                                _currentTabIndex = index;
-                              });
-                              print(
-                                'Tab changed to: $tabLabel (index: $index)',
-                              );
-                              _loadWarnings();
-                            },
-                            tabContents: [
-                              _buildWarningsContent(),
-                              _buildWarningsContent(),
+                              SizedBox(height: 20),
+
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                  backgroundColor: Colors.grey.shade200,
+                                ),
+                                onPressed: () {
+                                  CustomSnackBar.show(
+                                    context,
+                                    'This feature is coming soon...',
+                                    type: SnackBarType.comingsoon,
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 11,
+                                    horizontal: 25,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.search,
+                                        size: 30,
+                                        color: Colors.black.withOpacity(0.5),
+                                      ),
+                                      SizedBox(width: 20),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Search contractor or district',
+                                            style: TextStyle(
+                                              color: Colors.black.withOpacity(
+                                                0.5,
+                                              ),
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              SizedBox(height: 20),
+
+                              Expanded(
+                                child: CustomTabWidget(
+                                  tabs: const ['Reports', 'Site Warning'],
+                                  initialIndex: 1,
+                                  onTabChanged: (index, tabLabel) {
+                                    setState(() {
+                                      _currentTab = tabLabel;
+                                      _currentTabIndex = index;
+                                    });
+                                    print(
+                                      'Tab changed to: $tabLabel (index: $index)',
+                                    );
+                                    _loadWarnings();
+                                  },
+                                  tabContents: [
+                                    _buildWarningsContent(),
+                                    _buildWarningsContent(),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -423,7 +451,6 @@ class _WarningPageContentState extends State<_WarningPageContent> {
             ),
           ),
           loaded: (warnings, currentPage, hasMore, isLoadingMore) {
-            // Filter warnings based on current tab
             final filteredWarnings = _filterWarningsByTab(warnings);
 
             if (filteredWarnings.isEmpty) {

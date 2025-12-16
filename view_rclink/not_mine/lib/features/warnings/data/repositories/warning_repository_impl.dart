@@ -10,6 +10,7 @@ import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_state.dart';
 import '../../domain/entities/warning.dart';
 import '../../domain/repositories/warning_repository.dart';
+import '../datasources/warning_image_remote_datasource.dart';
 import '../datasources/warnings_local_datasource.dart';
 import '../datasources/warnings_remote_datasource.dart';
 import '../models/create_report_warning_model.dart';
@@ -23,6 +24,7 @@ class WarningRepositoryImpl
   final WarningsRemoteDataSource _remoteDataSource;
   final WarningsLocalDataSource _localDataSource;
   final CompanyBloc _companyBloc;
+  final WarningImageRemoteDataSource? _imageRemoteDataSource;
 
   WarningRepositoryImpl(
     this._remoteDataSource,
@@ -30,6 +32,7 @@ class WarningRepositoryImpl
     this._companyBloc,
     DatabaseService databaseService,
     ImageLocalDataSource imageLocalDataSource,
+    @Named('warningImageRemoteDataSource') this._imageRemoteDataSource,
   ) : super(
         databaseService: databaseService,
         imageLocalDataSource: imageLocalDataSource,
@@ -278,6 +281,8 @@ class WarningRepositoryImpl
   Future<Either<Failure, Warning>> createSiteWarning({
     required CreateWarningModel data,
     required String companyUID,
+    Map<ImageContextField, List<String>>? images,
+    String? adminUID,
   }) async {
     try {
       // Use base class executeOptimistic with automatic SyncQueue fallback
@@ -288,6 +293,31 @@ class WarningRepositoryImpl
             data,
             companyUID,
           );
+
+          // Step 2: Save images to sync queue if provided
+          print(
+            '💾 Checking image save conditions: images=${images != null ? "not null (${images.length} fields)" : "null"}, adminUID=${adminUID ?? "null"}',
+          );
+
+          if (images != null && images.isNotEmpty && adminUID != null) {
+            print(
+              '📸 Saving ${images.length} image context field(s) for warning ${localWarning.uid}',
+            );
+
+            await saveImagesForEntity(
+              entityType: SyncEntityType.warning,
+              entityUID: localWarning.uid, // Temp UID
+              companyUID: companyUID,
+              uploadedByUID: adminUID,
+              imagesByContextField: images,
+            );
+
+            print(
+              '✅ Images saved to sync queue with status: pendingEntitySync',
+            );
+          } else {
+            print('ℹ️ No images to save (or adminUID missing)');
+          }
 
           print('✅ Local site warning created: ${localWarning.uid}');
           return localWarning.toEntity();
@@ -305,6 +335,24 @@ class WarningRepositoryImpl
           if (tempUID != serverModel.uid) {
             await _localDataSource.deleteWarningByUID(tempUID);
           }
+
+          // Step 3: Activate images for upload
+          if (images != null && images.isNotEmpty) {
+            print(
+              '🔄 Activating images for upload: $tempUID → ${serverModel.uid}',
+            );
+
+            await activateImageUpload(
+              SyncEntityType.warning,
+              tempUID, // Old temp UID
+              serverModel.uid, // New server UID
+            );
+
+            print('✅ Images activated for upload');
+
+            // Step 4: Fire-and-forget immediate upload
+            _uploadImagesImmediately(companyUID, serverModel.uid);
+          }
         },
         entityType: SyncEntityType.warning,
         action: SyncAction.create,
@@ -313,6 +361,76 @@ class WarningRepositoryImpl
       );
     } catch (e) {
       return Left(CacheFailure('Failed to create site warning: $e'));
+    }
+  }
+
+  /// Attempt immediate image upload in the background
+  /// If fails, images remain in queue for periodic sync
+  Future<void> _uploadImagesImmediately(
+    String companyUID,
+    String warningUID,
+  ) async {
+    if (_imageRemoteDataSource == null) {
+      print('⚠️ Image remote datasource not available');
+      return;
+    }
+
+    try {
+      // Get unactivated images for this warning
+      final images = await imageLocalDataSource?.getImagesByEntity(
+        entityType: SyncEntityType.warning,
+        entityUID: warningUID,
+      );
+
+      if (images == null || images.isEmpty) {
+        print('ℹ️ No images to upload for warning $warningUID');
+        return;
+      }
+
+      print('📤 Uploading ${images.length} images immediately...');
+
+      // Attempt upload
+      final result = await _imageRemoteDataSource.uploadImagesForWarning(
+        companyUID: companyUID,
+        warningUID: warningUID,
+        images: images,
+      );
+
+      await result.fold(
+        (failure) async {
+          print('⚠️ Immediate image upload failed: ${failure.message}');
+          print('   Images will retry via periodic sync');
+
+          // Increment retry count for all images
+          await imageLocalDataSource?.incrementRetryCount(
+            SyncEntityType.warning,
+            warningUID,
+            failure.message,
+          );
+        },
+        (uploadedFiles) async {
+          print(
+            '✅ Immediate upload successful! ${uploadedFiles.length} images uploaded',
+          );
+
+          // Mark images as synced with server metadata
+          await imageLocalDataSource?.markImagesAsSynced(
+            SyncEntityType.warning,
+            warningUID,
+            uploadedFiles,
+          );
+        },
+      );
+    } catch (e) {
+      print('❌ Error in immediate image upload: $e');
+      print('   Images will retry via periodic sync');
+
+      // Increment retry count on exception
+      await imageLocalDataSource?.incrementRetryCount(
+        SyncEntityType.warning,
+        warningUID,
+        e.toString(),
+      );
     }
   }
 }

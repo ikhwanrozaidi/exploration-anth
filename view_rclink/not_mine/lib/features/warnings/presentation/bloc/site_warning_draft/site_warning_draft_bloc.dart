@@ -1,9 +1,15 @@
+// lib/features/warnings/presentation/bloc/site_warning_draft/site_warning_draft_bloc.dart
+
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/di/injection.dart';
 import '../../../../../core/errors/failures.dart';
+import '../../../../../core/sync/datasources/image_local_datasource.dart';
+import '../../../../../core/sync/sync_constants.dart';
+import '../../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../../auth/presentation/bloc/auth_state.dart';
 import '../../../../company/presentation/bloc/company_bloc.dart';
 import '../../../../company/presentation/bloc/company_state.dart';
 import '../../../../road/domain/entities/road_entity.dart';
@@ -18,17 +24,22 @@ class SiteWarningDraftBloc
     extends Bloc<SiteWarningDraftEvent, SiteWarningDraftState> {
   final WarningsLocalDataSource _localDataSource;
   final CreateSiteWarningUseCase _createSiteWarningUseCase;
+  final ImageLocalDataSource _imageLocalDataSource;
 
   Timer? _autoSaveTimer;
 
-  SiteWarningDraftBloc(this._localDataSource, this._createSiteWarningUseCase)
-    : super(const SiteWarningDraftState.initial()) {
+  SiteWarningDraftBloc(
+    this._localDataSource,
+    this._createSiteWarningUseCase,
+    this._imageLocalDataSource,
+  ) : super(const SiteWarningDraftState.initial()) {
     on<InitializeDraft>(_onInitializeDraft);
 
     on<UpdateLocation>(_onUpdateLocation);
     on<UpdateContractor>(_onUpdateContractor);
     on<UpdateWarningReasons>(_onUpdateWarningReasons);
     on<UpdateDescription>(_onUpdateDescription);
+    on<UpdateWarningImages>(_onUpdateWarningImages);
 
     on<AutoSaveDraft>(_onAutoSaveDraft);
 
@@ -219,6 +230,11 @@ class SiteWarningDraftBloc
         companyUID = companyState.selectedCompany!.uid;
       }
 
+      // Load draft images
+      print('📷 Loading draft images for ${event.draftUID}');
+      final draftImages = await _loadDraftImages(event.draftUID);
+      print('✅ Loaded ${draftImages.length} draft images');
+
       final draftData = SiteWarningDraftData(
         draftUID: draftWarning.uid,
         isDraftMode: true,
@@ -238,11 +254,10 @@ class SiteWarningDraftBloc
         contractor: null, // TODO: Load contractor from contractRelationID
         warningReasonUIDs: warningReasonUIDs,
         description: draftWarning.description ?? '',
+        warningImages: draftImages,
       );
 
       emit(SiteWarningDraftState.editing(draftData: draftData));
-
-      print('✅ Draft data loaded into state');
     } catch (e) {
       print('❌ Error loading draft: $e');
       emit(
@@ -250,20 +265,6 @@ class SiteWarningDraftBloc
           failure: ServerFailure('Failed to load draft: $e'),
         ),
       );
-    }
-  }
-
-  /// Delete a draft warning
-  Future<void> _onDeleteDraft(
-    DeleteDraft event,
-    Emitter<SiteWarningDraftState> emit,
-  ) async {
-    try {
-      await _localDataSource.deleteDraftWarning(event.draftUID);
-
-      emit(const SiteWarningDraftState.initial());
-    } catch (e) {
-      print('❌ Error deleting draft: $e');
     }
   }
 
@@ -275,12 +276,15 @@ class SiteWarningDraftBloc
     final currentData = _getCurrentDraftDataOrNull();
     if (currentData == null) return;
 
-    final updatedData = currentData.copyWith(
-      latitude: event.latitude,
-      longitude: event.longitude,
+    emit(
+      SiteWarningDraftState.editing(
+        draftData: currentData.copyWith(
+          latitude: event.latitude,
+          longitude: event.longitude,
+        ),
+      ),
     );
 
-    emit(SiteWarningDraftState.editing(draftData: updatedData));
     add(const SiteWarningDraftEvent.autoSaveDraft());
   }
 
@@ -290,12 +294,13 @@ class SiteWarningDraftBloc
     Emitter<SiteWarningDraftState> emit,
   ) async {
     final currentData = _getCurrentDraftDataOrNull();
-
     if (currentData == null) return;
 
-    final updatedData = currentData.copyWith(contractor: event.contractor);
-
-    emit(SiteWarningDraftState.editing(draftData: updatedData));
+    emit(
+      SiteWarningDraftState.editing(
+        draftData: currentData.copyWith(contractor: event.contractor),
+      ),
+    );
 
     add(const SiteWarningDraftEvent.autoSaveDraft());
   }
@@ -308,11 +313,13 @@ class SiteWarningDraftBloc
     final currentData = _getCurrentDraftDataOrNull();
     if (currentData == null) return;
 
-    final updatedData = currentData.copyWith(
-      warningReasonUIDs: event.warningReasonUIDs,
+    emit(
+      SiteWarningDraftState.editing(
+        draftData: currentData.copyWith(
+          warningReasonUIDs: event.warningReasonUIDs,
+        ),
+      ),
     );
-
-    emit(SiteWarningDraftState.editing(draftData: updatedData));
 
     add(const SiteWarningDraftEvent.autoSaveDraft());
   }
@@ -325,35 +332,53 @@ class SiteWarningDraftBloc
     final currentData = _getCurrentDraftDataOrNull();
     if (currentData == null) return;
 
-    final updatedData = currentData.copyWith(description: event.description);
-
-    emit(SiteWarningDraftState.editing(draftData: updatedData));
+    emit(
+      SiteWarningDraftState.editing(
+        draftData: currentData.copyWith(description: event.description),
+      ),
+    );
 
     add(const SiteWarningDraftEvent.autoSaveDraft());
   }
 
+  /// Update warning images
+  Future<void> _onUpdateWarningImages(
+    UpdateWarningImages event,
+    Emitter<SiteWarningDraftState> emit,
+  ) async {
+    final currentData = _getCurrentDraftDataOrNull();
+    if (currentData == null) return;
+
+    print('📷 Updating warning images: ${event.warningImages.length} images');
+
+    emit(
+      SiteWarningDraftState.editing(
+        draftData: currentData.copyWith(warningImages: event.warningImages),
+      ),
+    );
+
+    add(const SiteWarningDraftEvent.autoSaveDraft());
+  }
+
+  /// Auto-save draft
   Future<void> _onAutoSaveDraft(
     AutoSaveDraft event,
     Emitter<SiteWarningDraftState> emit,
   ) async {
     try {
       final currentData = _getCurrentDraftDataOrNull();
-      if (currentData == null) return;
-
-      final draftUID = currentData.draftUID;
-
-      print('🔍 [AUTO-SAVE DEBUG] Current state draft UID: $draftUID');
-      print('🔍 [AUTO-SAVE DEBUG] isDraftMode: ${currentData.isDraftMode}');
-
-      if (draftUID == null) {
-        print('⚠️ No draft UID, cannot auto-save');
+      if (currentData == null || currentData.draftUID == null) {
+        print('⚠️ Cannot auto-save: no draft UID');
         return;
       }
+
+      final draftUID = currentData.draftUID!;
 
       print('💾 Auto-saving draft: $draftUID');
 
       emit(SiteWarningDraftState.autoSaving(draftData: currentData));
 
+      // Build CreateWarningModel from current data
       final createModel = CreateWarningModel(
         roadUID: currentData.road.uid ?? '',
         workScopeUID: currentData.scopeUID,
@@ -371,22 +396,58 @@ class SiteWarningDraftBloc
         requiresAction: true,
       );
 
+      // Update draft in local database
       await _localDataSource.updateDraftWarningLocal(draftUID, createModel);
 
-      print('✅ Draft auto-saved successfully');
+      print('✅ Draft data auto-saved: $draftUID');
+
+      // Save draft images to permanent storage
+      await _saveWarningDraftImages(
+        draftUID: draftUID,
+        companyUID: currentData.companyUID,
+        warningImages: currentData.warningImages,
+      );
 
       emit(SiteWarningDraftState.autoSaved(draftData: currentData));
-
-      await Future.delayed(const Duration(milliseconds: 500));
-      emit(SiteWarningDraftState.editing(draftData: currentData));
     } catch (e) {
       print('❌ Error auto-saving draft: $e');
-
       final currentData = _getCurrentDraftDataOrNull();
-
       if (currentData != null) {
         emit(SiteWarningDraftState.editing(draftData: currentData));
       }
+    }
+  }
+
+  /// Delete draft
+  Future<void> _onDeleteDraft(
+    DeleteDraft event,
+    Emitter<SiteWarningDraftState> emit,
+  ) async {
+    try {
+      print('🗑️ Deleting draft: ${event.draftUID}');
+
+      // Delete draft images first
+      try {
+        await _deleteDraftImages(event.draftUID);
+        print('✅ Draft images deleted');
+      } catch (e) {
+        print('⚠️ Error deleting draft images: $e');
+        // Continue with draft deletion even if image deletion fails
+      }
+
+      // Delete draft record
+      await _localDataSource.deleteDraftWarning(event.draftUID);
+
+      print('✅ Draft deleted successfully');
+
+      emit(const SiteWarningDraftState.initial());
+    } catch (e) {
+      print('❌ Error deleting draft: $e');
+      emit(
+        SiteWarningDraftState.error(
+          failure: ServerFailure('Failed to delete draft: $e'),
+        ),
+      );
     }
   }
 
@@ -397,15 +458,60 @@ class SiteWarningDraftBloc
   ) async {
     try {
       final currentData = _getCurrentDraftDataOrNull();
-      if (currentData == null) return;
+      if (currentData == null) {
+        print('❌ No draft data available');
+        return;
+      }
 
       final draftUID = currentData.draftUID;
 
-      print('📤 Submitting warning: $draftUID');
+      // Validation
+      if (currentData.warningReasonUIDs.isEmpty) {
+        emit(
+          SiteWarningDraftState.error(
+            failure: ServerFailure('Please select at least one warning reason'),
+            draftData: currentData,
+          ),
+        );
+        return;
+      }
+
+      // CRITICAL: Validate minimum 2 images
+      if (currentData.warningImages.length < 2) {
+        emit(
+          SiteWarningDraftState.error(
+            failure: ServerFailure(
+              'Please upload at least 2 images (currently: ${currentData.warningImages.length})',
+            ),
+            draftData: currentData,
+          ),
+        );
+        return;
+      }
+
+      print(
+        '📤 Submitting warning with ${currentData.warningImages.length} images',
+      );
 
       emit(SiteWarningDraftState.submitting(draftData: currentData));
 
-      // Step 1: Build the CreateWarningModel
+      // Get admin UID from AuthBloc
+      String? adminUID;
+      final authBloc = getIt<AuthBloc>();
+      final authState = authBloc.state;
+
+      if (authState is Authenticated && authState.currentAdmin != null) {
+        adminUID = authState.currentAdmin!.uid;
+        print('✅ Got admin UID from AuthBloc: $adminUID');
+      } else {
+        print('⚠️ No admin data available in AuthBloc state');
+      }
+
+      if (adminUID == null) {
+        print('⚠️ Admin UID not found, continuing without it');
+      }
+
+      // Step 1: Build CreateWarningModel
       final createModel = CreateWarningModel(
         roadUID: currentData.road.uid ?? '',
         workScopeUID: currentData.scopeUID,
@@ -423,11 +529,13 @@ class SiteWarningDraftBloc
         requiresAction: true,
       );
 
-      // Step 2: Call use case to create site warning
+      // Step 2: Call use case to create site warning with images
       final result = await _createSiteWarningUseCase(
         CreateSiteWarningParams(
           data: createModel,
           companyUID: event.companyUID,
+          images: currentData.warningImages,
+          adminUID: adminUID,
         ),
       );
 
@@ -447,8 +555,14 @@ class SiteWarningDraftBloc
 
           // Step 4: Delete the draft after successful submission
           if (draftUID != null) {
-            await _localDataSource.deleteWarningByUID(draftUID);
-            print('🗑️ Draft deleted: $draftUID');
+            try {
+              await _deleteDraftImages(draftUID);
+              await _localDataSource.deleteWarningByUID(draftUID);
+              print('🗑️ Draft deleted: $draftUID');
+            } catch (e) {
+              print('⚠️ Error deleting draft: $e');
+              // Don't fail submission if draft deletion fails
+            }
           }
 
           // Emit submitted with the draft data (not Warning entity)
@@ -498,6 +612,76 @@ class SiteWarningDraftBloc
           failure: ServerFailure('Failed to load drafts: $e'),
         ),
       );
+    }
+  }
+
+  // ------------------------------------------------------- Draft Image Helpers
+
+  /// Save draft images to permanent storage
+  Future<void> _saveWarningDraftImages({
+    required String draftUID,
+    required String companyUID,
+    required List<String> warningImages,
+  }) async {
+    try {
+      if (warningImages.isEmpty) {
+        print('📷 No draft images to save for $draftUID');
+        return;
+      }
+
+      final imagesByContext = <ImageContextField, List<String>>{};
+
+      // All warning images go to GENERAL context field
+      imagesByContext[ImageContextField.general] = warningImages;
+
+      print('💾 Saving ${warningImages.length} draft images for $draftUID');
+
+      // Save to permanent storage with draft_pending status
+      await _imageLocalDataSource.saveDraftImages(
+        entityType: SyncEntityType.warning,
+        entityUID: draftUID,
+        companyUID: companyUID,
+        imagesByContextField: imagesByContext,
+      );
+
+      print('✅ Draft images saved: $draftUID');
+    } catch (e) {
+      print('❌ Error saving draft images: $e');
+    }
+  }
+
+  /// Load draft images from permanent storage
+  Future<List<String>> _loadDraftImages(String draftUID) async {
+    try {
+      final imagesByContext = await _imageLocalDataSource.getDraftImages(
+        entityType: SyncEntityType.warning,
+        entityUID: draftUID,
+      );
+
+      // Extract all image paths from GENERAL context field
+      final generalImages = imagesByContext[ImageContextField.general] ?? [];
+
+      print('📂 Loaded ${generalImages.length} draft images for $draftUID');
+
+      return generalImages;
+    } catch (e) {
+      print('❌ Error loading draft images: $e');
+      return [];
+    }
+  }
+
+  /// Delete draft images
+  Future<void> _deleteDraftImages(String draftUID) async {
+    try {
+      await _imageLocalDataSource.deleteDraftImages(
+        entityType: SyncEntityType.warning,
+        draftUID: draftUID,
+      );
+
+      print('🗑️ Deleted draft images for $draftUID');
+    } catch (e) {
+      print('❌ Error deleting draft images: $e');
+      rethrow;
     }
   }
 }

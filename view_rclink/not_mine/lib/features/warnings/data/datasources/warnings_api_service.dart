@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rclink_app/features/warnings/data/models/warning_filter_model.dart';
 import 'package:retrofit/retrofit.dart';
+import '../../../../core/sync/models/file_response_dto.dart';
 import '../../../../shared/models/api_response.dart';
 import '../models/create_report_warning_model.dart';
 import '../models/create_warning_model.dart';
@@ -53,5 +54,13 @@ abstract class WarningsApiService {
   Future<ApiResponse<WarningModel>> createSiteWarning(
     @Path('companyUID') String companyUID,
     @Body() CreateWarningModel data,
+  );
+
+  @POST('/companies/{companyUID}/warnings/{uid}/files')
+  @MultiPart()
+  Future<ApiResponse<List<FileResponseDto>>> uploadWarningFiles(
+    @Path('companyUID') String companyUID,
+    @Path('uid') String warningUID,
+    @Part(name: 'WARNING_IMAGE') List<MultipartFile>? warningImages,
   );
 }
