@@ -1,7 +1,11 @@
-// lib/features/login/presentation/pages/login_page.dart
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../../shared/utils/responsive_helper.dart';
+import '../../../../shared/utils/theme.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../locale/presentation/widgets/app_localization.dart';
 import '../bloc/login_bloc.dart';
 import '../bloc/login_event.dart';
 import '../bloc/login_state.dart';
@@ -18,13 +22,12 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  bool _obscurePassword = true;
+  bool _isPasswordObscured = true;
   bool _rememberMe = false;
 
   @override
   void initState() {
     super.initState();
-    // Load saved credentials if any
     context.read<LoginBloc>().add(const LoginLoadSavedCredentials());
   }
 
@@ -47,11 +50,25 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordObscured = !_isPasswordObscured;
+    });
+  }
+
+  void _onRememberMeChanged(bool? value) {
+    setState(() {
+      _rememberMe = value ?? false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // ✅ REMOVED BlocProvider - use the global one from main.dart
+    final localization = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.white,
+
       body: SafeArea(
         child: BlocConsumer<LoginBloc, LoginState>(
           listener: (context, state) {
@@ -59,230 +76,307 @@ class _LoginPageState extends State<LoginPage> {
               initial: () {},
               loading: () {},
               credentialsLoaded: (email, password) {
-                // Pre-fill email if credentials were saved
                 _emailController.text = email;
                 setState(() {
                   _rememberMe = true;
                 });
               },
               otpRequired: (email, message) {
-                // Show OTP dialog
                 _showOtpDialog(context, email);
               },
               authenticated: (authResult, user) {
-                // Navigate to root page will be handled by AuthWrapper
                 print('✅ LoginPage: Authenticated! User: ${user.email}');
               },
               success: (user) {
-                // Navigate to root page will be handled by AuthWrapper
                 print('✅ LoginPage: Success! User: ${user.email}');
               },
               unauthenticated: () {},
               loggedOut: () {},
               failure: (message) {
-                // Show error message
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(message), backgroundColor: Colors.red),
-                );
+                CustomSnackBar.show(context, message, type: SnackBarType.error);
               },
               forgotPasswordOtpRequired: (email, message) {},
               changePasswordRequired: (email, message) {},
               passwordChanged: (message) {},
             );
           },
+
           builder: (context, state) {
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: 60),
-
-                    // Logo or App Name
-                    Text(
-                      'GatePay',
-                      style: GoogleFonts.poppins(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+              padding: const EdgeInsets.all(25.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: rprimaryColor.withOpacity(0.3),
+                        shape: BoxShape.circle,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    Text(
-                      'Sign in to continue',
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        color: Colors.grey[600],
+                      child: const Icon(
+                        Icons.arrow_back_rounded,
+                        color: Color.fromARGB(255, 0, 69, 94),
+                        size: 25,
                       ),
-                      textAlign: TextAlign.center,
                     ),
+                  ),
 
-                    const SizedBox(height: 48),
+                  SizedBox(height: 30),
 
-                    // Email Field
-                    TextFormField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        hintText: 'Enter your email',
-                        prefixIcon: const Icon(Icons.email_outlined),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[50],
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your email';
-                        }
-                        if (!value.contains('@')) {
-                          return 'Please enter a valid email';
-                        }
-                        return null;
-                      },
+                  Text(
+                    'Hey, Welcome Back!',
+                    style: GoogleFonts.poppins(
+                      fontSize: ResponsiveHelper.fontSize(context, base: 24),
+                      fontWeight: FontWeight.w600,
                     ),
+                    textAlign: TextAlign.center,
+                  ),
 
-                    const SizedBox(height: 16),
+                  SizedBox(height: 60),
 
-                    // Password Field
-                    TextFormField(
-                      controller: _passwordController,
-                      obscureText: _obscurePassword,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        hintText: 'Enter your password',
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[50],
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    const SizedBox(height: 8),
-
-                    // Remember Me Checkbox
-                    Row(
+                  Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Checkbox(
-                          value: _rememberMe,
-                          onChanged: (value) {
-                            setState(() {
-                              _rememberMe = value ?? false;
-                            });
-                          },
-                        ),
                         Text(
-                          'Remember me',
-                          style: GoogleFonts.poppins(fontSize: 14),
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Login Button
-                    state.maybeWhen(
-                      loading: () =>
-                          const Center(child: CircularProgressIndicator()),
-                      orElse: () => ElevatedButton(
-                        onPressed: _onLoginPressed,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text(
-                          'Sign In',
+                          'Your Email',
                           style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            fontSize: ResponsiveHelper.fontSize(
+                              context,
+                              base: 14,
+                            ),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // Forgot Password
-                    TextButton(
-                      onPressed: () {
-                        // TODO: Navigate to forgot password
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Forgot password coming soon'),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        'Forgot Password?',
-                        style: GoogleFonts.poppins(color: Colors.blue),
-                      ),
-                    ),
-
-                    const SizedBox(height: 24),
-
-                    // Sign Up Link
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Don't have an account? ",
-                          style: GoogleFonts.poppins(color: Colors.grey[600]),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            // TODO: Navigate to sign up
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Sign up coming soon'),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _emailController,
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: tPrimaryBackground,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: localization.auth('emailHint'),
+                            hintStyle: TextStyle(
+                              color: rprimaryColor.withOpacity(0.6),
+                              fontSize: ResponsiveHelper.fontSize(
+                                context,
+                                base: 14,
                               ),
-                            );
+                            ),
+                          ),
+                          keyboardType: TextInputType.emailAddress,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return localization.auth('emailRequired');
+                            }
+                            if (!value.contains('@')) {
+                              return localization.auth('emailInvalid');
+                            }
+                            return null;
                           },
-                          child: Text(
-                            'Sign Up',
-                            style: GoogleFonts.poppins(
-                              color: Colors.blue,
-                              fontWeight: FontWeight.w600,
+                        ),
+
+                        SizedBox(height: 10),
+
+                        // Password field
+                        Text(
+                          localization.auth('password'),
+                          style: GoogleFonts.poppins(
+                            fontSize: ResponsiveHelper.fontSize(
+                              context,
+                              base: 14,
+                            ),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _passwordController,
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: tPrimaryBackground,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            hintText: localization.auth('passwordHint'),
+                            hintStyle: TextStyle(
+                              color: rprimaryColor.withOpacity(0.6),
+                              fontSize: ResponsiveHelper.fontSize(
+                                context,
+                                base: 14,
+                              ),
+                            ),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _isPasswordObscured
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: tPrimaryColor.withOpacity(0.7),
+                              ),
+                              onPressed: _togglePasswordVisibility,
+                            ),
+                          ),
+                          obscureText: _isPasswordObscured,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return localization.auth('passwordRequired');
+                            }
+                            if (value.length < 6) {
+                              return localization.auth('passwordTooShort');
+                            }
+                            return null;
+                          },
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // Remember me and forgot password
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Transform.scale(
+                                  scale: 0.8,
+                                  child: Switch(
+                                    value: _rememberMe,
+                                    onChanged: _onRememberMeChanged,
+                                    activeColor: tPrimaryColor,
+                                    inactiveThumbColor: Colors.grey,
+                                    inactiveTrackColor: Colors.grey[300],
+                                  ),
+                                ),
+                                Text(
+                                  _rememberMe
+                                      ? localization.auth('rememberMe')
+                                      : localization.auth('forgetMe'),
+                                  style: TextStyle(
+                                    fontSize: ResponsiveHelper.fontSize(
+                                      context,
+                                      base: 12,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                CustomSnackBar.show(
+                                  context,
+                                  'This feature is coming soon...',
+                                  type: SnackBarType.comingsoon,
+                                );
+                              },
+                              child: Text(
+                                localization.auth('forgotPassword'),
+                                style: TextStyle(
+                                  color: rprimaryColor,
+                                  fontSize: ResponsiveHelper.fontSize(
+                                    context,
+                                    base: 12,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(height: 120),
+
+                        SizedBox(
+                          width: double.infinity,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: state is LoginLoading
+                                ? null
+                                : _onLoginPressed,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: rprimaryColor,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              elevation: 2,
+                            ),
+                            child: state is LoginLoading
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    localization.auth('signIn'),
+                                    style: TextStyle(
+                                      fontSize: ResponsiveHelper.fontSize(
+                                        context,
+                                        base: 14,
+                                      ),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 20),
+
+                        // Sign up link
+                        Center(
+                          child: RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              text: localization.auth('noAccount'),
+                              style: TextStyle(
+                                fontSize: ResponsiveHelper.fontSize(
+                                  context,
+                                  base: 14,
+                                ),
+                                color: Colors.black87,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: ' ${localization.auth('register')}',
+                                  style: TextStyle(
+                                    color: rprimaryColor,
+                                    fontSize: ResponsiveHelper.fontSize(
+                                      context,
+                                      base: 14,
+                                    ),
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      CustomSnackBar.show(
+                                        context,
+                                        'This feature is coming soon...',
+                                        type: SnackBarType.comingsoon,
+                                      );
+                                    },
+                                ),
+                              ],
                             ),
                           ),
                         ),
+
+                        const SizedBox(height: 40),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             );
           },
@@ -298,12 +392,10 @@ class _LoginPageState extends State<LoginPage> {
       builder: (dialogContext) => OtpDialog(
         email: email,
         onOtpSubmitted: (otp) {
-          // Submit OTP to LoginBloc
           context.read<LoginBloc>().add(LoginOtpSubmitted(email, otp));
           Navigator.of(dialogContext).pop();
         },
         onResendOtp: () {
-          // Resend OTP - trigger login again
           context.read<LoginBloc>().add(
             LoginSubmitted(
               _emailController.text.trim(),

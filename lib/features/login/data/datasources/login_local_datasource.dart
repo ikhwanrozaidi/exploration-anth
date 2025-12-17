@@ -45,16 +45,21 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
     user_entity.User user,
   ) async {
     try {
+      print('💾 Storing auth result...');
+      print('💾 User ID: ${user.id}, Email: ${user.email}');
+
       // Store tokens WITH expiry timestamps
       await _secureStorage.storeAuthResult(authResult);
+      print('✅ Tokens stored in SecureStorage');
 
       // Store tokens in auth interceptor
       await _authInterceptor.storeTokens(
         accessToken: authResult.accessToken,
         refreshToken: authResult.refreshToken,
       );
+      print('✅ Tokens stored in AuthInterceptor');
 
-      // ✅ Store user in database (handle null nested objects)
+      // ✅ Store user in database
       await _database
           .into(_database.users)
           .insertOnConflictUpdate(
@@ -80,10 +85,21 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
               ),
             ),
           );
+      print('✅ User stored in database - ID: ${user.id}, Email: ${user.email}');
+
+      // ✅ VERIFY IT WAS STORED
+      final storedUser = await getStoredUser();
+      storedUser.fold(
+        (failure) =>
+            print('❌ Failed to verify stored user: ${failure.message}'),
+        (retrievedUser) =>
+            print('✅ Verified stored user: ${retrievedUser?.email}'),
+      );
 
       return const Right(null);
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('❌ StoreAuthResult Error: $e');
+      print('❌ StackTrace: $stackTrace');
       return Left(CacheFailure('Failed to store auth result: ${e.toString()}'));
     }
   }
@@ -91,6 +107,8 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   @override
   Future<Either<Failure, user_entity.User?>> getStoredUser() async {
     try {
+      print('🔍 Getting stored user from database...');
+
       final query = _database.select(_database.users)
         ..where((u) => u.deletedAt.isNull())
         ..limit(1);
@@ -98,9 +116,15 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
       final record = await query.getSingleOrNull();
 
       if (record == null) {
+        print('❌ No user found in database');
         return const Right(null);
       }
 
+      print(
+        '✅ Found user in database - ID: ${record.id}, Email: ${record.email}',
+      );
+
+      // Parse nested JSON objects (handle null)
       user_entity.UserDetail? userDetail;
       user_entity.UserSettings? userSettings;
 
@@ -109,6 +133,7 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
           userDetail = user_entity.UserDetail.fromJson(
             jsonDecode(record.userDetail!),
           );
+          print('✅ Parsed userDetail');
         } catch (e) {
           print('⚠️ Failed to parse userDetail: $e');
         }
@@ -119,6 +144,7 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
           userSettings = user_entity.UserSettings.fromJson(
             jsonDecode(record.userSettings!),
           );
+          print('✅ Parsed userSettings');
         } catch (e) {
           print('⚠️ Failed to parse userSettings: $e');
         }
@@ -138,9 +164,11 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
         userSettings: userSettings,
       );
 
+      print('✅ User entity created: ${user.email}');
       return Right(user);
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('❌ GetStoredUser Error: $e');
+      print('❌ StackTrace: $stackTrace');
       return Left(CacheFailure('Failed to get stored user: ${e.toString()}'));
     }
   }

@@ -50,8 +50,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     on<LoginLoadSavedCredentials>(_onLoadSavedCredentials);
     on<LoginStoreCredentials>(_onStoreCredentials);
-
-    on<LoginCheckAuthStatus>(_onCheckAuthStatus);
   }
 
   Future<void> _onLoginSubmitted(

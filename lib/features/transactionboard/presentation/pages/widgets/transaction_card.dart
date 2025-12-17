@@ -20,7 +20,7 @@ class TransactionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -32,10 +32,7 @@ class TransactionCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              title,
-              style: GoogleFonts.poppins(color: tDarkFontShade1),
-            ),
+            Text(title, style: GoogleFonts.poppins(color: tDarkFontShade1)),
             Text(
               amount,
               style: GoogleFonts.poppins(
@@ -81,10 +78,7 @@ class TransactionListItem extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: tPrimaryColorShade2,
-            width: 1.0,
-          ),
+          border: Border.all(color: tPrimaryColorShade2, width: 1.0),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -102,7 +96,7 @@ class TransactionListItem extends StatelessWidget {
                     child: Text(
                       initials,
                       style: TextStyle(
-                        fontFamily: tSecondaryFont,
+                        fontFamily: 'Poppins',
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -127,9 +121,9 @@ class TransactionListItem extends StatelessWidget {
                         fontSize: 11,
                         fontWeight: FontWeight.w500,
                       ),
-                    )
+                    ),
                   ],
-                )
+                ),
               ],
             ),
             Column(
@@ -152,7 +146,7 @@ class TransactionListItem extends StatelessWidget {
                   ),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
@@ -180,7 +174,7 @@ class AmountSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
-    
+
     return Container(
       height: w / 2,
       padding: const EdgeInsets.all(20),
@@ -234,9 +228,9 @@ class AmountSummaryCard extends StatelessWidget {
                     ),
                   ),
                 ],
-              )
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

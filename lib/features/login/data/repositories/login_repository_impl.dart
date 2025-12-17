@@ -47,15 +47,33 @@ class LoginRepositoryImpl implements LoginRepository {
       return const Left(ConnectionFailure());
     }
 
+    print('📡 Repository: Calling remote datasource verifyOtp...');
     final result = await _remoteDataSource.verifyOtp(email, otp);
 
-    return result.fold((failure) => Left(failure), (data) async {
-      final (authResult, user) = data;
+    return result.fold(
+      (failure) {
+        print('❌ Repository: Remote datasource failed - ${failure.message}');
+        return Left(failure);
+      },
+      (data) async {
+        final (authResult, user) = data;
+        print('✅ Repository: Got data from remote - User: ${user.email}');
+        print('💾 Repository: Calling local datasource to store...');
 
-      await _localDataSource.storeAuthResult(authResult, user);
+        // ✅ Store BOTH tokens and user
+        final storeResult = await _localDataSource.storeAuthResult(
+          authResult,
+          user,
+        );
 
-      return Right((authResult, user));
-    });
+        storeResult.fold(
+          (failure) => print('❌ Repository: Store failed - ${failure.message}'),
+          (_) => print('✅ Repository: Store successful'),
+        );
+
+        return Right((authResult, user));
+      },
+    );
   }
 
   // ==================== FORGOT PASSWORD ====================

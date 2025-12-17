@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gatepay_app/shared/utils/theme.dart';
+import 'package:gatepay_app/shared/widgets/custom_snackbar.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
+import 'dart:ui';
+
+import '../../../../shared/utils/responsive_helper.dart';
 
 class OtpDialog extends StatefulWidget {
   final String email;
   final Function(String otp) onOtpSubmitted;
   final VoidCallback onResendOtp;
+  final int otpLength;
 
   const OtpDialog({
     super.key,
     required this.email,
     required this.onOtpSubmitted,
     required this.onResendOtp,
+    this.otpLength = 6,
   });
 
   @override
@@ -20,11 +27,8 @@ class OtpDialog extends StatefulWidget {
 }
 
 class _OtpDialogState extends State<OtpDialog> {
-  final List<TextEditingController> _controllers = List.generate(
-    6,
-    (_) => TextEditingController(),
-  );
-  final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
+  late List<TextEditingController> _controllers;
+  late List<FocusNode> _focusNodes;
 
   int _resendCountdown = 60;
   Timer? _timer;
@@ -33,6 +37,11 @@ class _OtpDialogState extends State<OtpDialog> {
   @override
   void initState() {
     super.initState();
+    _controllers = List.generate(
+      widget.otpLength,
+      (_) => TextEditingController(),
+    );
+    _focusNodes = List.generate(widget.otpLength, (_) => FocusNode());
     _startResendTimer();
   }
 
@@ -65,12 +74,10 @@ class _OtpDialogState extends State<OtpDialog> {
   }
 
   void _onOtpChanged(String value, int index) {
-    if (value.length == 1 && index < 5) {
-      // Move to next field
+    if (value.length == 1 && index < widget.otpLength - 1) {
       _focusNodes[index + 1].requestFocus();
     }
 
-    // Check if all fields are filled
     if (_controllers.every((controller) => controller.text.length == 1)) {
       _submitOtp();
     }
@@ -84,7 +91,7 @@ class _OtpDialogState extends State<OtpDialog> {
 
   void _submitOtp() {
     final otp = _controllers.map((c) => c.text).join();
-    if (otp.length == 6) {
+    if (otp.length == widget.otpLength) {
       widget.onOtpSubmitted(otp);
     }
   }
@@ -98,159 +105,253 @@ class _OtpDialogState extends State<OtpDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: GestureDetector(
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+        child: Stack(
           children: [
-            // Close button
-            Align(
-              alignment: Alignment.topRight,
-              child: IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.of(context).pop(),
+            // Full-screen blurred background overlay
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Container(color: Colors.white.withOpacity(0.2)),
               ),
             ),
 
-            // Title
-            Text(
-              'Enter OTP',
-              style: GoogleFonts.poppins(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-
-            const SizedBox(height: 8),
-
-            // Subtitle
-            Text(
-              'We sent a code to',
-              style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
-            ),
-            Text(
-              widget.email,
-              style: GoogleFonts.poppins(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.blue,
-              ),
-            ),
-
-            const SizedBox(height: 32),
-
-            // OTP Input Fields
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(
-                6,
-                (index) => SizedBox(
-                  width: 45,
-                  height: 55,
-                  child: TextFormField(
-                    controller: _controllers[index],
-                    focusNode: _focusNodes[index],
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    maxLength: 1,
-                    style: GoogleFonts.poppins(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    decoration: InputDecoration(
-                      counterText: '',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Colors.grey[300]!),
+            Center(
+              child: SingleChildScrollView(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.all(32),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 20,
+                        offset: const Offset(0, 10),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Colors.blue,
-                          width: 2,
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Title
+                      Text(
+                        'Verify your Email',
+                        style: GoogleFonts.poppins(
+                          fontSize: ResponsiveHelper.fontSize(
+                            context,
+                            base: 22,
+                          ),
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
                         ),
                       ),
-                      filled: true,
-                      fillColor: Colors.grey[50],
-                    ),
-                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    onChanged: (value) => _onOtpChanged(value, index),
-                    onTap: () {
-                      // Clear field on tap
-                      _controllers[index].clear();
-                    },
-                  ),
-                ),
-              ),
-            ),
 
-            const SizedBox(height: 24),
+                      const SizedBox(height: 12),
 
-            // Verify Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _submitOtp,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  'Verify OTP',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Resend OTP
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Didn't receive code? ",
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                TextButton(
-                  onPressed: _canResend
-                      ? () {
-                          widget.onResendOtp();
-                          _clearOtp();
-                          _startResendTimer();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('OTP has been resent'),
+                      // Subtitle
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                          style: GoogleFonts.poppins(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                          children: [
+                            TextSpan(
+                              text:
+                                  'Please enter ${widget.otpLength} digit code sent to\n',
                             ),
-                          );
-                        }
-                      : null,
-                  child: Text(
-                    _canResend ? 'Resend' : 'Resend in ${_resendCountdown}s',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: _canResend ? Colors.blue : Colors.grey,
-                    ),
+                            TextSpan(
+                              text: widget.email,
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[700],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 40),
+
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 8,
+                        runSpacing: 12,
+                        children: List.generate(
+                          widget.otpLength,
+                          (index) => SizedBox(
+                            width: 40,
+                            height: 55,
+                            child: TextFormField(
+                              controller: _controllers[index],
+                              focusNode: _focusNodes[index],
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.number,
+                              maxLength: 1,
+                              style: GoogleFonts.poppins(
+                                fontSize: ResponsiveHelper.fontSize(
+                                  context,
+                                  base: 18,
+                                ),
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black,
+                              ),
+                              decoration: InputDecoration(
+                                counterText: '',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: BorderSide.none,
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  borderSide: const BorderSide(
+                                    color: rprimaryColor,
+                                    width: 1,
+                                  ),
+                                ),
+                                filled: true,
+                                fillColor: rprimaryColor.withOpacity(0.2),
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              onChanged: (value) => _onOtpChanged(value, index),
+                              onTap: () {
+                                _controllers[index].clear();
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 32),
+
+                      // Resend OTP
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Don't Receive Code? ",
+                            style: GoogleFonts.poppins(
+                              fontSize: ResponsiveHelper.fontSize(
+                                context,
+                                base: 12,
+                              ),
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          TextButton(
+                            onPressed: _canResend
+                                ? () {
+                                    widget.onResendOtp();
+                                    _clearOtp();
+                                    _startResendTimer();
+
+                                    CustomSnackBar.show(
+                                      context,
+                                      'Otp Sent',
+                                      type: SnackBarType.success,
+                                    );
+                                  }
+                                : null,
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              minimumSize: const Size(0, 0),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                            child: Text(
+                              _canResend
+                                  ? 'Resend Code'
+                                  : 'Resend in ${_resendCountdown}s',
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: _canResend ? rprimaryColor : Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 32),
+
+                      // Verify Button
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: _submitOtp,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: rprimaryColor,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: Text(
+                            'Verify Code',
+                            style: GoogleFonts.poppins(
+                              fontSize: ResponsiveHelper.fontSize(
+                                context,
+                                base: 14,
+                              ),
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           ],
         ),
       ),
     );
   }
+}
+
+void showOtpDialog(
+  BuildContext context, {
+  required String email,
+  required Function(String) onOtpSubmitted,
+  required VoidCallback onResendOtp,
+  int otpLength = 6,
+}) {
+  showGeneralDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierLabel: 'OTP Dialog',
+    barrierColor: Colors.transparent,
+    transitionDuration: const Duration(milliseconds: 300),
+    pageBuilder: (context, animation, secondaryAnimation) {
+      return AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: OtpDialog(
+          email: email,
+          onOtpSubmitted: onOtpSubmitted,
+          onResendOtp: onResendOtp,
+          otpLength: otpLength,
+        ),
+      );
+    },
+    transitionBuilder: (context, animation, secondaryAnimation, child) {
+      return FadeTransition(opacity: animation, child: child);
+    },
+  );
 }
