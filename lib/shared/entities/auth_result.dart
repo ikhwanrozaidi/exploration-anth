@@ -37,12 +37,10 @@ class AuthResult extends Equatable {
     );
   }
 
-  /// Check if access token is expired
   bool get isAccessTokenExpired {
     return DateTime.now().isAfter(accessTokenExpiresAt);
   }
 
-  /// Check if refresh token is expired
   bool get isRefreshTokenExpired {
     return DateTime.now().isAfter(refreshTokenExpiresAt);
   }

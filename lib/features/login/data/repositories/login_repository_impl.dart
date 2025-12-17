@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/network_info.dart';
 import '../../../../core/service/secure_storage_service.dart';
-import '../../../auth/domain/entities/auth_result.dart';
+import '../../../../shared/entities/auth_result.dart';
 import '../../../user/domain/entities/user.dart';
 import '../../domain/repositories/login_repository.dart';
 import '../datasources/login_local_datasource.dart';

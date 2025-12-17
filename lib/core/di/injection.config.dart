@@ -14,18 +14,6 @@ import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
-import '../../features/auth/data/datasources/auth_api_service.dart' as _i156;
-import '../../features/auth/data/datasources/auth_local_data_source.dart'
-    as _i852;
-import '../../features/auth/data/datasources/auth_remote_data_source.dart'
-    as _i107;
-import '../../features/auth/data/repositories/auth_repository_impl.dart'
-    as _i153;
-import '../../features/auth/domain/repositories/auth_repository.dart' as _i787;
-import '../../features/auth/domain/usecases/send_otp_usecase.dart' as _i663;
-import '../../features/auth/domain/usecases/signup_usecase.dart' as _i57;
-import '../../features/auth/presentation/bloc/auth_bloc.dart' as _i797;
-import '../../features/auth/presentation/bloc/signup_bloc.dart' as _i593;
 import '../../features/dashboard/data/datasources/dashboard_api_service.dart'
     as _i828;
 import '../../features/dashboard/data/datasources/dashboard_local_datasource.dart'
@@ -86,6 +74,10 @@ import '../../features/login/data/repositories/login_repository_impl.dart'
 import '../../features/login/domain/repositories/login_repository.dart'
     as _i902;
 import '../../features/login/domain/usecases/credential_usecase.dart' as _i443;
+import '../../features/login/domain/usecases/get_access_token_usecase.dart'
+    as _i211;
+import '../../features/login/domain/usecases/get_refresh_token_usecase.dart'
+    as _i1058;
 import '../../features/login/domain/usecases/get_store_credential_usecase.dart'
     as _i547;
 import '../../features/login/domain/usecases/get_stored_user_usecase.dart'
@@ -134,13 +126,6 @@ import '../../features/transactionboard/features/ongoing/presentation/bloc/ongoi
     as _i269;
 import '../../features/transactionboard/presentation/bloc/transaction_bloc.dart'
     as _i448;
-import '../../features/user/data/datasources/user_api_service.dart' as _i761;
-import '../../features/user/data/datasources/user_local_datasource.dart'
-    as _i798;
-import '../../features/user/data/datasources/user_remote_datasource.dart'
-    as _i708;
-import '../../features/user/data/repositories/user_repository_impl.dart'
-    as _i664;
 import '../../features/user/domain/repositories/user_repository.dart' as _i237;
 import '../../features/user/domain/usecases/get_current_user_usecase.dart'
     as _i6;
@@ -177,14 +162,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i491.NetworkInfo>(
       () => _i491.EnhancedNetworkInfo(gh<_i491.ConnectivityService>()),
     );
+    gh.lazySingleton<_i6.GetCurrentUserUseCase>(
+      () => _i6.GetCurrentUserUseCase(gh<_i237.UserRepository>()),
+    );
     gh.lazySingleton<_i748.InboxApiService>(
       () => _i748.InboxApiService(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i1041.ProfileApiService>(
       () => _i1041.ProfileApiService(gh<_i361.Dio>()),
-    );
-    gh.factory<_i156.AuthApiService>(
-      () => _i156.AuthApiService(gh<_i361.Dio>()),
     );
     gh.factory<_i828.DashboardApiService>(
       () => _i828.DashboardApiService(gh<_i361.Dio>()),
@@ -198,20 +183,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i605.EscrowpayApiService>(
       () => _i605.EscrowpayApiService(gh<_i361.Dio>()),
     );
-    gh.factory<_i761.UserApiService>(
-      () => _i761.UserApiService(gh<_i361.Dio>()),
-    );
     gh.lazySingleton<_i589.EscrowpayLocalDataSource>(
       () => _i589.EscrowpayLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
-    gh.lazySingleton<_i708.UserRemoteDataSource>(
-      () => _i708.UserRemoteDataSourceImpl(gh<_i761.UserApiService>()),
-    );
     gh.lazySingleton<_i1046.ProfileLocalDataSource>(
       () => _i1046.ProfileLocalDataSourceImpl(gh<_i982.DatabaseService>()),
-    );
-    gh.lazySingleton<_i798.UserLocalDataSource>(
-      () => _i798.UserLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
     gh.lazySingleton<_i490.TransactionBoardLocalDataSource>(
       () => _i490.TransactionBoardLocalDataSourceImpl(),
@@ -244,25 +220,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i932.NetworkInfo>(),
       ),
     );
-    gh.lazySingleton<_i852.AuthLocalDataSource>(
-      () => _i852.AuthLocalDataSourceImpl(
-        gh<_i982.DatabaseService>(),
-        gh<_i908.AuthInterceptor>(),
-        gh<_i142.SecureStorageService>(),
-      ),
-    );
     gh.lazySingleton<_i150.EscrowpayRemoteDataSource>(
       () =>
           _i150.EscrowpayRemoteDataSourceImpl(gh<_i605.EscrowpayApiService>()),
-    );
-    gh.lazySingleton<_i237.UserRepository>(
-      () => _i664.UserRepositoryImpl(
-        gh<_i798.UserLocalDataSource>(),
-        gh<_i708.UserRemoteDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i107.AuthRemoteDataSource>(
-      () => _i107.AuthRemoteDataSourceImpl(gh<_i156.AuthApiService>()),
     );
     gh.lazySingleton<_i802.TransactionBoardRemoteDataSource>(
       () => _i802.TransactionBoardRemoteDataSourceImpl(
@@ -281,9 +241,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i1033.LoginRemoteDataSource>(
       () => _i1033.LoginRemoteDataSourceImpl(gh<_i743.LoginApiService>()),
-    );
-    gh.lazySingleton<_i6.GetCurrentUserUseCase>(
-      () => _i6.GetCurrentUserUseCase(gh<_i237.UserRepository>()),
     );
     gh.lazySingleton<_i902.LoginRepository>(
       () => _i1066.LoginRepositoryImpl(
@@ -315,13 +272,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i792.GetOnholdBalanceUseCase>(),
       ),
     );
-    gh.lazySingleton<_i787.AuthRepository>(
-      () => _i153.AuthRepositoryImpl(
-        gh<_i107.AuthRemoteDataSource>(),
-        gh<_i852.AuthLocalDataSource>(),
-        gh<_i932.NetworkInfo>(),
-      ),
-    );
     gh.lazySingleton<_i113.TransactionBoardRepository>(
       () => _i571.TransactionBoardRepositoryImpl(
         gh<_i802.TransactionBoardRemoteDataSource>(),
@@ -336,6 +286,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i285.VerifyOtpUseCase>(
       () => _i285.VerifyOtpUseCase(gh<_i902.LoginRepository>()),
+    );
+    gh.lazySingleton<_i211.GetAccessTokenUseCase>(
+      () => _i211.GetAccessTokenUseCase(gh<_i902.LoginRepository>()),
+    );
+    gh.lazySingleton<_i1058.GetRefreshTokenUseCase>(
+      () => _i1058.GetRefreshTokenUseCase(gh<_i902.LoginRepository>()),
     );
     gh.factory<_i420.LoginUseCase>(
       () => _i420.LoginUseCase(gh<_i902.LoginRepository>()),
@@ -361,15 +317,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i320.StoreLoginCredentialsUseCase>(
       () => _i320.StoreLoginCredentialsUseCase(gh<_i902.LoginRepository>()),
     );
-    gh.factory<_i57.SignUpUseCase>(
-      () => _i57.SignUpUseCase(gh<_i787.AuthRepository>()),
-    );
-    gh.factory<_i57.CheckEmailExistsUseCase>(
-      () => _i57.CheckEmailExistsUseCase(gh<_i787.AuthRepository>()),
-    );
-    gh.factory<_i663.SendOtpUseCase>(
-      () => _i663.SendOtpUseCase(gh<_i787.AuthRepository>()),
-    );
     gh.lazySingleton<_i1016.GetUserSettingsUseCase>(
       () => _i1016.GetUserSettingsUseCase(gh<_i894.ProfileRepository>()),
     );
@@ -382,17 +329,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i469.ProfileBloc>(
       () => _i469.ProfileBloc(gh<_i1016.GetUserSettingsUseCase>()),
-    );
-    gh.lazySingleton<_i664.LoginBloc>(
-      () => _i664.LoginBloc(
-        gh<_i420.LoginUseCase>(),
-        gh<_i285.VerifyOtpUseCase>(),
-        gh<_i611.LogoutUseCase>(),
-        gh<_i489.GetStoredUserUseCase>(),
-        gh<_i1051.RefreshTokenUseCase>(),
-        gh<_i420.StoreLoginCredentialsUseCase>(),
-        gh<_i420.GetStoredCredentialsUseCase>(),
-      ),
     );
     gh.factory<_i59.SearchPhoneUseCase>(
       () => _i59.SearchPhoneUseCase(gh<_i601.EscrowpayRepository>()),
@@ -429,20 +365,23 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i586.GetMailboxUseCase>(
       () => _i586.GetMailboxUseCase(gh<_i717.InboxRepository>()),
     );
-    gh.lazySingleton<_i797.AuthBloc>(
-      () => _i797.AuthBloc(gh<_i663.SendOtpUseCase>()),
+    gh.lazySingleton<_i664.LoginBloc>(
+      () => _i664.LoginBloc(
+        gh<_i420.LoginUseCase>(),
+        gh<_i285.VerifyOtpUseCase>(),
+        gh<_i611.LogoutUseCase>(),
+        gh<_i489.GetStoredUserUseCase>(),
+        gh<_i211.GetAccessTokenUseCase>(),
+        gh<_i1058.GetRefreshTokenUseCase>(),
+        gh<_i420.StoreLoginCredentialsUseCase>(),
+        gh<_i420.GetStoredCredentialsUseCase>(),
+      ),
     );
     gh.factory<_i429.EscrowpayBloc>(
       () => _i429.EscrowpayBloc(
         gh<_i446.SearchUsernameUseCase>(),
         gh<_i59.SearchPhoneUseCase>(),
         gh<_i155.CreatePaymentUseCase>(),
-      ),
-    );
-    gh.lazySingleton<_i593.SignUpBloc>(
-      () => _i593.SignUpBloc(
-        gh<_i57.CheckEmailExistsUseCase>(),
-        gh<_i57.SignUpUseCase>(),
       ),
     );
     gh.factory<_i448.TransactionBoardBloc>(

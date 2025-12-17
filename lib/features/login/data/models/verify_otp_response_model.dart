@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../auth/domain/entities/auth_result.dart';
+import '../../../../shared/entities/auth_result.dart';
 import '../../../user/domain/entities/user.dart';
 
 part 'verify_otp_response_model.freezed.dart';
@@ -28,6 +28,6 @@ abstract class VerifyOtpResponseModel with _$VerifyOtpResponseModel {
     refreshTokenExpiresAt: refreshTokenExpiresAt,
   );
 
-  /// Convert to User entity (already is a User entity)
+  /// Get User entity (already is a User entity)
   User toUser() => userProfile;
 }

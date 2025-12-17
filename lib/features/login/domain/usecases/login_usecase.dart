@@ -1,10 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-import 'package:gatepay_app/features/user/domain/entities/user.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../../../auth/domain/entities/auth_result.dart';
 import '../repositories/login_repository.dart';
 
 export 'credential_usecase.dart';

@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
+import '../../domain/usecases/get_access_token_usecase.dart';
+import '../../domain/usecases/get_refresh_token_usecase.dart';
 import '../../domain/usecases/get_stored_user_usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
@@ -15,7 +17,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final VerifyOtpUseCase _verifyOtpUseCase;
   final LogoutUseCase _logoutUseCase;
   final GetStoredUserUseCase _getStoredUserUseCase;
-  final RefreshTokenUseCase _refreshTokenUseCase;
+
+  final GetAccessTokenUseCase _getAccessTokenUseCase;
+  final GetRefreshTokenUseCase _getRefreshTokenUseCase;
 
   final StoreLoginCredentialsUseCase _storeCredentialsUseCase;
   final GetStoredCredentialsUseCase _getStoredCredentialsUseCase;
@@ -27,7 +31,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     this._verifyOtpUseCase,
     this._logoutUseCase,
     this._getStoredUserUseCase,
-    this._refreshTokenUseCase,
+    this._getAccessTokenUseCase,
+    this._getRefreshTokenUseCase,
     this._storeCredentialsUseCase,
     this._getStoredCredentialsUseCase,
   ) : super(const LoginInitial()) {
@@ -45,6 +50,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
     on<LoginLoadSavedCredentials>(_onLoadSavedCredentials);
     on<LoginStoreCredentials>(_onStoreCredentials);
+
+    on<LoginCheckAuthStatus>(_onCheckAuthStatus);
   }
 
   Future<void> _onLoginSubmitted(
@@ -60,9 +67,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     result.fold(
       (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
       (message) {
-        _currentEmail = event.email; // Store email for OTP verification
+        _currentEmail = event.email;
 
-        // Store credentials if rememberMe is true
         if (event.rememberMe) {
           add(LoginStoreCredentials(event.email, event.password));
         }
@@ -76,7 +82,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginLoadSavedCredentials event,
     Emitter<LoginState> emit,
   ) async {
-    // Temporarily use repository directly until use cases are set up
     try {
       // For now, we'll skip this functionality until DI is set up
       // You can uncomment this once you add the use cases to DI
@@ -121,6 +126,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginOtpSubmitted event,
     Emitter<LoginState> emit,
   ) async {
+    print('🔵 OTP Submitted: ${event.otp}');
     emit(const LoginLoading());
 
     final result = await _verifyOtpUseCase(
@@ -128,11 +134,19 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     );
 
     result.fold(
-      (failure) => emit(LoginFailure(_mapFailureToMessage(failure))),
+      (failure) {
+        print('🔴 OTP Verification FAILED: ${_mapFailureToMessage(failure)}');
+        emit(LoginFailure(_mapFailureToMessage(failure)));
+      },
       (data) {
         final (authResult, user) = data;
+        print('🟢 OTP Verification SUCCESS!');
+        print('🟢 User: ${user.email}');
+        print('🟢 Emitting LoginSuccess...');
 
         emit(LoginSuccess(user));
+
+        print('🟢 LoginSuccess emitted!');
       },
     );
   }
@@ -141,27 +155,64 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     LoginCheckAuthStatus event,
     Emitter<LoginState> emit,
   ) async {
+    print('🔍 CheckAuthStatus: Starting...');
     emit(const LoginLoading());
 
-    try {
-      final result = await _getStoredUserUseCase();
+    // Check tokens first
+    final accessTokenResult = await _getAccessTokenUseCase();
+    final refreshTokenResult = await _getRefreshTokenUseCase();
 
-      result.fold(
-        (failure) {
-          emit(const LoginUnauthenticated());
-        },
-        (user) {
-          if (user != null) {
-            emit(LoginSuccess(user));
-          } else {
-            emit(const LoginUnauthenticated());
-          }
-        },
-      );
-    } catch (e) {
-      print('Error in CheckAuthStatus: $e');
+    final accessToken = accessTokenResult.fold(
+      (failure) {
+        print('🔴 Access Token Error: ${failure.message}');
+        return null;
+      },
+      (token) {
+        print('🟢 Access Token exists: ${token != null && token.isNotEmpty}');
+        return token;
+      },
+    );
+
+    final refreshToken = refreshTokenResult.fold(
+      (failure) {
+        print('🔴 Refresh Token Error: ${failure.message}');
+        return null;
+      },
+      (token) {
+        print('🟢 Refresh Token exists: ${token != null && token.isNotEmpty}');
+        return token;
+      },
+    );
+
+    // If no tokens, user is not authenticated
+    if (accessToken == null ||
+        accessToken.isEmpty ||
+        refreshToken == null ||
+        refreshToken.isEmpty) {
+      print('🔴 CheckAuthStatus: No valid tokens found');
       emit(const LoginUnauthenticated());
+      return;
     }
+
+    // Check if user exists in database
+    final userResult = await _getStoredUserUseCase();
+
+    await userResult.fold(
+      (failure) async {
+        print('🔴 CheckAuthStatus: No stored user - ${failure.message}');
+        emit(const LoginUnauthenticated());
+      },
+      (user) async {
+        if (user == null) {
+          print('🔴 CheckAuthStatus: User is null');
+          emit(const LoginUnauthenticated());
+          return;
+        }
+
+        print('🟢 CheckAuthStatus: User authenticated! Email: ${user.email}');
+        emit(LoginSuccess(user));
+      },
+    );
   }
 
   Future<void> _onLogoutRequested(

@@ -18,12 +18,14 @@ class _LoginApiService implements LoginApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ApiResponse<String>> signIn({required LoginRequestModel data}) async {
+  Future<ApiResponse<OtpResponseModel>> signIn({
+    required LoginRequestModel data,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = data;
-    final _options = _setStreamType<ApiResponse<String>>(
+    final _options = _setStreamType<ApiResponse<OtpResponseModel>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -34,11 +36,11 @@ class _LoginApiService implements LoginApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<String> _value;
+    late ApiResponse<OtpResponseModel> _value;
     try {
-      _value = ApiResponse<String>.fromJson(
+      _value = ApiResponse<OtpResponseModel>.fromJson(
         _result.data!,
-        (json) => json as String,
+        (json) => OtpResponseModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

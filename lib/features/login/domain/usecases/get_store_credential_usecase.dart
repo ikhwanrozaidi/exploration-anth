@@ -3,8 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../../../auth/domain/entities/auth_result.dart';
-import '../../../user/domain/entities/user.dart';
 import '../repositories/login_repository.dart';
 
 @injectable

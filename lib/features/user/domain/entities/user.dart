@@ -10,7 +10,7 @@ class User extends Equatable {
   final String role;
   final String phone;
   final String status;
-  final double balance;
+  final String balance;
   final String? merchantId;
   final String? country;
   final DateTime createdAt;
@@ -40,7 +40,7 @@ class User extends Equatable {
     String? role,
     String? phone,
     String? status,
-    double? balance,
+    String? balance,
     String? merchantId,
     String? country,
     DateTime? createdAt,

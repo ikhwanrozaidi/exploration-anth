@@ -28,7 +28,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
     pageController = PageController(initialPage: 0);
     _startAutoSwipe();
     pageController.addListener(_pageScrollListener);
-    // Initialize onboarding
     context.read<OnboardingBloc>().add(const OnboardingStarted());
   }
 
@@ -107,7 +106,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Colors.white, Color.fromARGB(255, 79, 191, 231), Color.fromARGB(255, 112, 255, 248),],
+              colors: [
+                Colors.white,
+                Color.fromARGB(255, 79, 191, 231),
+                Color.fromARGB(255, 112, 255, 248),
+              ],
               stops: [0.0, 0.6, 1.0],
             ),
           ),
@@ -237,7 +240,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             fontWeight: FontWeight.bold,
             fontSize: 18,
             fontFamily: 'Poppins',
-            color: Colors.white
+            color: Colors.white,
           ),
           textAlign: TextAlign.center,
         ),
@@ -248,7 +251,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
             fontFamily: 'Poppins',
             fontWeight: FontWeight.w300,
             fontSize: 16,
-            color: Colors.white
+            color: Colors.white,
           ),
           textAlign: TextAlign.center,
         ),
@@ -264,7 +267,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-
         ElevatedButton(
           onPressed: () {
             context.push(AppRoutePath.register);
@@ -303,7 +305,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
           ),
         ),
-        
       ],
     );
   }

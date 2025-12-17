@@ -1,8 +1,6 @@
-// lib/main.dart - Fixed flavor initialization
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:gatepay_app/features/transactionboard/presentation/bloc/transaction_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'core/config/flavor_config.dart';
 import 'core/di/injection.dart';
@@ -12,20 +10,13 @@ import 'features/locale/presentation/bloc/locale_bloc.dart';
 import 'features/locale/presentation/bloc/locale_event.dart';
 import 'features/locale/presentation/bloc/locale_state.dart';
 import 'features/locale/presentation/widgets/app_localization.dart';
-import 'features/auth/presentation/bloc/auth_bloc.dart';
-
-// Add login and onboarding blocs
 import 'features/login/presentation/bloc/login_bloc.dart';
 import 'features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'features/transactionboard/features/ongoing/presentation/bloc/ongoing_bloc.dart';
 import 'routes/app_router.dart';
 
-// This will be called from flavor-specific main files
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Don't configure dependencies here - they should be configured
-  // in the flavor-specific main files before calling this main()
 
   runApp(
     MultiBlocProvider(
@@ -34,7 +25,7 @@ Future<void> main() async {
           create: (context) =>
               getIt<LocaleBloc>()..add(const LoadSavedLocale()),
         ),
-        BlocProvider<AuthBloc>(create: (context) => getIt<AuthBloc>()),
+
         BlocProvider<LoginBloc>(create: (context) => getIt<LoginBloc>()),
         BlocProvider<OnboardingBloc>(
           create: (context) => getIt<OnboardingBloc>(),

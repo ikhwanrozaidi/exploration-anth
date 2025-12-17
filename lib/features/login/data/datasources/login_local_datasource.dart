@@ -1,26 +1,23 @@
-// lib/features/login/data/datasources/login_local_datasource.dart
 import 'dart:convert';
-
 import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../core/database/app_database.dart' hide User;
+import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/auth_interceptor.dart';
 import '../../../../core/service/secure_storage_service.dart';
-import '../../../auth/domain/entities/auth_result.dart';
-import '../../../user/domain/entities/user.dart';
+import '../../../../shared/entities/auth_result.dart';
+import '../../../user/domain/entities/user.dart' as user_entity;
 
 abstract class LoginLocalDataSource {
   Future<Either<Failure, void>> storeAuthResult(
     AuthResult authResult,
-    User user,
+    user_entity.User user,
   );
   Future<Either<Failure, String?>> getAccessToken();
   Future<Either<Failure, String?>> getRefreshToken();
-  Future<Either<Failure, User?>> getStoredUser();
+  Future<Either<Failure, user_entity.User?>> getStoredUser();
   Future<Either<Failure, void>> clearAuthData();
-
   Future<Either<Failure, void>> storeLoginCredentials(
     String email,
     String password,
@@ -45,19 +42,19 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   @override
   Future<Either<Failure, void>> storeAuthResult(
     AuthResult authResult,
-    User user,
+    user_entity.User user,
   ) async {
     try {
-      // ✅ Store tokens WITH expiry timestamps
+      // Store tokens WITH expiry timestamps
       await _secureStorage.storeAuthResult(authResult);
 
-      // Store tokens in auth interceptor for immediate use
+      // Store tokens in auth interceptor
       await _authInterceptor.storeTokens(
         accessToken: authResult.accessToken,
         refreshToken: authResult.refreshToken,
       );
 
-      // ✅ Store user in database
+      // ✅ Store user in database (handle null nested objects)
       await _database
           .into(_database.users)
           .insertOnConflictUpdate(
@@ -71,7 +68,6 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
               merchantId: Value(user.merchantId),
               country: Value(user.country),
               createdAt: user.createdAt,
-              // Store JSON strings for nested objects
               userDetail: Value(
                 user.userDetail != null
                     ? jsonEncode(user.userDetail!.toJson())
@@ -89,6 +85,63 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
     } catch (e) {
       print('❌ StoreAuthResult Error: $e');
       return Left(CacheFailure('Failed to store auth result: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, user_entity.User?>> getStoredUser() async {
+    try {
+      final query = _database.select(_database.users)
+        ..where((u) => u.deletedAt.isNull())
+        ..limit(1);
+
+      final record = await query.getSingleOrNull();
+
+      if (record == null) {
+        return const Right(null);
+      }
+
+      user_entity.UserDetail? userDetail;
+      user_entity.UserSettings? userSettings;
+
+      if (record.userDetail != null && record.userDetail!.isNotEmpty) {
+        try {
+          userDetail = user_entity.UserDetail.fromJson(
+            jsonDecode(record.userDetail!),
+          );
+        } catch (e) {
+          print('⚠️ Failed to parse userDetail: $e');
+        }
+      }
+
+      if (record.userSettings != null && record.userSettings!.isNotEmpty) {
+        try {
+          userSettings = user_entity.UserSettings.fromJson(
+            jsonDecode(record.userSettings!),
+          );
+        } catch (e) {
+          print('⚠️ Failed to parse userSettings: $e');
+        }
+      }
+
+      final user = user_entity.User(
+        id: record.id,
+        email: record.email,
+        role: record.role,
+        phone: record.phone,
+        status: record.status,
+        balance: record.balance,
+        merchantId: record.merchantId,
+        country: record.country,
+        createdAt: record.createdAt,
+        userDetail: userDetail,
+        userSettings: userSettings,
+      );
+
+      return Right(user);
+    } catch (e) {
+      print('❌ GetStoredUser Error: $e');
+      return Left(CacheFailure('Failed to get stored user: ${e.toString()}'));
     }
   }
 
@@ -113,51 +166,11 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   }
 
   @override
-  Future<Either<Failure, User?>> getStoredUser() async {
-    try {
-      // ✅ FIXED: Changed from db.admins to db.users
-      final query = _database.select(_database.users)
-        ..where((u) => u.deletedAt.isNull())
-        ..limit(1);
-
-      final record = await query.getSingleOrNull();
-
-      if (record == null) {
-        return const Right(null);
-      }
-
-      // Convert database record to User entity
-      final user = User(
-        id: record.id,
-        uid: record.uid,
-        phone: record.phone,
-        firstName: record.firstName,
-        lastName: record.lastName,
-        email: record.email,
-        updatedAt: record.updatedAt,
-        createdAt: record.createdAt,
-      );
-
-      return Right(user);
-    } catch (e) {
-      return Left(CacheFailure('Failed to get stored user: ${e.toString()}'));
-    }
-  }
-
-  @override
   Future<Either<Failure, void>> clearAuthData() async {
     try {
-      // Clear tokens from secure storage
       await _secureStorage.clearTokens();
-
-      // Clear credentials from secure storage
       await _secureStorage.clearCredentials();
-
-      // Clear tokens from auth interceptor
       await _authInterceptor.clearAllTokens();
-
-      // ✅ FIXED: Changed from db.admins to db.users
-      // Clear user data from database
       await _database.delete(_database.users).go();
 
       return const Right(null);

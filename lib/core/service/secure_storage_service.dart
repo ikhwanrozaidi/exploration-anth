@@ -1,7 +1,8 @@
 // lib/core/service/secure_storage_service.dart
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
-import '../../features/auth/domain/entities/auth_result.dart';
+
+import '../../shared/entities/auth_result.dart';
 
 @lazySingleton
 class SecureStorageService {

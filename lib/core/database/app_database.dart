@@ -29,16 +29,16 @@ class Users extends Table {
   TextColumn get role => text()();
   TextColumn get phone => text()();
   TextColumn get status => text()();
-  RealColumn get balance => real()();
+  TextColumn get balance => text()();
   TextColumn get merchantId => text().nullable()();
   TextColumn get country => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
-  // ✅ Store nested objects as JSON strings
+  // Store nested objects as JSON strings
   TextColumn get userDetail => text().nullable()();
   TextColumn get userSettings => text().nullable()();
 
-  DateTimeColumn get updatedAt => dateTime().nullable()();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get deletedAt => dateTime().nullable()();
 
   @override

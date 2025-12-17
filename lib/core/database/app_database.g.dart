@@ -57,11 +57,11 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
     'balance',
   );
   @override
-  late final GeneratedColumn<double> balance = GeneratedColumn<double>(
+  late final GeneratedColumn<String> balance = GeneratedColumn<String>(
     'balance',
     aliasedName,
     false,
-    type: DriftSqlType.double,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
   static const VerificationMeta _merchantIdMeta = const VerificationMeta(
@@ -126,9 +126,10 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
     'updated_at',
     aliasedName,
-    true,
+    false,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
   );
   static const VerificationMeta _deletedAtMeta = const VerificationMeta(
     'deletedAt',
@@ -289,7 +290,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
         data['${effectivePrefix}status'],
       )!,
       balance: attachedDatabase.typeMapping.read(
-        DriftSqlType.double,
+        DriftSqlType.string,
         data['${effectivePrefix}balance'],
       )!,
       merchantId: attachedDatabase.typeMapping.read(
@@ -315,7 +316,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
-      ),
+      )!,
       deletedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}deleted_at'],
@@ -335,13 +336,13 @@ class User extends DataClass implements Insertable<User> {
   final String role;
   final String phone;
   final String status;
-  final double balance;
+  final String balance;
   final String? merchantId;
   final String? country;
   final DateTime createdAt;
   final String? userDetail;
   final String? userSettings;
-  final DateTime? updatedAt;
+  final DateTime updatedAt;
   final DateTime? deletedAt;
   const User({
     required this.id,
@@ -355,7 +356,7 @@ class User extends DataClass implements Insertable<User> {
     required this.createdAt,
     this.userDetail,
     this.userSettings,
-    this.updatedAt,
+    required this.updatedAt,
     this.deletedAt,
   });
   @override
@@ -366,7 +367,7 @@ class User extends DataClass implements Insertable<User> {
     map['role'] = Variable<String>(role);
     map['phone'] = Variable<String>(phone);
     map['status'] = Variable<String>(status);
-    map['balance'] = Variable<double>(balance);
+    map['balance'] = Variable<String>(balance);
     if (!nullToAbsent || merchantId != null) {
       map['merchant_id'] = Variable<String>(merchantId);
     }
@@ -380,9 +381,7 @@ class User extends DataClass implements Insertable<User> {
     if (!nullToAbsent || userSettings != null) {
       map['user_settings'] = Variable<String>(userSettings);
     }
-    if (!nullToAbsent || updatedAt != null) {
-      map['updated_at'] = Variable<DateTime>(updatedAt);
-    }
+    map['updated_at'] = Variable<DateTime>(updatedAt);
     if (!nullToAbsent || deletedAt != null) {
       map['deleted_at'] = Variable<DateTime>(deletedAt);
     }
@@ -410,9 +409,7 @@ class User extends DataClass implements Insertable<User> {
       userSettings: userSettings == null && nullToAbsent
           ? const Value.absent()
           : Value(userSettings),
-      updatedAt: updatedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(updatedAt),
+      updatedAt: Value(updatedAt),
       deletedAt: deletedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(deletedAt),
@@ -430,13 +427,13 @@ class User extends DataClass implements Insertable<User> {
       role: serializer.fromJson<String>(json['role']),
       phone: serializer.fromJson<String>(json['phone']),
       status: serializer.fromJson<String>(json['status']),
-      balance: serializer.fromJson<double>(json['balance']),
+      balance: serializer.fromJson<String>(json['balance']),
       merchantId: serializer.fromJson<String?>(json['merchantId']),
       country: serializer.fromJson<String?>(json['country']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       userDetail: serializer.fromJson<String?>(json['userDetail']),
       userSettings: serializer.fromJson<String?>(json['userSettings']),
-      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
     );
   }
@@ -449,13 +446,13 @@ class User extends DataClass implements Insertable<User> {
       'role': serializer.toJson<String>(role),
       'phone': serializer.toJson<String>(phone),
       'status': serializer.toJson<String>(status),
-      'balance': serializer.toJson<double>(balance),
+      'balance': serializer.toJson<String>(balance),
       'merchantId': serializer.toJson<String?>(merchantId),
       'country': serializer.toJson<String?>(country),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'userDetail': serializer.toJson<String?>(userDetail),
       'userSettings': serializer.toJson<String?>(userSettings),
-      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'deletedAt': serializer.toJson<DateTime?>(deletedAt),
     };
   }
@@ -466,13 +463,13 @@ class User extends DataClass implements Insertable<User> {
     String? role,
     String? phone,
     String? status,
-    double? balance,
+    String? balance,
     Value<String?> merchantId = const Value.absent(),
     Value<String?> country = const Value.absent(),
     DateTime? createdAt,
     Value<String?> userDetail = const Value.absent(),
     Value<String?> userSettings = const Value.absent(),
-    Value<DateTime?> updatedAt = const Value.absent(),
+    DateTime? updatedAt,
     Value<DateTime?> deletedAt = const Value.absent(),
   }) => User(
     id: id ?? this.id,
@@ -486,7 +483,7 @@ class User extends DataClass implements Insertable<User> {
     createdAt: createdAt ?? this.createdAt,
     userDetail: userDetail.present ? userDetail.value : this.userDetail,
     userSettings: userSettings.present ? userSettings.value : this.userSettings,
-    updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+    updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
   );
   User copyWithCompanion(UsersCompanion data) {
@@ -574,13 +571,13 @@ class UsersCompanion extends UpdateCompanion<User> {
   final Value<String> role;
   final Value<String> phone;
   final Value<String> status;
-  final Value<double> balance;
+  final Value<String> balance;
   final Value<String?> merchantId;
   final Value<String?> country;
   final Value<DateTime> createdAt;
   final Value<String?> userDetail;
   final Value<String?> userSettings;
-  final Value<DateTime?> updatedAt;
+  final Value<DateTime> updatedAt;
   final Value<DateTime?> deletedAt;
   const UsersCompanion({
     this.id = const Value.absent(),
@@ -603,7 +600,7 @@ class UsersCompanion extends UpdateCompanion<User> {
     required String role,
     required String phone,
     required String status,
-    required double balance,
+    required String balance,
     this.merchantId = const Value.absent(),
     this.country = const Value.absent(),
     required DateTime createdAt,
@@ -623,7 +620,7 @@ class UsersCompanion extends UpdateCompanion<User> {
     Expression<String>? role,
     Expression<String>? phone,
     Expression<String>? status,
-    Expression<double>? balance,
+    Expression<String>? balance,
     Expression<String>? merchantId,
     Expression<String>? country,
     Expression<DateTime>? createdAt,
@@ -655,13 +652,13 @@ class UsersCompanion extends UpdateCompanion<User> {
     Value<String>? role,
     Value<String>? phone,
     Value<String>? status,
-    Value<double>? balance,
+    Value<String>? balance,
     Value<String?>? merchantId,
     Value<String?>? country,
     Value<DateTime>? createdAt,
     Value<String?>? userDetail,
     Value<String?>? userSettings,
-    Value<DateTime?>? updatedAt,
+    Value<DateTime>? updatedAt,
     Value<DateTime?>? deletedAt,
   }) {
     return UsersCompanion(
@@ -700,7 +697,7 @@ class UsersCompanion extends UpdateCompanion<User> {
       map['status'] = Variable<String>(status.value);
     }
     if (balance.present) {
-      map['balance'] = Variable<double>(balance.value);
+      map['balance'] = Variable<String>(balance.value);
     }
     if (merchantId.present) {
       map['merchant_id'] = Variable<String>(merchantId.value);
@@ -765,13 +762,13 @@ typedef $$UsersTableCreateCompanionBuilder =
       required String role,
       required String phone,
       required String status,
-      required double balance,
+      required String balance,
       Value<String?> merchantId,
       Value<String?> country,
       required DateTime createdAt,
       Value<String?> userDetail,
       Value<String?> userSettings,
-      Value<DateTime?> updatedAt,
+      Value<DateTime> updatedAt,
       Value<DateTime?> deletedAt,
     });
 typedef $$UsersTableUpdateCompanionBuilder =
@@ -781,13 +778,13 @@ typedef $$UsersTableUpdateCompanionBuilder =
       Value<String> role,
       Value<String> phone,
       Value<String> status,
-      Value<double> balance,
+      Value<String> balance,
       Value<String?> merchantId,
       Value<String?> country,
       Value<DateTime> createdAt,
       Value<String?> userDetail,
       Value<String?> userSettings,
-      Value<DateTime?> updatedAt,
+      Value<DateTime> updatedAt,
       Value<DateTime?> deletedAt,
     });
 
@@ -824,7 +821,7 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<double> get balance => $composableBuilder(
+  ColumnFilters<String> get balance => $composableBuilder(
     column: $table.balance,
     builder: (column) => ColumnFilters(column),
   );
@@ -899,7 +896,7 @@ class $$UsersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<double> get balance => $composableBuilder(
+  ColumnOrderings<String> get balance => $composableBuilder(
     column: $table.balance,
     builder: (column) => ColumnOrderings(column),
   );
@@ -964,7 +961,7 @@ class $$UsersTableAnnotationComposer
   GeneratedColumn<String> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
 
-  GeneratedColumn<double> get balance =>
+  GeneratedColumn<String> get balance =>
       $composableBuilder(column: $table.balance, builder: (column) => column);
 
   GeneratedColumn<String> get merchantId => $composableBuilder(
@@ -1028,13 +1025,13 @@ class $$UsersTableTableManager
                 Value<String> role = const Value.absent(),
                 Value<String> phone = const Value.absent(),
                 Value<String> status = const Value.absent(),
-                Value<double> balance = const Value.absent(),
+                Value<String> balance = const Value.absent(),
                 Value<String?> merchantId = const Value.absent(),
                 Value<String?> country = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<String?> userDetail = const Value.absent(),
                 Value<String?> userSettings = const Value.absent(),
-                Value<DateTime?> updatedAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime?> deletedAt = const Value.absent(),
               }) => UsersCompanion(
                 id: id,
@@ -1058,13 +1055,13 @@ class $$UsersTableTableManager
                 required String role,
                 required String phone,
                 required String status,
-                required double balance,
+                required String balance,
                 Value<String?> merchantId = const Value.absent(),
                 Value<String?> country = const Value.absent(),
                 required DateTime createdAt,
                 Value<String?> userDetail = const Value.absent(),
                 Value<String?> userSettings = const Value.absent(),
-                Value<DateTime?> updatedAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime?> deletedAt = const Value.absent(),
               }) => UsersCompanion.insert(
                 id: id,

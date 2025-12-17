@@ -1,93 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import '../../core/constants/route_constants.dart';
 import '../../features/login/presentation/bloc/login_bloc.dart';
-import '../../features/login/presentation/bloc/login_event.dart';
 import '../../features/login/presentation/bloc/login_state.dart';
-import '../../features/onboarding/presentation/pages/onboarding_pages.dart';
-import '../pages/root_page.dart';
 
 class AuthWrapper extends StatelessWidget {
-  const AuthWrapper({super.key});
+  final Widget child;
+
+  const AuthWrapper({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(
-      builder: (context, state) {
-        return state.when(
+    final loginBloc = context.read<LoginBloc>();
+    print('🎨 AuthWrapper: LoginBloc hashCode: ${loginBloc.hashCode}');
+    print('🎨 AuthWrapper: Current state: ${loginBloc.state}');
+
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (context, state) {
+        print('👂👂👂 AuthWrapper LISTENER TRIGGERED: $state');
+
+        state.when(
           initial: () {
-            // Check auth status on initial load
-            context.read<LoginBloc>().add(const LoginCheckAuthStatus());
-            return const _SplashScreen();
+            print('👂 Listener: initial - triggering CheckAuthStatus');
           },
-          credentialsLoaded: (email, password) {
-            // Show loading while credentials are being processed
-            return const _LoadingScreen();
+          loading: () {
+            print('👂 Listener: loading');
           },
-          loading: () => const _LoadingScreen(),
-          otpRequired: (email, message) {
-            // Stay on current page - OTP dialog will show
-            return const _LoadingScreen();
+          credentialsLoaded: (_, __) {},
+          otpRequired: (_, __) {},
+          authenticated: (_, user) {
+            print('👂👂👂 Listener: AUTHENTICATED! User: ${user.email}');
+            print('👂 Navigating to: ${AppRoutePath.main}');
+            context.go(AppRoutePath.main);
           },
-          authenticated: (authResult, admin) => const RootPage(),
-          success: (admin) => const RootPage(),
-          unauthenticated: () =>
-              const OnboardingPage(), // ✅ FIXED: Show onboarding, not RootPage
-          loggedOut: () =>
-              const OnboardingPage(), // ✅ User logged out - show onboarding
-          failure: (message) => const OnboardingPage(),
-          forgotPasswordOtpRequired: (email, message) {
-            // Stay on current page - forgot password flow
-            return const _LoadingScreen();
+          success: (user) {
+            print('👂👂👂 Listener: SUCCESS! User: ${user.email}');
+            print('👂 Navigating to: ${AppRoutePath.main}');
+            context.go(AppRoutePath.main);
           },
-          changePasswordRequired: (email, message) {
-            // Stay on current page - change password flow
-            return const _LoadingScreen();
+          unauthenticated: () {
+            print('👂 Listener: unauthenticated - going to onboarding');
+            context.go(AppRoutePath.onboarding);
           },
-          passwordChanged: (message) => const OnboardingPage(),
+          loggedOut: () {
+            print('👂 Listener: loggedOut - going to onboarding');
+            context.go(AppRoutePath.onboarding);
+          },
+          failure: (message) {
+            print('👂 Listener: failure - $message');
+          },
+          forgotPasswordOtpRequired: (_, __) {},
+          changePasswordRequired: (_, __) {},
+          passwordChanged: (_) {},
         );
       },
-    );
-  }
-}
-
-/// Simple splash screen while checking auth state
-class _SplashScreen extends StatelessWidget {
-  const _SplashScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Loading...'),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Loading screen during authentication
-class _LoadingScreen extends StatelessWidget {
-  const _LoadingScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircularProgressIndicator(),
-            SizedBox(height: 16),
-            Text('Authenticating...'),
-          ],
-        ),
-      ),
+      child: child,
     );
   }
 }

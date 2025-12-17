@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:gatepay_app/features/user/domain/entities/user.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../auth/domain/entities/auth_result.dart';
+import '../../../../shared/entities/auth_result.dart';
 
 abstract class LoginRepository {
   Future<Either<Failure, String>> login(String email, String password);
