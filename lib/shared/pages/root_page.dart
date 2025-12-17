@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gatepay_app/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:gatepay_app/features/inbox/presentation/pages/inbox_page.dart';
-import 'package:gatepay_app/features/profile/presentation/pages/profile_page.dart';
+import '../../../tempo_codes/profile/presentation/pages/profile_page.dart';
 import 'package:gatepay_app/shared/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 

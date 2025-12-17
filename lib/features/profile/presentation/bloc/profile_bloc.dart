@@ -1,103 +1,145 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'dart:developer';
 import '../../../../core/errors/failures.dart';
-import '../../domain/entities/user_settings_entity.dart';
-import '../../domain/usecases/get_user_settings_usecase.dart';
+import '../../../login/domain/usecases/logout_usecase.dart';
+import '../../domain/usecases/get_user_profile_usecase.dart';
+import '../../domain/usecases/update_user_profile_usecase.dart';
 import 'profile_event.dart';
 import 'profile_state.dart';
 
 @injectable
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
-  final GetUserSettingsUseCase _getUserSettingsUseCase;
+  final GetUserProfileUseCase _getUserProfileUseCase;
+  final LogoutUseCase _logoutUseCase;
+  final UpdateUserProfileUseCase _updateUserProfileUseCase;
 
-  ProfileBloc(this._getUserSettingsUseCase) : super(const ProfileInitial()) {
+  ProfileBloc(
+    this._getUserProfileUseCase,
+    this._logoutUseCase,
+    this._updateUserProfileUseCase,
+  ) : super(const ProfileInitial()) {
+    on<LoadUserProfile>(_onLoadUserProfile);
     on<LoadUserSettings>(_onLoadUserSettings);
     on<RefreshUserSettings>(_onRefreshUserSettings);
+    on<LogoutUser>(_onLogoutUser);
+
+    on<UpdateUserProfile>(_onUpdateUserProfile);
+  }
+
+  Future<void> _onLoadUserProfile(
+    LoadUserProfile event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(const ProfileLoading());
+
+    print('🔵 [ProfileBloc] Loading user profile...');
+
+    final result = await _getUserProfileUseCase();
+
+    result.fold(
+      (failure) {
+        print('🔴 [ProfileBloc] Failed to load profile: ${failure.message}');
+        emit(ProfileError(_mapFailureToMessage(failure)));
+      },
+      (user) {
+        if (user == null) {
+          print('🔴 [ProfileBloc] No user found in database');
+          emit(
+            const ProfileError('No user profile found. Please login again.'),
+          );
+        } else {
+          print('🟢 [ProfileBloc] Profile loaded - ${user.email}');
+          print(
+            '🟢 [ProfileBloc] Full name: ${user.userDetail?.fullName ?? "No name"}',
+          );
+          emit(ProfileLoaded(user));
+        }
+      },
+    );
   }
 
   Future<void> _onLoadUserSettings(
     LoadUserSettings event,
     Emitter<ProfileState> emit,
   ) async {
-    emit(const ProfileLoading());
-
-    ///
-    /// This is for TESTING ONLY
-    ///
-    emit(ProfileLoaded(userSettings: dummyUserSettings));
-
-    /*
-    ///
-    /// -------------------------------------- REAL API CALLS
-    ///
-    try {
-      final result = await _getUserSettingsUseCase();
-
-      result.fold(
-        (failure) => emit(ProfileError(_mapFailureToMessage(failure))),
-        (userSettings) => emit(ProfileLoaded(userSettings: userSettings)),
-      );
-    } catch (e) {
-      log('Error loading user settings: $e');
-      emit(ProfileError('Failed to load user settings: ${e.toString()}'));
-    }
-    */
+    await _onLoadUserProfile(const LoadUserProfile(), emit);
   }
 
   Future<void> _onRefreshUserSettings(
     RefreshUserSettings event,
     Emitter<ProfileState> emit,
   ) async {
-    ///
-    /// This is for TESTING ONLY
-    ///
-    emit(ProfileLoaded(userSettings: dummyUserSettings));
+    await _onLoadUserProfile(const LoadUserProfile(), emit);
+  }
 
-    /*
-    ///
-    /// -------------------------------------- REAL API CALLS
-    ///
-    try {
-      final result = await _getUserSettingsUseCase();
+  Future<void> _onLogoutUser(
+    LogoutUser event,
+    Emitter<ProfileState> emit,
+  ) async {
+    emit(const ProfileLoading());
 
-      result.fold((failure) {
-        // If refresh fails and we have current data, show error but keep data
-        if (state is ProfileLoaded) {
-          final currentState = state as ProfileLoaded;
-          // You could show a snackbar here instead of changing state
-          emit(ProfileError(_mapFailureToMessage(failure)));
-          // Restore previous state after showing error
-          Future.delayed(const Duration(seconds: 2), () {
-            if (!isClosed) emit(currentState);
-          });
-        } else {
-          emit(ProfileError(_mapFailureToMessage(failure)));
-        }
-      }, (userSettings) => emit(ProfileLoaded(userSettings: userSettings)));
-    } catch (e) {
-      log('Error refreshing user settings: $e');
-      emit(ProfileError('Failed to refresh user settings: ${e.toString()}'));
+    print('🔵 [ProfileBloc] Logging out...');
+
+    final result = await _logoutUseCase();
+
+    result.fold(
+      (failure) {
+        print('🔴 [ProfileBloc] Logout failed: ${failure.message}');
+        emit(ProfileError(_mapFailureToMessage(failure)));
+      },
+      (_) {
+        print('🟢 [ProfileBloc] Logout successful');
+        emit(const ProfileLoggedOut());
+      },
+    );
+  }
+
+  Future<void> _onUpdateUserProfile(
+    UpdateUserProfile event,
+    Emitter<ProfileState> emit,
+  ) async {
+    // Get current user from state
+    if (state is! ProfileLoaded) {
+      emit(const ProfileError('Cannot update profile: User not loaded'));
+      return;
     }
-    */
+
+    final currentUser = (state as ProfileLoaded).user;
+    emit(ProfileUpdating(currentUser)); // Show updating state
+
+    print('🔵 [ProfileBloc] Updating profile with: ${event.updates}');
+
+    final result = await _updateUserProfileUseCase(
+      UpdateProfileParams(event.updates),
+    );
+
+    result.fold(
+      (failure) {
+        print('🔴 [ProfileBloc] Update failed: ${failure.message}');
+        // Return to loaded state with error
+        emit(ProfileLoaded(currentUser, isFromCache: false));
+        emit(ProfileError(_mapFailureToMessage(failure)));
+        emit(
+          ProfileLoaded(currentUser, isFromCache: false),
+        ); // Return to loaded
+      },
+      (updatedUser) {
+        print('🟢 [ProfileBloc] Profile updated successfully');
+        emit(ProfileLoaded(updatedUser, isFromCache: false));
+      },
+    );
   }
 
   String _mapFailureToMessage(Failure failure) {
     switch (failure.runtimeType) {
-      case ConnectionFailure:
-        return 'No internet connection. Showing cached data if available.';
-      case TimeoutFailure:
-        return 'Request timeout. Please try again.';
-      case ServerFailure:
+      case const (CacheFailure):
+        return 'Failed to load profile from storage. Please try again.';
+      case const (ServerFailure):
         return failure.message.isNotEmpty
             ? failure.message
             : 'Server error occurred. Please try again.';
-      case NetworkFailure:
-        return 'Network error occurred. Please check your connection.';
-      case UnauthorizedFailure:
-        return 'Session expired. Please login again.';
-      case CacheFailure:
-        return 'Cache error: ${failure.message}';
+      case const (ConnectionFailure):
+        return 'No internet connection.';
       default:
         return failure.message.isEmpty
             ? 'An unexpected error occurred. Please try again.'
@@ -105,13 +147,3 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 }
-
-final dummyUserSettings = UserSettings(
-  address: "123 Jalan Putra Heights, Subang Jaya, 47650 Selangor, Malaysia",
-  profilePicture: "https://via.placeholder.com/150x150/4285F4/FFFFFF?text=JD",
-  tier: "Premium",
-  fullName: "John Doe",
-  isMarketing: true,
-  isNotifications: true,
-  isTwoFa: true,
-);

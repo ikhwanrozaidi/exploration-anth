@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import '../../../login/domain/entities/user.dart';
+import '../../../../lib/features/profile/domain/entities/user_settings_entity.dart';
 
 abstract class ProfileState extends Equatable {
   const ProfileState();
@@ -17,15 +17,20 @@ class ProfileLoading extends ProfileState {
 }
 
 class ProfileLoaded extends ProfileState {
-  final User user;
+  final UserSettings userSettings;
   final bool isFromCache;
 
-  const ProfileLoaded(this.user, {this.isFromCache = false});
-
-  User get userSettings => user;
+  const ProfileLoaded({required this.userSettings, this.isFromCache = false});
 
   @override
-  List<Object?> get props => [user, isFromCache];
+  List<Object?> get props => [userSettings, isFromCache];
+
+  ProfileLoaded copyWith({UserSettings? userSettings, bool? isFromCache}) {
+    return ProfileLoaded(
+      userSettings: userSettings ?? this.userSettings,
+      isFromCache: isFromCache ?? this.isFromCache,
+    );
+  }
 }
 
 class ProfileError extends ProfileState {
@@ -35,17 +40,4 @@ class ProfileError extends ProfileState {
 
   @override
   List<Object> get props => [message];
-}
-
-class ProfileLoggedOut extends ProfileState {
-  const ProfileLoggedOut();
-}
-
-class ProfileUpdating extends ProfileState {
-  final User user; // Keep current user data
-
-  const ProfileUpdating(this.user);
-
-  @override
-  List<Object?> get props => [user];
 }

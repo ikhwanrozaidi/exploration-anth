@@ -79,13 +79,14 @@ import '../../features/profile/data/datasources/profile_local_datasource.dart'
     as _i1046;
 import '../../features/profile/data/datasources/profile_remote_datasource.dart'
     as _i327;
-import '../../features/profile/data/repositories/profile_repository_impl.dart'
+import '../../../tempo_codes/profile/data/repositories/profile_repository_impl.dart'
     as _i334;
-import '../../features/profile/domain/repositories/profile_repository.dart'
+import '../../../tempo_codes/profile/domain/repositories/profile_repository.dart'
     as _i894;
 import '../../features/profile/domain/usecases/get_user_settings_usecase.dart'
     as _i1016;
-import '../../features/profile/presentation/bloc/profile_bloc.dart' as _i469;
+import '../../../tempo_codes/profile/presentation/bloc/profile_bloc.dart'
+    as _i469;
 import '../../features/transactionboard/data/datasources/transactionboard_api_service.dart'
     as _i375;
 import '../../features/transactionboard/data/datasources/transactionboard_local_datasource.dart'

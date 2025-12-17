@@ -8,6 +8,7 @@ import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../login/presentation/bloc/login_bloc.dart';
 import '../../../login/presentation/bloc/login_event.dart';
 import '../bloc/profile_bloc.dart';
@@ -19,6 +20,8 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/lucide.dart';
 import 'package:iconify_flutter/icons/radix_icons.dart';
 import 'package:iconify_flutter/icons/akar_icons.dart';
+
+import 'personal_info_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -42,7 +45,7 @@ class ProfileView extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
           'Log Out',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
         ),
         content: Text(
           'Are you sure you want to log out?',
@@ -77,6 +80,38 @@ class ProfileView extends StatelessWidget {
     );
   }
 
+  String _getDisplayName(ProfileState state) {
+    if (state is ProfileLoaded) {
+      final userDetail = state.user.userDetail;
+      if (userDetail != null) {
+        if (userDetail.fullName != null && userDetail.fullName!.isNotEmpty) {
+          return userDetail.fullName!;
+        }
+
+        final firstName =
+            (userDetail.firstName != null && userDetail.firstName!.isNotEmpty)
+            ? userDetail.firstName!
+            : '';
+        final lastName =
+            (userDetail.lastName != null && userDetail.lastName!.isNotEmpty)
+            ? userDetail.lastName!
+            : '';
+        final combinedName = '$firstName $lastName'.trim();
+        if (combinedName.isNotEmpty) {
+          return combinedName;
+        }
+      }
+
+      if (state.user.email.isNotEmpty) {
+        return state.user.email.split('@').first;
+      }
+      return "Unknown User";
+    } else if (state is ProfileError) {
+      return "Error";
+    }
+    return "Loading...";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -89,61 +124,71 @@ class ProfileView extends StatelessWidget {
                 horizontal: 20.0,
                 vertical: 10,
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Profile',
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      print('Profile button pressed');
-                    },
-                    style: TextButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 15,
-                        vertical: 10,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      elevation: 2,
-                      shadowColor: Colors.black26,
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Ikhwan Rozaidi',
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w400,
-                            color: Colors.black,
-                          ),
+              child: BlocBuilder<ProfileBloc, ProfileState>(
+                builder: (context, state) {
+                  final displayName = _getDisplayName(state);
+
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Profile',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
-                        const SizedBox(width: 12),
-                        Container(
-                          padding: EdgeInsets.all(5),
-                          decoration: BoxDecoration(
-                            color: backgroundColor,
-                            shape: BoxShape.circle,
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          CustomSnackBar.show(
+                            context,
+                            'This feature is coming soon...',
+                            type: SnackBarType.comingsoon,
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 15,
+                            vertical: 10,
                           ),
-                          child: Iconify(
-                            RadixIcons.person,
-                            size: 20,
-                            color: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
                           ),
+                          elevation: 2,
+                          shadowColor: Colors.black26,
                         ),
-                      ],
-                    ),
-                  ),
-                ],
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              displayName, // ✅ DYNAMIC NAME
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Container(
+                              padding: const EdgeInsets.all(5),
+                              decoration: const BoxDecoration(
+                                color: backgroundColor,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Iconify(
+                                RadixIcons.person,
+                                size: 20,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
 
@@ -188,7 +233,15 @@ class ProfileView extends StatelessWidget {
                   }
 
                   if (state is ProfileLoaded) {
-                    final userSettings = state.userSettings;
+                    final user = state.user; // ✅ GET USER ENTITY
+                    final userDetail = user.userDetail; // ✅ GET USER DETAIL
+
+                    // ✅ SAFE NULL HANDLING for all fields
+                    final fullName = userDetail?.fullName ?? "Unknown User";
+                    final email = user.email.isNotEmpty
+                        ? user.email
+                        : "No Email";
+                    final isVerified = userDetail?.verify ?? false;
 
                     return RefreshIndicator(
                       onRefresh: () async {
@@ -203,7 +256,7 @@ class ProfileView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 vertical: 25,
                                 horizontal: 20,
                               ),
@@ -220,8 +273,8 @@ class ProfileView extends StatelessWidget {
                                       Container(
                                         width: 80,
                                         height: 80,
-                                        padding: EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: const BoxDecoration(
                                           color: backgroundColor,
                                           shape: BoxShape.circle,
                                         ),
@@ -231,13 +284,13 @@ class ProfileView extends StatelessWidget {
                                           color: Colors.black,
                                         ),
                                       ),
-                                      SizedBox(width: 25),
+                                      const SizedBox(width: 25),
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            userSettings.fullName,
+                                            fullName, // ✅ NULL SAFE
                                             style: GoogleFonts.poppins(
                                               fontSize: 18,
                                               fontWeight: FontWeight.w500,
@@ -245,68 +298,116 @@ class ProfileView extends StatelessWidget {
                                             ),
                                           ),
                                           Text(
-                                            userSettings.fullName,
+                                            email, // ✅ NULL SAFE
                                             style: GoogleFonts.poppins(
                                               fontSize: 12,
                                               color: Colors.black,
                                             ),
                                           ),
-
-                                          SizedBox(height: 10),
-                                          TextButton(
-                                            onPressed: () {},
-                                            style: TextButton.styleFrom(
-                                              backgroundColor: Color.fromARGB(
-                                                255,
-                                                7,
-                                                246,
-                                                226,
-                                              ),
-                                              foregroundColor: Colors.black,
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 6,
-                                                  ),
-                                              minimumSize: Size.zero,
-                                              tapTargetSize:
-                                                  MaterialTapTargetSize
-                                                      .shrinkWrap,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(25),
-                                              ),
-                                              elevation: 2,
-                                              shadowColor: Colors.black26,
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Icon(
-                                                  Icons.person_outline,
-                                                  size: 15,
-                                                  color: Colors.black,
+                                          const SizedBox(height: 10),
+                                          // ✅ VERIFIED/UNVERIFIED BADGE
+                                          if (isVerified)
+                                            TextButton(
+                                              onPressed: () {},
+                                              style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                    const Color.fromARGB(
+                                                      255,
+                                                      7,
+                                                      246,
+                                                      226,
+                                                    ),
+                                                foregroundColor: Colors.black,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 6,
+                                                    ),
+                                                minimumSize: Size.zero,
+                                                tapTargetSize:
+                                                    MaterialTapTargetSize
+                                                        .shrinkWrap,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
                                                 ),
-                                                const SizedBox(width: 6),
-                                                Text(
-                                                  'Verified',
-                                                  style: GoogleFonts.poppins(
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w400,
+                                                elevation: 2,
+                                                shadowColor: Colors.black26,
+                                              ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const Icon(
+                                                    Icons.verified,
+                                                    size: 15,
                                                     color: Colors.black,
                                                   ),
+                                                  const SizedBox(width: 6),
+                                                  Text(
+                                                    'Verified',
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            )
+                                          else
+                                            TextButton(
+                                              onPressed: () {
+                                                // TODO: Navigate to verification
+                                              },
+                                              style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.grey.shade200,
+                                                foregroundColor: Colors.black,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 6,
+                                                    ),
+                                                minimumSize: Size.zero,
+                                                tapTargetSize:
+                                                    MaterialTapTargetSize
+                                                        .shrinkWrap,
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(25),
                                                 ),
-                                              ],
+                                                elevation: 2,
+                                                shadowColor: Colors.black26,
+                                              ),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const Icon(
+                                                    Icons.warning_amber_rounded,
+                                                    size: 15,
+                                                    color: Colors.orange,
+                                                  ),
+                                                  const SizedBox(width: 6),
+                                                  Text(
+                                                    'Unverified',
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Colors.black,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
                                         ],
                                       ),
                                     ],
                                   ),
-
                                   Container(
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: const BoxDecoration(
                                       color: backgroundColor,
                                       shape: BoxShape.circle,
                                     ),
@@ -320,7 +421,7 @@ class ProfileView extends StatelessWidget {
                               ),
                             ),
 
-                            SizedBox(height: 30),
+                            const SizedBox(height: 30),
                             Padding(
                               padding: const EdgeInsets.only(left: 20.0),
                               child: Text(
@@ -332,10 +433,10 @@ class ProfileView extends StatelessWidget {
                               ),
                             ),
 
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
 
                             Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 vertical: 20,
                                 horizontal: 25,
                               ),
@@ -348,7 +449,15 @@ class ProfileView extends StatelessWidget {
                                   _buildAccountDetailsTile(
                                     AkarIcons.person,
                                     "Personal Info",
-                                    () {},
+                                    () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              PersonalInfoPage(),
+                                        ),
+                                      );
+                                    },
                                   ),
                                   _buildAccountDetailsTile(
                                     MaterialSymbols.password_rounded,
@@ -377,23 +486,22 @@ class ProfileView extends StatelessWidget {
                                       Row(
                                         children: [
                                           Container(
-                                            padding: EdgeInsets.all(10),
-                                            decoration: BoxDecoration(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: const BoxDecoration(
                                               color: backgroundColor,
                                               shape: BoxShape.circle,
                                             ),
-                                            child: Iconify(
+                                            child: const Iconify(
                                               Lucide.activity,
                                               size: 20,
                                               color: Colors.black,
                                             ),
                                           ),
-                                          SizedBox(width: 20),
-                                          Text('About'),
+                                          const SizedBox(width: 20),
+                                          const Text('About'),
                                         ],
                                       ),
-
-                                      Icon(
+                                      const Icon(
                                         Icons.arrow_forward_ios_rounded,
                                         size: 18,
                                       ),
@@ -403,7 +511,7 @@ class ProfileView extends StatelessWidget {
                               ),
                             ),
 
-                            SizedBox(height: 30),
+                            const SizedBox(height: 30),
                             Padding(
                               padding: const EdgeInsets.only(left: 20.0),
                               child: Text(
@@ -415,10 +523,10 @@ class ProfileView extends StatelessWidget {
                               ),
                             ),
 
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
 
                             Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 vertical: 20,
                                 horizontal: 25,
                               ),
@@ -439,64 +547,105 @@ class ProfileView extends StatelessWidget {
                                     () {},
                                   ),
 
-                                  // Add this to your logout button section
                                   InkWell(
                                     onTap: () => _showLogoutDialog(context),
-                                    borderRadius: BorderRadius.circular(12),
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 12,
-                                        horizontal: 16,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                          color: Colors.grey.shade300,
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                color: Colors.red.shade50,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Iconify(
+                                                Ic.round_log_out,
+                                                size: 20,
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 20),
+                                            Text(
+                                              "Log Out",
+                                              style: TextStyle(
+                                                color: Colors.red,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Container(
-                                                padding: EdgeInsets.all(10),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.red.shade50,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: Iconify(
-                                                  Ic.round_log_out,
-                                                  size: 20,
-                                                  color: Colors.red,
-                                                ),
-                                              ),
-                                              SizedBox(width: 20),
-                                              Text(
-                                                'Log Out',
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 16,
-                                                  color: Colors.red,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Icon(
-                                            Icons.arrow_forward_ios_rounded,
-                                            size: 18,
-                                            color: Colors.red,
-                                          ),
-                                        ],
-                                      ),
+                                        const Icon(
+                                          Icons.arrow_forward_ios_rounded,
+                                          size: 18,
+                                          color: Colors.red,
+                                        ),
+                                      ],
                                     ),
                                   ),
+
+                                  // // Logout button
+                                  // InkWell(
+                                  //   onTap: () => _showLogoutDialog(context),
+                                  //   borderRadius: BorderRadius.circular(12),
+                                  //   child: Container(
+                                  //     padding: const EdgeInsets.symmetric(
+                                  //       vertical: 12,
+                                  //       horizontal: 16,
+                                  //     ),
+                                  //     decoration: BoxDecoration(
+                                  //       border: Border.all(
+                                  //         color: Colors.grey.shade300,
+                                  //       ),
+                                  //       borderRadius: BorderRadius.circular(12),
+                                  //     ),
+                                  //     child: Row(
+                                  //       mainAxisAlignment:
+                                  //           MainAxisAlignment.spaceBetween,
+                                  //       children: [
+                                  //         Row(
+                                  //           children: [
+                                  //             Container(
+                                  //               padding: const EdgeInsets.all(
+                                  //                 10,
+                                  //               ),
+                                  //               decoration: BoxDecoration(
+                                  //                 color: Colors.red.shade50,
+                                  //                 shape: BoxShape.circle,
+                                  //               ),
+                                  //               child: const Iconify(
+                                  //                 Ic.round_log_out,
+                                  //                 size: 20,
+                                  //                 color: Colors.red,
+                                  //               ),
+                                  //             ),
+                                  //             const SizedBox(width: 20),
+                                  //             Text(
+                                  //               'Log Out',
+                                  //               style: GoogleFonts.poppins(
+                                  //                 fontSize: 16,
+                                  //                 color: Colors.red,
+                                  //               ),
+                                  //             ),
+                                  //           ],
+                                  //         ),
+                                  //         const Icon(
+                                  //           Icons.arrow_forward_ios_rounded,
+                                  //           size: 18,
+                                  //           color: Colors.red,
+                                  //         ),
+                                  //       ],
+                                  //     ),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ),
 
-                            SizedBox(height: 100),
+                            const SizedBox(height: 100),
 
+                            // ✅ CACHE INDICATOR - NULL SAFE
                             if (state.isFromCache) ...[
                               const SizedBox(height: 16),
                               Container(
@@ -551,28 +700,30 @@ class ProfileView extends StatelessWidget {
   ) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    shape: BoxShape.circle,
+        InkWell(
+          onTap: onTap,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: const BoxDecoration(
+                      color: backgroundColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Iconify(icon, size: 20, color: Colors.black),
                   ),
-                  child: Iconify(icon, size: 20, color: Colors.black),
-                ),
-                SizedBox(width: 20),
-                Text(title),
-              ],
-            ),
-
-            Icon(Icons.arrow_forward_ios_rounded, size: 18),
-          ],
+                  const SizedBox(width: 20),
+                  Text(title),
+                ],
+              ),
+              const Icon(Icons.arrow_forward_ios_rounded, size: 18),
+            ],
+          ),
         ),
-        Divider(height: 40, thickness: 1, color: backgroundColor),
+        const Divider(height: 40, thickness: 1, color: backgroundColor),
       ],
     );
   }
