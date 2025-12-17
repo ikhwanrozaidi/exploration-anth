@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../shared/entities/auth_result.dart';
-import '../../../user/domain/entities/user.dart';
+import '../../domain/entities/user.dart';
 import '../models/login_request_model.dart';
 import '../models/verify_otp_request_model.dart';
 import 'login_api_service.dart';

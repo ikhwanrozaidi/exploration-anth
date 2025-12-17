@@ -1,22 +1,25 @@
 import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
+import 'package:gatepay_app/features/login/domain/entities/user_detail.dart';
+import 'package:gatepay_app/features/login/domain/entities/user_settings.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/auth_interceptor.dart';
 import '../../../../core/service/secure_storage_service.dart';
 import '../../../../shared/entities/auth_result.dart';
-import '../../../user/domain/entities/user.dart' as user_entity;
+import '../../domain/entities/user.dart' as user_entity;
+import '../../domain/entities/user.dart';
 
 abstract class LoginLocalDataSource {
   Future<Either<Failure, void>> storeAuthResult(
     AuthResult authResult,
-    user_entity.User user,
+    User user,
   );
   Future<Either<Failure, String?>> getAccessToken();
   Future<Either<Failure, String?>> getRefreshToken();
-  Future<Either<Failure, user_entity.User?>> getStoredUser();
+  Future<Either<Failure, User?>> getStoredUser();
   Future<Either<Failure, void>> clearAuthData();
   Future<Either<Failure, void>> storeLoginCredentials(
     String email,
@@ -42,7 +45,7 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   @override
   Future<Either<Failure, void>> storeAuthResult(
     AuthResult authResult,
-    user_entity.User user,
+    User user,
   ) async {
     try {
       print('💾 Storing auth result...');
@@ -105,7 +108,7 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
   }
 
   @override
-  Future<Either<Failure, user_entity.User?>> getStoredUser() async {
+  Future<Either<Failure, User?>> getStoredUser() async {
     try {
       print('🔍 Getting stored user from database...');
 
@@ -125,14 +128,12 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
       );
 
       // Parse nested JSON objects (handle null)
-      user_entity.UserDetail? userDetail;
-      user_entity.UserSettings? userSettings;
+      UserDetail? userDetail;
+      UserSettings? userSettings;
 
       if (record.userDetail != null && record.userDetail!.isNotEmpty) {
         try {
-          userDetail = user_entity.UserDetail.fromJson(
-            jsonDecode(record.userDetail!),
-          );
+          userDetail = UserDetail.fromJson(jsonDecode(record.userDetail!));
           print('✅ Parsed userDetail');
         } catch (e) {
           print('⚠️ Failed to parse userDetail: $e');
@@ -141,7 +142,7 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
 
       if (record.userSettings != null && record.userSettings!.isNotEmpty) {
         try {
-          userSettings = user_entity.UserSettings.fromJson(
+          userSettings = UserSettings.fromJson(
             jsonDecode(record.userSettings!),
           );
           print('✅ Parsed userSettings');
@@ -150,7 +151,7 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
         }
       }
 
-      final user = user_entity.User(
+      final user = User(
         id: record.id,
         email: record.email,
         role: record.role,

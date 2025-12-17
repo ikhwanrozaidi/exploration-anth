@@ -18,12 +18,12 @@ class _TransactionBoardApiService implements TransactionBoardApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ApiResponse<UserDetailModel>> getUserDetail() async {
+  Future<ApiResponse<InvalidType>> getUserDetail() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ApiResponse<UserDetailModel>>(
+    final _options = _setStreamType<ApiResponse<InvalidType>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -34,11 +34,11 @@ class _TransactionBoardApiService implements TransactionBoardApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<UserDetailModel> _value;
+    late ApiResponse<InvalidType> _value;
     try {
-      _value = ApiResponse<UserDetailModel>.fromJson(
+      _value = ApiResponse<InvalidType>.fromJson(
         _result.data!,
-        (json) => UserDetailModel.fromJson(json as Map<String, dynamic>),
+        (json) => InvalidType.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
@@ -48,12 +48,12 @@ class _TransactionBoardApiService implements TransactionBoardApiService {
   }
 
   @override
-  Future<ApiResponse<OnholdBalanceModel>> getOnholdBalance() async {
+  Future<ApiResponse<InvalidType>> getOnholdBalance() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ApiResponse<OnholdBalanceModel>>(
+    final _options = _setStreamType<ApiResponse<InvalidType>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -64,11 +64,11 @@ class _TransactionBoardApiService implements TransactionBoardApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<OnholdBalanceModel> _value;
+    late ApiResponse<InvalidType> _value;
     try {
-      _value = ApiResponse<OnholdBalanceModel>.fromJson(
+      _value = ApiResponse<InvalidType>.fromJson(
         _result.data!,
-        (json) => OnholdBalanceModel.fromJson(json as Map<String, dynamic>),
+        (json) => InvalidType.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
@@ -78,7 +78,7 @@ class _TransactionBoardApiService implements TransactionBoardApiService {
   }
 
   @override
-  Future<ApiResponse<List<OnholdTransactionModel>>> getOnholdTransactions({
+  Future<ApiResponse<List<InvalidType>>> getOnholdTransactions({
     required String onhold,
     required String page,
     required String size,
@@ -91,7 +91,7 @@ class _TransactionBoardApiService implements TransactionBoardApiService {
     };
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<ApiResponse<List<OnholdTransactionModel>>>(
+    final _options = _setStreamType<ApiResponse<List<InvalidType>>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -102,16 +102,14 @@ class _TransactionBoardApiService implements TransactionBoardApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<List<OnholdTransactionModel>> _value;
+    late ApiResponse<List<InvalidType>> _value;
     try {
-      _value = ApiResponse<List<OnholdTransactionModel>>.fromJson(
+      _value = ApiResponse<List<InvalidType>>.fromJson(
         _result.data!,
         (json) => json is List<dynamic>
             ? json
-                  .map<OnholdTransactionModel>(
-                    (i) => OnholdTransactionModel.fromJson(
-                      i as Map<String, dynamic>,
-                    ),
+                  .map<InvalidType>(
+                    (i) => InvalidType.fromJson(i as Map<String, dynamic>),
                   )
                   .toList()
             : List.empty(),

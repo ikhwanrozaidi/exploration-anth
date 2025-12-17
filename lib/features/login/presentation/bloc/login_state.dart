@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:gatepay_app/features/user/domain/entities/user.dart';
+import 'package:gatepay_app/features/login/domain/entities/user.dart';
 import '../../../../shared/entities/auth_result.dart';
 
 part 'login_state.freezed.dart';

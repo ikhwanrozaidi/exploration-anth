@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:gatepay_app/features/user/domain/entities/user.dart';
+import 'package:gatepay_app/features/login/domain/entities/user.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../shared/entities/auth_result.dart';
 

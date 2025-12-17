@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../../shared/entities/auth_result.dart';
-import '../../../user/domain/entities/user.dart';
+import '../../domain/entities/user.dart';
 
 part 'verify_otp_response_model.freezed.dart';
 part 'verify_otp_response_model.g.dart';

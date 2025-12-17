@@ -23,6 +23,7 @@ mixin SyncableTable on Table {
 }
 
 // User account record
+@DataClassName('UserRecord')
 class Users extends Table {
   IntColumn get id => integer()();
   TextColumn get email => text()();

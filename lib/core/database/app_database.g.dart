@@ -3,7 +3,7 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
-class $UsersTable extends Users with TableInfo<$UsersTable, User> {
+class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
@@ -165,7 +165,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   static const String $name = 'users';
   @override
   VerificationContext validateIntegrity(
-    Insertable<User> instance, {
+    Insertable<UserRecord> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
@@ -266,9 +266,9 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  User map(Map<String, dynamic> data, {String? tablePrefix}) {
+  UserRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return User(
+    return UserRecord(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
@@ -330,7 +330,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   }
 }
 
-class User extends DataClass implements Insertable<User> {
+class UserRecord extends DataClass implements Insertable<UserRecord> {
   final int id;
   final String email;
   final String role;
@@ -344,7 +344,7 @@ class User extends DataClass implements Insertable<User> {
   final String? userSettings;
   final DateTime updatedAt;
   final DateTime? deletedAt;
-  const User({
+  const UserRecord({
     required this.id,
     required this.email,
     required this.role,
@@ -416,12 +416,12 @@ class User extends DataClass implements Insertable<User> {
     );
   }
 
-  factory User.fromJson(
+  factory UserRecord.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return User(
+    return UserRecord(
       id: serializer.fromJson<int>(json['id']),
       email: serializer.fromJson<String>(json['email']),
       role: serializer.fromJson<String>(json['role']),
@@ -457,7 +457,7 @@ class User extends DataClass implements Insertable<User> {
     };
   }
 
-  User copyWith({
+  UserRecord copyWith({
     int? id,
     String? email,
     String? role,
@@ -471,7 +471,7 @@ class User extends DataClass implements Insertable<User> {
     Value<String?> userSettings = const Value.absent(),
     DateTime? updatedAt,
     Value<DateTime?> deletedAt = const Value.absent(),
-  }) => User(
+  }) => UserRecord(
     id: id ?? this.id,
     email: email ?? this.email,
     role: role ?? this.role,
@@ -486,8 +486,8 @@ class User extends DataClass implements Insertable<User> {
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
   );
-  User copyWithCompanion(UsersCompanion data) {
-    return User(
+  UserRecord copyWithCompanion(UsersCompanion data) {
+    return UserRecord(
       id: data.id.present ? data.id.value : this.id,
       email: data.email.present ? data.email.value : this.email,
       role: data.role.present ? data.role.value : this.role,
@@ -512,7 +512,7 @@ class User extends DataClass implements Insertable<User> {
 
   @override
   String toString() {
-    return (StringBuffer('User(')
+    return (StringBuffer('UserRecord(')
           ..write('id: $id, ')
           ..write('email: $email, ')
           ..write('role: $role, ')
@@ -549,7 +549,7 @@ class User extends DataClass implements Insertable<User> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is User &&
+      (other is UserRecord &&
           other.id == this.id &&
           other.email == this.email &&
           other.role == this.role &&
@@ -565,7 +565,7 @@ class User extends DataClass implements Insertable<User> {
           other.deletedAt == this.deletedAt);
 }
 
-class UsersCompanion extends UpdateCompanion<User> {
+class UsersCompanion extends UpdateCompanion<UserRecord> {
   final Value<int> id;
   final Value<String> email;
   final Value<String> role;
@@ -614,7 +614,7 @@ class UsersCompanion extends UpdateCompanion<User> {
        status = Value(status),
        balance = Value(balance),
        createdAt = Value(createdAt);
-  static Insertable<User> custom({
+  static Insertable<UserRecord> custom({
     Expression<int>? id,
     Expression<String>? email,
     Expression<String>? role,
@@ -997,14 +997,14 @@ class $$UsersTableTableManager
         RootTableManager<
           _$AppDatabase,
           $UsersTable,
-          User,
+          UserRecord,
           $$UsersTableFilterComposer,
           $$UsersTableOrderingComposer,
           $$UsersTableAnnotationComposer,
           $$UsersTableCreateCompanionBuilder,
           $$UsersTableUpdateCompanionBuilder,
-          (User, BaseReferences<_$AppDatabase, $UsersTable, User>),
-          User,
+          (UserRecord, BaseReferences<_$AppDatabase, $UsersTable, UserRecord>),
+          UserRecord,
           PrefetchHooks Function()
         > {
   $$UsersTableTableManager(_$AppDatabase db, $UsersTable table)
@@ -1090,14 +1090,14 @@ typedef $$UsersTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $UsersTable,
-      User,
+      UserRecord,
       $$UsersTableFilterComposer,
       $$UsersTableOrderingComposer,
       $$UsersTableAnnotationComposer,
       $$UsersTableCreateCompanionBuilder,
       $$UsersTableUpdateCompanionBuilder,
-      (User, BaseReferences<_$AppDatabase, $UsersTable, User>),
-      User,
+      (UserRecord, BaseReferences<_$AppDatabase, $UsersTable, UserRecord>),
+      UserRecord,
       PrefetchHooks Function()
     >;
 

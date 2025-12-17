@@ -14,24 +14,6 @@ import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
-import '../../features/dashboard/data/datasources/dashboard_api_service.dart'
-    as _i828;
-import '../../features/dashboard/data/datasources/dashboard_local_datasource.dart'
-    as _i806;
-import '../../features/dashboard/data/datasources/dashboard_remote_datasource.dart'
-    as _i817;
-import '../../features/dashboard/data/repositories/dashboard_repository_impl.dart'
-    as _i509;
-import '../../features/dashboard/domain/repositories/dashboard_repository.dart'
-    as _i665;
-import '../../features/dashboard/domain/usecases/get_onhold_balance_usecase.dart'
-    as _i792;
-import '../../features/dashboard/domain/usecases/get_onhold_transactions_usecase.dart'
-    as _i451;
-import '../../features/dashboard/domain/usecases/get_user_detail_usecase.dart'
-    as _i381;
-import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart'
-    as _i652;
 import '../../features/escrowpay/data/datasources/escrowpay_api_service.dart'
     as _i605;
 import '../../features/escrowpay/data/datasources/escrowpay_local_datasource.dart'
@@ -126,9 +108,6 @@ import '../../features/transactionboard/features/ongoing/presentation/bloc/ongoi
     as _i269;
 import '../../features/transactionboard/presentation/bloc/transaction_bloc.dart'
     as _i448;
-import '../../features/user/domain/repositories/user_repository.dart' as _i237;
-import '../../features/user/domain/usecases/get_current_user_usecase.dart'
-    as _i6;
 import '../database/app_database.dart' as _i982;
 import '../network/auth_interceptor.dart' as _i908;
 import '../network/connectivity_service.dart' as _i491;
@@ -156,23 +135,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i458.LocaleBloc>(() => _i458.LocaleBloc());
     gh.lazySingleton<_i269.OngoingBloc>(() => _i269.OngoingBloc());
     gh.lazySingleton<_i792.OnboardingBloc>(() => _i792.OnboardingBloc());
-    gh.lazySingleton<_i806.DashboardLocalDataSource>(
-      () => _i806.DashboardLocalDataSourceImpl(gh<_i982.DatabaseService>()),
-    );
     gh.lazySingleton<_i491.NetworkInfo>(
       () => _i491.EnhancedNetworkInfo(gh<_i491.ConnectivityService>()),
-    );
-    gh.lazySingleton<_i6.GetCurrentUserUseCase>(
-      () => _i6.GetCurrentUserUseCase(gh<_i237.UserRepository>()),
     );
     gh.lazySingleton<_i748.InboxApiService>(
       () => _i748.InboxApiService(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i1041.ProfileApiService>(
       () => _i1041.ProfileApiService(gh<_i361.Dio>()),
-    );
-    gh.factory<_i828.DashboardApiService>(
-      () => _i828.DashboardApiService(gh<_i361.Dio>()),
     );
     gh.factory<_i375.TransactionBoardApiService>(
       () => _i375.TransactionBoardApiService(gh<_i361.Dio>()),
@@ -206,19 +176,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i932.NetworkInfo>(
       () => _i932.NetworkInfoImpl(gh<_i895.Connectivity>()),
-    );
-    gh.lazySingleton<_i817.DashboardRemoteDataSource>(
-      () => _i817.DashboardRemoteDataSourceImpl(
-        gh<_i828.DashboardApiService>(),
-        gh<_i932.NetworkInfo>(),
-      ),
-    );
-    gh.lazySingleton<_i665.DashboardRepository>(
-      () => _i509.DashboardRepositoryImpl(
-        gh<_i817.DashboardRemoteDataSource>(),
-        gh<_i806.DashboardLocalDataSource>(),
-        gh<_i932.NetworkInfo>(),
-      ),
     );
     gh.lazySingleton<_i150.EscrowpayRemoteDataSource>(
       () =>
@@ -256,22 +213,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1046.ProfileLocalDataSource>(),
       ),
     );
-    gh.factory<_i381.GetUserDetailUseCase>(
-      () => _i381.GetUserDetailUseCase(gh<_i665.DashboardRepository>()),
-    );
-    gh.factory<_i451.GetOnholdTransactionsUseCase>(
-      () => _i451.GetOnholdTransactionsUseCase(gh<_i665.DashboardRepository>()),
-    );
-    gh.factory<_i792.GetOnholdBalanceUseCase>(
-      () => _i792.GetOnholdBalanceUseCase(gh<_i665.DashboardRepository>()),
-    );
-    gh.factory<_i652.DashboardBloc>(
-      () => _i652.DashboardBloc(
-        gh<_i381.GetUserDetailUseCase>(),
-        gh<_i451.GetOnholdTransactionsUseCase>(),
-        gh<_i792.GetOnholdBalanceUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i113.TransactionBoardRepository>(
       () => _i571.TransactionBoardRepositoryImpl(
         gh<_i802.TransactionBoardRemoteDataSource>(),
@@ -305,9 +246,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i611.LogoutUseCase>(
       () => _i611.LogoutUseCase(gh<_i902.LoginRepository>()),
     );
-    gh.factory<_i489.GetStoredUserUseCase>(
-      () => _i489.GetStoredUserUseCase(gh<_i902.LoginRepository>()),
-    );
     gh.factory<_i320.StoreLoginCredentialsUseCase>(
       () => _i320.StoreLoginCredentialsUseCase(gh<_i902.LoginRepository>()),
     );
@@ -316,6 +254,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i443.GetStoredCredentialsUseCase>(
       () => _i443.GetStoredCredentialsUseCase(gh<_i902.LoginRepository>()),
+    );
+    gh.factory<_i489.GetStoredUserUseCase>(
+      () => _i489.GetStoredUserUseCase(gh<_i902.LoginRepository>()),
     );
     gh.lazySingleton<_i1016.GetUserSettingsUseCase>(
       () => _i1016.GetUserSettingsUseCase(gh<_i894.ProfileRepository>()),
