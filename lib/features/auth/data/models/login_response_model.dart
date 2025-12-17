@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:gatepay_app/features/user/domain/entities/user.dart';
+import '../../../user/data/models/user_model.dart';
 import '../../../user/domain/entities/user.dart';
 import '../../domain/entities/auth_result.dart';
 
@@ -8,11 +8,13 @@ part 'login_response_model.g.dart';
 
 @freezed
 abstract class LoginResponseModel with _$LoginResponseModel {
-  const LoginResponseModel._(); // Add private constructor for methods
+  const LoginResponseModel._();
 
   const factory LoginResponseModel({
     required String accessToken,
     required String refreshToken,
+    required DateTime accessTokenExpiresAt,
+    required DateTime refreshTokenExpiresAt,
     required UserModel user,
   }) = _LoginResponseModel;
 
@@ -23,54 +25,19 @@ abstract class LoginResponseModel with _$LoginResponseModel {
       LoginResponseModel(
         accessToken: authResult.accessToken,
         refreshToken: authResult.refreshToken,
+        accessTokenExpiresAt: authResult.accessTokenExpiresAt,
+        refreshTokenExpiresAt: authResult.refreshTokenExpiresAt,
         user: UserModel.fromEntity(user),
       );
 
-  // Add methods directly to the class
-  AuthResult toAuthResult() =>
-      AuthResult(accessToken: accessToken, refreshToken: refreshToken);
+  // Convert model to AuthResult entity
+  AuthResult toAuthResult() => AuthResult(
+    accessToken: accessToken,
+    refreshToken: refreshToken,
+    accessTokenExpiresAt: accessTokenExpiresAt,
+    refreshTokenExpiresAt: refreshTokenExpiresAt,
+  );
 
+  // Convert model to User entity
   User toUser() => user.toEntity();
-}
-
-@freezed
-abstract class UserModel with _$UserModel {
-  const UserModel._(); // Add private constructor for methods
-
-  const factory UserModel({
-    required int id,
-    required String uid,
-    required String phone,
-    String? firstName,
-    String? lastName,
-    String? email,
-    required DateTime updatedAt,
-    required DateTime createdAt,
-  }) = _UserModel;
-
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
-
-  factory UserModel.fromEntity(User user) => UserModel(
-    id: user.id,
-    uid: user.uid,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    email: user.email,
-    phone: user.phone,
-    updatedAt: user.updatedAt,
-    createdAt: user.createdAt,
-  );
-
-  // Add method directly to the class
-  User toEntity() => User(
-    id: id,
-    uid: uid,
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-    phone: phone,
-    updatedAt: updatedAt,
-    createdAt: createdAt,
-  );
 }

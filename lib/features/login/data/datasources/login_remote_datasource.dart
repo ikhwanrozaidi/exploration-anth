@@ -9,6 +9,7 @@ import 'login_api_service.dart';
 
 abstract class LoginRemoteDataSource {
   Future<Either<Failure, String>> login(String email, String password);
+
   Future<Either<Failure, (AuthResult, User)>> verifyOtp(
     String email,
     String otp,
@@ -41,7 +42,7 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
       );
 
       if (response.isSuccess && response.message.isNotEmpty) {
-        return Right(response.message); // "OTP sent successfully"
+        return Right(response.message);
       } else {
         return Left(
           ServerFailure(
@@ -51,6 +52,7 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
         );
       }
     } catch (e) {
+      print('❌ Login Error: $e');
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }
@@ -66,20 +68,10 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
       );
 
       if (response.isSuccess && response.data != null) {
-        final authResult = response.data!;
+        final verifyOtpResponse = response.data!;
 
-        // Create user from response (you may need to fetch user details separately)
-        // For now, creating a basic user with email
-        final user = User(
-          id: 1, // Will be replaced with actual user ID from backend
-          uid: email, // Temporary UID
-          phone: email,
-          email: email,
-          firstName: null,
-          lastName: null,
-          updatedAt: DateTime.now(),
-          createdAt: DateTime.now(),
-        );
+        final authResult = verifyOtpResponse.toAuthResult();
+        final user = verifyOtpResponse.toUser();
 
         return Right((authResult, user));
       } else {
@@ -93,6 +85,7 @@ class LoginRemoteDataSourceImpl implements LoginRemoteDataSource {
         );
       }
     } catch (e) {
+      print('❌ VerifyOtp Error: $e');
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }

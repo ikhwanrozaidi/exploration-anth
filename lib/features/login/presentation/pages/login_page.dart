@@ -1,11 +1,12 @@
-// lib/features/auth/presentation/pages/login_page.dart
+// lib/features/login/presentation/pages/login_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../core/constants/route_constants.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../../../../core/di/injection.dart';
 import '../bloc/login_bloc.dart';
 import '../bloc/login_event.dart';
 import '../bloc/login_state.dart';
+import '../widgets/otp_dialog.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -15,21 +16,16 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _otpController = TextEditingController();
-  final _forgotEmailController = TextEditingController();
-  final _forgotOtpController = TextEditingController();
-  final _newPasswordController = TextEditingController();
-
-  final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
   bool _rememberMe = false;
 
   @override
   void initState() {
     super.initState();
-
+    // Load saved credentials if any
     context.read<LoginBloc>().add(const LoginLoadSavedCredentials());
   }
 
@@ -37,10 +33,6 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    _otpController.dispose();
-    _forgotEmailController.dispose();
-    _forgotOtpController.dispose();
-    _newPasswordController.dispose();
     super.dispose();
   }
 
@@ -48,7 +40,7 @@ class _LoginPageState extends State<LoginPage> {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<LoginBloc>().add(
         LoginSubmitted(
-          _emailController.text,
+          _emailController.text.trim(),
           _passwordController.text,
           rememberMe: _rememberMe,
         ),
@@ -58,408 +50,273 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
+    return BlocProvider(
+      create: (context) =>
+          getIt<LoginBloc>()..add(const LoginLoadSavedCredentials()),
+      child: Scaffold(
         backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 0,
-      ),
-      body: BlocListener<LoginBloc, LoginState>(
-        listener: (context, state) {
-          state.when(
-            initial: () {},
-            loading: () {},
-            credentialsLoaded: (email, password) {
-              _emailController.text = email;
-              // Don't auto-fill password for security, but show remember me as checked
-              setState(() {
-                _rememberMe = true;
-              });
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text('Welcome back, $email!')));
-            },
-            otpRequired: (email, message) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(message)));
-            },
-            authenticated: (authResult, admin) {
-              context.go(AppRoutePath.main);
-            },
-            success: (admin) {
-              context.go(AppRoutePath.main);
-            },
-            unauthenticated: () {},
-            loggedOut: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Logged out successfully')),
+        body: SafeArea(
+          child: BlocConsumer<LoginBloc, LoginState>(
+            listener: (context, state) {
+              state.when(
+                initial: () {},
+                loading: () {},
+                credentialsLoaded: (email, password) {
+                  // Pre-fill email if credentials were saved
+                  _emailController.text = email;
+                  setState(() {
+                    _rememberMe = true;
+                  });
+                },
+                otpRequired: (email, message) {
+                  // Show OTP dialog
+                  _showOtpDialog(context, email);
+                },
+                authenticated: (authResult, user) {
+                  // Navigate to root page will be handled by AuthWrapper
+                },
+                success: (user) {
+                  // Navigate to root page will be handled by AuthWrapper
+                },
+                unauthenticated: () {},
+                loggedOut: () {},
+                failure: (message) {
+                  // Show error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(message),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                },
+                forgotPasswordOtpRequired: (email, message) {},
+                changePasswordRequired: (email, message) {},
+                passwordChanged: (message) {},
               );
             },
-            failure: (message) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(message), backgroundColor: Colors.red),
-              );
-            },
-            forgotPasswordOtpRequired: (email, message) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(message)));
-            },
-            changePasswordRequired: (email, message) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(message)));
-            },
-            passwordChanged: (message) {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(SnackBar(content: Text(message)));
-              // Reset to login form
-              setState(() {
-                _forgotEmailController.clear();
-                _forgotOtpController.clear();
-                _newPasswordController.clear();
-              });
-            },
-          );
-        },
-        child: BlocBuilder<LoginBloc, LoginState>(
-          builder: (context, state) {
-            return SingleChildScrollView(
-              padding: const EdgeInsets.all(16.0),
-              child: state.when(
-                initial: () => _buildLoginForm(),
-                loading: () => _buildLoadingWidget(),
-                credentialsLoaded: (email, password) =>
-                    _buildLoginForm(),
-                otpRequired: (email, message) => _buildOtpForm(email),
-                authenticated: (authResult, admin) => _buildSuccessWidget(),
-                success: (admin) => _buildSuccessWidget(),
-                unauthenticated: () => _buildLoginForm(),
-                loggedOut: () => _buildLoginForm(),
-                failure: (message) => _buildLoginForm(),
-                forgotPasswordOtpRequired: (email, message) =>
-                    _buildForgotOtpForm(email),
-                changePasswordRequired: (email, message) =>
-                    _buildChangePasswordForm(email),
-                passwordChanged: (message) => _buildLoginForm(),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
+            builder: (context, state) {
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(24.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const SizedBox(height: 60),
 
-  Widget _buildLoginForm() {
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Text(
-            'Welcome Back',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 32),
-          TextFormField(
-            controller: _emailController,
-            decoration: const InputDecoration(
-              labelText: 'Email',
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(Icons.email),
-            ),
-            keyboardType: TextInputType.emailAddress,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your email';
-              }
-              if (!RegExp(
-                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-              ).hasMatch(value)) {
-                return 'Please enter a valid email';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-          TextFormField(
-            controller: _passwordController,
-            decoration: InputDecoration(
-              labelText: 'Password',
-              border: const OutlineInputBorder(),
-              prefixIcon: const Icon(Icons.lock),
-              suffixIcon: IconButton(
-                icon: Icon(
-                  _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                      // Logo or App Name
+                      Text(
+                        'Test',
+                        style: GoogleFonts.poppins(
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Text(
+                        'Sign in to continue',
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          color: Colors.grey[600],
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+
+                      const SizedBox(height: 48),
+
+                      // Email Field
+                      TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: 'Email',
+                          hintText: 'Enter your email',
+                          prefixIcon: const Icon(Icons.email_outlined),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your email';
+                          }
+                          if (!value.contains('@')) {
+                            return 'Please enter a valid email';
+                          }
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Password Field
+                      TextFormField(
+                        controller: _passwordController,
+                        obscureText: _obscurePassword,
+                        decoration: InputDecoration(
+                          labelText: 'Password',
+                          hintText: 'Enter your password',
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscurePassword
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscurePassword = !_obscurePassword;
+                              });
+                            },
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          if (value.length < 6) {
+                            return 'Password must be at least 6 characters';
+                          }
+                          return null;
+                        },
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // Remember Me Checkbox
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: _rememberMe,
+                            onChanged: (value) {
+                              setState(() {
+                                _rememberMe = value ?? false;
+                              });
+                            },
+                          ),
+                          Text(
+                            'Remember me',
+                            style: GoogleFonts.poppins(fontSize: 14),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // Login Button
+                      state.maybeWhen(
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
+                        orElse: () => ElevatedButton(
+                          onPressed: _onLoginPressed,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          child: Text(
+                            'Sign In',
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Forgot Password
+                      TextButton(
+                        onPressed: () {
+                          // TODO: Navigate to forgot password
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Forgot password coming soon'),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'Forgot Password?',
+                          style: GoogleFonts.poppins(color: Colors.blue),
+                        ),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      // Sign Up Link
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Don't have an account? ",
+                            style: GoogleFonts.poppins(color: Colors.grey[600]),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              // TODO: Navigate to sign up
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Sign up coming soon'),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              'Sign Up',
+                              style: GoogleFonts.poppins(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                onPressed: () {
-                  setState(() {
-                    _obscurePassword = !_obscurePassword;
-                  });
-                },
-              ),
-            ),
-            obscureText: _obscurePassword,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter your password';
-              }
-              return null;
+              );
             },
           ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              Checkbox(
-                value: _rememberMe,
-                onChanged: (value) {
-                  setState(() {
-                    _rememberMe = value ?? false;
-                  });
-                },
-              ),
-              const Text('Remember me'),
-              const Spacer(),
-              TextButton(
-                onPressed: () => _showForgotPasswordDialog(),
-                child: const Text('Forgot Password?'),
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: _onLoginPressed,
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-            ),
-            child: const Text('Login', style: TextStyle(fontSize: 16)),
-          ),
-          const SizedBox(height: 16),
-          TextButton(
-            onPressed: () => context.go(AppRoutePath.register),
-            child: const Text("Don't have an account? Sign Up"),
-          ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildOtpForm(String email) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Text(
-          'Enter OTP',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'We sent an OTP to $email',
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 32),
-        TextFormField(
-          controller: _otpController,
-          decoration: const InputDecoration(
-            labelText: 'OTP',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.security),
-          ),
-          keyboardType: TextInputType.number,
-          maxLength: 6,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter OTP';
-            }
-            if (value.length != 6) {
-              return 'OTP must be 6 digits';
-            }
-            return null;
-          },
-        ),
-        const SizedBox(height: 24),
-        ElevatedButton(
-          onPressed: () => _onOtpPressed(email),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-          ),
-          child: const Text('Verify OTP', style: TextStyle(fontSize: 16)),
-        ),
-        const SizedBox(height: 16),
-        TextButton(
-          onPressed: () {
-            // Reset to login form
-            setState(() {
-              _otpController.clear();
-            });
-          },
-          child: const Text('Back to Login'),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildForgotOtpForm(String email) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Text(
-          'Forgot Password OTP',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 16),
-        Text(
-          'We sent an OTP to $email',
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 16),
-        ),
-        const SizedBox(height: 32),
-        TextFormField(
-          controller: _forgotOtpController,
-          decoration: const InputDecoration(
-            labelText: 'OTP',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.security),
-          ),
-          keyboardType: TextInputType.number,
-          maxLength: 6,
-        ),
-        const SizedBox(height: 24),
-        ElevatedButton(
-          onPressed: () => _onForgotOtpPressed(email),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-          ),
-          child: const Text('Verify OTP', style: TextStyle(fontSize: 16)),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildChangePasswordForm(String email) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Text(
-          'Change Password',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 32),
-        TextFormField(
-          controller: _newPasswordController,
-          decoration: const InputDecoration(
-            labelText: 'New Password',
-            border: OutlineInputBorder(),
-            prefixIcon: Icon(Icons.lock),
-          ),
-          obscureText: true,
-        ),
-        const SizedBox(height: 24),
-        ElevatedButton(
-          onPressed: () => _onChangePasswordPressed(email),
-          style: ElevatedButton.styleFrom(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-          ),
-          child: const Text('Change Password', style: TextStyle(fontSize: 16)),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLoadingWidget() {
-    return const Column(
-      children: [
-        SizedBox(height: 100),
-        CircularProgressIndicator(),
-        SizedBox(height: 16),
-        Text('Please wait...'),
-      ],
-    );
-  }
-
-  Widget _buildSuccessWidget() {
-    return const Column(
-      children: [
-        SizedBox(height: 100),
-        Icon(Icons.check_circle, color: Colors.green, size: 64),
-        SizedBox(height: 16),
-        Text(
-          'Login Successful!',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-      ],
-    );
-  }
-
-  void _onOtpPressed(String email) {
-    if (_otpController.text.isNotEmpty) {
-      context.read<LoginBloc>().add(
-        LoginOtpSubmitted(email, _otpController.text),
-      );
-    }
-  }
-
-  void _onForgotOtpPressed(String email) {
-    if (_forgotOtpController.text.isNotEmpty) {
-      context.read<LoginBloc>().add(
-        LoginForgotOtpSubmitted(email, _forgotOtpController.text),
-      );
-    }
-  }
-
-  void _onChangePasswordPressed(String email) {
-    if (_newPasswordController.text.isNotEmpty) {
-      context.read<LoginBloc>().add(
-        LoginChangePasswordRequested(email, _newPasswordController.text),
-      );
-    }
-  }
-
-  void _showForgotPasswordDialog() {
+  void _showOtpDialog(BuildContext context, String email) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Forgot Password'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text('Enter your email address:'),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _forgotEmailController,
-              decoration: const InputDecoration(
-                labelText: 'Email',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.emailAddress,
+      barrierDismissible: false,
+      builder: (dialogContext) => OtpDialog(
+        email: email,
+        onOtpSubmitted: (otp) {
+          // Submit OTP to LoginBloc
+          context.read<LoginBloc>().add(LoginOtpSubmitted(email, otp));
+          Navigator.of(dialogContext).pop();
+        },
+        onResendOtp: () {
+          // Resend OTP - trigger login again
+          context.read<LoginBloc>().add(
+            LoginSubmitted(
+              _emailController.text.trim(),
+              _passwordController.text,
+              rememberMe: _rememberMe,
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              if (_forgotEmailController.text.isNotEmpty) {
-                Navigator.of(context).pop();
-                context.read<LoginBloc>().add(
-                  LoginForgotPasswordRequested(_forgotEmailController.text),
-                );
-              }
-            },
-            child: const Text('Send OTP'),
-          ),
-        ],
+          );
+        },
       ),
     );
   }

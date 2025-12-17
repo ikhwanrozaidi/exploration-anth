@@ -3,100 +3,33 @@
 part of 'app_database.dart';
 
 // ignore_for_file: type=lint
-class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
+class $UsersTable extends Users with TableInfo<$UsersTable, User> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
   $UsersTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
-    'isSynced',
-  );
-  @override
-  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
-    'is_synced',
-    aliasedName,
-    false,
-    type: DriftSqlType.bool,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'CHECK ("is_synced" IN (0, 1))',
-    ),
-    defaultValue: const Constant(false),
-  );
-  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
-    'deletedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
-    'deleted_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _syncActionMeta = const VerificationMeta(
-    'syncAction',
-  );
-  @override
-  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
-    'sync_action',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
-    'syncRetryCount',
-  );
-  @override
-  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
-    'sync_retry_count',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: false,
-    defaultValue: const Constant(0),
-  );
-  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
-    'syncError',
-  );
-  @override
-  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
-    'sync_error',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
-    'lastSyncAttempt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> lastSyncAttempt =
-      GeneratedColumn<DateTime>(
-        'last_sync_attempt',
-        aliasedName,
-        true,
-        type: DriftSqlType.dateTime,
-        requiredDuringInsert: false,
-      );
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
     'id',
     aliasedName,
     false,
-    hasAutoIncrement: true,
     type: DriftSqlType.int,
     requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'PRIMARY KEY AUTOINCREMENT',
-    ),
   );
-  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
   @override
-  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
-    'uid',
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+    'email',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _roleMeta = const VerificationMeta('role');
+  @override
+  late final GeneratedColumn<String> role = GeneratedColumn<String>(
+    'role',
     aliasedName,
     false,
     type: DriftSqlType.string,
@@ -111,47 +44,47 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
-  static const VerificationMeta _firstNameMeta = const VerificationMeta(
-    'firstName',
-  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
-  late final GeneratedColumn<String> firstName = GeneratedColumn<String>(
-    'first_name',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _lastNameMeta = const VerificationMeta(
-    'lastName',
-  );
-  @override
-  late final GeneratedColumn<String> lastName = GeneratedColumn<String>(
-    'last_name',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _emailMeta = const VerificationMeta('email');
-  @override
-  late final GeneratedColumn<String> email = GeneratedColumn<String>(
-    'email',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-    'updated_at',
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
     aliasedName,
     false,
-    type: DriftSqlType.dateTime,
+    type: DriftSqlType.string,
     requiredDuringInsert: true,
+  );
+  static const VerificationMeta _balanceMeta = const VerificationMeta(
+    'balance',
+  );
+  @override
+  late final GeneratedColumn<double> balance = GeneratedColumn<double>(
+    'balance',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _merchantIdMeta = const VerificationMeta(
+    'merchantId',
+  );
+  @override
+  late final GeneratedColumn<String> merchantId = GeneratedColumn<String>(
+    'merchant_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _countryMeta = const VerificationMeta(
+    'country',
+  );
+  @override
+  late final GeneratedColumn<String> country = GeneratedColumn<String>(
+    'country',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
@@ -164,22 +97,65 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _userDetailMeta = const VerificationMeta(
+    'userDetail',
+  );
+  @override
+  late final GeneratedColumn<String> userDetail = GeneratedColumn<String>(
+    'user_detail',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _userSettingsMeta = const VerificationMeta(
+    'userSettings',
+  );
+  @override
+  late final GeneratedColumn<String> userSettings = GeneratedColumn<String>(
+    'user_settings',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
-    isSynced,
-    deletedAt,
-    syncAction,
-    syncRetryCount,
-    syncError,
-    lastSyncAttempt,
     id,
-    uid,
-    phone,
-    firstName,
-    lastName,
     email,
-    updatedAt,
+    role,
+    phone,
+    status,
+    balance,
+    merchantId,
+    country,
     createdAt,
+    userDetail,
+    userSettings,
+    updatedAt,
+    deletedAt,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -188,63 +164,29 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
   static const String $name = 'users';
   @override
   VerificationContext validateIntegrity(
-    Insertable<UserRecord> instance, {
+    Insertable<User> instance, {
     bool isInserting = false,
   }) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('is_synced')) {
-      context.handle(
-        _isSyncedMeta,
-        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
-      );
-    }
-    if (data.containsKey('deleted_at')) {
-      context.handle(
-        _deletedAtMeta,
-        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
-      );
-    }
-    if (data.containsKey('sync_action')) {
-      context.handle(
-        _syncActionMeta,
-        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
-      );
-    }
-    if (data.containsKey('sync_retry_count')) {
-      context.handle(
-        _syncRetryCountMeta,
-        syncRetryCount.isAcceptableOrUnknown(
-          data['sync_retry_count']!,
-          _syncRetryCountMeta,
-        ),
-      );
-    }
-    if (data.containsKey('sync_error')) {
-      context.handle(
-        _syncErrorMeta,
-        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
-      );
-    }
-    if (data.containsKey('last_sync_attempt')) {
-      context.handle(
-        _lastSyncAttemptMeta,
-        lastSyncAttempt.isAcceptableOrUnknown(
-          data['last_sync_attempt']!,
-          _lastSyncAttemptMeta,
-        ),
-      );
-    }
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    if (data.containsKey('uid')) {
+    if (data.containsKey('email')) {
       context.handle(
-        _uidMeta,
-        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+        _emailMeta,
+        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
       );
     } else if (isInserting) {
-      context.missing(_uidMeta);
+      context.missing(_emailMeta);
+    }
+    if (data.containsKey('role')) {
+      context.handle(
+        _roleMeta,
+        role.isAcceptableOrUnknown(data['role']!, _roleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_roleMeta);
     }
     if (data.containsKey('phone')) {
       context.handle(
@@ -254,31 +196,33 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
     } else if (isInserting) {
       context.missing(_phoneMeta);
     }
-    if (data.containsKey('first_name')) {
+    if (data.containsKey('status')) {
       context.handle(
-        _firstNameMeta,
-        firstName.isAcceptableOrUnknown(data['first_name']!, _firstNameMeta),
-      );
-    }
-    if (data.containsKey('last_name')) {
-      context.handle(
-        _lastNameMeta,
-        lastName.isAcceptableOrUnknown(data['last_name']!, _lastNameMeta),
-      );
-    }
-    if (data.containsKey('email')) {
-      context.handle(
-        _emailMeta,
-        email.isAcceptableOrUnknown(data['email']!, _emailMeta),
-      );
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
       );
     } else if (isInserting) {
-      context.missing(_updatedAtMeta);
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('balance')) {
+      context.handle(
+        _balanceMeta,
+        balance.isAcceptableOrUnknown(data['balance']!, _balanceMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_balanceMeta);
+    }
+    if (data.containsKey('merchant_id')) {
+      context.handle(
+        _merchantIdMeta,
+        merchantId.isAcceptableOrUnknown(data['merchant_id']!, _merchantIdMeta),
+      );
+    }
+    if (data.containsKey('country')) {
+      context.handle(
+        _countryMeta,
+        country.isAcceptableOrUnknown(data['country']!, _countryMeta),
+      );
     }
     if (data.containsKey('created_at')) {
       context.handle(
@@ -288,76 +232,94 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
     } else if (isInserting) {
       context.missing(_createdAtMeta);
     }
+    if (data.containsKey('user_detail')) {
+      context.handle(
+        _userDetailMeta,
+        userDetail.isAcceptableOrUnknown(data['user_detail']!, _userDetailMeta),
+      );
+    }
+    if (data.containsKey('user_settings')) {
+      context.handle(
+        _userSettingsMeta,
+        userSettings.isAcceptableOrUnknown(
+          data['user_settings']!,
+          _userSettingsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
     return context;
   }
 
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  List<Set<GeneratedColumn>> get uniqueKeys => [
-    {uid},
-    {phone},
-  ];
-  @override
-  UserRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+  User map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return UserRecord(
-      isSynced: attachedDatabase.typeMapping.read(
-        DriftSqlType.bool,
-        data['${effectivePrefix}is_synced'],
-      )!,
-      deletedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}deleted_at'],
-      ),
-      syncAction: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}sync_action'],
-      ),
-      syncRetryCount: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}sync_retry_count'],
-      )!,
-      syncError: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}sync_error'],
-      ),
-      lastSyncAttempt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}last_sync_attempt'],
-      ),
+    return User(
       id: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}id'],
       )!,
-      uid: attachedDatabase.typeMapping.read(
+      email: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}uid'],
+        data['${effectivePrefix}email'],
+      )!,
+      role: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}role'],
       )!,
       phone: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}phone'],
       )!,
-      firstName: attachedDatabase.typeMapping.read(
+      status: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
-        data['${effectivePrefix}first_name'],
-      ),
-      lastName: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}last_name'],
-      ),
-      email: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}email'],
-      ),
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}updated_at'],
+        data['${effectivePrefix}status'],
       )!,
+      balance: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}balance'],
+      )!,
+      merchantId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}merchant_id'],
+      ),
+      country: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}country'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
+      userDetail: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_detail'],
+      ),
+      userSettings: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_settings'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      ),
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
     );
   }
 
@@ -367,425 +329,399 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
   }
 }
 
-class UserRecord extends DataClass implements Insertable<UserRecord> {
-  final bool isSynced;
-  final DateTime? deletedAt;
-  final String? syncAction;
-  final int syncRetryCount;
-  final String? syncError;
-  final DateTime? lastSyncAttempt;
+class User extends DataClass implements Insertable<User> {
   final int id;
-  final String uid;
+  final String email;
+  final String role;
   final String phone;
-  final String? firstName;
-  final String? lastName;
-  final String? email;
-  final DateTime updatedAt;
+  final String status;
+  final double balance;
+  final String? merchantId;
+  final String? country;
   final DateTime createdAt;
-  const UserRecord({
-    required this.isSynced,
-    this.deletedAt,
-    this.syncAction,
-    required this.syncRetryCount,
-    this.syncError,
-    this.lastSyncAttempt,
+  final String? userDetail;
+  final String? userSettings;
+  final DateTime? updatedAt;
+  final DateTime? deletedAt;
+  const User({
     required this.id,
-    required this.uid,
+    required this.email,
+    required this.role,
     required this.phone,
-    this.firstName,
-    this.lastName,
-    this.email,
-    required this.updatedAt,
+    required this.status,
+    required this.balance,
+    this.merchantId,
+    this.country,
     required this.createdAt,
+    this.userDetail,
+    this.userSettings,
+    this.updatedAt,
+    this.deletedAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    map['is_synced'] = Variable<bool>(isSynced);
+    map['id'] = Variable<int>(id);
+    map['email'] = Variable<String>(email);
+    map['role'] = Variable<String>(role);
+    map['phone'] = Variable<String>(phone);
+    map['status'] = Variable<String>(status);
+    map['balance'] = Variable<double>(balance);
+    if (!nullToAbsent || merchantId != null) {
+      map['merchant_id'] = Variable<String>(merchantId);
+    }
+    if (!nullToAbsent || country != null) {
+      map['country'] = Variable<String>(country);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || userDetail != null) {
+      map['user_detail'] = Variable<String>(userDetail);
+    }
+    if (!nullToAbsent || userSettings != null) {
+      map['user_settings'] = Variable<String>(userSettings);
+    }
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<DateTime>(updatedAt);
+    }
     if (!nullToAbsent || deletedAt != null) {
       map['deleted_at'] = Variable<DateTime>(deletedAt);
     }
-    if (!nullToAbsent || syncAction != null) {
-      map['sync_action'] = Variable<String>(syncAction);
-    }
-    map['sync_retry_count'] = Variable<int>(syncRetryCount);
-    if (!nullToAbsent || syncError != null) {
-      map['sync_error'] = Variable<String>(syncError);
-    }
-    if (!nullToAbsent || lastSyncAttempt != null) {
-      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
-    }
-    map['id'] = Variable<int>(id);
-    map['uid'] = Variable<String>(uid);
-    map['phone'] = Variable<String>(phone);
-    if (!nullToAbsent || firstName != null) {
-      map['first_name'] = Variable<String>(firstName);
-    }
-    if (!nullToAbsent || lastName != null) {
-      map['last_name'] = Variable<String>(lastName);
-    }
-    if (!nullToAbsent || email != null) {
-      map['email'] = Variable<String>(email);
-    }
-    map['updated_at'] = Variable<DateTime>(updatedAt);
-    map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
 
   UsersCompanion toCompanion(bool nullToAbsent) {
     return UsersCompanion(
-      isSynced: Value(isSynced),
+      id: Value(id),
+      email: Value(email),
+      role: Value(role),
+      phone: Value(phone),
+      status: Value(status),
+      balance: Value(balance),
+      merchantId: merchantId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(merchantId),
+      country: country == null && nullToAbsent
+          ? const Value.absent()
+          : Value(country),
+      createdAt: Value(createdAt),
+      userDetail: userDetail == null && nullToAbsent
+          ? const Value.absent()
+          : Value(userDetail),
+      userSettings: userSettings == null && nullToAbsent
+          ? const Value.absent()
+          : Value(userSettings),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
       deletedAt: deletedAt == null && nullToAbsent
           ? const Value.absent()
           : Value(deletedAt),
-      syncAction: syncAction == null && nullToAbsent
-          ? const Value.absent()
-          : Value(syncAction),
-      syncRetryCount: Value(syncRetryCount),
-      syncError: syncError == null && nullToAbsent
-          ? const Value.absent()
-          : Value(syncError),
-      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastSyncAttempt),
-      id: Value(id),
-      uid: Value(uid),
-      phone: Value(phone),
-      firstName: firstName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(firstName),
-      lastName: lastName == null && nullToAbsent
-          ? const Value.absent()
-          : Value(lastName),
-      email: email == null && nullToAbsent
-          ? const Value.absent()
-          : Value(email),
-      updatedAt: Value(updatedAt),
-      createdAt: Value(createdAt),
     );
   }
 
-  factory UserRecord.fromJson(
+  factory User.fromJson(
     Map<String, dynamic> json, {
     ValueSerializer? serializer,
   }) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return UserRecord(
-      isSynced: serializer.fromJson<bool>(json['isSynced']),
-      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
-      syncAction: serializer.fromJson<String?>(json['syncAction']),
-      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
-      syncError: serializer.fromJson<String?>(json['syncError']),
-      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+    return User(
       id: serializer.fromJson<int>(json['id']),
-      uid: serializer.fromJson<String>(json['uid']),
+      email: serializer.fromJson<String>(json['email']),
+      role: serializer.fromJson<String>(json['role']),
       phone: serializer.fromJson<String>(json['phone']),
-      firstName: serializer.fromJson<String?>(json['firstName']),
-      lastName: serializer.fromJson<String?>(json['lastName']),
-      email: serializer.fromJson<String?>(json['email']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      status: serializer.fromJson<String>(json['status']),
+      balance: serializer.fromJson<double>(json['balance']),
+      merchantId: serializer.fromJson<String?>(json['merchantId']),
+      country: serializer.fromJson<String?>(json['country']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      userDetail: serializer.fromJson<String?>(json['userDetail']),
+      userSettings: serializer.fromJson<String?>(json['userSettings']),
+      updatedAt: serializer.fromJson<DateTime?>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'isSynced': serializer.toJson<bool>(isSynced),
-      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
-      'syncAction': serializer.toJson<String?>(syncAction),
-      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
-      'syncError': serializer.toJson<String?>(syncError),
-      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
       'id': serializer.toJson<int>(id),
-      'uid': serializer.toJson<String>(uid),
+      'email': serializer.toJson<String>(email),
+      'role': serializer.toJson<String>(role),
       'phone': serializer.toJson<String>(phone),
-      'firstName': serializer.toJson<String?>(firstName),
-      'lastName': serializer.toJson<String?>(lastName),
-      'email': serializer.toJson<String?>(email),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'status': serializer.toJson<String>(status),
+      'balance': serializer.toJson<double>(balance),
+      'merchantId': serializer.toJson<String?>(merchantId),
+      'country': serializer.toJson<String?>(country),
       'createdAt': serializer.toJson<DateTime>(createdAt),
+      'userDetail': serializer.toJson<String?>(userDetail),
+      'userSettings': serializer.toJson<String?>(userSettings),
+      'updatedAt': serializer.toJson<DateTime?>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
     };
   }
 
-  UserRecord copyWith({
-    bool? isSynced,
-    Value<DateTime?> deletedAt = const Value.absent(),
-    Value<String?> syncAction = const Value.absent(),
-    int? syncRetryCount,
-    Value<String?> syncError = const Value.absent(),
-    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+  User copyWith({
     int? id,
-    String? uid,
+    String? email,
+    String? role,
     String? phone,
-    Value<String?> firstName = const Value.absent(),
-    Value<String?> lastName = const Value.absent(),
-    Value<String?> email = const Value.absent(),
-    DateTime? updatedAt,
+    String? status,
+    double? balance,
+    Value<String?> merchantId = const Value.absent(),
+    Value<String?> country = const Value.absent(),
     DateTime? createdAt,
-  }) => UserRecord(
-    isSynced: isSynced ?? this.isSynced,
-    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
-    syncAction: syncAction.present ? syncAction.value : this.syncAction,
-    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
-    syncError: syncError.present ? syncError.value : this.syncError,
-    lastSyncAttempt: lastSyncAttempt.present
-        ? lastSyncAttempt.value
-        : this.lastSyncAttempt,
+    Value<String?> userDetail = const Value.absent(),
+    Value<String?> userSettings = const Value.absent(),
+    Value<DateTime?> updatedAt = const Value.absent(),
+    Value<DateTime?> deletedAt = const Value.absent(),
+  }) => User(
     id: id ?? this.id,
-    uid: uid ?? this.uid,
+    email: email ?? this.email,
+    role: role ?? this.role,
     phone: phone ?? this.phone,
-    firstName: firstName.present ? firstName.value : this.firstName,
-    lastName: lastName.present ? lastName.value : this.lastName,
-    email: email.present ? email.value : this.email,
-    updatedAt: updatedAt ?? this.updatedAt,
+    status: status ?? this.status,
+    balance: balance ?? this.balance,
+    merchantId: merchantId.present ? merchantId.value : this.merchantId,
+    country: country.present ? country.value : this.country,
     createdAt: createdAt ?? this.createdAt,
+    userDetail: userDetail.present ? userDetail.value : this.userDetail,
+    userSettings: userSettings.present ? userSettings.value : this.userSettings,
+    updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
   );
-  UserRecord copyWithCompanion(UsersCompanion data) {
-    return UserRecord(
-      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
-      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
-      syncAction: data.syncAction.present
-          ? data.syncAction.value
-          : this.syncAction,
-      syncRetryCount: data.syncRetryCount.present
-          ? data.syncRetryCount.value
-          : this.syncRetryCount,
-      syncError: data.syncError.present ? data.syncError.value : this.syncError,
-      lastSyncAttempt: data.lastSyncAttempt.present
-          ? data.lastSyncAttempt.value
-          : this.lastSyncAttempt,
+  User copyWithCompanion(UsersCompanion data) {
+    return User(
       id: data.id.present ? data.id.value : this.id,
-      uid: data.uid.present ? data.uid.value : this.uid,
-      phone: data.phone.present ? data.phone.value : this.phone,
-      firstName: data.firstName.present ? data.firstName.value : this.firstName,
-      lastName: data.lastName.present ? data.lastName.value : this.lastName,
       email: data.email.present ? data.email.value : this.email,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      role: data.role.present ? data.role.value : this.role,
+      phone: data.phone.present ? data.phone.value : this.phone,
+      status: data.status.present ? data.status.value : this.status,
+      balance: data.balance.present ? data.balance.value : this.balance,
+      merchantId: data.merchantId.present
+          ? data.merchantId.value
+          : this.merchantId,
+      country: data.country.present ? data.country.value : this.country,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      userDetail: data.userDetail.present
+          ? data.userDetail.value
+          : this.userDetail,
+      userSettings: data.userSettings.present
+          ? data.userSettings.value
+          : this.userSettings,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
     );
   }
 
   @override
   String toString() {
-    return (StringBuffer('UserRecord(')
-          ..write('isSynced: $isSynced, ')
-          ..write('deletedAt: $deletedAt, ')
-          ..write('syncAction: $syncAction, ')
-          ..write('syncRetryCount: $syncRetryCount, ')
-          ..write('syncError: $syncError, ')
-          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+    return (StringBuffer('User(')
           ..write('id: $id, ')
-          ..write('uid: $uid, ')
-          ..write('phone: $phone, ')
-          ..write('firstName: $firstName, ')
-          ..write('lastName: $lastName, ')
           ..write('email: $email, ')
+          ..write('role: $role, ')
+          ..write('phone: $phone, ')
+          ..write('status: $status, ')
+          ..write('balance: $balance, ')
+          ..write('merchantId: $merchantId, ')
+          ..write('country: $country, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('userDetail: $userDetail, ')
+          ..write('userSettings: $userSettings, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('createdAt: $createdAt')
+          ..write('deletedAt: $deletedAt')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(
-    isSynced,
-    deletedAt,
-    syncAction,
-    syncRetryCount,
-    syncError,
-    lastSyncAttempt,
     id,
-    uid,
-    phone,
-    firstName,
-    lastName,
     email,
-    updatedAt,
+    role,
+    phone,
+    status,
+    balance,
+    merchantId,
+    country,
     createdAt,
+    userDetail,
+    userSettings,
+    updatedAt,
+    deletedAt,
   );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is UserRecord &&
-          other.isSynced == this.isSynced &&
-          other.deletedAt == this.deletedAt &&
-          other.syncAction == this.syncAction &&
-          other.syncRetryCount == this.syncRetryCount &&
-          other.syncError == this.syncError &&
-          other.lastSyncAttempt == this.lastSyncAttempt &&
+      (other is User &&
           other.id == this.id &&
-          other.uid == this.uid &&
-          other.phone == this.phone &&
-          other.firstName == this.firstName &&
-          other.lastName == this.lastName &&
           other.email == this.email &&
+          other.role == this.role &&
+          other.phone == this.phone &&
+          other.status == this.status &&
+          other.balance == this.balance &&
+          other.merchantId == this.merchantId &&
+          other.country == this.country &&
+          other.createdAt == this.createdAt &&
+          other.userDetail == this.userDetail &&
+          other.userSettings == this.userSettings &&
           other.updatedAt == this.updatedAt &&
-          other.createdAt == this.createdAt);
+          other.deletedAt == this.deletedAt);
 }
 
-class UsersCompanion extends UpdateCompanion<UserRecord> {
-  final Value<bool> isSynced;
-  final Value<DateTime?> deletedAt;
-  final Value<String?> syncAction;
-  final Value<int> syncRetryCount;
-  final Value<String?> syncError;
-  final Value<DateTime?> lastSyncAttempt;
+class UsersCompanion extends UpdateCompanion<User> {
   final Value<int> id;
-  final Value<String> uid;
+  final Value<String> email;
+  final Value<String> role;
   final Value<String> phone;
-  final Value<String?> firstName;
-  final Value<String?> lastName;
-  final Value<String?> email;
-  final Value<DateTime> updatedAt;
+  final Value<String> status;
+  final Value<double> balance;
+  final Value<String?> merchantId;
+  final Value<String?> country;
   final Value<DateTime> createdAt;
+  final Value<String?> userDetail;
+  final Value<String?> userSettings;
+  final Value<DateTime?> updatedAt;
+  final Value<DateTime?> deletedAt;
   const UsersCompanion({
-    this.isSynced = const Value.absent(),
-    this.deletedAt = const Value.absent(),
-    this.syncAction = const Value.absent(),
-    this.syncRetryCount = const Value.absent(),
-    this.syncError = const Value.absent(),
-    this.lastSyncAttempt = const Value.absent(),
     this.id = const Value.absent(),
-    this.uid = const Value.absent(),
-    this.phone = const Value.absent(),
-    this.firstName = const Value.absent(),
-    this.lastName = const Value.absent(),
     this.email = const Value.absent(),
-    this.updatedAt = const Value.absent(),
+    this.role = const Value.absent(),
+    this.phone = const Value.absent(),
+    this.status = const Value.absent(),
+    this.balance = const Value.absent(),
+    this.merchantId = const Value.absent(),
+    this.country = const Value.absent(),
     this.createdAt = const Value.absent(),
+    this.userDetail = const Value.absent(),
+    this.userSettings = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
   });
   UsersCompanion.insert({
-    this.isSynced = const Value.absent(),
-    this.deletedAt = const Value.absent(),
-    this.syncAction = const Value.absent(),
-    this.syncRetryCount = const Value.absent(),
-    this.syncError = const Value.absent(),
-    this.lastSyncAttempt = const Value.absent(),
     this.id = const Value.absent(),
-    required String uid,
+    required String email,
+    required String role,
     required String phone,
-    this.firstName = const Value.absent(),
-    this.lastName = const Value.absent(),
-    this.email = const Value.absent(),
-    required DateTime updatedAt,
+    required String status,
+    required double balance,
+    this.merchantId = const Value.absent(),
+    this.country = const Value.absent(),
     required DateTime createdAt,
-  }) : uid = Value(uid),
+    this.userDetail = const Value.absent(),
+    this.userSettings = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+  }) : email = Value(email),
+       role = Value(role),
        phone = Value(phone),
-       updatedAt = Value(updatedAt),
+       status = Value(status),
+       balance = Value(balance),
        createdAt = Value(createdAt);
-  static Insertable<UserRecord> custom({
-    Expression<bool>? isSynced,
-    Expression<DateTime>? deletedAt,
-    Expression<String>? syncAction,
-    Expression<int>? syncRetryCount,
-    Expression<String>? syncError,
-    Expression<DateTime>? lastSyncAttempt,
+  static Insertable<User> custom({
     Expression<int>? id,
-    Expression<String>? uid,
-    Expression<String>? phone,
-    Expression<String>? firstName,
-    Expression<String>? lastName,
     Expression<String>? email,
-    Expression<DateTime>? updatedAt,
+    Expression<String>? role,
+    Expression<String>? phone,
+    Expression<String>? status,
+    Expression<double>? balance,
+    Expression<String>? merchantId,
+    Expression<String>? country,
     Expression<DateTime>? createdAt,
+    Expression<String>? userDetail,
+    Expression<String>? userSettings,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
   }) {
     return RawValuesInsertable({
-      if (isSynced != null) 'is_synced': isSynced,
-      if (deletedAt != null) 'deleted_at': deletedAt,
-      if (syncAction != null) 'sync_action': syncAction,
-      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
-      if (syncError != null) 'sync_error': syncError,
-      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
       if (id != null) 'id': id,
-      if (uid != null) 'uid': uid,
-      if (phone != null) 'phone': phone,
-      if (firstName != null) 'first_name': firstName,
-      if (lastName != null) 'last_name': lastName,
       if (email != null) 'email': email,
-      if (updatedAt != null) 'updated_at': updatedAt,
+      if (role != null) 'role': role,
+      if (phone != null) 'phone': phone,
+      if (status != null) 'status': status,
+      if (balance != null) 'balance': balance,
+      if (merchantId != null) 'merchant_id': merchantId,
+      if (country != null) 'country': country,
       if (createdAt != null) 'created_at': createdAt,
+      if (userDetail != null) 'user_detail': userDetail,
+      if (userSettings != null) 'user_settings': userSettings,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
     });
   }
 
   UsersCompanion copyWith({
-    Value<bool>? isSynced,
-    Value<DateTime?>? deletedAt,
-    Value<String?>? syncAction,
-    Value<int>? syncRetryCount,
-    Value<String?>? syncError,
-    Value<DateTime?>? lastSyncAttempt,
     Value<int>? id,
-    Value<String>? uid,
+    Value<String>? email,
+    Value<String>? role,
     Value<String>? phone,
-    Value<String?>? firstName,
-    Value<String?>? lastName,
-    Value<String?>? email,
-    Value<DateTime>? updatedAt,
+    Value<String>? status,
+    Value<double>? balance,
+    Value<String?>? merchantId,
+    Value<String?>? country,
     Value<DateTime>? createdAt,
+    Value<String?>? userDetail,
+    Value<String?>? userSettings,
+    Value<DateTime?>? updatedAt,
+    Value<DateTime?>? deletedAt,
   }) {
     return UsersCompanion(
-      isSynced: isSynced ?? this.isSynced,
-      deletedAt: deletedAt ?? this.deletedAt,
-      syncAction: syncAction ?? this.syncAction,
-      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
-      syncError: syncError ?? this.syncError,
-      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
       id: id ?? this.id,
-      uid: uid ?? this.uid,
-      phone: phone ?? this.phone,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
       email: email ?? this.email,
-      updatedAt: updatedAt ?? this.updatedAt,
+      role: role ?? this.role,
+      phone: phone ?? this.phone,
+      status: status ?? this.status,
+      balance: balance ?? this.balance,
+      merchantId: merchantId ?? this.merchantId,
+      country: country ?? this.country,
       createdAt: createdAt ?? this.createdAt,
+      userDetail: userDetail ?? this.userDetail,
+      userSettings: userSettings ?? this.userSettings,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (isSynced.present) {
-      map['is_synced'] = Variable<bool>(isSynced.value);
-    }
-    if (deletedAt.present) {
-      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
-    }
-    if (syncAction.present) {
-      map['sync_action'] = Variable<String>(syncAction.value);
-    }
-    if (syncRetryCount.present) {
-      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
-    }
-    if (syncError.present) {
-      map['sync_error'] = Variable<String>(syncError.value);
-    }
-    if (lastSyncAttempt.present) {
-      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
-    }
     if (id.present) {
       map['id'] = Variable<int>(id.value);
-    }
-    if (uid.present) {
-      map['uid'] = Variable<String>(uid.value);
-    }
-    if (phone.present) {
-      map['phone'] = Variable<String>(phone.value);
-    }
-    if (firstName.present) {
-      map['first_name'] = Variable<String>(firstName.value);
-    }
-    if (lastName.present) {
-      map['last_name'] = Variable<String>(lastName.value);
     }
     if (email.present) {
       map['email'] = Variable<String>(email.value);
     }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    if (role.present) {
+      map['role'] = Variable<String>(role.value);
+    }
+    if (phone.present) {
+      map['phone'] = Variable<String>(phone.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (balance.present) {
+      map['balance'] = Variable<double>(balance.value);
+    }
+    if (merchantId.present) {
+      map['merchant_id'] = Variable<String>(merchantId.value);
+    }
+    if (country.present) {
+      map['country'] = Variable<String>(country.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (userDetail.present) {
+      map['user_detail'] = Variable<String>(userDetail.value);
+    }
+    if (userSettings.present) {
+      map['user_settings'] = Variable<String>(userSettings.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
     }
     return map;
   }
@@ -793,20 +729,19 @@ class UsersCompanion extends UpdateCompanion<UserRecord> {
   @override
   String toString() {
     return (StringBuffer('UsersCompanion(')
-          ..write('isSynced: $isSynced, ')
-          ..write('deletedAt: $deletedAt, ')
-          ..write('syncAction: $syncAction, ')
-          ..write('syncRetryCount: $syncRetryCount, ')
-          ..write('syncError: $syncError, ')
-          ..write('lastSyncAttempt: $lastSyncAttempt, ')
           ..write('id: $id, ')
-          ..write('uid: $uid, ')
-          ..write('phone: $phone, ')
-          ..write('firstName: $firstName, ')
-          ..write('lastName: $lastName, ')
           ..write('email: $email, ')
+          ..write('role: $role, ')
+          ..write('phone: $phone, ')
+          ..write('status: $status, ')
+          ..write('balance: $balance, ')
+          ..write('merchantId: $merchantId, ')
+          ..write('country: $country, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('userDetail: $userDetail, ')
+          ..write('userSettings: $userSettings, ')
           ..write('updatedAt: $updatedAt, ')
-          ..write('createdAt: $createdAt')
+          ..write('deletedAt: $deletedAt')
           ..write(')'))
         .toString();
   }
@@ -825,37 +760,35 @@ abstract class _$AppDatabase extends GeneratedDatabase {
 
 typedef $$UsersTableCreateCompanionBuilder =
     UsersCompanion Function({
-      Value<bool> isSynced,
-      Value<DateTime?> deletedAt,
-      Value<String?> syncAction,
-      Value<int> syncRetryCount,
-      Value<String?> syncError,
-      Value<DateTime?> lastSyncAttempt,
       Value<int> id,
-      required String uid,
+      required String email,
+      required String role,
       required String phone,
-      Value<String?> firstName,
-      Value<String?> lastName,
-      Value<String?> email,
-      required DateTime updatedAt,
+      required String status,
+      required double balance,
+      Value<String?> merchantId,
+      Value<String?> country,
       required DateTime createdAt,
+      Value<String?> userDetail,
+      Value<String?> userSettings,
+      Value<DateTime?> updatedAt,
+      Value<DateTime?> deletedAt,
     });
 typedef $$UsersTableUpdateCompanionBuilder =
     UsersCompanion Function({
-      Value<bool> isSynced,
-      Value<DateTime?> deletedAt,
-      Value<String?> syncAction,
-      Value<int> syncRetryCount,
-      Value<String?> syncError,
-      Value<DateTime?> lastSyncAttempt,
       Value<int> id,
-      Value<String> uid,
+      Value<String> email,
+      Value<String> role,
       Value<String> phone,
-      Value<String?> firstName,
-      Value<String?> lastName,
-      Value<String?> email,
-      Value<DateTime> updatedAt,
+      Value<String> status,
+      Value<double> balance,
+      Value<String?> merchantId,
+      Value<String?> country,
       Value<DateTime> createdAt,
+      Value<String?> userDetail,
+      Value<String?> userSettings,
+      Value<DateTime?> updatedAt,
+      Value<DateTime?> deletedAt,
     });
 
 class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
@@ -866,58 +799,8 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnFilters<bool> get isSynced => $composableBuilder(
-    column: $table.isSynced,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get syncAction => $composableBuilder(
-    column: $table.syncAction,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get syncRetryCount => $composableBuilder(
-    column: $table.syncRetryCount,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get syncError => $composableBuilder(
-    column: $table.syncError,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
-    column: $table.lastSyncAttempt,
-    builder: (column) => ColumnFilters(column),
-  );
-
   ColumnFilters<int> get id => $composableBuilder(
     column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get uid => $composableBuilder(
-    column: $table.uid,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get phone => $composableBuilder(
-    column: $table.phone,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get firstName => $composableBuilder(
-    column: $table.firstName,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get lastName => $composableBuilder(
-    column: $table.lastName,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -926,13 +809,58 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
+  ColumnFilters<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get balance => $composableBuilder(
+    column: $table.balance,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get merchantId => $composableBuilder(
+    column: $table.merchantId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get country => $composableBuilder(
+    column: $table.country,
     builder: (column) => ColumnFilters(column),
   );
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userDetail => $composableBuilder(
+    column: $table.userDetail,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userSettings => $composableBuilder(
+    column: $table.userSettings,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
     builder: (column) => ColumnFilters(column),
   );
 }
@@ -946,58 +874,8 @@ class $$UsersTableOrderingComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  ColumnOrderings<bool> get isSynced => $composableBuilder(
-    column: $table.isSynced,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get syncAction => $composableBuilder(
-    column: $table.syncAction,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
-    column: $table.syncRetryCount,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get syncError => $composableBuilder(
-    column: $table.syncError,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
-    column: $table.lastSyncAttempt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
   ColumnOrderings<int> get id => $composableBuilder(
     column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get uid => $composableBuilder(
-    column: $table.uid,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get phone => $composableBuilder(
-    column: $table.phone,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get firstName => $composableBuilder(
-    column: $table.firstName,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get lastName => $composableBuilder(
-    column: $table.lastName,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1006,13 +884,58 @@ class $$UsersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
+  ColumnOrderings<String> get role => $composableBuilder(
+    column: $table.role,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get phone => $composableBuilder(
+    column: $table.phone,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get balance => $composableBuilder(
+    column: $table.balance,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get merchantId => $composableBuilder(
+    column: $table.merchantId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get country => $composableBuilder(
+    column: $table.country,
     builder: (column) => ColumnOrderings(column),
   );
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userDetail => $composableBuilder(
+    column: $table.userDetail,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userSettings => $composableBuilder(
+    column: $table.userSettings,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
     builder: (column) => ColumnOrderings(column),
   );
 }
@@ -1026,53 +949,50 @@ class $$UsersTableAnnotationComposer
     super.$addJoinBuilderToRootComposer,
     super.$removeJoinBuilderFromRootComposer,
   });
-  GeneratedColumn<bool> get isSynced =>
-      $composableBuilder(column: $table.isSynced, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get deletedAt =>
-      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
-
-  GeneratedColumn<String> get syncAction => $composableBuilder(
-    column: $table.syncAction,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
-    column: $table.syncRetryCount,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get syncError =>
-      $composableBuilder(column: $table.syncError, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
-    column: $table.lastSyncAttempt,
-    builder: (column) => column,
-  );
-
   GeneratedColumn<int> get id =>
       $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get uid =>
-      $composableBuilder(column: $table.uid, builder: (column) => column);
-
-  GeneratedColumn<String> get phone =>
-      $composableBuilder(column: $table.phone, builder: (column) => column);
-
-  GeneratedColumn<String> get firstName =>
-      $composableBuilder(column: $table.firstName, builder: (column) => column);
-
-  GeneratedColumn<String> get lastName =>
-      $composableBuilder(column: $table.lastName, builder: (column) => column);
 
   GeneratedColumn<String> get email =>
       $composableBuilder(column: $table.email, builder: (column) => column);
 
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+  GeneratedColumn<String> get role =>
+      $composableBuilder(column: $table.role, builder: (column) => column);
+
+  GeneratedColumn<String> get phone =>
+      $composableBuilder(column: $table.phone, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<double> get balance =>
+      $composableBuilder(column: $table.balance, builder: (column) => column);
+
+  GeneratedColumn<String> get merchantId => $composableBuilder(
+    column: $table.merchantId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get country =>
+      $composableBuilder(column: $table.country, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<String> get userDetail => $composableBuilder(
+    column: $table.userDetail,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get userSettings => $composableBuilder(
+    column: $table.userSettings,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
 }
 
 class $$UsersTableTableManager
@@ -1080,14 +1000,14 @@ class $$UsersTableTableManager
         RootTableManager<
           _$AppDatabase,
           $UsersTable,
-          UserRecord,
+          User,
           $$UsersTableFilterComposer,
           $$UsersTableOrderingComposer,
           $$UsersTableAnnotationComposer,
           $$UsersTableCreateCompanionBuilder,
           $$UsersTableUpdateCompanionBuilder,
-          (UserRecord, BaseReferences<_$AppDatabase, $UsersTable, UserRecord>),
-          UserRecord,
+          (User, BaseReferences<_$AppDatabase, $UsersTable, User>),
+          User,
           PrefetchHooks Function()
         > {
   $$UsersTableTableManager(_$AppDatabase db, $UsersTable table)
@@ -1103,67 +1023,63 @@ class $$UsersTableTableManager
               $$UsersTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback:
               ({
-                Value<bool> isSynced = const Value.absent(),
-                Value<DateTime?> deletedAt = const Value.absent(),
-                Value<String?> syncAction = const Value.absent(),
-                Value<int> syncRetryCount = const Value.absent(),
-                Value<String?> syncError = const Value.absent(),
-                Value<DateTime?> lastSyncAttempt = const Value.absent(),
                 Value<int> id = const Value.absent(),
-                Value<String> uid = const Value.absent(),
+                Value<String> email = const Value.absent(),
+                Value<String> role = const Value.absent(),
                 Value<String> phone = const Value.absent(),
-                Value<String?> firstName = const Value.absent(),
-                Value<String?> lastName = const Value.absent(),
-                Value<String?> email = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<double> balance = const Value.absent(),
+                Value<String?> merchantId = const Value.absent(),
+                Value<String?> country = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
+                Value<String?> userDetail = const Value.absent(),
+                Value<String?> userSettings = const Value.absent(),
+                Value<DateTime?> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
               }) => UsersCompanion(
-                isSynced: isSynced,
-                deletedAt: deletedAt,
-                syncAction: syncAction,
-                syncRetryCount: syncRetryCount,
-                syncError: syncError,
-                lastSyncAttempt: lastSyncAttempt,
                 id: id,
-                uid: uid,
-                phone: phone,
-                firstName: firstName,
-                lastName: lastName,
                 email: email,
-                updatedAt: updatedAt,
+                role: role,
+                phone: phone,
+                status: status,
+                balance: balance,
+                merchantId: merchantId,
+                country: country,
                 createdAt: createdAt,
+                userDetail: userDetail,
+                userSettings: userSettings,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
               ),
           createCompanionCallback:
               ({
-                Value<bool> isSynced = const Value.absent(),
-                Value<DateTime?> deletedAt = const Value.absent(),
-                Value<String?> syncAction = const Value.absent(),
-                Value<int> syncRetryCount = const Value.absent(),
-                Value<String?> syncError = const Value.absent(),
-                Value<DateTime?> lastSyncAttempt = const Value.absent(),
                 Value<int> id = const Value.absent(),
-                required String uid,
+                required String email,
+                required String role,
                 required String phone,
-                Value<String?> firstName = const Value.absent(),
-                Value<String?> lastName = const Value.absent(),
-                Value<String?> email = const Value.absent(),
-                required DateTime updatedAt,
+                required String status,
+                required double balance,
+                Value<String?> merchantId = const Value.absent(),
+                Value<String?> country = const Value.absent(),
                 required DateTime createdAt,
+                Value<String?> userDetail = const Value.absent(),
+                Value<String?> userSettings = const Value.absent(),
+                Value<DateTime?> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
               }) => UsersCompanion.insert(
-                isSynced: isSynced,
-                deletedAt: deletedAt,
-                syncAction: syncAction,
-                syncRetryCount: syncRetryCount,
-                syncError: syncError,
-                lastSyncAttempt: lastSyncAttempt,
                 id: id,
-                uid: uid,
-                phone: phone,
-                firstName: firstName,
-                lastName: lastName,
                 email: email,
-                updatedAt: updatedAt,
+                role: role,
+                phone: phone,
+                status: status,
+                balance: balance,
+                merchantId: merchantId,
+                country: country,
                 createdAt: createdAt,
+                userDetail: userDetail,
+                userSettings: userSettings,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -1177,14 +1093,14 @@ typedef $$UsersTableProcessedTableManager =
     ProcessedTableManager<
       _$AppDatabase,
       $UsersTable,
-      UserRecord,
+      User,
       $$UsersTableFilterComposer,
       $$UsersTableOrderingComposer,
       $$UsersTableAnnotationComposer,
       $$UsersTableCreateCompanionBuilder,
       $$UsersTableUpdateCompanionBuilder,
-      (UserRecord, BaseReferences<_$AppDatabase, $UsersTable, UserRecord>),
-      UserRecord,
+      (User, BaseReferences<_$AppDatabase, $UsersTable, User>),
+      User,
       PrefetchHooks Function()
     >;
 

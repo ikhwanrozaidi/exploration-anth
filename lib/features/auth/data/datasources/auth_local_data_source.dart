@@ -97,8 +97,14 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
     User? user,
   ]) async {
     try {
-      // Store tokens in secure storage AND auth interceptor
-      await storeTokens(authResult.accessToken, authResult.refreshToken);
+      // ✅ Store tokens WITH expiry timestamps in secure storage
+      await _secureStorage.storeAuthResult(authResult);
+
+      // Also store tokens in auth interceptor for immediate use
+      await _authInterceptor.storeTokens(
+        accessToken: authResult.accessToken,
+        refreshToken: authResult.refreshToken,
+      );
 
       // Store user data in database if provided
       if (user != null) {
@@ -114,16 +120,9 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<Either<Failure, AuthResult?>> getStoredAuthResult() async {
     try {
-      final accessToken = await _secureStorage.getAccessToken();
-      final refreshToken = await _secureStorage.getRefreshToken();
-
-      if (accessToken == null || refreshToken == null) {
-        return const Right(null);
-      }
-
-      return Right(
-        AuthResult(accessToken: accessToken, refreshToken: refreshToken),
-      );
+      // ✅ Get complete auth result WITH expiry timestamps
+      final authResult = await _secureStorage.getAuthResult();
+      return Right(authResult);
     } catch (e) {
       return Left(
         CacheFailure('Failed to get stored auth result: ${e.toString()}'),

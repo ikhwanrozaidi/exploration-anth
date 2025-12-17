@@ -23,22 +23,26 @@ mixin SyncableTable on Table {
 }
 
 // User account record
-@DataClassName('UserRecord')
-class Users extends Table with SyncableTable {
-  IntColumn get id => integer().autoIncrement()();
-  TextColumn get uid => text()();
+class Users extends Table {
+  IntColumn get id => integer()();
+  TextColumn get email => text()();
+  TextColumn get role => text()();
   TextColumn get phone => text()();
-  TextColumn get firstName => text().nullable()();
-  TextColumn get lastName => text().nullable()();
-  TextColumn get email => text().nullable()();
-  DateTimeColumn get updatedAt => dateTime()();
+  TextColumn get status => text()();
+  RealColumn get balance => real()();
+  TextColumn get merchantId => text().nullable()();
+  TextColumn get country => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
 
+  // ✅ Store nested objects as JSON strings
+  TextColumn get userDetail => text().nullable()();
+  TextColumn get userSettings => text().nullable()();
+
+  DateTimeColumn get updatedAt => dateTime().nullable()();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
   @override
-  List<Set<Column>> get uniqueKeys => [
-    {uid},
-    {phone},
-  ];
+  Set<Column> get primaryKey => {id};
 }
 
 // Device registration table (for push notifications, etc.)

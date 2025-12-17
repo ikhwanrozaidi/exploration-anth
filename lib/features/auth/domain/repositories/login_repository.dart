@@ -21,7 +21,7 @@ abstract class LoginRepository {
   Future<Either<Failure, void>> logout();
 
   // Get stored data
-  Future<Either<Failure, User?>> getStoredAdmin();
+  Future<Either<Failure, User?>> getStoredUser();
   Future<Either<Failure, String?>> getAccessToken();
   Future<Either<Failure, String?>> getRefreshToken();
 

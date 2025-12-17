@@ -1,8 +1,10 @@
 // lib/features/login/data/datasources/login_local_datasource.dart
+import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../core/database/app_database.dart';
+import '../../../../core/database/app_database.dart' hide User;
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/auth_interceptor.dart';
 import '../../../../core/service/secure_storage_service.dart';
@@ -46,36 +48,46 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
     User user,
   ) async {
     try {
-      // Store tokens securely
-      await _secureStorage.storeTokens(
-        accessToken: authResult.accessToken,
-        refreshToken: authResult.refreshToken,
-      );
+      // ✅ Store tokens WITH expiry timestamps
+      await _secureStorage.storeAuthResult(authResult);
 
-      // Also store tokens in auth interceptor for immediate use
+      // Store tokens in auth interceptor for immediate use
       await _authInterceptor.storeTokens(
         accessToken: authResult.accessToken,
         refreshToken: authResult.refreshToken,
       );
 
-      // Store user in database
+      // ✅ Store user in database
       await _database
           .into(_database.users)
           .insertOnConflictUpdate(
             UsersCompanion.insert(
               id: Value(user.id),
-              uid: user.uid,
+              email: user.email,
+              role: user.role,
               phone: user.phone,
-              firstName: Value(user.firstName),
-              lastName: Value(user.lastName),
-              email: Value(user.email),
-              updatedAt: user.updatedAt,
+              status: user.status,
+              balance: user.balance,
+              merchantId: Value(user.merchantId),
+              country: Value(user.country),
               createdAt: user.createdAt,
+              // Store JSON strings for nested objects
+              userDetail: Value(
+                user.userDetail != null
+                    ? jsonEncode(user.userDetail!.toJson())
+                    : null,
+              ),
+              userSettings: Value(
+                user.userSettings != null
+                    ? jsonEncode(user.userSettings!.toJson())
+                    : null,
+              ),
             ),
           );
 
       return const Right(null);
     } catch (e) {
+      print('❌ StoreAuthResult Error: $e');
       return Left(CacheFailure('Failed to store auth result: ${e.toString()}'));
     }
   }

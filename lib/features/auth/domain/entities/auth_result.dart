@@ -7,24 +7,51 @@ part 'auth_result.g.dart';
 class AuthResult extends Equatable {
   final String accessToken;
   final String refreshToken;
+  final DateTime accessTokenExpiresAt;
+  final DateTime refreshTokenExpiresAt;
 
-  const AuthResult({required this.accessToken, required this.refreshToken});
+  const AuthResult({
+    required this.accessToken,
+    required this.refreshToken,
+    required this.accessTokenExpiresAt,
+    required this.refreshTokenExpiresAt,
+  });
 
-  // Add fromJson factory
   factory AuthResult.fromJson(Map<String, dynamic> json) =>
       _$AuthResultFromJson(json);
 
-  // Add toJson method
   Map<String, dynamic> toJson() => _$AuthResultToJson(this);
 
-  // Add copyWith for convenience
-  AuthResult copyWith({String? accessToken, String? refreshToken}) {
+  AuthResult copyWith({
+    String? accessToken,
+    String? refreshToken,
+    DateTime? accessTokenExpiresAt,
+    DateTime? refreshTokenExpiresAt,
+  }) {
     return AuthResult(
       accessToken: accessToken ?? this.accessToken,
       refreshToken: refreshToken ?? this.refreshToken,
+      accessTokenExpiresAt: accessTokenExpiresAt ?? this.accessTokenExpiresAt,
+      refreshTokenExpiresAt:
+          refreshTokenExpiresAt ?? this.refreshTokenExpiresAt,
     );
   }
 
+  /// Check if access token is expired
+  bool get isAccessTokenExpired {
+    return DateTime.now().isAfter(accessTokenExpiresAt);
+  }
+
+  /// Check if refresh token is expired
+  bool get isRefreshTokenExpired {
+    return DateTime.now().isAfter(refreshTokenExpiresAt);
+  }
+
   @override
-  List<Object?> get props => [accessToken, refreshToken];
+  List<Object?> get props => [
+    accessToken,
+    refreshToken,
+    accessTokenExpiresAt,
+    refreshTokenExpiresAt,
+  ];
 }

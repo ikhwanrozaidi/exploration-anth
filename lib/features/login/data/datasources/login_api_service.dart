@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../shared/models/api_response.dart';
 
 import '../../../auth/domain/entities/auth_result.dart';
+import '../../../user/data/models/verify_otp_response_model.dart';
 import '../models/login_request_model.dart';
 import '../models/verify_otp_request_model.dart';
 // import '../models/verify_otp_request_model.dart';
@@ -26,7 +27,7 @@ abstract class LoginApiService {
   Future<ApiResponse<String>> signIn({@Body() required LoginRequestModel data});
 
   @POST('/auth/verify-otp')
-  Future<ApiResponse<AuthResult>> verifyOtp({
+  Future<ApiResponse<VerifyOtpResponseModel>> verifyOtp({
     @Body() required VerifyOtpRequestModel data,
   });
 

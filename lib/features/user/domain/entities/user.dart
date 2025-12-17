@@ -1,4 +1,3 @@
-// lib/features/user/domain/entities/user.dart
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -7,23 +6,29 @@ part 'user.g.dart';
 @JsonSerializable()
 class User extends Equatable {
   final int id;
-  final String uid;
+  final String email;
+  final String role;
   final String phone;
-  final String? firstName;
-  final String? lastName;
-  final String? email;
-  final DateTime updatedAt;
+  final String status;
+  final double balance;
+  final String? merchantId;
+  final String? country;
   final DateTime createdAt;
+  final UserDetail? userDetail;
+  final UserSettings? userSettings;
 
   const User({
     required this.id,
-    required this.uid,
+    required this.email,
+    required this.role,
     required this.phone,
-    this.firstName,
-    this.lastName,
-    this.email,
-    required this.updatedAt,
+    required this.status,
+    required this.balance,
+    this.merchantId,
+    this.country,
     required this.createdAt,
+    this.userDetail,
+    this.userSettings,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
@@ -31,42 +36,106 @@ class User extends Equatable {
 
   User copyWith({
     int? id,
-    String? uid,
-    String? phone,
-    String? firstName,
-    String? lastName,
     String? email,
-    DateTime? updatedAt,
+    String? role,
+    String? phone,
+    String? status,
+    double? balance,
+    String? merchantId,
+    String? country,
     DateTime? createdAt,
+    UserDetail? userDetail,
+    UserSettings? userSettings,
   }) {
     return User(
       id: id ?? this.id,
-      uid: uid ?? this.uid,
-      phone: phone ?? this.phone,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
       email: email ?? this.email,
-      updatedAt: updatedAt ?? this.updatedAt,
+      role: role ?? this.role,
+      phone: phone ?? this.phone,
+      status: status ?? this.status,
+      balance: balance ?? this.balance,
+      merchantId: merchantId ?? this.merchantId,
+      country: country ?? this.country,
       createdAt: createdAt ?? this.createdAt,
+      userDetail: userDetail ?? this.userDetail,
+      userSettings: userSettings ?? this.userSettings,
     );
-  }
-
-  String get fullName {
-    if (firstName == null && lastName == null) return 'User';
-    if (firstName == null) return lastName!;
-    if (lastName == null) return firstName!;
-    return '$firstName $lastName';
   }
 
   @override
   List<Object?> get props => [
     id,
-    uid,
+    email,
+    role,
     phone,
+    status,
+    balance,
+    merchantId,
+    country,
+    createdAt,
+    userDetail,
+    userSettings,
+  ];
+}
+
+@JsonSerializable()
+class UserDetail extends Equatable {
+  final String firstName;
+  final String lastName;
+  final String fullName;
+  final String address;
+  final String birthDate;
+  final String profilePicture;
+  final int gatePoint;
+  final bool verify;
+  final String vaccount;
+
+  const UserDetail({
+    required this.firstName,
+    required this.lastName,
+    required this.fullName,
+    required this.address,
+    required this.birthDate,
+    required this.profilePicture,
+    required this.gatePoint,
+    required this.verify,
+    required this.vaccount,
+  });
+
+  factory UserDetail.fromJson(Map<String, dynamic> json) =>
+      _$UserDetailFromJson(json);
+  Map<String, dynamic> toJson() => _$UserDetailToJson(this);
+
+  @override
+  List<Object?> get props => [
     firstName,
     lastName,
-    email,
-    updatedAt,
-    createdAt,
+    fullName,
+    address,
+    birthDate,
+    profilePicture,
+    gatePoint,
+    verify,
+    vaccount,
   ];
+}
+
+@JsonSerializable()
+class UserSettings extends Equatable {
+  final bool marketing;
+  final bool notifications;
+  final bool twoFA;
+
+  const UserSettings({
+    required this.marketing,
+    required this.notifications,
+    required this.twoFA,
+  });
+
+  factory UserSettings.fromJson(Map<String, dynamic> json) =>
+      _$UserSettingsFromJson(json);
+  Map<String, dynamic> toJson() => _$UserSettingsToJson(this);
+
+  @override
+  List<Object?> get props => [marketing, notifications, twoFA];
 }

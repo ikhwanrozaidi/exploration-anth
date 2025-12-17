@@ -48,14 +48,14 @@ class _LoginApiService implements LoginApiService {
   }
 
   @override
-  Future<ApiResponse<AuthResult>> verifyOtp({
+  Future<ApiResponse<VerifyOtpResponseModel>> verifyOtp({
     required VerifyOtpRequestModel data,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = data;
-    final _options = _setStreamType<ApiResponse<AuthResult>>(
+    final _options = _setStreamType<ApiResponse<VerifyOtpResponseModel>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -66,11 +66,11 @@ class _LoginApiService implements LoginApiService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<AuthResult> _value;
+    late ApiResponse<VerifyOtpResponseModel> _value;
     try {
-      _value = ApiResponse<AuthResult>.fromJson(
+      _value = ApiResponse<VerifyOtpResponseModel>.fromJson(
         _result.data!,
-        (json) => AuthResult.fromJson(json as Map<String, dynamic>),
+        (json) => VerifyOtpResponseModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

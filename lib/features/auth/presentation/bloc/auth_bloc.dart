@@ -35,7 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(const AuthState.loading());
 
     // TODO: Implement auth status check
-    // final result = await _getStoredAdminUseCase();
+    // final result = await _getStoredUserUseCase();
 
     // result.fold(
     //   (failure) => emit(const AuthState.unauthenticated()),

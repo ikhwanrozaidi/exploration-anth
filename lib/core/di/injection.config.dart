@@ -334,6 +334,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i765.InboxLocalDataSource>(),
       ),
     );
+    gh.lazySingleton<_i285.VerifyOtpUseCase>(
+      () => _i285.VerifyOtpUseCase(gh<_i902.LoginRepository>()),
+    );
     gh.factory<_i420.LoginUseCase>(
       () => _i420.LoginUseCase(gh<_i902.LoginRepository>()),
     );
@@ -357,9 +360,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i320.StoreLoginCredentialsUseCase>(
       () => _i320.StoreLoginCredentialsUseCase(gh<_i902.LoginRepository>()),
-    );
-    gh.factory<_i285.VerifyOtpUseCase>(
-      () => _i285.VerifyOtpUseCase(gh<_i902.LoginRepository>()),
     );
     gh.factory<_i57.SignUpUseCase>(
       () => _i57.SignUpUseCase(gh<_i787.AuthRepository>()),
