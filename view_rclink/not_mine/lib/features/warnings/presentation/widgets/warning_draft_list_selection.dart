@@ -9,11 +9,13 @@ class WarningDraftListSelection extends StatefulWidget {
   final List<WarningCategoryWithReasons> categories;
   final List<String> initialSelectedUIDs;
   final int? workScopeID;
+  final String? warningType;
 
   const WarningDraftListSelection({
     Key? key,
     required this.categories,
     this.workScopeID,
+    this.warningType,
     this.initialSelectedUIDs = const [],
   }) : super(key: key);
 
@@ -33,15 +35,25 @@ class _WarningDraftListSelectionState extends State<WarningDraftListSelection> {
   }
 
   List<WarningCategoryWithReasons> get _filteredCategories {
-    if (widget.workScopeID == null) {
-      return widget.categories;
-    }
-
     return widget.categories
+        .where((categoryWithReasons) {
+          // Filter by warningType if provided
+          if (widget.warningType != null) {
+            final categoryWarningType =
+                categoryWithReasons.category.warningType.value;
+            if (categoryWarningType != widget.warningType) {
+              return false;
+            }
+          }
+          return true;
+        })
         .map((categoryWithReasons) {
-          final filteredReasons = categoryWithReasons.reasons
-              .where((reason) => reason.workScopeID == widget.workScopeID)
-              .toList();
+          // Filter reasons by workScopeID if provided
+          final filteredReasons = widget.workScopeID != null
+              ? categoryWithReasons.reasons
+                    .where((reason) => reason.workScopeID == widget.workScopeID)
+                    .toList()
+              : categoryWithReasons.reasons;
 
           return WarningCategoryWithReasons(
             category: categoryWithReasons.category,

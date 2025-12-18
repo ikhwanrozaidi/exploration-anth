@@ -1,9 +1,9 @@
 import 'package:intl/intl.dart';
 import 'package:rclink_app/features/work_scope/domain/entities/work_quantity_type.dart';
-import '../models/update_daily_report_model.dart';
-import '../models/create_daily_report_model.dart';
-import '../models/create_daily_report_quantity_field_model.dart';
-import '../models/create_daily_report_quantity_model.dart';
+import '../../../daily_report/data/models/update_daily_report_model.dart';
+import '../../../daily_report/data/models/create_daily_report_model.dart';
+import '../../../daily_report/data/models/create_daily_report_quantity_field_model.dart';
+import '../../../daily_report/data/models/create_daily_report_quantity_model.dart';
 import '../../presentation/bloc/daily_report_create/daily_report_create_state.dart';
 
 class ReportDataToUpdateModelMapper {
@@ -153,17 +153,16 @@ class ReportDataToUpdateModelMapper {
       // Parse composite key to extract quantityTypeUID and sequenceNo
       final parts = compositeKey.split('_');
       final quantityTypeUID = parts.length >= 2
-          ? parts
-                .sublist(0, parts.length - 1)
-                .join('_') // Handle UIDs with underscores
+          ? parts.sublist(0, parts.length - 1).join('_') // Handle UIDs with underscores
           : compositeKey;
-      final sequenceNo = parts.length >= 2 ? int.tryParse(parts.last) ?? 1 : 1;
+      final sequenceNo = parts.length >= 2
+          ? int.tryParse(parts.last) ?? 1
+          : 1;
 
       // Find the corresponding quantity type
       final quantityType = selectedQuantityTypes.firstWhere(
         (qt) => qt.uid == quantityTypeUID,
-        orElse: () =>
-            selectedQuantityTypes.first, // Fallback (shouldn't happen)
+        orElse: () => selectedQuantityTypes.first, // Fallback (shouldn't happen)
       );
 
       // Extract field values for this quantity instance
@@ -183,8 +182,7 @@ class ReportDataToUpdateModelMapper {
 
         if (fieldValue != null &&
             fieldValue.toString().isNotEmpty &&
-            !field.uid.endsWith('_images')) {
-          // Skip image fields
+            !field.uid.endsWith('_images')) { // Skip image fields
           quantityValues.add(
             CreateDailyReportQuantityFieldModel(
               quantityFieldUID: field.uid,

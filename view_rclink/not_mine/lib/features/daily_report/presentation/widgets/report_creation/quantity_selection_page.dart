@@ -9,7 +9,7 @@ import '../../../../../shared/utils/theme.dart';
 import '../../../../../shared/widgets/flexible_bottomsheet.dart';
 
 import '../../../../../core/di/injection.dart';
-import '../../../data/mapper/hybrid_field_mapper.dart';
+import '../../../../daily_report/data/mapper/hybrid_field_mapper.dart';
 import '../../bloc/daily_report_create/daily_report_create_bloc.dart';
 import '../../bloc/daily_report_create/daily_report_create_event.dart';
 import '../../bloc/daily_report_create/daily_report_create_state.dart';

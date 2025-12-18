@@ -148,6 +148,8 @@ import '../../features/warnings/data/datasources/warning_categories_local_dataso
     as _i263;
 import '../../features/warnings/data/datasources/warning_categories_remote_datasource.dart'
     as _i224;
+import '../../features/warnings/data/datasources/warning_image_remote_datasource.dart'
+    as _i157;
 import '../../features/warnings/data/datasources/warnings_api_service.dart'
     as _i863;
 import '../../features/warnings/data/datasources/warnings_local_datasource.dart'
@@ -170,6 +172,8 @@ import '../../features/warnings/domain/usecases/clear_warning_cache_usecase.dart
     as _i161;
 import '../../features/warnings/domain/usecases/create_report_warning_usecase.dart'
     as _i284;
+import '../../features/warnings/domain/usecases/create_site_warning_usecase.dart'
+    as _i467;
 import '../../features/warnings/domain/usecases/get_draft_warnings_usecase.dart'
     as _i984;
 import '../../features/warnings/domain/usecases/get_warning_categories_usecase.dart'
@@ -340,9 +344,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i820.WarningsRemoteDataSource>(
       () => _i820.WarningsRemoteDataSourceImpl(gh<_i863.WarningsApiService>()),
     );
-    gh.lazySingleton<_i605.SiteWarningDraftBloc>(
-      () => _i605.SiteWarningDraftBloc(gh<_i256.WarningsLocalDataSource>()),
-    );
     gh.factory<_i448.CheckPermissionUseCase>(
       () => _i448.CheckPermissionUseCase(gh<_i999.PermissionRepository>()),
     );
@@ -363,6 +364,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i491.ConnectivityService>(
       () => _i491.ConnectivityService(gh<_i895.Connectivity>()),
+    );
+    gh.lazySingleton<_i157.WarningImageRemoteDataSource>(
+      () => _i157.WarningImageRemoteDataSourceImpl(
+        gh<_i863.WarningsApiService>(),
+      ),
     );
     gh.lazySingleton<_i816.ContractorRelationRemoteDataSource>(
       () => _i816.ContractorRelationRemoteDataSourceImpl(
@@ -507,38 +513,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i8.UpdateCompanyFieldUseCase>(),
       ),
     );
-    gh.lazySingleton<_i157.WarningRepository>(
-      () => _i194.WarningRepositoryImpl(
-        gh<_i820.WarningsRemoteDataSource>(),
-        gh<_i256.WarningsLocalDataSource>(),
-        gh<_i426.CompanyBloc>(),
-        gh<_i982.DatabaseService>(),
-        gh<_i364.ImageLocalDataSource>(),
-      ),
-    );
     gh.lazySingleton<_i224.WarningCategoriesRemoteDataSource>(
       () => _i224.WarningCategoriesRemoteDataSourceImpl(
         gh<_i51.WarningCategoriesApiService>(),
         gh<_i426.CompanyBloc>(),
       ),
     );
-    gh.factory<_i545.ResolveWarningItemUseCase>(
-      () => _i545.ResolveWarningItemUseCase(gh<_i157.WarningRepository>()),
-    );
-    gh.lazySingleton<_i984.GetDraftWarningsUseCase>(
-      () => _i984.GetDraftWarningsUseCase(gh<_i157.WarningRepository>()),
-    );
     gh.lazySingleton<_i157.RefreshTokenUseCase>(
       () => _i157.RefreshTokenUseCase(gh<_i787.AuthRepository>()),
-    );
-    gh.lazySingleton<_i980.GetWarningByUidUseCase>(
-      () => _i980.GetWarningByUidUseCase(gh<_i157.WarningRepository>()),
-    );
-    gh.lazySingleton<_i161.ClearWarningCacheUseCase>(
-      () => _i161.ClearWarningCacheUseCase(gh<_i157.WarningRepository>()),
-    );
-    gh.lazySingleton<_i696.GetWarningsUseCase>(
-      () => _i696.GetWarningsUseCase(gh<_i157.WarningRepository>()),
     );
     gh.factory<_i786.ApproveDailyReportUseCase>(
       () => _i786.ApproveDailyReportUseCase(gh<_i819.DailyReportRepository>()),
@@ -586,16 +568,19 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i426.CompanyBloc>(),
       ),
     );
-    gh.factory<_i261.WarningBloc>(
-      () => _i261.WarningBloc(
-        gh<_i696.GetWarningsUseCase>(),
-        gh<_i161.ClearWarningCacheUseCase>(),
-        gh<_i545.ResolveWarningItemUseCase>(),
-      ),
-    );
     gh.lazySingleton<_i1051.WarningCategoriesBloc>(
       () => _i1051.WarningCategoriesBloc(
         gh<_i1062.GetWarningCategoriesUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i157.WarningRepository>(
+      () => _i194.WarningRepositoryImpl(
+        gh<_i820.WarningsRemoteDataSource>(),
+        gh<_i256.WarningsLocalDataSource>(),
+        gh<_i426.CompanyBloc>(),
+        gh<_i982.DatabaseService>(),
+        gh<_i364.ImageLocalDataSource>(),
+        gh<_i157.WarningImageRemoteDataSource>(),
       ),
     );
     gh.factory<_i337.ContractorRelationRepository>(
@@ -611,11 +596,23 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i838.CreateWarningBloc>(
       () => _i838.CreateWarningBloc(gh<_i284.CreateReportWarningUseCase>()),
     );
-    gh.factory<_i205.WarningDetailsBloc>(
-      () => _i205.WarningDetailsBloc(
-        gh<_i980.GetWarningByUidUseCase>(),
-        gh<_i426.CompanyBloc>(),
-      ),
+    gh.factory<_i545.ResolveWarningItemUseCase>(
+      () => _i545.ResolveWarningItemUseCase(gh<_i157.WarningRepository>()),
+    );
+    gh.lazySingleton<_i984.GetDraftWarningsUseCase>(
+      () => _i984.GetDraftWarningsUseCase(gh<_i157.WarningRepository>()),
+    );
+    gh.factory<_i467.CreateSiteWarningUseCase>(
+      () => _i467.CreateSiteWarningUseCase(gh<_i157.WarningRepository>()),
+    );
+    gh.lazySingleton<_i980.GetWarningByUidUseCase>(
+      () => _i980.GetWarningByUidUseCase(gh<_i157.WarningRepository>()),
+    );
+    gh.lazySingleton<_i161.ClearWarningCacheUseCase>(
+      () => _i161.ClearWarningCacheUseCase(gh<_i157.WarningRepository>()),
+    );
+    gh.lazySingleton<_i696.GetWarningsUseCase>(
+      () => _i696.GetWarningsUseCase(gh<_i157.WarningRepository>()),
     );
     gh.factory<_i79.ClearContractorRelationCacheUseCase>(
       () => _i79.ClearContractorRelationCacheUseCase(
@@ -625,6 +622,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i993.GetContractorRelationUseCase>(
       () => _i993.GetContractorRelationUseCase(
         gh<_i337.ContractorRelationRepository>(),
+      ),
+    );
+    gh.factory<_i261.WarningBloc>(
+      () => _i261.WarningBloc(
+        gh<_i696.GetWarningsUseCase>(),
+        gh<_i161.ClearWarningCacheUseCase>(),
+        gh<_i545.ResolveWarningItemUseCase>(),
       ),
     );
     gh.lazySingleton<_i224.ContractorRelationBloc>(
@@ -638,6 +642,19 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1060.RoadApiService>(),
         gh<_i224.ContractorRelationBloc>(),
         gh<_i426.CompanyBloc>(),
+      ),
+    );
+    gh.factory<_i205.WarningDetailsBloc>(
+      () => _i205.WarningDetailsBloc(
+        gh<_i980.GetWarningByUidUseCase>(),
+        gh<_i426.CompanyBloc>(),
+      ),
+    );
+    gh.lazySingleton<_i605.SiteWarningDraftBloc>(
+      () => _i605.SiteWarningDraftBloc(
+        gh<_i256.WarningsLocalDataSource>(),
+        gh<_i467.CreateSiteWarningUseCase>(),
+        gh<_i364.ImageLocalDataSource>(),
       ),
     );
     gh.lazySingleton<_i581.RoadRepository>(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:rclink_app/features/inspection/presentation/pages/inspection_creation_page.dart';
 import 'package:rclink_app/shared/widgets/coming_soon_overlay.dart';
 
+import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../shared/widgets/custom_tab_widget.dart';
@@ -48,6 +50,8 @@ class _InspectionPageState extends State<InspectionPage> {
             bottom: false,
             child: Column(
               children: [
+                SizedBox(height: ResponsiveHelper.getHeight(context, 0.02)),
+
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 30),
                   child: Row(
@@ -72,10 +76,13 @@ class _InspectionPageState extends State<InspectionPage> {
                                   ),
                                 ],
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.arrow_back_rounded,
                                 color: Colors.black,
-                                size: 25,
+                                size: ResponsiveHelper.iconSize(
+                                  context,
+                                  base: 20,
+                                ),
                               ),
                             ),
                           ),
@@ -87,7 +94,10 @@ class _InspectionPageState extends State<InspectionPage> {
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
-                              fontSize: 20,
+                              fontSize: ResponsiveHelper.fontSize(
+                                context,
+                                base: 18,
+                              ),
                             ),
                           ),
                         ],
@@ -100,24 +110,32 @@ class _InspectionPageState extends State<InspectionPage> {
                           padding: const EdgeInsets.all(10),
                         ),
                         onPressed: () {
-                          print("Add button clicked");
-                          CustomSnackBar.show(
+                          // print("Add button clicked");
+                          // CustomSnackBar.show(
+                          //   context,
+                          //   'This feature is coming soon...',
+                          //   type: SnackBarType.comingsoon,
+                          // );
+
+                          Navigator.push(
                             context,
-                            'This feature is coming soon...',
-                            type: SnackBarType.comingsoon,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  InspectionCreationPage(isNewDraft: true),
+                            ),
                           );
                         },
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.add,
                           color: primaryColor,
-                          size: 25,
+                          size: ResponsiveHelper.iconSize(context, base: 20),
                         ),
                       ),
                     ],
                   ),
                 ),
 
-                SizedBox(height: 30),
+                SizedBox(height: 20),
 
                 Expanded(
                   child: Container(

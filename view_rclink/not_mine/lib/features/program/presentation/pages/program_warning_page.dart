@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
-import '../../../../../../../lib/features/z_view_rclink/not_mine/shared/utils/responsive_helper.dart';
+import '../../../../../shared/utils/responsive_helper.dart';
 import '../../../../routes/app_router.dart';
 import '../../../../shared/helper/navigation_helper.dart';
 import '../../../../shared/pages/root_page.dart';

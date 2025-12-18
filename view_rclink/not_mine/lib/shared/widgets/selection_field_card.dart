@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../../lib/features/z_view_rclink/shared/utils/responsive_helper.dart';
-import '../../../../../lib/features/z_view_rclink/shared/utils/theme.dart';
+import '../../../../shared/utils/responsive_helper.dart';
+import '../../../../shared/utils/theme.dart';
 
 /// Reusable selection field card widget
 /// Used for Scope of Work, Weather, Location, and Section fields

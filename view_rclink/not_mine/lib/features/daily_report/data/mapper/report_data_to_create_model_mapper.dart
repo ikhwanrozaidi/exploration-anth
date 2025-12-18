@@ -1,9 +1,9 @@
 import 'package:intl/intl.dart';
 import 'package:rclink_app/features/work_scope/domain/entities/work_quantity_type.dart';
-import '../models/create_daily_report_equipment_model.dart';
-import '../models/create_daily_report_model.dart';
-import '../models/create_daily_report_quantity_field_model.dart';
-import '../models/create_daily_report_quantity_model.dart';
+import '../../../daily_report/data/models/create_daily_report_equipment_model.dart';
+import '../../../daily_report/data/models/create_daily_report_model.dart';
+import '../../../daily_report/data/models/create_daily_report_quantity_field_model.dart';
+import '../../../daily_report/data/models/create_daily_report_quantity_model.dart';
 import '../../presentation/bloc/daily_report_create/daily_report_create_state.dart';
 
 class ReportDataToCreateModelMapper {
@@ -134,9 +134,7 @@ class ReportDataToCreateModelMapper {
     print('  - quantityFieldData isEmpty: ${quantityFieldData.isEmpty}');
     print('  - quantityFieldData keys: ${quantityFieldData.keys.toList()}');
     print('  - selectedQuantityTypes count: ${selectedQuantityTypes.length}');
-    print(
-      '  - selectedQuantityTypes: ${selectedQuantityTypes.map((q) => q.name).toList()}',
-    );
+    print('  - selectedQuantityTypes: ${selectedQuantityTypes.map((q) => q.name).toList()}');
 
     if (quantityFieldData.isEmpty) {
       print('  ⚠️ quantityFieldData is EMPTY - returning null');
@@ -158,11 +156,11 @@ class ReportDataToCreateModelMapper {
       // Parse composite key to extract quantityTypeUID and sequenceNo
       final parts = compositeKey.split('_');
       final quantityTypeUID = parts.length >= 2
-          ? parts
-                .sublist(0, parts.length - 1)
-                .join('_') // Handle UIDs with underscores
+          ? parts.sublist(0, parts.length - 1).join('_') // Handle UIDs with underscores
           : compositeKey;
-      final sequenceNo = parts.length >= 2 ? int.tryParse(parts.last) ?? 1 : 1;
+      final sequenceNo = parts.length >= 2
+          ? int.tryParse(parts.last) ?? 1
+          : 1;
 
       // Find the corresponding quantity type
       WorkQuantityType? quantityType;
@@ -171,12 +169,8 @@ class ReportDataToCreateModelMapper {
           (qt) => qt.uid == quantityTypeUID,
         );
       } catch (e) {
-        print(
-          '     ⚠️ Quantity type not found in selectedQuantityTypes: $quantityTypeUID',
-        );
-        print(
-          '        Skipping this quantity. Make sure ToggleQuantityType is called when adding quantities.',
-        );
+        print('     ⚠️ Quantity type not found in selectedQuantityTypes: $quantityTypeUID');
+        print('        Skipping this quantity. Make sure ToggleQuantityType is called when adding quantities.');
         continue;
       }
 
@@ -197,8 +191,7 @@ class ReportDataToCreateModelMapper {
 
         if (fieldValue != null &&
             fieldValue.toString().isNotEmpty &&
-            !field.uid.endsWith('_images')) {
-          // Skip image fields
+            !field.uid.endsWith('_images')) { // Skip image fields
           quantityValues.add(
             CreateDailyReportQuantityFieldModel(
               quantityFieldUID: field.uid,
@@ -213,9 +206,7 @@ class ReportDataToCreateModelMapper {
 
       // Only add quantity if it has at least one value
       if (quantityValues.isNotEmpty || typeSegments != null) {
-        print(
-          '     ✅ Adding quantity: typeUID=$quantityTypeUID, seq=$sequenceNo, values=${quantityValues.length}',
-        );
+        print('     ✅ Adding quantity: typeUID=$quantityTypeUID, seq=$sequenceNo, values=${quantityValues.length}');
         quantities.add(
           CreateDailyReportQuantityModel(
             quantityTypeUID: quantityTypeUID, // Use extracted UID
@@ -233,9 +224,7 @@ class ReportDataToCreateModelMapper {
 
     print('  📊 [MAPPER DEBUG] Final result:');
     print('     - quantities.length: ${quantities.length}');
-    print(
-      '     - returning: ${quantities.isNotEmpty ? "List with ${quantities.length} items" : "null"}',
-    );
+    print('     - returning: ${quantities.isNotEmpty ? "List with ${quantities.length} items" : "null"}');
 
     return quantities.isNotEmpty ? quantities : null;
   }

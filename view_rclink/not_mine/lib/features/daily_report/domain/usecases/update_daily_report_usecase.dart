@@ -2,8 +2,8 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/sync/sync_constants.dart';
-import '../entities/daily_report.dart';
-import '../repository/daily_report_repository.dart';
+import '../../../daily_report/domain/entities/daily_report.dart';
+import '../../../daily_report/domain/repository/daily_report_repository.dart';
 import '../../data/mapper/report_data_to_update_model_mapper.dart';
 import '../../presentation/bloc/daily_report_create/daily_report_create_state.dart';
 
@@ -26,18 +26,12 @@ class UpdateDailyReportUseCase {
       );
 
       // Extract images from selections (condition snapshots and workerImages)
-      print(
-        '📷 [UPDATE] Condition snapshots keys: ${reportData.selections.conditionSnapshots.keys.toList()}',
-      );
-      print(
-        '📷 [UPDATE] Worker images count: ${reportData.selections.workerImages.length}',
-      );
+      print('📷 [UPDATE] Condition snapshots keys: ${reportData.selections.conditionSnapshots.keys.toList()}');
+      print('📷 [UPDATE] Worker images count: ${reportData.selections.workerImages.length}');
 
       final images = _extractImagesFromSelections(reportData.selections);
 
-      print(
-        '📷 [UPDATE] Extracted images: ${images?.keys.map((k) => '${k.value}: ${images[k]?.length}').join(', ') ?? 'none'}',
-      );
+      print('📷 [UPDATE] Extracted images: ${images?.keys.map((k) => '${k.value}: ${images[k]?.length}').join(', ') ?? 'none'}');
 
       // Call repository to update report with images
       return await _repository.updateDailyReport(

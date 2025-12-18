@@ -17,7 +17,6 @@ class CreateSiteWarningUseCase
 
   @override
   Future<Either<Failure, Warning>> call(CreateSiteWarningParams params) async {
-    // Extract images from params if provided
     final images = params.images != null && params.images!.isNotEmpty
         ? _extractImagesFromPaths(params.images!)
         : null;
@@ -30,7 +29,6 @@ class CreateSiteWarningUseCase
     );
   }
 
-  /// Extract images from image paths and convert to ImageContextField map
   Map<ImageContextField, List<String>>? _extractImagesFromPaths(
     List<String> imagePaths,
   ) {
@@ -38,7 +36,6 @@ class CreateSiteWarningUseCase
 
     final result = <ImageContextField, List<String>>{};
 
-    // All warning images go to GENERAL context field
     result[ImageContextField.general] = imagePaths;
 
     print('📷 Extracted ${imagePaths.length} warning images');
@@ -47,12 +44,11 @@ class CreateSiteWarningUseCase
   }
 }
 
-/// Parameters for creating a site warning
 class CreateSiteWarningParams extends Equatable {
   final CreateWarningModel data;
   final String companyUID;
-  final List<String>? images; // Image file paths
-  final String? adminUID; // For image upload tracking
+  final List<String>? images;
+  final String? adminUID;
 
   const CreateSiteWarningParams({
     required this.data,

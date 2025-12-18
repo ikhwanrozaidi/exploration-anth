@@ -114,4 +114,13 @@ class CustomSnackBar {
         return Icons.commit_outlined;
     }
   }
+
+  /// Show permission denied snackbar
+  static void showPermissionDenied(BuildContext context) {
+    CustomSnackBar.show(
+      context,
+      'You need permission to access',
+      type: SnackBarType.error,
+    );
+  }
 }

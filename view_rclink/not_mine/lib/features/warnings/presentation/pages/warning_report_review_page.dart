@@ -37,14 +37,17 @@ class _WarningReportReviewPageState extends State<WarningReportReviewPage> {
   @override
   void initState() {
     super.initState();
-    final state = context.read<WarningCategoriesBloc>().state;
-    if (state is WarningCategoriesInitial) {
-      context.read<WarningCategoriesBloc>().add(
-        const WarningCategoriesEvent.loadCategories(
-          warningType: 'REPORT_WARNING',
-        ),
-      );
-    }
+
+    /// I don't know why? lol
+    ///
+    // final state = context.read<WarningCategoriesBloc>().state;
+    // if (state is WarningCategoriesInitial) {
+    //   context.read<WarningCategoriesBloc>().add(
+    //     const WarningCategoriesEvent.loadCategories(
+    //       warningType: 'REPORT_WARNING',
+    //     ),
+    //   );
+    // }
   }
 
   @override

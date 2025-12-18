@@ -56,6 +56,7 @@ abstract class WarningsApiService {
     @Body() CreateWarningModel data,
   );
 
+  /// Create a warning from site inspection with images
   @POST('/companies/{companyUID}/warnings/{uid}/files')
   @MultiPart()
   Future<ApiResponse<List<FileResponseDto>>> uploadWarningFiles(

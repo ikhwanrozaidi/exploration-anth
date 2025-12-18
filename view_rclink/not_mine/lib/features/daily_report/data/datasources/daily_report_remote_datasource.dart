@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
-import 'daily_report_api_service.dart';
+import '../../data/datasources/daily_report_api_service.dart';
 import '../models/create_daily_report_model.dart';
 import '../models/update_daily_report_model.dart';
 import '../models/daily_report_model.dart';

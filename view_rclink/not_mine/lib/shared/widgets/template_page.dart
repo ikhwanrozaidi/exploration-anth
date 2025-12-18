@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../lib/features/z_view_rclink/shared/utils/responsive_helper.dart';
+import '../../../../shared/utils/responsive_helper.dart';
 
 class TemplatePage extends StatelessWidget {
   final String? pageTitle;

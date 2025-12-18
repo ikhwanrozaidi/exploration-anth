@@ -1,5 +1,3 @@
-// lib/features/warnings/data/datasources/warning_image_remote_datasource.dart
-
 import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
@@ -12,7 +10,6 @@ import '../../../../core/sync/sync_constants.dart';
 import 'warnings_api_service.dart';
 
 abstract class WarningImageRemoteDataSource {
-  /// Upload images for a warning
   Future<Either<Failure, List<FileResponseDto>>> uploadImagesForWarning({
     required String companyUID,
     required String warningUID,
@@ -33,7 +30,6 @@ class WarningImageRemoteDataSourceImpl implements WarningImageRemoteDataSource {
     required List<ImageSyncQueueRecord> images,
   }) async {
     try {
-      // Group images by contextField
       final Map<ImageContextField, List<ImageSyncQueueRecord>> groupedImages =
           {};
 
@@ -47,10 +43,8 @@ class WarningImageRemoteDataSourceImpl implements WarningImageRemoteDataSource {
         }
       }
 
-      // Convert to MultipartFiles - WARNING_IMAGE only
       List<MultipartFile>? warningImages;
 
-      // CRITICAL FIX: Track missing images to report to user
       final List<String> missingImagePaths = [];
       final Map<ImageContextField, int> missingByContext = {};
 
@@ -58,7 +52,6 @@ class WarningImageRemoteDataSourceImpl implements WarningImageRemoteDataSource {
         final contextField = entry.key;
         final imageRecords = entry.value;
 
-        // Sort by sequence to maintain order
         imageRecords.sort((a, b) => a.sequence.compareTo(b.sequence));
 
         final multipartFiles = <MultipartFile>[];
@@ -66,14 +59,13 @@ class WarningImageRemoteDataSourceImpl implements WarningImageRemoteDataSource {
           final file = File(record.localFilePath);
           if (!await file.exists()) {
             print('⚠️ Image file not found: ${record.localFilePath}');
-            // CRITICAL FIX: Track missing images instead of silently skipping
+
             missingImagePaths.add(record.localFilePath);
             missingByContext[contextField] =
                 (missingByContext[contextField] ?? 0) + 1;
             continue;
           }
 
-          // Parse MIME type for multipart upload
           final contentType = MediaType.parse(record.mimeType);
 
           print('📎 Adding file: ${record.fileName} (${record.mimeType})');
@@ -87,7 +79,6 @@ class WarningImageRemoteDataSourceImpl implements WarningImageRemoteDataSource {
           );
         }
 
-        // Assign to WARNING_IMAGE field (only one type for warnings)
         switch (contextField) {
           case ImageContextField.general:
             warningImages = multipartFiles;
@@ -99,8 +90,6 @@ class WarningImageRemoteDataSourceImpl implements WarningImageRemoteDataSource {
             break;
         }
       }
-
-      // CRITICAL FIX: Report missing images to user instead of silent skip
       if (missingImagePaths.isNotEmpty) {
         final contextDetails = missingByContext.entries
             .map((e) => '${e.key.value}: ${e.value}')
@@ -120,7 +109,6 @@ class WarningImageRemoteDataSourceImpl implements WarningImageRemoteDataSource {
         );
       }
 
-      // Call API
       print('📤 Uploading images for warning $warningUID:');
       print('  - Warning Images: ${warningImages?.length ?? 0}');
 

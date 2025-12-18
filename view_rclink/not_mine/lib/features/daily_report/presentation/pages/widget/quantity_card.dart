@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../../../../../lib/features/z_view_rclink/not_mine/shared/utils/theme.dart';
-import '../../../../../../../../lib/features/z_view_rclink/not_mine/shared/widgets/divider_config.dart';
+import '../../../../../../shared/utils/theme.dart';
+import '../../../../../../shared/widgets/divider_config.dart';
 import '../../../domain/entities/report_quantity.dart';
 
 class QuantityCard extends StatefulWidget {

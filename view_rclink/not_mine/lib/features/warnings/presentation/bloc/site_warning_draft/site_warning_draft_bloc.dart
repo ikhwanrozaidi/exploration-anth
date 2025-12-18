@@ -378,7 +378,6 @@ class SiteWarningDraftBloc
 
       emit(SiteWarningDraftState.autoSaving(draftData: currentData));
 
-      // Build CreateWarningModel from current data
       final createModel = CreateWarningModel(
         roadUID: currentData.road.uid ?? '',
         workScopeUID: currentData.scopeUID,
@@ -396,12 +395,10 @@ class SiteWarningDraftBloc
         requiresAction: true,
       );
 
-      // Update draft in local database
       await _localDataSource.updateDraftWarningLocal(draftUID, createModel);
 
       print('✅ Draft data auto-saved: $draftUID');
 
-      // Save draft images to permanent storage
       await _saveWarningDraftImages(
         draftUID: draftUID,
         companyUID: currentData.companyUID,
@@ -432,7 +429,6 @@ class SiteWarningDraftBloc
         print('✅ Draft images deleted');
       } catch (e) {
         print('⚠️ Error deleting draft images: $e');
-        // Continue with draft deletion even if image deletion fails
       }
 
       // Delete draft record
@@ -476,7 +472,6 @@ class SiteWarningDraftBloc
         return;
       }
 
-      // CRITICAL: Validate minimum 2 images
       if (currentData.warningImages.length < 2) {
         emit(
           SiteWarningDraftState.error(
@@ -561,11 +556,9 @@ class SiteWarningDraftBloc
               print('🗑️ Draft deleted: $draftUID');
             } catch (e) {
               print('⚠️ Error deleting draft: $e');
-              // Don't fail submission if draft deletion fails
             }
           }
 
-          // Emit submitted with the draft data (not Warning entity)
           emit(SiteWarningDraftState.submitted(draftData: currentData));
         },
       );
@@ -631,12 +624,10 @@ class SiteWarningDraftBloc
 
       final imagesByContext = <ImageContextField, List<String>>{};
 
-      // All warning images go to GENERAL context field
       imagesByContext[ImageContextField.general] = warningImages;
 
       print('💾 Saving ${warningImages.length} draft images for $draftUID');
 
-      // Save to permanent storage with draft_pending status
       await _imageLocalDataSource.saveDraftImages(
         entityType: SyncEntityType.warning,
         entityUID: draftUID,
@@ -658,7 +649,6 @@ class SiteWarningDraftBloc
         entityUID: draftUID,
       );
 
-      // Extract all image paths from GENERAL context field
       final generalImages = imagesByContext[ImageContextField.general] ?? [];
 
       print('📂 Loaded ${generalImages.length} draft images for $draftUID');

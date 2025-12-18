@@ -9,7 +9,7 @@ import '../../domain/repository/workscopes_repository.dart';
 import '../datasources/work_scope_remote_datasource.dart';
 import '../datasources/work_scope_local_datasource.dart';
 import '../models/work_scope_model.dart';
-import '../../../company/presentation/bloc/company_bloc.dart';
+import '../../../../features/company/presentation/bloc/company_bloc.dart';
 
 @LazySingleton(as: WorkScopesRepository)
 class WorkScopesRepositoryImpl

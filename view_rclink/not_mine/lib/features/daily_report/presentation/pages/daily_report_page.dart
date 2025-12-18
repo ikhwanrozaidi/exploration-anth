@@ -3,18 +3,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:rclink_app/features/rbac/presentation/widgets/permission_gate.dart';
 import 'package:rclink_app/shared/widgets/shimmer_loading.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_state.dart';
+import '../../../rbac/domain/constants/permission_codes.dart';
 import '../../../road/presentation/helper/road_level.dart';
 import '../../../road/presentation/helper/road_selection_result.dart';
 import '../../../road/presentation/widgets/road_bottom_sheet.dart';
 import '../../../work_scope/presentation/bloc/work_scope_bloc.dart';
 import '../../../work_scope/presentation/widgets/work_scope_bottom_sheet.dart';
-import 'report_creation_page.dart';
+import '../../presentation/pages/report_creation_page.dart';
 import '../../../../shared/widgets/month_filter_widget.dart';
 import '../bloc/daily_report_view/daily_report_view_bloc.dart';
 import '../bloc/daily_report_view/daily_report_view_event.dart';
@@ -367,27 +370,44 @@ class _DailyReportPageContentState extends State<_DailyReportPageContent>
                             ),
                           ],
                         ),
-                        IconButton(
-                          style: IconButton.styleFrom(
-                            shape: const CircleBorder(),
-                            backgroundColor: Colors.white,
-                            padding: ResponsiveHelper.padding(context, all: 10),
-                          ),
-                          onPressed: () {
-                            // Navigate to creation page with isNewDraft flag
-                            // This will trigger draft mode and auto-save
-                            Navigator.push(
+                        PermissionGate(
+                          permission: PermissionCodes.DAILY_REPORT_CREATE,
+                          behavior: PermissionBehavior.disable,
+                          onAccessDenied: () {
+                            CustomSnackBar.show(
                               context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    DailyReportCreationPage(isNewDraft: true),
-                              ),
+                              'You do not have permission to create daily reports',
+                              type: SnackBarType.info,
                             );
                           },
-                          icon: Icon(
-                            Icons.add,
-                            color: primaryColor,
-                            size: ResponsiveHelper.iconSize(context, base: 20),
+                          child: IconButton(
+                            style: IconButton.styleFrom(
+                              shape: const CircleBorder(),
+                              backgroundColor: Colors.white,
+                              padding: ResponsiveHelper.padding(
+                                context,
+                                all: 10,
+                              ),
+                            ),
+                            onPressed: () {
+                              // Navigate to creation page with isNewDraft flag
+                              // This will trigger draft mode and auto-save
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      DailyReportCreationPage(isNewDraft: true),
+                                ),
+                              );
+                            },
+                            icon: Icon(
+                              Icons.add,
+                              color: primaryColor,
+                              size: ResponsiveHelper.iconSize(
+                                context,
+                                base: 20,
+                              ),
+                            ),
                           ),
                         ),
                       ],

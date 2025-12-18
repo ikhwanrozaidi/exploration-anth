@@ -1,3 +1,5 @@
+// lib/features/warnings/data/repositories/warning_repository_impl.dart
+
 import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
@@ -24,18 +26,19 @@ class WarningRepositoryImpl
   final WarningsRemoteDataSource _remoteDataSource;
   final WarningsLocalDataSource _localDataSource;
   final CompanyBloc _companyBloc;
-  final WarningImageRemoteDataSource? _imageRemoteDataSource;
+  final ImageLocalDataSource _imageLocalDataSource;
+  final WarningImageRemoteDataSource _imageRemoteDataSource;
 
   WarningRepositoryImpl(
     this._remoteDataSource,
     this._localDataSource,
     this._companyBloc,
     DatabaseService databaseService,
-    ImageLocalDataSource imageLocalDataSource,
-    @Named('warningImageRemoteDataSource') this._imageRemoteDataSource,
+    this._imageLocalDataSource,
+    this._imageRemoteDataSource,
   ) : super(
         databaseService: databaseService,
-        imageLocalDataSource: imageLocalDataSource,
+        imageLocalDataSource: _imageLocalDataSource,
       );
 
   @override
@@ -126,38 +129,6 @@ class WarningRepositoryImpl
   }
 
   @override
-  Future<Either<Failure, Warning>> createReportWarning({
-    required String companyUID,
-    required String dailyReportUID,
-    required List<String> warningReasonUIDs,
-    String? description,
-  }) async {
-    final currentState = _companyBloc.state;
-
-    if (currentState is! CompanyLoaded ||
-        currentState.selectedCompany == null) {
-      return const Left(ServerFailure('No company selected'));
-    }
-
-    final createModel = CreateReportWarningModel(
-      dailyReportUID: dailyReportUID,
-      warningReasonUIDs: warningReasonUIDs,
-      description: description,
-    );
-
-    final result = await _remoteDataSource.createReportWarning(
-      companyUID: companyUID,
-      data: createModel,
-    );
-
-    return result.fold((failure) => Left(failure), (model) async {
-      // Cache the created warning
-      await _localDataSource.cacheSingleWarning(model);
-      return Right(model.toEntity());
-    });
-  }
-
-  @override
   Future<Either<Failure, Warning>> resolveWarningItem({
     required String companyUID,
     required String warningUID,
@@ -174,7 +145,7 @@ class WarningRepositoryImpl
       return await executeOptimistic<Warning, WarningModel>(
         local: () async {
           print('🟢 [WarningRepository] Executing local update...');
-          // Step 1: Update locally with optimistic response
+
           // Get the cached warning first
           final cachedWarning = await _localDataSource.getCachedWarningByUid(
             warningUID,
@@ -189,7 +160,6 @@ class WarningRepositoryImpl
             '🟢 [WarningRepository] Found cached warning, updating item...',
           );
 
-          // Mark the specific item as completed
           final updatedWarningItems = cachedWarning.warningItems.map((item) {
             if (item.uid == itemUID) {
               return item.copyWith(
@@ -201,7 +171,6 @@ class WarningRepositoryImpl
             return item;
           }).toList();
 
-          // Check if all items are now completed
           final allItemsCompleted = updatedWarningItems.every(
             (item) => item.isCompleted,
           );
@@ -306,7 +275,7 @@ class WarningRepositoryImpl
 
             await saveImagesForEntity(
               entityType: SyncEntityType.warning,
-              entityUID: localWarning.uid, // Temp UID
+              entityUID: localWarning.uid,
               companyUID: companyUID,
               uploadedByUID: adminUID,
               imagesByContextField: images,
@@ -328,10 +297,9 @@ class WarningRepositoryImpl
         ),
         onSyncSuccess: (serverModel, tempUID) async {
           print('✅ Site warning synced successfully, updating local DB');
-          // Update local DB with server data
+
           await _localDataSource.cacheSingleWarning(serverModel);
 
-          // Remove the temp UID entry if it exists
           if (tempUID != serverModel.uid) {
             await _localDataSource.deleteWarningByUID(tempUID);
           }
@@ -344,8 +312,8 @@ class WarningRepositoryImpl
 
             await activateImageUpload(
               SyncEntityType.warning,
-              tempUID, // Old temp UID
-              serverModel.uid, // New server UID
+              tempUID,
+              serverModel.uid,
             );
 
             print('✅ Images activated for upload');
@@ -357,7 +325,7 @@ class WarningRepositoryImpl
         entityType: SyncEntityType.warning,
         action: SyncAction.create,
         payload: {...data.toJson(), 'companyUID': companyUID},
-        priority: 10, // High priority - user-triggered creation
+        priority: 10,
       );
     } catch (e) {
       return Left(CacheFailure('Failed to create site warning: $e'));
@@ -365,31 +333,23 @@ class WarningRepositoryImpl
   }
 
   /// Attempt immediate image upload in the background
-  /// If fails, images remain in queue for periodic sync
   Future<void> _uploadImagesImmediately(
     String companyUID,
     String warningUID,
   ) async {
-    if (_imageRemoteDataSource == null) {
-      print('⚠️ Image remote datasource not available');
-      return;
-    }
-
     try {
-      // Get unactivated images for this warning
-      final images = await imageLocalDataSource?.getImagesByEntity(
+      final images = await _imageLocalDataSource.getImagesByEntity(
         entityType: SyncEntityType.warning,
         entityUID: warningUID,
       );
 
-      if (images == null || images.isEmpty) {
+      if (images.isEmpty) {
         print('ℹ️ No images to upload for warning $warningUID');
         return;
       }
 
       print('📤 Uploading ${images.length} images immediately...');
 
-      // Attempt upload
       final result = await _imageRemoteDataSource.uploadImagesForWarning(
         companyUID: companyUID,
         warningUID: warningUID,
@@ -401,8 +361,7 @@ class WarningRepositoryImpl
           print('⚠️ Immediate image upload failed: ${failure.message}');
           print('   Images will retry via periodic sync');
 
-          // Increment retry count for all images
-          await imageLocalDataSource?.incrementRetryCount(
+          await _imageLocalDataSource.incrementRetryCount(
             SyncEntityType.warning,
             warningUID,
             failure.message,
@@ -413,8 +372,7 @@ class WarningRepositoryImpl
             '✅ Immediate upload successful! ${uploadedFiles.length} images uploaded',
           );
 
-          // Mark images as synced with server metadata
-          await imageLocalDataSource?.markImagesAsSynced(
+          await _imageLocalDataSource.markImagesAsSynced(
             SyncEntityType.warning,
             warningUID,
             uploadedFiles,
@@ -425,8 +383,7 @@ class WarningRepositoryImpl
       print('❌ Error in immediate image upload: $e');
       print('   Images will retry via periodic sync');
 
-      // Increment retry count on exception
-      await imageLocalDataSource?.incrementRetryCount(
+      await _imageLocalDataSource.incrementRetryCount(
         SyncEntityType.warning,
         warningUID,
         e.toString(),

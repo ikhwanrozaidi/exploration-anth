@@ -8,7 +8,7 @@ import 'package:rclink_app/features/contractor_relation/domain/entities/contract
 import '../../../../core/errors/failures.dart';
 import '../../../../core/repositories/base_sync_repository.dart';
 import '../../../company/presentation/bloc/company_state.dart';
-import '../../../company/presentation/bloc/company_bloc.dart';
+import '../../../../features/company/presentation/bloc/company_bloc.dart';
 import '../../domain/repository/contractor_relation_repository.dart';
 import '../datasource/contractor_relation_local_datasource.dart';
 

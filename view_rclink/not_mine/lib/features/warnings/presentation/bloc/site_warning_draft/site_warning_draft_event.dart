@@ -37,10 +37,8 @@ abstract class SiteWarningDraftEvent with _$SiteWarningDraftEvent {
     required List<String> warningImages,
   }) = UpdateWarningImages;
 
-  // Auto-save
   const factory SiteWarningDraftEvent.autoSaveDraft() = AutoSaveDraft;
 
-  // Draft management
   const factory SiteWarningDraftEvent.loadExistingDraft({
     required String draftUID,
   }) = LoadExistingDraft;
@@ -48,7 +46,6 @@ abstract class SiteWarningDraftEvent with _$SiteWarningDraftEvent {
   const factory SiteWarningDraftEvent.deleteDraft({required String draftUID}) =
       DeleteDraft;
 
-  // Submission
   const factory SiteWarningDraftEvent.submitWarning({
     required String companyUID,
   }) = SubmitWarning;

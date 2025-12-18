@@ -705,6 +705,7 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                                             WarningDraftListSelection(
                                               categories: categories,
                                               workScopeID: _workScopeID,
+                                              warningType: 'SITE_WARNING',
                                               initialSelectedUIDs:
                                                   _selectedWarningReasonUIDs,
                                             ),
@@ -741,7 +742,6 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                         ),
 
                         // Photos
-                        // Photos
                         BlocBuilder<
                           SiteWarningDraftBloc,
                           SiteWarningDraftState
@@ -762,13 +762,12 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                               icon: Icons.camera_alt_rounded,
                               title: 'Photos',
                               titleDetails: warningImages.isEmpty
-                                  ? 'Take picture of site (min. 2 images)'
+                                  ? 'Take picture of site'
                                   : '${warningImages.length} image${warningImages.length > 1 ? 's' : ''} added',
                               isFilled: warningImages.length >= 2,
                               onTap: () async {
                                 print('📷 Opening gallery for warning images');
 
-                                // Convert existing image paths to GalleryImage objects
                                 final initialImages = warningImages
                                     .map(
                                       (path) => GalleryImage(
@@ -803,12 +802,10 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                                     '✅ Gallery result: ${result.images!.length} images',
                                   );
 
-                                  // Extract image paths from GalleryImage objects
                                   final imagePaths = result.images!
                                       .map((img) => img.path)
                                       .toList();
 
-                                  // Update BLoC with new images
                                   _siteWarningDraftBloc.add(
                                     SiteWarningDraftEvent.updateWarningImages(
                                       warningImages: imagePaths,

@@ -9,8 +9,8 @@ import 'package:rclink_app/features/daily_report/presentation/widgets/report_cre
 import '../../../../../core/di/injection.dart';
 import '../../../../../core/utils/cache_managers.dart';
 import '../../../../../shared/utils/responsive_helper.dart';
-import '../../../../company/presentation/bloc/company_bloc.dart';
-import '../../../../company/presentation/bloc/company_state.dart';
+import '../../../../../features/company/presentation/bloc/company_bloc.dart';
+import '../../../../../features/company/presentation/bloc/company_state.dart';
 import '../../../domain/entities/daily_report.dart';
 import '../../bloc/daily_report_create/daily_report_create_bloc.dart';
 import '../../bloc/daily_report_create/daily_report_create_event.dart';
