@@ -1,5 +1,3 @@
-// lib/features/warnings/data/repositories/warning_repository_impl.dart
-
 import 'dart:async';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
@@ -135,11 +133,6 @@ class WarningRepositoryImpl
     required String itemUID,
     String? notes,
   }) async {
-    print('🟢 [WarningRepository] resolveWarningItem called');
-    print('   companyUID: $companyUID');
-    print('   warningUID: $warningUID');
-    print('   itemUID: $itemUID');
-
     try {
       // Use base class executeOptimistic with automatic SyncQueue fallback
       return await executeOptimistic<Warning, WarningModel>(
@@ -200,7 +193,7 @@ class WarningRepositoryImpl
         },
         onSyncSuccess: (serverModel, tempUID) async {
           print('✅ [WarningRepository] Remote sync successful, updating cache');
-          // Update local DB with server data
+
           await _localDataSource.cacheSingleWarning(serverModel);
         },
         entityType: SyncEntityType.warningItem,
@@ -211,7 +204,7 @@ class WarningRepositoryImpl
           'itemUID': itemUID,
           if (notes != null) 'notes': notes,
         },
-        priority: 8, // High priority - user-triggered action
+        priority: 8,
       );
     } catch (e) {
       print('❌ [WarningRepository] Exception: $e');
@@ -368,10 +361,6 @@ class WarningRepositoryImpl
           );
         },
         (uploadedFiles) async {
-          print(
-            '✅ Immediate upload successful! ${uploadedFiles.length} images uploaded',
-          );
-
           await _imageLocalDataSource.markImagesAsSynced(
             SyncEntityType.warning,
             warningUID,

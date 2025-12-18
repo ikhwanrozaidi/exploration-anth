@@ -12,7 +12,6 @@ import '../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../../shared/widgets/gallery/gallery_widget.dart';
 import '../../../../shared/widgets/gallery/models/gallery_image.dart';
 import '../../../../shared/widgets/gallery/models/gallery_result.dart';
-import '../../../../shared/widgets/location_map_widget.dart';
 import '../../../../shared/widgets/location_picker/editable_location_map_widget.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_state.dart';
@@ -24,13 +23,10 @@ import '../bloc/site_warning_draft/site_warning_draft_bloc.dart';
 import '../bloc/site_warning_draft/site_warning_draft_event.dart';
 import '../bloc/site_warning_draft/site_warning_draft_state.dart';
 import '../bloc/warning_categories/warning_categories_bloc.dart';
-import '../bloc/warning_categories/warning_categories_event.dart';
 import '../bloc/warning_categories/warning_categories_state.dart';
 import '../widgets/warning_draft_list_selection.dart';
 
-import '../../../contractor_relation/presentation/bloc/contractor_relation_bloc.dart';
 import '../../../contractor_relation/presentation/bloc/contractor_relation_state.dart';
-import '../../../../shared/widgets/flexible_bottomsheet.dart';
 
 class WarningDraftPage extends StatefulWidget {
   final String? draftUID;
@@ -61,7 +57,6 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
   late final CompanyBloc _companyBloc;
   Timer? _autoSaveDebounce;
 
-  // Existing variables
   double? _latitude;
   double? _longitude;
   bool _isLoadingLocation = false;
@@ -80,21 +75,25 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
       _loadExistingDraft();
     } else {
       _initializeNewDraft();
+      _getCurrentLocation();
     }
-
-    _getCurrentLocation();
-    // _loadWarningCategories();
   }
 
   void _loadExistingDraft() {
+    print('📂 Loading existing draft: ${widget.draftUID}');
+
     _siteWarningDraftBloc.add(
       SiteWarningDraftEvent.loadExistingDraft(draftUID: widget.draftUID!),
     );
+
+    print('✅ Load existing draft event dispatched');
   }
 
   void _initializeNewDraft() {
     final companyState = _companyBloc.state;
     if (companyState is CompanyLoaded && companyState.selectedCompany != null) {
+      print('📝 Initializing new draft...');
+
       _siteWarningDraftBloc.add(
         SiteWarningDraftEvent.initializeDraft(
           companyUID: companyState.selectedCompany!.uid,
@@ -106,6 +105,8 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
           endSection: widget.endSection,
         ),
       );
+
+      print('✅ Draft initialization event dispatched');
     }
   }
 
@@ -115,12 +116,13 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
     super.dispose();
   }
 
-  // void _triggerAutoSave() {
-  //   _autoSaveDebounce?.cancel();
-  //   _autoSaveDebounce = Timer(const Duration(milliseconds: 500), () {
-  //     _siteWarningDraftBloc.add(const SiteWarningDraftEvent.autoSaveDraft());
-  //   });
-  // }
+  void _triggerAutoSave() {
+    _autoSaveDebounce?.cancel();
+    _autoSaveDebounce = Timer(const Duration(milliseconds: 500), () {
+      print('⏱️ Auto-save debounce timer fired');
+      _siteWarningDraftBloc.add(const SiteWarningDraftEvent.autoSaveDraft());
+    });
+  }
 
   // void _getWorkScopeID() {
   //   final state = context.read<WarningCategoriesBloc>().state;
@@ -203,6 +205,8 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
           longitude: position.longitude,
         ),
       );
+
+      _triggerAutoSave();
     } catch (e) {
       print('❌ Error getting location: $e');
       if (mounted) {
@@ -252,6 +256,8 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
             _siteWarningDraftBloc.add(
               SiteWarningDraftEvent.updateContractor(contractor: selected),
             );
+
+            _triggerAutoSave();
           },
         );
       },
@@ -269,23 +275,40 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
     return BlocListener<SiteWarningDraftBloc, SiteWarningDraftState>(
       bloc: _siteWarningDraftBloc,
       listener: (context, state) {
-        state.maybeWhen(
+        state.when(
+          initial: () {},
+          loading: () {},
+          editing: (draftData) {
+            setState(() {
+              _selectedContractor = draftData.contractor;
+              _selectedWarningReasonUIDs = List.from(
+                draftData.warningReasonUIDs,
+              );
+              _latitude = draftData.latitude;
+              _longitude = draftData.longitude;
+              _workScopeID = draftData.scopeID;
+            });
+          },
+          autoSaving: (draftData) {
+            setState(() {
+              _selectedContractor = draftData.contractor;
+              _selectedWarningReasonUIDs = List.from(
+                draftData.warningReasonUIDs,
+              );
+              _latitude = draftData.latitude;
+              _longitude = draftData.longitude;
+            });
+          },
+          autoSaved: (draftData) {},
+          submitting: (draftData) {},
           submitted: (draftData) {
-            CustomSnackBar.show(
-              context,
-              'Warning submitted successfully!',
-              // backgroundColor: Colors.green,
-            );
+            CustomSnackBar.show(context, 'Warning submitted successfully!');
             Navigator.pop(context, true);
           },
           error: (failure, draftData) {
-            CustomSnackBar.show(
-              context,
-              'Error: ${failure.message}',
-              // backgroundColor: Colors.red,
-            );
+            CustomSnackBar.show(context, failure.message);
           },
-          orElse: () {},
+          draftListLoaded: (drafts) {},
         );
       },
       child: Scaffold(
@@ -604,8 +627,36 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                         // Google Maps
                         const SizedBox(height: 20),
 
-                        _isLoadingLocation
-                            ? Container(
+                        BlocBuilder<
+                          SiteWarningDraftBloc,
+                          SiteWarningDraftState
+                        >(
+                          bloc: _siteWarningDraftBloc,
+                          builder: (context, draftState) {
+                            final latitude = draftState.maybeWhen(
+                              editing: (draftData) => draftData.latitude,
+                              autoSaving: (draftData) => draftData.latitude,
+                              autoSaved: (draftData) => draftData.latitude,
+                              submitting: (draftData) => draftData.latitude,
+                              orElse: () => _latitude,
+                            );
+
+                            final longitude = draftState.maybeWhen(
+                              editing: (draftData) => draftData.longitude,
+                              autoSaving: (draftData) => draftData.longitude,
+                              autoSaved: (draftData) => draftData.longitude,
+                              submitting: (draftData) => draftData.longitude,
+                              orElse: () => _longitude,
+                            );
+
+                            print(
+                              '🗺️ Map rendering with: ($latitude, $longitude)',
+                            );
+
+                            if (_isLoadingLocation &&
+                                latitude == null &&
+                                longitude == null) {
+                              return Container(
                                 height: 200,
                                 decoration: BoxDecoration(
                                   color: Colors.grey.shade100,
@@ -635,108 +686,158 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                                     ],
                                   ),
                                 ),
-                              )
-                            : EditableLocationMapWidget(
-                                latitude: _latitude,
-                                longitude: _longitude,
-                                markerTitle: widget.road?.name,
-                                onLocationUpdated: (lat, lng) {
-                                  setState(() {
-                                    _latitude = lat;
-                                    _longitude = lng;
-                                  });
-                                  // print('📍 New location: $lat, $lng');
+                              );
+                            }
 
-                                  _siteWarningDraftBloc.add(
-                                    SiteWarningDraftEvent.updateLocation(
-                                      latitude: lat,
-                                      longitude: lng,
-                                    ),
-                                  );
-                                },
-                              ),
+                            return EditableLocationMapWidget(
+                              key: ValueKey('${latitude}_${longitude}'),
+                              latitude: latitude,
+                              longitude: longitude,
+                              markerTitle: widget.road?.name,
+                              onLocationUpdated: (lat, lng) {
+                                setState(() {
+                                  _latitude = lat;
+                                  _longitude = lng;
+                                });
+
+                                _siteWarningDraftBloc.add(
+                                  SiteWarningDraftEvent.updateLocation(
+                                    latitude: lat,
+                                    longitude: lng,
+                                  ),
+                                );
+
+                                _triggerAutoSave();
+                              },
+                            );
+                          },
+                        ),
 
                         SizedBox(height: 20),
 
-                        // Contractor List
-                        CustomFieldTile(
-                          icon: Icons.person_pin_rounded,
-                          title: 'Contractor',
-                          titleDetails: _selectedContractor != null
-                              ? _selectedContractor!.name
-                              : 'Choose contractor',
-                          isFilled: _selectedContractor != null,
-                          onTap: _showContractorSelection,
-                          isRequired: true,
+                        BlocBuilder<
+                          SiteWarningDraftBloc,
+                          SiteWarningDraftState
+                        >(
+                          bloc: _siteWarningDraftBloc,
+                          builder: (context, draftState) {
+                            final contractor = draftState.when(
+                              initial: () => null,
+                              loading: () => null,
+                              editing: (draftData) => draftData.contractor,
+                              autoSaving: (draftData) => draftData.contractor,
+                              autoSaved: (draftData) => draftData.contractor,
+                              submitting: (draftData) => draftData.contractor,
+                              submitted: (draftData) => null,
+                              error: (failure, draftData) =>
+                                  draftData?.contractor,
+                              draftListLoaded: (drafts) => null,
+                            );
+
+                            return CustomFieldTile(
+                              icon: Icons.business,
+                              title: 'Contractor',
+                              titleDetails: contractor != null
+                                  ? contractor.name
+                                  : 'Choose contractor',
+                              isFilled: contractor != null,
+                              onTap: _showContractorSelection,
+                              isRequired: true,
+                            );
+                          },
                         ),
 
                         // Warning List
                         BlocBuilder<
-                          WarningCategoriesBloc,
-                          WarningCategoriesState
+                          SiteWarningDraftBloc,
+                          SiteWarningDraftState
                         >(
-                          builder: (context, categoriesState) {
-                            return CustomFieldTile(
-                              icon: Icons.list_sharp,
-                              title: 'List',
-                              titleDetails: _selectedWarningReasonUIDs.isEmpty
-                                  ? 'Select warnings'
-                                  : '${_selectedWarningReasonUIDs.length} warning${_selectedWarningReasonUIDs.length > 1 ? 's' : ''} selected',
-                              isFilled: _selectedWarningReasonUIDs.isNotEmpty,
-                              onTap: () async {
-                                categoriesState.when(
-                                  initial: () {
-                                    CustomSnackBar.show(
-                                      context,
-                                      'Loading warning categories...',
-                                    );
-                                  },
-                                  loading: () {
-                                    CustomSnackBar.show(
-                                      context,
-                                      'Loading warning categories...',
-                                    );
-                                  },
-                                  loaded: (categories) async {
-                                    final result = await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            WarningDraftListSelection(
-                                              categories: categories,
-                                              workScopeID: _workScopeID,
-                                              warningType: 'SITE_WARNING',
-                                              initialSelectedUIDs:
-                                                  _selectedWarningReasonUIDs,
+                          bloc: _siteWarningDraftBloc,
+                          builder: (context, draftState) {
+                            final warningReasonUIDs = draftState.when(
+                              initial: () => <String>[],
+                              loading: () => <String>[],
+                              editing: (draftData) =>
+                                  draftData.warningReasonUIDs,
+                              autoSaving: (draftData) =>
+                                  draftData.warningReasonUIDs,
+                              autoSaved: (draftData) =>
+                                  draftData.warningReasonUIDs,
+                              submitting: (draftData) =>
+                                  draftData.warningReasonUIDs,
+                              submitted: (draftData) => <String>[],
+                              error: (failure, draftData) =>
+                                  draftData?.warningReasonUIDs ?? [],
+                              draftListLoaded: (drafts) => <String>[],
+                            );
+
+                            return BlocBuilder<
+                              WarningCategoriesBloc,
+                              WarningCategoriesState
+                            >(
+                              builder: (context, categoriesState) {
+                                return CustomFieldTile(
+                                  icon: Icons.list_sharp,
+                                  title: 'List',
+                                  titleDetails: warningReasonUIDs.isEmpty
+                                      ? 'Select warnings'
+                                      : '${warningReasonUIDs.length} warning${warningReasonUIDs.length > 1 ? 's' : ''} selected',
+                                  isFilled: warningReasonUIDs.isNotEmpty,
+                                  onTap: () async {
+                                    categoriesState.when(
+                                      initial: () {
+                                        CustomSnackBar.show(
+                                          context,
+                                          'Loading warning categories...',
+                                        );
+                                      },
+                                      loading: () {
+                                        CustomSnackBar.show(
+                                          context,
+                                          'Loading warning categories...',
+                                        );
+                                      },
+                                      loaded: (categories) async {
+                                        final result = await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                WarningDraftListSelection(
+                                                  categories: categories,
+                                                  workScopeID: _workScopeID,
+                                                  warningType: 'SITE_WARNING',
+                                                  initialSelectedUIDs:
+                                                      warningReasonUIDs,
+                                                ),
+                                          ),
+                                        );
+
+                                        if (result != null &&
+                                            result is List<String>) {
+                                          setState(() {
+                                            _selectedWarningReasonUIDs = result;
+                                          });
+
+                                          _siteWarningDraftBloc.add(
+                                            SiteWarningDraftEvent.updateWarningReasons(
+                                              warningReasonUIDs: result,
                                             ),
-                                      ),
-                                    );
+                                          );
 
-                                    if (result != null &&
-                                        result is List<String>) {
-                                      setState(() {
-                                        _selectedWarningReasonUIDs = result;
-                                      });
-                                      print(
-                                        '✅ Selected warning UIDs: $_selectedWarningReasonUIDs',
-                                      );
-
-                                      _siteWarningDraftBloc.add(
-                                        SiteWarningDraftEvent.updateWarningReasons(
-                                          warningReasonUIDs: result,
-                                        ),
-                                      );
-                                    }
-                                  },
-                                  error: (failure) {
-                                    CustomSnackBar.show(
-                                      context,
-                                      'Failed to load warning categories: ${failure.message}',
+                                          _triggerAutoSave();
+                                        }
+                                      },
+                                      error: (failure) {
+                                        CustomSnackBar.show(
+                                          context,
+                                          'Failed to load warning categories: ${failure.message}',
+                                        );
+                                      },
                                     );
                                   },
+                                  isRequired: true,
                                 );
                               },
-                              isRequired: true,
                             );
                           },
                         ),
@@ -748,14 +849,19 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                         >(
                           bloc: _siteWarningDraftBloc,
                           builder: (context, draftState) {
-                            final warningImages = draftState.maybeWhen(
+                            final warningImages = draftState.when(
+                              initial: () => <String>[],
+                              loading: () => <String>[],
                               editing: (draftData) => draftData.warningImages,
                               autoSaving: (draftData) =>
                                   draftData.warningImages,
                               autoSaved: (draftData) => draftData.warningImages,
                               submitting: (draftData) =>
                                   draftData.warningImages,
-                              orElse: () => <String>[],
+                              submitted: (draftData) => <String>[],
+                              error: (failure, draftData) =>
+                                  draftData?.warningImages ?? [],
+                              draftListLoaded: (drafts) => <String>[],
                             );
 
                             return CustomFieldTile(
@@ -763,8 +869,8 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                               title: 'Photos',
                               titleDetails: warningImages.isEmpty
                                   ? 'Take picture of site'
-                                  : '${warningImages.length} image${warningImages.length > 1 ? 's' : ''} added',
-                              isFilled: warningImages.length >= 2,
+                                  : '${warningImages.length} image${warningImages.length > 1 ? 's' : ''} selected',
+                              isFilled: warningImages.isNotEmpty,
                               onTap: () async {
                                 print('📷 Opening gallery for warning images');
 
@@ -811,6 +917,8 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                                       warningImages: imagePaths,
                                     ),
                                   );
+
+                                  _triggerAutoSave();
                                 } else {
                                   print('⚠️ No result or images is null');
                                 }

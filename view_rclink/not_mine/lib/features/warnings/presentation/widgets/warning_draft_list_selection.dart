@@ -158,7 +158,6 @@ class _WarningDraftListSelectionState extends State<WarningDraftListSelection> {
 
                       return Column(
                         children: [
-                          // Category header
                           InkWell(
                             onTap: () => _toggleCategoryExpansion(category.uid),
                             child: Container(
@@ -180,7 +179,6 @@ class _WarningDraftListSelectionState extends State<WarningDraftListSelection> {
                                   ),
                                   SizedBox(width: 12),
 
-                                  // Category name and count
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
@@ -281,7 +279,6 @@ class _WarningDraftListSelectionState extends State<WarningDraftListSelection> {
                   ),
           ),
 
-          // Confirm button
           Container(
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(

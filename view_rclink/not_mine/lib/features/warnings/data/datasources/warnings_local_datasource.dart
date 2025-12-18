@@ -3,6 +3,7 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../core/database/app_database.dart';
+import '../../../contractor_relation/domain/entities/contractor_relation_entity.dart';
 import '../models/create_warning_model.dart';
 import '../models/warning_daily_report_model.dart';
 import '../models/warning_model.dart';
@@ -34,6 +35,7 @@ abstract class WarningsLocalDataSource {
   );
   Future<void> deleteDraftWarning(String draftUID);
   Future<List<WarningModel>?> getDraftWarnings(String companyUID);
+  Future<ContractorRelation?> getContractorByID(int contractRelationID);
 
   Future<WarningModel> createSiteWarningLocal(
     CreateWarningModel data,
@@ -110,7 +112,6 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
     }
   }
 
-  /// Helper method to save a single warning record
   Future<void> _saveWarningRecord(WarningModel warning) async {
     // warningItems to JSON
     String? warningItemsJson;
@@ -218,7 +219,6 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
         );
   }
 
-  /// Helper method to convert WarningRecord to WarningModel
   Future<WarningModel> _convertRecordToModel(WarningRecord record) async {
     List<WarningItemModel> warningItems = [];
 
@@ -287,18 +287,6 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
     }
 
     List<FileModel>? files;
-
-    /// Database not ready yet
-    // if (record.filesData != null && record.filesData!.isNotEmpty) {
-    //   try {
-    //     final filesDataList = jsonDecode(record.filesData!) as List;
-    //     files = filesDataList
-    //         .map((file) => FileModel.fromJson(file as Map<String, dynamic>))
-    //         .toList();
-    //   } catch (e) {
-    //     print('Error parsing files: $e');
-    //   }
-    // }
 
     WarningDailyReportModel? dailyReport;
     if (record.dailyReportData != null && record.dailyReportData!.isNotEmpty) {
@@ -433,6 +421,7 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
               workScopeData: Value(workScopeDataJson),
               roadData: Value(roadDataJson),
               companyData: Value(companyDataJson),
+              warningItemsData: const Value.absent(),
             ),
           );
 
@@ -457,10 +446,6 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
     CreateWarningModel data,
   ) async {
     try {
-      print('💾 Updating draft warning: $draftUID');
-      print('   Road UID: ${data.roadUID}');
-      print('   Work Scope UID: ${data.workScopeUID}');
-
       final roadRecord = await (_database.select(
         _database.roads,
       )..where((tbl) => tbl.uid.equals(data.roadUID))).getSingleOrNull();
@@ -478,24 +463,81 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
       int? contractRelationID;
       if (data.contractRelationUID != null) {
         final contractRelationRecord =
-            await (_database.select(_database.contractorRelations)
-                  ..where((tbl) => tbl.uid.equals(data.contractRelationUID!)))
+            await (_database.select(_database.contractorRelations)..where(
+                  (tbl) =>
+                      tbl.contractRelationUID.equals(data.contractRelationUID!),
+                ))
                 .getSingleOrNull();
-        contractRelationID = contractRelationRecord?.id;
+
+        if (contractRelationRecord != null) {
+          contractRelationID = contractRelationRecord.id;
+        } else {
+          print(
+            '❌ Contractor NOT found with contractRelationUID: ${data.contractRelationUID}',
+          );
+
+          final fallbackRecord =
+              await (_database.select(_database.contractorRelations)
+                    ..where((tbl) => tbl.uid.equals(data.contractRelationUID!)))
+                  .getSingleOrNull();
+
+          if (fallbackRecord != null) {
+            contractRelationID = fallbackRecord.id;
+            print(
+              '✅ Found contractor via fallback uid query: ${fallbackRecord.name} (ID: $contractRelationID)',
+            );
+          }
+        }
+      } else {
+        print('⚠️ No contractRelationUID provided in data');
       }
 
       String? warningItemsData;
       if (data.warningReasonUIDs.isNotEmpty) {
-        final warningItems = data.warningReasonUIDs.map((reasonUID) {
-          return {
-            'uid': const Uuid().v4(),
-            'warningReasonUID': reasonUID,
-            'isCompleted': false,
-            'completedAt': null,
-            'notes': null,
-          };
-        }).toList();
-        warningItemsData = jsonEncode(warningItems);
+        final now = DateTime.now();
+        final warningItems = <Map<String, dynamic>>[];
+
+        for (final reasonUID in data.warningReasonUIDs) {
+          // Get the reason record to build proper structure
+          final reasonRecord = await (_database.select(
+            _database.warningReasons,
+          )..where((tbl) => tbl.uid.equals(reasonUID))).getSingleOrNull();
+
+          if (reasonRecord != null) {
+            final warningReasonJson = {
+              'id': reasonRecord.id,
+              'uid': reasonRecord.uid,
+              'name': reasonRecord.name,
+              'warningType': reasonRecord.warningType,
+              'categoryID': reasonRecord.categoryID,
+              'workScopeID': reasonRecord.workScopeID,
+              'requiresAction': reasonRecord.requiresAction,
+              'isActive': reasonRecord.isActive,
+              'displayOrder': reasonRecord.displayOrder,
+              'createdAt': reasonRecord.createdAt.toIso8601String(),
+              'updatedAt': reasonRecord.updatedAt.toIso8601String(),
+              if (reasonRecord.categoryData != null)
+                'categoryData': reasonRecord.categoryData,
+            };
+
+            warningItems.add({
+              'id': 0, // Temp ID for draft
+              'uid': const Uuid().v4(),
+              'warningID': 0, // Temp ID for draft
+              'warningReasonID': reasonRecord.id,
+              'notes': data.description,
+              'isCompleted': false,
+              'completedAt': null,
+              'createdAt': now.toIso8601String(),
+              'updatedAt': now.toIso8601String(),
+              'warningReason': warningReasonJson,
+            });
+          }
+        }
+
+        if (warningItems.isNotEmpty) {
+          warningItemsData = jsonEncode(warningItems);
+        }
       }
 
       final draftWarning = await (_database.select(
@@ -549,8 +591,6 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
           companyData: Value(companyDataJson),
         ),
       );
-
-      print('✅ Draft warning updated: $draftUID');
     } catch (e) {
       print('❌ Error updating draft warning: $e');
       rethrow;
@@ -598,13 +638,6 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
 
       final records = await query.get();
 
-      if (records.isEmpty) {
-        print('📭 No draft warnings found');
-        return null;
-      }
-
-      print('✅ Found ${records.length} draft warnings');
-
       final warnings = await Future.wait(
         records.map((record) => _convertRecordToModel(record)),
       );
@@ -612,6 +645,55 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
       return warnings;
     } catch (e) {
       print('❌ Error getting draft warnings: $e');
+      return null;
+    }
+  }
+
+  @override
+  Future<ContractorRelation?> getContractorByID(int contractRelationID) async {
+    try {
+      print('📋 Loading contractor from ID: $contractRelationID');
+
+      final contractorRecord = await (_database.select(
+        _database.contractorRelations,
+      )..where((tbl) => tbl.id.equals(contractRelationID))).getSingleOrNull();
+
+      if (contractorRecord == null) {
+        print('⚠️ Contractor not found for ID: $contractRelationID');
+        return null;
+      }
+
+      return ContractorRelation(
+        id: contractorRecord.id,
+        uid: contractorRecord.uid,
+        name: contractorRecord.name,
+        regNo: contractorRecord.regNo,
+        cidbNo: contractorRecord.cidbNo,
+        address: contractorRecord.address,
+        postalCode: contractorRecord.postalCode,
+        city: contractorRecord.city,
+        state: contractorRecord.state,
+        country: contractorRecord.country,
+        phone: contractorRecord.phone,
+        email: contractorRecord.email,
+        website: contractorRecord.website,
+        companyType: contractorRecord.companyType,
+        bumiputera: contractorRecord.bumiputera,
+        einvoiceTinNo: contractorRecord.einvoiceTinNo,
+        registrationDate: contractorRecord.registrationDate,
+        createdAt: contractorRecord.createdAt,
+        updatedAt: contractorRecord.updatedAt,
+        deletedAt: contractorRecord.deletedAt,
+        ownerID: contractorRecord.ownerID,
+        defaultBankAcc: contractorRecord.defaultBankAcc,
+        defaultBankAccType: contractorRecord.defaultBankAccType,
+        isSelf: contractorRecord.isSelf,
+        contractRelationUID: contractorRecord.contractRelationUID,
+        relationStatus: contractorRecord.relationStatus,
+        relationRole: contractorRecord.relationRole,
+      );
+    } catch (e) {
+      print('❌ Error loading contractor: $e');
       return null;
     }
   }
@@ -665,13 +747,11 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
           }
         }
 
-        // Build warning items JSON data with FULL WarningItemModel structure
         String? warningItemsData;
         if (data.warningReasonUIDs.isNotEmpty) {
           final warningItems = <Map<String, dynamic>>[];
 
           for (final reasonUID in data.warningReasonUIDs) {
-            // Get the reason record to get its ID
             final reasonRecord = await (_database.select(
               _database.warningReasons,
             )..where((tbl) => tbl.uid.equals(reasonUID))).getSingleOrNull();
@@ -758,9 +838,6 @@ class WarningsLocalDataSourceImpl implements WarningsLocalDataSource {
               ),
             );
 
-        print('✅ Created local site warning with temp UID: $tempUID');
-
-        // Return the warning model
         final createdWarning = await getCachedWarningByUid(tempUID);
         if (createdWarning == null) {
           throw Exception('Failed to retrieve created warning');

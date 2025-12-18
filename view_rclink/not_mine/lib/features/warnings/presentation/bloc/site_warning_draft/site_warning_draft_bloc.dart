@@ -1,9 +1,8 @@
-// lib/features/warnings/presentation/bloc/site_warning_draft/site_warning_draft_bloc.dart
-
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../../core/database/app_database.dart';
 import '../../../../../core/di/injection.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/sync/datasources/image_local_datasource.dart';
@@ -12,6 +11,7 @@ import '../../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../../auth/presentation/bloc/auth_state.dart';
 import '../../../../company/presentation/bloc/company_bloc.dart';
 import '../../../../company/presentation/bloc/company_state.dart';
+import '../../../../contractor_relation/domain/entities/contractor_relation_entity.dart';
 import '../../../../road/domain/entities/road_entity.dart';
 import '../../../data/datasources/warnings_local_datasource.dart';
 import '../../../data/models/create_warning_model.dart';
@@ -121,8 +121,6 @@ class SiteWarningDraftBloc
         toSection: toSectionValue,
       );
 
-      print('✅ Draft warning created with UID: ${draftWarning.uid}');
-
       final draftData = SiteWarningDraftData(
         draftUID: draftWarning.uid,
         isDraftMode: true,
@@ -136,8 +134,6 @@ class SiteWarningDraftBloc
       );
 
       emit(SiteWarningDraftState.editing(draftData: draftData));
-
-      print('✅ State updated with new draft UID: ${draftData.draftUID}');
 
       add(const SiteWarningDraftEvent.autoSaveDraft());
     } catch (e) {
@@ -156,8 +152,6 @@ class SiteWarningDraftBloc
     Emitter<SiteWarningDraftState> emit,
   ) async {
     try {
-      print('📂 Loading draft warning: ${event.draftUID}');
-
       emit(const SiteWarningDraftState.loading());
 
       final draftWarning = await _localDataSource.getCachedWarningByUid(
@@ -230,10 +224,14 @@ class SiteWarningDraftBloc
         companyUID = companyState.selectedCompany!.uid;
       }
 
-      // Load draft images
-      print('📷 Loading draft images for ${event.draftUID}');
+      ContractorRelation? contractor;
+      if (draftWarning.contractRelationID != null) {
+        contractor = await _localDataSource.getContractorByID(
+          draftWarning.contractRelationID!,
+        );
+      }
+
       final draftImages = await _loadDraftImages(event.draftUID);
-      print('✅ Loaded ${draftImages.length} draft images');
 
       final draftData = SiteWarningDraftData(
         draftUID: draftWarning.uid,
@@ -251,7 +249,7 @@ class SiteWarningDraftBloc
         longitude: draftWarning.longitude != null
             ? double.tryParse(draftWarning.longitude!)
             : null,
-        contractor: null, // TODO: Load contractor from contractRelationID
+        contractor: contractor,
         warningReasonUIDs: warningReasonUIDs,
         description: draftWarning.description ?? '',
         warningImages: draftImages,
@@ -284,8 +282,6 @@ class SiteWarningDraftBloc
         ),
       ),
     );
-
-    add(const SiteWarningDraftEvent.autoSaveDraft());
   }
 
   /// Update contractor
@@ -301,8 +297,6 @@ class SiteWarningDraftBloc
         draftData: currentData.copyWith(contractor: event.contractor),
       ),
     );
-
-    add(const SiteWarningDraftEvent.autoSaveDraft());
   }
 
   /// Update warning reasons
@@ -320,8 +314,6 @@ class SiteWarningDraftBloc
         ),
       ),
     );
-
-    add(const SiteWarningDraftEvent.autoSaveDraft());
   }
 
   /// Update description
@@ -337,8 +329,6 @@ class SiteWarningDraftBloc
         draftData: currentData.copyWith(description: event.description),
       ),
     );
-
-    add(const SiteWarningDraftEvent.autoSaveDraft());
   }
 
   /// Update warning images
@@ -349,15 +339,11 @@ class SiteWarningDraftBloc
     final currentData = _getCurrentDraftDataOrNull();
     if (currentData == null) return;
 
-    print('📷 Updating warning images: ${event.warningImages.length} images');
-
     emit(
       SiteWarningDraftState.editing(
         draftData: currentData.copyWith(warningImages: event.warningImages),
       ),
     );
-
-    add(const SiteWarningDraftEvent.autoSaveDraft());
   }
 
   /// Auto-save draft
@@ -385,7 +371,7 @@ class SiteWarningDraftBloc
         toSection: currentData.endSection != null
             ? double.tryParse(currentData.endSection!)
             : null,
-        contractRelationUID: currentData.contractor?.contractRelationUID,
+        contractRelationUID: currentData.contractor?.uid,
         warningReasonUIDs: currentData.warningReasonUIDs,
         description: currentData.description.isEmpty
             ? null
@@ -423,7 +409,6 @@ class SiteWarningDraftBloc
     try {
       print('🗑️ Deleting draft: ${event.draftUID}');
 
-      // Delete draft images first
       try {
         await _deleteDraftImages(event.draftUID);
         print('✅ Draft images deleted');
@@ -431,7 +416,6 @@ class SiteWarningDraftBloc
         print('⚠️ Error deleting draft images: $e');
       }
 
-      // Delete draft record
       await _localDataSource.deleteDraftWarning(event.draftUID);
 
       print('✅ Draft deleted successfully');
@@ -514,7 +498,7 @@ class SiteWarningDraftBloc
         toSection: currentData.endSection != null
             ? double.tryParse(currentData.endSection!)
             : null,
-        contractRelationUID: currentData.contractor?.contractRelationUID,
+        contractRelationUID: currentData.contractor?.uid,
         warningReasonUIDs: currentData.warningReasonUIDs,
         description: currentData.description.isEmpty
             ? null
@@ -626,8 +610,6 @@ class SiteWarningDraftBloc
 
       imagesByContext[ImageContextField.general] = warningImages;
 
-      print('💾 Saving ${warningImages.length} draft images for $draftUID');
-
       await _imageLocalDataSource.saveDraftImages(
         entityType: SyncEntityType.warning,
         entityUID: draftUID,
@@ -635,15 +617,18 @@ class SiteWarningDraftBloc
         imagesByContextField: imagesByContext,
       );
 
-      print('✅ Draft images saved: $draftUID');
+      print('✅ Draft images saved successfully: $draftUID');
     } catch (e) {
       print('❌ Error saving draft images: $e');
+      print('   Stack trace: ${StackTrace.current}');
     }
   }
 
   /// Load draft images from permanent storage
   Future<List<String>> _loadDraftImages(String draftUID) async {
     try {
+      print('📂 Loading draft images for: $draftUID');
+
       final imagesByContext = await _imageLocalDataSource.getDraftImages(
         entityType: SyncEntityType.warning,
         entityUID: draftUID,
@@ -651,11 +636,11 @@ class SiteWarningDraftBloc
 
       final generalImages = imagesByContext[ImageContextField.general] ?? [];
 
-      print('📂 Loaded ${generalImages.length} draft images for $draftUID');
-
       return generalImages;
     } catch (e) {
       print('❌ Error loading draft images: $e');
+
+      print('   Stack trace: ${StackTrace.current}');
       return [];
     }
   }

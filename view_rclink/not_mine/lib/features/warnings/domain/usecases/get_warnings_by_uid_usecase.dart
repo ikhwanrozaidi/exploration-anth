@@ -5,7 +5,7 @@ import '../../../../core/usecases/usecase.dart';
 import '../entities/warning.dart';
 import '../repositories/warning_repository.dart';
 
-@lazySingleton
+@injectable
 class GetWarningByUidUseCase
     implements UseCase<Warning, GetWarningByUidParams> {
   final WarningRepository _repository;

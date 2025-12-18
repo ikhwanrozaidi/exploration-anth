@@ -4,7 +4,7 @@ import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../repositories/warning_repository.dart';
 
-@lazySingleton
+@injectable
 class ClearWarningCacheUseCase implements UseCaseNoParams<void> {
   final WarningRepository _repository;
 

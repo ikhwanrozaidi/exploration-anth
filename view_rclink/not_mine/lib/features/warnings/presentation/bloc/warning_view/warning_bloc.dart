@@ -7,7 +7,7 @@ import '../../../domain/usecases/resolve_warning_item_usecase.dart';
 import 'warning_event.dart';
 import 'warning_state.dart';
 
-@injectable
+@lazySingleton
 class WarningBloc extends Bloc<WarningEvent, WarningState> {
   final GetWarningsUseCase _getWarningsUseCase;
   final ClearWarningCacheUseCase _clearWarningCacheUseCase;
@@ -181,7 +181,9 @@ class WarningBloc extends Bloc<WarningEvent, WarningState> {
       currentPage = currentState.currentPage;
     }
 
-    print('🔵 [WarningBloc] Existing warnings count: ${existingWarnings.length}');
+    print(
+      '🔵 [WarningBloc] Existing warnings count: ${existingWarnings.length}',
+    );
 
     // Only emit resolving state if we have warnings loaded
     if (existingWarnings.isNotEmpty) {
@@ -205,7 +207,9 @@ class WarningBloc extends Bloc<WarningEvent, WarningState> {
 
     print('🔵 [WarningBloc] Calling use case...');
     final result = await _resolveWarningItemUseCase(params);
-    print('🔵 [WarningBloc] Use case returned: ${result.isRight() ? "Success" : "Failure"}');
+    print(
+      '🔵 [WarningBloc] Use case returned: ${result.isRight() ? "Success" : "Failure"}',
+    );
 
     result.fold(
       (failure) {
@@ -214,7 +218,9 @@ class WarningBloc extends Bloc<WarningEvent, WarningState> {
         emit(
           WarningState.error(
             failure: failure,
-            cachedWarnings: existingWarnings.isNotEmpty ? existingWarnings : null,
+            cachedWarnings: existingWarnings.isNotEmpty
+                ? existingWarnings
+                : null,
           ),
         );
       },

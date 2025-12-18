@@ -1,9 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/sync/datasources/image_local_datasource.dart';
+import '../../../../core/sync/sync_constants.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/template_page.dart';
@@ -257,6 +261,20 @@ class _DraftWarningCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final updatedDate = DateFormat('d MMM yyyy, HH:mm').format(draft.updatedAt);
 
+    Future<List<String>> _loadDraftImages(String draftUID) async {
+      try {
+        final imageLocalDataSource = getIt<ImageLocalDataSource>();
+        final imagesByContext = await imageLocalDataSource.getDraftImages(
+          entityType: SyncEntityType.warning,
+          entityUID: draftUID,
+        );
+        return imagesByContext[ImageContextField.general] ?? [];
+      } catch (e) {
+        print('❌ Error loading draft images for card: $e');
+        return [];
+      }
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -287,13 +305,52 @@ class _DraftWarningCard extends StatelessWidget {
               ),
               child: Stack(
                 children: [
-                  // Placeholder
-                  Center(
-                    child: Icon(
-                      Icons.image_not_supported,
-                      size: 50,
-                      color: Colors.grey.shade400,
-                    ),
+                  FutureBuilder<List<String>>(
+                    future: _loadDraftImages(draft.uid),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: primaryColor,
+                          ),
+                        );
+                      }
+
+                      final images = snapshot.data ?? [];
+
+                      if (images.isEmpty) {
+                        return Center(
+                          child: Icon(
+                            Icons.image_not_supported,
+                            size: 50,
+                            color: Colors.grey.shade400,
+                          ),
+                        );
+                      }
+
+                      return ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                        child: Image.file(
+                          File(images.first),
+                          width: double.infinity,
+                          height: 170,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Center(
+                              child: Icon(
+                                Icons.image_not_supported,
+                                size: 50,
+                                color: Colors.grey.shade400,
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
                   ),
 
                   // Gradient overlay
