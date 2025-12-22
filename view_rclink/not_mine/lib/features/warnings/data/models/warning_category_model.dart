@@ -14,8 +14,8 @@ abstract class WarningCategoryModel with _$WarningCategoryModel {
     required String uid,
     required String name,
     required String warningType, // Stored as string in API/DB
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) = _WarningCategoryModel;
 
   factory WarningCategoryModel.fromJson(Map<String, dynamic> json) =>
@@ -27,8 +27,8 @@ abstract class WarningCategoryModel with _$WarningCategoryModel {
       uid: uid,
       name: name,
       warningType: WarningType.fromString(warningType),
-      createdAt: createdAt,
-      updatedAt: updatedAt,
+      createdAt: createdAt ?? DateTime.now(),
+      updatedAt: updatedAt ?? DateTime.now(),
     );
   }
 }

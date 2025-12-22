@@ -251,7 +251,9 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
               _selectedContractor = selected;
             });
 
-            print('✅ Selected contractor: ${selected.name} (${selected.uid})');
+            print(
+              '✅ Selected contractor: ${selected.name} (${selected.contractRelationUID})',
+            );
 
             _siteWarningDraftBloc.add(
               SiteWarningDraftEvent.updateContractor(contractor: selected),
@@ -303,6 +305,7 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
           submitting: (draftData) {},
           submitted: (draftData) {
             CustomSnackBar.show(context, 'Warning submitted successfully!');
+            Navigator.pop(context, true);
             Navigator.pop(context, true);
           },
           error: (failure, draftData) {

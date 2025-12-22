@@ -62,9 +62,9 @@ class _WarningProgramListWidgetState extends State<WarningProgramListWidget> {
   @override
   Widget build(BuildContext context) {
     final imageFiles =
-        // widget.report.files
-        //     ?.where((f) => f.mimeType.startsWith('image/'))
-        //     .toList() ??
+        widget.warning.files
+            ?.where((f) => f.mimeType.startsWith('image/'))
+            .toList() ??
         [];
 
     return GestureDetector(

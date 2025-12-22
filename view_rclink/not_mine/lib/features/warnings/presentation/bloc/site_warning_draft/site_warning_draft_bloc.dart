@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -498,7 +499,7 @@ class SiteWarningDraftBloc
         toSection: currentData.endSection != null
             ? double.tryParse(currentData.endSection!)
             : null,
-        contractRelationUID: currentData.contractor?.uid,
+        contractRelationUID: currentData.contractor?.contractRelationUID,
         warningReasonUIDs: currentData.warningReasonUIDs,
         description: currentData.description.isEmpty
             ? null
@@ -507,6 +508,19 @@ class SiteWarningDraftBloc
         latitude: currentData.latitude,
         requiresAction: true,
       );
+
+      // DEBUG: Print the contractor details and payload
+      print('🔍 DEBUG: Contractor details:');
+      print('   Contractor name: ${currentData.contractor?.name}');
+      print('   Contractor company UID: ${currentData.contractor?.uid}');
+      print(
+        '   Contractor contractRelationUID: ${currentData.contractor?.contractRelationUID}',
+      );
+      print('🔍 DEBUG: CreateWarningModel payload:');
+      print(
+        '   contractRelationUID in payload: ${createModel.contractRelationUID}',
+      );
+      print('   Full JSON: ${jsonEncode(createModel.toJson())}');
 
       // Step 2: Call use case to create site warning with images
       final result = await _createSiteWarningUseCase(

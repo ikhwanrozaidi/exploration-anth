@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$WarningReasonModel {
 
  int get id; String get uid; String get name; String get warningType;// Stored as string in API/DB
- int get categoryID; int get workScopeID; bool get requiresAction; bool get isActive; int get displayOrder; DateTime get createdAt; DateTime get updatedAt;// Optional nested category
+ int get categoryID; int get workScopeID; bool get requiresAction; bool get isActive; int get displayOrder; DateTime? get createdAt; DateTime? get updatedAt;// Optional nested category
  WarningCategoryModel? get category;
 /// Create a copy of WarningReasonModel
 /// with the given fields replaced by the non-null parameter values.
@@ -50,7 +50,7 @@ abstract mixin class $WarningReasonModelCopyWith<$Res>  {
   factory $WarningReasonModelCopyWith(WarningReasonModel value, $Res Function(WarningReasonModel) _then) = _$WarningReasonModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String uid, String name, String warningType, int categoryID, int workScopeID, bool requiresAction, bool isActive, int displayOrder, DateTime createdAt, DateTime updatedAt, WarningCategoryModel? category
+ int id, String uid, String name, String warningType, int categoryID, int workScopeID, bool requiresAction, bool isActive, int displayOrder, DateTime? createdAt, DateTime? updatedAt, WarningCategoryModel? category
 });
 
 
@@ -67,7 +67,7 @@ class _$WarningReasonModelCopyWithImpl<$Res>
 
 /// Create a copy of WarningReasonModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? warningType = null,Object? categoryID = null,Object? workScopeID = null,Object? requiresAction = null,Object? isActive = null,Object? displayOrder = null,Object? createdAt = null,Object? updatedAt = null,Object? category = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? warningType = null,Object? categoryID = null,Object? workScopeID = null,Object? requiresAction = null,Object? isActive = null,Object? displayOrder = null,Object? createdAt = freezed,Object? updatedAt = freezed,Object? category = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -78,9 +78,9 @@ as int,workScopeID: null == workScopeID ? _self.workScopeID : workScopeID // ign
 as int,requiresAction: null == requiresAction ? _self.requiresAction : requiresAction // ignore: cast_nullable_to_non_nullable
 as bool,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,displayOrder: null == displayOrder ? _self.displayOrder : displayOrder // ignore: cast_nullable_to_non_nullable
-as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
+as int,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as WarningCategoryModel?,
   ));
 }
@@ -178,7 +178,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String warningType,  int categoryID,  int workScopeID,  bool requiresAction,  bool isActive,  int displayOrder,  DateTime createdAt,  DateTime updatedAt,  WarningCategoryModel? category)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String warningType,  int categoryID,  int workScopeID,  bool requiresAction,  bool isActive,  int displayOrder,  DateTime? createdAt,  DateTime? updatedAt,  WarningCategoryModel? category)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WarningReasonModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.warningType,_that.categoryID,_that.workScopeID,_that.requiresAction,_that.isActive,_that.displayOrder,_that.createdAt,_that.updatedAt,_that.category);case _:
@@ -199,7 +199,7 @@ return $default(_that.id,_that.uid,_that.name,_that.warningType,_that.categoryID
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String warningType,  int categoryID,  int workScopeID,  bool requiresAction,  bool isActive,  int displayOrder,  DateTime createdAt,  DateTime updatedAt,  WarningCategoryModel? category)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String warningType,  int categoryID,  int workScopeID,  bool requiresAction,  bool isActive,  int displayOrder,  DateTime? createdAt,  DateTime? updatedAt,  WarningCategoryModel? category)  $default,) {final _that = this;
 switch (_that) {
 case _WarningReasonModel():
 return $default(_that.id,_that.uid,_that.name,_that.warningType,_that.categoryID,_that.workScopeID,_that.requiresAction,_that.isActive,_that.displayOrder,_that.createdAt,_that.updatedAt,_that.category);case _:
@@ -219,7 +219,7 @@ return $default(_that.id,_that.uid,_that.name,_that.warningType,_that.categoryID
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uid,  String name,  String warningType,  int categoryID,  int workScopeID,  bool requiresAction,  bool isActive,  int displayOrder,  DateTime createdAt,  DateTime updatedAt,  WarningCategoryModel? category)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uid,  String name,  String warningType,  int categoryID,  int workScopeID,  bool requiresAction,  bool isActive,  int displayOrder,  DateTime? createdAt,  DateTime? updatedAt,  WarningCategoryModel? category)?  $default,) {final _that = this;
 switch (_that) {
 case _WarningReasonModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.warningType,_that.categoryID,_that.workScopeID,_that.requiresAction,_that.isActive,_that.displayOrder,_that.createdAt,_that.updatedAt,_that.category);case _:
@@ -234,7 +234,7 @@ return $default(_that.id,_that.uid,_that.name,_that.warningType,_that.categoryID
 @JsonSerializable()
 
 class _WarningReasonModel extends WarningReasonModel {
-  const _WarningReasonModel({required this.id, required this.uid, required this.name, required this.warningType, required this.categoryID, required this.workScopeID, this.requiresAction = true, this.isActive = true, this.displayOrder = 0, required this.createdAt, required this.updatedAt, this.category}): super._();
+  const _WarningReasonModel({required this.id, required this.uid, required this.name, required this.warningType, required this.categoryID, required this.workScopeID, this.requiresAction = true, this.isActive = true, this.displayOrder = 0, this.createdAt, this.updatedAt, this.category}): super._();
   factory _WarningReasonModel.fromJson(Map<String, dynamic> json) => _$WarningReasonModelFromJson(json);
 
 @override final  int id;
@@ -247,8 +247,8 @@ class _WarningReasonModel extends WarningReasonModel {
 @override@JsonKey() final  bool requiresAction;
 @override@JsonKey() final  bool isActive;
 @override@JsonKey() final  int displayOrder;
-@override final  DateTime createdAt;
-@override final  DateTime updatedAt;
+@override final  DateTime? createdAt;
+@override final  DateTime? updatedAt;
 // Optional nested category
 @override final  WarningCategoryModel? category;
 
@@ -285,7 +285,7 @@ abstract mixin class _$WarningReasonModelCopyWith<$Res> implements $WarningReaso
   factory _$WarningReasonModelCopyWith(_WarningReasonModel value, $Res Function(_WarningReasonModel) _then) = __$WarningReasonModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String uid, String name, String warningType, int categoryID, int workScopeID, bool requiresAction, bool isActive, int displayOrder, DateTime createdAt, DateTime updatedAt, WarningCategoryModel? category
+ int id, String uid, String name, String warningType, int categoryID, int workScopeID, bool requiresAction, bool isActive, int displayOrder, DateTime? createdAt, DateTime? updatedAt, WarningCategoryModel? category
 });
 
 
@@ -302,7 +302,7 @@ class __$WarningReasonModelCopyWithImpl<$Res>
 
 /// Create a copy of WarningReasonModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? warningType = null,Object? categoryID = null,Object? workScopeID = null,Object? requiresAction = null,Object? isActive = null,Object? displayOrder = null,Object? createdAt = null,Object? updatedAt = null,Object? category = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? warningType = null,Object? categoryID = null,Object? workScopeID = null,Object? requiresAction = null,Object? isActive = null,Object? displayOrder = null,Object? createdAt = freezed,Object? updatedAt = freezed,Object? category = freezed,}) {
   return _then(_WarningReasonModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -313,9 +313,9 @@ as int,workScopeID: null == workScopeID ? _self.workScopeID : workScopeID // ign
 as int,requiresAction: null == requiresAction ? _self.requiresAction : requiresAction // ignore: cast_nullable_to_non_nullable
 as bool,isActive: null == isActive ? _self.isActive : isActive // ignore: cast_nullable_to_non_nullable
 as bool,displayOrder: null == displayOrder ? _self.displayOrder : displayOrder // ignore: cast_nullable_to_non_nullable
-as int,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
+as int,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,category: freezed == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
 as WarningCategoryModel?,
   ));
 }

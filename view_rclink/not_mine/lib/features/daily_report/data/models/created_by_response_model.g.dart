@@ -9,7 +9,8 @@ part of 'created_by_response_model.dart';
 _CreatedByResponseModel _$CreatedByResponseModelFromJson(
   Map<String, dynamic> json,
 ) => _CreatedByResponseModel(
-  uid: json['uid'] as String,
+  id: (json['id'] as num?)?.toInt(),
+  uid: json['uid'] as String?,
   firstName: json['firstName'] as String?,
   lastName: json['lastName'] as String?,
 );
@@ -17,6 +18,7 @@ _CreatedByResponseModel _$CreatedByResponseModelFromJson(
 Map<String, dynamic> _$CreatedByResponseModelToJson(
   _CreatedByResponseModel instance,
 ) => <String, dynamic>{
+  'id': instance.id,
   'uid': instance.uid,
   'firstName': instance.firstName,
   'lastName': instance.lastName,

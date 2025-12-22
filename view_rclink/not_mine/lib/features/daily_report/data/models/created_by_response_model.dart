@@ -7,7 +7,8 @@ part 'created_by_response_model.g.dart';
 @freezed
 abstract class CreatedByResponseModel with _$CreatedByResponseModel {
   const factory CreatedByResponseModel({
-    required String uid,
+    int? id,
+    String? uid,
     String? firstName,
     String? lastName,
   }) = _CreatedByResponseModel;
@@ -19,6 +20,7 @@ abstract class CreatedByResponseModel with _$CreatedByResponseModel {
 extension CreatedByResponseModelX on CreatedByResponseModel {
   CreatedByResponse toEntity() {
     return CreatedByResponse(
+      id: id,
       uid: uid,
       firstName: firstName,
       lastName: lastName,

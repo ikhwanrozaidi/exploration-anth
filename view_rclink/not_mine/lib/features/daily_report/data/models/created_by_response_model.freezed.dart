@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreatedByResponseModel {
 
- String get uid; String? get firstName; String? get lastName;
+ int? get id; String? get uid; String? get firstName; String? get lastName;
 /// Create a copy of CreatedByResponseModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $CreatedByResponseModelCopyWith<CreatedByResponseModel> get copyWith => _$Create
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreatedByResponseModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CreatedByResponseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,firstName,lastName);
+int get hashCode => Object.hash(runtimeType,id,uid,firstName,lastName);
 
 @override
 String toString() {
-  return 'CreatedByResponseModel(uid: $uid, firstName: $firstName, lastName: $lastName)';
+  return 'CreatedByResponseModel(id: $id, uid: $uid, firstName: $firstName, lastName: $lastName)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $CreatedByResponseModelCopyWith<$Res>  {
   factory $CreatedByResponseModelCopyWith(CreatedByResponseModel value, $Res Function(CreatedByResponseModel) _then) = _$CreatedByResponseModelCopyWithImpl;
 @useResult
 $Res call({
- String uid, String? firstName, String? lastName
+ int? id, String? uid, String? firstName, String? lastName
 });
 
 
@@ -65,10 +65,11 @@ class _$CreatedByResponseModelCopyWithImpl<$Res>
 
 /// Create a copy of CreatedByResponseModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? firstName = freezed,Object? lastName = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? uid = freezed,Object? firstName = freezed,Object? lastName = freezed,}) {
   return _then(_self.copyWith(
-uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
-as String,firstName: freezed == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
+as String?,firstName: freezed == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String?,lastName: freezed == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -155,10 +156,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String? firstName,  String? lastName)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? firstName,  String? lastName)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreatedByResponseModel() when $default != null:
-return $default(_that.uid,_that.firstName,_that.lastName);case _:
+return $default(_that.id,_that.uid,_that.firstName,_that.lastName);case _:
   return orElse();
 
 }
@@ -176,10 +177,10 @@ return $default(_that.uid,_that.firstName,_that.lastName);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String? firstName,  String? lastName)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? firstName,  String? lastName)  $default,) {final _that = this;
 switch (_that) {
 case _CreatedByResponseModel():
-return $default(_that.uid,_that.firstName,_that.lastName);case _:
+return $default(_that.id,_that.uid,_that.firstName,_that.lastName);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -196,10 +197,10 @@ return $default(_that.uid,_that.firstName,_that.lastName);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String? firstName,  String? lastName)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? uid,  String? firstName,  String? lastName)?  $default,) {final _that = this;
 switch (_that) {
 case _CreatedByResponseModel() when $default != null:
-return $default(_that.uid,_that.firstName,_that.lastName);case _:
+return $default(_that.id,_that.uid,_that.firstName,_that.lastName);case _:
   return null;
 
 }
@@ -211,10 +212,11 @@ return $default(_that.uid,_that.firstName,_that.lastName);case _:
 @JsonSerializable()
 
 class _CreatedByResponseModel implements CreatedByResponseModel {
-  const _CreatedByResponseModel({required this.uid, this.firstName, this.lastName});
+  const _CreatedByResponseModel({this.id, this.uid, this.firstName, this.lastName});
   factory _CreatedByResponseModel.fromJson(Map<String, dynamic> json) => _$CreatedByResponseModelFromJson(json);
 
-@override final  String uid;
+@override final  int? id;
+@override final  String? uid;
 @override final  String? firstName;
 @override final  String? lastName;
 
@@ -231,16 +233,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreatedByResponseModel&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CreatedByResponseModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uid,firstName,lastName);
+int get hashCode => Object.hash(runtimeType,id,uid,firstName,lastName);
 
 @override
 String toString() {
-  return 'CreatedByResponseModel(uid: $uid, firstName: $firstName, lastName: $lastName)';
+  return 'CreatedByResponseModel(id: $id, uid: $uid, firstName: $firstName, lastName: $lastName)';
 }
 
 
@@ -251,7 +253,7 @@ abstract mixin class _$CreatedByResponseModelCopyWith<$Res> implements $CreatedB
   factory _$CreatedByResponseModelCopyWith(_CreatedByResponseModel value, $Res Function(_CreatedByResponseModel) _then) = __$CreatedByResponseModelCopyWithImpl;
 @override @useResult
 $Res call({
- String uid, String? firstName, String? lastName
+ int? id, String? uid, String? firstName, String? lastName
 });
 
 
@@ -268,10 +270,11 @@ class __$CreatedByResponseModelCopyWithImpl<$Res>
 
 /// Create a copy of CreatedByResponseModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? firstName = freezed,Object? lastName = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? uid = freezed,Object? firstName = freezed,Object? lastName = freezed,}) {
   return _then(_CreatedByResponseModel(
-uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
-as String,firstName: freezed == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int?,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
+as String?,firstName: freezed == firstName ? _self.firstName : firstName // ignore: cast_nullable_to_non_nullable
 as String?,lastName: freezed == lastName ? _self.lastName : lastName // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

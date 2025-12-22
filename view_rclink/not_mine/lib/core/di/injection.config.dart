@@ -599,19 +599,19 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i545.ResolveWarningItemUseCase>(
       () => _i545.ResolveWarningItemUseCase(gh<_i157.WarningRepository>()),
     );
-    gh.lazySingleton<_i984.GetDraftWarningsUseCase>(
+    gh.factory<_i984.GetDraftWarningsUseCase>(
       () => _i984.GetDraftWarningsUseCase(gh<_i157.WarningRepository>()),
     );
     gh.factory<_i467.CreateSiteWarningUseCase>(
       () => _i467.CreateSiteWarningUseCase(gh<_i157.WarningRepository>()),
     );
-    gh.lazySingleton<_i980.GetWarningByUidUseCase>(
+    gh.factory<_i980.GetWarningByUidUseCase>(
       () => _i980.GetWarningByUidUseCase(gh<_i157.WarningRepository>()),
     );
-    gh.lazySingleton<_i161.ClearWarningCacheUseCase>(
+    gh.factory<_i161.ClearWarningCacheUseCase>(
       () => _i161.ClearWarningCacheUseCase(gh<_i157.WarningRepository>()),
     );
-    gh.lazySingleton<_i696.GetWarningsUseCase>(
+    gh.factory<_i696.GetWarningsUseCase>(
       () => _i696.GetWarningsUseCase(gh<_i157.WarningRepository>()),
     );
     gh.factory<_i79.ClearContractorRelationCacheUseCase>(
@@ -624,7 +624,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i337.ContractorRelationRepository>(),
       ),
     );
-    gh.factory<_i261.WarningBloc>(
+    gh.lazySingleton<_i261.WarningBloc>(
       () => _i261.WarningBloc(
         gh<_i696.GetWarningsUseCase>(),
         gh<_i161.ClearWarningCacheUseCase>(),

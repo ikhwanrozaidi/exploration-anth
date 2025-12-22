@@ -17,8 +17,12 @@ _WarningReasonModel _$WarningReasonModelFromJson(Map<String, dynamic> json) =>
       requiresAction: json['requiresAction'] as bool? ?? true,
       isActive: json['isActive'] as bool? ?? true,
       displayOrder: (json['displayOrder'] as num?)?.toInt() ?? 0,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: DateTime.parse(json['updatedAt'] as String),
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] == null
+          ? null
+          : DateTime.parse(json['updatedAt'] as String),
       category: json['category'] == null
           ? null
           : WarningCategoryModel.fromJson(
@@ -37,7 +41,7 @@ Map<String, dynamic> _$WarningReasonModelToJson(_WarningReasonModel instance) =>
       'requiresAction': instance.requiresAction,
       'isActive': instance.isActive,
       'displayOrder': instance.displayOrder,
-      'createdAt': instance.createdAt.toIso8601String(),
-      'updatedAt': instance.updatedAt.toIso8601String(),
+      'createdAt': instance.createdAt?.toIso8601String(),
+      'updatedAt': instance.updatedAt?.toIso8601String(),
       'category': instance.category,
     };

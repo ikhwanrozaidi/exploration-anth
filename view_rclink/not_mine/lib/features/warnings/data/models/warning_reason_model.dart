@@ -20,8 +20,8 @@ abstract class WarningReasonModel with _$WarningReasonModel {
     @Default(true) bool requiresAction,
     @Default(true) bool isActive,
     @Default(0) int displayOrder,
-    required DateTime createdAt,
-    required DateTime updatedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
     // Optional nested category
     WarningCategoryModel? category,
   }) = _WarningReasonModel;
@@ -40,8 +40,8 @@ abstract class WarningReasonModel with _$WarningReasonModel {
       requiresAction: requiresAction,
       isActive: isActive,
       displayOrder: displayOrder,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
+      createdAt: createdAt ?? DateTime.now(),
+      updatedAt: updatedAt ?? DateTime.now(),
       category: category?.toEntity(),
     );
   }

@@ -73,9 +73,9 @@ void _configureDioInterceptors() {
       dio.interceptors.add(
         PrettyDioLogger(
           requestHeader: true,
-          requestBody: false,
-          responseBody: false,
-          responseHeader: false,
+          requestBody: true,
+          responseBody: true,
+          responseHeader: true,
           error: true,
           compact: true,
           maxWidth: 90,

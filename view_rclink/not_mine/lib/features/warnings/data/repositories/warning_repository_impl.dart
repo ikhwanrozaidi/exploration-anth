@@ -289,31 +289,62 @@ class WarningRepositoryImpl
           companyUID: companyUID,
         ),
         onSyncSuccess: (serverModel, tempUID) async {
-          print('✅ Site warning synced successfully, updating local DB');
+          print('🔍 DEBUG: onSyncSuccess callback started');
+          print('   tempUID: $tempUID');
+          print('   serverModel.uid: ${serverModel.uid}');
 
-          await _localDataSource.cacheSingleWarning(serverModel);
+          try {
+            print('🔍 DEBUG: Caching single warning...');
+            await _localDataSource.cacheSingleWarning(serverModel);
+            print('✅ DEBUG: cacheSingleWarning completed');
+          } catch (e, stackTrace) {
+            print('❌ DEBUG: cacheSingleWarning failed: $e');
+            print('📍 Stack trace: $stackTrace');
+            rethrow;
+          }
 
-          if (tempUID != serverModel.uid) {
-            await _localDataSource.deleteWarningByUID(tempUID);
+          try {
+            print('🔍 DEBUG: Checking if tempUID != serverModel.uid...');
+            if (tempUID != serverModel.uid) {
+              print('   Deleting temp UID: $tempUID');
+              await _localDataSource.deleteWarningByUID(tempUID);
+              print('✅ DEBUG: deleteWarningByUID completed');
+            } else {
+              print('   UIDs match, no need to delete');
+            }
+          } catch (e, stackTrace) {
+            print('❌ DEBUG: deleteWarningByUID failed: $e');
+            print('📍 Stack trace: $stackTrace');
+            rethrow;
           }
 
           // Step 3: Activate images for upload
           if (images != null && images.isNotEmpty) {
-            print(
-              '🔄 Activating images for upload: $tempUID → ${serverModel.uid}',
-            );
+            print('🔍 DEBUG: Activating images for upload...');
+            print('   tempUID: $tempUID');
+            print('   serverModel.uid: ${serverModel.uid}');
 
-            await activateImageUpload(
-              SyncEntityType.warning,
-              tempUID,
-              serverModel.uid,
-            );
-
-            print('✅ Images activated for upload');
+            try {
+              await activateImageUpload(
+                SyncEntityType.warning,
+                tempUID,
+                serverModel.uid,
+              );
+              print('✅ DEBUG: activateImageUpload completed');
+            } catch (e, stackTrace) {
+              print('❌ DEBUG: activateImageUpload failed: $e');
+              print('📍 Stack trace: $stackTrace');
+              rethrow;
+            }
 
             // Step 4: Fire-and-forget immediate upload
+            print('🔍 DEBUG: Calling _uploadImagesImmediately...');
             _uploadImagesImmediately(companyUID, serverModel.uid);
+          } else {
+            print('ℹ️ DEBUG: No images to activate/upload');
           }
+
+          print('✅ DEBUG: onSyncSuccess callback completed');
         },
         entityType: SyncEntityType.warning,
         action: SyncAction.create,
@@ -331,23 +362,52 @@ class WarningRepositoryImpl
     String warningUID,
   ) async {
     try {
+      print('🔍 DEBUG: Starting _uploadImagesImmediately');
+      print('   companyUID: $companyUID');
+      print('   warningUID: $warningUID');
+
+      print('🔍 DEBUG: Calling getImagesByEntity...');
       final images = await _imageLocalDataSource.getImagesByEntity(
         entityType: SyncEntityType.warning,
         entityUID: warningUID,
       );
+      print('✅ DEBUG: getImagesByEntity completed');
+      print('   Found ${images.length} images');
 
       if (images.isEmpty) {
         print('ℹ️ No images to upload for warning $warningUID');
         return;
       }
 
+      // Debug each image record
+      for (int i = 0; i < images.length; i++) {
+        final img = images[i];
+        print('🔍 DEBUG: Image $i:');
+        print('   - id: ${img.id}');
+        print('   - entityType: ${img.entityType}');
+        print('   - entityUID: ${img.entityUID}');
+        print('   - contextField: ${img.contextField}');
+        print('   - sequence: ${img.sequence}');
+        print('   - localFilePath: ${img.localFilePath}');
+        print('   - fileName: ${img.fileName}');
+        print('   - mimeType: ${img.mimeType}');
+        print('   - fileSize: ${img.fileSize}');
+        print('   - companyUID: ${img.companyUID}');
+        print('   - uploadedByUID: ${img.uploadedByUID}');
+        print('   - syncStatus: ${img.syncStatus}');
+        print('   - retryCount: ${img.retryCount}');
+      }
+
       print('📤 Uploading ${images.length} images immediately...');
+      print('🔍 DEBUG: Calling uploadImagesForWarning...');
 
       final result = await _imageRemoteDataSource.uploadImagesForWarning(
         companyUID: companyUID,
         warningUID: warningUID,
         images: images,
       );
+
+      print('✅ DEBUG: uploadImagesForWarning completed');
 
       await result.fold(
         (failure) async {
@@ -361,6 +421,10 @@ class WarningRepositoryImpl
           );
         },
         (uploadedFiles) async {
+          print(
+            '✅ Immediate upload successful! ${uploadedFiles.length} images uploaded',
+          );
+
           await _imageLocalDataSource.markImagesAsSynced(
             SyncEntityType.warning,
             warningUID,
@@ -368,15 +432,21 @@ class WarningRepositoryImpl
           );
         },
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
       print('❌ Error in immediate image upload: $e');
+      print('📍 Stack trace:');
+      print(stackTrace);
       print('   Images will retry via periodic sync');
 
-      await _imageLocalDataSource.incrementRetryCount(
-        SyncEntityType.warning,
-        warningUID,
-        e.toString(),
-      );
+      try {
+        await _imageLocalDataSource.incrementRetryCount(
+          SyncEntityType.warning,
+          warningUID,
+          e.toString(),
+        );
+      } catch (incrementError) {
+        print('❌ Error incrementing retry count: $incrementError');
+      }
     }
   }
 }

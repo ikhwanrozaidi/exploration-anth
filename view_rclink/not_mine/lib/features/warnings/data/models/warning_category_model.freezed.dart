@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 mixin _$WarningCategoryModel {
 
  int get id; String get uid; String get name; String get warningType;// Stored as string in API/DB
- DateTime get createdAt; DateTime get updatedAt;
+ DateTime? get createdAt; DateTime? get updatedAt;
 /// Create a copy of WarningCategoryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $WarningCategoryModelCopyWith<$Res>  {
   factory $WarningCategoryModelCopyWith(WarningCategoryModel value, $Res Function(WarningCategoryModel) _then) = _$WarningCategoryModelCopyWithImpl;
 @useResult
 $Res call({
- int id, String uid, String name, String warningType, DateTime createdAt, DateTime updatedAt
+ int id, String uid, String name, String warningType, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -66,15 +66,15 @@ class _$WarningCategoryModelCopyWithImpl<$Res>
 
 /// Create a copy of WarningCategoryModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? warningType = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? warningType = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,warningType: null == warningType ? _self.warningType : warningType // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as String,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 
@@ -159,7 +159,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String warningType,  DateTime createdAt,  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String warningType,  DateTime? createdAt,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WarningCategoryModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.warningType,_that.createdAt,_that.updatedAt);case _:
@@ -180,7 +180,7 @@ return $default(_that.id,_that.uid,_that.name,_that.warningType,_that.createdAt,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String warningType,  DateTime createdAt,  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uid,  String name,  String warningType,  DateTime? createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _WarningCategoryModel():
 return $default(_that.id,_that.uid,_that.name,_that.warningType,_that.createdAt,_that.updatedAt);case _:
@@ -200,7 +200,7 @@ return $default(_that.id,_that.uid,_that.name,_that.warningType,_that.createdAt,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uid,  String name,  String warningType,  DateTime createdAt,  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uid,  String name,  String warningType,  DateTime? createdAt,  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _WarningCategoryModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.warningType,_that.createdAt,_that.updatedAt);case _:
@@ -215,7 +215,7 @@ return $default(_that.id,_that.uid,_that.name,_that.warningType,_that.createdAt,
 @JsonSerializable()
 
 class _WarningCategoryModel extends WarningCategoryModel {
-  const _WarningCategoryModel({required this.id, required this.uid, required this.name, required this.warningType, required this.createdAt, required this.updatedAt}): super._();
+  const _WarningCategoryModel({required this.id, required this.uid, required this.name, required this.warningType, this.createdAt, this.updatedAt}): super._();
   factory _WarningCategoryModel.fromJson(Map<String, dynamic> json) => _$WarningCategoryModelFromJson(json);
 
 @override final  int id;
@@ -223,8 +223,8 @@ class _WarningCategoryModel extends WarningCategoryModel {
 @override final  String name;
 @override final  String warningType;
 // Stored as string in API/DB
-@override final  DateTime createdAt;
-@override final  DateTime updatedAt;
+@override final  DateTime? createdAt;
+@override final  DateTime? updatedAt;
 
 /// Create a copy of WarningCategoryModel
 /// with the given fields replaced by the non-null parameter values.
@@ -259,7 +259,7 @@ abstract mixin class _$WarningCategoryModelCopyWith<$Res> implements $WarningCat
   factory _$WarningCategoryModelCopyWith(_WarningCategoryModel value, $Res Function(_WarningCategoryModel) _then) = __$WarningCategoryModelCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String uid, String name, String warningType, DateTime createdAt, DateTime updatedAt
+ int id, String uid, String name, String warningType, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -276,15 +276,15 @@ class __$WarningCategoryModelCopyWithImpl<$Res>
 
 /// Create a copy of WarningCategoryModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? warningType = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uid = null,Object? name = null,Object? warningType = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_WarningCategoryModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,warningType: null == warningType ? _self.warningType : warningType // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
+as String,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,
   ));
 }
 

@@ -13,8 +13,12 @@ _WarningCategoryModel _$WarningCategoryModelFromJson(
   uid: json['uid'] as String,
   name: json['name'] as String,
   warningType: json['warningType'] as String,
-  createdAt: DateTime.parse(json['createdAt'] as String),
-  updatedAt: DateTime.parse(json['updatedAt'] as String),
+  createdAt: json['createdAt'] == null
+      ? null
+      : DateTime.parse(json['createdAt'] as String),
+  updatedAt: json['updatedAt'] == null
+      ? null
+      : DateTime.parse(json['updatedAt'] as String),
 );
 
 Map<String, dynamic> _$WarningCategoryModelToJson(
@@ -24,6 +28,6 @@ Map<String, dynamic> _$WarningCategoryModelToJson(
   'uid': instance.uid,
   'name': instance.name,
   'warningType': instance.warningType,
-  'createdAt': instance.createdAt.toIso8601String(),
-  'updatedAt': instance.updatedAt.toIso8601String(),
+  'createdAt': instance.createdAt?.toIso8601String(),
+  'updatedAt': instance.updatedAt?.toIso8601String(),
 };

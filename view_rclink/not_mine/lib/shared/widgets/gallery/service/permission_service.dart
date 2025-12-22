@@ -1,7 +1,10 @@
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:io';
+
+import '../../location_service_check_dialog.dart';
 
 class PermissionService {
   static Future<bool> requestCameraPermission() async {
@@ -97,5 +100,24 @@ class PermissionService {
 
   static Future<void> openAppSettings() async {
     await openAppSettings();
+  }
+
+  /// Checks if location service is enabled and shows dialog if not
+  /// Returns true if enabled or user enabled it, false otherwise
+  static Future<bool> checkLocationService(BuildContext context) async {
+    final isEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!isEnabled && context.mounted) {
+      // Import the LocationServiceCheckDialog at the top of the file
+      final shouldContinue = await LocationServiceCheckDialog.check(context);
+      if (!shouldContinue) {
+        return false;
+      }
+
+      // Check again after user potentially enabled it
+      return await Geolocator.isLocationServiceEnabled();
+    }
+
+    return isEnabled;
   }
 }
