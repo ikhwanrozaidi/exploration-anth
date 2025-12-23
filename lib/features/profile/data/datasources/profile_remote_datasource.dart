@@ -21,30 +21,29 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     Map<String, dynamic> updates,
   ) async {
     try {
-      print('📡 [ProfileRemoteDataSource] Updating profile with: $updates');
-
       final response = await _apiService.updateProfile(data: updates);
 
       if (response.isSuccess && response.data != null) {
-        final responseData = response.data!;
+        final data = response
+            .data!; //REVISE: Are you sure to use this because already extract out 'data' from ApiResponse
+        final userData =
+            data['user']
+                as Map<String, dynamic>; //REVISE: don't use "data['user']"
+        final userDetailData =
+            data['userDetail']
+                as Map<
+                  String,
+                  dynamic
+                >?; //REVISE: don't use "data['userDetail']"
 
-        // Parse userDetail
-        UserDetail? userDetail;
-        if (responseData.userDetail.isNotEmpty) {
-          userDetail = UserDetail.fromJson(responseData.userDetail);
+        User user = User.fromJson(userData);
+
+        if (userDetailData != null) {
+          final userDetail = UserDetail.fromJson(userDetailData);
+          user = user.copyWith(userDetail: userDetail);
         }
 
-        // Parse userSettings (if exists in response, otherwise keep existing)
-        UserSettings? userSettings = responseData.user.userSettings;
-
-        // Create updated user entity
-        final updatedUser = responseData.user.copyWith(
-          userDetail: userDetail,
-          userSettings: userSettings,
-        );
-
-        print('✅ [ProfileRemoteDataSource] Profile updated successfully');
-        return Right(updatedUser);
+        return Right(user);
       } else {
         return Left(
           ServerFailure(
@@ -56,7 +55,6 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         );
       }
     } catch (e) {
-      print('❌ [ProfileRemoteDataSource] Update error: $e');
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }

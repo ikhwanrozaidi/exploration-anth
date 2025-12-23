@@ -1,33 +1,11 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class ProfileEvent extends Equatable {
-  const ProfileEvent();
+part 'profile_event.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class LoadUserProfile extends ProfileEvent {
-  const LoadUserProfile();
-}
-
-class LoadUserSettings extends ProfileEvent {
-  const LoadUserSettings();
-}
-
-class RefreshUserSettings extends ProfileEvent {
-  const RefreshUserSettings();
-}
-
-class LogoutUser extends ProfileEvent {
-  const LogoutUser();
-}
-
-class UpdateUserProfile extends ProfileEvent {
-  final Map<String, dynamic> updates;
-
-  const UpdateUserProfile(this.updates);
-
-  @override
-  List<Object> get props => [updates];
+@freezed
+class ProfileEvent with _$ProfileEvent {
+  const factory ProfileEvent.updateField({
+    required String fieldName,
+    required String fieldValue,
+  }) = UpdateProfileField;
 }

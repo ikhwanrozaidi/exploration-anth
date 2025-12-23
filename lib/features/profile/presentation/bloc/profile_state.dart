@@ -1,51 +1,11 @@
-import 'package:equatable/equatable.dart';
-import '../../../login/domain/entities/user.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class ProfileState extends Equatable {
-  const ProfileState();
+part 'profile_state.freezed.dart';
 
-  @override
-  List<Object?> get props => [];
-}
-
-class ProfileInitial extends ProfileState {
-  const ProfileInitial();
-}
-
-class ProfileLoading extends ProfileState {
-  const ProfileLoading();
-}
-
-class ProfileLoaded extends ProfileState {
-  final User user;
-  final bool isFromCache;
-
-  const ProfileLoaded(this.user, {this.isFromCache = false});
-
-  User get userSettings => user;
-
-  @override
-  List<Object?> get props => [user, isFromCache];
-}
-
-class ProfileError extends ProfileState {
-  final String message;
-
-  const ProfileError(this.message);
-
-  @override
-  List<Object> get props => [message];
-}
-
-class ProfileLoggedOut extends ProfileState {
-  const ProfileLoggedOut();
-}
-
-class ProfileUpdating extends ProfileState {
-  final User user; // Keep current user data
-
-  const ProfileUpdating(this.user);
-
-  @override
-  List<Object?> get props => [user];
+@freezed
+class ProfileState with _$ProfileState {
+  const factory ProfileState.initial() = ProfileInitial;
+  const factory ProfileState.updating() = ProfileUpdating;
+  const factory ProfileState.success() = ProfileSuccess;
+  const factory ProfileState.failure(String message) = ProfileFailure;
 }

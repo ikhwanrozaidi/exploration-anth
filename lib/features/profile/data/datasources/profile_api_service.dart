@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../../../shared/models/api_response.dart';
-import '../models/update_profile_response_model.dart';
 
 part 'profile_api_service.g.dart';
 
@@ -13,7 +12,8 @@ abstract class ProfileApiService {
   factory ProfileApiService(Dio dio) = _ProfileApiService;
 
   @PATCH('/users/profile')
-  Future<ApiResponse<UpdateProfileResponseModel>> updateProfile({
+  Future<ApiResponse<Map<String, dynamic>>> updateProfile({
+    //REVISE: Need to do UpdateProfileResponseModel
     @Body() required Map<String, dynamic> data,
   });
 }

@@ -450,11 +450,16 @@ class ProfileView extends StatelessWidget {
                                     AkarIcons.person,
                                     "Personal Info",
                                     () {
+                                      final profileBloc = context
+                                          .read<ProfileBloc>();
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              PersonalInfoPage(),
+                                              BlocProvider.value(
+                                                value: profileBloc,
+                                                child: const PersonalInfoPage(),
+                                              ),
                                         ),
                                       );
                                     },

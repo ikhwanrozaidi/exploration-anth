@@ -93,6 +93,7 @@ class ProfileLocalDataSourceImpl implements ProfileLocalDataSource {
 
   @override
   Future<Either<Failure, void>> storeUser(User user) async {
+    //QUESTION: Why storeUser here? data comes from where?
     try {
       print('💾 [ProfileLocalDataSource] Storing user to database...');
 
