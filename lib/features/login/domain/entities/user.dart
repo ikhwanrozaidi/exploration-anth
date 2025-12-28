@@ -14,7 +14,7 @@ class User extends Equatable {
   final String phone;
   final String status;
   final String balance;
-  final String? merchantId;
+  final int? merchantId;
   final String? country;
   final DateTime createdAt;
   final UserDetail? userDetail;
@@ -44,7 +44,7 @@ class User extends Equatable {
     String? phone,
     String? status,
     String? balance,
-    String? merchantId,
+    int? merchantId,
     String? country,
     DateTime? createdAt,
     UserDetail? userDetail,

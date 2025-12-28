@@ -22,7 +22,6 @@ mixin SyncableTable on Table {
   DateTimeColumn get lastSyncAttempt => dateTime().nullable()();
 }
 
-// User account record
 @DataClassName('UserRecord')
 class Users extends Table {
   IntColumn get id => integer()();
@@ -30,14 +29,10 @@ class Users extends Table {
   TextColumn get role => text()();
   TextColumn get phone => text()();
   TextColumn get status => text()();
-  TextColumn get balance => text()();
-  TextColumn get merchantId => text().nullable()();
+  TextColumn get balance => text().withDefault(const Constant('0.00'))();
+  IntColumn get merchantId => integer().nullable()();
   TextColumn get country => text().nullable()();
   DateTimeColumn get createdAt => dateTime()();
-
-  // Store nested objects as JSON strings
-  TextColumn get userDetail => text().nullable()();
-  TextColumn get userSettings => text().nullable()();
 
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get deletedAt => dateTime().nullable()();
@@ -46,30 +41,41 @@ class Users extends Table {
   Set<Column> get primaryKey => {id};
 }
 
-// Device registration table (for push notifications, etc.)
-// @DataClassName('DeviceEntity')
-// class Devices extends Table with SyncableTable {
-//   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
-//   TextColumn get uid => text()(); // Business UUID - unique for public lookup
-//   TextColumn get deviceId => text()(); // Unique device identifier
-//   TextColumn get deviceCode => text()(); // Human-readable device code
-//   TextColumn get type => text()(); // 'mobile', 'web', 'desktop'
-//   TextColumn get name => text().nullable()(); // Device name
-//   DateTimeColumn get lastActiveAt => dateTime().nullable()();
-//   DateTimeColumn get updatedAt => dateTime()();
-//   DateTimeColumn get createdAt => dateTime()();
+@DataClassName('UserDetailRecord')
+class UserDetails extends Table {
+  IntColumn get userId => integer()(); // Foreign key to Users
+  TextColumn get firstName => text()();
+  TextColumn get lastName => text()();
+  TextColumn get fullName => text()();
+  TextColumn get address => text().nullable()();
+  TextColumn get birthDate => text().nullable()();
+  TextColumn get profilePicture => text().nullable()();
+  IntColumn get gatePoint => integer().withDefault(const Constant(0))();
+  BoolColumn get verify => boolean().withDefault(const Constant(false))();
+  TextColumn get vaccount => text().nullable()();
 
-//   @override
-//   List<Set<Column>> get uniqueKeys => [
-//     {uid}, // UID must be unique for public lookup
-//     {deviceId}, // Device ID must be unique
-//     {deviceCode}, // Device code must be unique
-//   ];
-// }
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
-@DriftDatabase(tables: [Users])
+  @override
+  Set<Column> get primaryKey => {userId};
+}
+
+@DataClassName('UserSettingRecord')
+class UserSettingsDetails extends Table {
+  IntColumn get userId => integer()(); // Foreign key to Users
+  BoolColumn get marketing => boolean().withDefault(const Constant(true))();
+  BoolColumn get notifications => boolean().withDefault(const Constant(true))();
+  BoolColumn get twoFA => boolean().withDefault(const Constant(false))();
+
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column> get primaryKey => {userId};
+}
+
+@DriftDatabase(tables: [Users, UserDetails, UserSettingsDetails])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
   int get schemaVersion => 1;

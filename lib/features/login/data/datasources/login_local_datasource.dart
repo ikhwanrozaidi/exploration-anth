@@ -1,8 +1,5 @@
-import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
-import 'package:gatepay_app/features/login/domain/entities/user_detail.dart';
-import 'package:gatepay_app/features/login/domain/entities/user_settings.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
@@ -11,6 +8,8 @@ import '../../../../core/service/secure_storage_service.dart';
 import '../../../../shared/entities/auth_result.dart';
 import '../../domain/entities/user.dart' as user_entity;
 import '../../domain/entities/user.dart';
+import '../../domain/entities/user_detail.dart';
+import '../../domain/entities/user_settings.dart';
 
 abstract class LoginLocalDataSource {
   Future<Either<Failure, void>> storeAuthResult(
@@ -62,7 +61,8 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
       );
       print('✅ Tokens stored in AuthInterceptor');
 
-      // ✅ Store user in database
+      // ✅ Store user in database - NORMALIZED TABLES
+      // Store main user record
       await _database
           .into(_database.users)
           .insertOnConflictUpdate(
@@ -72,22 +72,50 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
               role: user.role,
               phone: user.phone,
               status: user.status,
-              balance: user.balance,
+              balance: Value(user.balance),
               merchantId: Value(user.merchantId),
               country: Value(user.country),
               createdAt: user.createdAt,
-              userDetail: Value(
-                user.userDetail != null
-                    ? jsonEncode(user.userDetail!.toJson())
-                    : null,
-              ),
-              userSettings: Value(
-                user.userSettings != null
-                    ? jsonEncode(user.userSettings!.toJson())
-                    : null,
-              ),
             ),
           );
+      print('✅ User record stored in database');
+
+      // Store user detail if available
+      if (user.userDetail != null) {
+        await _database
+            .into(_database.userDetails)
+            .insertOnConflictUpdate(
+              UserDetailsCompanion.insert(
+                userId: Value(user.id),
+                firstName: user.userDetail!.firstName,
+                lastName: user.userDetail!.lastName,
+                fullName: user.userDetail!.fullName,
+                address: Value(user.userDetail!.address),
+                birthDate: Value(user.userDetail!.birthDate),
+                profilePicture: Value(user.userDetail!.profilePicture),
+                gatePoint: Value(user.userDetail!.gatePoint),
+                verify: Value(user.userDetail!.verify),
+                vaccount: Value(user.userDetail!.vaccount),
+              ),
+            );
+        print('✅ User detail stored in database');
+      }
+
+      // Store user settings if available
+      if (user.userSettings != null) {
+        await _database
+            .into(_database.userSettingsDetails)
+            .insertOnConflictUpdate(
+              UserSettingsDetailsCompanion.insert(
+                userId: Value(user.id),
+                marketing: Value(user.userSettings!.marketing),
+                notifications: Value(user.userSettings!.notifications),
+                twoFA: Value(user.userSettings!.twoFA),
+              ),
+            );
+        print('✅ User settings stored in database');
+      }
+
       print('✅ User stored in database - ID: ${user.id}, Email: ${user.email}');
 
       // ✅ VERIFY IT WAS STORED
@@ -112,55 +140,70 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
     try {
       print('🔍 Getting stored user from database...');
 
+      // 💾 USING LOCAL DATA: Query from normalized tables
       final query = _database.select(_database.users)
         ..where((u) => u.deletedAt.isNull())
         ..limit(1);
 
-      final record = await query.getSingleOrNull();
+      final userRecord = await query.getSingleOrNull();
 
-      if (record == null) {
+      if (userRecord == null) {
         print('❌ No user found in database');
         return const Right(null);
       }
 
       print(
-        '✅ Found user in database - ID: ${record.id}, Email: ${record.email}',
+        '✅ Found user in database - ID: ${userRecord.id}, Email: ${userRecord.email}',
       );
 
-      // Parse nested JSON objects (handle null)
+      // Fetch related data from normalized tables
       UserDetail? userDetail;
       UserSettings? userSettings;
 
-      if (record.userDetail != null && record.userDetail!.isNotEmpty) {
-        try {
-          userDetail = UserDetail.fromJson(jsonDecode(record.userDetail!));
-          print('✅ Parsed userDetail');
-        } catch (e) {
-          print('⚠️ Failed to parse userDetail: $e');
-        }
+      // Get user detail
+      final detailQuery = _database.select(_database.userDetails)
+        ..where((d) => d.userId.equals(userRecord.id));
+      final detailRecord = await detailQuery.getSingleOrNull();
+
+      if (detailRecord != null) {
+        userDetail = UserDetail(
+          firstName: detailRecord.firstName,
+          lastName: detailRecord.lastName,
+          fullName: detailRecord.fullName,
+          address: detailRecord.address,
+          birthDate: detailRecord.birthDate,
+          profilePicture: detailRecord.profilePicture,
+          gatePoint: detailRecord.gatePoint,
+          verify: detailRecord.verify,
+          vaccount: detailRecord.vaccount,
+        );
+        print('✅ User detail fetched from database');
       }
 
-      if (record.userSettings != null && record.userSettings!.isNotEmpty) {
-        try {
-          userSettings = UserSettings.fromJson(
-            jsonDecode(record.userSettings!),
-          );
-          print('✅ Parsed userSettings');
-        } catch (e) {
-          print('⚠️ Failed to parse userSettings: $e');
-        }
+      // Get user settings
+      final settingsQuery = _database.select(_database.userSettingsDetails)
+        ..where((s) => s.userId.equals(userRecord.id));
+      final settingsRecord = await settingsQuery.getSingleOrNull();
+
+      if (settingsRecord != null) {
+        userSettings = UserSettings(
+          marketing: settingsRecord.marketing,
+          notifications: settingsRecord.notifications,
+          twoFA: settingsRecord.twoFA,
+        );
+        print('✅ User settings fetched from database');
       }
 
       final user = User(
-        id: record.id,
-        email: record.email,
-        role: record.role,
-        phone: record.phone,
-        status: record.status,
-        balance: record.balance,
-        merchantId: record.merchantId,
-        country: record.country,
-        createdAt: record.createdAt,
+        id: userRecord.id,
+        email: userRecord.email,
+        role: userRecord.role,
+        phone: userRecord.phone,
+        status: userRecord.status,
+        balance: userRecord.balance,
+        merchantId: userRecord.merchantId,
+        country: userRecord.country,
+        createdAt: userRecord.createdAt,
         userDetail: userDetail,
         userSettings: userSettings,
       );
@@ -200,7 +243,11 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
       await _secureStorage.clearTokens();
       await _secureStorage.clearCredentials();
       await _authInterceptor.clearAllTokens();
+
+      // ✅ Clear all user-related tables
       await _database.delete(_database.users).go();
+      await _database.delete(_database.userDetails).go();
+      await _database.delete(_database.userSettingsDetails).go();
 
       return const Right(null);
     } catch (e) {

@@ -1,16 +1,9 @@
-import 'package:equatable/equatable.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-abstract class DashboardEvent extends Equatable {
-  const DashboardEvent();
+part 'dashboard_event.freezed.dart';
 
-  @override
-  List<Object> get props => [];
-}
-
-class LoadDashboardData extends DashboardEvent {
-  const LoadDashboardData();
-}
-
-class RefreshDashboardData extends DashboardEvent {
-  const RefreshDashboardData();
+@freezed
+class DashboardEvent with _$DashboardEvent {
+  const factory DashboardEvent.load() = LoadDashboard;
+  const factory DashboardEvent.refresh() = RefreshDashboard;
 }

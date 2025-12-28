@@ -71,9 +71,9 @@ void _configureDioInterceptors() {
           requestHeader: true,
           requestBody: true,
           responseBody: true,
-          responseHeader: true,
+          responseHeader: false,
           error: true,
-          compact: true,
+          compact: false,
           maxWidth: 90,
         ),
       );

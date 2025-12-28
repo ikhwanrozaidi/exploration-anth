@@ -8,23 +8,23 @@ class UserDetail extends Equatable {
   final String firstName;
   final String lastName;
   final String fullName;
-  final String address;
-  final String birthDate;
-  final String profilePicture;
+  final String? address;
+  final String? birthDate;
+  final String? profilePicture;
   final int gatePoint;
   final bool verify;
-  final String vaccount;
+  final String? vaccount;
 
   const UserDetail({
     required this.firstName,
     required this.lastName,
     required this.fullName,
-    required this.address,
-    required this.birthDate,
-    required this.profilePicture,
+    this.address,
+    this.birthDate,
+    this.profilePicture,
     required this.gatePoint,
     required this.verify,
-    required this.vaccount,
+    this.vaccount,
   });
 
   factory UserDetail.fromJson(Map<String, dynamic> json) =>

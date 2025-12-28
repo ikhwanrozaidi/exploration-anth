@@ -55,7 +55,7 @@ class CustomSnackBar {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: _getBackgroundColor(type).withOpacity(0.3),
+            color: _getBackgroundColor(type).withOpacity(0.7),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
               color: _getTextColor(type).withOpacity(0.2),
@@ -103,7 +103,7 @@ class CustomSnackBar {
       case SnackBarType.validation:
         return const Color.fromARGB(255, 255, 175, 151);
       case SnackBarType.comingsoon:
-        return const Color.fromARGB(255, 221, 221, 221);
+        return const Color.fromARGB(255, 255, 255, 255);
     }
   }
 

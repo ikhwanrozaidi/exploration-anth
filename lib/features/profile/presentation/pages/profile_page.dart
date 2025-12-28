@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gatepay_app/shared/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconify_flutter/icons/arcticons.dart';
 import 'package:iconify_flutter/icons/bx.dart';
@@ -8,9 +7,13 @@ import 'package:iconify_flutter/icons/ic.dart';
 import 'package:iconify_flutter/icons/material_symbols.dart';
 import 'package:iconify_flutter/icons/wpf.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../login/presentation/bloc/login_bloc.dart';
 import '../../../login/presentation/bloc/login_event.dart';
+import '../../domain/entities/user_profile_detail.dart';
+import '../../domain/entities/user_profile_settings.dart';
+import '../../domain/entities/user_profile_user.dart';
 import '../bloc/profile_bloc.dart';
 import '../bloc/profile_event.dart';
 import '../bloc/profile_state.dart';
@@ -29,7 +32,8 @@ class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<ProfileBloc>()..add(const LoadUserSettings()),
+      create: (context) =>
+          getIt<ProfileBloc>()..add(const ProfileEvent.loadProfile()),
       child: const ProfileView(),
     );
   }
@@ -81,35 +85,28 @@ class ProfileView extends StatelessWidget {
   }
 
   String _getDisplayName(ProfileState state) {
-    if (state is ProfileLoaded) {
-      final userDetail = state.user.userDetail;
-      if (userDetail != null) {
-        if (userDetail.fullName != null && userDetail.fullName!.isNotEmpty) {
-          return userDetail.fullName!;
+    return state.when(
+      initial: () => 'Loading...',
+      loading: () => 'Loading...',
+      updating: () => 'Updating...',
+      loaded: (user, detail, settings) {
+        if (detail != null && detail.fullName.isNotEmpty) {
+          return detail.fullName;
         }
-
-        final firstName =
-            (userDetail.firstName != null && userDetail.firstName!.isNotEmpty)
-            ? userDetail.firstName!
-            : '';
-        final lastName =
-            (userDetail.lastName != null && userDetail.lastName!.isNotEmpty)
-            ? userDetail.lastName!
-            : '';
+        final firstName = detail?.firstName ?? '';
+        final lastName = detail?.lastName ?? '';
         final combinedName = '$firstName $lastName'.trim();
         if (combinedName.isNotEmpty) {
           return combinedName;
         }
-      }
-
-      if (state.user.email.isNotEmpty) {
-        return state.user.email.split('@').first;
-      }
-      return "Unknown User";
-    } else if (state is ProfileError) {
-      return "Error";
-    }
-    return "Loading...";
+        if (user.email.isNotEmpty) {
+          return user.email.split('@').first;
+        }
+        return 'Unknown User';
+      },
+      empty: () => 'No User',
+      failure: (message) => 'Error',
+    );
   }
 
   @override
@@ -164,7 +161,7 @@ class ProfileView extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              displayName, // ✅ DYNAMIC NAME
+                              displayName,
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w400,
                                 color: Colors.black,
@@ -195,500 +192,34 @@ class ProfileView extends StatelessWidget {
             Expanded(
               child: BlocBuilder<ProfileBloc, ProfileState>(
                 builder: (context, state) {
-                  if (state is ProfileLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (state is ProfileError) {
-                    return Center(
+                  return state.when(
+                    initial: () => const Center(child: Text('Initializing...')),
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    updating: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    loaded: (user, detail, settings) =>
+                        _buildContent(context, user, detail, settings),
+                    empty: () =>
+                        const Center(child: Text('No profile data found')),
+                    failure: (message) => Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.error_outline,
-                            size: 64,
-                            color: Colors.red[300],
-                          ),
+                          Text('Error: $message'),
                           const SizedBox(height: 16),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 32),
-                            child: Text(
-                              state.message,
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(fontSize: 16),
-                            ),
-                          ),
-                          const SizedBox(height: 24),
                           ElevatedButton(
                             onPressed: () {
                               context.read<ProfileBloc>().add(
-                                const LoadUserSettings(),
+                                const ProfileEvent.loadProfile(),
                               );
                             },
                             child: const Text('Retry'),
                           ),
                         ],
                       ),
-                    );
-                  }
-
-                  if (state is ProfileLoaded) {
-                    final user = state.user; // ✅ GET USER ENTITY
-                    final userDetail = user.userDetail; // ✅ GET USER DETAIL
-
-                    // ✅ SAFE NULL HANDLING for all fields
-                    final fullName = userDetail?.fullName ?? "Unknown User";
-                    final email = user.email.isNotEmpty
-                        ? user.email
-                        : "No Email";
-                    final isVerified = userDetail?.verify ?? false;
-
-                    return RefreshIndicator(
-                      onRefresh: () async {
-                        context.read<ProfileBloc>().add(
-                          const RefreshUserSettings(),
-                        );
-                      },
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        padding: const EdgeInsets.all(16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 25,
-                                horizontal: 20,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 80,
-                                        height: 80,
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: const BoxDecoration(
-                                          color: backgroundColor,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(
-                                          Icons.person_outline,
-                                          size: 20,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                      const SizedBox(width: 25),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            fullName, // ✅ NULL SAFE
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          Text(
-                                            email, // ✅ NULL SAFE
-                                            style: GoogleFonts.poppins(
-                                              fontSize: 12,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                          // ✅ VERIFIED/UNVERIFIED BADGE
-                                          if (isVerified)
-                                            TextButton(
-                                              onPressed: () {},
-                                              style: TextButton.styleFrom(
-                                                backgroundColor:
-                                                    const Color.fromARGB(
-                                                      255,
-                                                      7,
-                                                      246,
-                                                      226,
-                                                    ),
-                                                foregroundColor: Colors.black,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 6,
-                                                    ),
-                                                minimumSize: Size.zero,
-                                                tapTargetSize:
-                                                    MaterialTapTargetSize
-                                                        .shrinkWrap,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(25),
-                                                ),
-                                                elevation: 2,
-                                                shadowColor: Colors.black26,
-                                              ),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Icon(
-                                                    Icons.verified,
-                                                    size: 15,
-                                                    color: Colors.black,
-                                                  ),
-                                                  const SizedBox(width: 6),
-                                                  Text(
-                                                    'Verified',
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            )
-                                          else
-                                            TextButton(
-                                              onPressed: () {
-                                                // TODO: Navigate to verification
-                                              },
-                                              style: TextButton.styleFrom(
-                                                backgroundColor:
-                                                    Colors.grey.shade200,
-                                                foregroundColor: Colors.black,
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 6,
-                                                    ),
-                                                minimumSize: Size.zero,
-                                                tapTargetSize:
-                                                    MaterialTapTargetSize
-                                                        .shrinkWrap,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(25),
-                                                ),
-                                                elevation: 2,
-                                                shadowColor: Colors.black26,
-                                              ),
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  const Icon(
-                                                    Icons.warning_amber_rounded,
-                                                    size: 15,
-                                                    color: Colors.orange,
-                                                  ),
-                                                  const SizedBox(width: 6),
-                                                  Text(
-                                                    'Unverified',
-                                                    style: GoogleFonts.poppins(
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.all(10),
-                                    decoration: const BoxDecoration(
-                                      color: backgroundColor,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(
-                                      Icons.mode_edit_outlined,
-                                      size: 20,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 30),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: Text(
-                                'Account details',
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 20,
-                                horizontal: 25,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                children: [
-                                  _buildAccountDetailsTile(
-                                    AkarIcons.person,
-                                    "Personal Info",
-                                    () {
-                                      final profileBloc = context
-                                          .read<ProfileBloc>();
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              BlocProvider.value(
-                                                value: profileBloc,
-                                                child: const PersonalInfoPage(),
-                                              ),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                  _buildAccountDetailsTile(
-                                    MaterialSymbols.password_rounded,
-                                    "Change Password",
-                                    () {},
-                                  ),
-                                  _buildAccountDetailsTile(
-                                    Arcticons.i_2fas_auth,
-                                    "Two Factor Authentication",
-                                    () {},
-                                  ),
-                                  _buildAccountDetailsTile(
-                                    MaterialSymbols.fingerprint_outline,
-                                    "Biometric Authentication",
-                                    () {},
-                                  ),
-                                  _buildAccountDetailsTile(
-                                    Ic.outline_notifications_active,
-                                    "Notification Settings",
-                                    () {},
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(10),
-                                            decoration: const BoxDecoration(
-                                              color: backgroundColor,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            child: const Iconify(
-                                              Lucide.activity,
-                                              size: 20,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                          const SizedBox(width: 20),
-                                          const Text('About'),
-                                        ],
-                                      ),
-                                      const Icon(
-                                        Icons.arrow_forward_ios_rounded,
-                                        size: 18,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 30),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 20.0),
-                              child: Text(
-                                'Help and Support',
-                                style: GoogleFonts.poppins(
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            ),
-
-                            const SizedBox(height: 16),
-
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 20,
-                                horizontal: 25,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Column(
-                                children: [
-                                  _buildAccountDetailsTile(
-                                    Bx.support,
-                                    "Contact Our Support",
-                                    () {},
-                                  ),
-                                  _buildAccountDetailsTile(
-                                    Wpf.faq,
-                                    "FAQ",
-                                    () {},
-                                  ),
-
-                                  InkWell(
-                                    onTap: () => _showLogoutDialog(context),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Container(
-                                              padding: const EdgeInsets.all(10),
-                                              decoration: BoxDecoration(
-                                                color: Colors.red.shade50,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: Iconify(
-                                                Ic.round_log_out,
-                                                size: 20,
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 20),
-                                            Text(
-                                              "Log Out",
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        const Icon(
-                                          Icons.arrow_forward_ios_rounded,
-                                          size: 18,
-                                          color: Colors.red,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  // // Logout button
-                                  // InkWell(
-                                  //   onTap: () => _showLogoutDialog(context),
-                                  //   borderRadius: BorderRadius.circular(12),
-                                  //   child: Container(
-                                  //     padding: const EdgeInsets.symmetric(
-                                  //       vertical: 12,
-                                  //       horizontal: 16,
-                                  //     ),
-                                  //     decoration: BoxDecoration(
-                                  //       border: Border.all(
-                                  //         color: Colors.grey.shade300,
-                                  //       ),
-                                  //       borderRadius: BorderRadius.circular(12),
-                                  //     ),
-                                  //     child: Row(
-                                  //       mainAxisAlignment:
-                                  //           MainAxisAlignment.spaceBetween,
-                                  //       children: [
-                                  //         Row(
-                                  //           children: [
-                                  //             Container(
-                                  //               padding: const EdgeInsets.all(
-                                  //                 10,
-                                  //               ),
-                                  //               decoration: BoxDecoration(
-                                  //                 color: Colors.red.shade50,
-                                  //                 shape: BoxShape.circle,
-                                  //               ),
-                                  //               child: const Iconify(
-                                  //                 Ic.round_log_out,
-                                  //                 size: 20,
-                                  //                 color: Colors.red,
-                                  //               ),
-                                  //             ),
-                                  //             const SizedBox(width: 20),
-                                  //             Text(
-                                  //               'Log Out',
-                                  //               style: GoogleFonts.poppins(
-                                  //                 fontSize: 16,
-                                  //                 color: Colors.red,
-                                  //               ),
-                                  //             ),
-                                  //           ],
-                                  //         ),
-                                  //         const Icon(
-                                  //           Icons.arrow_forward_ios_rounded,
-                                  //           size: 18,
-                                  //           color: Colors.red,
-                                  //         ),
-                                  //       ],
-                                  //     ),
-                                  //   ),
-                                  // ),
-                                ],
-                              ),
-                            ),
-
-                            const SizedBox(height: 100),
-
-                            // ✅ CACHE INDICATOR - NULL SAFE
-                            if (state.isFromCache) ...[
-                              const SizedBox(height: 16),
-                              Container(
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: Colors.orange[100],
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: Border.all(
-                                    color: Colors.orange[300]!,
-                                  ),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.offline_pin,
-                                      color: Colors.orange[700],
-                                    ),
-                                    const SizedBox(width: 8),
-                                    Expanded(
-                                      child: Text(
-                                        'Showing cached data. Pull to refresh when online.',
-                                        style: TextStyle(
-                                          color: Colors.orange[700],
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      ),
-                    );
-                  }
-
-                  return const Center(child: Text('No data available'));
+                    ),
+                  );
                 },
               ),
             ),
@@ -698,38 +229,352 @@ class ProfileView extends StatelessWidget {
     );
   }
 
-  Widget _buildAccountDetailsTile(
-    String icon,
-    String title,
-    VoidCallback onTap,
+  Widget _buildContent(
+    BuildContext context,
+    UserProfileUser user,
+    UserProfileDetail? detail,
+    UserProfileSettings? settings,
   ) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: onTap,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 80,
+                        height: 80,
+                        padding: const EdgeInsets.all(10),
+                        decoration: const BoxDecoration(
+                          color: backgroundColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.person_outline,
+                          size: 20,
+                          color: Colors.black,
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            detail?.fullName ?? '',
+                            style: GoogleFonts.poppins(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Text(
+                            user.email,
+                            style: GoogleFonts.poppins(
+                              fontSize: 12,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+
+                          detail!.verify
+                              ? TextButton(
+                                  onPressed: () {},
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: const Color.fromARGB(
+                                      255,
+                                      7,
+                                      246,
+                                      226,
+                                    ),
+                                    foregroundColor: Colors.black,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
+                                    minimumSize: Size.zero,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    elevation: 2,
+                                    shadowColor: Colors.black26,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.verified,
+                                        size: 15,
+                                        color: Colors.black,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        'Verified',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : TextButton(
+                                  onPressed: () {
+                                    // TODO: Navigate to verification
+                                  },
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: Colors.grey.shade200,
+                                    foregroundColor: Colors.black,
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
+                                    minimumSize: Size.zero,
+                                    tapTargetSize:
+                                        MaterialTapTargetSize.shrinkWrap,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(25),
+                                    ),
+                                    elevation: 2,
+                                    shadowColor: Colors.black26,
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.warning_amber_rounded,
+                                        size: 15,
+                                        color: Colors.orange,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        'Unverified',
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w400,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                        ],
+                      ),
+                    ],
+                  ),
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: const BoxDecoration(
                       color: backgroundColor,
                       shape: BoxShape.circle,
                     ),
-                    child: Iconify(icon, size: 20, color: Colors.black),
+                    child: const Icon(
+                      Icons.mode_edit_outlined,
+                      size: 20,
+                      color: Colors.black,
+                    ),
                   ),
-                  const SizedBox(width: 20),
-                  Text(title),
                 ],
               ),
-              const Icon(Icons.arrow_forward_ios_rounded, size: 18),
-            ],
-          ),
+            ),
+
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Text(
+                'Account details',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                children: [
+                  _buildAccountDetailsTile(
+                    context,
+                    AkarIcons.person,
+                    "Personal Info",
+                    () {
+                      final profileBloc = context.read<ProfileBloc>();
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => BlocProvider.value(
+                            value: profileBloc,
+                            child: const PersonalInfoPage(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  _buildAccountDetailsTile(
+                    context,
+                    MaterialSymbols.password_rounded,
+                    "Change Password",
+                    () {},
+                  ),
+                  _buildAccountDetailsTile(
+                    context,
+                    Arcticons.i_2fas_auth,
+                    "Two Factor Authentication",
+                    () {},
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: const BoxDecoration(
+                              color: backgroundColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Iconify(
+                              Lucide.bell,
+                              size: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          const Text('Notification Preference'),
+                        ],
+                      ),
+                      const Icon(Icons.arrow_forward_ios_rounded, size: 18),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Text(
+                'More',
+                style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                children: [
+                  _buildAccountDetailsTile(
+                    context,
+                    Bx.support,
+                    "Contact Our Support",
+                    () {},
+                  ),
+                  _buildAccountDetailsTile(context, Wpf.faq, "FAQ", () {}),
+                  InkWell(
+                    onTap: () => _showLogoutDialog(context),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color: Colors.red.shade50,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Iconify(
+                                Ic.round_log_out,
+                                size: 20,
+                                color: Colors.red,
+                              ),
+                            ),
+                            const SizedBox(width: 20),
+                            const Text(
+                              "Log Out",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 18,
+                          color: Colors.red,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 100),
+          ],
         ),
-        const Divider(height: 40, thickness: 1, color: backgroundColor),
-      ],
+      ),
+    );
+  }
+
+  Widget _buildAccountDetailsTile(
+    BuildContext context,
+    String iconPath,
+    String title,
+    VoidCallback onTap,
+  ) {
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 30.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: const BoxDecoration(
+                    color: backgroundColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Iconify(iconPath, size: 20, color: Colors.black),
+                ),
+                const SizedBox(width: 20),
+                Text(
+                  title,
+                  style: const TextStyle(fontWeight: FontWeight.w400),
+                ),
+              ],
+            ),
+            const Icon(Icons.arrow_forward_ios, size: 18),
+          ],
+        ),
+      ),
     );
   }
 }

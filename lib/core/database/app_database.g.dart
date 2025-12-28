@@ -62,17 +62,18 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
     aliasedName,
     false,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('0.00'),
   );
   static const VerificationMeta _merchantIdMeta = const VerificationMeta(
     'merchantId',
   );
   @override
-  late final GeneratedColumn<String> merchantId = GeneratedColumn<String>(
+  late final GeneratedColumn<int> merchantId = GeneratedColumn<int>(
     'merchant_id',
     aliasedName,
     true,
-    type: DriftSqlType.string,
+    type: DriftSqlType.int,
     requiredDuringInsert: false,
   );
   static const VerificationMeta _countryMeta = const VerificationMeta(
@@ -96,28 +97,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
     false,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
-  );
-  static const VerificationMeta _userDetailMeta = const VerificationMeta(
-    'userDetail',
-  );
-  @override
-  late final GeneratedColumn<String> userDetail = GeneratedColumn<String>(
-    'user_detail',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _userSettingsMeta = const VerificationMeta(
-    'userSettings',
-  );
-  @override
-  late final GeneratedColumn<String> userSettings = GeneratedColumn<String>(
-    'user_settings',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
   );
   static const VerificationMeta _updatedAtMeta = const VerificationMeta(
     'updatedAt',
@@ -153,8 +132,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
     merchantId,
     country,
     createdAt,
-    userDetail,
-    userSettings,
     updatedAt,
     deletedAt,
   ];
@@ -210,8 +187,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
         _balanceMeta,
         balance.isAcceptableOrUnknown(data['balance']!, _balanceMeta),
       );
-    } else if (isInserting) {
-      context.missing(_balanceMeta);
     }
     if (data.containsKey('merchant_id')) {
       context.handle(
@@ -232,21 +207,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
       );
     } else if (isInserting) {
       context.missing(_createdAtMeta);
-    }
-    if (data.containsKey('user_detail')) {
-      context.handle(
-        _userDetailMeta,
-        userDetail.isAcceptableOrUnknown(data['user_detail']!, _userDetailMeta),
-      );
-    }
-    if (data.containsKey('user_settings')) {
-      context.handle(
-        _userSettingsMeta,
-        userSettings.isAcceptableOrUnknown(
-          data['user_settings']!,
-          _userSettingsMeta,
-        ),
-      );
     }
     if (data.containsKey('updated_at')) {
       context.handle(
@@ -294,7 +254,7 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
         data['${effectivePrefix}balance'],
       )!,
       merchantId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
+        DriftSqlType.int,
         data['${effectivePrefix}merchant_id'],
       ),
       country: attachedDatabase.typeMapping.read(
@@ -305,14 +265,6 @@ class $UsersTable extends Users with TableInfo<$UsersTable, UserRecord> {
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
       )!,
-      userDetail: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}user_detail'],
-      ),
-      userSettings: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}user_settings'],
-      ),
       updatedAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}updated_at'],
@@ -337,11 +289,9 @@ class UserRecord extends DataClass implements Insertable<UserRecord> {
   final String phone;
   final String status;
   final String balance;
-  final String? merchantId;
+  final int? merchantId;
   final String? country;
   final DateTime createdAt;
-  final String? userDetail;
-  final String? userSettings;
   final DateTime updatedAt;
   final DateTime? deletedAt;
   const UserRecord({
@@ -354,8 +304,6 @@ class UserRecord extends DataClass implements Insertable<UserRecord> {
     this.merchantId,
     this.country,
     required this.createdAt,
-    this.userDetail,
-    this.userSettings,
     required this.updatedAt,
     this.deletedAt,
   });
@@ -369,18 +317,12 @@ class UserRecord extends DataClass implements Insertable<UserRecord> {
     map['status'] = Variable<String>(status);
     map['balance'] = Variable<String>(balance);
     if (!nullToAbsent || merchantId != null) {
-      map['merchant_id'] = Variable<String>(merchantId);
+      map['merchant_id'] = Variable<int>(merchantId);
     }
     if (!nullToAbsent || country != null) {
       map['country'] = Variable<String>(country);
     }
     map['created_at'] = Variable<DateTime>(createdAt);
-    if (!nullToAbsent || userDetail != null) {
-      map['user_detail'] = Variable<String>(userDetail);
-    }
-    if (!nullToAbsent || userSettings != null) {
-      map['user_settings'] = Variable<String>(userSettings);
-    }
     map['updated_at'] = Variable<DateTime>(updatedAt);
     if (!nullToAbsent || deletedAt != null) {
       map['deleted_at'] = Variable<DateTime>(deletedAt);
@@ -403,12 +345,6 @@ class UserRecord extends DataClass implements Insertable<UserRecord> {
           ? const Value.absent()
           : Value(country),
       createdAt: Value(createdAt),
-      userDetail: userDetail == null && nullToAbsent
-          ? const Value.absent()
-          : Value(userDetail),
-      userSettings: userSettings == null && nullToAbsent
-          ? const Value.absent()
-          : Value(userSettings),
       updatedAt: Value(updatedAt),
       deletedAt: deletedAt == null && nullToAbsent
           ? const Value.absent()
@@ -428,11 +364,9 @@ class UserRecord extends DataClass implements Insertable<UserRecord> {
       phone: serializer.fromJson<String>(json['phone']),
       status: serializer.fromJson<String>(json['status']),
       balance: serializer.fromJson<String>(json['balance']),
-      merchantId: serializer.fromJson<String?>(json['merchantId']),
+      merchantId: serializer.fromJson<int?>(json['merchantId']),
       country: serializer.fromJson<String?>(json['country']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      userDetail: serializer.fromJson<String?>(json['userDetail']),
-      userSettings: serializer.fromJson<String?>(json['userSettings']),
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
     );
@@ -447,11 +381,9 @@ class UserRecord extends DataClass implements Insertable<UserRecord> {
       'phone': serializer.toJson<String>(phone),
       'status': serializer.toJson<String>(status),
       'balance': serializer.toJson<String>(balance),
-      'merchantId': serializer.toJson<String?>(merchantId),
+      'merchantId': serializer.toJson<int?>(merchantId),
       'country': serializer.toJson<String?>(country),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'userDetail': serializer.toJson<String?>(userDetail),
-      'userSettings': serializer.toJson<String?>(userSettings),
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'deletedAt': serializer.toJson<DateTime?>(deletedAt),
     };
@@ -464,11 +396,9 @@ class UserRecord extends DataClass implements Insertable<UserRecord> {
     String? phone,
     String? status,
     String? balance,
-    Value<String?> merchantId = const Value.absent(),
+    Value<int?> merchantId = const Value.absent(),
     Value<String?> country = const Value.absent(),
     DateTime? createdAt,
-    Value<String?> userDetail = const Value.absent(),
-    Value<String?> userSettings = const Value.absent(),
     DateTime? updatedAt,
     Value<DateTime?> deletedAt = const Value.absent(),
   }) => UserRecord(
@@ -481,8 +411,6 @@ class UserRecord extends DataClass implements Insertable<UserRecord> {
     merchantId: merchantId.present ? merchantId.value : this.merchantId,
     country: country.present ? country.value : this.country,
     createdAt: createdAt ?? this.createdAt,
-    userDetail: userDetail.present ? userDetail.value : this.userDetail,
-    userSettings: userSettings.present ? userSettings.value : this.userSettings,
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
   );
@@ -499,12 +427,6 @@ class UserRecord extends DataClass implements Insertable<UserRecord> {
           : this.merchantId,
       country: data.country.present ? data.country.value : this.country,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      userDetail: data.userDetail.present
-          ? data.userDetail.value
-          : this.userDetail,
-      userSettings: data.userSettings.present
-          ? data.userSettings.value
-          : this.userSettings,
       updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
     );
@@ -522,8 +444,6 @@ class UserRecord extends DataClass implements Insertable<UserRecord> {
           ..write('merchantId: $merchantId, ')
           ..write('country: $country, ')
           ..write('createdAt: $createdAt, ')
-          ..write('userDetail: $userDetail, ')
-          ..write('userSettings: $userSettings, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt')
           ..write(')'))
@@ -541,8 +461,6 @@ class UserRecord extends DataClass implements Insertable<UserRecord> {
     merchantId,
     country,
     createdAt,
-    userDetail,
-    userSettings,
     updatedAt,
     deletedAt,
   );
@@ -559,8 +477,6 @@ class UserRecord extends DataClass implements Insertable<UserRecord> {
           other.merchantId == this.merchantId &&
           other.country == this.country &&
           other.createdAt == this.createdAt &&
-          other.userDetail == this.userDetail &&
-          other.userSettings == this.userSettings &&
           other.updatedAt == this.updatedAt &&
           other.deletedAt == this.deletedAt);
 }
@@ -572,11 +488,9 @@ class UsersCompanion extends UpdateCompanion<UserRecord> {
   final Value<String> phone;
   final Value<String> status;
   final Value<String> balance;
-  final Value<String?> merchantId;
+  final Value<int?> merchantId;
   final Value<String?> country;
   final Value<DateTime> createdAt;
-  final Value<String?> userDetail;
-  final Value<String?> userSettings;
   final Value<DateTime> updatedAt;
   final Value<DateTime?> deletedAt;
   const UsersCompanion({
@@ -589,8 +503,6 @@ class UsersCompanion extends UpdateCompanion<UserRecord> {
     this.merchantId = const Value.absent(),
     this.country = const Value.absent(),
     this.createdAt = const Value.absent(),
-    this.userDetail = const Value.absent(),
-    this.userSettings = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
   });
@@ -600,19 +512,16 @@ class UsersCompanion extends UpdateCompanion<UserRecord> {
     required String role,
     required String phone,
     required String status,
-    required String balance,
+    this.balance = const Value.absent(),
     this.merchantId = const Value.absent(),
     this.country = const Value.absent(),
     required DateTime createdAt,
-    this.userDetail = const Value.absent(),
-    this.userSettings = const Value.absent(),
     this.updatedAt = const Value.absent(),
     this.deletedAt = const Value.absent(),
   }) : email = Value(email),
        role = Value(role),
        phone = Value(phone),
        status = Value(status),
-       balance = Value(balance),
        createdAt = Value(createdAt);
   static Insertable<UserRecord> custom({
     Expression<int>? id,
@@ -621,11 +530,9 @@ class UsersCompanion extends UpdateCompanion<UserRecord> {
     Expression<String>? phone,
     Expression<String>? status,
     Expression<String>? balance,
-    Expression<String>? merchantId,
+    Expression<int>? merchantId,
     Expression<String>? country,
     Expression<DateTime>? createdAt,
-    Expression<String>? userDetail,
-    Expression<String>? userSettings,
     Expression<DateTime>? updatedAt,
     Expression<DateTime>? deletedAt,
   }) {
@@ -639,8 +546,6 @@ class UsersCompanion extends UpdateCompanion<UserRecord> {
       if (merchantId != null) 'merchant_id': merchantId,
       if (country != null) 'country': country,
       if (createdAt != null) 'created_at': createdAt,
-      if (userDetail != null) 'user_detail': userDetail,
-      if (userSettings != null) 'user_settings': userSettings,
       if (updatedAt != null) 'updated_at': updatedAt,
       if (deletedAt != null) 'deleted_at': deletedAt,
     });
@@ -653,11 +558,9 @@ class UsersCompanion extends UpdateCompanion<UserRecord> {
     Value<String>? phone,
     Value<String>? status,
     Value<String>? balance,
-    Value<String?>? merchantId,
+    Value<int?>? merchantId,
     Value<String?>? country,
     Value<DateTime>? createdAt,
-    Value<String?>? userDetail,
-    Value<String?>? userSettings,
     Value<DateTime>? updatedAt,
     Value<DateTime?>? deletedAt,
   }) {
@@ -671,8 +574,6 @@ class UsersCompanion extends UpdateCompanion<UserRecord> {
       merchantId: merchantId ?? this.merchantId,
       country: country ?? this.country,
       createdAt: createdAt ?? this.createdAt,
-      userDetail: userDetail ?? this.userDetail,
-      userSettings: userSettings ?? this.userSettings,
       updatedAt: updatedAt ?? this.updatedAt,
       deletedAt: deletedAt ?? this.deletedAt,
     );
@@ -700,19 +601,13 @@ class UsersCompanion extends UpdateCompanion<UserRecord> {
       map['balance'] = Variable<String>(balance.value);
     }
     if (merchantId.present) {
-      map['merchant_id'] = Variable<String>(merchantId.value);
+      map['merchant_id'] = Variable<int>(merchantId.value);
     }
     if (country.present) {
       map['country'] = Variable<String>(country.value);
     }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (userDetail.present) {
-      map['user_detail'] = Variable<String>(userDetail.value);
-    }
-    if (userSettings.present) {
-      map['user_settings'] = Variable<String>(userSettings.value);
     }
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
@@ -735,10 +630,1018 @@ class UsersCompanion extends UpdateCompanion<UserRecord> {
           ..write('merchantId: $merchantId, ')
           ..write('country: $country, ')
           ..write('createdAt: $createdAt, ')
-          ..write('userDetail: $userDetail, ')
-          ..write('userSettings: $userSettings, ')
           ..write('updatedAt: $updatedAt, ')
           ..write('deletedAt: $deletedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UserDetailsTable extends UserDetails
+    with TableInfo<$UserDetailsTable, UserDetailRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UserDetailsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<int> userId = GeneratedColumn<int>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _firstNameMeta = const VerificationMeta(
+    'firstName',
+  );
+  @override
+  late final GeneratedColumn<String> firstName = GeneratedColumn<String>(
+    'first_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _lastNameMeta = const VerificationMeta(
+    'lastName',
+  );
+  @override
+  late final GeneratedColumn<String> lastName = GeneratedColumn<String>(
+    'last_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fullNameMeta = const VerificationMeta(
+    'fullName',
+  );
+  @override
+  late final GeneratedColumn<String> fullName = GeneratedColumn<String>(
+    'full_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _addressMeta = const VerificationMeta(
+    'address',
+  );
+  @override
+  late final GeneratedColumn<String> address = GeneratedColumn<String>(
+    'address',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _birthDateMeta = const VerificationMeta(
+    'birthDate',
+  );
+  @override
+  late final GeneratedColumn<String> birthDate = GeneratedColumn<String>(
+    'birth_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _profilePictureMeta = const VerificationMeta(
+    'profilePicture',
+  );
+  @override
+  late final GeneratedColumn<String> profilePicture = GeneratedColumn<String>(
+    'profile_picture',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _gatePointMeta = const VerificationMeta(
+    'gatePoint',
+  );
+  @override
+  late final GeneratedColumn<int> gatePoint = GeneratedColumn<int>(
+    'gate_point',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _verifyMeta = const VerificationMeta('verify');
+  @override
+  late final GeneratedColumn<bool> verify = GeneratedColumn<bool>(
+    'verify',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("verify" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _vaccountMeta = const VerificationMeta(
+    'vaccount',
+  );
+  @override
+  late final GeneratedColumn<String> vaccount = GeneratedColumn<String>(
+    'vaccount',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    userId,
+    firstName,
+    lastName,
+    fullName,
+    address,
+    birthDate,
+    profilePicture,
+    gatePoint,
+    verify,
+    vaccount,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'user_details';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UserDetailRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    }
+    if (data.containsKey('first_name')) {
+      context.handle(
+        _firstNameMeta,
+        firstName.isAcceptableOrUnknown(data['first_name']!, _firstNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_firstNameMeta);
+    }
+    if (data.containsKey('last_name')) {
+      context.handle(
+        _lastNameMeta,
+        lastName.isAcceptableOrUnknown(data['last_name']!, _lastNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_lastNameMeta);
+    }
+    if (data.containsKey('full_name')) {
+      context.handle(
+        _fullNameMeta,
+        fullName.isAcceptableOrUnknown(data['full_name']!, _fullNameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_fullNameMeta);
+    }
+    if (data.containsKey('address')) {
+      context.handle(
+        _addressMeta,
+        address.isAcceptableOrUnknown(data['address']!, _addressMeta),
+      );
+    }
+    if (data.containsKey('birth_date')) {
+      context.handle(
+        _birthDateMeta,
+        birthDate.isAcceptableOrUnknown(data['birth_date']!, _birthDateMeta),
+      );
+    }
+    if (data.containsKey('profile_picture')) {
+      context.handle(
+        _profilePictureMeta,
+        profilePicture.isAcceptableOrUnknown(
+          data['profile_picture']!,
+          _profilePictureMeta,
+        ),
+      );
+    }
+    if (data.containsKey('gate_point')) {
+      context.handle(
+        _gatePointMeta,
+        gatePoint.isAcceptableOrUnknown(data['gate_point']!, _gatePointMeta),
+      );
+    }
+    if (data.containsKey('verify')) {
+      context.handle(
+        _verifyMeta,
+        verify.isAcceptableOrUnknown(data['verify']!, _verifyMeta),
+      );
+    }
+    if (data.containsKey('vaccount')) {
+      context.handle(
+        _vaccountMeta,
+        vaccount.isAcceptableOrUnknown(data['vaccount']!, _vaccountMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {userId};
+  @override
+  UserDetailRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UserDetailRecord(
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}user_id'],
+      )!,
+      firstName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}first_name'],
+      )!,
+      lastName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}last_name'],
+      )!,
+      fullName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}full_name'],
+      )!,
+      address: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}address'],
+      ),
+      birthDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}birth_date'],
+      ),
+      profilePicture: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}profile_picture'],
+      ),
+      gatePoint: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}gate_point'],
+      )!,
+      verify: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}verify'],
+      )!,
+      vaccount: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}vaccount'],
+      ),
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $UserDetailsTable createAlias(String alias) {
+    return $UserDetailsTable(attachedDatabase, alias);
+  }
+}
+
+class UserDetailRecord extends DataClass
+    implements Insertable<UserDetailRecord> {
+  final int userId;
+  final String firstName;
+  final String lastName;
+  final String fullName;
+  final String? address;
+  final String? birthDate;
+  final String? profilePicture;
+  final int gatePoint;
+  final bool verify;
+  final String? vaccount;
+  final DateTime updatedAt;
+  const UserDetailRecord({
+    required this.userId,
+    required this.firstName,
+    required this.lastName,
+    required this.fullName,
+    this.address,
+    this.birthDate,
+    this.profilePicture,
+    required this.gatePoint,
+    required this.verify,
+    this.vaccount,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['user_id'] = Variable<int>(userId);
+    map['first_name'] = Variable<String>(firstName);
+    map['last_name'] = Variable<String>(lastName);
+    map['full_name'] = Variable<String>(fullName);
+    if (!nullToAbsent || address != null) {
+      map['address'] = Variable<String>(address);
+    }
+    if (!nullToAbsent || birthDate != null) {
+      map['birth_date'] = Variable<String>(birthDate);
+    }
+    if (!nullToAbsent || profilePicture != null) {
+      map['profile_picture'] = Variable<String>(profilePicture);
+    }
+    map['gate_point'] = Variable<int>(gatePoint);
+    map['verify'] = Variable<bool>(verify);
+    if (!nullToAbsent || vaccount != null) {
+      map['vaccount'] = Variable<String>(vaccount);
+    }
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  UserDetailsCompanion toCompanion(bool nullToAbsent) {
+    return UserDetailsCompanion(
+      userId: Value(userId),
+      firstName: Value(firstName),
+      lastName: Value(lastName),
+      fullName: Value(fullName),
+      address: address == null && nullToAbsent
+          ? const Value.absent()
+          : Value(address),
+      birthDate: birthDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(birthDate),
+      profilePicture: profilePicture == null && nullToAbsent
+          ? const Value.absent()
+          : Value(profilePicture),
+      gatePoint: Value(gatePoint),
+      verify: Value(verify),
+      vaccount: vaccount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(vaccount),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory UserDetailRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UserDetailRecord(
+      userId: serializer.fromJson<int>(json['userId']),
+      firstName: serializer.fromJson<String>(json['firstName']),
+      lastName: serializer.fromJson<String>(json['lastName']),
+      fullName: serializer.fromJson<String>(json['fullName']),
+      address: serializer.fromJson<String?>(json['address']),
+      birthDate: serializer.fromJson<String?>(json['birthDate']),
+      profilePicture: serializer.fromJson<String?>(json['profilePicture']),
+      gatePoint: serializer.fromJson<int>(json['gatePoint']),
+      verify: serializer.fromJson<bool>(json['verify']),
+      vaccount: serializer.fromJson<String?>(json['vaccount']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'userId': serializer.toJson<int>(userId),
+      'firstName': serializer.toJson<String>(firstName),
+      'lastName': serializer.toJson<String>(lastName),
+      'fullName': serializer.toJson<String>(fullName),
+      'address': serializer.toJson<String?>(address),
+      'birthDate': serializer.toJson<String?>(birthDate),
+      'profilePicture': serializer.toJson<String?>(profilePicture),
+      'gatePoint': serializer.toJson<int>(gatePoint),
+      'verify': serializer.toJson<bool>(verify),
+      'vaccount': serializer.toJson<String?>(vaccount),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  UserDetailRecord copyWith({
+    int? userId,
+    String? firstName,
+    String? lastName,
+    String? fullName,
+    Value<String?> address = const Value.absent(),
+    Value<String?> birthDate = const Value.absent(),
+    Value<String?> profilePicture = const Value.absent(),
+    int? gatePoint,
+    bool? verify,
+    Value<String?> vaccount = const Value.absent(),
+    DateTime? updatedAt,
+  }) => UserDetailRecord(
+    userId: userId ?? this.userId,
+    firstName: firstName ?? this.firstName,
+    lastName: lastName ?? this.lastName,
+    fullName: fullName ?? this.fullName,
+    address: address.present ? address.value : this.address,
+    birthDate: birthDate.present ? birthDate.value : this.birthDate,
+    profilePicture: profilePicture.present
+        ? profilePicture.value
+        : this.profilePicture,
+    gatePoint: gatePoint ?? this.gatePoint,
+    verify: verify ?? this.verify,
+    vaccount: vaccount.present ? vaccount.value : this.vaccount,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  UserDetailRecord copyWithCompanion(UserDetailsCompanion data) {
+    return UserDetailRecord(
+      userId: data.userId.present ? data.userId.value : this.userId,
+      firstName: data.firstName.present ? data.firstName.value : this.firstName,
+      lastName: data.lastName.present ? data.lastName.value : this.lastName,
+      fullName: data.fullName.present ? data.fullName.value : this.fullName,
+      address: data.address.present ? data.address.value : this.address,
+      birthDate: data.birthDate.present ? data.birthDate.value : this.birthDate,
+      profilePicture: data.profilePicture.present
+          ? data.profilePicture.value
+          : this.profilePicture,
+      gatePoint: data.gatePoint.present ? data.gatePoint.value : this.gatePoint,
+      verify: data.verify.present ? data.verify.value : this.verify,
+      vaccount: data.vaccount.present ? data.vaccount.value : this.vaccount,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserDetailRecord(')
+          ..write('userId: $userId, ')
+          ..write('firstName: $firstName, ')
+          ..write('lastName: $lastName, ')
+          ..write('fullName: $fullName, ')
+          ..write('address: $address, ')
+          ..write('birthDate: $birthDate, ')
+          ..write('profilePicture: $profilePicture, ')
+          ..write('gatePoint: $gatePoint, ')
+          ..write('verify: $verify, ')
+          ..write('vaccount: $vaccount, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    userId,
+    firstName,
+    lastName,
+    fullName,
+    address,
+    birthDate,
+    profilePicture,
+    gatePoint,
+    verify,
+    vaccount,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UserDetailRecord &&
+          other.userId == this.userId &&
+          other.firstName == this.firstName &&
+          other.lastName == this.lastName &&
+          other.fullName == this.fullName &&
+          other.address == this.address &&
+          other.birthDate == this.birthDate &&
+          other.profilePicture == this.profilePicture &&
+          other.gatePoint == this.gatePoint &&
+          other.verify == this.verify &&
+          other.vaccount == this.vaccount &&
+          other.updatedAt == this.updatedAt);
+}
+
+class UserDetailsCompanion extends UpdateCompanion<UserDetailRecord> {
+  final Value<int> userId;
+  final Value<String> firstName;
+  final Value<String> lastName;
+  final Value<String> fullName;
+  final Value<String?> address;
+  final Value<String?> birthDate;
+  final Value<String?> profilePicture;
+  final Value<int> gatePoint;
+  final Value<bool> verify;
+  final Value<String?> vaccount;
+  final Value<DateTime> updatedAt;
+  const UserDetailsCompanion({
+    this.userId = const Value.absent(),
+    this.firstName = const Value.absent(),
+    this.lastName = const Value.absent(),
+    this.fullName = const Value.absent(),
+    this.address = const Value.absent(),
+    this.birthDate = const Value.absent(),
+    this.profilePicture = const Value.absent(),
+    this.gatePoint = const Value.absent(),
+    this.verify = const Value.absent(),
+    this.vaccount = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  UserDetailsCompanion.insert({
+    this.userId = const Value.absent(),
+    required String firstName,
+    required String lastName,
+    required String fullName,
+    this.address = const Value.absent(),
+    this.birthDate = const Value.absent(),
+    this.profilePicture = const Value.absent(),
+    this.gatePoint = const Value.absent(),
+    this.verify = const Value.absent(),
+    this.vaccount = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  }) : firstName = Value(firstName),
+       lastName = Value(lastName),
+       fullName = Value(fullName);
+  static Insertable<UserDetailRecord> custom({
+    Expression<int>? userId,
+    Expression<String>? firstName,
+    Expression<String>? lastName,
+    Expression<String>? fullName,
+    Expression<String>? address,
+    Expression<String>? birthDate,
+    Expression<String>? profilePicture,
+    Expression<int>? gatePoint,
+    Expression<bool>? verify,
+    Expression<String>? vaccount,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (userId != null) 'user_id': userId,
+      if (firstName != null) 'first_name': firstName,
+      if (lastName != null) 'last_name': lastName,
+      if (fullName != null) 'full_name': fullName,
+      if (address != null) 'address': address,
+      if (birthDate != null) 'birth_date': birthDate,
+      if (profilePicture != null) 'profile_picture': profilePicture,
+      if (gatePoint != null) 'gate_point': gatePoint,
+      if (verify != null) 'verify': verify,
+      if (vaccount != null) 'vaccount': vaccount,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  UserDetailsCompanion copyWith({
+    Value<int>? userId,
+    Value<String>? firstName,
+    Value<String>? lastName,
+    Value<String>? fullName,
+    Value<String?>? address,
+    Value<String?>? birthDate,
+    Value<String?>? profilePicture,
+    Value<int>? gatePoint,
+    Value<bool>? verify,
+    Value<String?>? vaccount,
+    Value<DateTime>? updatedAt,
+  }) {
+    return UserDetailsCompanion(
+      userId: userId ?? this.userId,
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      fullName: fullName ?? this.fullName,
+      address: address ?? this.address,
+      birthDate: birthDate ?? this.birthDate,
+      profilePicture: profilePicture ?? this.profilePicture,
+      gatePoint: gatePoint ?? this.gatePoint,
+      verify: verify ?? this.verify,
+      vaccount: vaccount ?? this.vaccount,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (userId.present) {
+      map['user_id'] = Variable<int>(userId.value);
+    }
+    if (firstName.present) {
+      map['first_name'] = Variable<String>(firstName.value);
+    }
+    if (lastName.present) {
+      map['last_name'] = Variable<String>(lastName.value);
+    }
+    if (fullName.present) {
+      map['full_name'] = Variable<String>(fullName.value);
+    }
+    if (address.present) {
+      map['address'] = Variable<String>(address.value);
+    }
+    if (birthDate.present) {
+      map['birth_date'] = Variable<String>(birthDate.value);
+    }
+    if (profilePicture.present) {
+      map['profile_picture'] = Variable<String>(profilePicture.value);
+    }
+    if (gatePoint.present) {
+      map['gate_point'] = Variable<int>(gatePoint.value);
+    }
+    if (verify.present) {
+      map['verify'] = Variable<bool>(verify.value);
+    }
+    if (vaccount.present) {
+      map['vaccount'] = Variable<String>(vaccount.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserDetailsCompanion(')
+          ..write('userId: $userId, ')
+          ..write('firstName: $firstName, ')
+          ..write('lastName: $lastName, ')
+          ..write('fullName: $fullName, ')
+          ..write('address: $address, ')
+          ..write('birthDate: $birthDate, ')
+          ..write('profilePicture: $profilePicture, ')
+          ..write('gatePoint: $gatePoint, ')
+          ..write('verify: $verify, ')
+          ..write('vaccount: $vaccount, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $UserSettingsDetailsTable extends UserSettingsDetails
+    with TableInfo<$UserSettingsDetailsTable, UserSettingRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $UserSettingsDetailsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<int> userId = GeneratedColumn<int>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _marketingMeta = const VerificationMeta(
+    'marketing',
+  );
+  @override
+  late final GeneratedColumn<bool> marketing = GeneratedColumn<bool>(
+    'marketing',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("marketing" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _notificationsMeta = const VerificationMeta(
+    'notifications',
+  );
+  @override
+  late final GeneratedColumn<bool> notifications = GeneratedColumn<bool>(
+    'notifications',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("notifications" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _twoFAMeta = const VerificationMeta('twoFA');
+  @override
+  late final GeneratedColumn<bool> twoFA = GeneratedColumn<bool>(
+    'two_f_a',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("two_f_a" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    userId,
+    marketing,
+    notifications,
+    twoFA,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'user_settings_details';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<UserSettingRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    }
+    if (data.containsKey('marketing')) {
+      context.handle(
+        _marketingMeta,
+        marketing.isAcceptableOrUnknown(data['marketing']!, _marketingMeta),
+      );
+    }
+    if (data.containsKey('notifications')) {
+      context.handle(
+        _notificationsMeta,
+        notifications.isAcceptableOrUnknown(
+          data['notifications']!,
+          _notificationsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('two_f_a')) {
+      context.handle(
+        _twoFAMeta,
+        twoFA.isAcceptableOrUnknown(data['two_f_a']!, _twoFAMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {userId};
+  @override
+  UserSettingRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return UserSettingRecord(
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}user_id'],
+      )!,
+      marketing: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}marketing'],
+      )!,
+      notifications: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}notifications'],
+      )!,
+      twoFA: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}two_f_a'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $UserSettingsDetailsTable createAlias(String alias) {
+    return $UserSettingsDetailsTable(attachedDatabase, alias);
+  }
+}
+
+class UserSettingRecord extends DataClass
+    implements Insertable<UserSettingRecord> {
+  final int userId;
+  final bool marketing;
+  final bool notifications;
+  final bool twoFA;
+  final DateTime updatedAt;
+  const UserSettingRecord({
+    required this.userId,
+    required this.marketing,
+    required this.notifications,
+    required this.twoFA,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['user_id'] = Variable<int>(userId);
+    map['marketing'] = Variable<bool>(marketing);
+    map['notifications'] = Variable<bool>(notifications);
+    map['two_f_a'] = Variable<bool>(twoFA);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  UserSettingsDetailsCompanion toCompanion(bool nullToAbsent) {
+    return UserSettingsDetailsCompanion(
+      userId: Value(userId),
+      marketing: Value(marketing),
+      notifications: Value(notifications),
+      twoFA: Value(twoFA),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory UserSettingRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return UserSettingRecord(
+      userId: serializer.fromJson<int>(json['userId']),
+      marketing: serializer.fromJson<bool>(json['marketing']),
+      notifications: serializer.fromJson<bool>(json['notifications']),
+      twoFA: serializer.fromJson<bool>(json['twoFA']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'userId': serializer.toJson<int>(userId),
+      'marketing': serializer.toJson<bool>(marketing),
+      'notifications': serializer.toJson<bool>(notifications),
+      'twoFA': serializer.toJson<bool>(twoFA),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  UserSettingRecord copyWith({
+    int? userId,
+    bool? marketing,
+    bool? notifications,
+    bool? twoFA,
+    DateTime? updatedAt,
+  }) => UserSettingRecord(
+    userId: userId ?? this.userId,
+    marketing: marketing ?? this.marketing,
+    notifications: notifications ?? this.notifications,
+    twoFA: twoFA ?? this.twoFA,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  UserSettingRecord copyWithCompanion(UserSettingsDetailsCompanion data) {
+    return UserSettingRecord(
+      userId: data.userId.present ? data.userId.value : this.userId,
+      marketing: data.marketing.present ? data.marketing.value : this.marketing,
+      notifications: data.notifications.present
+          ? data.notifications.value
+          : this.notifications,
+      twoFA: data.twoFA.present ? data.twoFA.value : this.twoFA,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserSettingRecord(')
+          ..write('userId: $userId, ')
+          ..write('marketing: $marketing, ')
+          ..write('notifications: $notifications, ')
+          ..write('twoFA: $twoFA, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(userId, marketing, notifications, twoFA, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is UserSettingRecord &&
+          other.userId == this.userId &&
+          other.marketing == this.marketing &&
+          other.notifications == this.notifications &&
+          other.twoFA == this.twoFA &&
+          other.updatedAt == this.updatedAt);
+}
+
+class UserSettingsDetailsCompanion extends UpdateCompanion<UserSettingRecord> {
+  final Value<int> userId;
+  final Value<bool> marketing;
+  final Value<bool> notifications;
+  final Value<bool> twoFA;
+  final Value<DateTime> updatedAt;
+  const UserSettingsDetailsCompanion({
+    this.userId = const Value.absent(),
+    this.marketing = const Value.absent(),
+    this.notifications = const Value.absent(),
+    this.twoFA = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  UserSettingsDetailsCompanion.insert({
+    this.userId = const Value.absent(),
+    this.marketing = const Value.absent(),
+    this.notifications = const Value.absent(),
+    this.twoFA = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  static Insertable<UserSettingRecord> custom({
+    Expression<int>? userId,
+    Expression<bool>? marketing,
+    Expression<bool>? notifications,
+    Expression<bool>? twoFA,
+    Expression<DateTime>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (userId != null) 'user_id': userId,
+      if (marketing != null) 'marketing': marketing,
+      if (notifications != null) 'notifications': notifications,
+      if (twoFA != null) 'two_f_a': twoFA,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  UserSettingsDetailsCompanion copyWith({
+    Value<int>? userId,
+    Value<bool>? marketing,
+    Value<bool>? notifications,
+    Value<bool>? twoFA,
+    Value<DateTime>? updatedAt,
+  }) {
+    return UserSettingsDetailsCompanion(
+      userId: userId ?? this.userId,
+      marketing: marketing ?? this.marketing,
+      notifications: notifications ?? this.notifications,
+      twoFA: twoFA ?? this.twoFA,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (userId.present) {
+      map['user_id'] = Variable<int>(userId.value);
+    }
+    if (marketing.present) {
+      map['marketing'] = Variable<bool>(marketing.value);
+    }
+    if (notifications.present) {
+      map['notifications'] = Variable<bool>(notifications.value);
+    }
+    if (twoFA.present) {
+      map['two_f_a'] = Variable<bool>(twoFA.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('UserSettingsDetailsCompanion(')
+          ..write('userId: $userId, ')
+          ..write('marketing: $marketing, ')
+          ..write('notifications: $notifications, ')
+          ..write('twoFA: $twoFA, ')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -748,11 +1651,18 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $UsersTable users = $UsersTable(this);
+  late final $UserDetailsTable userDetails = $UserDetailsTable(this);
+  late final $UserSettingsDetailsTable userSettingsDetails =
+      $UserSettingsDetailsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities => [users];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+    users,
+    userDetails,
+    userSettingsDetails,
+  ];
 }
 
 typedef $$UsersTableCreateCompanionBuilder =
@@ -762,12 +1672,10 @@ typedef $$UsersTableCreateCompanionBuilder =
       required String role,
       required String phone,
       required String status,
-      required String balance,
-      Value<String?> merchantId,
+      Value<String> balance,
+      Value<int?> merchantId,
       Value<String?> country,
       required DateTime createdAt,
-      Value<String?> userDetail,
-      Value<String?> userSettings,
       Value<DateTime> updatedAt,
       Value<DateTime?> deletedAt,
     });
@@ -779,11 +1687,9 @@ typedef $$UsersTableUpdateCompanionBuilder =
       Value<String> phone,
       Value<String> status,
       Value<String> balance,
-      Value<String?> merchantId,
+      Value<int?> merchantId,
       Value<String?> country,
       Value<DateTime> createdAt,
-      Value<String?> userDetail,
-      Value<String?> userSettings,
       Value<DateTime> updatedAt,
       Value<DateTime?> deletedAt,
     });
@@ -826,7 +1732,7 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
     builder: (column) => ColumnFilters(column),
   );
 
-  ColumnFilters<String> get merchantId => $composableBuilder(
+  ColumnFilters<int> get merchantId => $composableBuilder(
     column: $table.merchantId,
     builder: (column) => ColumnFilters(column),
   );
@@ -838,16 +1744,6 @@ class $$UsersTableFilterComposer extends Composer<_$AppDatabase, $UsersTable> {
 
   ColumnFilters<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get userDetail => $composableBuilder(
-    column: $table.userDetail,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get userSettings => $composableBuilder(
-    column: $table.userSettings,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -901,7 +1797,7 @@ class $$UsersTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
-  ColumnOrderings<String> get merchantId => $composableBuilder(
+  ColumnOrderings<int> get merchantId => $composableBuilder(
     column: $table.merchantId,
     builder: (column) => ColumnOrderings(column),
   );
@@ -913,16 +1809,6 @@ class $$UsersTableOrderingComposer
 
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get userDetail => $composableBuilder(
-    column: $table.userDetail,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get userSettings => $composableBuilder(
-    column: $table.userSettings,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -964,7 +1850,7 @@ class $$UsersTableAnnotationComposer
   GeneratedColumn<String> get balance =>
       $composableBuilder(column: $table.balance, builder: (column) => column);
 
-  GeneratedColumn<String> get merchantId => $composableBuilder(
+  GeneratedColumn<int> get merchantId => $composableBuilder(
     column: $table.merchantId,
     builder: (column) => column,
   );
@@ -974,16 +1860,6 @@ class $$UsersTableAnnotationComposer
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<String> get userDetail => $composableBuilder(
-    column: $table.userDetail,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get userSettings => $composableBuilder(
-    column: $table.userSettings,
-    builder: (column) => column,
-  );
 
   GeneratedColumn<DateTime> get updatedAt =>
       $composableBuilder(column: $table.updatedAt, builder: (column) => column);
@@ -1026,11 +1902,9 @@ class $$UsersTableTableManager
                 Value<String> phone = const Value.absent(),
                 Value<String> status = const Value.absent(),
                 Value<String> balance = const Value.absent(),
-                Value<String?> merchantId = const Value.absent(),
+                Value<int?> merchantId = const Value.absent(),
                 Value<String?> country = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
-                Value<String?> userDetail = const Value.absent(),
-                Value<String?> userSettings = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime?> deletedAt = const Value.absent(),
               }) => UsersCompanion(
@@ -1043,8 +1917,6 @@ class $$UsersTableTableManager
                 merchantId: merchantId,
                 country: country,
                 createdAt: createdAt,
-                userDetail: userDetail,
-                userSettings: userSettings,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,
               ),
@@ -1055,12 +1927,10 @@ class $$UsersTableTableManager
                 required String role,
                 required String phone,
                 required String status,
-                required String balance,
-                Value<String?> merchantId = const Value.absent(),
+                Value<String> balance = const Value.absent(),
+                Value<int?> merchantId = const Value.absent(),
                 Value<String?> country = const Value.absent(),
                 required DateTime createdAt,
-                Value<String?> userDetail = const Value.absent(),
-                Value<String?> userSettings = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime?> deletedAt = const Value.absent(),
               }) => UsersCompanion.insert(
@@ -1073,8 +1943,6 @@ class $$UsersTableTableManager
                 merchantId: merchantId,
                 country: country,
                 createdAt: createdAt,
-                userDetail: userDetail,
-                userSettings: userSettings,
                 updatedAt: updatedAt,
                 deletedAt: deletedAt,
               ),
@@ -1100,10 +1968,536 @@ typedef $$UsersTableProcessedTableManager =
       UserRecord,
       PrefetchHooks Function()
     >;
+typedef $$UserDetailsTableCreateCompanionBuilder =
+    UserDetailsCompanion Function({
+      Value<int> userId,
+      required String firstName,
+      required String lastName,
+      required String fullName,
+      Value<String?> address,
+      Value<String?> birthDate,
+      Value<String?> profilePicture,
+      Value<int> gatePoint,
+      Value<bool> verify,
+      Value<String?> vaccount,
+      Value<DateTime> updatedAt,
+    });
+typedef $$UserDetailsTableUpdateCompanionBuilder =
+    UserDetailsCompanion Function({
+      Value<int> userId,
+      Value<String> firstName,
+      Value<String> lastName,
+      Value<String> fullName,
+      Value<String?> address,
+      Value<String?> birthDate,
+      Value<String?> profilePicture,
+      Value<int> gatePoint,
+      Value<bool> verify,
+      Value<String?> vaccount,
+      Value<DateTime> updatedAt,
+    });
+
+class $$UserDetailsTableFilterComposer
+    extends Composer<_$AppDatabase, $UserDetailsTable> {
+  $$UserDetailsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get firstName => $composableBuilder(
+    column: $table.firstName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get lastName => $composableBuilder(
+    column: $table.lastName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fullName => $composableBuilder(
+    column: $table.fullName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get birthDate => $composableBuilder(
+    column: $table.birthDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get profilePicture => $composableBuilder(
+    column: $table.profilePicture,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get gatePoint => $composableBuilder(
+    column: $table.gatePoint,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get verify => $composableBuilder(
+    column: $table.verify,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get vaccount => $composableBuilder(
+    column: $table.vaccount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UserDetailsTableOrderingComposer
+    extends Composer<_$AppDatabase, $UserDetailsTable> {
+  $$UserDetailsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get firstName => $composableBuilder(
+    column: $table.firstName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get lastName => $composableBuilder(
+    column: $table.lastName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fullName => $composableBuilder(
+    column: $table.fullName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get address => $composableBuilder(
+    column: $table.address,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get birthDate => $composableBuilder(
+    column: $table.birthDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get profilePicture => $composableBuilder(
+    column: $table.profilePicture,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get gatePoint => $composableBuilder(
+    column: $table.gatePoint,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get verify => $composableBuilder(
+    column: $table.verify,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get vaccount => $composableBuilder(
+    column: $table.vaccount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UserDetailsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UserDetailsTable> {
+  $$UserDetailsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get firstName =>
+      $composableBuilder(column: $table.firstName, builder: (column) => column);
+
+  GeneratedColumn<String> get lastName =>
+      $composableBuilder(column: $table.lastName, builder: (column) => column);
+
+  GeneratedColumn<String> get fullName =>
+      $composableBuilder(column: $table.fullName, builder: (column) => column);
+
+  GeneratedColumn<String> get address =>
+      $composableBuilder(column: $table.address, builder: (column) => column);
+
+  GeneratedColumn<String> get birthDate =>
+      $composableBuilder(column: $table.birthDate, builder: (column) => column);
+
+  GeneratedColumn<String> get profilePicture => $composableBuilder(
+    column: $table.profilePicture,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get gatePoint =>
+      $composableBuilder(column: $table.gatePoint, builder: (column) => column);
+
+  GeneratedColumn<bool> get verify =>
+      $composableBuilder(column: $table.verify, builder: (column) => column);
+
+  GeneratedColumn<String> get vaccount =>
+      $composableBuilder(column: $table.vaccount, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$UserDetailsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UserDetailsTable,
+          UserDetailRecord,
+          $$UserDetailsTableFilterComposer,
+          $$UserDetailsTableOrderingComposer,
+          $$UserDetailsTableAnnotationComposer,
+          $$UserDetailsTableCreateCompanionBuilder,
+          $$UserDetailsTableUpdateCompanionBuilder,
+          (
+            UserDetailRecord,
+            BaseReferences<_$AppDatabase, $UserDetailsTable, UserDetailRecord>,
+          ),
+          UserDetailRecord,
+          PrefetchHooks Function()
+        > {
+  $$UserDetailsTableTableManager(_$AppDatabase db, $UserDetailsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UserDetailsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UserDetailsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$UserDetailsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<int> userId = const Value.absent(),
+                Value<String> firstName = const Value.absent(),
+                Value<String> lastName = const Value.absent(),
+                Value<String> fullName = const Value.absent(),
+                Value<String?> address = const Value.absent(),
+                Value<String?> birthDate = const Value.absent(),
+                Value<String?> profilePicture = const Value.absent(),
+                Value<int> gatePoint = const Value.absent(),
+                Value<bool> verify = const Value.absent(),
+                Value<String?> vaccount = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => UserDetailsCompanion(
+                userId: userId,
+                firstName: firstName,
+                lastName: lastName,
+                fullName: fullName,
+                address: address,
+                birthDate: birthDate,
+                profilePicture: profilePicture,
+                gatePoint: gatePoint,
+                verify: verify,
+                vaccount: vaccount,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> userId = const Value.absent(),
+                required String firstName,
+                required String lastName,
+                required String fullName,
+                Value<String?> address = const Value.absent(),
+                Value<String?> birthDate = const Value.absent(),
+                Value<String?> profilePicture = const Value.absent(),
+                Value<int> gatePoint = const Value.absent(),
+                Value<bool> verify = const Value.absent(),
+                Value<String?> vaccount = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => UserDetailsCompanion.insert(
+                userId: userId,
+                firstName: firstName,
+                lastName: lastName,
+                fullName: fullName,
+                address: address,
+                birthDate: birthDate,
+                profilePicture: profilePicture,
+                gatePoint: gatePoint,
+                verify: verify,
+                vaccount: vaccount,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UserDetailsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UserDetailsTable,
+      UserDetailRecord,
+      $$UserDetailsTableFilterComposer,
+      $$UserDetailsTableOrderingComposer,
+      $$UserDetailsTableAnnotationComposer,
+      $$UserDetailsTableCreateCompanionBuilder,
+      $$UserDetailsTableUpdateCompanionBuilder,
+      (
+        UserDetailRecord,
+        BaseReferences<_$AppDatabase, $UserDetailsTable, UserDetailRecord>,
+      ),
+      UserDetailRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$UserSettingsDetailsTableCreateCompanionBuilder =
+    UserSettingsDetailsCompanion Function({
+      Value<int> userId,
+      Value<bool> marketing,
+      Value<bool> notifications,
+      Value<bool> twoFA,
+      Value<DateTime> updatedAt,
+    });
+typedef $$UserSettingsDetailsTableUpdateCompanionBuilder =
+    UserSettingsDetailsCompanion Function({
+      Value<int> userId,
+      Value<bool> marketing,
+      Value<bool> notifications,
+      Value<bool> twoFA,
+      Value<DateTime> updatedAt,
+    });
+
+class $$UserSettingsDetailsTableFilterComposer
+    extends Composer<_$AppDatabase, $UserSettingsDetailsTable> {
+  $$UserSettingsDetailsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get marketing => $composableBuilder(
+    column: $table.marketing,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get notifications => $composableBuilder(
+    column: $table.notifications,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get twoFA => $composableBuilder(
+    column: $table.twoFA,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$UserSettingsDetailsTableOrderingComposer
+    extends Composer<_$AppDatabase, $UserSettingsDetailsTable> {
+  $$UserSettingsDetailsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get marketing => $composableBuilder(
+    column: $table.marketing,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get notifications => $composableBuilder(
+    column: $table.notifications,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get twoFA => $composableBuilder(
+    column: $table.twoFA,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$UserSettingsDetailsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $UserSettingsDetailsTable> {
+  $$UserSettingsDetailsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<bool> get marketing =>
+      $composableBuilder(column: $table.marketing, builder: (column) => column);
+
+  GeneratedColumn<bool> get notifications => $composableBuilder(
+    column: $table.notifications,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get twoFA =>
+      $composableBuilder(column: $table.twoFA, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$UserSettingsDetailsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $UserSettingsDetailsTable,
+          UserSettingRecord,
+          $$UserSettingsDetailsTableFilterComposer,
+          $$UserSettingsDetailsTableOrderingComposer,
+          $$UserSettingsDetailsTableAnnotationComposer,
+          $$UserSettingsDetailsTableCreateCompanionBuilder,
+          $$UserSettingsDetailsTableUpdateCompanionBuilder,
+          (
+            UserSettingRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $UserSettingsDetailsTable,
+              UserSettingRecord
+            >,
+          ),
+          UserSettingRecord,
+          PrefetchHooks Function()
+        > {
+  $$UserSettingsDetailsTableTableManager(
+    _$AppDatabase db,
+    $UserSettingsDetailsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$UserSettingsDetailsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$UserSettingsDetailsTableOrderingComposer(
+                $db: db,
+                $table: table,
+              ),
+          createComputedFieldComposer: () =>
+              $$UserSettingsDetailsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<int> userId = const Value.absent(),
+                Value<bool> marketing = const Value.absent(),
+                Value<bool> notifications = const Value.absent(),
+                Value<bool> twoFA = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => UserSettingsDetailsCompanion(
+                userId: userId,
+                marketing: marketing,
+                notifications: notifications,
+                twoFA: twoFA,
+                updatedAt: updatedAt,
+              ),
+          createCompanionCallback:
+              ({
+                Value<int> userId = const Value.absent(),
+                Value<bool> marketing = const Value.absent(),
+                Value<bool> notifications = const Value.absent(),
+                Value<bool> twoFA = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+              }) => UserSettingsDetailsCompanion.insert(
+                userId: userId,
+                marketing: marketing,
+                notifications: notifications,
+                twoFA: twoFA,
+                updatedAt: updatedAt,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$UserSettingsDetailsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $UserSettingsDetailsTable,
+      UserSettingRecord,
+      $$UserSettingsDetailsTableFilterComposer,
+      $$UserSettingsDetailsTableOrderingComposer,
+      $$UserSettingsDetailsTableAnnotationComposer,
+      $$UserSettingsDetailsTableCreateCompanionBuilder,
+      $$UserSettingsDetailsTableUpdateCompanionBuilder,
+      (
+        UserSettingRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $UserSettingsDetailsTable,
+          UserSettingRecord
+        >,
+      ),
+      UserSettingRecord,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
   $AppDatabaseManager(this._db);
   $$UsersTableTableManager get users =>
       $$UsersTableTableManager(_db, _db.users);
+  $$UserDetailsTableTableManager get userDetails =>
+      $$UserDetailsTableTableManager(_db, _db.userDetails);
+  $$UserSettingsDetailsTableTableManager get userSettingsDetails =>
+      $$UserSettingsDetailsTableTableManager(_db, _db.userSettingsDetails);
 }

@@ -10,12 +10,12 @@ UserDetail _$UserDetailFromJson(Map<String, dynamic> json) => UserDetail(
   firstName: json['firstName'] as String,
   lastName: json['lastName'] as String,
   fullName: json['fullName'] as String,
-  address: json['address'] as String,
-  birthDate: json['birthDate'] as String,
-  profilePicture: json['profilePicture'] as String,
+  address: json['address'] as String?,
+  birthDate: json['birthDate'] as String?,
+  profilePicture: json['profilePicture'] as String?,
   gatePoint: (json['gatePoint'] as num).toInt(),
   verify: json['verify'] as bool,
-  vaccount: json['vaccount'] as String,
+  vaccount: json['vaccount'] as String?,
 );
 
 Map<String, dynamic> _$UserDetailToJson(UserDetail instance) =>

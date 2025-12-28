@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:gatepay_app/features/dashboard/presentation/pages/dashboard_page.dart';
 import 'package:gatepay_app/features/inbox/presentation/pages/inbox_page.dart';
-import '../../../tempo_codes/profile/presentation/pages/profile_page.dart';
+import 'package:gatepay_app/features/profile/presentation/pages/profile_page.dart';
 import 'package:gatepay_app/shared/utils/theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/config/flavor_config.dart';
 import '../../features/locale/presentation/widgets/app_localization.dart';
-import '../../features/transactionboard/presentation/pages/transactionboard_page.dart';
+// import '../../features/transactionboard/presentation/pages/transactionboard_page.dart';
 
 // icons
 import 'package:iconify_flutter/iconify_flutter.dart';
@@ -15,6 +15,7 @@ import 'package:iconify_flutter/icons/bi.dart';
 import 'package:iconify_flutter/icons/bx.dart';
 import 'package:iconify_flutter/icons/octicon.dart';
 
+import '../../features/transaction_board/presentation/pages/transactionboard_page.dart';
 import 'home_page.dart';
 
 class RootPage extends StatefulWidget {

@@ -13,7 +13,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
   phone: json['phone'] as String,
   status: json['status'] as String,
   balance: json['balance'] as String,
-  merchantId: json['merchantId'] as String?,
+  merchantId: (json['merchantId'] as num?)?.toInt(),
   country: json['country'] as String?,
   createdAt: DateTime.parse(json['createdAt'] as String),
   userDetail: json['userDetail'] == null

@@ -14,6 +14,8 @@ import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 
+import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart'
+    as _i652;
 import '../../features/escrowpay/data/datasources/escrowpay_api_service.dart'
     as _i605;
 import '../../features/escrowpay/data/datasources/escrowpay_local_datasource.dart'
@@ -79,36 +81,17 @@ import '../../features/profile/data/datasources/profile_local_datasource.dart'
     as _i1046;
 import '../../features/profile/data/datasources/profile_remote_datasource.dart'
     as _i327;
-import '../../../tempo_codes/profile/data/repositories/profile_repository_impl.dart'
+import '../../features/profile/data/repositories/profile_repository_impl.dart'
     as _i334;
-import '../../../tempo_codes/profile/domain/repositories/profile_repository.dart'
+import '../../features/profile/domain/repositories/profile_repository.dart'
     as _i894;
-import '../../features/profile/domain/usecases/get_user_settings_usecase.dart'
-    as _i1016;
-import '../../../tempo_codes/profile/presentation/bloc/profile_bloc.dart'
-    as _i469;
-import '../../features/transactionboard/data/datasources/transactionboard_api_service.dart'
-    as _i375;
-import '../../features/transactionboard/data/datasources/transactionboard_local_datasource.dart'
-    as _i490;
-import '../../features/transactionboard/data/datasources/transactionboard_remote_datasource.dart'
-    as _i802;
-import '../../features/transactionboard/data/repositories/transactionboard_repository_impl.dart'
-    as _i571;
-import '../../features/transactionboard/domain/repositories/transactionboard_repository.dart'
-    as _i113;
-import '../../features/transactionboard/domain/usecases/get_onhold_balance_usecase.dart'
-    as _i292;
-import '../../features/transactionboard/domain/usecases/get_onhold_transactions_usecase.dart'
-    as _i813;
-import '../../features/transactionboard/domain/usecases/get_request_transactions_usecase.dart'
-    as _i1043;
-import '../../features/transactionboard/domain/usecases/get_user_detail_usecase.dart'
-    as _i742;
-import '../../features/transactionboard/features/ongoing/presentation/bloc/ongoing_bloc.dart'
-    as _i269;
-import '../../features/transactionboard/presentation/bloc/transaction_bloc.dart'
-    as _i448;
+import '../../features/profile/domain/usecases/get_profile_usecase.dart'
+    as _i965;
+import '../../features/profile/domain/usecases/update_user_profile_usecase.dart'
+    as _i103;
+import '../../features/profile/presentation/bloc/profile_bloc.dart' as _i469;
+import '../../features/transaction_board/presentation/bloc/transaction_bloc.dart'
+    as _i436;
 import '../database/app_database.dart' as _i982;
 import '../network/auth_interceptor.dart' as _i908;
 import '../network/connectivity_service.dart' as _i491;
@@ -125,6 +108,8 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final registerModule = _$RegisterModule();
+    gh.factory<_i652.DashboardBloc>(() => _i652.DashboardBloc());
+    gh.factory<_i436.TransactionBoardBloc>(() => _i436.TransactionBoardBloc());
     gh.singleton<_i982.DatabaseService>(() => _i982.DatabaseService());
     gh.singleton<_i491.ConnectivityService>(() => _i491.ConnectivityService());
     gh.lazySingleton<_i361.Dio>(() => registerModule.dio);
@@ -134,7 +119,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i142.SecureStorageService(),
     );
     gh.lazySingleton<_i458.LocaleBloc>(() => _i458.LocaleBloc());
-    gh.lazySingleton<_i269.OngoingBloc>(() => _i269.OngoingBloc());
     gh.lazySingleton<_i792.OnboardingBloc>(() => _i792.OnboardingBloc());
     gh.lazySingleton<_i491.NetworkInfo>(
       () => _i491.EnhancedNetworkInfo(gh<_i491.ConnectivityService>()),
@@ -142,26 +126,20 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i748.InboxApiService>(
       () => _i748.InboxApiService(gh<_i361.Dio>()),
     );
-    gh.lazySingleton<_i1041.ProfileApiService>(
-      () => _i1041.ProfileApiService(gh<_i361.Dio>()),
-    );
-    gh.factory<_i375.TransactionBoardApiService>(
-      () => _i375.TransactionBoardApiService(gh<_i361.Dio>()),
-    );
     gh.factory<_i605.EscrowpayApiService>(
       () => _i605.EscrowpayApiService(gh<_i361.Dio>()),
     );
     gh.factory<_i743.LoginApiService>(
       () => _i743.LoginApiService(gh<_i361.Dio>()),
     );
+    gh.factory<_i1041.ProfileApiService>(
+      () => _i1041.ProfileApiService(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i589.EscrowpayLocalDataSource>(
       () => _i589.EscrowpayLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
     gh.lazySingleton<_i1046.ProfileLocalDataSource>(
       () => _i1046.ProfileLocalDataSourceImpl(gh<_i982.DatabaseService>()),
-    );
-    gh.lazySingleton<_i490.TransactionBoardLocalDataSource>(
-      () => _i490.TransactionBoardLocalDataSourceImpl(),
     );
     gh.lazySingleton<_i765.InboxLocalDataSource>(
       () => _i765.InboxLocalDataSourceImpl(gh<_i982.DatabaseService>()),
@@ -178,14 +156,22 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i932.NetworkInfo>(
       () => _i932.NetworkInfoImpl(gh<_i895.Connectivity>()),
     );
+    gh.lazySingleton<_i894.ProfileRepository>(
+      () => _i334.ProfileRepositoryImpl(
+        gh<_i1046.ProfileLocalDataSource>(),
+        gh<_i327.ProfileRemoteDataSource>(),
+        gh<_i932.NetworkInfo>(),
+      ),
+    );
+    gh.lazySingleton<_i103.UpdateProfileUseCase>(
+      () => _i103.UpdateProfileUseCase(gh<_i894.ProfileRepository>()),
+    );
+    gh.lazySingleton<_i965.GetProfileUseCase>(
+      () => _i965.GetProfileUseCase(gh<_i894.ProfileRepository>()),
+    );
     gh.lazySingleton<_i150.EscrowpayRemoteDataSource>(
       () =>
           _i150.EscrowpayRemoteDataSourceImpl(gh<_i605.EscrowpayApiService>()),
-    );
-    gh.lazySingleton<_i802.TransactionBoardRemoteDataSource>(
-      () => _i802.TransactionBoardRemoteDataSourceImpl(
-        gh<_i375.TransactionBoardApiService>(),
-      ),
     );
     gh.lazySingleton<_i94.InboxRemoteDataSource>(
       () => _i94.InboxRemoteDataSourceImpl(gh<_i748.InboxApiService>()),
@@ -208,16 +194,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i142.SecureStorageService>(),
       ),
     );
-    gh.lazySingleton<_i894.ProfileRepository>(
-      () => _i334.ProfileRepositoryImpl(
-        gh<_i327.ProfileRemoteDataSource>(),
-        gh<_i1046.ProfileLocalDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i113.TransactionBoardRepository>(
-      () => _i571.TransactionBoardRepositoryImpl(
-        gh<_i802.TransactionBoardRemoteDataSource>(),
-        gh<_i490.TransactionBoardLocalDataSource>(),
+    gh.factory<_i469.ProfileBloc>(
+      () => _i469.ProfileBloc(
+        gh<_i965.GetProfileUseCase>(),
+        gh<_i103.UpdateProfileUseCase>(),
       ),
     );
     gh.lazySingleton<_i717.InboxRepository>(
@@ -259,18 +239,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i489.GetStoredUserUseCase>(
       () => _i489.GetStoredUserUseCase(gh<_i902.LoginRepository>()),
     );
-    gh.lazySingleton<_i1016.GetUserSettingsUseCase>(
-      () => _i1016.GetUserSettingsUseCase(gh<_i894.ProfileRepository>()),
-    );
     gh.lazySingleton<_i601.EscrowpayRepository>(
       () => _i437.EscrowpayRepositoryImpl(
         gh<_i150.EscrowpayRemoteDataSource>(),
         gh<_i589.EscrowpayLocalDataSource>(),
         gh<_i932.NetworkInfo>(),
       ),
-    );
-    gh.factory<_i469.ProfileBloc>(
-      () => _i469.ProfileBloc(gh<_i1016.GetUserSettingsUseCase>()),
     );
     gh.factory<_i59.SearchPhoneUseCase>(
       () => _i59.SearchPhoneUseCase(gh<_i601.EscrowpayRepository>()),
@@ -280,26 +254,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i155.CreatePaymentUseCase>(
       () => _i155.CreatePaymentUseCase(gh<_i601.EscrowpayRepository>()),
-    );
-    gh.factory<_i742.GetUserDetailTransactionBoardUseCase>(
-      () => _i742.GetUserDetailTransactionBoardUseCase(
-        gh<_i113.TransactionBoardRepository>(),
-      ),
-    );
-    gh.factory<_i813.GetOnholdTransactionsWithParamsUseCase>(
-      () => _i813.GetOnholdTransactionsWithParamsUseCase(
-        gh<_i113.TransactionBoardRepository>(),
-      ),
-    );
-    gh.factory<_i292.GetOnholdBalanceTransactionBoardUseCase>(
-      () => _i292.GetOnholdBalanceTransactionBoardUseCase(
-        gh<_i113.TransactionBoardRepository>(),
-      ),
-    );
-    gh.factory<_i1043.GetRequestTransactionsUseCase>(
-      () => _i1043.GetRequestTransactionsUseCase(
-        gh<_i113.TransactionBoardRepository>(),
-      ),
     );
     gh.lazySingleton<_i791.GetMarketingUseCase>(
       () => _i791.GetMarketingUseCase(gh<_i717.InboxRepository>()),
@@ -324,14 +278,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i446.SearchUsernameUseCase>(),
         gh<_i59.SearchPhoneUseCase>(),
         gh<_i155.CreatePaymentUseCase>(),
-      ),
-    );
-    gh.factory<_i448.TransactionBoardBloc>(
-      () => _i448.TransactionBoardBloc(
-        gh<_i742.GetUserDetailTransactionBoardUseCase>(),
-        gh<_i813.GetOnholdTransactionsWithParamsUseCase>(),
-        gh<_i292.GetOnholdBalanceTransactionBoardUseCase>(),
-        gh<_i1043.GetRequestTransactionsUseCase>(),
       ),
     );
     gh.factory<_i923.InboxBloc>(

@@ -12,7 +12,7 @@ import 'features/locale/presentation/bloc/locale_state.dart';
 import 'features/locale/presentation/widgets/app_localization.dart';
 import 'features/login/presentation/bloc/login_bloc.dart';
 import 'features/onboarding/presentation/bloc/onboarding_bloc.dart';
-import 'features/transactionboard/features/ongoing/presentation/bloc/ongoing_bloc.dart';
+// import 'features/transactionboard/features/ongoing/presentation/bloc/ongoing_bloc.dart';
 import 'routes/app_router.dart';
 
 Future<void> main() async {
@@ -30,14 +30,14 @@ Future<void> main() async {
         BlocProvider<OnboardingBloc>(
           create: (context) => getIt<OnboardingBloc>(),
         ),
-        BlocProvider<DashboardBloc>(
-          create: (context) => getIt<DashboardBloc>(),
-          lazy: true,
-        ),
-        BlocProvider<OngoingBloc>(
-          create: (context) => getIt<OngoingBloc>(),
-          lazy: true,
-        ),
+        // BlocProvider<DashboardBloc>(
+        //   create: (context) => getIt<DashboardBloc>(),
+        //   lazy: true,
+        // ),
+        // BlocProvider<OngoingBloc>(
+        //   create: (context) => getIt<OngoingBloc>(),
+        //   lazy: true,
+        // ),
       ],
       child: const MyApp(),
     ),

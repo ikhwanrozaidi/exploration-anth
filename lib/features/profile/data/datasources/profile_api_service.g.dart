@@ -19,15 +19,14 @@ class _ProfileApiService implements ProfileApiService {
 
   @override
   Future<ApiResponse<UpdateProfileResponseModel>> updateProfile({
-    required Map<String, dynamic> data,
+    required UpdateProfileRequestModel data,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(data);
+    final _data = data;
     final _options = _setStreamType<ApiResponse<UpdateProfileResponseModel>>(
-      Options(method: 'PATCH', headers: _headers, extra: _extra)
+      Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
             '/users/profile',
