@@ -7,6 +7,9 @@ import 'package:iconify_flutter/icons/uil.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/string_formatter.dart';
 import '../../../../shared/utils/theme.dart';
+import '../../../profile/presentation/bloc/profile_bloc.dart';
+import '../../../profile/presentation/bloc/profile_event.dart';
+import '../../../profile/presentation/bloc/profile_state.dart';
 import '../bloc/dashboard_bloc.dart';
 import '../bloc/dashboard_event.dart';
 import '../bloc/dashboard_state.dart';
@@ -16,9 +19,17 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          getIt<DashboardBloc>()..add(const DashboardEvent.load()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              getIt<DashboardBloc>()..add(const DashboardEvent.load()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              getIt<ProfileBloc>()..add(const ProfileEvent.loadProfile()),
+        ),
+      ],
       child: const DashboardView(),
     );
   }
@@ -176,85 +187,95 @@ class DashboardView extends StatelessWidget {
   }
 
   Widget _buildDashboardContent(BuildContext context, double w) {
-    //HARDCODED
-    final balance = "510.00";
-    final awaitingPayment = "234.20";
-    final withheldPayment = "123.00";
+    // ✅ Get balance from ProfileBloc instead of hardcoding
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, profileState) {
+        // Extract balance from profile, default to "0.00" if not available
+        final balance = profileState.maybeWhen(
+          loaded: (user, detail, settings) => user.balance,
+          orElse: () => "0.00",
+        );
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildUserBalanceCard(balance, w),
-        const SizedBox(height: 16),
+        //HARDCODED - TODO: Replace these with actual API data
+        final awaitingPayment = "234.20";
+        final withheldPayment = "123.00";
 
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            gradient: const LinearGradient(
-              colors: [
-                Color.fromARGB(255, 0, 69, 129),
-                Color.fromARGB(255, 77, 191, 232),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildUserBalanceCard(balance, w),
+            const SizedBox(height: 16),
+
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                gradient: const LinearGradient(
+                  colors: [
+                    Color.fromARGB(255, 0, 69, 129),
+                    Color.fromARGB(255, 77, 191, 232),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Buy and sell your things \nwith Gatepay',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  TextButton(
+                    onPressed: () {},
+                    style: TextButton.styleFrom(
+                      backgroundColor: primaryColor,
+                      foregroundColor: Colors.black87,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 8,
+                      ),
+                    ),
+                    child: Text(
+                      'Explore',
+                      style: GoogleFonts.poppins(color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Buy and sell your things \nwith Gatepay',
+
+            const SizedBox(height: 16),
+            _buildOnholdBalanceCard(awaitingPayment, withheldPayment, w),
+
+            const SizedBox(height: 30),
+            Padding(
+              padding: const EdgeInsets.only(left: 20.0),
+              child: Text(
+                'In & Out Transaction',
                 style: GoogleFonts.poppins(
-                  color: Colors.white,
                   fontWeight: FontWeight.w500,
-                  fontSize: 16,
+                  fontSize: 13,
                 ),
               ),
-              const SizedBox(height: 20),
-              TextButton(
-                onPressed: () {},
-                style: TextButton.styleFrom(
-                  backgroundColor: primaryColor,
-                  foregroundColor: Colors.black87,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 8,
-                  ),
-                ),
-                child: Text(
-                  'Explore',
-                  style: GoogleFonts.poppins(color: Colors.black),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        const SizedBox(height: 16),
-        _buildOnholdBalanceCard(awaitingPayment, withheldPayment, w),
-
-        const SizedBox(height: 30),
-        Padding(
-          padding: const EdgeInsets.only(left: 20.0),
-          child: Text(
-            'In & Out Transaction',
-            style: GoogleFonts.poppins(
-              fontWeight: FontWeight.w500,
-              fontSize: 13,
             ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        _buildTransactionsCard(w),
+            const SizedBox(height: 16),
+            _buildTransactionsCard(w),
 
-        const SizedBox(height: 100),
-      ],
+            const SizedBox(height: 100),
+          ],
+        );
+      },
     );
   }
 

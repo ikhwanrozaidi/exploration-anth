@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/string_formatter.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../escrowpay/presentation/pages/escrowpay_page.dart';
+import '../../../profile/presentation/bloc/profile_bloc.dart';
+import '../../../profile/presentation/bloc/profile_event.dart';
+import '../../../profile/presentation/bloc/profile_state.dart';
+import '../../domain/entities/transaction_board_data.dart';
 import '../bloc/transaction_bloc.dart';
 import '../bloc/transaction_event.dart';
 import '../bloc/transaction_state.dart';
@@ -14,10 +19,18 @@ class TransactionBoardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          getIt<TransactionBoardBloc>()
-            ..add(const TransactionBoardEvent.load()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) =>
+              getIt<TransactionboardBloc>()
+                ..add(const TransactionboardEvent.loadTransactionboard()),
+        ),
+        BlocProvider(
+          create: (context) =>
+              getIt<ProfileBloc>()..add(const ProfileEvent.loadProfile()),
+        ),
+      ],
       child: const TransactionBoardView(),
     );
   }
@@ -81,12 +94,12 @@ class TransactionBoardView extends StatelessWidget {
               ),
             ),
             Expanded(
-              child: BlocBuilder<TransactionBoardBloc, TransactionBoardState>(
+              child: BlocBuilder<TransactionboardBloc, TransactionboardState>(
                 builder: (context, state) {
                   return RefreshIndicator(
                     onRefresh: () async {
-                      context.read<TransactionBoardBloc>().add(
-                        const TransactionBoardEvent.refresh(),
+                      context.read<TransactionboardBloc>().add(
+                        const TransactionboardEvent.refreshTransactionboard(),
                       );
                     },
                     child: SingleChildScrollView(
@@ -106,7 +119,7 @@ class TransactionBoardView extends StatelessWidget {
 
   Widget _buildContent(
     BuildContext context,
-    TransactionBoardState state,
+    TransactionboardState state,
     double w,
   ) {
     return state.when(
@@ -121,7 +134,7 @@ class TransactionBoardView extends StatelessWidget {
           ],
         ),
       ),
-      ready: () => _buildTransactionBoardContent(context, w),
+      loaded: (data) => _buildTransactionBoardContent(context, data, w),
       error: (message) => Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -141,8 +154,8 @@ class TransactionBoardView extends StatelessWidget {
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                context.read<TransactionBoardBloc>().add(
-                  const TransactionBoardEvent.load(),
+                context.read<TransactionboardBloc>().add(
+                  const TransactionboardEvent.loadTransactionboard(),
                 );
               },
               child: const Text('Retry'),
@@ -153,110 +166,108 @@ class TransactionBoardView extends StatelessWidget {
     );
   }
 
-  Widget _buildTransactionBoardContent(BuildContext context, double w) {
-    //HARDCODED
-    final balance = "1234.45";
-    final awaitingPayment = "2100.00";
-    final withheldPayment = "2100.00";
+  Widget _buildTransactionBoardContent(
+    BuildContext context,
+    TransactionBoardData data,
+    double w,
+  ) {
+    // ✅ Get balance from ProfileBloc
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, profileState) {
+        final balance = profileState.maybeWhen(
+          loaded: (user, detail, settings) => user.balance,
+          orElse: () => "0.00",
+        );
 
-    //HARDCODED - Dummy onhold transactions
-    final onholdTransactions = [
-      {
-        'productName': 'Product A',
-        'senderId': '12345',
-        'createdAt': '20250821',
-        'amount': '123.50',
-      },
-      {
-        'productName': 'Product B',
-        'senderId': '54321',
-        'createdAt': '20250820',
-        'amount': '456.75',
-      },
-    ];
+        // ✅ Get awaiting/withheld payment from transaction data
+        final awaitingPayment = data.waitReceiveAmount.toString();
+        final withheldPayment = data.waitReleaseAmount.toString();
 
-    //HARDCODED - Dummy complete transactions
-    final completeTransactions = [
-      {
-        'productName': 'Product C',
-        'senderId': '11111',
-        'createdAt': '20250819',
-        'amount': '789.00',
-      },
-    ];
+        // ✅ Filter transactions by completion status
+        final onholdTransactions = data.transactions
+            .where((tx) => !tx.isCompleted)
+            .toList();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Request Transaction Section (Hardcoded)
-        _buildRequestTransactionSection(w),
+        final completeTransactions = data.transactions
+            .where((tx) => tx.isCompleted)
+            .toList();
 
-        const SizedBox(height: 16),
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Request Transaction Section (Hardcoded)
+            _buildRequestTransactionSection(w),
 
-        // User Detail Card
-        _buildUserDetailCard(balance, awaitingPayment, withheldPayment, w),
+            const SizedBox(height: 16),
 
-        const SizedBox(height: 30),
+            // User Detail Card
+            _buildUserDetailCard(balance, awaitingPayment, withheldPayment, w),
 
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Onhold Transaction',
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 13,
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // Navigate to onhold view page (disabled for now)
-                  print('View onhold transactions');
-                },
-                child: Text(
-                  'View',
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    color: Colors.black,
-                    fontWeight: FontWeight.w500,
+            const SizedBox(height: 30),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Onhold Transaction',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                    ),
                   ),
-                ),
+                  GestureDetector(
+                    onTap: () {
+                      // Navigate to onhold view page (disabled for now)
+                      print('View onhold transactions');
+                    },
+                    child: Text(
+                      'View',
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
 
-        const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-        _buildOnholdTransaction(onholdTransactions, w),
+            // ✅ REPLACED: with actual isCompleted = false payments
+            _buildOnholdTransaction(onholdTransactions, w),
 
-        const SizedBox(height: 30),
+            const SizedBox(height: 30),
 
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Complete Transaction',
-                style: GoogleFonts.poppins(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 13,
-                ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Complete Transaction',
+                    style: GoogleFonts.poppins(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                    ),
+                  ),
+                  Text('View', style: GoogleFonts.poppins(fontSize: 13)),
+                ],
               ),
-              Text('View', style: GoogleFonts.poppins(fontSize: 13)),
-            ],
-          ),
-        ),
+            ),
 
-        const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
-        _buildCompleteTransaction(completeTransactions, w),
+            // ✅ REPLACED: with actual isCompleted = true payments
+            _buildCompleteTransaction(completeTransactions, w),
 
-        const SizedBox(height: 100),
-      ],
+            const SizedBox(height: 100),
+          ],
+        );
+      },
     );
   }
 
@@ -395,7 +406,7 @@ class TransactionBoardView extends StatelessWidget {
             ),
           ),
           Text(
-            "RM ${formatCurrency(balance)}", //HARDCODED
+            "RM ${formatCurrency(balance)}",
             style: GoogleFonts.poppins(
               fontSize: w * 0.065,
               fontWeight: FontWeight.w600,
@@ -423,7 +434,7 @@ class TransactionBoardView extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '+RM ${formatCurrency(awaitingPayment)}', //HARDCODED
+                        '+RM ${formatCurrency(awaitingPayment)}',
                         style: GoogleFonts.poppins(
                           fontSize: w * 0.048,
                           color: const Color.fromARGB(255, 175, 226, 255),
@@ -452,7 +463,7 @@ class TransactionBoardView extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '-RM ${formatCurrency(withheldPayment)}', //HARDCODED
+                        '-RM ${formatCurrency(withheldPayment)}',
                         style: GoogleFonts.poppins(
                           fontSize: w * 0.048,
                           color: const Color.fromARGB(255, 175, 226, 255),
@@ -470,10 +481,7 @@ class TransactionBoardView extends StatelessWidget {
     );
   }
 
-  Widget _buildOnholdTransaction(
-    List<Map<String, String>> transactions,
-    double w,
-  ) {
+  Widget _buildOnholdTransaction(List<dynamic> transactions, double w) {
     return Container(
       padding: EdgeInsets.symmetric(vertical: w * 0.06, horizontal: w * 0.05),
       decoration: BoxDecoration(
@@ -494,6 +502,20 @@ class TransactionBoardView extends StatelessWidget {
               separatorBuilder: (context, index) => const SizedBox(height: 18),
               itemBuilder: (context, index) {
                 final transaction = transactions[index];
+
+                // ✅ Format date to YYYYMMDD
+                final formattedDate = DateFormat(
+                  'yyyyMMdd',
+                ).format(transaction.createdAt);
+
+                // ✅ Determine amount display based on userRole
+                final amountPrefix = transaction.userRole == 'buyer'
+                    ? '-'
+                    : '+';
+                final amountColor = transaction.userRole == 'buyer'
+                    ? red
+                    : green;
+
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -516,14 +538,14 @@ class TransactionBoardView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              transaction['productName']!,
+                              transaction.paymentDetails.productName,
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black,
                               ),
                             ),
                             Text(
-                              '${transaction['senderId']} • ${transaction['createdAt']}',
+                              '${transaction.seller?.email ?? 'N/A'} • $formattedDate',
                               style: GoogleFonts.poppins(
                                 fontSize: w * 0.025,
                                 color: Colors.black,
@@ -537,10 +559,10 @@ class TransactionBoardView extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          '-RM ${formatCurrency(transaction['amount']!)}',
+                          '${amountPrefix}RM ${formatCurrency(transaction.amount.toString())}',
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w500,
-                            color: red,
+                            color: amountColor,
                           ),
                         ),
                         Text(
@@ -559,10 +581,7 @@ class TransactionBoardView extends StatelessWidget {
     );
   }
 
-  Widget _buildCompleteTransaction(
-    List<Map<String, String>> transactions,
-    double w,
-  ) {
+  Widget _buildCompleteTransaction(List<dynamic> transactions, double w) {
     return transactions.isEmpty
         ? const Center(
             child: Padding(
@@ -577,6 +596,16 @@ class TransactionBoardView extends StatelessWidget {
             separatorBuilder: (context, index) => const SizedBox(height: 10),
             itemBuilder: (context, index) {
               final transaction = transactions[index];
+
+              // ✅ Format date to YYYYMMDD
+              final formattedDate = DateFormat(
+                'yyyyMMdd',
+              ).format(transaction.createdAt);
+
+              // ✅ Determine amount display based on userRole
+              final amountPrefix = transaction.userRole == 'buyer' ? '-' : '+';
+              final amountColor = transaction.userRole == 'buyer' ? red : green;
+
               return Container(
                 padding: const EdgeInsets.symmetric(
                   vertical: 15,
@@ -608,14 +637,14 @@ class TransactionBoardView extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              transaction['productName']!,
+                              transaction.paymentDetails.productName,
                               style: GoogleFonts.poppins(
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black,
                               ),
                             ),
                             Text(
-                              '${transaction['senderId']} • ${transaction['createdAt']}',
+                              '${transaction.seller?.email ?? 'N/A'} • $formattedDate',
                               style: GoogleFonts.poppins(
                                 fontSize: w * 0.025,
                                 color: Colors.black,
@@ -626,10 +655,10 @@ class TransactionBoardView extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      '-RM ${formatCurrency(transaction['amount']!)}',
+                      '${amountPrefix}RM ${formatCurrency(transaction.amount.toString())}',
                       style: GoogleFonts.poppins(
                         fontWeight: FontWeight.w500,
-                        color: red,
+                        color: amountColor,
                       ),
                     ),
                   ],

@@ -12,7 +12,7 @@ part of 'transaction_state.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$TransactionBoardState {
+mixin _$TransactionboardState {
 
 
 
@@ -20,7 +20,7 @@ mixin _$TransactionBoardState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionBoardState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionboardState);
 }
 
 
@@ -29,20 +29,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TransactionBoardState()';
+  return 'TransactionboardState()';
 }
 
 
 }
 
 /// @nodoc
-class $TransactionBoardStateCopyWith<$Res>  {
-$TransactionBoardStateCopyWith(TransactionBoardState _, $Res Function(TransactionBoardState) __);
+class $TransactionboardStateCopyWith<$Res>  {
+$TransactionboardStateCopyWith(TransactionboardState _, $Res Function(TransactionboardState) __);
 }
 
 
-/// Adds pattern-matching-related methods to [TransactionBoardState].
-extension TransactionBoardStatePatterns on TransactionBoardState {
+/// Adds pattern-matching-related methods to [TransactionboardState].
+extension TransactionboardStatePatterns on TransactionboardState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -55,13 +55,13 @@ extension TransactionBoardStatePatterns on TransactionBoardState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( TransactionBoardInitial value)?  initial,TResult Function( TransactionBoardLoading value)?  loading,TResult Function( TransactionBoardReady value)?  ready,TResult Function( TransactionBoardError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( TransactionboardInitial value)?  initial,TResult Function( TransactionboardLoading value)?  loading,TResult Function( TransactionboardLoaded value)?  loaded,TResult Function( TransactionboardError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case TransactionBoardInitial() when initial != null:
-return initial(_that);case TransactionBoardLoading() when loading != null:
-return loading(_that);case TransactionBoardReady() when ready != null:
-return ready(_that);case TransactionBoardError() when error != null:
+case TransactionboardInitial() when initial != null:
+return initial(_that);case TransactionboardLoading() when loading != null:
+return loading(_that);case TransactionboardLoaded() when loaded != null:
+return loaded(_that);case TransactionboardError() when error != null:
 return error(_that);case _:
   return orElse();
 
@@ -80,13 +80,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( TransactionBoardInitial value)  initial,required TResult Function( TransactionBoardLoading value)  loading,required TResult Function( TransactionBoardReady value)  ready,required TResult Function( TransactionBoardError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( TransactionboardInitial value)  initial,required TResult Function( TransactionboardLoading value)  loading,required TResult Function( TransactionboardLoaded value)  loaded,required TResult Function( TransactionboardError value)  error,}){
 final _that = this;
 switch (_that) {
-case TransactionBoardInitial():
-return initial(_that);case TransactionBoardLoading():
-return loading(_that);case TransactionBoardReady():
-return ready(_that);case TransactionBoardError():
+case TransactionboardInitial():
+return initial(_that);case TransactionboardLoading():
+return loading(_that);case TransactionboardLoaded():
+return loaded(_that);case TransactionboardError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -104,13 +104,13 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( TransactionBoardInitial value)?  initial,TResult? Function( TransactionBoardLoading value)?  loading,TResult? Function( TransactionBoardReady value)?  ready,TResult? Function( TransactionBoardError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( TransactionboardInitial value)?  initial,TResult? Function( TransactionboardLoading value)?  loading,TResult? Function( TransactionboardLoaded value)?  loaded,TResult? Function( TransactionboardError value)?  error,}){
 final _that = this;
 switch (_that) {
-case TransactionBoardInitial() when initial != null:
-return initial(_that);case TransactionBoardLoading() when loading != null:
-return loading(_that);case TransactionBoardReady() when ready != null:
-return ready(_that);case TransactionBoardError() when error != null:
+case TransactionboardInitial() when initial != null:
+return initial(_that);case TransactionboardLoading() when loading != null:
+return loading(_that);case TransactionboardLoaded() when loaded != null:
+return loaded(_that);case TransactionboardError() when error != null:
 return error(_that);case _:
   return null;
 
@@ -128,12 +128,12 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function()?  ready,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( TransactionBoardData data)?  loaded,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case TransactionBoardInitial() when initial != null:
-return initial();case TransactionBoardLoading() when loading != null:
-return loading();case TransactionBoardReady() when ready != null:
-return ready();case TransactionBoardError() when error != null:
+case TransactionboardInitial() when initial != null:
+return initial();case TransactionboardLoading() when loading != null:
+return loading();case TransactionboardLoaded() when loaded != null:
+return loaded(_that.data);case TransactionboardError() when error != null:
 return error(_that.message);case _:
   return orElse();
 
@@ -152,12 +152,12 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function()  ready,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( TransactionBoardData data)  loaded,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
-case TransactionBoardInitial():
-return initial();case TransactionBoardLoading():
-return loading();case TransactionBoardReady():
-return ready();case TransactionBoardError():
+case TransactionboardInitial():
+return initial();case TransactionboardLoading():
+return loading();case TransactionboardLoaded():
+return loaded(_that.data);case TransactionboardError():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
 
@@ -175,12 +175,12 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function()?  ready,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( TransactionBoardData data)?  loaded,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
-case TransactionBoardInitial() when initial != null:
-return initial();case TransactionBoardLoading() when loading != null:
-return loading();case TransactionBoardReady() when ready != null:
-return ready();case TransactionBoardError() when error != null:
+case TransactionboardInitial() when initial != null:
+return initial();case TransactionboardLoading() when loading != null:
+return loading();case TransactionboardLoaded() when loaded != null:
+return loaded(_that.data);case TransactionboardError() when error != null:
 return error(_that.message);case _:
   return null;
 
@@ -192,8 +192,8 @@ return error(_that.message);case _:
 /// @nodoc
 
 
-class TransactionBoardInitial implements TransactionBoardState {
-  const TransactionBoardInitial();
+class TransactionboardInitial implements TransactionboardState {
+  const TransactionboardInitial();
   
 
 
@@ -203,7 +203,7 @@ class TransactionBoardInitial implements TransactionBoardState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionBoardInitial);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionboardInitial);
 }
 
 
@@ -212,7 +212,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TransactionBoardState.initial()';
+  return 'TransactionboardState.initial()';
 }
 
 
@@ -224,8 +224,8 @@ String toString() {
 /// @nodoc
 
 
-class TransactionBoardLoading implements TransactionBoardState {
-  const TransactionBoardLoading();
+class TransactionboardLoading implements TransactionboardState {
+  const TransactionboardLoading();
   
 
 
@@ -235,7 +235,7 @@ class TransactionBoardLoading implements TransactionBoardState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionBoardLoading);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionboardLoading);
 }
 
 
@@ -244,7 +244,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TransactionBoardState.loading()';
+  return 'TransactionboardState.loading()';
 }
 
 
@@ -256,55 +256,89 @@ String toString() {
 /// @nodoc
 
 
-class TransactionBoardReady implements TransactionBoardState {
-  const TransactionBoardReady();
+class TransactionboardLoaded implements TransactionboardState {
+  const TransactionboardLoaded({required this.data});
   
 
+ final  TransactionBoardData data;
 
-
+/// Create a copy of TransactionboardState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TransactionboardLoadedCopyWith<TransactionboardLoaded> get copyWith => _$TransactionboardLoadedCopyWithImpl<TransactionboardLoaded>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionBoardReady);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionboardLoaded&&(identical(other.data, data) || other.data == data));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,data);
 
 @override
 String toString() {
-  return 'TransactionBoardState.ready()';
+  return 'TransactionboardState.loaded(data: $data)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $TransactionboardLoadedCopyWith<$Res> implements $TransactionboardStateCopyWith<$Res> {
+  factory $TransactionboardLoadedCopyWith(TransactionboardLoaded value, $Res Function(TransactionboardLoaded) _then) = _$TransactionboardLoadedCopyWithImpl;
+@useResult
+$Res call({
+ TransactionBoardData data
+});
 
 
+
+
+}
+/// @nodoc
+class _$TransactionboardLoadedCopyWithImpl<$Res>
+    implements $TransactionboardLoadedCopyWith<$Res> {
+  _$TransactionboardLoadedCopyWithImpl(this._self, this._then);
+
+  final TransactionboardLoaded _self;
+  final $Res Function(TransactionboardLoaded) _then;
+
+/// Create a copy of TransactionboardState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? data = null,}) {
+  return _then(TransactionboardLoaded(
+data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as TransactionBoardData,
+  ));
+}
+
+
+}
 
 /// @nodoc
 
 
-class TransactionBoardError implements TransactionBoardState {
-  const TransactionBoardError(this.message);
+class TransactionboardError implements TransactionboardState {
+  const TransactionboardError(this.message);
   
 
  final  String message;
 
-/// Create a copy of TransactionBoardState
+/// Create a copy of TransactionboardState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$TransactionBoardErrorCopyWith<TransactionBoardError> get copyWith => _$TransactionBoardErrorCopyWithImpl<TransactionBoardError>(this, _$identity);
+$TransactionboardErrorCopyWith<TransactionboardError> get copyWith => _$TransactionboardErrorCopyWithImpl<TransactionboardError>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionBoardError&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionboardError&&(identical(other.message, message) || other.message == message));
 }
 
 
@@ -313,15 +347,15 @@ int get hashCode => Object.hash(runtimeType,message);
 
 @override
 String toString() {
-  return 'TransactionBoardState.error(message: $message)';
+  return 'TransactionboardState.error(message: $message)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $TransactionBoardErrorCopyWith<$Res> implements $TransactionBoardStateCopyWith<$Res> {
-  factory $TransactionBoardErrorCopyWith(TransactionBoardError value, $Res Function(TransactionBoardError) _then) = _$TransactionBoardErrorCopyWithImpl;
+abstract mixin class $TransactionboardErrorCopyWith<$Res> implements $TransactionboardStateCopyWith<$Res> {
+  factory $TransactionboardErrorCopyWith(TransactionboardError value, $Res Function(TransactionboardError) _then) = _$TransactionboardErrorCopyWithImpl;
 @useResult
 $Res call({
  String message
@@ -332,17 +366,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$TransactionBoardErrorCopyWithImpl<$Res>
-    implements $TransactionBoardErrorCopyWith<$Res> {
-  _$TransactionBoardErrorCopyWithImpl(this._self, this._then);
+class _$TransactionboardErrorCopyWithImpl<$Res>
+    implements $TransactionboardErrorCopyWith<$Res> {
+  _$TransactionboardErrorCopyWithImpl(this._self, this._then);
 
-  final TransactionBoardError _self;
-  final $Res Function(TransactionBoardError) _then;
+  final TransactionboardError _self;
+  final $Res Function(TransactionboardError) _then;
 
-/// Create a copy of TransactionBoardState
+/// Create a copy of TransactionboardState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(TransactionBoardError(
+  return _then(TransactionboardError(
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String,
   ));

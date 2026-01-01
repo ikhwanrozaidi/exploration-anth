@@ -12,7 +12,7 @@ part of 'transaction_event.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$TransactionBoardEvent {
+mixin _$TransactionboardEvent {
 
 
 
@@ -20,7 +20,7 @@ mixin _$TransactionBoardEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionBoardEvent);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TransactionboardEvent);
 }
 
 
@@ -29,20 +29,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TransactionBoardEvent()';
+  return 'TransactionboardEvent()';
 }
 
 
 }
 
 /// @nodoc
-class $TransactionBoardEventCopyWith<$Res>  {
-$TransactionBoardEventCopyWith(TransactionBoardEvent _, $Res Function(TransactionBoardEvent) __);
+class $TransactionboardEventCopyWith<$Res>  {
+$TransactionboardEventCopyWith(TransactionboardEvent _, $Res Function(TransactionboardEvent) __);
 }
 
 
-/// Adds pattern-matching-related methods to [TransactionBoardEvent].
-extension TransactionBoardEventPatterns on TransactionBoardEvent {
+/// Adds pattern-matching-related methods to [TransactionboardEvent].
+extension TransactionboardEventPatterns on TransactionboardEvent {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -55,12 +55,13 @@ extension TransactionBoardEventPatterns on TransactionBoardEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadTransactionBoard value)?  load,TResult Function( RefreshTransactionBoard value)?  refresh,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( LoadTransactionboard value)?  loadTransactionboard,TResult Function( RefreshTransactionboard value)?  refreshTransactionboard,TResult Function( ClearTransactionCache value)?  clearCache,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case LoadTransactionBoard() when load != null:
-return load(_that);case RefreshTransactionBoard() when refresh != null:
-return refresh(_that);case _:
+case LoadTransactionboard() when loadTransactionboard != null:
+return loadTransactionboard(_that);case RefreshTransactionboard() when refreshTransactionboard != null:
+return refreshTransactionboard(_that);case ClearTransactionCache() when clearCache != null:
+return clearCache(_that);case _:
   return orElse();
 
 }
@@ -78,12 +79,13 @@ return refresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadTransactionBoard value)  load,required TResult Function( RefreshTransactionBoard value)  refresh,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( LoadTransactionboard value)  loadTransactionboard,required TResult Function( RefreshTransactionboard value)  refreshTransactionboard,required TResult Function( ClearTransactionCache value)  clearCache,}){
 final _that = this;
 switch (_that) {
-case LoadTransactionBoard():
-return load(_that);case RefreshTransactionBoard():
-return refresh(_that);case _:
+case LoadTransactionboard():
+return loadTransactionboard(_that);case RefreshTransactionboard():
+return refreshTransactionboard(_that);case ClearTransactionCache():
+return clearCache(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -100,12 +102,13 @@ return refresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadTransactionBoard value)?  load,TResult? Function( RefreshTransactionBoard value)?  refresh,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( LoadTransactionboard value)?  loadTransactionboard,TResult? Function( RefreshTransactionboard value)?  refreshTransactionboard,TResult? Function( ClearTransactionCache value)?  clearCache,}){
 final _that = this;
 switch (_that) {
-case LoadTransactionBoard() when load != null:
-return load(_that);case RefreshTransactionBoard() when refresh != null:
-return refresh(_that);case _:
+case LoadTransactionboard() when loadTransactionboard != null:
+return loadTransactionboard(_that);case RefreshTransactionboard() when refreshTransactionboard != null:
+return refreshTransactionboard(_that);case ClearTransactionCache() when clearCache != null:
+return clearCache(_that);case _:
   return null;
 
 }
@@ -122,11 +125,12 @@ return refresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  load,TResult Function()?  refresh,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loadTransactionboard,TResult Function()?  refreshTransactionboard,TResult Function()?  clearCache,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case LoadTransactionBoard() when load != null:
-return load();case RefreshTransactionBoard() when refresh != null:
-return refresh();case _:
+case LoadTransactionboard() when loadTransactionboard != null:
+return loadTransactionboard();case RefreshTransactionboard() when refreshTransactionboard != null:
+return refreshTransactionboard();case ClearTransactionCache() when clearCache != null:
+return clearCache();case _:
   return orElse();
 
 }
@@ -144,11 +148,12 @@ return refresh();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  load,required TResult Function()  refresh,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loadTransactionboard,required TResult Function()  refreshTransactionboard,required TResult Function()  clearCache,}) {final _that = this;
 switch (_that) {
-case LoadTransactionBoard():
-return load();case RefreshTransactionBoard():
-return refresh();case _:
+case LoadTransactionboard():
+return loadTransactionboard();case RefreshTransactionboard():
+return refreshTransactionboard();case ClearTransactionCache():
+return clearCache();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -165,11 +170,12 @@ return refresh();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  load,TResult? Function()?  refresh,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loadTransactionboard,TResult? Function()?  refreshTransactionboard,TResult? Function()?  clearCache,}) {final _that = this;
 switch (_that) {
-case LoadTransactionBoard() when load != null:
-return load();case RefreshTransactionBoard() when refresh != null:
-return refresh();case _:
+case LoadTransactionboard() when loadTransactionboard != null:
+return loadTransactionboard();case RefreshTransactionboard() when refreshTransactionboard != null:
+return refreshTransactionboard();case ClearTransactionCache() when clearCache != null:
+return clearCache();case _:
   return null;
 
 }
@@ -180,8 +186,8 @@ return refresh();case _:
 /// @nodoc
 
 
-class LoadTransactionBoard implements TransactionBoardEvent {
-  const LoadTransactionBoard();
+class LoadTransactionboard implements TransactionboardEvent {
+  const LoadTransactionboard();
   
 
 
@@ -191,7 +197,7 @@ class LoadTransactionBoard implements TransactionBoardEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadTransactionBoard);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadTransactionboard);
 }
 
 
@@ -200,7 +206,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TransactionBoardEvent.load()';
+  return 'TransactionboardEvent.loadTransactionboard()';
 }
 
 
@@ -212,8 +218,8 @@ String toString() {
 /// @nodoc
 
 
-class RefreshTransactionBoard implements TransactionBoardEvent {
-  const RefreshTransactionBoard();
+class RefreshTransactionboard implements TransactionboardEvent {
+  const RefreshTransactionboard();
   
 
 
@@ -223,7 +229,7 @@ class RefreshTransactionBoard implements TransactionBoardEvent {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RefreshTransactionBoard);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RefreshTransactionboard);
 }
 
 
@@ -232,7 +238,39 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'TransactionBoardEvent.refresh()';
+  return 'TransactionboardEvent.refreshTransactionboard()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class ClearTransactionCache implements TransactionboardEvent {
+  const ClearTransactionCache();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ClearTransactionCache);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TransactionboardEvent.clearCache()';
 }
 
 

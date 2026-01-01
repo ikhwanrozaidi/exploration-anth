@@ -287,7 +287,7 @@ class ProfileView extends StatelessWidget {
                           ),
                           const SizedBox(height: 10),
 
-                          detail!.verify
+                          detail?.verify == 'unverified'
                               ? TextButton(
                                   onPressed: () {},
                                   style: TextButton.styleFrom(

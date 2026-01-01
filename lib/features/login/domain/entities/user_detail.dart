@@ -12,7 +12,7 @@ class UserDetail extends Equatable {
   final String? birthDate;
   final String? profilePicture;
   final int gatePoint;
-  final bool verify;
+  final String verify;
   final String? vaccount;
 
   const UserDetail({

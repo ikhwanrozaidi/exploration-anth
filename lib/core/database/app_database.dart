@@ -51,7 +51,7 @@ class UserDetails extends Table {
   TextColumn get birthDate => text().nullable()();
   TextColumn get profilePicture => text().nullable()();
   IntColumn get gatePoint => integer().withDefault(const Constant(0))();
-  BoolColumn get verify => boolean().withDefault(const Constant(false))();
+  TextColumn get verify => text()();
   TextColumn get vaccount => text().nullable()();
 
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
@@ -73,7 +73,77 @@ class UserSettingsDetails extends Table {
   Set<Column> get primaryKey => {userId};
 }
 
-@DriftDatabase(tables: [Users, UserDetails, UserSettingsDetails])
+// ==================== TRANSACTION BOARD TABLES ====================
+
+/// Table for storing transactions
+@DataClassName('TransactionRecord')
+class Transactions extends Table {
+  TextColumn get paymentId => text()();
+  TextColumn get paymentType => text()();
+  IntColumn get sellerId => integer()();
+  IntColumn get buyerId => integer()();
+  IntColumn get merchantId => integer().nullable()();
+  IntColumn get amount => integer()();
+  TextColumn get providerId => text()();
+  BoolColumn get isCompleted => boolean()();
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+  TextColumn get userRole => text()();
+
+  @override
+  Set<Column> get primaryKey => {paymentId};
+}
+
+/// Table for storing payment details
+@DataClassName('PaymentDetailsRecord')
+class PaymentDetailsTable extends Table {
+  TextColumn get paymentId => text()(); // FK to transactions
+  TextColumn get productName => text()();
+  TextColumn get productDesc => text()(); // JSON array: '["item1","item2"]'
+  TextColumn get productCat => text()();
+  IntColumn get amount => integer()();
+  BoolColumn get refundable => boolean()();
+  TextColumn get deliveryStatus => text()();
+
+  @override
+  Set<Column> get primaryKey => {paymentId};
+}
+
+/// Table for storing transaction user info (seller/buyer)
+@DataClassName('TransactionUsersRecord')
+class TransactionUsers extends Table {
+  TextColumn get paymentId => text()(); // FK to transactions
+  TextColumn get userType => text()(); // 'seller' or 'buyer'
+  IntColumn get userId => integer()();
+  TextColumn get email => text()();
+
+  @override
+  Set<Column> get primaryKey => {paymentId, userType};
+}
+
+/// Table for storing transaction board summary
+@DataClassName('TransactionBoardRecord')
+class TransactionBoardSummary extends Table {
+  IntColumn get id => integer().autoIncrement()();
+  IntColumn get completeOrder => integer()();
+  IntColumn get waitReceiveAmount => integer()();
+  IntColumn get completeReceive => integer()();
+  IntColumn get waitReleaseAmount => integer()();
+  IntColumn get completeRelease => integer()();
+  DateTimeColumn get updatedAt => dateTime()();
+}
+
+@DriftDatabase(
+  tables: [
+    Users,
+    UserDetails,
+    UserSettingsDetails,
+    Transactions,
+    PaymentDetailsTable,
+    TransactionUsers,
+    TransactionBoardSummary,
+  ],
+)
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 

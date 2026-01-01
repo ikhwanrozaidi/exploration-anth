@@ -1,11 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+import '../../../profile/presentation/bloc/profile_bloc.dart';
 import 'dashboard_event.dart';
 import 'dashboard_state.dart';
 
 @injectable
 class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
-  DashboardBloc() : super(const DashboardState.initial()) {
+  final ProfileBloc _profileBloc;
+
+  DashboardBloc(this._profileBloc) : super(const DashboardState.initial()) {
     on<LoadDashboard>(_onLoadDashboard);
     on<RefreshDashboard>(_onRefreshDashboard);
   }
@@ -18,7 +21,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
     emit(const DashboardState.loading());
 
     // Simulate loading delay
-    await Future.delayed(const Duration(milliseconds: 500));
+    // await Future.delayed(const Duration(milliseconds: 500));
 
     print('🟢 [DashboardBloc] Dashboard ready');
     emit(const DashboardState.ready());

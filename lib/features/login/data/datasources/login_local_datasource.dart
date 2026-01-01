@@ -94,7 +94,7 @@ class LoginLocalDataSourceImpl implements LoginLocalDataSource {
                 birthDate: Value(user.userDetail!.birthDate),
                 profilePicture: Value(user.userDetail!.profilePicture),
                 gatePoint: Value(user.userDetail!.gatePoint),
-                verify: Value(user.userDetail!.verify),
+                verify: user.userDetail!.verify,
                 vaccount: Value(user.userDetail!.vaccount),
               ),
             );

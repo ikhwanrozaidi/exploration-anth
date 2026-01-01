@@ -14,7 +14,7 @@ abstract class UserDetailResponseModel with _$UserDetailResponseModel {
     String? birthDate,
     String? profilePicture,
     required int gatePoint,
-    required bool verify,
+    required String verify,
     String? vaccount,
   }) = _UserDetailResponseModel;
 

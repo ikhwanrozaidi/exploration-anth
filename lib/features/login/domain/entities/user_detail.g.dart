@@ -14,7 +14,7 @@ UserDetail _$UserDetailFromJson(Map<String, dynamic> json) => UserDetail(
   birthDate: json['birthDate'] as String?,
   profilePicture: json['profilePicture'] as String?,
   gatePoint: (json['gatePoint'] as num).toInt(),
-  verify: json['verify'] as bool,
+  verify: json['verify'] as String,
   vaccount: json['vaccount'] as String?,
 );
 

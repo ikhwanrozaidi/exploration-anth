@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserDetailResponseModel {
 
- int get userId; String get firstName; String get lastName; String get fullName; String? get address; String? get birthDate; String? get profilePicture; int get gatePoint; bool get verify; String? get vaccount;
+ int get userId; String get firstName; String get lastName; String get fullName; String? get address; String? get birthDate; String? get profilePicture; int get gatePoint; String get verify; String? get vaccount;
 /// Create a copy of UserDetailResponseModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $UserDetailResponseModelCopyWith<$Res>  {
   factory $UserDetailResponseModelCopyWith(UserDetailResponseModel value, $Res Function(UserDetailResponseModel) _then) = _$UserDetailResponseModelCopyWithImpl;
 @useResult
 $Res call({
- int userId, String firstName, String lastName, String fullName, String? address, String? birthDate, String? profilePicture, int gatePoint, bool verify, String? vaccount
+ int userId, String firstName, String lastName, String fullName, String? address, String? birthDate, String? profilePicture, int gatePoint, String verify, String? vaccount
 });
 
 
@@ -76,7 +76,7 @@ as String?,birthDate: freezed == birthDate ? _self.birthDate : birthDate // igno
 as String?,profilePicture: freezed == profilePicture ? _self.profilePicture : profilePicture // ignore: cast_nullable_to_non_nullable
 as String?,gatePoint: null == gatePoint ? _self.gatePoint : gatePoint // ignore: cast_nullable_to_non_nullable
 as int,verify: null == verify ? _self.verify : verify // ignore: cast_nullable_to_non_nullable
-as bool,vaccount: freezed == vaccount ? _self.vaccount : vaccount // ignore: cast_nullable_to_non_nullable
+as String,vaccount: freezed == vaccount ? _self.vaccount : vaccount // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -162,7 +162,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int userId,  String firstName,  String lastName,  String fullName,  String? address,  String? birthDate,  String? profilePicture,  int gatePoint,  bool verify,  String? vaccount)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int userId,  String firstName,  String lastName,  String fullName,  String? address,  String? birthDate,  String? profilePicture,  int gatePoint,  String verify,  String? vaccount)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserDetailResponseModel() when $default != null:
 return $default(_that.userId,_that.firstName,_that.lastName,_that.fullName,_that.address,_that.birthDate,_that.profilePicture,_that.gatePoint,_that.verify,_that.vaccount);case _:
@@ -183,7 +183,7 @@ return $default(_that.userId,_that.firstName,_that.lastName,_that.fullName,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int userId,  String firstName,  String lastName,  String fullName,  String? address,  String? birthDate,  String? profilePicture,  int gatePoint,  bool verify,  String? vaccount)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int userId,  String firstName,  String lastName,  String fullName,  String? address,  String? birthDate,  String? profilePicture,  int gatePoint,  String verify,  String? vaccount)  $default,) {final _that = this;
 switch (_that) {
 case _UserDetailResponseModel():
 return $default(_that.userId,_that.firstName,_that.lastName,_that.fullName,_that.address,_that.birthDate,_that.profilePicture,_that.gatePoint,_that.verify,_that.vaccount);case _:
@@ -203,7 +203,7 @@ return $default(_that.userId,_that.firstName,_that.lastName,_that.fullName,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int userId,  String firstName,  String lastName,  String fullName,  String? address,  String? birthDate,  String? profilePicture,  int gatePoint,  bool verify,  String? vaccount)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int userId,  String firstName,  String lastName,  String fullName,  String? address,  String? birthDate,  String? profilePicture,  int gatePoint,  String verify,  String? vaccount)?  $default,) {final _that = this;
 switch (_that) {
 case _UserDetailResponseModel() when $default != null:
 return $default(_that.userId,_that.firstName,_that.lastName,_that.fullName,_that.address,_that.birthDate,_that.profilePicture,_that.gatePoint,_that.verify,_that.vaccount);case _:
@@ -229,7 +229,7 @@ class _UserDetailResponseModel implements UserDetailResponseModel {
 @override final  String? birthDate;
 @override final  String? profilePicture;
 @override final  int gatePoint;
-@override final  bool verify;
+@override final  String verify;
 @override final  String? vaccount;
 
 /// Create a copy of UserDetailResponseModel
@@ -265,7 +265,7 @@ abstract mixin class _$UserDetailResponseModelCopyWith<$Res> implements $UserDet
   factory _$UserDetailResponseModelCopyWith(_UserDetailResponseModel value, $Res Function(_UserDetailResponseModel) _then) = __$UserDetailResponseModelCopyWithImpl;
 @override @useResult
 $Res call({
- int userId, String firstName, String lastName, String fullName, String? address, String? birthDate, String? profilePicture, int gatePoint, bool verify, String? vaccount
+ int userId, String firstName, String lastName, String fullName, String? address, String? birthDate, String? profilePicture, int gatePoint, String verify, String? vaccount
 });
 
 
@@ -293,7 +293,7 @@ as String?,birthDate: freezed == birthDate ? _self.birthDate : birthDate // igno
 as String?,profilePicture: freezed == profilePicture ? _self.profilePicture : profilePicture // ignore: cast_nullable_to_non_nullable
 as String?,gatePoint: null == gatePoint ? _self.gatePoint : gatePoint // ignore: cast_nullable_to_non_nullable
 as int,verify: null == verify ? _self.verify : verify // ignore: cast_nullable_to_non_nullable
-as bool,vaccount: freezed == vaccount ? _self.vaccount : vaccount // ignore: cast_nullable_to_non_nullable
+as String,vaccount: freezed == vaccount ? _self.vaccount : vaccount // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
