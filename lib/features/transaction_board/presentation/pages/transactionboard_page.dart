@@ -7,7 +7,6 @@ import '../../../../shared/utils/string_formatter.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../escrowpay/presentation/pages/escrowpay_page.dart';
 import '../../../profile/presentation/bloc/profile_bloc.dart';
-import '../../../profile/presentation/bloc/profile_event.dart';
 import '../../../profile/presentation/bloc/profile_state.dart';
 import '../../domain/entities/transaction_board_data.dart';
 import '../bloc/transaction_bloc.dart';
@@ -19,18 +18,10 @@ class TransactionBoardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) =>
-              getIt<TransactionboardBloc>()
-                ..add(const TransactionboardEvent.loadTransactionboard()),
-        ),
-        BlocProvider(
-          create: (context) =>
-              getIt<ProfileBloc>()..add(const ProfileEvent.loadProfile()),
-        ),
-      ],
+    return BlocProvider(
+      create: (context) =>
+          getIt<TransactionboardBloc>()
+            ..add(const TransactionboardEvent.loadTransactionboard()),
       child: const TransactionBoardView(),
     );
   }
