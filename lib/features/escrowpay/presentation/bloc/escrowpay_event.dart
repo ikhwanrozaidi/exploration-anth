@@ -67,3 +67,12 @@ class EscrowpayReset extends EscrowpayEvent {
 class EscrowpayClearSellerValidation extends EscrowpayEvent {
   const EscrowpayClearSellerValidation();
 }
+
+class EscrowpayDescriptionsChanged extends EscrowpayEvent {
+  final List<String> descriptions;
+
+  const EscrowpayDescriptionsChanged(this.descriptions);
+
+  @override
+  List<Object?> get props => [descriptions];
+}

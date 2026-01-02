@@ -3,31 +3,36 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../shared/utils/currency_input_formatter.dart';
 import '../../../../shared/utils/theme.dart';
 import '../bloc/escrowpay_bloc.dart';
 import '../bloc/escrowpay_event.dart';
 import '../bloc/escrowpay_state.dart';
+import 'widget/description_input_widget.dart';
 import 'widget/escrowpay_form.dart';
 import 'widget/price_calculator_widget.dart';
 
 import 'widget/escrowpay_form.dart';
 
 class EscrowpayPage extends StatelessWidget {
+  final bool isBuyer;
   final String? title;
 
-  const EscrowpayPage({super.key, this.title});
+  const EscrowpayPage({super.key, this.title, this.isBuyer = true});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => getIt<EscrowpayBloc>(),
-      child: const EscrowpayView(),
+      child: EscrowpayView(isBuyer: isBuyer),
     );
   }
 }
 
 class EscrowpayView extends StatefulWidget {
-  const EscrowpayView({super.key});
+  final bool isBuyer;
+
+  const EscrowpayView({super.key, this.isBuyer = true});
 
   @override
   State<EscrowpayView> createState() => _EscrowpayViewState();
@@ -43,7 +48,7 @@ class _EscrowpayViewState extends State<EscrowpayView> {
 
   bool _isUpdatingSellerReceive = false;
   bool _isUpdatingYouPay = false;
-  static const double _incrementFactor = 0.03;
+  static const double _incrementFactor = 0.02;
 
   @override
   void initState() {
@@ -186,27 +191,10 @@ class _EscrowpayViewState extends State<EscrowpayView> {
                   style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 10),
-                TextFormField(
-                  controller: _productDescriptionController,
-                  style: GoogleFonts.poppins(fontWeight: FontWeight.w500),
-                  decoration: InputDecoration(
-                    filled: true,
-                    fillColor: tPrimaryColorShade4,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide.none,
-                    ),
-                  ),
-                  maxLines: 3,
-                  onChanged: (value) {
+                MultiDescriptionInput(
+                  onDescriptionsChanged: (descriptions) {
                     context.read<EscrowpayBloc>().add(
-                      EscrowpayFormFieldChanged(
-                        productName: _productNameController.text,
-                        productDesc: value,
-                        price: _youPayController.text,
-                        sellerUsername: '',
-                        sellerPhone: '',
-                      ),
+                      EscrowpayDescriptionsChanged(descriptions),
                     );
                   },
                 ),
@@ -220,10 +208,52 @@ class _EscrowpayViewState extends State<EscrowpayView> {
                 ),
                 const SizedBox(height: 10),
 
-                PriceCalculatorWidget(
-                  sellerReceiveController: _sellerReceiveController,
-                  youPayController: _youPayController,
-                ),
+                widget.isBuyer
+                    ? Container(
+                        width: w / 2,
+                        padding: const EdgeInsets.all(13),
+                        decoration: BoxDecoration(
+                          color: tPrimaryColorShade4,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Row(
+                          children: [
+                            Text(
+                              'RM',
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w600,
+                                color: Colors.grey.shade800,
+                              ),
+                            ),
+                            SizedBox(width: 10),
+                            Expanded(
+                              child: TextFormField(
+                                controller: _youPayController,
+                                keyboardType:
+                                    const TextInputType.numberWithOptions(
+                                      decimal: true,
+                                    ),
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  CurrencyInputFormatter(),
+                                ],
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  isDense: true,
+                                  hintText: '0.00',
+                                ),
+                                style: GoogleFonts.poppins(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : PriceCalculatorWidget(
+                        sellerReceiveController: _sellerReceiveController,
+                        youPayController: _youPayController,
+                      ),
 
                 const SizedBox(height: 60),
 

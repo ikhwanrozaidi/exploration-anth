@@ -23,6 +23,7 @@ class EscrowpayBloc extends Bloc<EscrowpayEvent, EscrowpayState> {
   String _sellerUsername = '';
   String _sellerPhone = '';
   SellerInfo? _validatedSeller;
+  List<String> _productDescriptions = [];
 
   EscrowpayBloc(
     this._searchUsernameUseCase,
@@ -35,6 +36,8 @@ class EscrowpayBloc extends Bloc<EscrowpayEvent, EscrowpayState> {
     on<EscrowpayCreatePayment>(_onCreatePayment);
     on<EscrowpayReset>(_onReset);
     on<EscrowpayClearSellerValidation>(_onClearSellerValidation);
+
+    on<EscrowpayDescriptionsChanged>(_onDescriptionsChanged);
   }
 
   Future<void> _onFormFieldChanged(
@@ -195,6 +198,7 @@ class EscrowpayBloc extends Bloc<EscrowpayEvent, EscrowpayState> {
     _sellerUsername = '';
     _sellerPhone = '';
     _validatedSeller = null;
+    _productDescriptions = [];
 
     emit(const EscrowpayInitial());
   }
@@ -213,6 +217,31 @@ class EscrowpayBloc extends Bloc<EscrowpayEvent, EscrowpayState> {
         sellerUsername: _sellerUsername,
         sellerPhone: _sellerPhone,
         isFormComplete: false,
+      ),
+    );
+  }
+
+  Future<void> _onDescriptionsChanged(
+    EscrowpayDescriptionsChanged event,
+    Emitter<EscrowpayState> emit,
+  ) async {
+    _productDescriptions = event.descriptions;
+
+    final isFormComplete =
+        _productName.isNotEmpty &&
+        _productDescriptions.isNotEmpty &&
+        _price > 0 &&
+        (_sellerUsername.isNotEmpty || _sellerPhone.isNotEmpty) &&
+        _validatedSeller != null;
+
+    emit(
+      EscrowpayFormValid(
+        productName: _productName,
+        productDesc: _productDescriptions.join(' | '),
+        price: _price,
+        sellerUsername: _sellerUsername,
+        sellerPhone: _sellerPhone,
+        isFormComplete: isFormComplete,
       ),
     );
   }
@@ -239,4 +268,5 @@ class EscrowpayBloc extends Bloc<EscrowpayEvent, EscrowpayState> {
   String get sellerUsername => _sellerUsername;
   String get sellerPhone => _sellerPhone;
   SellerInfo? get validatedSeller => _validatedSeller;
+  List<String> get productDescriptions => _productDescriptions;
 }
