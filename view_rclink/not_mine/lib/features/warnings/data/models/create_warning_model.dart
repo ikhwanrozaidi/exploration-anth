@@ -10,7 +10,7 @@ abstract class CreateWarningModel with _$CreateWarningModel {
     required String workScopeUID,
     double? fromSection,
     double? toSection,
-    String? contractRelationUID,
+    @JsonKey(includeIfNull: false) String? contractRelationUID,
     required List<String> warningReasonUIDs,
     String? description,
     double? longitude,

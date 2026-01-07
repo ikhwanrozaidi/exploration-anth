@@ -1,10 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/domain/entities/file_entity.dart';
+import '../../../../core/utils/cache_managers.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
+import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../shared/widgets/divider_config.dart';
+import '../../../../shared/widgets/image_viewer/image_viewer_page.dart';
 import '../../../../shared/widgets/theme_listtile_widget.dart';
 import '../../../daily_report/presentation/widgets/report_detail/daily_report_detail_quantity_card.dart';
 import '../../domain/entities/warning.dart';
@@ -13,6 +20,7 @@ import '../bloc/warning_details/warning_details_event.dart';
 import '../bloc/warning_details/warning_details_state.dart';
 import '../widgets/expandable_warning_card.dart';
 import '../widgets/show_status_selection.dart';
+import '../widgets/warning_image_carousel.dart';
 
 class WarningDetailsPage extends StatelessWidget {
   final String warningUID;
@@ -204,41 +212,15 @@ class _WarningDetailsPageContent extends StatelessWidget {
                           children: [
                             ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: Container(
+                              child: SizedBox(
                                 width: double.infinity,
                                 height: ResponsiveHelper.getHeight(
                                   context,
                                   0.28,
                                 ),
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.7),
-                                    ],
-                                  ),
-                                ),
-                                child: Image.asset(
-                                  'imagelink',
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.grey.shade300,
-                                      ),
-                                      child: Icon(
-                                        Icons.image_not_supported,
-                                        size: ResponsiveHelper.iconSize(
-                                          context,
-                                          base: 20,
-                                        ),
-                                        color: Colors.grey.shade600,
-                                      ),
-                                    );
-                                  },
+                                child: _buildImageCarousel(
+                                  context,
+                                  warningReport,
                                 ),
                               ),
                             ),
@@ -247,8 +229,42 @@ class _WarningDetailsPageContent extends StatelessWidget {
                               bottom: 12,
                               right: 12,
                               child: ElevatedButton(
-                                onPressed: () {},
-                                style: OutlinedButton.styleFrom(
+                                onPressed: () {
+                                  // Filter for image files only
+                                  final imageFiles =
+                                      warningReport.files
+                                          ?.where(
+                                            (f) =>
+                                                f.mimeType.startsWith('image/'),
+                                          )
+                                          .toList() ??
+                                      [];
+
+                                  if (imageFiles.isEmpty) {
+                                    CustomSnackBar.show(
+                                      context,
+                                      'No images available',
+                                      type: SnackBarType.info,
+                                    );
+                                    return;
+                                  }
+
+                                  // Open image viewer
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => ImageViewerPage.fromPaths(
+                                        paths: imageFiles
+                                            .map((f) => f.s3Url)
+                                            .toList(),
+                                        initialIndex: 0,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: primaryColor,
                                   side: BorderSide(
                                     color: primaryColor,
                                     width: ResponsiveHelper.adaptive(
@@ -273,6 +289,7 @@ class _WarningDetailsPageContent extends StatelessWidget {
                                 child: Text(
                                   'View images',
                                   style: TextStyle(
+                                    color: primaryColor,
                                     fontWeight: FontWeight.w600,
                                     fontSize: ResponsiveHelper.fontSize(
                                       context,
@@ -474,98 +491,131 @@ class _WarningDetailsPageContent extends StatelessWidget {
                                     isChevron: false,
                                   ),
 
-                                  // if (widget.report.latitude != null &&
-                                  //     widget.report.longitude != null)
-                                  //   Column(
-                                  //     children: [
-                                  //       dividerConfig(),
+                                  if (warningReport.latitude != null &&
+                                      warningReport.longitude != null)
+                                    Column(
+                                      children: [
+                                        dividerConfig(),
 
-                                  //       Stack(
-                                  //         children: [
-                                  //           Container(
-                                  //             height: 200,
-                                  //             decoration: BoxDecoration(
-                                  //               borderRadius: BorderRadius.circular(10),
-                                  //               border: Border.all(
-                                  //                 color: Colors.grey.shade300,
-                                  //               ),
-                                  //             ),
-                                  //             clipBehavior: Clip.antiAlias,
-                                  //             child: GoogleMap(
-                                  //               initialCameraPosition: CameraPosition(
-                                  //                 target: LatLng(
-                                  //                   double.parse(widget.report.latitude!),
-                                  //                   double.parse(
-                                  //                     widget.report.longitude!,
-                                  //                   ),
-                                  //                 ),
-                                  //                 zoom: 14,
-                                  //               ),
-                                  //               markers: {
-                                  //                 Marker(
-                                  //                   markerId: MarkerId('report_location'),
-                                  //                   position: LatLng(
-                                  //                     double.parse(
-                                  //                       widget.report.latitude!,
-                                  //                     ),
-                                  //                     double.parse(
-                                  //                       widget.report.longitude!,
-                                  //                     ),
-                                  //                   ),
-                                  //                   infoWindow: InfoWindow(
-                                  //                     title: widget.report.name,
-                                  //                   ),
-                                  //                 ),
-                                  //               },
-                                  //               zoomControlsEnabled: false,
-                                  //               myLocationButtonEnabled: false,
-                                  //             ),
-                                  //           ),
+                                        Stack(
+                                          children: [
+                                            Container(
+                                              height: 200,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                border: Border.all(
+                                                  color: Colors.grey.shade300,
+                                                ),
+                                              ),
+                                              clipBehavior: Clip.antiAlias,
+                                              child: GoogleMap(
+                                                initialCameraPosition:
+                                                    CameraPosition(
+                                                      target: LatLng(
+                                                        double.parse(
+                                                          warningReport
+                                                              .latitude!,
+                                                        ),
+                                                        double.parse(
+                                                          warningReport
+                                                              .longitude!,
+                                                        ),
+                                                      ),
+                                                      zoom: 14,
+                                                    ),
+                                                markers: {
+                                                  Marker(
+                                                    markerId: MarkerId(
+                                                      'warning_location',
+                                                    ),
+                                                    position: LatLng(
+                                                      double.parse(
+                                                        warningReport.latitude!,
+                                                      ),
+                                                      double.parse(
+                                                        warningReport
+                                                            .longitude!,
+                                                      ),
+                                                    ),
+                                                    infoWindow: InfoWindow(
+                                                      title:
+                                                          warningReport
+                                                              .road
+                                                              ?.name ??
+                                                          'Warning Location',
+                                                    ),
+                                                  ),
+                                                },
+                                                zoomControlsEnabled: false,
+                                                myLocationButtonEnabled: false,
+                                              ),
+                                            ),
 
-                                  //           Positioned.fill(
-                                  //             bottom: 10,
-                                  //             child: Align(
-                                  //               alignment: Alignment.bottomCenter,
-                                  //               child: ElevatedButton(
-                                  //                 onPressed: () {
-                                  //                   final lat = widget.report.latitude!;
-                                  //                   final lng = widget.report.longitude!;
-                                  //                   final url =
-                                  //                       'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
-                                  //                 },
-                                  //                 style: ElevatedButton.styleFrom(
-                                  //                   backgroundColor: Colors.white,
-                                  //                   side: BorderSide(
-                                  //                     color: primaryColor,
-                                  //                     width: ResponsiveHelper.adaptive(
-                                  //                       context,
-                                  //                       mobile: 1.0,
-                                  //                       tablet: 1.5,
-                                  //                       desktop: 2.0,
-                                  //                     ),
-                                  //                   ),
-                                  //                   padding: ResponsiveHelper.padding(
-                                  //                     context,
-                                  //                     vertical: 10,
-                                  //                     horizontal: 20,
-                                  //                   ),
+                                            Positioned.fill(
+                                              bottom: 10,
+                                              child: Align(
+                                                alignment:
+                                                    Alignment.bottomCenter,
+                                                child: ElevatedButton(
+                                                  onPressed: () async {
+                                                    final lat =
+                                                        warningReport.latitude!;
+                                                    final lng = warningReport
+                                                        .longitude!;
+                                                    final url =
+                                                        'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
 
-                                  //                   shape: RoundedRectangleBorder(
-                                  //                     borderRadius:
-                                  //                         ResponsiveHelper.borderRadius(
-                                  //                           context,
-                                  //                           all: 14,
-                                  //                         ),
-                                  //                   ),
-                                  //                 ),
-                                  //                 child: Text('View location'),
-                                  //               ),
-                                  //             ),
-                                  //           ),
-                                  //         ],
-                                  //       ),
-                                  //     ],
-                                  //   ),
+                                                    if (await canLaunchUrl(
+                                                      Uri.parse(url),
+                                                    )) {
+                                                      await launchUrl(
+                                                        Uri.parse(url),
+                                                        mode: LaunchMode
+                                                            .externalApplication,
+                                                      );
+                                                    }
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    side: BorderSide(
+                                                      color: primaryColor,
+                                                      width:
+                                                          ResponsiveHelper.adaptive(
+                                                            context,
+                                                            mobile: 1.0,
+                                                            tablet: 1.5,
+                                                            desktop: 2.0,
+                                                          ),
+                                                    ),
+                                                    padding:
+                                                        ResponsiveHelper.padding(
+                                                          context,
+                                                          vertical: 10,
+                                                          horizontal: 20,
+                                                        ),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          ResponsiveHelper.borderRadius(
+                                                            context,
+                                                            all: 14,
+                                                          ),
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    'View location',
+                                                    style: TextStyle(
+                                                      color: primaryColor,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                 ],
                               ),
                             ),
@@ -660,6 +710,110 @@ class _WarningDetailsPageContent extends StatelessWidget {
             );
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildImageCarousel(BuildContext context, Warning warning) {
+    final imageFiles =
+        warning.files?.where((f) => f.mimeType.startsWith('image/')).toList() ??
+        [];
+
+    if (imageFiles.isEmpty) {
+      // No images
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.grey.shade300,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.image_not_supported,
+              size: ResponsiveHelper.iconSize(context, base: 40),
+              color: Colors.grey.shade600,
+            ),
+            SizedBox(height: 8),
+            Text(
+              'No images available',
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: ResponsiveHelper.fontSize(context, base: 12),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // Single image
+    if (imageFiles.length == 1) {
+      return _buildImageWithGradient(context, imageFiles[0], 0, imageFiles);
+    }
+
+    // Multiple images
+    return WarningImageCarousel(imageFiles: imageFiles);
+  }
+
+  Widget _buildImageWithGradient(
+    BuildContext context,
+    FileEntity file,
+    int index,
+    List<FileEntity> allFiles,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ImageViewerPage.fromPaths(
+              paths: allFiles.map((f) => f.s3Url).toList(),
+              initialIndex: index,
+            ),
+          ),
+        );
+      },
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          CachedNetworkImage(
+            imageUrl: file.s3Url,
+            cacheManager: dailyReportImageCacheManager,
+            fit: BoxFit.cover,
+            placeholder: (context, url) {
+              return Container(
+                color: Colors.grey.shade300,
+                child: Center(
+                  child: CircularProgressIndicator(color: primaryColor),
+                ),
+              );
+            },
+            errorWidget: (context, url, error) {
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey.shade300,
+                ),
+                child: Icon(
+                  Icons.image_not_supported,
+                  size: ResponsiveHelper.iconSize(context, base: 20),
+                  color: Colors.grey.shade600,
+                ),
+              );
+            },
+          ),
+          // Dark gradient overlay
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

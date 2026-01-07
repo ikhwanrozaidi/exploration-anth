@@ -46,6 +46,8 @@ abstract class SiteWarningDraftEvent with _$SiteWarningDraftEvent {
   const factory SiteWarningDraftEvent.deleteDraft({required String draftUID}) =
       DeleteDraft;
 
+  const factory SiteWarningDraftEvent.resetForm() = ResetForm;
+
   const factory SiteWarningDraftEvent.submitWarning({
     required String companyUID,
   }) = SubmitWarning;

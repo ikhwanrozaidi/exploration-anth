@@ -221,6 +221,59 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
     }
   }
 
+  Future<void> _handleRemoveData() async {
+    // Show confirmation dialog
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remove Draft'),
+        content: const Text(
+          'Are you sure you want to remove this draft? This action cannot be undone.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Remove'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      final draftUID = widget.draftUID;
+
+      if (draftUID != null) {
+        // Delete the draft from database
+        _siteWarningDraftBloc.add(
+          SiteWarningDraftEvent.deleteDraft(draftUID: draftUID),
+        );
+
+        print('✅ Draft deleted from database: $draftUID');
+      } else {
+        // If no draft UID, just reset form
+        _siteWarningDraftBloc.add(const SiteWarningDraftEvent.resetForm());
+
+        print('✅ All draft data cleared');
+      }
+
+      // Show success message (with mounted check)
+      if (mounted) {
+        CustomSnackBar.show(
+          context,
+          'Draft has been removed',
+          type: SnackBarType.success,
+        );
+
+        Navigator.of(context).pop();
+      }
+    }
+  }
+
   void _showContractorSelection() {
     final contractorState = context.read<ContractorRelationBloc>().state;
 
@@ -373,7 +426,9 @@ class _WarningDraftPageState extends State<WarningDraftPage> {
                           ),
 
                           TextButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              _handleRemoveData();
+                            },
                             style: TextButton.styleFrom(
                               backgroundColor: Colors.white,
                               foregroundColor: Colors.red,

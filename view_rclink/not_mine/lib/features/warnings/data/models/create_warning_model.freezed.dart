@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CreateWarningModel {
 
- String get roadUID; String get workScopeUID; double? get fromSection; double? get toSection; String? get contractRelationUID; List<String> get warningReasonUIDs; String? get description; double? get longitude; double? get latitude; bool? get requiresAction;
+ String get roadUID; String get workScopeUID; double? get fromSection; double? get toSection;@JsonKey(includeIfNull: false) String? get contractRelationUID; List<String> get warningReasonUIDs; String? get description; double? get longitude; double? get latitude; bool? get requiresAction;
 /// Create a copy of CreateWarningModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $CreateWarningModelCopyWith<$Res>  {
   factory $CreateWarningModelCopyWith(CreateWarningModel value, $Res Function(CreateWarningModel) _then) = _$CreateWarningModelCopyWithImpl;
 @useResult
 $Res call({
- String roadUID, String workScopeUID, double? fromSection, double? toSection, String? contractRelationUID, List<String> warningReasonUIDs, String? description, double? longitude, double? latitude, bool? requiresAction
+ String roadUID, String workScopeUID, double? fromSection, double? toSection,@JsonKey(includeIfNull: false) String? contractRelationUID, List<String> warningReasonUIDs, String? description, double? longitude, double? latitude, bool? requiresAction
 });
 
 
@@ -162,7 +162,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String roadUID,  String workScopeUID,  double? fromSection,  double? toSection,  String? contractRelationUID,  List<String> warningReasonUIDs,  String? description,  double? longitude,  double? latitude,  bool? requiresAction)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String roadUID,  String workScopeUID,  double? fromSection,  double? toSection, @JsonKey(includeIfNull: false)  String? contractRelationUID,  List<String> warningReasonUIDs,  String? description,  double? longitude,  double? latitude,  bool? requiresAction)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CreateWarningModel() when $default != null:
 return $default(_that.roadUID,_that.workScopeUID,_that.fromSection,_that.toSection,_that.contractRelationUID,_that.warningReasonUIDs,_that.description,_that.longitude,_that.latitude,_that.requiresAction);case _:
@@ -183,7 +183,7 @@ return $default(_that.roadUID,_that.workScopeUID,_that.fromSection,_that.toSecti
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String roadUID,  String workScopeUID,  double? fromSection,  double? toSection,  String? contractRelationUID,  List<String> warningReasonUIDs,  String? description,  double? longitude,  double? latitude,  bool? requiresAction)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String roadUID,  String workScopeUID,  double? fromSection,  double? toSection, @JsonKey(includeIfNull: false)  String? contractRelationUID,  List<String> warningReasonUIDs,  String? description,  double? longitude,  double? latitude,  bool? requiresAction)  $default,) {final _that = this;
 switch (_that) {
 case _CreateWarningModel():
 return $default(_that.roadUID,_that.workScopeUID,_that.fromSection,_that.toSection,_that.contractRelationUID,_that.warningReasonUIDs,_that.description,_that.longitude,_that.latitude,_that.requiresAction);case _:
@@ -203,7 +203,7 @@ return $default(_that.roadUID,_that.workScopeUID,_that.fromSection,_that.toSecti
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String roadUID,  String workScopeUID,  double? fromSection,  double? toSection,  String? contractRelationUID,  List<String> warningReasonUIDs,  String? description,  double? longitude,  double? latitude,  bool? requiresAction)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String roadUID,  String workScopeUID,  double? fromSection,  double? toSection, @JsonKey(includeIfNull: false)  String? contractRelationUID,  List<String> warningReasonUIDs,  String? description,  double? longitude,  double? latitude,  bool? requiresAction)?  $default,) {final _that = this;
 switch (_that) {
 case _CreateWarningModel() when $default != null:
 return $default(_that.roadUID,_that.workScopeUID,_that.fromSection,_that.toSection,_that.contractRelationUID,_that.warningReasonUIDs,_that.description,_that.longitude,_that.latitude,_that.requiresAction);case _:
@@ -218,14 +218,14 @@ return $default(_that.roadUID,_that.workScopeUID,_that.fromSection,_that.toSecti
 @JsonSerializable()
 
 class _CreateWarningModel implements CreateWarningModel {
-  const _CreateWarningModel({required this.roadUID, required this.workScopeUID, this.fromSection, this.toSection, this.contractRelationUID, required final  List<String> warningReasonUIDs, this.description, this.longitude, this.latitude, this.requiresAction}): _warningReasonUIDs = warningReasonUIDs;
+  const _CreateWarningModel({required this.roadUID, required this.workScopeUID, this.fromSection, this.toSection, @JsonKey(includeIfNull: false) this.contractRelationUID, required final  List<String> warningReasonUIDs, this.description, this.longitude, this.latitude, this.requiresAction}): _warningReasonUIDs = warningReasonUIDs;
   factory _CreateWarningModel.fromJson(Map<String, dynamic> json) => _$CreateWarningModelFromJson(json);
 
 @override final  String roadUID;
 @override final  String workScopeUID;
 @override final  double? fromSection;
 @override final  double? toSection;
-@override final  String? contractRelationUID;
+@override@JsonKey(includeIfNull: false) final  String? contractRelationUID;
  final  List<String> _warningReasonUIDs;
 @override List<String> get warningReasonUIDs {
   if (_warningReasonUIDs is EqualUnmodifiableListView) return _warningReasonUIDs;
@@ -271,7 +271,7 @@ abstract mixin class _$CreateWarningModelCopyWith<$Res> implements $CreateWarnin
   factory _$CreateWarningModelCopyWith(_CreateWarningModel value, $Res Function(_CreateWarningModel) _then) = __$CreateWarningModelCopyWithImpl;
 @override @useResult
 $Res call({
- String roadUID, String workScopeUID, double? fromSection, double? toSection, String? contractRelationUID, List<String> warningReasonUIDs, String? description, double? longitude, double? latitude, bool? requiresAction
+ String roadUID, String workScopeUID, double? fromSection, double? toSection,@JsonKey(includeIfNull: false) String? contractRelationUID, List<String> warningReasonUIDs, String? description, double? longitude, double? latitude, bool? requiresAction
 });
 
 

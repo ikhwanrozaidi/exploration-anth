@@ -28,7 +28,7 @@ Map<String, dynamic> _$CreateWarningModelToJson(_CreateWarningModel instance) =>
       'workScopeUID': instance.workScopeUID,
       'fromSection': instance.fromSection,
       'toSection': instance.toSection,
-      'contractRelationUID': instance.contractRelationUID,
+      'contractRelationUID': ?instance.contractRelationUID,
       'warningReasonUIDs': instance.warningReasonUIDs,
       'description': instance.description,
       'longitude': instance.longitude,

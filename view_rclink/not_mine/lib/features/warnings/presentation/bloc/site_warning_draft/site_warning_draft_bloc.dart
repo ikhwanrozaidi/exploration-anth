@@ -47,6 +47,8 @@ class SiteWarningDraftBloc
     on<LoadExistingDraft>(_onLoadExistingDraft);
     on<DeleteDraft>(_onDeleteDraft);
 
+    on<ResetForm>(_onResetForm);
+
     on<SubmitWarning>(_onSubmitWarning);
     on<LoadDraftList>(_onLoadDraftList);
   }
@@ -429,6 +431,23 @@ class SiteWarningDraftBloc
           failure: ServerFailure('Failed to delete draft: $e'),
         ),
       );
+    }
+  }
+
+  /// Reset form to initial state
+  Future<void> _onResetForm(
+    ResetForm event,
+    Emitter<SiteWarningDraftState> emit,
+  ) async {
+    try {
+      print('🔄 Resetting form to initial state');
+
+      // Emit initial state to clear all data
+      emit(const SiteWarningDraftState.initial());
+
+      print('✅ Form reset to initial state');
+    } catch (e) {
+      print('❌ Error resetting form: $e');
     }
   }
 
