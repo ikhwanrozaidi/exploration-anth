@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rclink_app/features/program/domain/entities/work_scope_nested_entity.dart';
 
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../contractor_relation/presentation/bloc/contractor_relation_bloc.dart';
+import '../../../contractor_relation/presentation/widgets/show_contractor_relation_selection.dart';
 import '../../../daily_report/presentation/widgets/report_creation/selection_field_card.dart';
 import '../../../road/domain/entities/road_entity.dart';
 import '../../../road/presentation/helper/road_level.dart';
@@ -12,6 +15,10 @@ import '../../../road/presentation/pages/road_field_tile.dart';
 import '../../../work_scope/domain/entities/work_scope.dart';
 import '../../../work_scope/presentation/bloc/work_scope_bloc.dart';
 import '../../../work_scope/presentation/bloc/work_scope_state.dart';
+import '../bloc/program_bloc.dart';
+import '../bloc/program_event.dart';
+import '../bloc/program_state.dart';
+import '../widgets/contractor_road_field_tile.dart';
 
 class ProgramCreationPage extends StatefulWidget {
   const ProgramCreationPage({Key? key}) : super(key: key);
@@ -21,9 +28,14 @@ class ProgramCreationPage extends StatefulWidget {
 }
 
 class _ProgramCreationPageState extends State<ProgramCreationPage> {
+  int? selectedWorkScopeID;
   String? selectedWorkScopeUID;
   String? selectedWorkScopeCode;
   String? selectedWorkScopeName;
+
+  String? selectedContractorUID;
+  String? selectedContractorName;
+  List<Road>? contractorRoads;
 
   String selectedWeatherDisplay = '';
   final TextEditingController _sectionController = TextEditingController();
@@ -189,17 +201,16 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
 
           SizedBox(height: ResponsiveHelper.spacing(context, 16)),
 
-          // Work Scope Grid
           Expanded(
-            child: BlocConsumer<WorkScopeBloc, WorkScopeState>(
+            child: BlocConsumer<ProgramBloc, ProgramState>(
               listener: (context, state) {
                 state.maybeWhen(
-                  error: (failure) {
+                  error: (message) {
                     CustomSnackBar.show(
                       context,
-                      failure.message.isNotEmpty
-                          ? failure.message
-                          : 'Failed to load work scopes',
+                      message.isNotEmpty
+                          ? message
+                          : 'Failed to load program settings',
                     );
                   },
                   orElse: () {},
@@ -210,11 +221,11 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
                   loading: () => Center(
                     child: CircularProgressIndicator(color: primaryColor),
                   ),
-                  loaded: (workScopes) {
-                    if (workScopes.isEmpty) {
+                  loaded: (programSettings, contractorRoads) {
+                    if (programSettings.isEmpty) {
                       return Center(
                         child: Text(
-                          'No work scopes available',
+                          'No program settings available',
                           style: TextStyle(
                             fontSize: ResponsiveHelper.fontSize(
                               context,
@@ -226,11 +237,35 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
                       );
                     }
 
+                    final workScopes = programSettings
+                        .where((setting) => setting.workScope != null)
+                        .map(
+                          (setting) => WorkScopeNested(
+                            id: setting.workScope!.id,
+                            uid: setting.workScope!.uid ?? '',
+                            name: setting.workScope!.name ?? '',
+                            code: setting.workScope!.code ?? '',
+                            description: setting.workScope!.description ?? '',
+                            allowMultipleQuantities:
+                                setting.workScope!.allowMultipleQuantities ??
+                                false,
+                            companyID: setting.workScope!.companyID ?? 0,
+                            createdAt:
+                                setting.workScope!.createdAt ??
+                                DateTime.now().toIso8601String(),
+                            updatedAt:
+                                setting.workScope!.updatedAt ??
+                                DateTime.now().toIso8601String(),
+                            deletedAt: setting.workScope!.deletedAt,
+                          ),
+                        )
+                        .toList();
+
                     return _buildWorkScopeGrid(workScopes);
                   },
                   orElse: () => Center(
                     child: Text(
-                      'Loading work scopes...',
+                      'Loading program settings...',
                       style: TextStyle(
                         fontSize: ResponsiveHelper.fontSize(context, base: 14),
                         color: Colors.grey[600],
@@ -275,6 +310,9 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
 
   // Page 2
   Widget _buildAdditionalDetailsPage() {
+    // Check if workScopeID == 2 (R02 - Road Shoulder)
+    final isR02 = selectedWorkScopeID == 2;
+
     return Padding(
       padding: EdgeInsets.all(25),
       child: Column(
@@ -291,6 +329,7 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
 
           SizedBox(height: ResponsiveHelper.spacing(context, 16)),
 
+          // Selected Work Scope Display
           Container(
             padding: EdgeInsets.all(ResponsiveHelper.spacing(context, 16)),
             decoration: BoxDecoration(
@@ -346,177 +385,132 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
 
           SizedBox(height: ResponsiveHelper.spacing(context, 15)),
 
-          RoadFieldTile(
-            startFrom: RoadLevel.roads,
-            endAt: RoadLevel.roads,
-            selectMultipleRoads: true,
-            label: 'Route',
-            // preSelectedDistrictUid: 'df3ae453-1f8f-4739-9d17-54db2355e17f',
-            placeholder: 'Require Update',
-            onRoadSelected: (RoadSelectionResult result) {
-              // For multiple roads selection
-              if (result.selectedRoads != null) {
-                print('Selected ${result.selectedRoads!.length} roads');
+          // Conditional UI based on workScopeID
+          if (!isR02) ...[
+            // Show Contractor Selection (for non-R02)
+            SelectionFieldCard(
+              icon: Icons.person_2_rounded,
+              label: 'Contractor',
+              value: selectedContractorName ?? '',
+              placeholder: 'Select Contractor',
+              onTap: () {
+                final contractorState = context
+                    .read<ContractorRelationBloc>()
+                    .state;
 
-                // Loop through all selected roads
-                result.selectedRoads!.forEach((road) {
-                  print('Road UID: ${road.uid}');
-                  print('Road Name: ${road.name}');
-                  print('Road No: ${road.roadNo}');
-                });
+                showContractorRelationSelection(
+                  context: context,
+                  state: contractorState,
+                  onContractorSelected: (selectedData) {
+                    setState(() {
+                      selectedContractorUID =
+                          selectedData['companyReportToUID'];
+                      selectedContractorName = selectedData['name'];
+                    });
 
-                // Get list of road UIDs
-                final roadUids = result.selectedRoads!
-                    .map((road) => road.uid)
-                    .toList();
-                print('All Road UIDs: $roadUids');
+                    // Fetch contractor roads
+                    if (selectedContractorUID != null) {
+                      context.read<ProgramBloc>().add(
+                        ProgramEvent.loadContractorRoads(
+                          contractorRelationUID: selectedContractorUID!,
+                        ),
+                      );
+                    }
+                  },
+                );
+              },
+            ),
 
-                // setState(() {
-                //   _selectedRoadUids = roadUids; // Store multiple UIDs
-                // });
-              }
+            SizedBox(height: ResponsiveHelper.spacing(context, 15)),
+          ],
 
-              // Province and District info still available
-              print('Province: ${result.selectedProvince?.name}');
-              print('District: ${result.selectedDistrict?.name}');
-            },
-          ),
+          // Route Selection
+          if (isR02)
+            // R02: Use original RoadFieldTile with existing roads
+            RoadFieldTile(
+              startFrom: RoadLevel.roads,
+              endAt: RoadLevel.roads,
+              selectMultipleRoads: true,
+              label: 'Route',
+              placeholder: 'Select Routes',
+              onRoadSelected: (RoadSelectionResult result) {
+                if (result.selectedRoads != null) {
+                  print(
+                    'Selected ${result.selectedRoads!.length} roads for R02',
+                  );
+                  result.selectedRoads!.forEach((road) {
+                    print('Road UID: ${road.uid}');
+                    print('Road Name: ${road.name}');
+                  });
+                }
+              },
+            )
+          else
+            // Non-R02: Use ContractorRoadFieldTile with contractor roads
+            BlocBuilder<ProgramBloc, ProgramState>(
+              builder: (context, state) {
+                final roads = state.maybeWhen(
+                  loaded: (_, contractorRoads) => contractorRoads,
+                  orElse: () => null,
+                );
 
-          // Container(
-          //   margin: const EdgeInsets.only(bottom: 15),
-          //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          //   decoration: BoxDecoration(
-          //     border: Border.all(
-          //       color: hasError ? Colors.red : Colors.grey.shade400,
-          //       width: 0.5,
-          //     ),
-          //     borderRadius: BorderRadius.circular(10),
-          //   ),
-          //   child: Row(
-          //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          //     children: [
-          //       Expanded(
-          //         child: Row(
-          //           children: [
-          //             Container(
-          //               padding: const EdgeInsets.all(12),
-          //               decoration: BoxDecoration(
-          //                 color: hasError
-          //                     ? Colors.red.shade50
-          //                     : const Color.fromARGB(255, 214, 226, 255),
-          //                 shape: BoxShape.circle,
-          //               ),
-          //               child: Center(
-          //                 child: Icon(
-          //                   Icons.swap_calls,
-          //                   color: hasError ? Colors.red : primaryColor,
-          //                 ),
-          //               ),
-          //             ),
-          //             const SizedBox(width: 20),
-          //             Expanded(
-          //               child: Column(
-          //                 crossAxisAlignment: CrossAxisAlignment.start,
-          //                 children: [
-          //                   Text(
-          //                     'Section',
-          //                     style: TextStyle(
-          //                       color: hasError
-          //                           ? Colors.red.shade600
-          //                           : Colors.black,
-          //                     ),
-          //                   ),
-          //                   const SizedBox(height: 5),
-          //                   TextField(
-          //                     controller: _sectionController,
-          //                     onChanged: (value) {},
-          //                     keyboardType:
-          //                         const TextInputType.numberWithOptions(
-          //                           decimal: true,
-          //                         ),
-          //                     decoration: InputDecoration(
-          //                       isDense: true,
-          //                       hintText: "Type section",
-          //                       contentPadding: const EdgeInsets.symmetric(
-          //                         horizontal: 12,
-          //                         vertical: 8,
-          //                       ),
-          //                       border: OutlineInputBorder(
-          //                         borderRadius: BorderRadius.circular(8.0),
-          //                         borderSide: BorderSide(
-          //                           color: Colors.grey.shade300,
-          //                           width: 1,
-          //                         ),
-          //                       ),
-          //                       enabledBorder: OutlineInputBorder(
-          //                         borderRadius: BorderRadius.circular(8.0),
-          //                         borderSide: BorderSide(
-          //                           color: Colors.grey.shade300,
-          //                           width: 1,
-          //                         ),
-          //                       ),
-          //                       focusedBorder: OutlineInputBorder(
-          //                         borderRadius: BorderRadius.circular(8.0),
-          //                         borderSide: BorderSide(
-          //                           color: hasError
-          //                               ? Colors.red
-          //                               : const Color(0xFF5B7FFF),
-          //                           width: 1.5,
-          //                         ),
-          //                       ),
-          //                     ),
-          //                   ),
-          //                   const SizedBox(height: 5),
-          //                   Builder(
-          //                     builder: (context) {
-          //                       if (selectedRoad.sectionStart != null &&
-          //                           selectedRoad.sectionFinish != null) {
-          //                         return Text(
-          //                           'Range from ${selectedRoad.sectionStart} - ${selectedRoad.sectionFinish}',
-          //                           style: TextStyle(
-          //                             fontWeight: hasError
-          //                                 ? FontWeight.bold
-          //                                 : FontWeight.normal,
-          //                             fontSize: ResponsiveHelper.fontSize(
-          //                               context,
-          //                               base: 10,
-          //                             ),
-          //                             color: hasError
-          //                                 ? Colors.red
-          //                                 : Colors.black,
-          //                           ),
-          //                         );
-          //                       }
-          //                       return const SizedBox.shrink();
-          //                     },
-          //                   ),
-          //                 ],
-          //               ),
-          //             ),
-          //           ],
-          //         ),
-          //       ),
-          //     ],
-          //   ),
-          // ),
+                if (selectedContractorUID == null) {
+                  // No contractor selected yet
+                  return Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: Text(
+                      'Please select a contractor first',
+                      style: TextStyle(
+                        fontSize: ResponsiveHelper.fontSize(context, base: 14),
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  );
+                }
 
-          // Temprorary ONLY!! NO API YET
-          SelectionFieldCard(
-            icon: Icons.person_2_rounded,
-            label: 'Contractor',
-            value: selectedWeatherDisplay,
-            placeholder: 'Require Update',
-            onTap: () {
-              // CustomSnackBar.show(
-              //   context,
-              //   'Should this called from API?',
-              //   type: SnackBarType.comingsoon,
-              // );
-            },
-          ),
+                if (roads == null || roads.isEmpty) {
+                  // Loading or no roads
+                  return Container(
+                    padding: EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: Center(
+                      child: CircularProgressIndicator(color: primaryColor),
+                    ),
+                  );
+                }
+
+                // Show ContractorRoadFieldTile with contractor roads
+                return ContractorRoadFieldTile(
+                  contractorRoads: roads,
+                  label: 'Route',
+                  placeholder: 'Select Routes',
+                  onRoadSelected: (RoadSelectionResult result) {
+                    if (result.selectedRoads != null) {
+                      print(
+                        'Selected ${result.selectedRoads!.length} contractor roads',
+                      );
+                      result.selectedRoads!.forEach((road) {
+                        print('Road UID: ${road.uid}');
+                        print('Road Name: ${road.name}');
+                      });
+                    }
+                  },
+                );
+              },
+            ),
 
           Spacer(),
 
+          // Action Buttons
           Row(
             children: [
               Expanded(
@@ -554,10 +548,16 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
                 flex: 2,
                 child: ElevatedButton(
                   onPressed: () {
-                    // print('Submit program');
-                    // print('Work Scope UID: $selectedWorkScopeUID');
-                    // print('Work Scope Code: $selectedWorkScopeCode');
-                    // print('Work Scope Name: $selectedWorkScopeName');
+                    print('Submit program');
+                    print('Work Scope UID: $selectedWorkScopeUID');
+                    print('Work Scope ID: $selectedWorkScopeID');
+                    print('Work Scope Code: $selectedWorkScopeCode');
+                    print('Work Scope Name: $selectedWorkScopeName');
+                    print('Is R02: $isR02');
+                    if (!isR02) {
+                      print('Contractor UID: $selectedContractorUID');
+                      print('Contractor Name: $selectedContractorName');
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
@@ -586,7 +586,7 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
     );
   }
 
-  Widget _buildWorkScopeGrid(List<WorkScope> workScopes) {
+  Widget _buildWorkScopeGrid(List<WorkScopeNested> workScopes) {
     final crossAxisCount = ResponsiveHelper.gridColumns(
       context,
       baseColumns: 2,
@@ -612,6 +612,7 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
               selectedWorkScopeUID = workScope.uid;
               selectedWorkScopeCode = workScope.code;
               selectedWorkScopeName = workScope.name;
+              selectedWorkScopeID = workScope.id;
             });
           },
           child: Container(
@@ -657,7 +658,7 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
                       ),
                       child: Center(
                         child: Text(
-                          workScope.code,
+                          workScope.code ?? '',
                           style: TextStyle(
                             fontSize: ResponsiveHelper.fontSize(
                               context,
@@ -710,7 +711,7 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
 
                 // Workscope
                 Text(
-                  workScope.name,
+                  workScope.name ?? '',
                   style: TextStyle(
                     fontSize: ResponsiveHelper.fontSize(context, base: 12),
                     fontWeight: FontWeight.w600,
