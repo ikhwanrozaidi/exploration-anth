@@ -3,27 +3,19 @@
   "message": "",
   "data": [
 
-
-    //R07 - Cleaning Drains
     {
       "id": 5,
       "uid": "3c51af91-754a-4302-97c8-53f45456de4f",
       "companyID": 1,
       "workScopeID": 6,
-
       "calculationType": "SECTION_BASED",
       "inputLabel": "Total Length",
-
       "inputValue": null,
-
       "dividerValue": "200",
       "dividerLabel": "Meters per report",
       "unitMeasurement": "METER",
-
       "photoRequired": false,
-
       "isActive": true,
-
       "createdByID": 1,
       "createdAt": "2026-01-02T07:32:37.534Z",
       "updatedAt": "2026-01-02T16:10:50.616Z",
@@ -52,25 +44,19 @@
     },
 
 
-    //R05 - Cleaning Culverts & Bridge
     {
       "id": 4,
       "uid": "0027fc75-a3cc-477f-910e-f5ed3ae7e97a",
       "companyID": 1,
       "workScopeID": 5,
-
       "calculationType": "FIXED_COUNT",
       "inputLabel": "Total Culvert & Bridge",
-
       "inputValue": null,
-
       "dividerValue": null,
       "dividerLabel": null,
       "unitMeasurement": "NUMBER",
-
       "photoRequired": false,
       "isActive": true,
-
       "createdByID": 1,
       "createdAt": "2026-01-02T07:32:37.491Z",
       "updatedAt": "2026-01-02T16:10:50.469Z",
@@ -99,7 +85,6 @@
     },
 
 
-    // R04 - Cleaning Road Furnitures
     {
       "id": 3,
       "uid": "d166b2b1-00fd-45fb-9ad7-8bbe9e351bae",
@@ -139,9 +124,6 @@
       },
       "quantityTypes": []
     },
-
-
-    // R03 - Grass Cutting
     {
       "id": 2,
       "uid": "34f8d42e-31b5-4b65-aeff-01cb6a360a4a",
@@ -183,7 +165,8 @@
     },
 
 
-    // R02 - Road Shoulder
+
+
     {
       "id": 1,
       "uid": "c72dff69-704d-464b-920a-02883e423e4e",
@@ -221,6 +204,9 @@
         "phone": "+60173555706",
         "email": "foongef@gmail.com"
       },
+
+
+      
       "quantityTypes": [
         {
           "id": 4,
@@ -385,6 +371,8 @@
             ]
           }
         },
+
+
         {
           "id": 5,
           "programSettingID": 1,
@@ -713,10 +701,6 @@
         }
       ]
     }
-
-
-
-
   ],
   "meta": {
     "page": 1,

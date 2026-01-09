@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../road/domain/entities/road_entity.dart';
-import '../../domain/entities/program_setting_entity.dart';
+import '../../../../road/domain/entities/road_entity.dart';
+import '../../../domain/entities/program_setting_entity.dart';
 
 part 'program_state.freezed.dart';
 

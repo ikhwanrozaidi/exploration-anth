@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../core/errors/failures.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../../domain/entities/program_setting_entity.dart';
-import '../../domain/usecases/clear_program_cache_usecase.dart';
-import '../../domain/usecases/get_contractor_roads_usecase.dart';
-import '../../domain/usecases/get_program_settings_usecase.dart';
+import '../../../../../core/errors/failures.dart';
+import '../../../../../core/usecases/usecase.dart';
+import '../../../domain/entities/program_setting_entity.dart';
+import '../../../domain/usecases/clear_program_cache_usecase.dart';
+import '../../../domain/usecases/get_contractor_roads_usecase.dart';
+import '../../../domain/usecases/get_program_settings_usecase.dart';
 import 'program_event.dart';
 import 'program_state.dart';
 
@@ -59,8 +59,12 @@ class ProgramBloc extends Bloc<ProgramEvent, ProgramState> {
     LoadContractorRoads event,
     Emitter<ProgramState> emit,
   ) async {
-    // Don't show loading if program settings already loaded
-    if (state is! ProgramLoaded) {
+    final currentState = state;
+    final programSettings = currentState is ProgramLoaded
+        ? currentState.programSettings
+        : <ProgramSetting>[];
+
+    if (programSettings.isEmpty) {
       emit(const ProgramLoading());
     }
 
@@ -71,13 +75,19 @@ class ProgramBloc extends Bloc<ProgramEvent, ProgramState> {
     );
 
     result.fold(
-      (failure) => emit(ProgramError(_mapFailureToMessage(failure))),
+      (failure) {
+        if (programSettings.isNotEmpty) {
+          emit(
+            ProgramLoaded(
+              programSettings: programSettings,
+              contractorRoads: null,
+            ),
+          );
+        } else {
+          emit(ProgramError(_mapFailureToMessage(failure)));
+        }
+      },
       (packageData) {
-        final currentState = state;
-        final programSettings = currentState is ProgramLoaded
-            ? currentState.programSettings
-            : <ProgramSetting>[];
-
         emit(
           ProgramLoaded(
             programSettings: programSettings,

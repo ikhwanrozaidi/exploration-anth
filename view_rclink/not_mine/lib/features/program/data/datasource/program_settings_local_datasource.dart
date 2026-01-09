@@ -10,17 +10,18 @@ import '../models/program_setting_model.dart';
 import '../models/quantity_type_nested_model.dart';
 import '../models/work_scope_nested_model.dart';
 
-abstract class ProgramLocalDataSource {
+abstract class ProgramSettingsLocalDataSource {
   Future<Either<Failure, List<ProgramSetting>>> getLocal();
   Future<Either<Failure, void>> saveLocal(List<ProgramSetting> settings);
   Future<Either<Failure, void>> clearCache();
 }
 
-@LazySingleton(as: ProgramLocalDataSource)
-class ProgramLocalDataSourceImpl implements ProgramLocalDataSource {
+@LazySingleton(as: ProgramSettingsLocalDataSource)
+class ProgramSettingsLocalDataSourceImpl
+    implements ProgramSettingsLocalDataSource {
   final DatabaseService _databaseService;
 
-  ProgramLocalDataSourceImpl(this._databaseService);
+  ProgramSettingsLocalDataSourceImpl(this._databaseService);
 
   AppDatabase get _database => _databaseService.database;
 

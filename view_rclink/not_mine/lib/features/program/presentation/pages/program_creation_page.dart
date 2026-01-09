@@ -6,6 +6,7 @@ import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../contractor_relation/presentation/bloc/contractor_relation_bloc.dart';
+import '../../../contractor_relation/presentation/bloc/contractor_relation_state.dart';
 import '../../../contractor_relation/presentation/widgets/show_contractor_relation_selection.dart';
 import '../../../daily_report/presentation/widgets/report_creation/selection_field_card.dart';
 import '../../../road/domain/entities/road_entity.dart';
@@ -15,10 +16,13 @@ import '../../../road/presentation/pages/road_field_tile.dart';
 import '../../../work_scope/domain/entities/work_scope.dart';
 import '../../../work_scope/presentation/bloc/work_scope_bloc.dart';
 import '../../../work_scope/presentation/bloc/work_scope_state.dart';
-import '../bloc/program_bloc.dart';
-import '../bloc/program_event.dart';
-import '../bloc/program_state.dart';
+import '../bloc/program/program_bloc.dart';
+import '../bloc/program/program_event.dart';
+import '../bloc/program/program_state.dart';
 import '../widgets/contractor_road_field_tile.dart';
+import '../widgets/contractor_selection_bottomsheet.dart';
+import '../widgets/program_creation_draft_page.dart';
+import '../widgets/r02_program_creation_draft_page.dart';
 
 class ProgramCreationPage extends StatefulWidget {
   const ProgramCreationPage({Key? key}) : super(key: key);
@@ -35,19 +39,25 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
 
   String? selectedContractorUID;
   String? selectedContractorName;
+  bool isSelfContractor = false;
   List<Road>? contractorRoads;
 
   String selectedWeatherDisplay = '';
-  final TextEditingController _sectionController = TextEditingController();
   bool hasError = false;
   late Road selectedRoad;
 
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
+  Road? selectedRoadR02; // Store selected road for R02
+  String sectionValue = ''; // Store section input
+  bool hasSectionError = false; // Track validation error
+  final TextEditingController _sectionController = TextEditingController();
+
   @override
   void dispose() {
     _pageController.dispose();
+    _sectionController.dispose();
     super.dispose();
   }
 
@@ -388,73 +398,228 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
           // Conditional UI based on workScopeID
           if (!isR02) ...[
             // Show Contractor Selection (for non-R02)
-            SelectionFieldCard(
-              icon: Icons.person_2_rounded,
-              label: 'Contractor',
-              value: selectedContractorName ?? '',
-              placeholder: 'Select Contractor',
-              onTap: () {
-                final contractorState = context
-                    .read<ContractorRelationBloc>()
-                    .state;
-
-                showContractorRelationSelection(
-                  context: context,
-                  state: contractorState,
-                  onContractorSelected: (selectedData) {
-                    setState(() {
-                      selectedContractorUID =
-                          selectedData['companyReportToUID'];
-                      selectedContractorName = selectedData['name'];
-                    });
-
-                    // Fetch contractor roads
-                    if (selectedContractorUID != null) {
-                      context.read<ProgramBloc>().add(
-                        ProgramEvent.loadContractorRoads(
-                          contractorRelationUID: selectedContractorUID!,
-                        ),
-                      );
-                    }
-                  },
+            BlocBuilder<ContractorRelationBloc, ContractorRelationState>(
+              builder: (context, contractorState) {
+                return SelectionFieldCard(
+                  icon: Icons.person_2_rounded,
+                  label: 'Contractor',
+                  value: selectedContractorName ?? '',
+                  placeholder: 'Select Contractor',
+                  onTap: () =>
+                      _showContractorSelection(context, contractorState),
                 );
               },
             ),
 
-            SizedBox(height: ResponsiveHelper.spacing(context, 15)),
+            // SizedBox(height: ResponsiveHelper.spacing(context, 15)),
           ],
 
           // Route Selection
-          if (isR02)
+          if (isR02) ...[
             // R02: Use original RoadFieldTile with existing roads
             RoadFieldTile(
-              startFrom: RoadLevel.roads,
+              startFrom: RoadLevel.provinces,
               endAt: RoadLevel.roads,
-              selectMultipleRoads: true,
               label: 'Route',
               placeholder: 'Select Routes',
               onRoadSelected: (RoadSelectionResult result) {
-                if (result.selectedRoads != null) {
-                  print(
-                    'Selected ${result.selectedRoads!.length} roads for R02',
-                  );
-                  result.selectedRoads!.forEach((road) {
-                    print('Road UID: ${road.uid}');
-                    print('Road Name: ${road.name}');
+                if (result.selectedRoad != null) {
+                  setState(() {
+                    selectedRoadR02 = result.selectedRoad;
+                    sectionValue = ''; // Reset section value
+                    _sectionController.clear();
+                    hasSectionError = false;
                   });
+
+                  print('Selected road for R02: ${result.selectedRoad!.name}');
+                  print('Road UID: ${result.selectedRoad!.uid}');
+                  print('Section Start: ${result.selectedRoad!.sectionStart}');
+                  print(
+                    'Section Finish: ${result.selectedRoad!.sectionFinish}',
+                  );
                 }
               },
-            )
-          else
-            // Non-R02: Use ContractorRoadFieldTile with contractor roads
-            BlocBuilder<ProgramBloc, ProgramState>(
-              builder: (context, state) {
-                final roads = state.maybeWhen(
-                  loaded: (_, contractorRoads) => contractorRoads,
-                  orElse: () => null,
-                );
+            ),
 
-                if (selectedContractorUID == null) {
+            // Show section input after road selection
+            if (selectedRoadR02 != null) ...[
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: ResponsiveHelper.spacing(context, 20),
+                  vertical: ResponsiveHelper.spacing(context, 15),
+                ),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: hasSectionError ? Colors.red : Colors.grey.shade400,
+                    width: 0.5,
+                  ),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(
+                              ResponsiveHelper.spacing(context, 12),
+                            ),
+                            decoration: BoxDecoration(
+                              color: hasSectionError
+                                  ? Colors.red.shade50
+                                  : const Color.fromARGB(255, 214, 226, 255),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Icon(
+                                Icons.swap_calls,
+                                color: hasSectionError
+                                    ? Colors.red
+                                    : primaryColor,
+                                size: ResponsiveHelper.iconSize(
+                                  context,
+                                  base: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: ResponsiveHelper.spacing(context, 20),
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Section',
+                                  style: TextStyle(
+                                    color: hasSectionError
+                                        ? Colors.red.shade600
+                                        : Colors.black,
+                                    fontSize: ResponsiveHelper.fontSize(
+                                      context,
+                                      base: 14,
+                                    ),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: ResponsiveHelper.spacing(context, 5),
+                                ),
+                                TextField(
+                                  controller: _sectionController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      sectionValue = value;
+                                      // Validate section value
+                                      if (value.isNotEmpty) {
+                                        final sectionNum = double.tryParse(
+                                          value,
+                                        );
+                                        if (sectionNum != null &&
+                                            selectedRoadR02!.sectionStart !=
+                                                null &&
+                                            selectedRoadR02!.sectionFinish !=
+                                                null) {
+                                          hasSectionError =
+                                              sectionNum <
+                                                  selectedRoadR02!
+                                                      .sectionStart! ||
+                                              sectionNum >
+                                                  selectedRoadR02!
+                                                      .sectionFinish!;
+                                        } else {
+                                          hasSectionError = false;
+                                        }
+                                      } else {
+                                        hasSectionError = false;
+                                      }
+                                    });
+                                  },
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                        decimal: true,
+                                      ),
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    hintText: "Type section",
+                                    hintStyle: TextStyle(
+                                      fontSize: ResponsiveHelper.fontSize(
+                                        context,
+                                        base: 13,
+                                      ),
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                      horizontal: ResponsiveHelper.spacing(
+                                        context,
+                                        12,
+                                      ),
+                                      vertical: ResponsiveHelper.spacing(
+                                        context,
+                                        8,
+                                      ),
+                                    ),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade300,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      borderSide: BorderSide(
+                                        color: Colors.grey.shade300,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8.0),
+                                      borderSide: BorderSide(
+                                        color: hasSectionError
+                                            ? Colors.red
+                                            : primaryColor,
+                                        width: 1.5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: ResponsiveHelper.spacing(context, 5),
+                                ),
+                                if (selectedRoadR02!.sectionStart != null &&
+                                    selectedRoadR02!.sectionFinish != null)
+                                  Text(
+                                    'Range from ${selectedRoadR02!.sectionStart} - ${selectedRoadR02!.sectionFinish}',
+                                    style: TextStyle(
+                                      fontWeight: hasSectionError
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                      fontSize: ResponsiveHelper.fontSize(
+                                        context,
+                                        base: 10,
+                                      ),
+                                      color: hasSectionError
+                                          ? Colors.red
+                                          : Colors.black,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ] else
+            // Non-R02: Check if self company or external contractor
+            Builder(
+              builder: (context) {
+                if (selectedContractorName == null) {
                   // No contractor selected yet
                   return Container(
                     padding: EdgeInsets.all(16),
@@ -473,36 +638,114 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
                   );
                 }
 
-                if (roads == null || roads.isEmpty) {
-                  // Loading or no roads
-                  return Container(
-                    padding: EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
-                    child: Center(
-                      child: CircularProgressIndicator(color: primaryColor),
-                    ),
+                // Check if self company using the flag
+                if (isSelfContractor) {
+                  // Self company: Use original RoadFieldTile
+                  print('🏠 Showing RoadFieldTile for self company');
+                  return RoadFieldTile(
+                    startFrom: RoadLevel.roads,
+                    endAt: RoadLevel.roads,
+                    selectMultipleRoads: true,
+                    label: 'Route',
+                    placeholder: 'Select Routes',
+                    onRoadSelected: (RoadSelectionResult result) {
+                      if (result.selectedRoads != null) {
+                        print(
+                          'Selected ${result.selectedRoads!.length} roads (Self Company)',
+                        );
+                        result.selectedRoads!.forEach((road) {
+                          print('Road UID: ${road.uid}');
+                          print('Road Name: ${road.name}');
+                        });
+                      }
+                    },
                   );
                 }
 
-                // Show ContractorRoadFieldTile with contractor roads
-                return ContractorRoadFieldTile(
-                  contractorRoads: roads,
-                  label: 'Route',
-                  placeholder: 'Select Routes',
-                  onRoadSelected: (RoadSelectionResult result) {
-                    if (result.selectedRoads != null) {
-                      print(
-                        'Selected ${result.selectedRoads!.length} contractor roads',
+                // External contractor: Use contractor roads
+                print(
+                  '🏢 Showing ContractorRoadFieldTile for external contractor',
+                );
+                return BlocBuilder<ProgramBloc, ProgramState>(
+                  builder: (context, state) {
+                    final roads = state.maybeWhen(
+                      loaded: (_, contractorRoads) => contractorRoads,
+                      orElse: () => null,
+                    );
+
+                    if (roads == null) {
+                      // Loading
+                      return Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: Center(
+                          child: CircularProgressIndicator(color: primaryColor),
+                        ),
                       );
-                      result.selectedRoads!.forEach((road) {
-                        print('Road UID: ${road.uid}');
-                        print('Road Name: ${road.name}');
-                      });
                     }
+
+                    if (roads.isEmpty) {
+                      // No roads available for this contractor
+                      return Container(
+                        padding: EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade50,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                color: Colors.orange,
+                                size: ResponsiveHelper.iconSize(
+                                  context,
+                                  base: 30,
+                                ),
+                              ),
+                              SizedBox(
+                                height: ResponsiveHelper.spacing(context, 8),
+                              ),
+                              Text(
+                                'No roads available for this contractor',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: ResponsiveHelper.fontSize(
+                                    context,
+                                    base: 14,
+                                  ),
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }
+
+                    // Show ContractorRoadFieldTile with contractor roads
+                    return ContractorRoadFieldTile(
+                      contractorRoads: roads,
+                      label: 'Route',
+                      placeholder: 'Select Routes',
+                      onRoadSelected: (RoadSelectionResult result) {
+                        if (result.selectedRoads != null) {
+                          print(
+                            'Selected ${result.selectedRoads!.length} contractor roads',
+                          );
+                          result.selectedRoads!.forEach((road) {
+                            print('Road UID: ${road.uid}');
+                            print('Road Name: ${road.name}');
+                          });
+                        }
+                      },
+                    );
                   },
                 );
               },
@@ -548,6 +791,21 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
                 flex: 2,
                 child: ElevatedButton(
                   onPressed: () {
+                    // isR02
+                    //     ? Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //           builder: (context) =>
+                    //               R02ProgramCreationDraftPage(),
+                    //         ),
+                    //       )
+                    //     : Navigator.push(
+                    //         context,
+                    //         MaterialPageRoute(
+                    //           builder: (context) => ProgramCreationDraftPage(),
+                    //         ),
+                    //       );
+
                     print('Submit program');
                     print('Work Scope UID: $selectedWorkScopeUID');
                     print('Work Scope ID: $selectedWorkScopeID');
@@ -723,6 +981,85 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
               ],
             ),
           ),
+        );
+      },
+    );
+  }
+
+  void _showContractorSelection(
+    BuildContext context,
+    ContractorRelationState state,
+  ) {
+    state.maybeWhen(
+      loaded: (contractors, selectedContractor) {
+        if (contractors.isEmpty) {
+          CustomSnackBar.show(
+            context,
+            'No contractors available',
+            type: SnackBarType.warning,
+          );
+          return;
+        }
+
+        showModalBottomSheet(
+          context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.transparent,
+          builder: (context) => ContractorSelectionBottomSheet(
+            contractors: contractors,
+            selectedContractorUID: selectedContractorUID,
+            onContractorSelected: (contractor) {
+              // Check if contractRelationUID is null (self company)
+              final isSelf =
+                  contractor.contractRelationUID == null ||
+                  contractor.contractRelationUID!.isEmpty;
+
+              setState(() {
+                selectedContractorUID = contractor.contractRelationUID;
+                selectedContractorName = contractor.name;
+                isSelfContractor = isSelf; // Set the flag
+              });
+
+              if (isSelf) {
+                print(
+                  '📍 Selected contractor: ${contractor.name} (Self Company)',
+                );
+                print('📍 Contract Relation UID: null - Using original roads');
+
+                // Clear contractor roads since we'll use original RoadFieldTile
+                context.read<ProgramBloc>().add(
+                  const ProgramEvent.clearContractorRoads(),
+                );
+                return;
+              }
+
+              // Fetch contractor roads for non-self company
+              print('📍 Selected contractor: ${contractor.name}');
+              print(
+                '📍 Contract Relation UID: ${contractor.contractRelationUID}',
+              );
+
+              context.read<ProgramBloc>().add(
+                ProgramEvent.loadContractorRoads(
+                  contractorRelationUID: contractor.contractRelationUID!,
+                ),
+              );
+            },
+          ),
+        );
+      },
+      loading: () {
+        CustomSnackBar.show(
+          context,
+          'Loading contractors...',
+          type: SnackBarType.info,
+        );
+      },
+      orElse: () {
+        CustomSnackBar.show(
+          context,
+          'No contractors available',
+          type: SnackBarType.warning,
         );
       },
     );
