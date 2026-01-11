@@ -776,6 +776,79 @@ class ContractorRelations extends Table with SyncableTable {
   ];
 }
 
+// Program Settings table - stores program configuration per work scope
+@DataClassName('ProgramSettingRecord')
+class ProgramSettings extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
+  TextColumn get uid => text()(); // Business UUID
+  IntColumn get companyID => integer()(); // Foreign key to Companies
+  IntColumn get workScopeID => integer()(); // Foreign key to WorkScopes
+  TextColumn get calculationType => text()(); // SECTION_BASED, FIXED_COUNT
+  TextColumn get inputLabel => text().nullable()();
+  TextColumn get inputValue => text().nullable()();
+  TextColumn get dividerValue => text().nullable()();
+  TextColumn get dividerLabel => text().nullable()();
+  TextColumn get unitMeasurement => text().nullable()(); // METER, NUMBER
+  BoolColumn get photoRequired =>
+      boolean().withDefault(const Constant(false))();
+  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
+  IntColumn get createdByID => integer()(); // Foreign key to Admins
+  DateTimeColumn get createdAt => dateTime()();
+  DateTimeColumn get updatedAt => dateTime()();
+
+  // Store nested data as JSON
+  TextColumn get workScopeData => text().nullable()(); // JSON of WorkScope
+  TextColumn get createdByData =>
+      text().nullable()(); // JSON of CreatedBy (Admin)
+  TextColumn get quantityTypesData =>
+      text().nullable()(); // JSON array of QuantityTypes
+
+  @override
+  List<Set<Column>> get uniqueKeys => [
+    {uid}, // UID must be unique for public lookup
+  ];
+}
+
+@DataClassName('ProgramRecord')
+class Programs extends Table with SyncableTable {
+  IntColumn get id => integer().autoIncrement()();
+  TextColumn get uid => text()();
+  IntColumn get companyID => integer()();
+  IntColumn get workScopeID => integer()();
+  TextColumn get workScopeData => text().nullable()();
+  IntColumn get roadID => integer().nullable()();
+  TextColumn get roadData => text().nullable()();
+  IntColumn get contractRelationID => integer().nullable()();
+  TextColumn get contractRelationData => text().nullable()();
+  TextColumn get name => text()();
+  TextColumn get description => text().nullable()();
+  DateTimeColumn get periodStart => dateTime()();
+  DateTimeColumn get periodEnd => dateTime()();
+  TextColumn get calculationType => text()();
+  TextColumn get fromSection => text().nullable()();
+  TextColumn get toSection => text().nullable()();
+  TextColumn get dividerValue => text().nullable()();
+  TextColumn get inputValue => text().nullable()();
+  IntColumn get requiredReportsCount => integer().nullable()();
+  IntColumn get totalReports => integer().withDefault(const Constant(0))();
+
+  TextColumn get status => text()(); // DRAFT, SUBMITTED, ACTIVE, etc.
+
+  RealColumn get latitude => real().nullable()();
+  RealColumn get longitude => real().nullable()();
+  TextColumn get quantitiesData => text().nullable()();
+  TextColumn get filesData => text().nullable()();
+  IntColumn get createdByID => integer().nullable()();
+  TextColumn get createdByData => text().nullable()();
+
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get deletedAt => dateTime().nullable()();
+
+  @override
+  Set<Column> get primaryKey => {uid};
+}
+
 @DriftDatabase(
   tables: [
     Admins,
@@ -807,13 +880,15 @@ class ContractorRelations extends Table with SyncableTable {
     WarningReasons,
     Warnings,
     ContractorRelations,
+    ProgramSettings,
+    Programs,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 26; // createdByID to null
+  int get schemaVersion => 28; // create Program table
 
   @override
   MigrationStrategy get migration {
@@ -1292,26 +1367,18 @@ class AppDatabase extends _$AppDatabase {
 
           // Re-enable foreign keys
           await customStatement('PRAGMA foreign_keys = ON');
-
-          print(
-            '✅ Migration 22→23: Made fromSection/toSection nullable and added filesData column to Warnings table',
-          );
         },
         from23To24: (m, schema) async {
           // Migration from version 23 to 24:
           // Add status column to Warnings table
 
           await m.addColumn(schema.warnings, schema.warnings.status);
-
-          print('✅ Migration 23→24: Added status column to Warnings table');
         },
         from24To25: (m, schema) async {
           // Migration from version 24 to 25:
           // Add ContractorRelations table
 
           await m.createTable(schema.contractorRelations);
-
-          print('✅ Migration 24→25: Added ContractorRelations table');
         },
         from25To26: (m, schema) async {
           // Migration from version 25 to 26:
@@ -1355,10 +1422,21 @@ class AppDatabase extends _$AppDatabase {
 
           // Re-enable foreign keys
           await customStatement('PRAGMA foreign_keys = ON');
+        },
+        from26To27: (m, schema) async {
+          // Migration from version 26 to 27:
+          // Add ProgramSettings table for program configuration
 
-          print(
-            '✅ Migration 25→26: Made createdByID nullable in Warnings table for draft support',
-          );
+          await m.createTable(schema.programSettings);
+
+          print('✅ Migration 26→27: Added ProgramSettings table');
+        },
+        from27To28: (m, schema) async {
+          // Migration from version 27 to 28:
+          // Create Programs table
+
+          await m.createTable(schema.programs);
+          print('✅ Created programs table (v28)');
         },
       ),
       beforeOpen: (details) async {
