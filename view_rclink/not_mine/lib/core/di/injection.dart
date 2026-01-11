@@ -72,9 +72,9 @@ void _configureDioInterceptors() {
     if (FlavorConfig.instance.flavor != Flavor.production) {
       dio.interceptors.add(
         PrettyDioLogger(
-          requestHeader: true,
-          requestBody: true,
-          responseBody: true,
+          requestHeader: false,
+          requestBody: false,
+          responseBody: false,
           responseHeader: true,
           error: true,
           compact: true,

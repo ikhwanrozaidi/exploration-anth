@@ -40,7 +40,8 @@ enum SyncEntityType {
   equipment,
   quantity,
   warning,
-  warningItem;
+  warningItem,
+  program;
 
   /// Convert to string for database storage (snake_case)
   String get value {
@@ -67,6 +68,8 @@ enum SyncEntityType {
         return 'warning';
       case SyncEntityType.warningItem:
         return 'warning_item';
+      case SyncEntityType.program:
+        return 'program';
     }
   }
 

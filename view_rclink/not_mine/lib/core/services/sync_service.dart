@@ -31,22 +31,22 @@ class SyncService {
     this._dailyReportImageRemoteDataSource,
     this._imageLocalDataSource,
   );
-  
+
   /// Start periodic sync
   void startPeriodicSync({Duration interval = const Duration(minutes: 5)}) {
     stopPeriodicSync();
     _syncTimer = Timer.periodic(interval, (_) => syncAll());
-    
+
     // Also sync immediately
     syncAll();
   }
-  
+
   /// Stop periodic sync
   void stopPeriodicSync() {
     _syncTimer?.cancel();
     _syncTimer = null;
   }
-  
+
   /// Manually trigger sync for all pending items
   Future<void> syncAll() async {
     if (_isSyncing) return;
@@ -62,27 +62,29 @@ class SyncService {
       _isSyncing = false;
     }
   }
-  
+
   /// Process items from sync queue
   Future<void> _syncFromQueue() async {
     final db = _databaseService.database;
-    
+
     // Get pending sync items ordered by priority and creation date
     final query = db.select(db.syncQueue)
       ..where((tbl) => tbl.isProcessed.equals(false))
       ..orderBy([
-        (tbl) => OrderingTerm(expression: tbl.priority, mode: OrderingMode.desc),
-        (tbl) => OrderingTerm(expression: tbl.createdAt, mode: OrderingMode.asc),
+        (tbl) =>
+            OrderingTerm(expression: tbl.priority, mode: OrderingMode.desc),
+        (tbl) =>
+            OrderingTerm(expression: tbl.createdAt, mode: OrderingMode.asc),
       ])
       ..limit(10); // Process in batches
-    
+
     final pendingItems = await query.get();
-    
+
     for (final item in pendingItems) {
       await _processSyncItem(item);
     }
   }
-  
+
   /// Process individual sync item
   Future<void> _processSyncItem(SyncQueueRecord item) async {
     try {
@@ -114,46 +116,48 @@ class SyncService {
         case SyncEntityType.quantity:
         case SyncEntityType.warning:
         case SyncEntityType.warningItem:
+        case SyncEntityType.program:
           print('⚠️ Sync handler not implemented for: ${entityType.value}');
           return;
       }
-      
+
       if (success) {
         // Mark as processed
-        await (db.update(db.syncQueue)
-          ..where((tbl) => tbl.id.equals(item.id)))
-          .write(const SyncQueueCompanion(
-            isProcessed: Value(true),
-          ));
+        await (db.update(db.syncQueue)..where((tbl) => tbl.id.equals(item.id)))
+            .write(const SyncQueueCompanion(isProcessed: Value(true)));
       } else {
         // Update retry count
-        await (db.update(db.syncQueue)
-          ..where((tbl) => tbl.id.equals(item.id)))
-          .write(SyncQueueCompanion(
+        await (db.update(
+          db.syncQueue,
+        )..where((tbl) => tbl.id.equals(item.id))).write(
+          SyncQueueCompanion(
             retryCount: Value(item.retryCount + 1),
             error: const Value('Sync failed'),
-          ));
+          ),
+        );
       }
     } catch (e) {
       // Update error in queue
-      await (db.update(db.syncQueue)
-        ..where((tbl) => tbl.id.equals(item.id)))
-        .write(SyncQueueCompanion(
+      await (db.update(
+        db.syncQueue,
+      )..where((tbl) => tbl.id.equals(item.id))).write(
+        SyncQueueCompanion(
           retryCount: Value(item.retryCount + 1),
           error: Value(e.toString()),
-        ));
+        ),
+      );
     }
   }
-  
+
   /// Sync admin entity
   Future<bool> _syncAdmin(SyncQueueRecord item) async {
     final db = _databaseService.database;
-    
+
     // Get the admin record
     final adminQuery = db.select(db.admins)
       ..where((tbl) => tbl.uid.equals(item.entityUid));
     final adminRecord = await adminQuery.getSingleOrNull();
-    
+
     if (adminRecord == null) return true; // Already deleted
 
     // Parse action from DB string
@@ -171,29 +175,35 @@ class SyncService {
         final adminModel = adminRecord.toModel();
 
         // Call the update API
-        final result = await _adminRemoteDataSource.updateAdmin(adminModel.toJson());
-        
+        final result = await _adminRemoteDataSource.updateAdmin(
+          adminModel.toJson(),
+        );
+
         return result.fold(
           (failure) async {
             // Update sync error in admin record
-            await (db.update(db.admins)
-              ..where((tbl) => tbl.uid.equals(item.entityUid)))
-              .write(AdminsCompanion(
+            await (db.update(
+              db.admins,
+            )..where((tbl) => tbl.uid.equals(item.entityUid))).write(
+              AdminsCompanion(
                 syncError: Value(failure.toString()),
                 lastSyncAttempt: Value(DateTime.now()),
-              ));
+              ),
+            );
             return false;
           },
           (updatedModel) async {
             // Mark admin as synced
-            await (db.update(db.admins)
-              ..where((tbl) => tbl.uid.equals(item.entityUid)))
-              .write(const AdminsCompanion(
+            await (db.update(
+              db.admins,
+            )..where((tbl) => tbl.uid.equals(item.entityUid))).write(
+              const AdminsCompanion(
                 isSynced: Value(true),
                 syncAction: Value(null),
                 syncError: Value(null),
                 lastSyncAttempt: Value(null),
-              ));
+              ),
+            );
             return true;
           },
         );
@@ -215,7 +225,7 @@ class SyncService {
         return false;
     }
   }
-  
+
   /// Sync daily report with temp UID replacement
   Future<bool> _syncDailyReport(SyncQueueRecord item) async {
     // Parse action from DB string
@@ -234,10 +244,8 @@ class SyncService {
 
     try {
       // Get unsynced report data with companyUID
-      final reportData =
-          await _dailyReportLocalDataSource.getUnsyncedReportData(
-        item.entityUid,
-      );
+      final reportData = await _dailyReportLocalDataSource
+          .getUnsyncedReportData(item.entityUid);
 
       if (reportData == null) {
         print('⚠️ Report not found or already synced: ${item.entityUid}');
@@ -254,7 +262,9 @@ class SyncService {
 
       return await result.fold(
         (failure) async {
-          print('⚠️ Sync retry failed for ${item.entityUid}: ${failure.message}');
+          print(
+            '⚠️ Sync retry failed for ${item.entityUid}: ${failure.message}',
+          );
           return false; // Will retry later
         },
         (serverModel) async {
@@ -288,7 +298,10 @@ class SyncService {
   }
 
   /// Upload images for a daily report
-  Future<void> _syncImagesForReport(String companyUID, String dailyReportUID) async {
+  Future<void> _syncImagesForReport(
+    String companyUID,
+    String dailyReportUID,
+  ) async {
     try {
       // Get pending images for this report
       final images = await _imageLocalDataSource.getImagesByEntity(
@@ -304,15 +317,18 @@ class SyncService {
       print('📤 Uploading ${images.length} images for report $dailyReportUID');
 
       // Attempt upload
-      final result = await _dailyReportImageRemoteDataSource.uploadImagesForReport(
-        companyUID: companyUID,
-        dailyReportUID: dailyReportUID,
-        images: images,
-      );
+      final result = await _dailyReportImageRemoteDataSource
+          .uploadImagesForReport(
+            companyUID: companyUID,
+            dailyReportUID: dailyReportUID,
+            images: images,
+          );
 
       await result.fold(
         (failure) async {
-          print('❌ Image upload failed for $dailyReportUID: ${failure.message}');
+          print(
+            '❌ Image upload failed for $dailyReportUID: ${failure.message}',
+          );
 
           // Increment retry count for all images
           await _imageLocalDataSource.incrementRetryCount(
@@ -322,7 +338,9 @@ class SyncService {
           );
         },
         (uploadedFiles) async {
-          print('✅ Successfully uploaded ${uploadedFiles.length} images for $dailyReportUID');
+          print(
+            '✅ Successfully uploaded ${uploadedFiles.length} images for $dailyReportUID',
+          );
 
           // Mark images as synced with server metadata
           await _imageLocalDataSource.markImagesAsSynced(
@@ -359,7 +377,8 @@ class SyncService {
       // Group images by entity
       final Map<String, List<ImageSyncQueueRecord>> imagesByEntity = {};
       for (final image in pendingImages) {
-        final key = '${image.entityType}|${image.entityUID}|${image.companyUID}';
+        final key =
+            '${image.entityType}|${image.entityUID}|${image.companyUID}';
         imagesByEntity.putIfAbsent(key, () => []).add(image);
       }
 
@@ -371,19 +390,24 @@ class SyncService {
         final companyUID = parts[2];
         final images = entry.value;
 
-        print('📤 Uploading ${images.length} images for $entityType/$entityUID');
+        print(
+          '📤 Uploading ${images.length} images for $entityType/$entityUID',
+        );
 
         // Currently only support daily_report
         if (entityType == SyncEntityType.dailyReport.value) {
-          final result = await _dailyReportImageRemoteDataSource.uploadImagesForReport(
-            companyUID: companyUID,
-            dailyReportUID: entityUID,
-            images: images,
-          );
+          final result = await _dailyReportImageRemoteDataSource
+              .uploadImagesForReport(
+                companyUID: companyUID,
+                dailyReportUID: entityUID,
+                images: images,
+              );
 
           await result.fold(
             (failure) async {
-              print('❌ Image upload failed for $entityType/$entityUID: ${failure.message}');
+              print(
+                '❌ Image upload failed for $entityType/$entityUID: ${failure.message}',
+              );
               await _imageLocalDataSource.incrementRetryCount(
                 SyncEntityType.dailyReport,
                 entityUID,
@@ -391,7 +415,9 @@ class SyncService {
               );
             },
             (uploadedFiles) async {
-              print('✅ Uploaded ${uploadedFiles.length} images for $entityType/$entityUID');
+              print(
+                '✅ Uploaded ${uploadedFiles.length} images for $entityType/$entityUID',
+              );
               await _imageLocalDataSource.markImagesAsSynced(
                 SyncEntityType.dailyReport,
                 entityUID,
@@ -412,18 +438,19 @@ class SyncService {
 
   /// Get sync status
   Future<SyncStatus> getSyncStatus() async {
-    final pendingCount = await (db.select(db.syncQueue)
-      ..where((tbl) => tbl.isProcessed.equals(false)))
-      .get()
-      .then((items) => items.length);
-    
-    final failedCount = await (db.select(db.syncQueue)
-      ..where((tbl) => 
-        tbl.isProcessed.equals(false) & 
-        tbl.error.isNotNull()))
-      .get()
-      .then((items) => items.length);
-    
+    final pendingCount =
+        await (db.select(db.syncQueue)
+              ..where((tbl) => tbl.isProcessed.equals(false)))
+            .get()
+            .then((items) => items.length);
+
+    final failedCount =
+        await (db.select(db.syncQueue)..where(
+              (tbl) => tbl.isProcessed.equals(false) & tbl.error.isNotNull(),
+            ))
+            .get()
+            .then((items) => items.length);
+
     return SyncStatus(
       pendingCount: pendingCount,
       failedCount: failedCount,
@@ -439,14 +466,14 @@ class SyncStatus {
   final int failedCount;
   final bool isSyncing;
   final DateTime? lastSyncTime;
-  
+
   const SyncStatus({
     required this.pendingCount,
     required this.failedCount,
     required this.isSyncing,
     this.lastSyncTime,
   });
-  
+
   bool get hasUnsyncedData => pendingCount > 0;
   bool get hasFailedSync => failedCount > 0;
 }

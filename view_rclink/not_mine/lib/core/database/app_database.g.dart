@@ -27413,6 +27413,3296 @@ class ContractorRelationsCompanion
   }
 }
 
+class $ProgramSettingsTable extends ProgramSettings
+    with TableInfo<$ProgramSettingsTable, ProgramSettingRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgramSettingsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _companyIDMeta = const VerificationMeta(
+    'companyID',
+  );
+  @override
+  late final GeneratedColumn<int> companyID = GeneratedColumn<int>(
+    'company_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workScopeIDMeta = const VerificationMeta(
+    'workScopeID',
+  );
+  @override
+  late final GeneratedColumn<int> workScopeID = GeneratedColumn<int>(
+    'work_scope_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _calculationTypeMeta = const VerificationMeta(
+    'calculationType',
+  );
+  @override
+  late final GeneratedColumn<String> calculationType = GeneratedColumn<String>(
+    'calculation_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _inputLabelMeta = const VerificationMeta(
+    'inputLabel',
+  );
+  @override
+  late final GeneratedColumn<String> inputLabel = GeneratedColumn<String>(
+    'input_label',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _inputValueMeta = const VerificationMeta(
+    'inputValue',
+  );
+  @override
+  late final GeneratedColumn<String> inputValue = GeneratedColumn<String>(
+    'input_value',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dividerValueMeta = const VerificationMeta(
+    'dividerValue',
+  );
+  @override
+  late final GeneratedColumn<String> dividerValue = GeneratedColumn<String>(
+    'divider_value',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dividerLabelMeta = const VerificationMeta(
+    'dividerLabel',
+  );
+  @override
+  late final GeneratedColumn<String> dividerLabel = GeneratedColumn<String>(
+    'divider_label',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _unitMeasurementMeta = const VerificationMeta(
+    'unitMeasurement',
+  );
+  @override
+  late final GeneratedColumn<String> unitMeasurement = GeneratedColumn<String>(
+    'unit_measurement',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _photoRequiredMeta = const VerificationMeta(
+    'photoRequired',
+  );
+  @override
+  late final GeneratedColumn<bool> photoRequired = GeneratedColumn<bool>(
+    'photo_required',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("photo_required" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _createdByIDMeta = const VerificationMeta(
+    'createdByID',
+  );
+  @override
+  late final GeneratedColumn<int> createdByID = GeneratedColumn<int>(
+    'created_by_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workScopeDataMeta = const VerificationMeta(
+    'workScopeData',
+  );
+  @override
+  late final GeneratedColumn<String> workScopeData = GeneratedColumn<String>(
+    'work_scope_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdByDataMeta = const VerificationMeta(
+    'createdByData',
+  );
+  @override
+  late final GeneratedColumn<String> createdByData = GeneratedColumn<String>(
+    'created_by_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _quantityTypesDataMeta = const VerificationMeta(
+    'quantityTypesData',
+  );
+  @override
+  late final GeneratedColumn<String> quantityTypesData =
+      GeneratedColumn<String>(
+        'quantity_types_data',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    companyID,
+    workScopeID,
+    calculationType,
+    inputLabel,
+    inputValue,
+    dividerValue,
+    dividerLabel,
+    unitMeasurement,
+    photoRequired,
+    isActive,
+    createdByID,
+    createdAt,
+    updatedAt,
+    workScopeData,
+    createdByData,
+    quantityTypesData,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'program_settings';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgramSettingRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('company_i_d')) {
+      context.handle(
+        _companyIDMeta,
+        companyID.isAcceptableOrUnknown(data['company_i_d']!, _companyIDMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_companyIDMeta);
+    }
+    if (data.containsKey('work_scope_i_d')) {
+      context.handle(
+        _workScopeIDMeta,
+        workScopeID.isAcceptableOrUnknown(
+          data['work_scope_i_d']!,
+          _workScopeIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workScopeIDMeta);
+    }
+    if (data.containsKey('calculation_type')) {
+      context.handle(
+        _calculationTypeMeta,
+        calculationType.isAcceptableOrUnknown(
+          data['calculation_type']!,
+          _calculationTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_calculationTypeMeta);
+    }
+    if (data.containsKey('input_label')) {
+      context.handle(
+        _inputLabelMeta,
+        inputLabel.isAcceptableOrUnknown(data['input_label']!, _inputLabelMeta),
+      );
+    }
+    if (data.containsKey('input_value')) {
+      context.handle(
+        _inputValueMeta,
+        inputValue.isAcceptableOrUnknown(data['input_value']!, _inputValueMeta),
+      );
+    }
+    if (data.containsKey('divider_value')) {
+      context.handle(
+        _dividerValueMeta,
+        dividerValue.isAcceptableOrUnknown(
+          data['divider_value']!,
+          _dividerValueMeta,
+        ),
+      );
+    }
+    if (data.containsKey('divider_label')) {
+      context.handle(
+        _dividerLabelMeta,
+        dividerLabel.isAcceptableOrUnknown(
+          data['divider_label']!,
+          _dividerLabelMeta,
+        ),
+      );
+    }
+    if (data.containsKey('unit_measurement')) {
+      context.handle(
+        _unitMeasurementMeta,
+        unitMeasurement.isAcceptableOrUnknown(
+          data['unit_measurement']!,
+          _unitMeasurementMeta,
+        ),
+      );
+    }
+    if (data.containsKey('photo_required')) {
+      context.handle(
+        _photoRequiredMeta,
+        photoRequired.isAcceptableOrUnknown(
+          data['photo_required']!,
+          _photoRequiredMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('created_by_i_d')) {
+      context.handle(
+        _createdByIDMeta,
+        createdByID.isAcceptableOrUnknown(
+          data['created_by_i_d']!,
+          _createdByIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_createdByIDMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('work_scope_data')) {
+      context.handle(
+        _workScopeDataMeta,
+        workScopeData.isAcceptableOrUnknown(
+          data['work_scope_data']!,
+          _workScopeDataMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_by_data')) {
+      context.handle(
+        _createdByDataMeta,
+        createdByData.isAcceptableOrUnknown(
+          data['created_by_data']!,
+          _createdByDataMeta,
+        ),
+      );
+    }
+    if (data.containsKey('quantity_types_data')) {
+      context.handle(
+        _quantityTypesDataMeta,
+        quantityTypesData.isAcceptableOrUnknown(
+          data['quantity_types_data']!,
+          _quantityTypesDataMeta,
+        ),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
+  @override
+  ProgramSettingRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgramSettingRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      companyID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}company_i_d'],
+      )!,
+      workScopeID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}work_scope_i_d'],
+      )!,
+      calculationType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}calculation_type'],
+      )!,
+      inputLabel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}input_label'],
+      ),
+      inputValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}input_value'],
+      ),
+      dividerValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}divider_value'],
+      ),
+      dividerLabel: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}divider_label'],
+      ),
+      unitMeasurement: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}unit_measurement'],
+      ),
+      photoRequired: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}photo_required'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      createdByID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by_i_d'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      workScopeData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}work_scope_data'],
+      ),
+      createdByData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by_data'],
+      ),
+      quantityTypesData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}quantity_types_data'],
+      ),
+    );
+  }
+
+  @override
+  $ProgramSettingsTable createAlias(String alias) {
+    return $ProgramSettingsTable(attachedDatabase, alias);
+  }
+}
+
+class ProgramSettingRecord extends DataClass
+    implements Insertable<ProgramSettingRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final int companyID;
+  final int workScopeID;
+  final String calculationType;
+  final String? inputLabel;
+  final String? inputValue;
+  final String? dividerValue;
+  final String? dividerLabel;
+  final String? unitMeasurement;
+  final bool photoRequired;
+  final bool isActive;
+  final int createdByID;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String? workScopeData;
+  final String? createdByData;
+  final String? quantityTypesData;
+  const ProgramSettingRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.companyID,
+    required this.workScopeID,
+    required this.calculationType,
+    this.inputLabel,
+    this.inputValue,
+    this.dividerValue,
+    this.dividerLabel,
+    this.unitMeasurement,
+    required this.photoRequired,
+    required this.isActive,
+    required this.createdByID,
+    required this.createdAt,
+    required this.updatedAt,
+    this.workScopeData,
+    this.createdByData,
+    this.quantityTypesData,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['company_i_d'] = Variable<int>(companyID);
+    map['work_scope_i_d'] = Variable<int>(workScopeID);
+    map['calculation_type'] = Variable<String>(calculationType);
+    if (!nullToAbsent || inputLabel != null) {
+      map['input_label'] = Variable<String>(inputLabel);
+    }
+    if (!nullToAbsent || inputValue != null) {
+      map['input_value'] = Variable<String>(inputValue);
+    }
+    if (!nullToAbsent || dividerValue != null) {
+      map['divider_value'] = Variable<String>(dividerValue);
+    }
+    if (!nullToAbsent || dividerLabel != null) {
+      map['divider_label'] = Variable<String>(dividerLabel);
+    }
+    if (!nullToAbsent || unitMeasurement != null) {
+      map['unit_measurement'] = Variable<String>(unitMeasurement);
+    }
+    map['photo_required'] = Variable<bool>(photoRequired);
+    map['is_active'] = Variable<bool>(isActive);
+    map['created_by_i_d'] = Variable<int>(createdByID);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || workScopeData != null) {
+      map['work_scope_data'] = Variable<String>(workScopeData);
+    }
+    if (!nullToAbsent || createdByData != null) {
+      map['created_by_data'] = Variable<String>(createdByData);
+    }
+    if (!nullToAbsent || quantityTypesData != null) {
+      map['quantity_types_data'] = Variable<String>(quantityTypesData);
+    }
+    return map;
+  }
+
+  ProgramSettingsCompanion toCompanion(bool nullToAbsent) {
+    return ProgramSettingsCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      companyID: Value(companyID),
+      workScopeID: Value(workScopeID),
+      calculationType: Value(calculationType),
+      inputLabel: inputLabel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(inputLabel),
+      inputValue: inputValue == null && nullToAbsent
+          ? const Value.absent()
+          : Value(inputValue),
+      dividerValue: dividerValue == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dividerValue),
+      dividerLabel: dividerLabel == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dividerLabel),
+      unitMeasurement: unitMeasurement == null && nullToAbsent
+          ? const Value.absent()
+          : Value(unitMeasurement),
+      photoRequired: Value(photoRequired),
+      isActive: Value(isActive),
+      createdByID: Value(createdByID),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      workScopeData: workScopeData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(workScopeData),
+      createdByData: createdByData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdByData),
+      quantityTypesData: quantityTypesData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(quantityTypesData),
+    );
+  }
+
+  factory ProgramSettingRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgramSettingRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      companyID: serializer.fromJson<int>(json['companyID']),
+      workScopeID: serializer.fromJson<int>(json['workScopeID']),
+      calculationType: serializer.fromJson<String>(json['calculationType']),
+      inputLabel: serializer.fromJson<String?>(json['inputLabel']),
+      inputValue: serializer.fromJson<String?>(json['inputValue']),
+      dividerValue: serializer.fromJson<String?>(json['dividerValue']),
+      dividerLabel: serializer.fromJson<String?>(json['dividerLabel']),
+      unitMeasurement: serializer.fromJson<String?>(json['unitMeasurement']),
+      photoRequired: serializer.fromJson<bool>(json['photoRequired']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      createdByID: serializer.fromJson<int>(json['createdByID']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      workScopeData: serializer.fromJson<String?>(json['workScopeData']),
+      createdByData: serializer.fromJson<String?>(json['createdByData']),
+      quantityTypesData: serializer.fromJson<String?>(
+        json['quantityTypesData'],
+      ),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'companyID': serializer.toJson<int>(companyID),
+      'workScopeID': serializer.toJson<int>(workScopeID),
+      'calculationType': serializer.toJson<String>(calculationType),
+      'inputLabel': serializer.toJson<String?>(inputLabel),
+      'inputValue': serializer.toJson<String?>(inputValue),
+      'dividerValue': serializer.toJson<String?>(dividerValue),
+      'dividerLabel': serializer.toJson<String?>(dividerLabel),
+      'unitMeasurement': serializer.toJson<String?>(unitMeasurement),
+      'photoRequired': serializer.toJson<bool>(photoRequired),
+      'isActive': serializer.toJson<bool>(isActive),
+      'createdByID': serializer.toJson<int>(createdByID),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'workScopeData': serializer.toJson<String?>(workScopeData),
+      'createdByData': serializer.toJson<String?>(createdByData),
+      'quantityTypesData': serializer.toJson<String?>(quantityTypesData),
+    };
+  }
+
+  ProgramSettingRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    int? companyID,
+    int? workScopeID,
+    String? calculationType,
+    Value<String?> inputLabel = const Value.absent(),
+    Value<String?> inputValue = const Value.absent(),
+    Value<String?> dividerValue = const Value.absent(),
+    Value<String?> dividerLabel = const Value.absent(),
+    Value<String?> unitMeasurement = const Value.absent(),
+    bool? photoRequired,
+    bool? isActive,
+    int? createdByID,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<String?> workScopeData = const Value.absent(),
+    Value<String?> createdByData = const Value.absent(),
+    Value<String?> quantityTypesData = const Value.absent(),
+  }) => ProgramSettingRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    companyID: companyID ?? this.companyID,
+    workScopeID: workScopeID ?? this.workScopeID,
+    calculationType: calculationType ?? this.calculationType,
+    inputLabel: inputLabel.present ? inputLabel.value : this.inputLabel,
+    inputValue: inputValue.present ? inputValue.value : this.inputValue,
+    dividerValue: dividerValue.present ? dividerValue.value : this.dividerValue,
+    dividerLabel: dividerLabel.present ? dividerLabel.value : this.dividerLabel,
+    unitMeasurement: unitMeasurement.present
+        ? unitMeasurement.value
+        : this.unitMeasurement,
+    photoRequired: photoRequired ?? this.photoRequired,
+    isActive: isActive ?? this.isActive,
+    createdByID: createdByID ?? this.createdByID,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    workScopeData: workScopeData.present
+        ? workScopeData.value
+        : this.workScopeData,
+    createdByData: createdByData.present
+        ? createdByData.value
+        : this.createdByData,
+    quantityTypesData: quantityTypesData.present
+        ? quantityTypesData.value
+        : this.quantityTypesData,
+  );
+  ProgramSettingRecord copyWithCompanion(ProgramSettingsCompanion data) {
+    return ProgramSettingRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      companyID: data.companyID.present ? data.companyID.value : this.companyID,
+      workScopeID: data.workScopeID.present
+          ? data.workScopeID.value
+          : this.workScopeID,
+      calculationType: data.calculationType.present
+          ? data.calculationType.value
+          : this.calculationType,
+      inputLabel: data.inputLabel.present
+          ? data.inputLabel.value
+          : this.inputLabel,
+      inputValue: data.inputValue.present
+          ? data.inputValue.value
+          : this.inputValue,
+      dividerValue: data.dividerValue.present
+          ? data.dividerValue.value
+          : this.dividerValue,
+      dividerLabel: data.dividerLabel.present
+          ? data.dividerLabel.value
+          : this.dividerLabel,
+      unitMeasurement: data.unitMeasurement.present
+          ? data.unitMeasurement.value
+          : this.unitMeasurement,
+      photoRequired: data.photoRequired.present
+          ? data.photoRequired.value
+          : this.photoRequired,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      createdByID: data.createdByID.present
+          ? data.createdByID.value
+          : this.createdByID,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      workScopeData: data.workScopeData.present
+          ? data.workScopeData.value
+          : this.workScopeData,
+      createdByData: data.createdByData.present
+          ? data.createdByData.value
+          : this.createdByData,
+      quantityTypesData: data.quantityTypesData.present
+          ? data.quantityTypesData.value
+          : this.quantityTypesData,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramSettingRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('companyID: $companyID, ')
+          ..write('workScopeID: $workScopeID, ')
+          ..write('calculationType: $calculationType, ')
+          ..write('inputLabel: $inputLabel, ')
+          ..write('inputValue: $inputValue, ')
+          ..write('dividerValue: $dividerValue, ')
+          ..write('dividerLabel: $dividerLabel, ')
+          ..write('unitMeasurement: $unitMeasurement, ')
+          ..write('photoRequired: $photoRequired, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdByID: $createdByID, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('workScopeData: $workScopeData, ')
+          ..write('createdByData: $createdByData, ')
+          ..write('quantityTypesData: $quantityTypesData')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    companyID,
+    workScopeID,
+    calculationType,
+    inputLabel,
+    inputValue,
+    dividerValue,
+    dividerLabel,
+    unitMeasurement,
+    photoRequired,
+    isActive,
+    createdByID,
+    createdAt,
+    updatedAt,
+    workScopeData,
+    createdByData,
+    quantityTypesData,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgramSettingRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.companyID == this.companyID &&
+          other.workScopeID == this.workScopeID &&
+          other.calculationType == this.calculationType &&
+          other.inputLabel == this.inputLabel &&
+          other.inputValue == this.inputValue &&
+          other.dividerValue == this.dividerValue &&
+          other.dividerLabel == this.dividerLabel &&
+          other.unitMeasurement == this.unitMeasurement &&
+          other.photoRequired == this.photoRequired &&
+          other.isActive == this.isActive &&
+          other.createdByID == this.createdByID &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.workScopeData == this.workScopeData &&
+          other.createdByData == this.createdByData &&
+          other.quantityTypesData == this.quantityTypesData);
+}
+
+class ProgramSettingsCompanion extends UpdateCompanion<ProgramSettingRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<int> companyID;
+  final Value<int> workScopeID;
+  final Value<String> calculationType;
+  final Value<String?> inputLabel;
+  final Value<String?> inputValue;
+  final Value<String?> dividerValue;
+  final Value<String?> dividerLabel;
+  final Value<String?> unitMeasurement;
+  final Value<bool> photoRequired;
+  final Value<bool> isActive;
+  final Value<int> createdByID;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<String?> workScopeData;
+  final Value<String?> createdByData;
+  final Value<String?> quantityTypesData;
+  const ProgramSettingsCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.companyID = const Value.absent(),
+    this.workScopeID = const Value.absent(),
+    this.calculationType = const Value.absent(),
+    this.inputLabel = const Value.absent(),
+    this.inputValue = const Value.absent(),
+    this.dividerValue = const Value.absent(),
+    this.dividerLabel = const Value.absent(),
+    this.unitMeasurement = const Value.absent(),
+    this.photoRequired = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdByID = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.workScopeData = const Value.absent(),
+    this.createdByData = const Value.absent(),
+    this.quantityTypesData = const Value.absent(),
+  });
+  ProgramSettingsCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    required String uid,
+    required int companyID,
+    required int workScopeID,
+    required String calculationType,
+    this.inputLabel = const Value.absent(),
+    this.inputValue = const Value.absent(),
+    this.dividerValue = const Value.absent(),
+    this.dividerLabel = const Value.absent(),
+    this.unitMeasurement = const Value.absent(),
+    this.photoRequired = const Value.absent(),
+    this.isActive = const Value.absent(),
+    required int createdByID,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.workScopeData = const Value.absent(),
+    this.createdByData = const Value.absent(),
+    this.quantityTypesData = const Value.absent(),
+  }) : uid = Value(uid),
+       companyID = Value(companyID),
+       workScopeID = Value(workScopeID),
+       calculationType = Value(calculationType),
+       createdByID = Value(createdByID),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<ProgramSettingRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<int>? companyID,
+    Expression<int>? workScopeID,
+    Expression<String>? calculationType,
+    Expression<String>? inputLabel,
+    Expression<String>? inputValue,
+    Expression<String>? dividerValue,
+    Expression<String>? dividerLabel,
+    Expression<String>? unitMeasurement,
+    Expression<bool>? photoRequired,
+    Expression<bool>? isActive,
+    Expression<int>? createdByID,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<String>? workScopeData,
+    Expression<String>? createdByData,
+    Expression<String>? quantityTypesData,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (companyID != null) 'company_i_d': companyID,
+      if (workScopeID != null) 'work_scope_i_d': workScopeID,
+      if (calculationType != null) 'calculation_type': calculationType,
+      if (inputLabel != null) 'input_label': inputLabel,
+      if (inputValue != null) 'input_value': inputValue,
+      if (dividerValue != null) 'divider_value': dividerValue,
+      if (dividerLabel != null) 'divider_label': dividerLabel,
+      if (unitMeasurement != null) 'unit_measurement': unitMeasurement,
+      if (photoRequired != null) 'photo_required': photoRequired,
+      if (isActive != null) 'is_active': isActive,
+      if (createdByID != null) 'created_by_i_d': createdByID,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (workScopeData != null) 'work_scope_data': workScopeData,
+      if (createdByData != null) 'created_by_data': createdByData,
+      if (quantityTypesData != null) 'quantity_types_data': quantityTypesData,
+    });
+  }
+
+  ProgramSettingsCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<int>? companyID,
+    Value<int>? workScopeID,
+    Value<String>? calculationType,
+    Value<String?>? inputLabel,
+    Value<String?>? inputValue,
+    Value<String?>? dividerValue,
+    Value<String?>? dividerLabel,
+    Value<String?>? unitMeasurement,
+    Value<bool>? photoRequired,
+    Value<bool>? isActive,
+    Value<int>? createdByID,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<String?>? workScopeData,
+    Value<String?>? createdByData,
+    Value<String?>? quantityTypesData,
+  }) {
+    return ProgramSettingsCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      companyID: companyID ?? this.companyID,
+      workScopeID: workScopeID ?? this.workScopeID,
+      calculationType: calculationType ?? this.calculationType,
+      inputLabel: inputLabel ?? this.inputLabel,
+      inputValue: inputValue ?? this.inputValue,
+      dividerValue: dividerValue ?? this.dividerValue,
+      dividerLabel: dividerLabel ?? this.dividerLabel,
+      unitMeasurement: unitMeasurement ?? this.unitMeasurement,
+      photoRequired: photoRequired ?? this.photoRequired,
+      isActive: isActive ?? this.isActive,
+      createdByID: createdByID ?? this.createdByID,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      workScopeData: workScopeData ?? this.workScopeData,
+      createdByData: createdByData ?? this.createdByData,
+      quantityTypesData: quantityTypesData ?? this.quantityTypesData,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (companyID.present) {
+      map['company_i_d'] = Variable<int>(companyID.value);
+    }
+    if (workScopeID.present) {
+      map['work_scope_i_d'] = Variable<int>(workScopeID.value);
+    }
+    if (calculationType.present) {
+      map['calculation_type'] = Variable<String>(calculationType.value);
+    }
+    if (inputLabel.present) {
+      map['input_label'] = Variable<String>(inputLabel.value);
+    }
+    if (inputValue.present) {
+      map['input_value'] = Variable<String>(inputValue.value);
+    }
+    if (dividerValue.present) {
+      map['divider_value'] = Variable<String>(dividerValue.value);
+    }
+    if (dividerLabel.present) {
+      map['divider_label'] = Variable<String>(dividerLabel.value);
+    }
+    if (unitMeasurement.present) {
+      map['unit_measurement'] = Variable<String>(unitMeasurement.value);
+    }
+    if (photoRequired.present) {
+      map['photo_required'] = Variable<bool>(photoRequired.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (createdByID.present) {
+      map['created_by_i_d'] = Variable<int>(createdByID.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (workScopeData.present) {
+      map['work_scope_data'] = Variable<String>(workScopeData.value);
+    }
+    if (createdByData.present) {
+      map['created_by_data'] = Variable<String>(createdByData.value);
+    }
+    if (quantityTypesData.present) {
+      map['quantity_types_data'] = Variable<String>(quantityTypesData.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramSettingsCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('companyID: $companyID, ')
+          ..write('workScopeID: $workScopeID, ')
+          ..write('calculationType: $calculationType, ')
+          ..write('inputLabel: $inputLabel, ')
+          ..write('inputValue: $inputValue, ')
+          ..write('dividerValue: $dividerValue, ')
+          ..write('dividerLabel: $dividerLabel, ')
+          ..write('unitMeasurement: $unitMeasurement, ')
+          ..write('photoRequired: $photoRequired, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdByID: $createdByID, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('workScopeData: $workScopeData, ')
+          ..write('createdByData: $createdByData, ')
+          ..write('quantityTypesData: $quantityTypesData')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $ProgramsTable extends Programs
+    with TableInfo<$ProgramsTable, ProgramRecord> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProgramsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _isSyncedMeta = const VerificationMeta(
+    'isSynced',
+  );
+  @override
+  late final GeneratedColumn<bool> isSynced = GeneratedColumn<bool>(
+    'is_synced',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_synced" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncActionMeta = const VerificationMeta(
+    'syncAction',
+  );
+  @override
+  late final GeneratedColumn<String> syncAction = GeneratedColumn<String>(
+    'sync_action',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncRetryCountMeta = const VerificationMeta(
+    'syncRetryCount',
+  );
+  @override
+  late final GeneratedColumn<int> syncRetryCount = GeneratedColumn<int>(
+    'sync_retry_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _syncErrorMeta = const VerificationMeta(
+    'syncError',
+  );
+  @override
+  late final GeneratedColumn<String> syncError = GeneratedColumn<String>(
+    'sync_error',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _lastSyncAttemptMeta = const VerificationMeta(
+    'lastSyncAttempt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> lastSyncAttempt =
+      GeneratedColumn<DateTime>(
+        'last_sync_attempt',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+    'id',
+    aliasedName,
+    false,
+    hasAutoIncrement: true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'PRIMARY KEY AUTOINCREMENT',
+    ),
+  );
+  static const VerificationMeta _uidMeta = const VerificationMeta('uid');
+  @override
+  late final GeneratedColumn<String> uid = GeneratedColumn<String>(
+    'uid',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _companyIDMeta = const VerificationMeta(
+    'companyID',
+  );
+  @override
+  late final GeneratedColumn<int> companyID = GeneratedColumn<int>(
+    'company_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workScopeIDMeta = const VerificationMeta(
+    'workScopeID',
+  );
+  @override
+  late final GeneratedColumn<int> workScopeID = GeneratedColumn<int>(
+    'work_scope_i_d',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _workScopeDataMeta = const VerificationMeta(
+    'workScopeData',
+  );
+  @override
+  late final GeneratedColumn<String> workScopeData = GeneratedColumn<String>(
+    'work_scope_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _roadIDMeta = const VerificationMeta('roadID');
+  @override
+  late final GeneratedColumn<int> roadID = GeneratedColumn<int>(
+    'road_i_d',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _roadDataMeta = const VerificationMeta(
+    'roadData',
+  );
+  @override
+  late final GeneratedColumn<String> roadData = GeneratedColumn<String>(
+    'road_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _contractRelationIDMeta =
+      const VerificationMeta('contractRelationID');
+  @override
+  late final GeneratedColumn<int> contractRelationID = GeneratedColumn<int>(
+    'contract_relation_i_d',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _contractRelationDataMeta =
+      const VerificationMeta('contractRelationData');
+  @override
+  late final GeneratedColumn<String> contractRelationData =
+      GeneratedColumn<String>(
+        'contract_relation_data',
+        aliasedName,
+        true,
+        type: DriftSqlType.string,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _periodStartMeta = const VerificationMeta(
+    'periodStart',
+  );
+  @override
+  late final GeneratedColumn<DateTime> periodStart = GeneratedColumn<DateTime>(
+    'period_start',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _periodEndMeta = const VerificationMeta(
+    'periodEnd',
+  );
+  @override
+  late final GeneratedColumn<DateTime> periodEnd = GeneratedColumn<DateTime>(
+    'period_end',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _calculationTypeMeta = const VerificationMeta(
+    'calculationType',
+  );
+  @override
+  late final GeneratedColumn<String> calculationType = GeneratedColumn<String>(
+    'calculation_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _fromSectionMeta = const VerificationMeta(
+    'fromSection',
+  );
+  @override
+  late final GeneratedColumn<String> fromSection = GeneratedColumn<String>(
+    'from_section',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _toSectionMeta = const VerificationMeta(
+    'toSection',
+  );
+  @override
+  late final GeneratedColumn<String> toSection = GeneratedColumn<String>(
+    'to_section',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _dividerValueMeta = const VerificationMeta(
+    'dividerValue',
+  );
+  @override
+  late final GeneratedColumn<String> dividerValue = GeneratedColumn<String>(
+    'divider_value',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _inputValueMeta = const VerificationMeta(
+    'inputValue',
+  );
+  @override
+  late final GeneratedColumn<String> inputValue = GeneratedColumn<String>(
+    'input_value',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _requiredReportsCountMeta =
+      const VerificationMeta('requiredReportsCount');
+  @override
+  late final GeneratedColumn<int> requiredReportsCount = GeneratedColumn<int>(
+    'required_reports_count',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _totalReportsMeta = const VerificationMeta(
+    'totalReports',
+  );
+  @override
+  late final GeneratedColumn<int> totalReports = GeneratedColumn<int>(
+    'total_reports',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _latitudeMeta = const VerificationMeta(
+    'latitude',
+  );
+  @override
+  late final GeneratedColumn<double> latitude = GeneratedColumn<double>(
+    'latitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _longitudeMeta = const VerificationMeta(
+    'longitude',
+  );
+  @override
+  late final GeneratedColumn<double> longitude = GeneratedColumn<double>(
+    'longitude',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _quantitiesDataMeta = const VerificationMeta(
+    'quantitiesData',
+  );
+  @override
+  late final GeneratedColumn<String> quantitiesData = GeneratedColumn<String>(
+    'quantities_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _filesDataMeta = const VerificationMeta(
+    'filesData',
+  );
+  @override
+  late final GeneratedColumn<String> filesData = GeneratedColumn<String>(
+    'files_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdByIDMeta = const VerificationMeta(
+    'createdByID',
+  );
+  @override
+  late final GeneratedColumn<int> createdByID = GeneratedColumn<int>(
+    'created_by_i_d',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdByDataMeta = const VerificationMeta(
+    'createdByData',
+  );
+  @override
+  late final GeneratedColumn<String> createdByData = GeneratedColumn<String>(
+    'created_by_data',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    companyID,
+    workScopeID,
+    workScopeData,
+    roadID,
+    roadData,
+    contractRelationID,
+    contractRelationData,
+    name,
+    description,
+    periodStart,
+    periodEnd,
+    calculationType,
+    fromSection,
+    toSection,
+    dividerValue,
+    inputValue,
+    requiredReportsCount,
+    totalReports,
+    status,
+    latitude,
+    longitude,
+    quantitiesData,
+    filesData,
+    createdByID,
+    createdByData,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'programs';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<ProgramRecord> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('is_synced')) {
+      context.handle(
+        _isSyncedMeta,
+        isSynced.isAcceptableOrUnknown(data['is_synced']!, _isSyncedMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_action')) {
+      context.handle(
+        _syncActionMeta,
+        syncAction.isAcceptableOrUnknown(data['sync_action']!, _syncActionMeta),
+      );
+    }
+    if (data.containsKey('sync_retry_count')) {
+      context.handle(
+        _syncRetryCountMeta,
+        syncRetryCount.isAcceptableOrUnknown(
+          data['sync_retry_count']!,
+          _syncRetryCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('sync_error')) {
+      context.handle(
+        _syncErrorMeta,
+        syncError.isAcceptableOrUnknown(data['sync_error']!, _syncErrorMeta),
+      );
+    }
+    if (data.containsKey('last_sync_attempt')) {
+      context.handle(
+        _lastSyncAttemptMeta,
+        lastSyncAttempt.isAcceptableOrUnknown(
+          data['last_sync_attempt']!,
+          _lastSyncAttemptMeta,
+        ),
+      );
+    }
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('uid')) {
+      context.handle(
+        _uidMeta,
+        uid.isAcceptableOrUnknown(data['uid']!, _uidMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_uidMeta);
+    }
+    if (data.containsKey('company_i_d')) {
+      context.handle(
+        _companyIDMeta,
+        companyID.isAcceptableOrUnknown(data['company_i_d']!, _companyIDMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_companyIDMeta);
+    }
+    if (data.containsKey('work_scope_i_d')) {
+      context.handle(
+        _workScopeIDMeta,
+        workScopeID.isAcceptableOrUnknown(
+          data['work_scope_i_d']!,
+          _workScopeIDMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_workScopeIDMeta);
+    }
+    if (data.containsKey('work_scope_data')) {
+      context.handle(
+        _workScopeDataMeta,
+        workScopeData.isAcceptableOrUnknown(
+          data['work_scope_data']!,
+          _workScopeDataMeta,
+        ),
+      );
+    }
+    if (data.containsKey('road_i_d')) {
+      context.handle(
+        _roadIDMeta,
+        roadID.isAcceptableOrUnknown(data['road_i_d']!, _roadIDMeta),
+      );
+    }
+    if (data.containsKey('road_data')) {
+      context.handle(
+        _roadDataMeta,
+        roadData.isAcceptableOrUnknown(data['road_data']!, _roadDataMeta),
+      );
+    }
+    if (data.containsKey('contract_relation_i_d')) {
+      context.handle(
+        _contractRelationIDMeta,
+        contractRelationID.isAcceptableOrUnknown(
+          data['contract_relation_i_d']!,
+          _contractRelationIDMeta,
+        ),
+      );
+    }
+    if (data.containsKey('contract_relation_data')) {
+      context.handle(
+        _contractRelationDataMeta,
+        contractRelationData.isAcceptableOrUnknown(
+          data['contract_relation_data']!,
+          _contractRelationDataMeta,
+        ),
+      );
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('period_start')) {
+      context.handle(
+        _periodStartMeta,
+        periodStart.isAcceptableOrUnknown(
+          data['period_start']!,
+          _periodStartMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_periodStartMeta);
+    }
+    if (data.containsKey('period_end')) {
+      context.handle(
+        _periodEndMeta,
+        periodEnd.isAcceptableOrUnknown(data['period_end']!, _periodEndMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_periodEndMeta);
+    }
+    if (data.containsKey('calculation_type')) {
+      context.handle(
+        _calculationTypeMeta,
+        calculationType.isAcceptableOrUnknown(
+          data['calculation_type']!,
+          _calculationTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_calculationTypeMeta);
+    }
+    if (data.containsKey('from_section')) {
+      context.handle(
+        _fromSectionMeta,
+        fromSection.isAcceptableOrUnknown(
+          data['from_section']!,
+          _fromSectionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('to_section')) {
+      context.handle(
+        _toSectionMeta,
+        toSection.isAcceptableOrUnknown(data['to_section']!, _toSectionMeta),
+      );
+    }
+    if (data.containsKey('divider_value')) {
+      context.handle(
+        _dividerValueMeta,
+        dividerValue.isAcceptableOrUnknown(
+          data['divider_value']!,
+          _dividerValueMeta,
+        ),
+      );
+    }
+    if (data.containsKey('input_value')) {
+      context.handle(
+        _inputValueMeta,
+        inputValue.isAcceptableOrUnknown(data['input_value']!, _inputValueMeta),
+      );
+    }
+    if (data.containsKey('required_reports_count')) {
+      context.handle(
+        _requiredReportsCountMeta,
+        requiredReportsCount.isAcceptableOrUnknown(
+          data['required_reports_count']!,
+          _requiredReportsCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('total_reports')) {
+      context.handle(
+        _totalReportsMeta,
+        totalReports.isAcceptableOrUnknown(
+          data['total_reports']!,
+          _totalReportsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    if (data.containsKey('latitude')) {
+      context.handle(
+        _latitudeMeta,
+        latitude.isAcceptableOrUnknown(data['latitude']!, _latitudeMeta),
+      );
+    }
+    if (data.containsKey('longitude')) {
+      context.handle(
+        _longitudeMeta,
+        longitude.isAcceptableOrUnknown(data['longitude']!, _longitudeMeta),
+      );
+    }
+    if (data.containsKey('quantities_data')) {
+      context.handle(
+        _quantitiesDataMeta,
+        quantitiesData.isAcceptableOrUnknown(
+          data['quantities_data']!,
+          _quantitiesDataMeta,
+        ),
+      );
+    }
+    if (data.containsKey('files_data')) {
+      context.handle(
+        _filesDataMeta,
+        filesData.isAcceptableOrUnknown(data['files_data']!, _filesDataMeta),
+      );
+    }
+    if (data.containsKey('created_by_i_d')) {
+      context.handle(
+        _createdByIDMeta,
+        createdByID.isAcceptableOrUnknown(
+          data['created_by_i_d']!,
+          _createdByIDMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_by_data')) {
+      context.handle(
+        _createdByDataMeta,
+        createdByData.isAcceptableOrUnknown(
+          data['created_by_data']!,
+          _createdByDataMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {uid};
+  @override
+  ProgramRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProgramRecord(
+      isSynced: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_synced'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncAction: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_action'],
+      ),
+      syncRetryCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sync_retry_count'],
+      )!,
+      syncError: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_error'],
+      ),
+      lastSyncAttempt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}last_sync_attempt'],
+      ),
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}id'],
+      )!,
+      uid: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}uid'],
+      )!,
+      companyID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}company_i_d'],
+      )!,
+      workScopeID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}work_scope_i_d'],
+      )!,
+      workScopeData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}work_scope_data'],
+      ),
+      roadID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}road_i_d'],
+      ),
+      roadData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}road_data'],
+      ),
+      contractRelationID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}contract_relation_i_d'],
+      ),
+      contractRelationData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}contract_relation_data'],
+      ),
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      ),
+      periodStart: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}period_start'],
+      )!,
+      periodEnd: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}period_end'],
+      )!,
+      calculationType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}calculation_type'],
+      )!,
+      fromSection: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}from_section'],
+      ),
+      toSection: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}to_section'],
+      ),
+      dividerValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}divider_value'],
+      ),
+      inputValue: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}input_value'],
+      ),
+      requiredReportsCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}required_reports_count'],
+      ),
+      totalReports: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_reports'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      latitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}latitude'],
+      ),
+      longitude: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}longitude'],
+      ),
+      quantitiesData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}quantities_data'],
+      ),
+      filesData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}files_data'],
+      ),
+      createdByID: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}created_by_i_d'],
+      ),
+      createdByData: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by_data'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $ProgramsTable createAlias(String alias) {
+    return $ProgramsTable(attachedDatabase, alias);
+  }
+}
+
+class ProgramRecord extends DataClass implements Insertable<ProgramRecord> {
+  final bool isSynced;
+  final DateTime? deletedAt;
+  final String? syncAction;
+  final int syncRetryCount;
+  final String? syncError;
+  final DateTime? lastSyncAttempt;
+  final int id;
+  final String uid;
+  final int companyID;
+  final int workScopeID;
+  final String? workScopeData;
+  final int? roadID;
+  final String? roadData;
+  final int? contractRelationID;
+  final String? contractRelationData;
+  final String name;
+  final String? description;
+  final DateTime periodStart;
+  final DateTime periodEnd;
+  final String calculationType;
+  final String? fromSection;
+  final String? toSection;
+  final String? dividerValue;
+  final String? inputValue;
+  final int? requiredReportsCount;
+  final int totalReports;
+  final String status;
+  final double? latitude;
+  final double? longitude;
+  final String? quantitiesData;
+  final String? filesData;
+  final int? createdByID;
+  final String? createdByData;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const ProgramRecord({
+    required this.isSynced,
+    this.deletedAt,
+    this.syncAction,
+    required this.syncRetryCount,
+    this.syncError,
+    this.lastSyncAttempt,
+    required this.id,
+    required this.uid,
+    required this.companyID,
+    required this.workScopeID,
+    this.workScopeData,
+    this.roadID,
+    this.roadData,
+    this.contractRelationID,
+    this.contractRelationData,
+    required this.name,
+    this.description,
+    required this.periodStart,
+    required this.periodEnd,
+    required this.calculationType,
+    this.fromSection,
+    this.toSection,
+    this.dividerValue,
+    this.inputValue,
+    this.requiredReportsCount,
+    required this.totalReports,
+    required this.status,
+    this.latitude,
+    this.longitude,
+    this.quantitiesData,
+    this.filesData,
+    this.createdByID,
+    this.createdByData,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['is_synced'] = Variable<bool>(isSynced);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    if (!nullToAbsent || syncAction != null) {
+      map['sync_action'] = Variable<String>(syncAction);
+    }
+    map['sync_retry_count'] = Variable<int>(syncRetryCount);
+    if (!nullToAbsent || syncError != null) {
+      map['sync_error'] = Variable<String>(syncError);
+    }
+    if (!nullToAbsent || lastSyncAttempt != null) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt);
+    }
+    map['id'] = Variable<int>(id);
+    map['uid'] = Variable<String>(uid);
+    map['company_i_d'] = Variable<int>(companyID);
+    map['work_scope_i_d'] = Variable<int>(workScopeID);
+    if (!nullToAbsent || workScopeData != null) {
+      map['work_scope_data'] = Variable<String>(workScopeData);
+    }
+    if (!nullToAbsent || roadID != null) {
+      map['road_i_d'] = Variable<int>(roadID);
+    }
+    if (!nullToAbsent || roadData != null) {
+      map['road_data'] = Variable<String>(roadData);
+    }
+    if (!nullToAbsent || contractRelationID != null) {
+      map['contract_relation_i_d'] = Variable<int>(contractRelationID);
+    }
+    if (!nullToAbsent || contractRelationData != null) {
+      map['contract_relation_data'] = Variable<String>(contractRelationData);
+    }
+    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || description != null) {
+      map['description'] = Variable<String>(description);
+    }
+    map['period_start'] = Variable<DateTime>(periodStart);
+    map['period_end'] = Variable<DateTime>(periodEnd);
+    map['calculation_type'] = Variable<String>(calculationType);
+    if (!nullToAbsent || fromSection != null) {
+      map['from_section'] = Variable<String>(fromSection);
+    }
+    if (!nullToAbsent || toSection != null) {
+      map['to_section'] = Variable<String>(toSection);
+    }
+    if (!nullToAbsent || dividerValue != null) {
+      map['divider_value'] = Variable<String>(dividerValue);
+    }
+    if (!nullToAbsent || inputValue != null) {
+      map['input_value'] = Variable<String>(inputValue);
+    }
+    if (!nullToAbsent || requiredReportsCount != null) {
+      map['required_reports_count'] = Variable<int>(requiredReportsCount);
+    }
+    map['total_reports'] = Variable<int>(totalReports);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || latitude != null) {
+      map['latitude'] = Variable<double>(latitude);
+    }
+    if (!nullToAbsent || longitude != null) {
+      map['longitude'] = Variable<double>(longitude);
+    }
+    if (!nullToAbsent || quantitiesData != null) {
+      map['quantities_data'] = Variable<String>(quantitiesData);
+    }
+    if (!nullToAbsent || filesData != null) {
+      map['files_data'] = Variable<String>(filesData);
+    }
+    if (!nullToAbsent || createdByID != null) {
+      map['created_by_i_d'] = Variable<int>(createdByID);
+    }
+    if (!nullToAbsent || createdByData != null) {
+      map['created_by_data'] = Variable<String>(createdByData);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  ProgramsCompanion toCompanion(bool nullToAbsent) {
+    return ProgramsCompanion(
+      isSynced: Value(isSynced),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncAction: syncAction == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncAction),
+      syncRetryCount: Value(syncRetryCount),
+      syncError: syncError == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncError),
+      lastSyncAttempt: lastSyncAttempt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastSyncAttempt),
+      id: Value(id),
+      uid: Value(uid),
+      companyID: Value(companyID),
+      workScopeID: Value(workScopeID),
+      workScopeData: workScopeData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(workScopeData),
+      roadID: roadID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(roadID),
+      roadData: roadData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(roadData),
+      contractRelationID: contractRelationID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contractRelationID),
+      contractRelationData: contractRelationData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contractRelationData),
+      name: Value(name),
+      description: description == null && nullToAbsent
+          ? const Value.absent()
+          : Value(description),
+      periodStart: Value(periodStart),
+      periodEnd: Value(periodEnd),
+      calculationType: Value(calculationType),
+      fromSection: fromSection == null && nullToAbsent
+          ? const Value.absent()
+          : Value(fromSection),
+      toSection: toSection == null && nullToAbsent
+          ? const Value.absent()
+          : Value(toSection),
+      dividerValue: dividerValue == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dividerValue),
+      inputValue: inputValue == null && nullToAbsent
+          ? const Value.absent()
+          : Value(inputValue),
+      requiredReportsCount: requiredReportsCount == null && nullToAbsent
+          ? const Value.absent()
+          : Value(requiredReportsCount),
+      totalReports: Value(totalReports),
+      status: Value(status),
+      latitude: latitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(latitude),
+      longitude: longitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(longitude),
+      quantitiesData: quantitiesData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(quantitiesData),
+      filesData: filesData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(filesData),
+      createdByID: createdByID == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdByID),
+      createdByData: createdByData == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createdByData),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory ProgramRecord.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProgramRecord(
+      isSynced: serializer.fromJson<bool>(json['isSynced']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncAction: serializer.fromJson<String?>(json['syncAction']),
+      syncRetryCount: serializer.fromJson<int>(json['syncRetryCount']),
+      syncError: serializer.fromJson<String?>(json['syncError']),
+      lastSyncAttempt: serializer.fromJson<DateTime?>(json['lastSyncAttempt']),
+      id: serializer.fromJson<int>(json['id']),
+      uid: serializer.fromJson<String>(json['uid']),
+      companyID: serializer.fromJson<int>(json['companyID']),
+      workScopeID: serializer.fromJson<int>(json['workScopeID']),
+      workScopeData: serializer.fromJson<String?>(json['workScopeData']),
+      roadID: serializer.fromJson<int?>(json['roadID']),
+      roadData: serializer.fromJson<String?>(json['roadData']),
+      contractRelationID: serializer.fromJson<int?>(json['contractRelationID']),
+      contractRelationData: serializer.fromJson<String?>(
+        json['contractRelationData'],
+      ),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String?>(json['description']),
+      periodStart: serializer.fromJson<DateTime>(json['periodStart']),
+      periodEnd: serializer.fromJson<DateTime>(json['periodEnd']),
+      calculationType: serializer.fromJson<String>(json['calculationType']),
+      fromSection: serializer.fromJson<String?>(json['fromSection']),
+      toSection: serializer.fromJson<String?>(json['toSection']),
+      dividerValue: serializer.fromJson<String?>(json['dividerValue']),
+      inputValue: serializer.fromJson<String?>(json['inputValue']),
+      requiredReportsCount: serializer.fromJson<int?>(
+        json['requiredReportsCount'],
+      ),
+      totalReports: serializer.fromJson<int>(json['totalReports']),
+      status: serializer.fromJson<String>(json['status']),
+      latitude: serializer.fromJson<double?>(json['latitude']),
+      longitude: serializer.fromJson<double?>(json['longitude']),
+      quantitiesData: serializer.fromJson<String?>(json['quantitiesData']),
+      filesData: serializer.fromJson<String?>(json['filesData']),
+      createdByID: serializer.fromJson<int?>(json['createdByID']),
+      createdByData: serializer.fromJson<String?>(json['createdByData']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'isSynced': serializer.toJson<bool>(isSynced),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncAction': serializer.toJson<String?>(syncAction),
+      'syncRetryCount': serializer.toJson<int>(syncRetryCount),
+      'syncError': serializer.toJson<String?>(syncError),
+      'lastSyncAttempt': serializer.toJson<DateTime?>(lastSyncAttempt),
+      'id': serializer.toJson<int>(id),
+      'uid': serializer.toJson<String>(uid),
+      'companyID': serializer.toJson<int>(companyID),
+      'workScopeID': serializer.toJson<int>(workScopeID),
+      'workScopeData': serializer.toJson<String?>(workScopeData),
+      'roadID': serializer.toJson<int?>(roadID),
+      'roadData': serializer.toJson<String?>(roadData),
+      'contractRelationID': serializer.toJson<int?>(contractRelationID),
+      'contractRelationData': serializer.toJson<String?>(contractRelationData),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String?>(description),
+      'periodStart': serializer.toJson<DateTime>(periodStart),
+      'periodEnd': serializer.toJson<DateTime>(periodEnd),
+      'calculationType': serializer.toJson<String>(calculationType),
+      'fromSection': serializer.toJson<String?>(fromSection),
+      'toSection': serializer.toJson<String?>(toSection),
+      'dividerValue': serializer.toJson<String?>(dividerValue),
+      'inputValue': serializer.toJson<String?>(inputValue),
+      'requiredReportsCount': serializer.toJson<int?>(requiredReportsCount),
+      'totalReports': serializer.toJson<int>(totalReports),
+      'status': serializer.toJson<String>(status),
+      'latitude': serializer.toJson<double?>(latitude),
+      'longitude': serializer.toJson<double?>(longitude),
+      'quantitiesData': serializer.toJson<String?>(quantitiesData),
+      'filesData': serializer.toJson<String?>(filesData),
+      'createdByID': serializer.toJson<int?>(createdByID),
+      'createdByData': serializer.toJson<String?>(createdByData),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  ProgramRecord copyWith({
+    bool? isSynced,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    Value<String?> syncAction = const Value.absent(),
+    int? syncRetryCount,
+    Value<String?> syncError = const Value.absent(),
+    Value<DateTime?> lastSyncAttempt = const Value.absent(),
+    int? id,
+    String? uid,
+    int? companyID,
+    int? workScopeID,
+    Value<String?> workScopeData = const Value.absent(),
+    Value<int?> roadID = const Value.absent(),
+    Value<String?> roadData = const Value.absent(),
+    Value<int?> contractRelationID = const Value.absent(),
+    Value<String?> contractRelationData = const Value.absent(),
+    String? name,
+    Value<String?> description = const Value.absent(),
+    DateTime? periodStart,
+    DateTime? periodEnd,
+    String? calculationType,
+    Value<String?> fromSection = const Value.absent(),
+    Value<String?> toSection = const Value.absent(),
+    Value<String?> dividerValue = const Value.absent(),
+    Value<String?> inputValue = const Value.absent(),
+    Value<int?> requiredReportsCount = const Value.absent(),
+    int? totalReports,
+    String? status,
+    Value<double?> latitude = const Value.absent(),
+    Value<double?> longitude = const Value.absent(),
+    Value<String?> quantitiesData = const Value.absent(),
+    Value<String?> filesData = const Value.absent(),
+    Value<int?> createdByID = const Value.absent(),
+    Value<String?> createdByData = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => ProgramRecord(
+    isSynced: isSynced ?? this.isSynced,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncAction: syncAction.present ? syncAction.value : this.syncAction,
+    syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+    syncError: syncError.present ? syncError.value : this.syncError,
+    lastSyncAttempt: lastSyncAttempt.present
+        ? lastSyncAttempt.value
+        : this.lastSyncAttempt,
+    id: id ?? this.id,
+    uid: uid ?? this.uid,
+    companyID: companyID ?? this.companyID,
+    workScopeID: workScopeID ?? this.workScopeID,
+    workScopeData: workScopeData.present
+        ? workScopeData.value
+        : this.workScopeData,
+    roadID: roadID.present ? roadID.value : this.roadID,
+    roadData: roadData.present ? roadData.value : this.roadData,
+    contractRelationID: contractRelationID.present
+        ? contractRelationID.value
+        : this.contractRelationID,
+    contractRelationData: contractRelationData.present
+        ? contractRelationData.value
+        : this.contractRelationData,
+    name: name ?? this.name,
+    description: description.present ? description.value : this.description,
+    periodStart: periodStart ?? this.periodStart,
+    periodEnd: periodEnd ?? this.periodEnd,
+    calculationType: calculationType ?? this.calculationType,
+    fromSection: fromSection.present ? fromSection.value : this.fromSection,
+    toSection: toSection.present ? toSection.value : this.toSection,
+    dividerValue: dividerValue.present ? dividerValue.value : this.dividerValue,
+    inputValue: inputValue.present ? inputValue.value : this.inputValue,
+    requiredReportsCount: requiredReportsCount.present
+        ? requiredReportsCount.value
+        : this.requiredReportsCount,
+    totalReports: totalReports ?? this.totalReports,
+    status: status ?? this.status,
+    latitude: latitude.present ? latitude.value : this.latitude,
+    longitude: longitude.present ? longitude.value : this.longitude,
+    quantitiesData: quantitiesData.present
+        ? quantitiesData.value
+        : this.quantitiesData,
+    filesData: filesData.present ? filesData.value : this.filesData,
+    createdByID: createdByID.present ? createdByID.value : this.createdByID,
+    createdByData: createdByData.present
+        ? createdByData.value
+        : this.createdByData,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  ProgramRecord copyWithCompanion(ProgramsCompanion data) {
+    return ProgramRecord(
+      isSynced: data.isSynced.present ? data.isSynced.value : this.isSynced,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncAction: data.syncAction.present
+          ? data.syncAction.value
+          : this.syncAction,
+      syncRetryCount: data.syncRetryCount.present
+          ? data.syncRetryCount.value
+          : this.syncRetryCount,
+      syncError: data.syncError.present ? data.syncError.value : this.syncError,
+      lastSyncAttempt: data.lastSyncAttempt.present
+          ? data.lastSyncAttempt.value
+          : this.lastSyncAttempt,
+      id: data.id.present ? data.id.value : this.id,
+      uid: data.uid.present ? data.uid.value : this.uid,
+      companyID: data.companyID.present ? data.companyID.value : this.companyID,
+      workScopeID: data.workScopeID.present
+          ? data.workScopeID.value
+          : this.workScopeID,
+      workScopeData: data.workScopeData.present
+          ? data.workScopeData.value
+          : this.workScopeData,
+      roadID: data.roadID.present ? data.roadID.value : this.roadID,
+      roadData: data.roadData.present ? data.roadData.value : this.roadData,
+      contractRelationID: data.contractRelationID.present
+          ? data.contractRelationID.value
+          : this.contractRelationID,
+      contractRelationData: data.contractRelationData.present
+          ? data.contractRelationData.value
+          : this.contractRelationData,
+      name: data.name.present ? data.name.value : this.name,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      periodStart: data.periodStart.present
+          ? data.periodStart.value
+          : this.periodStart,
+      periodEnd: data.periodEnd.present ? data.periodEnd.value : this.periodEnd,
+      calculationType: data.calculationType.present
+          ? data.calculationType.value
+          : this.calculationType,
+      fromSection: data.fromSection.present
+          ? data.fromSection.value
+          : this.fromSection,
+      toSection: data.toSection.present ? data.toSection.value : this.toSection,
+      dividerValue: data.dividerValue.present
+          ? data.dividerValue.value
+          : this.dividerValue,
+      inputValue: data.inputValue.present
+          ? data.inputValue.value
+          : this.inputValue,
+      requiredReportsCount: data.requiredReportsCount.present
+          ? data.requiredReportsCount.value
+          : this.requiredReportsCount,
+      totalReports: data.totalReports.present
+          ? data.totalReports.value
+          : this.totalReports,
+      status: data.status.present ? data.status.value : this.status,
+      latitude: data.latitude.present ? data.latitude.value : this.latitude,
+      longitude: data.longitude.present ? data.longitude.value : this.longitude,
+      quantitiesData: data.quantitiesData.present
+          ? data.quantitiesData.value
+          : this.quantitiesData,
+      filesData: data.filesData.present ? data.filesData.value : this.filesData,
+      createdByID: data.createdByID.present
+          ? data.createdByID.value
+          : this.createdByID,
+      createdByData: data.createdByData.present
+          ? data.createdByData.value
+          : this.createdByData,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramRecord(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('companyID: $companyID, ')
+          ..write('workScopeID: $workScopeID, ')
+          ..write('workScopeData: $workScopeData, ')
+          ..write('roadID: $roadID, ')
+          ..write('roadData: $roadData, ')
+          ..write('contractRelationID: $contractRelationID, ')
+          ..write('contractRelationData: $contractRelationData, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('periodStart: $periodStart, ')
+          ..write('periodEnd: $periodEnd, ')
+          ..write('calculationType: $calculationType, ')
+          ..write('fromSection: $fromSection, ')
+          ..write('toSection: $toSection, ')
+          ..write('dividerValue: $dividerValue, ')
+          ..write('inputValue: $inputValue, ')
+          ..write('requiredReportsCount: $requiredReportsCount, ')
+          ..write('totalReports: $totalReports, ')
+          ..write('status: $status, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('quantitiesData: $quantitiesData, ')
+          ..write('filesData: $filesData, ')
+          ..write('createdByID: $createdByID, ')
+          ..write('createdByData: $createdByData, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    isSynced,
+    deletedAt,
+    syncAction,
+    syncRetryCount,
+    syncError,
+    lastSyncAttempt,
+    id,
+    uid,
+    companyID,
+    workScopeID,
+    workScopeData,
+    roadID,
+    roadData,
+    contractRelationID,
+    contractRelationData,
+    name,
+    description,
+    periodStart,
+    periodEnd,
+    calculationType,
+    fromSection,
+    toSection,
+    dividerValue,
+    inputValue,
+    requiredReportsCount,
+    totalReports,
+    status,
+    latitude,
+    longitude,
+    quantitiesData,
+    filesData,
+    createdByID,
+    createdByData,
+    createdAt,
+    updatedAt,
+  ]);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProgramRecord &&
+          other.isSynced == this.isSynced &&
+          other.deletedAt == this.deletedAt &&
+          other.syncAction == this.syncAction &&
+          other.syncRetryCount == this.syncRetryCount &&
+          other.syncError == this.syncError &&
+          other.lastSyncAttempt == this.lastSyncAttempt &&
+          other.id == this.id &&
+          other.uid == this.uid &&
+          other.companyID == this.companyID &&
+          other.workScopeID == this.workScopeID &&
+          other.workScopeData == this.workScopeData &&
+          other.roadID == this.roadID &&
+          other.roadData == this.roadData &&
+          other.contractRelationID == this.contractRelationID &&
+          other.contractRelationData == this.contractRelationData &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.periodStart == this.periodStart &&
+          other.periodEnd == this.periodEnd &&
+          other.calculationType == this.calculationType &&
+          other.fromSection == this.fromSection &&
+          other.toSection == this.toSection &&
+          other.dividerValue == this.dividerValue &&
+          other.inputValue == this.inputValue &&
+          other.requiredReportsCount == this.requiredReportsCount &&
+          other.totalReports == this.totalReports &&
+          other.status == this.status &&
+          other.latitude == this.latitude &&
+          other.longitude == this.longitude &&
+          other.quantitiesData == this.quantitiesData &&
+          other.filesData == this.filesData &&
+          other.createdByID == this.createdByID &&
+          other.createdByData == this.createdByData &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
+  final Value<bool> isSynced;
+  final Value<DateTime?> deletedAt;
+  final Value<String?> syncAction;
+  final Value<int> syncRetryCount;
+  final Value<String?> syncError;
+  final Value<DateTime?> lastSyncAttempt;
+  final Value<int> id;
+  final Value<String> uid;
+  final Value<int> companyID;
+  final Value<int> workScopeID;
+  final Value<String?> workScopeData;
+  final Value<int?> roadID;
+  final Value<String?> roadData;
+  final Value<int?> contractRelationID;
+  final Value<String?> contractRelationData;
+  final Value<String> name;
+  final Value<String?> description;
+  final Value<DateTime> periodStart;
+  final Value<DateTime> periodEnd;
+  final Value<String> calculationType;
+  final Value<String?> fromSection;
+  final Value<String?> toSection;
+  final Value<String?> dividerValue;
+  final Value<String?> inputValue;
+  final Value<int?> requiredReportsCount;
+  final Value<int> totalReports;
+  final Value<String> status;
+  final Value<double?> latitude;
+  final Value<double?> longitude;
+  final Value<String?> quantitiesData;
+  final Value<String?> filesData;
+  final Value<int?> createdByID;
+  final Value<String?> createdByData;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const ProgramsCompanion({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    this.id = const Value.absent(),
+    this.uid = const Value.absent(),
+    this.companyID = const Value.absent(),
+    this.workScopeID = const Value.absent(),
+    this.workScopeData = const Value.absent(),
+    this.roadID = const Value.absent(),
+    this.roadData = const Value.absent(),
+    this.contractRelationID = const Value.absent(),
+    this.contractRelationData = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.periodStart = const Value.absent(),
+    this.periodEnd = const Value.absent(),
+    this.calculationType = const Value.absent(),
+    this.fromSection = const Value.absent(),
+    this.toSection = const Value.absent(),
+    this.dividerValue = const Value.absent(),
+    this.inputValue = const Value.absent(),
+    this.requiredReportsCount = const Value.absent(),
+    this.totalReports = const Value.absent(),
+    this.status = const Value.absent(),
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.quantitiesData = const Value.absent(),
+    this.filesData = const Value.absent(),
+    this.createdByID = const Value.absent(),
+    this.createdByData = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  ProgramsCompanion.insert({
+    this.isSynced = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncAction = const Value.absent(),
+    this.syncRetryCount = const Value.absent(),
+    this.syncError = const Value.absent(),
+    this.lastSyncAttempt = const Value.absent(),
+    required int id,
+    required String uid,
+    required int companyID,
+    required int workScopeID,
+    this.workScopeData = const Value.absent(),
+    this.roadID = const Value.absent(),
+    this.roadData = const Value.absent(),
+    this.contractRelationID = const Value.absent(),
+    this.contractRelationData = const Value.absent(),
+    required String name,
+    this.description = const Value.absent(),
+    required DateTime periodStart,
+    required DateTime periodEnd,
+    required String calculationType,
+    this.fromSection = const Value.absent(),
+    this.toSection = const Value.absent(),
+    this.dividerValue = const Value.absent(),
+    this.inputValue = const Value.absent(),
+    this.requiredReportsCount = const Value.absent(),
+    this.totalReports = const Value.absent(),
+    required String status,
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
+    this.quantitiesData = const Value.absent(),
+    this.filesData = const Value.absent(),
+    this.createdByID = const Value.absent(),
+    this.createdByData = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       uid = Value(uid),
+       companyID = Value(companyID),
+       workScopeID = Value(workScopeID),
+       name = Value(name),
+       periodStart = Value(periodStart),
+       periodEnd = Value(periodEnd),
+       calculationType = Value(calculationType),
+       status = Value(status);
+  static Insertable<ProgramRecord> custom({
+    Expression<bool>? isSynced,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncAction,
+    Expression<int>? syncRetryCount,
+    Expression<String>? syncError,
+    Expression<DateTime>? lastSyncAttempt,
+    Expression<int>? id,
+    Expression<String>? uid,
+    Expression<int>? companyID,
+    Expression<int>? workScopeID,
+    Expression<String>? workScopeData,
+    Expression<int>? roadID,
+    Expression<String>? roadData,
+    Expression<int>? contractRelationID,
+    Expression<String>? contractRelationData,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<DateTime>? periodStart,
+    Expression<DateTime>? periodEnd,
+    Expression<String>? calculationType,
+    Expression<String>? fromSection,
+    Expression<String>? toSection,
+    Expression<String>? dividerValue,
+    Expression<String>? inputValue,
+    Expression<int>? requiredReportsCount,
+    Expression<int>? totalReports,
+    Expression<String>? status,
+    Expression<double>? latitude,
+    Expression<double>? longitude,
+    Expression<String>? quantitiesData,
+    Expression<String>? filesData,
+    Expression<int>? createdByID,
+    Expression<String>? createdByData,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (isSynced != null) 'is_synced': isSynced,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncAction != null) 'sync_action': syncAction,
+      if (syncRetryCount != null) 'sync_retry_count': syncRetryCount,
+      if (syncError != null) 'sync_error': syncError,
+      if (lastSyncAttempt != null) 'last_sync_attempt': lastSyncAttempt,
+      if (id != null) 'id': id,
+      if (uid != null) 'uid': uid,
+      if (companyID != null) 'company_i_d': companyID,
+      if (workScopeID != null) 'work_scope_i_d': workScopeID,
+      if (workScopeData != null) 'work_scope_data': workScopeData,
+      if (roadID != null) 'road_i_d': roadID,
+      if (roadData != null) 'road_data': roadData,
+      if (contractRelationID != null)
+        'contract_relation_i_d': contractRelationID,
+      if (contractRelationData != null)
+        'contract_relation_data': contractRelationData,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (periodStart != null) 'period_start': periodStart,
+      if (periodEnd != null) 'period_end': periodEnd,
+      if (calculationType != null) 'calculation_type': calculationType,
+      if (fromSection != null) 'from_section': fromSection,
+      if (toSection != null) 'to_section': toSection,
+      if (dividerValue != null) 'divider_value': dividerValue,
+      if (inputValue != null) 'input_value': inputValue,
+      if (requiredReportsCount != null)
+        'required_reports_count': requiredReportsCount,
+      if (totalReports != null) 'total_reports': totalReports,
+      if (status != null) 'status': status,
+      if (latitude != null) 'latitude': latitude,
+      if (longitude != null) 'longitude': longitude,
+      if (quantitiesData != null) 'quantities_data': quantitiesData,
+      if (filesData != null) 'files_data': filesData,
+      if (createdByID != null) 'created_by_i_d': createdByID,
+      if (createdByData != null) 'created_by_data': createdByData,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  ProgramsCompanion copyWith({
+    Value<bool>? isSynced,
+    Value<DateTime?>? deletedAt,
+    Value<String?>? syncAction,
+    Value<int>? syncRetryCount,
+    Value<String?>? syncError,
+    Value<DateTime?>? lastSyncAttempt,
+    Value<int>? id,
+    Value<String>? uid,
+    Value<int>? companyID,
+    Value<int>? workScopeID,
+    Value<String?>? workScopeData,
+    Value<int?>? roadID,
+    Value<String?>? roadData,
+    Value<int?>? contractRelationID,
+    Value<String?>? contractRelationData,
+    Value<String>? name,
+    Value<String?>? description,
+    Value<DateTime>? periodStart,
+    Value<DateTime>? periodEnd,
+    Value<String>? calculationType,
+    Value<String?>? fromSection,
+    Value<String?>? toSection,
+    Value<String?>? dividerValue,
+    Value<String?>? inputValue,
+    Value<int?>? requiredReportsCount,
+    Value<int>? totalReports,
+    Value<String>? status,
+    Value<double?>? latitude,
+    Value<double?>? longitude,
+    Value<String?>? quantitiesData,
+    Value<String?>? filesData,
+    Value<int?>? createdByID,
+    Value<String?>? createdByData,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return ProgramsCompanion(
+      isSynced: isSynced ?? this.isSynced,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncAction: syncAction ?? this.syncAction,
+      syncRetryCount: syncRetryCount ?? this.syncRetryCount,
+      syncError: syncError ?? this.syncError,
+      lastSyncAttempt: lastSyncAttempt ?? this.lastSyncAttempt,
+      id: id ?? this.id,
+      uid: uid ?? this.uid,
+      companyID: companyID ?? this.companyID,
+      workScopeID: workScopeID ?? this.workScopeID,
+      workScopeData: workScopeData ?? this.workScopeData,
+      roadID: roadID ?? this.roadID,
+      roadData: roadData ?? this.roadData,
+      contractRelationID: contractRelationID ?? this.contractRelationID,
+      contractRelationData: contractRelationData ?? this.contractRelationData,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      periodStart: periodStart ?? this.periodStart,
+      periodEnd: periodEnd ?? this.periodEnd,
+      calculationType: calculationType ?? this.calculationType,
+      fromSection: fromSection ?? this.fromSection,
+      toSection: toSection ?? this.toSection,
+      dividerValue: dividerValue ?? this.dividerValue,
+      inputValue: inputValue ?? this.inputValue,
+      requiredReportsCount: requiredReportsCount ?? this.requiredReportsCount,
+      totalReports: totalReports ?? this.totalReports,
+      status: status ?? this.status,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      quantitiesData: quantitiesData ?? this.quantitiesData,
+      filesData: filesData ?? this.filesData,
+      createdByID: createdByID ?? this.createdByID,
+      createdByData: createdByData ?? this.createdByData,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (isSynced.present) {
+      map['is_synced'] = Variable<bool>(isSynced.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncAction.present) {
+      map['sync_action'] = Variable<String>(syncAction.value);
+    }
+    if (syncRetryCount.present) {
+      map['sync_retry_count'] = Variable<int>(syncRetryCount.value);
+    }
+    if (syncError.present) {
+      map['sync_error'] = Variable<String>(syncError.value);
+    }
+    if (lastSyncAttempt.present) {
+      map['last_sync_attempt'] = Variable<DateTime>(lastSyncAttempt.value);
+    }
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (uid.present) {
+      map['uid'] = Variable<String>(uid.value);
+    }
+    if (companyID.present) {
+      map['company_i_d'] = Variable<int>(companyID.value);
+    }
+    if (workScopeID.present) {
+      map['work_scope_i_d'] = Variable<int>(workScopeID.value);
+    }
+    if (workScopeData.present) {
+      map['work_scope_data'] = Variable<String>(workScopeData.value);
+    }
+    if (roadID.present) {
+      map['road_i_d'] = Variable<int>(roadID.value);
+    }
+    if (roadData.present) {
+      map['road_data'] = Variable<String>(roadData.value);
+    }
+    if (contractRelationID.present) {
+      map['contract_relation_i_d'] = Variable<int>(contractRelationID.value);
+    }
+    if (contractRelationData.present) {
+      map['contract_relation_data'] = Variable<String>(
+        contractRelationData.value,
+      );
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (periodStart.present) {
+      map['period_start'] = Variable<DateTime>(periodStart.value);
+    }
+    if (periodEnd.present) {
+      map['period_end'] = Variable<DateTime>(periodEnd.value);
+    }
+    if (calculationType.present) {
+      map['calculation_type'] = Variable<String>(calculationType.value);
+    }
+    if (fromSection.present) {
+      map['from_section'] = Variable<String>(fromSection.value);
+    }
+    if (toSection.present) {
+      map['to_section'] = Variable<String>(toSection.value);
+    }
+    if (dividerValue.present) {
+      map['divider_value'] = Variable<String>(dividerValue.value);
+    }
+    if (inputValue.present) {
+      map['input_value'] = Variable<String>(inputValue.value);
+    }
+    if (requiredReportsCount.present) {
+      map['required_reports_count'] = Variable<int>(requiredReportsCount.value);
+    }
+    if (totalReports.present) {
+      map['total_reports'] = Variable<int>(totalReports.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (latitude.present) {
+      map['latitude'] = Variable<double>(latitude.value);
+    }
+    if (longitude.present) {
+      map['longitude'] = Variable<double>(longitude.value);
+    }
+    if (quantitiesData.present) {
+      map['quantities_data'] = Variable<String>(quantitiesData.value);
+    }
+    if (filesData.present) {
+      map['files_data'] = Variable<String>(filesData.value);
+    }
+    if (createdByID.present) {
+      map['created_by_i_d'] = Variable<int>(createdByID.value);
+    }
+    if (createdByData.present) {
+      map['created_by_data'] = Variable<String>(createdByData.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProgramsCompanion(')
+          ..write('isSynced: $isSynced, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncAction: $syncAction, ')
+          ..write('syncRetryCount: $syncRetryCount, ')
+          ..write('syncError: $syncError, ')
+          ..write('lastSyncAttempt: $lastSyncAttempt, ')
+          ..write('id: $id, ')
+          ..write('uid: $uid, ')
+          ..write('companyID: $companyID, ')
+          ..write('workScopeID: $workScopeID, ')
+          ..write('workScopeData: $workScopeData, ')
+          ..write('roadID: $roadID, ')
+          ..write('roadData: $roadData, ')
+          ..write('contractRelationID: $contractRelationID, ')
+          ..write('contractRelationData: $contractRelationData, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('periodStart: $periodStart, ')
+          ..write('periodEnd: $periodEnd, ')
+          ..write('calculationType: $calculationType, ')
+          ..write('fromSection: $fromSection, ')
+          ..write('toSection: $toSection, ')
+          ..write('dividerValue: $dividerValue, ')
+          ..write('inputValue: $inputValue, ')
+          ..write('requiredReportsCount: $requiredReportsCount, ')
+          ..write('totalReports: $totalReports, ')
+          ..write('status: $status, ')
+          ..write('latitude: $latitude, ')
+          ..write('longitude: $longitude, ')
+          ..write('quantitiesData: $quantitiesData, ')
+          ..write('filesData: $filesData, ')
+          ..write('createdByID: $createdByID, ')
+          ..write('createdByData: $createdByData, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   _$AppDatabase.connect(DatabaseConnection c) : super.connect(c);
@@ -27458,6 +30748,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $WarningsTable warnings = $WarningsTable(this);
   late final $ContractorRelationsTable contractorRelations =
       $ContractorRelationsTable(this);
+  late final $ProgramSettingsTable programSettings = $ProgramSettingsTable(
+    this,
+  );
+  late final $ProgramsTable programs = $ProgramsTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -27492,6 +30786,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     warningReasons,
     warnings,
     contractorRelations,
+    programSettings,
+    programs,
   ];
 }
 
@@ -39927,6 +43223,1407 @@ typedef $$ContractorRelationsTableProcessedTableManager =
       ContractorRelationRecord,
       PrefetchHooks Function()
     >;
+typedef $$ProgramSettingsTableCreateCompanionBuilder =
+    ProgramSettingsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      required String uid,
+      required int companyID,
+      required int workScopeID,
+      required String calculationType,
+      Value<String?> inputLabel,
+      Value<String?> inputValue,
+      Value<String?> dividerValue,
+      Value<String?> dividerLabel,
+      Value<String?> unitMeasurement,
+      Value<bool> photoRequired,
+      Value<bool> isActive,
+      required int createdByID,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<String?> workScopeData,
+      Value<String?> createdByData,
+      Value<String?> quantityTypesData,
+    });
+typedef $$ProgramSettingsTableUpdateCompanionBuilder =
+    ProgramSettingsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<int> companyID,
+      Value<int> workScopeID,
+      Value<String> calculationType,
+      Value<String?> inputLabel,
+      Value<String?> inputValue,
+      Value<String?> dividerValue,
+      Value<String?> dividerLabel,
+      Value<String?> unitMeasurement,
+      Value<bool> photoRequired,
+      Value<bool> isActive,
+      Value<int> createdByID,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<String?> workScopeData,
+      Value<String?> createdByData,
+      Value<String?> quantityTypesData,
+    });
+
+class $$ProgramSettingsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgramSettingsTable> {
+  $$ProgramSettingsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get companyID => $composableBuilder(
+    column: $table.companyID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get calculationType => $composableBuilder(
+    column: $table.calculationType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get inputLabel => $composableBuilder(
+    column: $table.inputLabel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get inputValue => $composableBuilder(
+    column: $table.inputValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dividerValue => $composableBuilder(
+    column: $table.dividerValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dividerLabel => $composableBuilder(
+    column: $table.dividerLabel,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get unitMeasurement => $composableBuilder(
+    column: $table.unitMeasurement,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get photoRequired => $composableBuilder(
+    column: $table.photoRequired,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdByID => $composableBuilder(
+    column: $table.createdByID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workScopeData => $composableBuilder(
+    column: $table.workScopeData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdByData => $composableBuilder(
+    column: $table.createdByData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get quantityTypesData => $composableBuilder(
+    column: $table.quantityTypesData,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgramSettingsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgramSettingsTable> {
+  $$ProgramSettingsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get companyID => $composableBuilder(
+    column: $table.companyID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get calculationType => $composableBuilder(
+    column: $table.calculationType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get inputLabel => $composableBuilder(
+    column: $table.inputLabel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get inputValue => $composableBuilder(
+    column: $table.inputValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dividerValue => $composableBuilder(
+    column: $table.dividerValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dividerLabel => $composableBuilder(
+    column: $table.dividerLabel,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get unitMeasurement => $composableBuilder(
+    column: $table.unitMeasurement,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get photoRequired => $composableBuilder(
+    column: $table.photoRequired,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdByID => $composableBuilder(
+    column: $table.createdByID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workScopeData => $composableBuilder(
+    column: $table.workScopeData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdByData => $composableBuilder(
+    column: $table.createdByData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get quantityTypesData => $composableBuilder(
+    column: $table.quantityTypesData,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgramSettingsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgramSettingsTable> {
+  $$ProgramSettingsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<int> get companyID =>
+      $composableBuilder(column: $table.companyID, builder: (column) => column);
+
+  GeneratedColumn<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get calculationType => $composableBuilder(
+    column: $table.calculationType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get inputLabel => $composableBuilder(
+    column: $table.inputLabel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get inputValue => $composableBuilder(
+    column: $table.inputValue,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dividerValue => $composableBuilder(
+    column: $table.dividerValue,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get dividerLabel => $composableBuilder(
+    column: $table.dividerLabel,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get unitMeasurement => $composableBuilder(
+    column: $table.unitMeasurement,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get photoRequired => $composableBuilder(
+    column: $table.photoRequired,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<int> get createdByID => $composableBuilder(
+    column: $table.createdByID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get workScopeData => $composableBuilder(
+    column: $table.workScopeData,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get createdByData => $composableBuilder(
+    column: $table.createdByData,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get quantityTypesData => $composableBuilder(
+    column: $table.quantityTypesData,
+    builder: (column) => column,
+  );
+}
+
+class $$ProgramSettingsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgramSettingsTable,
+          ProgramSettingRecord,
+          $$ProgramSettingsTableFilterComposer,
+          $$ProgramSettingsTableOrderingComposer,
+          $$ProgramSettingsTableAnnotationComposer,
+          $$ProgramSettingsTableCreateCompanionBuilder,
+          $$ProgramSettingsTableUpdateCompanionBuilder,
+          (
+            ProgramSettingRecord,
+            BaseReferences<
+              _$AppDatabase,
+              $ProgramSettingsTable,
+              ProgramSettingRecord
+            >,
+          ),
+          ProgramSettingRecord,
+          PrefetchHooks Function()
+        > {
+  $$ProgramSettingsTableTableManager(
+    _$AppDatabase db,
+    $ProgramSettingsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgramSettingsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProgramSettingsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProgramSettingsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<int> companyID = const Value.absent(),
+                Value<int> workScopeID = const Value.absent(),
+                Value<String> calculationType = const Value.absent(),
+                Value<String?> inputLabel = const Value.absent(),
+                Value<String?> inputValue = const Value.absent(),
+                Value<String?> dividerValue = const Value.absent(),
+                Value<String?> dividerLabel = const Value.absent(),
+                Value<String?> unitMeasurement = const Value.absent(),
+                Value<bool> photoRequired = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<int> createdByID = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<String?> workScopeData = const Value.absent(),
+                Value<String?> createdByData = const Value.absent(),
+                Value<String?> quantityTypesData = const Value.absent(),
+              }) => ProgramSettingsCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                companyID: companyID,
+                workScopeID: workScopeID,
+                calculationType: calculationType,
+                inputLabel: inputLabel,
+                inputValue: inputValue,
+                dividerValue: dividerValue,
+                dividerLabel: dividerLabel,
+                unitMeasurement: unitMeasurement,
+                photoRequired: photoRequired,
+                isActive: isActive,
+                createdByID: createdByID,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                workScopeData: workScopeData,
+                createdByData: createdByData,
+                quantityTypesData: quantityTypesData,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                required String uid,
+                required int companyID,
+                required int workScopeID,
+                required String calculationType,
+                Value<String?> inputLabel = const Value.absent(),
+                Value<String?> inputValue = const Value.absent(),
+                Value<String?> dividerValue = const Value.absent(),
+                Value<String?> dividerLabel = const Value.absent(),
+                Value<String?> unitMeasurement = const Value.absent(),
+                Value<bool> photoRequired = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                required int createdByID,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<String?> workScopeData = const Value.absent(),
+                Value<String?> createdByData = const Value.absent(),
+                Value<String?> quantityTypesData = const Value.absent(),
+              }) => ProgramSettingsCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                companyID: companyID,
+                workScopeID: workScopeID,
+                calculationType: calculationType,
+                inputLabel: inputLabel,
+                inputValue: inputValue,
+                dividerValue: dividerValue,
+                dividerLabel: dividerLabel,
+                unitMeasurement: unitMeasurement,
+                photoRequired: photoRequired,
+                isActive: isActive,
+                createdByID: createdByID,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                workScopeData: workScopeData,
+                createdByData: createdByData,
+                quantityTypesData: quantityTypesData,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgramSettingsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgramSettingsTable,
+      ProgramSettingRecord,
+      $$ProgramSettingsTableFilterComposer,
+      $$ProgramSettingsTableOrderingComposer,
+      $$ProgramSettingsTableAnnotationComposer,
+      $$ProgramSettingsTableCreateCompanionBuilder,
+      $$ProgramSettingsTableUpdateCompanionBuilder,
+      (
+        ProgramSettingRecord,
+        BaseReferences<
+          _$AppDatabase,
+          $ProgramSettingsTable,
+          ProgramSettingRecord
+        >,
+      ),
+      ProgramSettingRecord,
+      PrefetchHooks Function()
+    >;
+typedef $$ProgramsTableCreateCompanionBuilder =
+    ProgramsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      required int id,
+      required String uid,
+      required int companyID,
+      required int workScopeID,
+      Value<String?> workScopeData,
+      Value<int?> roadID,
+      Value<String?> roadData,
+      Value<int?> contractRelationID,
+      Value<String?> contractRelationData,
+      required String name,
+      Value<String?> description,
+      required DateTime periodStart,
+      required DateTime periodEnd,
+      required String calculationType,
+      Value<String?> fromSection,
+      Value<String?> toSection,
+      Value<String?> dividerValue,
+      Value<String?> inputValue,
+      Value<int?> requiredReportsCount,
+      Value<int> totalReports,
+      required String status,
+      Value<double?> latitude,
+      Value<double?> longitude,
+      Value<String?> quantitiesData,
+      Value<String?> filesData,
+      Value<int?> createdByID,
+      Value<String?> createdByData,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+typedef $$ProgramsTableUpdateCompanionBuilder =
+    ProgramsCompanion Function({
+      Value<bool> isSynced,
+      Value<DateTime?> deletedAt,
+      Value<String?> syncAction,
+      Value<int> syncRetryCount,
+      Value<String?> syncError,
+      Value<DateTime?> lastSyncAttempt,
+      Value<int> id,
+      Value<String> uid,
+      Value<int> companyID,
+      Value<int> workScopeID,
+      Value<String?> workScopeData,
+      Value<int?> roadID,
+      Value<String?> roadData,
+      Value<int?> contractRelationID,
+      Value<String?> contractRelationData,
+      Value<String> name,
+      Value<String?> description,
+      Value<DateTime> periodStart,
+      Value<DateTime> periodEnd,
+      Value<String> calculationType,
+      Value<String?> fromSection,
+      Value<String?> toSection,
+      Value<String?> dividerValue,
+      Value<String?> inputValue,
+      Value<int?> requiredReportsCount,
+      Value<int> totalReports,
+      Value<String> status,
+      Value<double?> latitude,
+      Value<double?> longitude,
+      Value<String?> quantitiesData,
+      Value<String?> filesData,
+      Value<int?> createdByID,
+      Value<String?> createdByData,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$ProgramsTableFilterComposer
+    extends Composer<_$AppDatabase, $ProgramsTable> {
+  $$ProgramsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get companyID => $composableBuilder(
+    column: $table.companyID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get workScopeData => $composableBuilder(
+    column: $table.workScopeData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get roadID => $composableBuilder(
+    column: $table.roadID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get roadData => $composableBuilder(
+    column: $table.roadData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get contractRelationID => $composableBuilder(
+    column: $table.contractRelationID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contractRelationData => $composableBuilder(
+    column: $table.contractRelationData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get periodStart => $composableBuilder(
+    column: $table.periodStart,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get periodEnd => $composableBuilder(
+    column: $table.periodEnd,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get calculationType => $composableBuilder(
+    column: $table.calculationType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get fromSection => $composableBuilder(
+    column: $table.fromSection,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get toSection => $composableBuilder(
+    column: $table.toSection,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get dividerValue => $composableBuilder(
+    column: $table.dividerValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get inputValue => $composableBuilder(
+    column: $table.inputValue,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get requiredReportsCount => $composableBuilder(
+    column: $table.requiredReportsCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalReports => $composableBuilder(
+    column: $table.totalReports,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get quantitiesData => $composableBuilder(
+    column: $table.quantitiesData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get filesData => $composableBuilder(
+    column: $table.filesData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get createdByID => $composableBuilder(
+    column: $table.createdByID,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdByData => $composableBuilder(
+    column: $table.createdByData,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$ProgramsTableOrderingComposer
+    extends Composer<_$AppDatabase, $ProgramsTable> {
+  $$ProgramsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<bool> get isSynced => $composableBuilder(
+    column: $table.isSynced,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncError => $composableBuilder(
+    column: $table.syncError,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get uid => $composableBuilder(
+    column: $table.uid,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get companyID => $composableBuilder(
+    column: $table.companyID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get workScopeData => $composableBuilder(
+    column: $table.workScopeData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get roadID => $composableBuilder(
+    column: $table.roadID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get roadData => $composableBuilder(
+    column: $table.roadData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get contractRelationID => $composableBuilder(
+    column: $table.contractRelationID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contractRelationData => $composableBuilder(
+    column: $table.contractRelationData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get periodStart => $composableBuilder(
+    column: $table.periodStart,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get periodEnd => $composableBuilder(
+    column: $table.periodEnd,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get calculationType => $composableBuilder(
+    column: $table.calculationType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get fromSection => $composableBuilder(
+    column: $table.fromSection,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get toSection => $composableBuilder(
+    column: $table.toSection,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get dividerValue => $composableBuilder(
+    column: $table.dividerValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get inputValue => $composableBuilder(
+    column: $table.inputValue,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get requiredReportsCount => $composableBuilder(
+    column: $table.requiredReportsCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalReports => $composableBuilder(
+    column: $table.totalReports,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get latitude => $composableBuilder(
+    column: $table.latitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get longitude => $composableBuilder(
+    column: $table.longitude,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get quantitiesData => $composableBuilder(
+    column: $table.quantitiesData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get filesData => $composableBuilder(
+    column: $table.filesData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdByID => $composableBuilder(
+    column: $table.createdByID,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdByData => $composableBuilder(
+    column: $table.createdByData,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$ProgramsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ProgramsTable> {
+  $$ProgramsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<bool> get isSynced =>
+      $composableBuilder(column: $table.isSynced, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncAction => $composableBuilder(
+    column: $table.syncAction,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get syncRetryCount => $composableBuilder(
+    column: $table.syncRetryCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get syncError =>
+      $composableBuilder(column: $table.syncError, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get lastSyncAttempt => $composableBuilder(
+    column: $table.lastSyncAttempt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get uid =>
+      $composableBuilder(column: $table.uid, builder: (column) => column);
+
+  GeneratedColumn<int> get companyID =>
+      $composableBuilder(column: $table.companyID, builder: (column) => column);
+
+  GeneratedColumn<int> get workScopeID => $composableBuilder(
+    column: $table.workScopeID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get workScopeData => $composableBuilder(
+    column: $table.workScopeData,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get roadID =>
+      $composableBuilder(column: $table.roadID, builder: (column) => column);
+
+  GeneratedColumn<String> get roadData =>
+      $composableBuilder(column: $table.roadData, builder: (column) => column);
+
+  GeneratedColumn<int> get contractRelationID => $composableBuilder(
+    column: $table.contractRelationID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get contractRelationData => $composableBuilder(
+    column: $table.contractRelationData,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get periodStart => $composableBuilder(
+    column: $table.periodStart,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get periodEnd =>
+      $composableBuilder(column: $table.periodEnd, builder: (column) => column);
+
+  GeneratedColumn<String> get calculationType => $composableBuilder(
+    column: $table.calculationType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get fromSection => $composableBuilder(
+    column: $table.fromSection,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get toSection =>
+      $composableBuilder(column: $table.toSection, builder: (column) => column);
+
+  GeneratedColumn<String> get dividerValue => $composableBuilder(
+    column: $table.dividerValue,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get inputValue => $composableBuilder(
+    column: $table.inputValue,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get requiredReportsCount => $composableBuilder(
+    column: $table.requiredReportsCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get totalReports => $composableBuilder(
+    column: $table.totalReports,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<double> get latitude =>
+      $composableBuilder(column: $table.latitude, builder: (column) => column);
+
+  GeneratedColumn<double> get longitude =>
+      $composableBuilder(column: $table.longitude, builder: (column) => column);
+
+  GeneratedColumn<String> get quantitiesData => $composableBuilder(
+    column: $table.quantitiesData,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get filesData =>
+      $composableBuilder(column: $table.filesData, builder: (column) => column);
+
+  GeneratedColumn<int> get createdByID => $composableBuilder(
+    column: $table.createdByID,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get createdByData => $composableBuilder(
+    column: $table.createdByData,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$ProgramsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $ProgramsTable,
+          ProgramRecord,
+          $$ProgramsTableFilterComposer,
+          $$ProgramsTableOrderingComposer,
+          $$ProgramsTableAnnotationComposer,
+          $$ProgramsTableCreateCompanionBuilder,
+          $$ProgramsTableUpdateCompanionBuilder,
+          (
+            ProgramRecord,
+            BaseReferences<_$AppDatabase, $ProgramsTable, ProgramRecord>,
+          ),
+          ProgramRecord,
+          PrefetchHooks Function()
+        > {
+  $$ProgramsTableTableManager(_$AppDatabase db, $ProgramsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ProgramsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ProgramsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ProgramsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                Value<int> id = const Value.absent(),
+                Value<String> uid = const Value.absent(),
+                Value<int> companyID = const Value.absent(),
+                Value<int> workScopeID = const Value.absent(),
+                Value<String?> workScopeData = const Value.absent(),
+                Value<int?> roadID = const Value.absent(),
+                Value<String?> roadData = const Value.absent(),
+                Value<int?> contractRelationID = const Value.absent(),
+                Value<String?> contractRelationData = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String?> description = const Value.absent(),
+                Value<DateTime> periodStart = const Value.absent(),
+                Value<DateTime> periodEnd = const Value.absent(),
+                Value<String> calculationType = const Value.absent(),
+                Value<String?> fromSection = const Value.absent(),
+                Value<String?> toSection = const Value.absent(),
+                Value<String?> dividerValue = const Value.absent(),
+                Value<String?> inputValue = const Value.absent(),
+                Value<int?> requiredReportsCount = const Value.absent(),
+                Value<int> totalReports = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<String?> quantitiesData = const Value.absent(),
+                Value<String?> filesData = const Value.absent(),
+                Value<int?> createdByID = const Value.absent(),
+                Value<String?> createdByData = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramsCompanion(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                companyID: companyID,
+                workScopeID: workScopeID,
+                workScopeData: workScopeData,
+                roadID: roadID,
+                roadData: roadData,
+                contractRelationID: contractRelationID,
+                contractRelationData: contractRelationData,
+                name: name,
+                description: description,
+                periodStart: periodStart,
+                periodEnd: periodEnd,
+                calculationType: calculationType,
+                fromSection: fromSection,
+                toSection: toSection,
+                dividerValue: dividerValue,
+                inputValue: inputValue,
+                requiredReportsCount: requiredReportsCount,
+                totalReports: totalReports,
+                status: status,
+                latitude: latitude,
+                longitude: longitude,
+                quantitiesData: quantitiesData,
+                filesData: filesData,
+                createdByID: createdByID,
+                createdByData: createdByData,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                Value<bool> isSynced = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String?> syncAction = const Value.absent(),
+                Value<int> syncRetryCount = const Value.absent(),
+                Value<String?> syncError = const Value.absent(),
+                Value<DateTime?> lastSyncAttempt = const Value.absent(),
+                required int id,
+                required String uid,
+                required int companyID,
+                required int workScopeID,
+                Value<String?> workScopeData = const Value.absent(),
+                Value<int?> roadID = const Value.absent(),
+                Value<String?> roadData = const Value.absent(),
+                Value<int?> contractRelationID = const Value.absent(),
+                Value<String?> contractRelationData = const Value.absent(),
+                required String name,
+                Value<String?> description = const Value.absent(),
+                required DateTime periodStart,
+                required DateTime periodEnd,
+                required String calculationType,
+                Value<String?> fromSection = const Value.absent(),
+                Value<String?> toSection = const Value.absent(),
+                Value<String?> dividerValue = const Value.absent(),
+                Value<String?> inputValue = const Value.absent(),
+                Value<int?> requiredReportsCount = const Value.absent(),
+                Value<int> totalReports = const Value.absent(),
+                required String status,
+                Value<double?> latitude = const Value.absent(),
+                Value<double?> longitude = const Value.absent(),
+                Value<String?> quantitiesData = const Value.absent(),
+                Value<String?> filesData = const Value.absent(),
+                Value<int?> createdByID = const Value.absent(),
+                Value<String?> createdByData = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => ProgramsCompanion.insert(
+                isSynced: isSynced,
+                deletedAt: deletedAt,
+                syncAction: syncAction,
+                syncRetryCount: syncRetryCount,
+                syncError: syncError,
+                lastSyncAttempt: lastSyncAttempt,
+                id: id,
+                uid: uid,
+                companyID: companyID,
+                workScopeID: workScopeID,
+                workScopeData: workScopeData,
+                roadID: roadID,
+                roadData: roadData,
+                contractRelationID: contractRelationID,
+                contractRelationData: contractRelationData,
+                name: name,
+                description: description,
+                periodStart: periodStart,
+                periodEnd: periodEnd,
+                calculationType: calculationType,
+                fromSection: fromSection,
+                toSection: toSection,
+                dividerValue: dividerValue,
+                inputValue: inputValue,
+                requiredReportsCount: requiredReportsCount,
+                totalReports: totalReports,
+                status: status,
+                latitude: latitude,
+                longitude: longitude,
+                quantitiesData: quantitiesData,
+                filesData: filesData,
+                createdByID: createdByID,
+                createdByData: createdByData,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$ProgramsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $ProgramsTable,
+      ProgramRecord,
+      $$ProgramsTableFilterComposer,
+      $$ProgramsTableOrderingComposer,
+      $$ProgramsTableAnnotationComposer,
+      $$ProgramsTableCreateCompanionBuilder,
+      $$ProgramsTableUpdateCompanionBuilder,
+      (
+        ProgramRecord,
+        BaseReferences<_$AppDatabase, $ProgramsTable, ProgramRecord>,
+      ),
+      ProgramRecord,
+      PrefetchHooks Function()
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -39992,4 +44689,8 @@ class $AppDatabaseManager {
       $$WarningsTableTableManager(_db, _db.warnings);
   $$ContractorRelationsTableTableManager get contractorRelations =>
       $$ContractorRelationsTableTableManager(_db, _db.contractorRelations);
+  $$ProgramSettingsTableTableManager get programSettings =>
+      $$ProgramSettingsTableTableManager(_db, _db.programSettings);
+  $$ProgramsTableTableManager get programs =>
+      $$ProgramsTableTableManager(_db, _db.programs);
 }

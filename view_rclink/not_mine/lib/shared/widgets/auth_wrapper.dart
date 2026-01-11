@@ -11,6 +11,8 @@ import '../../features/company/presentation/bloc/company_state.dart';
 import '../../features/contractor_relation/presentation/bloc/contractor_relation_bloc.dart';
 import '../../features/contractor_relation/presentation/bloc/contractor_relation_event.dart';
 import '../../features/contractor_relation/presentation/bloc/contractor_relation_state.dart';
+import '../../features/program/presentation/bloc/program/program_bloc.dart';
+import '../../features/program/presentation/bloc/program/program_event.dart';
 import '../../features/rbac/presentation/bloc/rbac_bloc.dart';
 import '../../features/rbac/presentation/bloc/rbac_state.dart';
 import '../../features/road/presentation/bloc/road_bloc.dart';
@@ -128,6 +130,11 @@ class _AuthWrapperState extends State<AuthWrapper> {
             // Load Warning Categories with fresh data
             context.read<WarningCategoriesBloc>().add(
               const WarningCategoriesEvent.loadCategories(forceRefresh: true),
+            );
+
+            // Load Program Settings with fresj data
+            context.read<ProgramBloc>().add(
+              const ProgramEvent.loadProgramSettings(forceRefresh: true),
             );
           }
         },

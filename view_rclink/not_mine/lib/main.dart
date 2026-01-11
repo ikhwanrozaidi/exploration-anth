@@ -13,6 +13,7 @@ import 'features/locale/presentation/bloc/locale_state.dart';
 import 'features/locale/presentation/widgets/app_localization.dart';
 import 'features/auth/presentation/bloc/auth_bloc.dart';
 import 'features/company/presentation/bloc/company_bloc.dart';
+import 'features/program/presentation/bloc/program/program_bloc.dart';
 import 'features/rbac/presentation/bloc/rbac_bloc.dart';
 import 'features/road/presentation/bloc/road_bloc.dart';
 import 'features/warnings/presentation/bloc/warning_categories/warning_categories_bloc.dart';
@@ -53,6 +54,8 @@ Future<void> main() async {
         BlocProvider<WarningCategoriesBloc>(
           create: (context) => getIt<WarningCategoriesBloc>(),
         ),
+
+        BlocProvider<ProgramBloc>(create: (context) => getIt<ProgramBloc>()),
       ],
       child: const MyApp(),
     ),

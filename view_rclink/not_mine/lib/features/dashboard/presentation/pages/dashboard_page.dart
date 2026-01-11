@@ -17,6 +17,8 @@ import '../../../contractor_relation/presentation/bloc/contractor_relation_state
 import '../../../contractor_relation/presentation/widgets/show_contractor_relation_selection.dart';
 import '../../../daily_report/presentation/pages/daily_report_page.dart';
 import '../../../locale/presentation/pages/localization_debug_page.dart';
+import '../../../program/presentation/bloc/program/program_bloc.dart';
+import '../../../program/presentation/bloc/program/program_event.dart';
 import '../../../rbac/domain/constants/permission_codes.dart';
 import '../../../rbac/presentation/widgets/permission_gate.dart';
 import '../../../road/presentation/bloc/road_bloc.dart';
@@ -247,15 +249,15 @@ class _DashboardPageState extends State<DashboardPage> {
 
                               // --- Conditionally show second Expanded: Contractor Button ---
                               if (shouldShowSecondButton)
-                                PermissionGate(
-                                  permission: PermissionCodes
-                                      .CONTRACTOR_RELATION_UPDATE,
-                                  behavior: PermissionBehavior.disable,
-                                  onAccessDenied: () =>
-                                      CustomSnackBar.showPermissionDenied(
-                                        context,
-                                      ),
-                                  child: Expanded(
+                                Expanded(
+                                  child: PermissionGate(
+                                    permission: PermissionCodes
+                                        .CONTRACTOR_RELATION_UPDATE,
+                                    behavior: PermissionBehavior.disable,
+                                    onAccessDenied: () =>
+                                        CustomSnackBar.showPermissionDenied(
+                                          context,
+                                        ),
                                     child: TextButton(
                                       style: TextButton.styleFrom(
                                         padding: EdgeInsets.zero,
@@ -392,6 +394,150 @@ class _DashboardPageState extends State<DashboardPage> {
                                     ),
                                   ),
                                 ),
+
+                              // PermissionGate(
+                              //   permission: PermissionCodes
+                              //       .CONTRACTOR_RELATION_UPDATE,
+                              //   behavior: PermissionBehavior.disable,
+                              //   onAccessDenied: () =>
+                              //       CustomSnackBar.showPermissionDenied(
+                              //         context,
+                              //       ),
+                              //   child: TextButton(
+                              //     style: TextButton.styleFrom(
+                              //       padding: EdgeInsets.zero,
+                              //       shape: RoundedRectangleBorder(
+                              //         borderRadius:
+                              //             ResponsiveHelper.borderRadius(
+                              //               context,
+                              //               topRight: 50,
+                              //               bottomRight: 50,
+                              //             ),
+                              //       ),
+                              //       backgroundColor: Colors.white
+                              //           .withOpacity(0.6),
+                              //     ),
+                              //     onPressed: isLoading
+                              //         ? null
+                              //         : () {
+                              //             showContractorRelationSelection(
+                              //               context: context,
+                              //               state: contractorState,
+                              //               onContractorSelected: (selectedData) {
+                              //                 context
+                              //                     .read<
+                              //                       ContractorRelationBloc
+                              //                     >()
+                              //                     .add(
+                              //                       SelectContractorRelation(
+                              //                         selectedData['companyReportToUID'],
+                              //                       ),
+                              //                     );
+                              //               },
+                              //             );
+                              //           },
+                              //     child: Padding(
+                              //       padding: ResponsiveHelper.padding(
+                              //         context,
+                              //         horizontal: 20,
+                              //         vertical: 13,
+                              //       ),
+                              //       child: Row(
+                              //         children: [
+                              //           isLoading
+                              //               ? SizedBox(
+                              //                   width:
+                              //                       ResponsiveHelper.iconSize(
+                              //                         context,
+                              //                         base: 25,
+                              //                       ),
+                              //                   height:
+                              //                       ResponsiveHelper.iconSize(
+                              //                         context,
+                              //                         base: 25,
+                              //                       ),
+                              //                   child: CircularProgressIndicator(
+                              //                     strokeWidth: 2,
+                              //                     valueColor:
+                              //                         AlwaysStoppedAnimation<
+                              //                           Color
+                              //                         >(
+                              //                           Colors.black
+                              //                               .withOpacity(
+                              //                                 0.6,
+                              //                               ),
+                              //                         ),
+                              //                   ),
+                              //                 )
+                              //               : Icon(
+                              //                   Icons.note_alt_outlined,
+                              //                   size:
+                              //                       ResponsiveHelper.iconSize(
+                              //                         context,
+                              //                         base: 25,
+                              //                       ),
+                              //                   color: Colors.black
+                              //                       .withOpacity(0.6),
+                              //                 ),
+                              //           SizedBox(
+                              //             width: ResponsiveHelper.spacing(
+                              //               context,
+                              //               10,
+                              //             ),
+                              //           ),
+                              //           Expanded(
+                              //             child: Column(
+                              //               crossAxisAlignment:
+                              //                   CrossAxisAlignment.start,
+                              //               children: [
+                              //                 Text(
+                              //                   'Report to',
+                              //                   style: TextStyle(
+                              //                     overflow:
+                              //                         TextOverflow.ellipsis,
+                              //                     color: Colors.black,
+                              //                     fontWeight:
+                              //                         FontWeight.w500,
+                              //                     fontSize:
+                              //                         ResponsiveHelper.fontSize(
+                              //                           context,
+                              //                           base: 12,
+                              //                         ),
+                              //                   ),
+                              //                 ),
+                              //                 Text(
+                              //                   isLoading
+                              //                       ? 'Loading...'
+                              //                       : selectedContractor
+                              //                                 ?.name ??
+                              //                             'Company name',
+                              //                   style: TextStyle(
+                              //                     color: isLoading
+                              //                         ? Colors.black
+                              //                               .withOpacity(
+                              //                                 0.5,
+                              //                               )
+                              //                         : Colors.black
+                              //                               .withOpacity(
+                              //                                 0.7,
+                              //                               ),
+                              //                     overflow:
+                              //                         TextOverflow.ellipsis,
+                              //                     fontSize:
+                              //                         ResponsiveHelper.fontSize(
+                              //                           context,
+                              //                           base: 12,
+                              //                         ),
+                              //                   ),
+                              //                 ),
+                              //               ],
+                              //             ),
+                              //           ),
+                              //         ],
+                              //       ),
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           );
                         },
