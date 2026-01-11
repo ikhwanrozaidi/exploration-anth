@@ -218,12 +218,8 @@ class ProgramDraftBloc extends Bloc<ProgramDraftEvent, ProgramDraftState> {
     emit(
       ProgramDraftState.editing(
         draftData: currentData.copyWith(
-          periodStart: event.periods.isNotEmpty
-              ? DateTime.parse(event.periods.first.periodStart)
-              : null,
-          periodEnd: event.periods.isNotEmpty
-              ? DateTime.parse(event.periods.first.periodEnd)
-              : null,
+          periodStart: event.periodStart,
+          periodEnd: event.periodEnd,
         ),
       ),
     );

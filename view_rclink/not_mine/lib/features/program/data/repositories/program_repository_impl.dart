@@ -6,7 +6,7 @@ import '../../../../core/repositories/base_sync_repository.dart';
 import '../../../road/domain/entities/package_data_response_entity.dart';
 import '../../domain/entities/program_setting_entity.dart';
 import '../../domain/repositories/program_repository.dart';
-import '../datasource/program_local_datasource.dart';
+import '../datasource/program_settings_local_datasource.dart';
 import '../datasource/program_remote_datasource.dart';
 import '../models/program_setting_model.dart';
 
@@ -18,7 +18,7 @@ class ProgramRepositoryImpl
           List<ProgramSettingModel>
         >
     implements ProgramRepository {
-  final ProgramLocalDataSource _localDataSource;
+  final ProgramSettingsLocalDataSource _localDataSource;
   final ProgramRemoteDataSource _remoteDataSource;
 
   ProgramRepositoryImpl(this._localDataSource, this._remoteDataSource);

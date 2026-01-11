@@ -32,16 +32,16 @@ abstract class ProgramDraftLocalDataSource {
 
   Future<Either<Failure, ProgramDraftData?>> getDraftByUID(String draftUID);
 
-  Future<Either<Failure, List<ProgramData>>> getDraftList(String companyUID);
+  Future<Either<Failure, List<ProgramRecord>>> getDraftList(String companyUID);
 
   Future<Either<Failure, void>> deleteDraftByUID(String draftUID);
 
   // Cache operations (for API responses)
   Future<Either<Failure, void>> cacheProgramsFromAPI(
-    List<ProgramData> programs,
+    List<ProgramRecord> programs,
   );
 
-  Future<Either<Failure, List<ProgramData>>> getCachedPrograms(
+  Future<Either<Failure, List<ProgramRecord>>> getCachedPrograms(
     String companyUID,
   );
 
@@ -159,7 +159,8 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
       if (draftData.contractor != null) {
         contractorJson = json.encode({
           'id': draftData.contractor!.id,
-          'uid': draftData.contractor!.contractRelationUID,
+          'uid': draftData.contractor!.uid,
+          'contractRelationUID': draftData.contractor!.contractRelationUID,
           'name': draftData.contractor!.name,
           'regNo': draftData.contractor!.regNo,
         });
@@ -238,7 +239,8 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
         final contractorJson = json.decode(draft.contractRelationData!);
         contractor = ContractorRelation(
           id: contractorJson['id'],
-          contractRelationUID: contractorJson['uid'],
+          uid: contractorJson['uid'],
+          contractRelationUID: contractorJson['contractRelationUID'],
           name: contractorJson['name'] ?? '',
           regNo: contractorJson['regNo'],
         );
@@ -259,7 +261,7 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
         uid: draft.uid,
         isDraftMode: true,
         companyUID: draft.companyID.toString(),
-        workScopeID: draft.workScopeID ?? 0,
+        workScopeID: draft.workScopeID,
         workScopeUID: '', // Not stored in DB for drafts
         workScopeName: '', // Not stored in DB for drafts
         workScopeCode: '', // Not stored in DB for drafts
@@ -289,7 +291,7 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
   }
 
   @override
-  Future<Either<Failure, List<ProgramData>>> getDraftList(
+  Future<Either<Failure, List<ProgramRecord>>> getDraftList(
     String companyUID,
   ) async {
     try {
@@ -305,8 +307,6 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
               .get();
 
       print('✅ Loaded ${drafts.length} program drafts');
-
-      // Convert List<ProgramData> from Drift to our return type
       return Right(drafts);
     } catch (e) {
       print('❌ Error loading draft list: $e');
@@ -338,7 +338,7 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
 
   @override
   Future<Either<Failure, void>> cacheProgramsFromAPI(
-    List<ProgramData> programs,
+    List<ProgramRecord> programs,
   ) async {
     try {
       print('💾 Caching ${programs.length} programs from API');
@@ -366,7 +366,7 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
   }
 
   @override
-  Future<Either<Failure, List<ProgramData>>> getCachedPrograms(
+  Future<Either<Failure, List<ProgramRecord>>> getCachedPrograms(
     String companyUID,
   ) async {
     try {
