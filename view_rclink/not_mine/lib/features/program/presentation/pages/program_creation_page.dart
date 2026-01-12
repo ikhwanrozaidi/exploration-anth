@@ -791,30 +791,75 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
                 flex: 2,
                 child: ElevatedButton(
                   onPressed: () {
-                    // isR02
-                    //     ? Navigator.push(
-                    //         context,
-                    //         MaterialPageRoute(
-                    //           builder: (context) =>
-                    //               R02ProgramCreationDraftPage(),
-                    //         ),
-                    //       )
-                    //     : Navigator.push(
-                    //         context,
-                    //         MaterialPageRoute(
-                    //           builder: (context) => ProgramCreationDraftPage(),
-                    //         ),
-                    //       );
+                    // Validate required fields based on isR02
+                    if (isR02) {
+                      // R02 validation: must have road and section
+                      if (selectedRoadR02 == null) {
+                        CustomSnackBar.show(
+                          context,
+                          'Please select a road',
+                          type: SnackBarType.warning,
+                        );
+                        return;
+                      }
 
-                    print('Submit program');
-                    print('Work Scope UID: $selectedWorkScopeUID');
-                    print('Work Scope ID: $selectedWorkScopeID');
-                    print('Work Scope Code: $selectedWorkScopeCode');
-                    print('Work Scope Name: $selectedWorkScopeName');
-                    print('Is R02: $isR02');
-                    if (!isR02) {
-                      print('Contractor UID: $selectedContractorUID');
-                      print('Contractor Name: $selectedContractorName');
+                      if (sectionValue.isEmpty) {
+                        CustomSnackBar.show(
+                          context,
+                          'Please enter section',
+                          type: SnackBarType.warning,
+                        );
+                        return;
+                      }
+
+                      if (hasSectionError) {
+                        CustomSnackBar.show(
+                          context,
+                          'Section is out of valid range',
+                          type: SnackBarType.error,
+                        );
+                        return;
+                      }
+
+                      // Navigate to R02 Draft Page
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => R02ProgramCreationDraftPage(
+                            workScopeID: selectedWorkScopeID,
+                            workScopeUID: selectedWorkScopeUID,
+                            workScopeName: selectedWorkScopeName,
+                            workScopeCode: selectedWorkScopeCode,
+                            road: selectedRoadR02,
+                            section: double.tryParse(sectionValue),
+                          ),
+                        ),
+                      );
+                    } else {
+                      // Non-R02 validation: must have contractor
+                      if (selectedContractorUID == null) {
+                        CustomSnackBar.show(
+                          context,
+                          'Please select a contractor',
+                          type: SnackBarType.warning,
+                        );
+                        return;
+                      }
+
+                      // Navigate to Non-R02 Draft Page
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => ProgramCreationDraftPage(
+                      //       workScopeID: selectedWorkScopeID,
+                      //       workScopeUID: selectedWorkScopeUID,
+                      //       workScopeName: selectedWorkScopeName,
+                      //       workScopeCode: selectedWorkScopeCode,
+                      //       contractorUID: selectedContractorUID,
+                      //       contractorName: selectedContractorName,
+                      //     ),
+                      //   ),
+                      // );
                     }
                   },
                   style: ElevatedButton.styleFrom(

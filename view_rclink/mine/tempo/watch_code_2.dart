@@ -7,6 +7,14 @@
     {
       "periodStart": "2026-01-01",
       "periodEnd": "2026-02-28"
+    },
+    {
+      "periodStart": "2026-03-01",
+      "periodEnd": "2026-03-31"
+    },
+    {
+      "periodStart": "2026-04-01",
+      "periodEnd": "2026-04-20"
     }
   ],
   "contractRelationUID": "39cf3bb1-ea7d-48a9-a125-cf7bac889639",

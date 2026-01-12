@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:rclink_app/features/program/presentation/bloc/program/program_state.dart';
 
 import '../../../../core/di/injection.dart';
@@ -20,12 +22,16 @@ import '../../../company/presentation/bloc/company_state.dart';
 import '../../../contractor_relation/domain/entities/contractor_relation_entity.dart';
 import '../../../contractor_relation/presentation/bloc/contractor_relation_bloc.dart';
 import '../../../contractor_relation/presentation/bloc/contractor_relation_state.dart';
+import '../../../daily_report/presentation/widgets/report_creation/notes_bottomsheet.dart';
 import '../../../daily_report/presentation/widgets/report_creation/shared/custom_fields_tile_widget.dart';
 import '../../../road/domain/entities/road_entity.dart';
+import '../../domain/entities/program_setting_entity.dart';
 import '../bloc/program/program_bloc.dart';
 import '../bloc/program_draft/program_draft_bloc.dart';
 import '../bloc/program_draft/program_draft_event.dart';
 import '../bloc/program_draft/program_draft_state.dart';
+import 'program_quantity_selection_page.dart';
+import 'select_date_program_widget.dart';
 
 class R02ProgramCreationDraftPage extends StatefulWidget {
   final String? draftUID;
@@ -64,6 +70,12 @@ class _R02ProgramCreationDraftPageState
   bool _isLoadingLocation = false;
   ContractorRelation? _selectedContractor;
   Map<String, Map<String, dynamic>> _quantityFieldData = {};
+
+  DateTime? _periodStart;
+  DateTime? _periodEnd;
+  List<Map<String, String>> _periods = [];
+
+  String _description = '';
 
   @override
   void initState() {
@@ -304,13 +316,12 @@ class _R02ProgramCreationDraftPageState
     );
   }
 
-  void _handleQuantityTap() {
-    // Get program settings from ProgramBloc
+  void _handleQuantityTap() async {
     final programState = _programBloc.state;
 
     programState.maybeWhen(
       loaded: (programSettings, contractorRoads) {
-        if (programSettings.isEmpty) {
+        if (programSettings == null || programSettings.isEmpty) {
           CustomSnackBar.show(
             context,
             'No program settings available',
@@ -319,36 +330,56 @@ class _R02ProgramCreationDraftPageState
           return;
         }
 
-        // Find the current work scope's program setting
-        final currentSetting = programSettings.firstWhere(
-          (setting) => setting.workScope?.uid == widget.workScopeUID,
-          orElse: () => programSettings.first,
-        );
+        // Find setting for current work scope
+        ProgramSetting? currentSetting;
+        try {
+          currentSetting = programSettings.firstWhere(
+            (setting) => setting.workScopeID == widget.workScopeID,
+          );
+        } catch (e) {
+          print('⚠️ No setting found for workScopeID: ${widget.workScopeID}');
+          return;
+        }
 
-        if (currentSetting.quantityTypes == null ||
+        if (currentSetting == null ||
+            currentSetting.quantityTypes == null ||
             currentSetting.quantityTypes!.isEmpty) {
           CustomSnackBar.show(
             context,
-            'No quantities available for this work scope',
+            'No quantities configured for this work scope',
             type: SnackBarType.warning,
           );
           return;
         }
 
-        // TODO: Navigate to ProgramQuantitySelectionPage
-        // Similar to DailyReport's QuantitySelectionPage
-        print(
-          '📦 Quantity types available: ${currentSetting.quantityTypes!.length}',
-        );
-        print(
-          '   Quantities: ${currentSetting.quantityTypes!.map((qt) => qt.name).toList()}',
-        );
-
-        CustomSnackBar.show(
+        // Navigate to quantity selection page
+        Navigator.push(
           context,
-          'Quantity selection coming soon...',
-          type: SnackBarType.info,
-        );
+          MaterialPageRoute(
+            builder: (context) => ProgramQuantitySelectionPage(
+              quantityTypes: currentSetting!.quantityTypes!,
+              allowMultipleQuantities:
+                  currentSetting.workScope?.allowMultipleQuantities ?? false,
+              existingQuantityData: _quantityFieldData,
+            ),
+          ),
+        ).then((result) {
+          if (result != null && result is Map<String, Map<String, dynamic>>) {
+            setState(() {
+              _quantityFieldData = result;
+            });
+
+            _programDraftBloc.add(
+              ProgramDraftEvent.updateQuantityFieldData(
+                quantityFieldData: result,
+              ),
+            );
+
+            _triggerAutoSave();
+
+            print('✅ Quantity data updated: ${result.length} quantities');
+          }
+        });
       },
       orElse: () {
         CustomSnackBar.show(
@@ -358,6 +389,62 @@ class _R02ProgramCreationDraftPageState
         );
       },
     );
+  }
+
+  void _handlePeriodTap() async {
+    final result = await Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SelectDateProgramPage(
+          initialStartDate: _periodStart,
+          initialEndDate: _periodEnd,
+        ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        _periodStart = result['startDate'] as DateTime;
+        _periodEnd = result['endDate'] as DateTime;
+        _periods = List<Map<String, String>>.from(result['periods']);
+      });
+
+      print('📅 Period selected: $_periodStart to $_periodEnd');
+      print('   Monthly periods: ${_periods.length}');
+      _periods.forEach((period) {
+        print('   - ${period['periodStart']} to ${period['periodEnd']}');
+      });
+
+      _programDraftBloc.add(
+        ProgramDraftEvent.updatePeriods(
+          periodStart: _periodStart!,
+          periodEnd: _periodEnd!,
+        ),
+      );
+
+      _triggerAutoSave();
+    }
+  }
+
+  void _handleNotesTap() async {
+    final result = await showNotesBottomSheet(
+      context: context,
+      initialNotes: _description,
+    );
+
+    if (result != null) {
+      setState(() {
+        _description = result;
+      });
+
+      print('📝 Description saved: $result');
+
+      _programDraftBloc.add(
+        ProgramDraftEvent.updateDescription(description: result),
+      );
+
+      _triggerAutoSave();
+    }
   }
 
   @override
@@ -374,6 +461,9 @@ class _R02ProgramCreationDraftPageState
               _quantityFieldData = Map.from(draftData.quantityFieldData);
               _latitude = draftData.latitude;
               _longitude = draftData.longitude;
+              _periodStart = draftData.periodStart;
+              _periodEnd = draftData.periodEnd;
+              _description = draftData.description ?? '';
             });
           },
           autoSaving: (draftData) {
@@ -382,6 +472,9 @@ class _R02ProgramCreationDraftPageState
               _quantityFieldData = Map.from(draftData.quantityFieldData);
               _latitude = draftData.latitude;
               _longitude = draftData.longitude;
+              _periodStart = draftData.periodStart;
+              _periodEnd = draftData.periodEnd;
+              _description = draftData.description ?? '';
             });
           },
           autoSaved: (draftData) {},
@@ -474,7 +567,7 @@ class _R02ProgramCreationDraftPageState
                       ),
                       SizedBox(height: 13),
                       Text(
-                        'Draft R02 Program',
+                        'Draft Program',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
@@ -812,15 +905,15 @@ class _R02ProgramCreationDraftPageState
                               title: 'Contractor',
                               titleDetails: contractor != null
                                   ? contractor.name
-                                  : 'Choose contractor (optional)',
+                                  : 'Choose contractor',
                               isFilled: contractor != null,
                               onTap: _showContractorSelection,
-                              isRequired: false,
+                              isRequired: true,
                             );
                           },
                         ),
 
-                        // Quantity Selection (NEW - Dynamic from program-settings)
+                        // Quantity Selection
                         BlocBuilder<ProgramDraftBloc, ProgramDraftState>(
                           bloc: _programDraftBloc,
                           builder: (context, draftState) {
@@ -857,6 +950,19 @@ class _R02ProgramCreationDraftPageState
                           },
                         ),
 
+                        // Period Selection
+                        CustomFieldTile(
+                          icon: Icons.calendar_month,
+                          title: 'Date',
+                          titleDetails:
+                              _periodStart != null && _periodEnd != null
+                              ? '${DateFormat('d MMM yyyy').format(_periodStart!)} - ${DateFormat('d MMM yyyy').format(_periodEnd!)}'
+                              : 'Select program date range',
+                          isFilled: _periodStart != null && _periodEnd != null,
+                          onTap: _handlePeriodTap,
+                          isRequired: true,
+                        ),
+
                         // Photos
                         BlocBuilder<ProgramDraftBloc, ProgramDraftState>(
                           bloc: _programDraftBloc,
@@ -876,10 +982,11 @@ class _R02ProgramCreationDraftPageState
                             );
 
                             return CustomFieldTile(
+                              isRequired: true,
                               icon: Icons.camera_alt_rounded,
                               title: 'Photos',
                               titleDetails: programImages.isEmpty
-                                  ? 'Take pictures (optional)'
+                                  ? 'Take pictures'
                                   : '${programImages.length} image${programImages.length > 1 ? 's' : ''} selected',
                               isFilled: programImages.isNotEmpty,
                               onTap: () async {
@@ -934,9 +1041,22 @@ class _R02ProgramCreationDraftPageState
                                   print('⚠️ No result or images is null');
                                 }
                               },
-                              isRequired: false,
                             );
                           },
+                        ),
+
+                        // Notes/Description
+                        CustomFieldTile(
+                          icon: Icons.notes,
+                          title: 'Notes',
+                          titleDetails: _description.isEmpty
+                              ? 'Notes or remark (optional)'
+                              : _description.length > 50
+                              ? '${_description.substring(0, 50)}...'
+                              : _description,
+                          isFilled: _description.isNotEmpty,
+                          onTap: _handleNotesTap,
+                          isRequired: true,
                         ),
 
                         SizedBox(height: 60),
@@ -954,18 +1074,175 @@ class _R02ProgramCreationDraftPageState
                                 onPressed: isSubmitting
                                     ? null
                                     : () {
-                                        final companyState = _companyBloc.state;
-                                        if (companyState is CompanyLoaded &&
-                                            companyState.selectedCompany !=
-                                                null) {
-                                          _programDraftBloc.add(
-                                            ProgramDraftEvent.submitProgram(
-                                              companyUID: companyState
-                                                  .selectedCompany!
-                                                  .uid,
-                                            ),
+                                        // ═══════════════════════════════════════════════════════
+                                        // 🔍 DEBUG PRINTS - VERIFY ALL DATA BEFORE API SUBMISSION
+                                        // ═══════════════════════════════════════════════════════
+
+                                        print('\n');
+                                        print(
+                                          '═══════════════════════════════════════════════════════',
+                                        );
+                                        print(
+                                          '📋 PROGRAM SUBMISSION DATA - DEBUG',
+                                        );
+                                        print(
+                                          '═══════════════════════════════════════════════════════',
+                                        );
+
+                                        // 1. CONTRACTOR
+                                        print('\n👷 CONTRACTOR:');
+                                        if (_selectedContractor != null) {
+                                          print(
+                                            '  - UID: ${_selectedContractor!.uid}',
                                           );
+                                          print(
+                                            '  - Name: ${_selectedContractor!.name}',
+                                          );
+                                        } else {
+                                          print('  - ❌ No contractor selected');
                                         }
+
+                                        // 2. DATES/PERIODS
+                                        print('\n📅 PERIODS:');
+                                        if (_periodStart != null &&
+                                            _periodEnd != null) {
+                                          print('  - Start: $_periodStart');
+                                          print('  - End: $_periodEnd');
+                                          print(
+                                            '  - Monthly Periods (${_periods.length}):',
+                                          );
+                                          for (
+                                            var i = 0;
+                                            i < _periods.length;
+                                            i++
+                                          ) {
+                                            print(
+                                              '    ${i + 1}. ${_periods[i]['periodStart']} → ${_periods[i]['periodEnd']}',
+                                            );
+                                          }
+                                        } else {
+                                          print('  - ❌ No periods selected');
+                                        }
+
+                                        // 3. NOTES/DESCRIPTION
+                                        print('\n📝 NOTES/DESCRIPTION:');
+                                        if (_description.isNotEmpty) {
+                                          print('  "$_description"');
+                                        } else {
+                                          print('  - (No description)');
+                                        }
+
+                                        // 4. QUANTITIES (JSON FORMAT)
+                                        print('\n🔢 QUANTITIES DATA:');
+                                        if (_quantityFieldData.isNotEmpty) {
+                                          print(
+                                            '  - Total quantities: ${_quantityFieldData.length}',
+                                          );
+                                          print('\n  📦 Full JSON Structure:');
+
+                                          // Convert to JSON-like structure for API submission
+                                          final quantitiesForAPI =
+                                              _quantityFieldData.entries.map((
+                                                entry,
+                                              ) {
+                                                final quantityTypeUID =
+                                                    entry.key;
+                                                final data = entry.value;
+
+                                                final fields =
+                                                    data['fields']
+                                                        as Map<
+                                                          String,
+                                                          dynamic
+                                                        >? ??
+                                                    {};
+                                                final segments =
+                                                    data['segments']
+                                                        as List<dynamic>? ??
+                                                    [];
+
+                                                return {
+                                                  'quantityTypeUID':
+                                                      quantityTypeUID,
+                                                  'name': data['name'],
+                                                  'code': data['code'],
+                                                  'fields': fields,
+                                                  'segments': segments
+                                                      .map(
+                                                        (seg) => {
+                                                          'segmentNumber':
+                                                              seg['segmentNumber'],
+                                                          'startDistance':
+                                                              seg['startDistance'],
+                                                          'endDistance':
+                                                              seg['endDistance'],
+                                                          'segment_length':
+                                                              seg['segment_length'],
+                                                          'segment_width':
+                                                              seg['segment_width'],
+                                                          'segment_depth':
+                                                              seg['segment_depth'],
+                                                        },
+                                                      )
+                                                      .toList(),
+                                                };
+                                              }).toList();
+
+                                          final jsonString =
+                                              JsonEncoder.withIndent(
+                                                '  ',
+                                              ).convert(quantitiesForAPI);
+                                          print(jsonString);
+                                        } else {
+                                          print('  - ❌ No quantities added');
+                                        }
+
+                                        // 5. LOCATION
+                                        print('\n📍 LOCATION:');
+                                        if (_latitude != null &&
+                                            _longitude != null) {
+                                          print('  - Latitude: $_latitude');
+                                          print('  - Longitude: $_longitude');
+                                        } else {
+                                          print('  - ❌ No location set');
+                                        }
+
+                                        // 6. BASIC INFO
+                                        print('\n📋 BASIC INFO:');
+                                        print(
+                                          '  - Work Scope UID: ${widget.workScopeUID}',
+                                        );
+                                        print(
+                                          '  - Work Scope Name: ${widget.workScopeName}',
+                                        );
+                                        print(
+                                          '  - Work Scope Code: ${widget.workScopeCode}',
+                                        );
+                                        print('  - Road: ${widget.road?.name}');
+                                        print('  - Section: ${widget.section}');
+
+                                        print(
+                                          '\n═══════════════════════════════════════════════════════',
+                                        );
+                                        print('END DEBUG');
+                                        print(
+                                          '═══════════════════════════════════════════════════════\n',
+                                        );
+
+                                        // ═══════════════════════════════════════════════════════
+
+                                        // final companyState = _companyBloc.state;
+                                        // if (companyState is CompanyLoaded &&
+                                        //     companyState.selectedCompany !=
+                                        //         null) {
+                                        //   _programDraftBloc.add(
+                                        //     ProgramDraftEvent.submitProgram(
+                                        //       companyUID: companyState
+                                        //           .selectedCompany!
+                                        //           .uid,
+                                        //     ),
+                                        //   );
+                                        // }
                                       },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: primaryColor,
