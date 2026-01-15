@@ -26,9 +26,6 @@ import '../../../daily_report/presentation/widgets/report_creation/notes_bottoms
 import '../../../daily_report/presentation/widgets/report_creation/shared/custom_fields_tile_widget.dart';
 import '../../../road/domain/entities/road_entity.dart';
 import '../../domain/entities/program_setting_entity.dart';
-import '../bloc/create_program/ create_program_bloc.dart';
-import '../bloc/create_program/create_program_event.dart';
-import '../bloc/create_program/create_program_state.dart';
 import '../bloc/program/program_bloc.dart';
 import '../bloc/program_draft/program_draft_bloc.dart';
 import '../bloc/program_draft/program_draft_event.dart';
@@ -64,7 +61,6 @@ class R02ProgramCreationDraftPage extends StatefulWidget {
 class _R02ProgramCreationDraftPageState
     extends State<R02ProgramCreationDraftPage> {
   late final ProgramDraftBloc _programDraftBloc;
-  late final CreateProgramBloc _createProgramBloc;
   late final CompanyBloc _companyBloc;
   late final ProgramBloc _programBloc;
   Timer? _autoSaveDebounce;
@@ -88,7 +84,6 @@ class _R02ProgramCreationDraftPageState
     _programDraftBloc = getIt<ProgramDraftBloc>();
     _companyBloc = getIt<CompanyBloc>();
     _programBloc = context.read<ProgramBloc>();
-    _createProgramBloc = getIt<CreateProgramBloc>();
 
     if (widget.draftUID != null) {
       _loadExistingDraft();
@@ -132,7 +127,6 @@ class _R02ProgramCreationDraftPageState
   @override
   void dispose() {
     _autoSaveDebounce?.cancel();
-    _createProgramBloc.close();
     super.dispose();
   }
 
@@ -1068,187 +1062,221 @@ class _R02ProgramCreationDraftPageState
                         SizedBox(height: 60),
 
                         // Submit Button
-                        // Wrap the submit button with BlocListener
-                        BlocListener<CreateProgramBloc, CreateProgramState>(
-                          bloc: _createProgramBloc,
-                          listener: (context, state) {
-                            state.maybeWhen(
-                              success: (program) async {
-                                print('✅ Program created: ${program.uid}');
+                        BlocBuilder<ProgramDraftBloc, ProgramDraftState>(
+                          bloc: _programDraftBloc,
+                          builder: (context, draftState) {
+                            final isSubmitting =
+                                draftState is ProgramDraftSubmitting;
 
-                                // Delete draft
-                                _programDraftBloc.add(
-                                  ProgramDraftEvent.deleteDraft(
-                                    draftUID: program.uid.toString(),
-                                  ),
-                                );
+                            return SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: isSubmitting
+                                    ? null
+                                    : () {
+                                        // ═══════════════════════════════════════════════════════
+                                        // 🔍 DEBUG PRINTS - VERIFY ALL DATA BEFORE API SUBMISSION
+                                        // ═══════════════════════════════════════════════════════
 
-                                CustomSnackBar.show(
-                                  context,
-                                  'Program created successfully!',
-                                  type: SnackBarType.success,
-                                );
+                                        print('\n');
+                                        print(
+                                          '═══════════════════════════════════════════════════════',
+                                        );
+                                        print(
+                                          '📋 PROGRAM SUBMISSION DATA - DEBUG',
+                                        );
+                                        print(
+                                          '═══════════════════════════════════════════════════════',
+                                        );
 
-                                // Navigate back to program list or home
-                                Navigator.pop(context);
-                              },
-                              error: (message) {
-                                CustomSnackBar.show(
-                                  context,
-                                  message,
-                                  type: SnackBarType.error,
-                                );
-                              },
-                              orElse: () {},
-                            );
-                          },
-                          child: BlocBuilder<CreateProgramBloc, CreateProgramState>(
-                            bloc: _createProgramBloc,
-                            builder: (context, createState) {
-                              final isSubmitting =
-                                  createState is CreateProgramSubmitting;
-
-                              return SizedBox(
-                                width: double.infinity,
-                                child: ElevatedButton(
-                                  onPressed: isSubmitting
-                                      ? null
-                                      : () {
-                                          // Get states
-                                          final companyState =
-                                              _companyBloc.state;
-                                          final programState =
-                                              _programBloc.state;
-
-                                          // Validate company
-                                          if (companyState is! CompanyLoaded ||
-                                              companyState.selectedCompany ==
-                                                  null) {
-                                            CustomSnackBar.show(
-                                              context,
-                                              'Company not loaded',
-                                              type: SnackBarType.error,
-                                            );
-                                            return;
-                                          }
-
-                                          // Validate program settings
-                                          if (programState is! ProgramLoaded) {
-                                            CustomSnackBar.show(
-                                              context,
-                                              'Program settings not loaded',
-                                              type: SnackBarType.error,
-                                            );
-                                            return;
-                                          }
-
-                                          // Validate periods
-                                          if (_periodStart == null ||
-                                              _periodEnd == null ||
-                                              _periods.isEmpty) {
-                                            CustomSnackBar.show(
-                                              context,
-                                              'Please select program period',
-                                              type: SnackBarType.error,
-                                            );
-                                            return;
-                                          }
-
-                                          // Validate quantities
-                                          if (_quantityFieldData.isEmpty) {
-                                            CustomSnackBar.show(
-                                              context,
-                                              'Please add at least one quantity',
-                                              type: SnackBarType.error,
-                                            );
-                                            return;
-                                          }
-
-                                          // Get quantity types
-                                          final currentSetting = programState
-                                              .programSettings
-                                              ?.firstWhere(
-                                                (setting) =>
-                                                    setting.workScopeID ==
-                                                    widget.workScopeID,
-                                                orElse: () => programState
-                                                    .programSettings!
-                                                    .first,
-                                              );
-
-                                          if (currentSetting == null ||
-                                              currentSetting.quantityTypes ==
-                                                  null) {
-                                            CustomSnackBar.show(
-                                              context,
-                                              'No quantity types available',
-                                              type: SnackBarType.error,
-                                            );
-                                            return;
-                                          }
-
-                                          // Submit program
-                                          _createProgramBloc.add(
-                                            CreateProgramEvent.submitR02Program(
-                                              companyUID: companyState
-                                                  .selectedCompany!
-                                                  .uid,
-                                              workScopeUID:
-                                                  widget.workScopeUID ?? '',
-                                              workScopeCode:
-                                                  widget.workScopeCode ?? '',
-                                              workScopeName:
-                                                  widget.workScopeName ?? '',
-                                              roadUID: widget.road!.uid ?? '',
-                                              section: widget.section ?? 0,
-                                              periods: _periods,
-                                              periodStart: _periodStart!,
-                                              contractRelationUID:
-                                                  _selectedContractor?.uid,
-                                              description: _description,
-                                              latitude: _latitude,
-                                              longitude: _longitude,
-                                              quantityFieldData:
-                                                  _quantityFieldData,
-                                              quantityTypes:
-                                                  currentSetting.quantityTypes!,
-                                            ),
+                                        // 1. CONTRACTOR
+                                        print('\n👷 CONTRACTOR:');
+                                        if (_selectedContractor != null) {
+                                          print(
+                                            '  - UID: ${_selectedContractor!.uid}',
                                           );
-                                        },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: primaryColor,
-                                    padding: ResponsiveHelper.padding(
-                                      context,
-                                      vertical: 12,
-                                    ),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    elevation: 2,
+                                          print(
+                                            '  - Name: ${_selectedContractor!.name}',
+                                          );
+                                        } else {
+                                          print('  - ❌ No contractor selected');
+                                        }
+
+                                        // 2. DATES/PERIODS
+                                        print('\n📅 PERIODS:');
+                                        if (_periodStart != null &&
+                                            _periodEnd != null) {
+                                          print('  - Start: $_periodStart');
+                                          print('  - End: $_periodEnd');
+                                          print(
+                                            '  - Monthly Periods (${_periods.length}):',
+                                          );
+                                          for (
+                                            var i = 0;
+                                            i < _periods.length;
+                                            i++
+                                          ) {
+                                            print(
+                                              '    ${i + 1}. ${_periods[i]['periodStart']} → ${_periods[i]['periodEnd']}',
+                                            );
+                                          }
+                                        } else {
+                                          print('  - ❌ No periods selected');
+                                        }
+
+                                        // 3. NOTES/DESCRIPTION
+                                        print('\n📝 NOTES/DESCRIPTION:');
+                                        if (_description.isNotEmpty) {
+                                          print('  "$_description"');
+                                        } else {
+                                          print('  - (No description)');
+                                        }
+
+                                        // 4. QUANTITIES (JSON FORMAT)
+                                        print('\n🔢 QUANTITIES DATA:');
+                                        if (_quantityFieldData.isNotEmpty) {
+                                          print(
+                                            '  - Total quantities: ${_quantityFieldData.length}',
+                                          );
+                                          print('\n  📦 Full JSON Structure:');
+
+                                          // Convert to JSON-like structure for API submission
+                                          final quantitiesForAPI =
+                                              _quantityFieldData.entries.map((
+                                                entry,
+                                              ) {
+                                                final quantityTypeUID =
+                                                    entry.key;
+                                                final data = entry.value;
+
+                                                final fields =
+                                                    data['fields']
+                                                        as Map<
+                                                          String,
+                                                          dynamic
+                                                        >? ??
+                                                    {};
+                                                final segments =
+                                                    data['segments']
+                                                        as List<dynamic>? ??
+                                                    [];
+
+                                                return {
+                                                  'quantityTypeUID':
+                                                      quantityTypeUID,
+                                                  'name': data['name'],
+                                                  'code': data['code'],
+                                                  'fields': fields,
+                                                  'segments': segments
+                                                      .map(
+                                                        (seg) => {
+                                                          'segmentNumber':
+                                                              seg['segmentNumber'],
+                                                          'startDistance':
+                                                              seg['startDistance'],
+                                                          'endDistance':
+                                                              seg['endDistance'],
+                                                          'segment_length':
+                                                              seg['segment_length'],
+                                                          'segment_width':
+                                                              seg['segment_width'],
+                                                          'segment_depth':
+                                                              seg['segment_depth'],
+                                                        },
+                                                      )
+                                                      .toList(),
+                                                };
+                                              }).toList();
+
+                                          final jsonString =
+                                              JsonEncoder.withIndent(
+                                                '  ',
+                                              ).convert(quantitiesForAPI);
+                                          print(jsonString);
+                                        } else {
+                                          print('  - ❌ No quantities added');
+                                        }
+
+                                        // 5. LOCATION
+                                        print('\n📍 LOCATION:');
+                                        if (_latitude != null &&
+                                            _longitude != null) {
+                                          print('  - Latitude: $_latitude');
+                                          print('  - Longitude: $_longitude');
+                                        } else {
+                                          print('  - ❌ No location set');
+                                        }
+
+                                        // 6. BASIC INFO
+                                        print('\n📋 BASIC INFO:');
+                                        print(
+                                          '  - Work Scope UID: ${widget.workScopeUID}',
+                                        );
+                                        print(
+                                          '  - Work Scope Name: ${widget.workScopeName}',
+                                        );
+                                        print(
+                                          '  - Work Scope Code: ${widget.workScopeCode}',
+                                        );
+                                        print('  - Road: ${widget.road?.name}');
+                                        print('  - Section: ${widget.section}');
+
+                                        print(
+                                          '\n═══════════════════════════════════════════════════════',
+                                        );
+                                        print('END DEBUG');
+                                        print(
+                                          '═══════════════════════════════════════════════════════\n',
+                                        );
+
+                                        // ═══════════════════════════════════════════════════════
+
+                                        // final companyState = _companyBloc.state;
+                                        // if (companyState is CompanyLoaded &&
+                                        //     companyState.selectedCompany !=
+                                        //         null) {
+                                        //   _programDraftBloc.add(
+                                        //     ProgramDraftEvent.submitProgram(
+                                        //       companyUID: companyState
+                                        //           .selectedCompany!
+                                        //           .uid,
+                                        //     ),
+                                        //   );
+                                        // }
+                                      },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: primaryColor,
+                                  padding: ResponsiveHelper.padding(
+                                    context,
+                                    vertical: 12,
                                   ),
-                                  child: isSubmitting
-                                      ? SizedBox(
-                                          height: 20,
-                                          width: 20,
-                                          child: CircularProgressIndicator(
-                                            color: Colors.white,
-                                            strokeWidth: 2,
-                                          ),
-                                        )
-                                      : Text(
-                                          'Submit',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: ResponsiveHelper.fontSize(
-                                              context,
-                                              base: 14,
-                                            ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  elevation: 2,
+                                ),
+                                child: isSubmitting
+                                    ? SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : Text(
+                                        'Submit',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: ResponsiveHelper.fontSize(
+                                            context,
+                                            base: 14,
                                           ),
                                         ),
-                                ),
-                              );
-                            },
-                          ),
+                                      ),
+                              ),
+                            );
+                          },
                         ),
                       ],
                     ),

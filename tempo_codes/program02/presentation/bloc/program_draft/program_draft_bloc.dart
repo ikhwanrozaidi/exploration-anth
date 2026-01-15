@@ -22,7 +22,6 @@ class ProgramDraftBloc extends Bloc<ProgramDraftEvent, ProgramDraftState> {
     : super(const ProgramDraftState.initial()) {
     on<InitializeDraft>(_onInitializeDraft);
     on<LoadExistingDraft>(_onLoadExistingDraft);
-
     on<UpdateLocation>(_onUpdateLocation);
     on<UpdateContractor>(_onUpdateContractor);
     on<UpdateProgramName>(_onUpdateProgramName);
@@ -30,11 +29,9 @@ class ProgramDraftBloc extends Bloc<ProgramDraftEvent, ProgramDraftState> {
     on<UpdatePeriods>(_onUpdatePeriods);
     on<UpdateQuantityFieldData>(_onUpdateQuantityFieldData);
     on<UpdateProgramImages>(_onUpdateProgramImages);
-
     on<AutoSaveDraft>(_onAutoSaveDraft);
     on<DeleteDraft>(_onDeleteDraft);
     on<ResetForm>(_onResetForm);
-
     on<SubmitProgram>(_onSubmitProgram);
 
     on<InitializeDraftMultiRoad>(_onInitializeDraftMultiRoad);

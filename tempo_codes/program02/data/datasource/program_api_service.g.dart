@@ -58,47 +58,6 @@ class _ProgramApiService implements ProgramApiService {
     return _value;
   }
 
-  @override
-  Future<ApiResponse<List<ProgramResponseModel>>> createProgram(
-    String companyUID,
-    SubmitProgramRequestModel requestBody,
-  ) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = requestBody;
-    final _options = _setStreamType<ApiResponse<List<ProgramResponseModel>>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            'companies/${companyUID}/programs',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late ApiResponse<List<ProgramResponseModel>> _value;
-    try {
-      _value = ApiResponse<List<ProgramResponseModel>>.fromJson(
-        _result.data!,
-        (json) => json is List<dynamic>
-            ? json
-                  .map<ProgramResponseModel>(
-                    (i) => ProgramResponseModel.fromJson(
-                      i as Map<String, dynamic>,
-                    ),
-                  )
-                  .toList()
-            : List.empty(),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

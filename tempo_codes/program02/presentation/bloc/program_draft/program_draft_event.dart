@@ -6,6 +6,7 @@ part 'program_draft_event.freezed.dart';
 
 @freezed
 class ProgramDraftEvent with _$ProgramDraftEvent {
+  // Initialize new draft
   const factory ProgramDraftEvent.initializeDraft({
     required String companyUID,
     required int workScopeID,
@@ -38,6 +39,7 @@ class ProgramDraftEvent with _$ProgramDraftEvent {
     required String description,
   }) = UpdateDescription;
 
+  // UPDATED: Use DateTime instead of List<ProgramPeriod>
   const factory ProgramDraftEvent.updatePeriods({
     required DateTime periodStart,
     required DateTime periodEnd,
@@ -53,13 +55,17 @@ class ProgramDraftEvent with _$ProgramDraftEvent {
 
   // Auto-save
   const factory ProgramDraftEvent.autoSaveDraft() = AutoSaveDraft;
+
   // Delete draft
   const factory ProgramDraftEvent.deleteDraft({required String draftUID}) =
       DeleteDraft;
+
   // Reset form
   const factory ProgramDraftEvent.resetForm() = ResetForm;
+
   // Submit program
-  const factory ProgramDraftEvent.submitProgram() = SubmitProgram;
+  const factory ProgramDraftEvent.submitProgram({required String companyUID}) =
+      SubmitProgram;
 
   // Initialize new draft for non-R02 (multi-road)
   const factory ProgramDraftEvent.initializeDraftMultiRoad({

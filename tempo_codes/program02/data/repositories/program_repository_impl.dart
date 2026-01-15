@@ -1,17 +1,14 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:rclink_app/features/program/data/models/create_program_response_model.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/repositories/base_sync_repository.dart';
 
 import '../../../road/domain/entities/package_data_response_entity.dart';
-import '../../domain/entities/program_entity.dart';
 import '../../domain/entities/program_setting_entity.dart';
 import '../../domain/repositories/program_repository.dart';
 import '../datasource/program_settings_local_datasource.dart';
 import '../datasource/program_remote_datasource.dart';
 import '../models/program_setting_model.dart';
-import '../models/submit_program_request_model.dart';
 
 @LazySingleton(as: ProgramRepository)
 class ProgramRepositoryImpl
@@ -72,35 +69,5 @@ class ProgramRepositoryImpl
   @override
   Future<Either<Failure, void>> clearCache() async {
     return await _localDataSource.clearCache();
-  }
-
-  @override
-  Future<Either<Failure, Program>> submitProgram({
-    required String companyUID,
-    required SubmitProgramRequestModel requestModel,
-  }) async {
-    print('📤 Repository: Submitting program...');
-
-    // Call remote datasource (returns Either)
-    final result = await _remoteDataSource.submitProgram(
-      companyUID: companyUID,
-      requestModel: requestModel,
-    );
-
-    return result.fold(
-      (failure) {
-        print('❌ Repository: Failed - ${failure.message}');
-        return Left(failure);
-      },
-      (programModel) {
-        print('✅ Repository: Program received from API');
-
-        // TODO: Store to local database if needed
-        // await _localDataSource.saveProgram(programModel);
-
-        final entity = programModel.toEntity();
-        return Right(entity);
-      },
-    );
   }
 }
