@@ -8,18 +8,25 @@
       "uid": "3c51af91-754a-4302-97c8-53f45456de4f",
       "companyID": 1,
       "workScopeID": 6,
+
       "calculationType": "SECTION_BASED",
+
       "inputLabel": "Total Length",
       "inputValue": null,
+
       "dividerValue": "200",
       "dividerLabel": "Meters per report",
+
       "unitMeasurement": "METER",
       "photoRequired": false,
+
       "isActive": true,
+
       "createdByID": 1,
       "createdAt": "2026-01-02T07:32:37.534Z",
       "updatedAt": "2026-01-02T16:10:50.616Z",
       "deletedAt": null,
+
       "workScope": {
         "id": 6,
         "uid": "501632f0-e6b5-4054-9d9e-ac349db0d749",
@@ -49,18 +56,25 @@
       "uid": "0027fc75-a3cc-477f-910e-f5ed3ae7e97a",
       "companyID": 1,
       "workScopeID": 5,
+
       "calculationType": "FIXED_COUNT",
+
       "inputLabel": "Total Culvert & Bridge",
       "inputValue": null,
+
       "dividerValue": null,
       "dividerLabel": null,
+
       "unitMeasurement": "NUMBER",
       "photoRequired": false,
+
       "isActive": true,
+
       "createdByID": 1,
       "createdAt": "2026-01-02T07:32:37.491Z",
       "updatedAt": "2026-01-02T16:10:50.469Z",
       "deletedAt": null,
+
       "workScope": {
         "id": 5,
         "uid": "9711e5f9-cf3a-48a9-99e1-87dc1e82f3ec",
@@ -90,14 +104,20 @@
       "uid": "d166b2b1-00fd-45fb-9ad7-8bbe9e351bae",
       "companyID": 1,
       "workScopeID": 4,
+
       "calculationType": "FIXED_COUNT",
+
       "inputLabel": "Total Road Furniture",
       "inputValue": null,
+
       "dividerValue": null,
       "dividerLabel": null,
+
       "unitMeasurement": "NUMBER",
       "photoRequired": false,
+
       "isActive": true,
+
       "createdByID": 1,
       "createdAt": "2026-01-02T07:32:37.449Z",
       "updatedAt": "2026-01-02T16:10:50.432Z",
@@ -124,19 +144,27 @@
       },
       "quantityTypes": []
     },
+
+
     {
       "id": 2,
       "uid": "34f8d42e-31b5-4b65-aeff-01cb6a360a4a",
       "companyID": 1,
       "workScopeID": 3,
+
       "calculationType": "SECTION_BASED",
+
       "inputLabel": "Total Length",
       "inputValue": null,
+
       "dividerValue": "300",
       "dividerLabel": "Meters per report",
+
       "unitMeasurement": "METER",
       "photoRequired": false,
+
       "isActive": true,
+
       "createdByID": 1,
       "createdAt": "2026-01-02T07:32:37.410Z",
       "updatedAt": "2026-01-02T16:10:50.394Z",
@@ -166,7 +194,15 @@
 
 
 
-    // R02 - ROUD SHOULDER
+
+
+
+
+    // R02 - ROAD SHOULDER
+    //
+    //
+    //
+    //
     {
       "id": 1,
       "uid": "c72dff69-704d-464b-920a-02883e423e4e",
@@ -372,7 +408,6 @@
           }
         },
 
-
         {
           "id": 5,
           "programSettingID": 1,
@@ -536,6 +571,7 @@
             ]
           }
         },
+        
         {
           "id": 6,
           "programSettingID": 1,
@@ -701,6 +737,13 @@
         }
       ]
     }
+
+
+
+
+
+
+
   ],
   "meta": {
     "page": 1,

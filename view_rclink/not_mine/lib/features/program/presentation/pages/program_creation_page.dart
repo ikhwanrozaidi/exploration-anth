@@ -5,17 +5,14 @@ import 'package:rclink_app/features/program/domain/entities/work_scope_nested_en
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../contractor_relation/domain/entities/contractor_relation_entity.dart';
 import '../../../contractor_relation/presentation/bloc/contractor_relation_bloc.dart';
 import '../../../contractor_relation/presentation/bloc/contractor_relation_state.dart';
-import '../../../contractor_relation/presentation/widgets/show_contractor_relation_selection.dart';
 import '../../../daily_report/presentation/widgets/report_creation/selection_field_card.dart';
 import '../../../road/domain/entities/road_entity.dart';
 import '../../../road/presentation/helper/road_level.dart';
 import '../../../road/presentation/helper/road_selection_result.dart';
 import '../../../road/presentation/pages/road_field_tile.dart';
-import '../../../work_scope/domain/entities/work_scope.dart';
-import '../../../work_scope/presentation/bloc/work_scope_bloc.dart';
-import '../../../work_scope/presentation/bloc/work_scope_state.dart';
 import '../bloc/program/program_bloc.dart';
 import '../bloc/program/program_event.dart';
 import '../bloc/program/program_state.dart';
@@ -41,6 +38,7 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
   String? selectedContractorName;
   bool isSelfContractor = false;
   List<Road>? contractorRoads;
+  List<Road> selectedRoadsForNonR02 = [];
 
   String selectedWeatherDisplay = '';
   bool hasError = false;
@@ -650,12 +648,17 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
                     placeholder: 'Select Routes',
                     onRoadSelected: (RoadSelectionResult result) {
                       if (result.selectedRoads != null) {
+                        setState(() {
+                          selectedRoadsForNonR02 = result.selectedRoads!;
+                        });
+
                         print(
                           'Selected ${result.selectedRoads!.length} roads (Self Company)',
                         );
                         result.selectedRoads!.forEach((road) {
                           print('Road UID: ${road.uid}');
                           print('Road Name: ${road.name}');
+                          print('Road District: ${road.district?.name}');
                         });
                       }
                     },
@@ -736,12 +739,17 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
                       placeholder: 'Select Routes',
                       onRoadSelected: (RoadSelectionResult result) {
                         if (result.selectedRoads != null) {
+                          setState(() {
+                            selectedRoadsForNonR02 = result.selectedRoads!;
+                          });
+
                           print(
                             'Selected ${result.selectedRoads!.length} contractor roads',
                           );
                           result.selectedRoads!.forEach((road) {
                             print('Road UID: ${road.uid}');
                             print('Road Name: ${road.name}');
+                            print('Road District: ${road.district?.name}');
                           });
                         }
                       },
@@ -836,7 +844,7 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
                         ),
                       );
                     } else {
-                      // Non-R02 validation: must have contractor
+                      // Non-R02 validation: must have contractor and roads
                       if (selectedContractorUID == null) {
                         CustomSnackBar.show(
                           context,
@@ -846,20 +854,64 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
                         return;
                       }
 
+                      if (selectedRoadsForNonR02.isEmpty) {
+                        CustomSnackBar.show(
+                          context,
+                          'Please select at least one road',
+                          type: SnackBarType.warning,
+                        );
+                        return;
+                      }
+
+                      // Get contractor entity
+                      ContractorRelation? contractorEntity;
+                      final contractorState = context
+                          .read<ContractorRelationBloc>()
+                          .state;
+                      contractorState.maybeWhen(
+                        loaded: (contractors, _) {
+                          try {
+                            contractorEntity = contractors.firstWhere(
+                              (c) =>
+                                  c.contractRelationUID ==
+                                      selectedContractorUID ||
+                                  (c.contractRelationUID == null &&
+                                      selectedContractorUID == null),
+                            );
+                          } catch (e) {
+                            // Contractor not found in list
+                            print(
+                              '⚠️ Contractor not found: $selectedContractorUID',
+                            );
+                            contractorEntity = null;
+                          }
+                        },
+                        orElse: () {},
+                      );
+
+                      if (contractorEntity == null) {
+                        CustomSnackBar.show(
+                          context,
+                          'Contractor information not available',
+                          type: SnackBarType.error,
+                        );
+                        return;
+                      }
+
                       // Navigate to Non-R02 Draft Page
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => ProgramCreationDraftPage(
-                      //       workScopeID: selectedWorkScopeID,
-                      //       workScopeUID: selectedWorkScopeUID,
-                      //       workScopeName: selectedWorkScopeName,
-                      //       workScopeCode: selectedWorkScopeCode,
-                      //       contractorUID: selectedContractorUID,
-                      //       contractorName: selectedContractorName,
-                      //     ),
-                      //   ),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProgramCreationDraftPage(
+                            workScopeID: selectedWorkScopeID!,
+                            workScopeUID: selectedWorkScopeUID!,
+                            workScopeName: selectedWorkScopeName!,
+                            workScopeCode: selectedWorkScopeCode!,
+                            contractor: contractorEntity!,
+                            selectedRoads: selectedRoadsForNonR02,
+                          ),
+                        ),
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(

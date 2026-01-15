@@ -66,4 +66,20 @@ class ProgramDraftEvent with _$ProgramDraftEvent {
   // Submit program
   const factory ProgramDraftEvent.submitProgram({required String companyUID}) =
       SubmitProgram;
+
+  // Initialize new draft for non-R02 (multi-road)
+  const factory ProgramDraftEvent.initializeDraftMultiRoad({
+    required String companyUID,
+    required int workScopeID,
+    required String workScopeUID,
+    required String workScopeName,
+    required String workScopeCode,
+    required List<Road> roads,
+    required ContractorRelation contractor,
+  }) = InitializeDraftMultiRoad;
+
+  // Update road input data (for non-R02 programs)
+  const factory ProgramDraftEvent.updateRoadInputData({
+    required Map<String, Map<String, dynamic>> roadInputData,
+  }) = UpdateRoadInputData;
 }

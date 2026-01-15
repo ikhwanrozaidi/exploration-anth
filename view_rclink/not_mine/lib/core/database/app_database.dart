@@ -820,33 +820,32 @@ class Programs extends Table with SyncableTable {
   TextColumn get roadData => text().nullable()();
   IntColumn get contractRelationID => integer().nullable()();
   TextColumn get contractRelationData => text().nullable()();
-  TextColumn get name => text()();
+  TextColumn get name => text().nullable()();
   TextColumn get description => text().nullable()();
-  DateTimeColumn get periodStart => dateTime()();
-  DateTimeColumn get periodEnd => dateTime()();
-  TextColumn get calculationType => text()();
+  DateTimeColumn get periodStart => dateTime().nullable()();
+  DateTimeColumn get periodEnd => dateTime().nullable()();
+  TextColumn get calculationType => text().nullable()();
   TextColumn get fromSection => text().nullable()();
   TextColumn get toSection => text().nullable()();
   TextColumn get dividerValue => text().nullable()();
   TextColumn get inputValue => text().nullable()();
   IntColumn get requiredReportsCount => integer().nullable()();
   IntColumn get totalReports => integer().withDefault(const Constant(0))();
-
   TextColumn get status => text()(); // DRAFT, SUBMITTED, ACTIVE, etc.
-
   RealColumn get latitude => real().nullable()();
   RealColumn get longitude => real().nullable()();
   TextColumn get quantitiesData => text().nullable()();
   TextColumn get filesData => text().nullable()();
   IntColumn get createdByID => integer().nullable()();
   TextColumn get createdByData => text().nullable()();
-
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
   DateTimeColumn get deletedAt => dateTime().nullable()();
 
   @override
-  Set<Column> get primaryKey => {uid};
+  List<Set<Column>> get uniqueKeys => [
+    {uid},
+  ];
 }
 
 @DriftDatabase(
@@ -888,7 +887,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? e]) : super(e ?? _openConnection());
 
   @override
-  int get schemaVersion => 28; // create Program table
+  int get schemaVersion => 28; // create Program table, nullables and uids
 
   @override
   MigrationStrategy get migration {

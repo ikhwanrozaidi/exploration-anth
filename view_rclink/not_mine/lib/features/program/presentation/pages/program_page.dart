@@ -99,6 +99,34 @@ class _ProgramPageState extends State<ProgramPage> {
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
+                                  TextButton(
+                                    onPressed: () {},
+
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      foregroundColor: primaryColor,
+                                      side: BorderSide(
+                                        color: Colors.amber.shade800,
+                                        width: 1.5,
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 5,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      'Draft',
+                                      style: TextStyle(
+                                        color: Colors.amber.shade800,
+                                      ),
+                                    ),
+                                  ),
+
+                                  SizedBox(width: 5),
+
                                   IconButton(
                                     style: IconButton.styleFrom(
                                       shape: const CircleBorder(),
@@ -131,33 +159,33 @@ class _ProgramPageState extends State<ProgramPage> {
                                     ),
                                   ),
 
-                                  SizedBox(
-                                    width: ResponsiveHelper.spacing(context, 5),
-                                  ),
+                                  // SizedBox(
+                                  //   width: ResponsiveHelper.spacing(context, 5),
+                                  // ),
 
-                                  IconButton(
-                                    style: IconButton.styleFrom(
-                                      shape: const CircleBorder(),
-                                      backgroundColor: Colors.white,
-                                      padding: const EdgeInsets.all(5),
-                                    ),
-                                    onPressed: () {
-                                      print("Delete button clicked");
-                                      CustomSnackBar.show(
-                                        context,
-                                        'This feature is coming soon...',
-                                        type: SnackBarType.comingsoon,
-                                      );
-                                    },
-                                    icon: Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                      size: ResponsiveHelper.iconSize(
-                                        context,
-                                        base: 20,
-                                      ),
-                                    ),
-                                  ),
+                                  // IconButton(
+                                  //   style: IconButton.styleFrom(
+                                  //     shape: const CircleBorder(),
+                                  //     backgroundColor: Colors.white,
+                                  //     padding: const EdgeInsets.all(5),
+                                  //   ),
+                                  //   onPressed: () {
+                                  //     print("Delete button clicked");
+                                  //     CustomSnackBar.show(
+                                  //       context,
+                                  //       'This feature is coming soon...',
+                                  //       type: SnackBarType.comingsoon,
+                                  //     );
+                                  //   },
+                                  //   icon: Icon(
+                                  //     Icons.delete,
+                                  //     color: Colors.red,
+                                  //     size: ResponsiveHelper.iconSize(
+                                  //       context,
+                                  //       base: 20,
+                                  //     ),
+                                  //   ),
+                                  // ),
                                 ],
                               ),
                             ],

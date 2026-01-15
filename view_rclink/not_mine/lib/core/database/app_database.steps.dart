@@ -19192,7 +19192,7 @@ final class Schema28 extends i0.VersionedSchema {
       entityName: 'programs',
       withoutRowId: false,
       isStrict: false,
-      tableConstraints: ['PRIMARY KEY(uid)'],
+      tableConstraints: ['UNIQUE(uid)'],
       columns: [
         _column_0,
         _column_1,
@@ -19209,26 +19209,26 @@ final class Schema28 extends i0.VersionedSchema {
         _column_110,
         _column_87,
         _column_178,
-        _column_24,
-        _column_25,
         _column_179,
+        _column_25,
         _column_180,
-        _column_169,
+        _column_181,
+        _column_182,
         _column_159,
         _column_160,
         _column_172,
         _column_171,
-        _column_181,
-        _column_182,
         _column_183,
+        _column_184,
+        _column_185,
         _column_86,
         _column_85,
-        _column_184,
+        _column_186,
         _column_161,
         _column_168,
         _column_138,
         _column_127,
-        _column_185,
+        _column_187,
       ],
       attachedDatabase: database,
     ),
@@ -19324,28 +19324,42 @@ i1.GeneratedColumn<String> _column_178(String aliasedName) =>
       true,
       type: i1.DriftSqlType.string,
     );
-i1.GeneratedColumn<DateTime> _column_179(String aliasedName) =>
-    i1.GeneratedColumn<DateTime>(
-      'period_start',
+i1.GeneratedColumn<String> _column_179(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'name',
       aliasedName,
-      false,
-      type: i1.DriftSqlType.dateTime,
+      true,
+      type: i1.DriftSqlType.string,
     );
 i1.GeneratedColumn<DateTime> _column_180(String aliasedName) =>
     i1.GeneratedColumn<DateTime>(
-      'period_end',
+      'period_start',
       aliasedName,
-      false,
+      true,
       type: i1.DriftSqlType.dateTime,
     );
-i1.GeneratedColumn<int> _column_181(String aliasedName) =>
+i1.GeneratedColumn<DateTime> _column_181(String aliasedName) =>
+    i1.GeneratedColumn<DateTime>(
+      'period_end',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.dateTime,
+    );
+i1.GeneratedColumn<String> _column_182(String aliasedName) =>
+    i1.GeneratedColumn<String>(
+      'calculation_type',
+      aliasedName,
+      true,
+      type: i1.DriftSqlType.string,
+    );
+i1.GeneratedColumn<int> _column_183(String aliasedName) =>
     i1.GeneratedColumn<int>(
       'required_reports_count',
       aliasedName,
       true,
       type: i1.DriftSqlType.int,
     );
-i1.GeneratedColumn<int> _column_182(String aliasedName) =>
+i1.GeneratedColumn<int> _column_184(String aliasedName) =>
     i1.GeneratedColumn<int>(
       'total_reports',
       aliasedName,
@@ -19353,21 +19367,21 @@ i1.GeneratedColumn<int> _column_182(String aliasedName) =>
       type: i1.DriftSqlType.int,
       defaultValue: const CustomExpression('0'),
     );
-i1.GeneratedColumn<String> _column_183(String aliasedName) =>
+i1.GeneratedColumn<String> _column_185(String aliasedName) =>
     i1.GeneratedColumn<String>(
       'status',
       aliasedName,
       false,
       type: i1.DriftSqlType.string,
     );
-i1.GeneratedColumn<String> _column_184(String aliasedName) =>
+i1.GeneratedColumn<String> _column_186(String aliasedName) =>
     i1.GeneratedColumn<String>(
       'quantities_data',
       aliasedName,
       true,
       type: i1.DriftSqlType.string,
     );
-i1.GeneratedColumn<DateTime> _column_185(String aliasedName) =>
+i1.GeneratedColumn<DateTime> _column_187(String aliasedName) =>
     i1.GeneratedColumn<DateTime>(
       'updated_at',
       aliasedName,

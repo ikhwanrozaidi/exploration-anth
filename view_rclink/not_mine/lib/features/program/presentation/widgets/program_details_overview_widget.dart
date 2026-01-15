@@ -37,12 +37,69 @@ class _ProgramDetailsOverviewWidgetState
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Workday',
-                style: TextStyle(
-                  fontSize: ResponsiveHelper.fontSize(context, base: 14),
-                  fontWeight: FontWeight.w600,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Workday',
+                    style: TextStyle(
+                      fontSize: ResponsiveHelper.fontSize(context, base: 14),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+
+                  GestureDetector(
+                    onTap: () {
+                      // Filter by months
+                      //
+                      // showWorkdayDetail(
+                      //   context: context,
+                      //   date: '2025-09-22T20:01:55.752Z',
+                      //   scopeCode: 'code',
+                      //   onViewReport: () {
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder: (context) => ViewReportProgramPage(),
+                      //       ),
+                      //     );
+                      //   },
+                      // );
+                    },
+
+                    child: Container(
+                      padding: ResponsiveHelper.padding(
+                        context,
+                        vertical: 5,
+                        horizontal: 15,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: primaryColor,
+                          width: ResponsiveHelper.adaptive(
+                            context,
+                            mobile: 1.0,
+                            tablet: 1.5,
+                            desktop: 2.0,
+                          ),
+                        ),
+                      ),
+                      child: Text(
+                        'Add Report',
+                        style: TextStyle(
+                          fontSize: ResponsiveHelper.fontSize(
+                            context,
+                            base: 12,
+                          ),
+                          color: primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
 
               dividerConfig(),
@@ -51,17 +108,21 @@ class _ProgramDetailsOverviewWidgetState
                 padding: EdgeInsets.symmetric(horizontal: 5.0),
                 child: GestureDetector(
                   onTap: () {
+                    // Filter by months
+                    //
                     showWorkdayDetail(
                       context: context,
                       date: '2025-09-22T20:01:55.752Z',
                       scopeCode: 'code',
                       onViewReport: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ViewReportProgramPage(),
-                          ),
-                        );
+                        print('❌ Should redirect to DalyReportPage Details');
+
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //     builder: (context) => ViewReportProgramPage(),
+                        //   ),
+                        // );
                       },
                     );
                   },

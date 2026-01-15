@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rclink_app/shared/widgets/template_page.dart';
 
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
@@ -140,98 +141,82 @@ class _ProgramQuantitySegmentBreakdownPageState
   Widget build(BuildContext context) {
     final segmentFields = _getSegmentFields();
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Segment Breakdown',
-          style: TextStyle(
-            fontSize: ResponsiveHelper.fontSize(context, base: 18),
-            fontWeight: FontWeight.w600,
-          ),
+    return TemplatePage(
+      pageTitle: 'Segment Breakdown',
+      body: Padding(
+        padding: ResponsiveHelper.padding(
+          context,
+          vertical: 25,
+          horizontal: 20,
         ),
-        backgroundColor: primaryColor,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Column(
-        children: [
-          // Info banner
-          Container(
-            width: double.infinity,
-            padding: ResponsiveHelper.padding(context, all: 12),
-            color: Colors.orange.shade50,
-            child: Row(
-              children: [
-                Icon(Icons.space_dashboard, color: Colors.orange, size: 20),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    '${_segments.length} segment${_segments.length > 1 ? 's' : ''} (${widget.quantityType.segmentSize}m each)',
-                    style: TextStyle(
-                      fontSize: ResponsiveHelper.fontSize(context, base: 13),
-                      color: Colors.orange.shade700,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ],
+        child: Column(
+          children: [
+            // Info banner
+            //
+            // Container(
+            //   width: double.infinity,
+            //   padding: ResponsiveHelper.padding(context, all: 12),
+            //   margin: ResponsiveHelper.padding(context, bottom: 20),
+            //   decoration: BoxDecoration(
+            //     color: Colors.orange.shade50,
+            //     borderRadius: BorderRadius.circular(8),
+            //   ),
+            //   child: Row(
+            //     children: [
+            //       Icon(Icons.info_outline, color: Colors.orange, size: 20),
+            //       SizedBox(width: 10),
+            //       Expanded(
+            //         child: Text(
+            //           '${_segments.length} segment${_segments.length > 1 ? 's' : ''} (${widget.quantityType.segmentSize}m each)',
+            //           style: TextStyle(
+            //             fontSize: ResponsiveHelper.fontSize(context, base: 13),
+            //             color: Colors.orange.shade700,
+            //           ),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            Expanded(
+              child: ListView.separated(
+                itemCount: _segments.length,
+                separatorBuilder: (context, index) => SizedBox(height: 16),
+                itemBuilder: (context, index) {
+                  return _buildSegmentCard(index, segmentFields);
+                },
+              ),
             ),
-          ),
 
-          Expanded(
-            child: ListView.separated(
-              padding: ResponsiveHelper.padding(context, all: 20),
-              itemCount: _segments.length,
-              separatorBuilder: (context, index) => SizedBox(height: 16),
-              itemBuilder: (context, index) {
-                return _buildSegmentCard(index, segmentFields);
-              },
-            ),
-          ),
+            SizedBox(height: 10),
 
-          // Save button
-          Container(
-            padding: ResponsiveHelper.padding(
-              context,
-              horizontal: 20,
-              vertical: 15,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 10,
-                  offset: Offset(0, -2),
-                ),
-              ],
-            ),
-            child: SafeArea(
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _handleSave,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    padding: ResponsiveHelper.padding(context, vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    elevation: 2,
+            // Save Button
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _handleSave,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  padding: ResponsiveHelper.padding(context, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text(
-                    'Save',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: ResponsiveHelper.fontSize(context, base: 16),
-                      fontWeight: FontWeight.w600,
-                    ),
+                  elevation: 2,
+                  disabledBackgroundColor: Colors.grey,
+                ),
+                child: Text(
+                  'Save',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: ResponsiveHelper.fontSize(context, base: 14),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+
+            SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
@@ -239,40 +224,53 @@ class _ProgramQuantitySegmentBreakdownPageState
   Widget _buildSegmentCard(int index, List<QuantityFieldNested> segmentFields) {
     final segment = _segments[index];
 
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: ResponsiveHelper.padding(context, all: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Segment ${segment['segmentNumber']}',
-                  style: TextStyle(
-                    fontSize: ResponsiveHelper.fontSize(context, base: 15),
-                    fontWeight: FontWeight.w600,
-                    color: primaryColor,
-                  ),
+    return Container(
+      padding: ResponsiveHelper.padding(context, all: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: Colors.grey.shade300,
+          width: ResponsiveHelper.adaptive(context, mobile: 2),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Segment ${segment['segmentNumber']}',
+                style: TextStyle(
+                  fontSize: ResponsiveHelper.fontSize(context, base: 15),
+                  fontWeight: FontWeight.w600,
+                  color: primaryColor,
                 ),
-                Text(
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  borderRadius: BorderRadius.circular(50),
+                ),
+                child: Text(
                   '${segment['startDistance'].toStringAsFixed(1)}m - ${segment['endDistance'].toStringAsFixed(1)}m',
                   style: TextStyle(
-                    fontSize: ResponsiveHelper.fontSize(context, base: 13),
-                    color: Colors.grey.shade600,
+                    fontSize: ResponsiveHelper.fontSize(context, base: 12),
+                    color: Colors.white,
                   ),
                 ),
-              ],
-            ),
-            SizedBox(height: 12),
-            ...segmentFields.map(
-              (field) => _buildSegmentFieldWidget(index, field),
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 20),
+
+          ...segmentFields.map(
+            (field) => _buildSegmentFieldWidget(index, field),
+          ),
+        ],
       ),
     );
   }
@@ -293,28 +291,43 @@ class _ProgramQuantitySegmentBreakdownPageState
                 style: TextStyle(
                   fontSize: ResponsiveHelper.fontSize(context, base: 13),
                   fontWeight: FontWeight.w500,
-                  color: Colors.black87,
+                  color: Colors.black,
                 ),
               ),
               if (field.isRequired == true)
                 Text(' *', style: TextStyle(color: Colors.red, fontSize: 13)),
             ],
           ),
+
           SizedBox(height: 6),
+
           TextFormField(
             initialValue: value?.toString() ?? '',
-            keyboardType: TextInputType.numberWithOptions(decimal: true),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
             decoration: InputDecoration(
               hintText: field.placeholder ?? 'Enter ${field.name}',
-              suffixText: field.unit,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
+              hintStyle: TextStyle(
+                fontSize: ResponsiveHelper.fontSize(context, base: 14),
+                color: Colors.grey,
               ),
-              contentPadding: EdgeInsets.symmetric(
+              suffixText: field.unit,
+              isDense: true,
+              contentPadding: const EdgeInsets.symmetric(
                 horizontal: 12,
                 vertical: 10,
               ),
-              isDense: true,
+
+              // Border when NOT focused
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: Colors.grey, width: 1),
+              ),
+
+              // Border when focused (clicked)
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(8),
+                borderSide: const BorderSide(color: primaryColor, width: 1.5),
+              ),
             ),
             onChanged: (newValue) =>
                 _handleSegmentFieldChange(segmentIndex, field.code!, newValue),

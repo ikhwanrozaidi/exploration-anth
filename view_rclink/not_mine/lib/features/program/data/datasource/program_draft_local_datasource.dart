@@ -46,6 +46,16 @@ abstract class ProgramDraftLocalDataSource {
   );
 
   Future<Either<Failure, void>> clearCache();
+
+  Future<Either<Failure, ProgramDraftData>> createDraftMultiRoadLocal({
+    required String companyUID,
+    required int workScopeID,
+    required String workScopeUID,
+    required String workScopeName,
+    required String workScopeCode,
+    required List<Road> roads,
+    required ContractorRelation contractor,
+  });
 }
 
 @LazySingleton(as: ProgramDraftLocalDataSource)
@@ -166,6 +176,39 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
         });
       }
 
+      // Encode roads if present
+      String? roadsJson;
+      if (draftData.roads != null && draftData.roads!.isNotEmpty) {
+        roadsJson = json.encode(
+          draftData.roads!
+              .map(
+                (road) => {
+                  'id': road.id,
+                  'uid': road.uid,
+                  'name': road.name,
+                  'roadNo': road.roadNo,
+                  'sectionStart': road.sectionStart,
+                  'sectionFinish': road.sectionFinish,
+                  'district': road.district != null
+                      ? {
+                          'id': road.district!.id,
+                          'uid': road.district!.uid,
+                          'name': road.district!.name,
+                        }
+                      : null,
+                },
+              )
+              .toList(),
+        );
+      }
+
+      // Encode roadInputData
+      String? roadInputDataJson;
+      if (draftData.roadInputData != null &&
+          draftData.roadInputData!.isNotEmpty) {
+        roadInputDataJson = json.encode(draftData.roadInputData);
+      }
+
       // Encode quantities data
       final quantitiesJson = draftData.quantityFieldData.isNotEmpty
           ? json.encode(draftData.quantityFieldData)
@@ -178,6 +221,8 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
           contractRelationID: Value(draftData.contractor?.id),
           contractRelationData: Value(contractorJson),
           name: Value(draftData.name ?? ''),
+          roadData: Value(roadsJson ?? roadsJson),
+          inputValue: Value(roadInputDataJson),
           description: Value(draftData.description),
           periodStart: Value(draftData.periodStart ?? DateTime.now()),
           periodEnd: Value(
@@ -257,6 +302,45 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
         );
       }
 
+      // Parse roads list for non-R02
+      List<Road>? roads;
+      if (draft.roadData != null &&
+          draft.roadData!.isNotEmpty &&
+          draft.contractRelationData != null) {
+        try {
+          final roadsListJson = json.decode(draft.roadData!);
+          if (roadsListJson is List) {
+            roads = roadsListJson.map((roadJson) {
+              return Road(
+                id: roadJson['id'],
+                uid: roadJson['uid'],
+                name: roadJson['name'],
+                roadNo: roadJson['roadNo'],
+                sectionStart: roadJson['sectionStart'],
+                sectionFinish: roadJson['sectionFinish'],
+              );
+            }).toList();
+          }
+        } catch (e) {
+          print('⚠️ Could not parse roads list: $e');
+        }
+      }
+
+      // Parse roadInputData
+      Map<String, Map<String, dynamic>>? roadInputData;
+      if (draft.inputValue != null && draft.inputValue!.isNotEmpty) {
+        try {
+          final Map<String, dynamic> inputDataJson = json.decode(
+            draft.inputValue!,
+          );
+          roadInputData = inputDataJson.map(
+            (key, value) => MapEntry(key, Map<String, dynamic>.from(value)),
+          );
+        } catch (e) {
+          print('⚠️ Could not parse roadInputData: $e');
+        }
+      }
+
       final draftData = ProgramDraftData(
         uid: draft.uid,
         isDraftMode: true,
@@ -266,6 +350,8 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
         workScopeName: '', // Not stored in DB for drafts
         workScopeCode: '', // Not stored in DB for drafts
         road: road,
+        roads: roads,
+        roadInputData: roadInputData,
         contractor: contractor,
         name: draft.name,
         description: draft.description,
@@ -404,6 +490,94 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
     } catch (e) {
       print('❌ Error clearing cache: $e');
       return Left(CacheFailure('Failed to clear cache: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ProgramDraftData>> createDraftMultiRoadLocal({
+    required String companyUID,
+    required int workScopeID,
+    required String workScopeUID,
+    required String workScopeName,
+    required String workScopeCode,
+    required List<Road> roads,
+    required ContractorRelation contractor,
+  }) async {
+    try {
+      final draftUID = _uuid.v4();
+      final now = DateTime.now();
+
+      print('💾 Creating multi-road program draft: $draftUID');
+
+      // Encode contractor data
+      final contractorJson = json.encode({
+        'id': contractor.id,
+        'uid': contractor.uid,
+        'contractRelationUID': contractor.contractRelationUID,
+        'name': contractor.name,
+        'regNo': contractor.regNo,
+      });
+
+      // Encode roads data
+      final roadsJson = json.encode(
+        roads
+            .map(
+              (road) => {
+                'id': road.id,
+                'uid': road.uid,
+                'name': road.name,
+                'roadNo': road.roadNo,
+                'sectionStart': road.sectionStart,
+                'sectionFinish': road.sectionFinish,
+                'district': road.district != null
+                    ? {
+                        'id': road.district!.id,
+                        'uid': road.district!.uid,
+                        'name': road.district!.name,
+                      }
+                    : null,
+              },
+            )
+            .toList(),
+      );
+
+      await _database
+          .into(_database.programs)
+          .insert(
+            ProgramsCompanion(
+              uid: Value(draftUID),
+              companyID: Value(int.tryParse(companyUID) ?? 0),
+              workScopeID: Value(workScopeID),
+              contractRelationData: Value(contractorJson),
+              roadData: Value(roadsJson), // Store multiple roads as JSON
+              name: const Value.absent(),
+              status: Value('DRAFT'),
+              periodStart: Value(now),
+              periodEnd: Value(now.add(const Duration(days: 30))),
+              createdAt: Value(now),
+              updatedAt: Value(now),
+            ),
+          );
+
+      final draftData = ProgramDraftData(
+        uid: draftUID,
+        isDraftMode: true,
+        companyUID: companyUID,
+        workScopeID: workScopeID,
+        workScopeUID: workScopeUID,
+        workScopeName: workScopeName,
+        workScopeCode: workScopeCode,
+        roads: roads,
+        roadInputData: {}, // Empty initially
+        contractor: contractor,
+        status: 'DRAFT',
+      );
+
+      print('✅ Multi-road program draft created successfully');
+      return Right(draftData);
+    } catch (e) {
+      print('❌ Error creating multi-road program draft: $e');
+      return Left(CacheFailure('Failed to create draft: $e'));
     }
   }
 }

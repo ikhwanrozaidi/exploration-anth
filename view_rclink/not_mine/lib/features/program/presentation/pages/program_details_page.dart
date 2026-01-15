@@ -378,25 +378,25 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                         );
                                       },
                                     ),
-                                    dividerConfig(),
 
-                                    ThemeListTileWidget(
-                                      title: 'Summary Program',
-                                      titleDetails:
-                                          'List of payment suggestion',
-                                      icon: Icons.calendar_today_rounded,
-                                      isInverseBold: true,
-                                    ),
+                                    // dividerConfig(),
 
-                                    dividerConfig(),
+                                    // ThemeListTileWidget(
+                                    //   title: 'Summary Program',
+                                    //   titleDetails:
+                                    //       'List of payment suggestion',
+                                    //   icon: Icons.calendar_today_rounded,
+                                    //   isInverseBold: true,
+                                    // ),
 
-                                    ThemeListTileWidget(
-                                      title: 'Monthly Summary',
-                                      titleDetails: 'List of overall report',
-                                      icon: Icons.history,
-                                      isInverseBold: true,
-                                    ),
+                                    // dividerConfig(),
 
+                                    // ThemeListTileWidget(
+                                    //   title: 'Monthly Summary',
+                                    //   titleDetails: 'List of overall report',
+                                    //   icon: Icons.history,
+                                    //   isInverseBold: true,
+                                    // ),
                                     dividerConfig(),
 
                                     // Remove Program

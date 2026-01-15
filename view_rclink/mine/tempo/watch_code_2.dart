@@ -20,33 +20,6 @@
   "contractRelationUID": "39cf3bb1-ea7d-48a9-a125-cf7bac889639",
   "name": "R02 - Road Shoulder - January 2026",
   "description": "Road shoulder cleaning",
-  "quantities": [
-    {
-      "quantityTypeUID": "1f10229c-e100-46d7-a11b-28e8f44ac073",
-      "sequenceNo": 1,
-      "totalLength": 100.5,
-      "notes": "Additional notes",
-      "quantityValues": [
-        {
-          "quantityFieldUID": "5a1d6f49-4cbf-419e-821d-9c7d233d21de",
-          "value": "LHS"
-        }
-      ],
-      "segments": [
-        {
-          "segmentNumber": 1,
-          "startDistance": 0,
-          "endDistance": 0.5,
-          "segmentValues": [
-            {
-              "quantityFieldUID": "5a1d6f49-4cbf-419e-821d-9c7d233d21de",
-              "value": "LHS"
-            }
-          ]
-        }
-      ]
-    }
-  ]
 }
 
 

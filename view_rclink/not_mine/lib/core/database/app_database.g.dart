@@ -28865,7 +28865,7 @@ class $ProgramsTable extends Programs
     false,
     hasAutoIncrement: true,
     type: DriftSqlType.int,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'PRIMARY KEY AUTOINCREMENT',
     ),
@@ -28958,9 +28958,9 @@ class $ProgramsTable extends Programs
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
     'name',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _descriptionMeta = const VerificationMeta(
     'description',
@@ -28980,9 +28980,9 @@ class $ProgramsTable extends Programs
   late final GeneratedColumn<DateTime> periodStart = GeneratedColumn<DateTime>(
     'period_start',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _periodEndMeta = const VerificationMeta(
     'periodEnd',
@@ -28991,9 +28991,9 @@ class $ProgramsTable extends Programs
   late final GeneratedColumn<DateTime> periodEnd = GeneratedColumn<DateTime>(
     'period_end',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _calculationTypeMeta = const VerificationMeta(
     'calculationType',
@@ -29002,9 +29002,9 @@ class $ProgramsTable extends Programs
   late final GeneratedColumn<String> calculationType = GeneratedColumn<String>(
     'calculation_type',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
   );
   static const VerificationMeta _fromSectionMeta = const VerificationMeta(
     'fromSection',
@@ -29265,8 +29265,6 @@ class $ProgramsTable extends Programs
     }
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
     }
     if (data.containsKey('uid')) {
       context.handle(
@@ -29339,8 +29337,6 @@ class $ProgramsTable extends Programs
         _nameMeta,
         name.isAcceptableOrUnknown(data['name']!, _nameMeta),
       );
-    } else if (isInserting) {
-      context.missing(_nameMeta);
     }
     if (data.containsKey('description')) {
       context.handle(
@@ -29359,16 +29355,12 @@ class $ProgramsTable extends Programs
           _periodStartMeta,
         ),
       );
-    } else if (isInserting) {
-      context.missing(_periodStartMeta);
     }
     if (data.containsKey('period_end')) {
       context.handle(
         _periodEndMeta,
         periodEnd.isAcceptableOrUnknown(data['period_end']!, _periodEndMeta),
       );
-    } else if (isInserting) {
-      context.missing(_periodEndMeta);
     }
     if (data.containsKey('calculation_type')) {
       context.handle(
@@ -29378,8 +29370,6 @@ class $ProgramsTable extends Programs
           _calculationTypeMeta,
         ),
       );
-    } else if (isInserting) {
-      context.missing(_calculationTypeMeta);
     }
     if (data.containsKey('from_section')) {
       context.handle(
@@ -29498,7 +29488,11 @@ class $ProgramsTable extends Programs
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => {uid};
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  List<Set<GeneratedColumn>> get uniqueKeys => [
+    {uid},
+  ];
   @override
   ProgramRecord map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
@@ -29566,7 +29560,7 @@ class $ProgramsTable extends Programs
       name: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}name'],
-      )!,
+      ),
       description: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}description'],
@@ -29574,15 +29568,15 @@ class $ProgramsTable extends Programs
       periodStart: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}period_start'],
-      )!,
+      ),
       periodEnd: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}period_end'],
-      )!,
+      ),
       calculationType: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}calculation_type'],
-      )!,
+      ),
       fromSection: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}from_section'],
@@ -29668,11 +29662,11 @@ class ProgramRecord extends DataClass implements Insertable<ProgramRecord> {
   final String? roadData;
   final int? contractRelationID;
   final String? contractRelationData;
-  final String name;
+  final String? name;
   final String? description;
-  final DateTime periodStart;
-  final DateTime periodEnd;
-  final String calculationType;
+  final DateTime? periodStart;
+  final DateTime? periodEnd;
+  final String? calculationType;
   final String? fromSection;
   final String? toSection;
   final String? dividerValue;
@@ -29704,11 +29698,11 @@ class ProgramRecord extends DataClass implements Insertable<ProgramRecord> {
     this.roadData,
     this.contractRelationID,
     this.contractRelationData,
-    required this.name,
+    this.name,
     this.description,
-    required this.periodStart,
-    required this.periodEnd,
-    required this.calculationType,
+    this.periodStart,
+    this.periodEnd,
+    this.calculationType,
     this.fromSection,
     this.toSection,
     this.dividerValue,
@@ -29761,13 +29755,21 @@ class ProgramRecord extends DataClass implements Insertable<ProgramRecord> {
     if (!nullToAbsent || contractRelationData != null) {
       map['contract_relation_data'] = Variable<String>(contractRelationData);
     }
-    map['name'] = Variable<String>(name);
+    if (!nullToAbsent || name != null) {
+      map['name'] = Variable<String>(name);
+    }
     if (!nullToAbsent || description != null) {
       map['description'] = Variable<String>(description);
     }
-    map['period_start'] = Variable<DateTime>(periodStart);
-    map['period_end'] = Variable<DateTime>(periodEnd);
-    map['calculation_type'] = Variable<String>(calculationType);
+    if (!nullToAbsent || periodStart != null) {
+      map['period_start'] = Variable<DateTime>(periodStart);
+    }
+    if (!nullToAbsent || periodEnd != null) {
+      map['period_end'] = Variable<DateTime>(periodEnd);
+    }
+    if (!nullToAbsent || calculationType != null) {
+      map['calculation_type'] = Variable<String>(calculationType);
+    }
     if (!nullToAbsent || fromSection != null) {
       map['from_section'] = Variable<String>(fromSection);
     }
@@ -29843,13 +29845,19 @@ class ProgramRecord extends DataClass implements Insertable<ProgramRecord> {
       contractRelationData: contractRelationData == null && nullToAbsent
           ? const Value.absent()
           : Value(contractRelationData),
-      name: Value(name),
+      name: name == null && nullToAbsent ? const Value.absent() : Value(name),
       description: description == null && nullToAbsent
           ? const Value.absent()
           : Value(description),
-      periodStart: Value(periodStart),
-      periodEnd: Value(periodEnd),
-      calculationType: Value(calculationType),
+      periodStart: periodStart == null && nullToAbsent
+          ? const Value.absent()
+          : Value(periodStart),
+      periodEnd: periodEnd == null && nullToAbsent
+          ? const Value.absent()
+          : Value(periodEnd),
+      calculationType: calculationType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(calculationType),
       fromSection: fromSection == null && nullToAbsent
           ? const Value.absent()
           : Value(fromSection),
@@ -29913,11 +29921,11 @@ class ProgramRecord extends DataClass implements Insertable<ProgramRecord> {
       contractRelationData: serializer.fromJson<String?>(
         json['contractRelationData'],
       ),
-      name: serializer.fromJson<String>(json['name']),
+      name: serializer.fromJson<String?>(json['name']),
       description: serializer.fromJson<String?>(json['description']),
-      periodStart: serializer.fromJson<DateTime>(json['periodStart']),
-      periodEnd: serializer.fromJson<DateTime>(json['periodEnd']),
-      calculationType: serializer.fromJson<String>(json['calculationType']),
+      periodStart: serializer.fromJson<DateTime?>(json['periodStart']),
+      periodEnd: serializer.fromJson<DateTime?>(json['periodEnd']),
+      calculationType: serializer.fromJson<String?>(json['calculationType']),
       fromSection: serializer.fromJson<String?>(json['fromSection']),
       toSection: serializer.fromJson<String?>(json['toSection']),
       dividerValue: serializer.fromJson<String?>(json['dividerValue']),
@@ -29956,11 +29964,11 @@ class ProgramRecord extends DataClass implements Insertable<ProgramRecord> {
       'roadData': serializer.toJson<String?>(roadData),
       'contractRelationID': serializer.toJson<int?>(contractRelationID),
       'contractRelationData': serializer.toJson<String?>(contractRelationData),
-      'name': serializer.toJson<String>(name),
+      'name': serializer.toJson<String?>(name),
       'description': serializer.toJson<String?>(description),
-      'periodStart': serializer.toJson<DateTime>(periodStart),
-      'periodEnd': serializer.toJson<DateTime>(periodEnd),
-      'calculationType': serializer.toJson<String>(calculationType),
+      'periodStart': serializer.toJson<DateTime?>(periodStart),
+      'periodEnd': serializer.toJson<DateTime?>(periodEnd),
+      'calculationType': serializer.toJson<String?>(calculationType),
       'fromSection': serializer.toJson<String?>(fromSection),
       'toSection': serializer.toJson<String?>(toSection),
       'dividerValue': serializer.toJson<String?>(dividerValue),
@@ -29995,11 +30003,11 @@ class ProgramRecord extends DataClass implements Insertable<ProgramRecord> {
     Value<String?> roadData = const Value.absent(),
     Value<int?> contractRelationID = const Value.absent(),
     Value<String?> contractRelationData = const Value.absent(),
-    String? name,
+    Value<String?> name = const Value.absent(),
     Value<String?> description = const Value.absent(),
-    DateTime? periodStart,
-    DateTime? periodEnd,
-    String? calculationType,
+    Value<DateTime?> periodStart = const Value.absent(),
+    Value<DateTime?> periodEnd = const Value.absent(),
+    Value<String?> calculationType = const Value.absent(),
     Value<String?> fromSection = const Value.absent(),
     Value<String?> toSection = const Value.absent(),
     Value<String?> dividerValue = const Value.absent(),
@@ -30039,11 +30047,13 @@ class ProgramRecord extends DataClass implements Insertable<ProgramRecord> {
     contractRelationData: contractRelationData.present
         ? contractRelationData.value
         : this.contractRelationData,
-    name: name ?? this.name,
+    name: name.present ? name.value : this.name,
     description: description.present ? description.value : this.description,
-    periodStart: periodStart ?? this.periodStart,
-    periodEnd: periodEnd ?? this.periodEnd,
-    calculationType: calculationType ?? this.calculationType,
+    periodStart: periodStart.present ? periodStart.value : this.periodStart,
+    periodEnd: periodEnd.present ? periodEnd.value : this.periodEnd,
+    calculationType: calculationType.present
+        ? calculationType.value
+        : this.calculationType,
     fromSection: fromSection.present ? fromSection.value : this.fromSection,
     toSection: toSection.present ? toSection.value : this.toSection,
     dividerValue: dividerValue.present ? dividerValue.value : this.dividerValue,
@@ -30279,11 +30289,11 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
   final Value<String?> roadData;
   final Value<int?> contractRelationID;
   final Value<String?> contractRelationData;
-  final Value<String> name;
+  final Value<String?> name;
   final Value<String?> description;
-  final Value<DateTime> periodStart;
-  final Value<DateTime> periodEnd;
-  final Value<String> calculationType;
+  final Value<DateTime?> periodStart;
+  final Value<DateTime?> periodEnd;
+  final Value<String?> calculationType;
   final Value<String?> fromSection;
   final Value<String?> toSection;
   final Value<String?> dividerValue;
@@ -30299,7 +30309,6 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
   final Value<String?> createdByData;
   final Value<DateTime> createdAt;
   final Value<DateTime> updatedAt;
-  final Value<int> rowid;
   const ProgramsCompanion({
     this.isSynced = const Value.absent(),
     this.deletedAt = const Value.absent(),
@@ -30336,7 +30345,6 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
     this.createdByData = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
   });
   ProgramsCompanion.insert({
     this.isSynced = const Value.absent(),
@@ -30345,7 +30353,7 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
     this.syncRetryCount = const Value.absent(),
     this.syncError = const Value.absent(),
     this.lastSyncAttempt = const Value.absent(),
-    required int id,
+    this.id = const Value.absent(),
     required String uid,
     required int companyID,
     required int workScopeID,
@@ -30354,11 +30362,11 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
     this.roadData = const Value.absent(),
     this.contractRelationID = const Value.absent(),
     this.contractRelationData = const Value.absent(),
-    required String name,
+    this.name = const Value.absent(),
     this.description = const Value.absent(),
-    required DateTime periodStart,
-    required DateTime periodEnd,
-    required String calculationType,
+    this.periodStart = const Value.absent(),
+    this.periodEnd = const Value.absent(),
+    this.calculationType = const Value.absent(),
     this.fromSection = const Value.absent(),
     this.toSection = const Value.absent(),
     this.dividerValue = const Value.absent(),
@@ -30374,15 +30382,9 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
     this.createdByData = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.updatedAt = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       uid = Value(uid),
+  }) : uid = Value(uid),
        companyID = Value(companyID),
        workScopeID = Value(workScopeID),
-       name = Value(name),
-       periodStart = Value(periodStart),
-       periodEnd = Value(periodEnd),
-       calculationType = Value(calculationType),
        status = Value(status);
   static Insertable<ProgramRecord> custom({
     Expression<bool>? isSynced,
@@ -30420,7 +30422,6 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
     Expression<String>? createdByData,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? updatedAt,
-    Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
       if (isSynced != null) 'is_synced': isSynced,
@@ -30461,7 +30462,6 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
       if (createdByData != null) 'created_by_data': createdByData,
       if (createdAt != null) 'created_at': createdAt,
       if (updatedAt != null) 'updated_at': updatedAt,
-      if (rowid != null) 'rowid': rowid,
     });
   }
 
@@ -30481,11 +30481,11 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
     Value<String?>? roadData,
     Value<int?>? contractRelationID,
     Value<String?>? contractRelationData,
-    Value<String>? name,
+    Value<String?>? name,
     Value<String?>? description,
-    Value<DateTime>? periodStart,
-    Value<DateTime>? periodEnd,
-    Value<String>? calculationType,
+    Value<DateTime?>? periodStart,
+    Value<DateTime?>? periodEnd,
+    Value<String?>? calculationType,
     Value<String?>? fromSection,
     Value<String?>? toSection,
     Value<String?>? dividerValue,
@@ -30501,7 +30501,6 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
     Value<String?>? createdByData,
     Value<DateTime>? createdAt,
     Value<DateTime>? updatedAt,
-    Value<int>? rowid,
   }) {
     return ProgramsCompanion(
       isSynced: isSynced ?? this.isSynced,
@@ -30539,7 +30538,6 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
       createdByData: createdByData ?? this.createdByData,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
-      rowid: rowid ?? this.rowid,
     );
   }
 
@@ -30653,9 +30651,6 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
     if (updatedAt.present) {
       map['updated_at'] = Variable<DateTime>(updatedAt.value);
     }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
     return map;
   }
 
@@ -30696,8 +30691,7 @@ class ProgramsCompanion extends UpdateCompanion<ProgramRecord> {
           ..write('createdByID: $createdByID, ')
           ..write('createdByData: $createdByData, ')
           ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('rowid: $rowid')
+          ..write('updatedAt: $updatedAt')
           ..write(')'))
         .toString();
   }
@@ -43826,7 +43820,7 @@ typedef $$ProgramsTableCreateCompanionBuilder =
       Value<int> syncRetryCount,
       Value<String?> syncError,
       Value<DateTime?> lastSyncAttempt,
-      required int id,
+      Value<int> id,
       required String uid,
       required int companyID,
       required int workScopeID,
@@ -43835,11 +43829,11 @@ typedef $$ProgramsTableCreateCompanionBuilder =
       Value<String?> roadData,
       Value<int?> contractRelationID,
       Value<String?> contractRelationData,
-      required String name,
+      Value<String?> name,
       Value<String?> description,
-      required DateTime periodStart,
-      required DateTime periodEnd,
-      required String calculationType,
+      Value<DateTime?> periodStart,
+      Value<DateTime?> periodEnd,
+      Value<String?> calculationType,
       Value<String?> fromSection,
       Value<String?> toSection,
       Value<String?> dividerValue,
@@ -43855,7 +43849,6 @@ typedef $$ProgramsTableCreateCompanionBuilder =
       Value<String?> createdByData,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
-      Value<int> rowid,
     });
 typedef $$ProgramsTableUpdateCompanionBuilder =
     ProgramsCompanion Function({
@@ -43874,11 +43867,11 @@ typedef $$ProgramsTableUpdateCompanionBuilder =
       Value<String?> roadData,
       Value<int?> contractRelationID,
       Value<String?> contractRelationData,
-      Value<String> name,
+      Value<String?> name,
       Value<String?> description,
-      Value<DateTime> periodStart,
-      Value<DateTime> periodEnd,
-      Value<String> calculationType,
+      Value<DateTime?> periodStart,
+      Value<DateTime?> periodEnd,
+      Value<String?> calculationType,
       Value<String?> fromSection,
       Value<String?> toSection,
       Value<String?> dividerValue,
@@ -43894,7 +43887,6 @@ typedef $$ProgramsTableUpdateCompanionBuilder =
       Value<String?> createdByData,
       Value<DateTime> createdAt,
       Value<DateTime> updatedAt,
-      Value<int> rowid,
     });
 
 class $$ProgramsTableFilterComposer
@@ -44464,11 +44456,11 @@ class $$ProgramsTableTableManager
                 Value<String?> roadData = const Value.absent(),
                 Value<int?> contractRelationID = const Value.absent(),
                 Value<String?> contractRelationData = const Value.absent(),
-                Value<String> name = const Value.absent(),
+                Value<String?> name = const Value.absent(),
                 Value<String?> description = const Value.absent(),
-                Value<DateTime> periodStart = const Value.absent(),
-                Value<DateTime> periodEnd = const Value.absent(),
-                Value<String> calculationType = const Value.absent(),
+                Value<DateTime?> periodStart = const Value.absent(),
+                Value<DateTime?> periodEnd = const Value.absent(),
+                Value<String?> calculationType = const Value.absent(),
                 Value<String?> fromSection = const Value.absent(),
                 Value<String?> toSection = const Value.absent(),
                 Value<String?> dividerValue = const Value.absent(),
@@ -44484,7 +44476,6 @@ class $$ProgramsTableTableManager
                 Value<String?> createdByData = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
               }) => ProgramsCompanion(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -44521,7 +44512,6 @@ class $$ProgramsTableTableManager
                 createdByData: createdByData,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
-                rowid: rowid,
               ),
           createCompanionCallback:
               ({
@@ -44531,7 +44521,7 @@ class $$ProgramsTableTableManager
                 Value<int> syncRetryCount = const Value.absent(),
                 Value<String?> syncError = const Value.absent(),
                 Value<DateTime?> lastSyncAttempt = const Value.absent(),
-                required int id,
+                Value<int> id = const Value.absent(),
                 required String uid,
                 required int companyID,
                 required int workScopeID,
@@ -44540,11 +44530,11 @@ class $$ProgramsTableTableManager
                 Value<String?> roadData = const Value.absent(),
                 Value<int?> contractRelationID = const Value.absent(),
                 Value<String?> contractRelationData = const Value.absent(),
-                required String name,
+                Value<String?> name = const Value.absent(),
                 Value<String?> description = const Value.absent(),
-                required DateTime periodStart,
-                required DateTime periodEnd,
-                required String calculationType,
+                Value<DateTime?> periodStart = const Value.absent(),
+                Value<DateTime?> periodEnd = const Value.absent(),
+                Value<String?> calculationType = const Value.absent(),
                 Value<String?> fromSection = const Value.absent(),
                 Value<String?> toSection = const Value.absent(),
                 Value<String?> dividerValue = const Value.absent(),
@@ -44560,7 +44550,6 @@ class $$ProgramsTableTableManager
                 Value<String?> createdByData = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime> updatedAt = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
               }) => ProgramsCompanion.insert(
                 isSynced: isSynced,
                 deletedAt: deletedAt,
@@ -44597,7 +44586,6 @@ class $$ProgramsTableTableManager
                 createdByData: createdByData,
                 createdAt: createdAt,
                 updatedAt: updatedAt,
-                rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

@@ -20,6 +20,10 @@ class ProgramDraftData extends Equatable {
   // Contractor (for non-R02)
   final ContractorRelation? contractor;
 
+  // Non-R02 multi-road specific
+  final List<Road>? roads;
+  final Map<String, Map<String, dynamic>>? roadInputData;
+
   // Program Details
   final String? name;
   final String? description;
@@ -58,6 +62,8 @@ class ProgramDraftData extends Equatable {
     required this.workScopeCode,
     this.road,
     this.contractor,
+    this.roads,
+    this.roadInputData,
     this.name,
     this.description,
     this.periodStart,
@@ -84,6 +90,8 @@ class ProgramDraftData extends Equatable {
     String? workScopeCode,
     Road? road,
     ContractorRelation? contractor,
+    List<Road>? roads,
+    Map<String, Map<String, dynamic>>? roadInputData,
     String? name,
     String? description,
     DateTime? periodStart,
@@ -108,6 +116,8 @@ class ProgramDraftData extends Equatable {
       workScopeName: workScopeName ?? this.workScopeName,
       workScopeCode: workScopeCode ?? this.workScopeCode,
       road: road ?? this.road,
+      roads: roads ?? this.roads,
+      roadInputData: roadInputData ?? this.roadInputData,
       contractor: contractor ?? this.contractor,
       name: name ?? this.name,
       description: description ?? this.description,
@@ -136,6 +146,8 @@ class ProgramDraftData extends Equatable {
     workScopeName,
     workScopeCode,
     road,
+    roads,
+    roadInputData,
     contractor,
     name,
     description,

@@ -33,6 +33,9 @@ class ProgramDraftBloc extends Bloc<ProgramDraftEvent, ProgramDraftState> {
     on<DeleteDraft>(_onDeleteDraft);
     on<ResetForm>(_onResetForm);
     on<SubmitProgram>(_onSubmitProgram);
+
+    on<InitializeDraftMultiRoad>(_onInitializeDraftMultiRoad);
+    on<UpdateRoadInputData>(_onUpdateRoadInputData);
   }
 
   @override
@@ -408,6 +411,62 @@ class ProgramDraftBloc extends Bloc<ProgramDraftEvent, ProgramDraftState> {
         );
       }
     }
+  }
+
+  /// Initialize new draft for non-R02 (multi-road)
+  Future<void> _onInitializeDraftMultiRoad(
+    InitializeDraftMultiRoad event,
+    Emitter<ProgramDraftState> emit,
+  ) async {
+    try {
+      print('📝 Initializing new multi-road program draft...');
+
+      final result = await _localDataSource.createDraftMultiRoadLocal(
+        companyUID: event.companyUID,
+        workScopeID: event.workScopeID,
+        workScopeUID: event.workScopeUID,
+        workScopeName: event.workScopeName,
+        workScopeCode: event.workScopeCode,
+        roads: event.roads,
+        contractor: event.contractor,
+      );
+
+      result.fold(
+        (failure) {
+          print('❌ Error creating multi-road draft: ${failure.message}');
+          emit(ProgramDraftState.error(failure: failure));
+        },
+        (draftData) {
+          print('✅ Multi-road draft initialized: ${draftData.uid}');
+          emit(ProgramDraftState.editing(draftData: draftData));
+
+          // Trigger initial auto-save
+          add(const ProgramDraftEvent.autoSaveDraft());
+        },
+      );
+    } catch (e) {
+      print('❌ Error initializing multi-road draft: $e');
+      emit(
+        ProgramDraftState.error(
+          failure: ServerFailure('Failed to initialize draft: $e'),
+        ),
+      );
+    }
+  }
+
+  /// Update road input data
+  Future<void> _onUpdateRoadInputData(
+    UpdateRoadInputData event,
+    Emitter<ProgramDraftState> emit,
+  ) async {
+    final currentData = _getCurrentDraftDataOrNull();
+    if (currentData == null) return;
+
+    emit(
+      ProgramDraftState.editing(
+        draftData: currentData.copyWith(roadInputData: event.roadInputData),
+      ),
+    );
   }
 
   // ------------------------------------------------------- Draft Image Helpers
