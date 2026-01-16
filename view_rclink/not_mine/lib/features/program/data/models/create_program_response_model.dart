@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../domain/entities/program_entity.dart';
+import '../../domain/entities/program_entity.dart';
 
 part 'create_program_response_model.freezed.dart';
 part 'create_program_response_model.g.dart';

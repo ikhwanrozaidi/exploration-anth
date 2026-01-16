@@ -1,155 +1,326 @@
+import 'dart:convert';
+import 'package:dartz/dartz.dart';
+import 'package:drift/drift.dart';
+import 'package:injectable/injectable.dart';
+import '../../../../core/database/app_database.dart';
+import '../../../../core/errors/failures.dart';
+import '../../domain/entities/program_list_item_entity.dart';
+import '../../domain/entities/program_detail_entity.dart';
+import 'program_local_datasource.dart';
 
-{
-  "statusCode": 200,
-  "message": "",
-  "data": [
-    {
-      "id": 1,
-      "uid": "73a13c3e-e747-4eda-8204-ea2fb95b4773",
-      "name": "R02 - Road Shoulder - January 2026",
-      "description": "Road shoulder cleaning",
-      "companyID": 1,
-      "workScopeID": 2,
-      "roadID": 203,
-      "periodStart": "2026-01-01T00:00:00.000Z",
-      "periodEnd": "2026-02-28T00:00:00.000Z",
-      "contractRelationID": 4,
-      "requiredReportsCount": 24,
-      "totalReports": 0,
-      "calculationType": "SECTION_BASED",
-      "fromSection": "0",
-      "toSection": "2.45",
-      "dividerValue": "100",
-      "inputValue": null,
-      "longitude": null,
-      "latitude": null,
-      "status": "DRAFT",
-      "createdByID": 1,
-      "createdAt": "2026-01-08T10:06:53.852Z",
-      "updatedAt": "2026-01-08T10:06:53.852Z",
-      "deletedAt": null,
-      "workScope": {
-        "id": 2,
-        "uid": "81094b15-03b7-4648-bc35-1fd214c90031",
-        "name": "Road Shoulder",
-        "code": "R02",
-        "description": "Road shoulder maintenance and repairs",
-        "allowMultipleQuantities": false,
-        "companyID": 1,
-        "createdAt": "2025-09-16T18:17:04.035Z",
-        "updatedAt": "2025-09-16T19:45:09.158Z",
-        "deletedAt": null
-      },
-      "road": {
-        "id": 203,
-        "uid": "b77a503a-1f1a-4a16-b310-8c8b815f1670",
-        "name": "Jalan Pelabuhan Kuantan",
-        "roadNo": "V0421",
-        "sectionStart": "0",
-        "sectionFinish": "2.45",
-        "mainCategoryID": 1,
-        "secondaryCategoryID": null,
-        "districtID": 10,
-        "createdAt": "2025-08-29T17:13:28.677Z",
-        "updatedAt": "2025-08-30T09:17:25.989Z",
-        "district": {
-          "id": 10,
-          "uid": "df3ae453-1f8f-4739-9d17-54db2355e17f",
-          "name": "Kuantan",
-          "stateID": 6,
-          "state": {
-            "id": 6,
-            "uid": "c4ce6ab7-ba1c-4cbe-a6da-722016e9b9b2",
-            "name": "Pahang",
-            "code": "PH",
-            "countryID": 1,
-            "createdAt": "2025-08-29T16:35:48.280Z",
-            "updatedAt": "2026-01-10T17:57:42.669Z",
-            "country": {
-              "id": 1,
-              "uid": "81b08280-ffb2-47e6-8945-c000fca5f95c",
-              "name": "Malaysia",
-              "code": "MY",
-              "createdAt": "2025-08-29T16:35:36.170Z",
-              "updatedAt": "2026-01-10T17:57:35.350Z"
-            }
-          }
-        }
-      },
-      "contractRelation": {
-        "id": 4,
-        "uid": "39cf3bb1-ea7d-48a9-a125-cf7bac889639",
-        "principalCompanyID": 1,
-        "contractorCompanyID": 3,
-        "contractNumber": "Test-Con-1",
-        "description": "",
-        "startDate": "2025-01-01T00:00:00.000Z",
-        "endDate": "2025-12-31T00:00:00.000Z",
-        "status": "ACTIVE",
-        "invitedAt": "2025-10-23T08:38:52.222Z",
-        "acceptedAt": null,
-        "suspendedAt": null,
-        "terminatedAt": null,
-        "terminationReason": null,
-        "rejectedAt": null,
-        "rejectionReason": null,
-        "createdAt": "2025-10-23T08:38:52.222Z",
-        "updatedAt": "2025-10-23T16:16:47.136Z",
-        "deletedAt": null,
-        "packageID": 1,
-        "invitationCodeID": null,
-        "contractorCompany": {
-          "id": 3,
-          "uid": "5a6051d4-159d-48cd-bf08-cc55433de85c",
-          "name": "Test SDN BHD",
-          "regNo": "1211241134",
-          "bumiputera": false,
-          "einvoiceTinNo": "TIADA",
-          "registrationDate": null,
-          "cidbNo": "0120190912-WP031478",
-          "cidbGrade": "G3",
-          "lastCidbSyncAt": "2026-01-15T02:17:33.895Z",
-          "address": "07-06, Uno Promenade, Jalan 1/108D, Taman Sungai Besi, 57100 Kuala Lumpur, Wilayah Persekutuan Kuala Lumpur\nUno Promenade",
-          "postalCode": "57100",
-          "city": "Kuala Lumpur",
-          "state": "Kuala Lumpur",
-          "country": "Malaysia",
-          "phone": "+60311223212",
-          "email": "test@test.com",
-          "website": null,
-          "defaultBankAcc": "123123123123",
-          "defaultBankAccType": "AMBANK",
-          "companyType": "PRIVATE_LIMITED_COMPANY",
-          "createdAt": "2025-08-27T09:26:45.360Z",
-          "updatedAt": "2026-01-15T02:18:22.880Z",
-          "deletedAt": null,
-          "ownerID": 1,
-          "status": "PENDING",
-          "statusReason": null,
-          "statusUpdatedAt": null,
-          "statusUpdatedByID": null
-        }
-      },
-      "createdBy": {
-        "id": 1,
-        "uid": "83a0562d-9561-4fbd-8bd1-73ccc87fb9e2",
-        "firstName": "Ee Fong",
-        "lastName": "Foong",
-        "phone": "+60173555706",
-        "email": "foongef@gmail.com"
-      },
-      
-      "_count": {
-        "dailyReports": 0
+@LazySingleton(as: ProgramLocalDataSource)
+class ProgramLocalDataSourceImpl implements ProgramLocalDataSource {
+  final DatabaseService _databaseService;
+
+  ProgramLocalDataSourceImpl(this._databaseService);
+
+  AppDatabase get _database => _databaseService.database;
+
+  @override
+  Future<Either<Failure, List<ProgramListItem>>> getCachedProgramList(
+    String companyUID,
+  ) async {
+    try {
+      final records = await (_database.select(
+        _database.programs,
+      )..where((tbl) => tbl.deletedAt.isNull())).get();
+
+      if (records.isEmpty) {
+        print('💾 No cached programs found');
+        return const Right([]);
       }
+
+      final List<ProgramListItem> programs = [];
+
+      for (final record in records) {
+        programs.add(_mapRecordToListItem(record));
+      }
+
+      print('💾 Retrieved ${programs.length} cached programs');
+      return Right(programs);
+    } catch (e) {
+      print('❌ Error loading cached programs: $e');
+      return Left(CacheFailure('Failed to load cached programs: $e'));
     }
-  ],
-  "meta": {
-    "page": 1,
-    "limit": 1,
-    "totalCount": 1,
-    "totalPages": 1,
-    "hasNext": false,
-    "hasPrev": false
+  }
+
+  @override
+  Future<Either<Failure, ProgramDetail>> getCachedProgramDetail(
+    String programUID,
+  ) async {
+    try {
+      final record = await (_database.select(
+        _database.programs,
+      )..where((tbl) => tbl.uid.equals(programUID))).getSingleOrNull();
+
+      if (record == null) {
+        print('💾 No cached program detail found for UID: $programUID');
+        return Left(CacheFailure('Program not found in cache'));
+      }
+
+      final programDetail = _mapRecordToDetail(record);
+      print('💾 Retrieved cached program detail: ${programDetail.name}');
+      return Right(programDetail);
+    } catch (e) {
+      print('❌ Error loading cached program detail: $e');
+      return Left(CacheFailure('Failed to load cached program detail: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> cacheProgramList(
+    List<ProgramListItem> programs,
+  ) async {
+    try {
+      await _database.transaction(() async {
+        for (final program in programs) {
+          await _database
+              .into(_database.programs)
+              .insertOnConflictUpdate(_mapListItemToCompanion(program));
+        }
+      });
+
+      print('💾 Cached ${programs.length} programs');
+      return const Right(null);
+    } catch (e) {
+      print('❌ Error caching programs: $e');
+      return Left(CacheFailure('Failed to cache programs: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> cacheProgramDetail(
+    ProgramDetail program,
+  ) async {
+    try {
+      await _database
+          .into(_database.programs)
+          .insertOnConflictUpdate(_mapDetailToCompanion(program));
+
+      print('💾 Cached program detail: ${program.name}');
+      return const Right(null);
+    } catch (e) {
+      print('❌ Error caching program detail: $e');
+      return Left(CacheFailure('Failed to cache program detail: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> clearCache() async {
+    try {
+      await _database.delete(_database.programs).go();
+      print('💾 Cleared program cache');
+      return const Right(null);
+    } catch (e) {
+      print('❌ Error clearing program cache: $e');
+      return Left(CacheFailure('Failed to clear program cache: $e'));
+    }
+  }
+
+  // Helper: Map database record to ProgramListItem entity
+  ProgramListItem _mapRecordToListItem(ProgramRecord record) {
+    return ProgramListItem(
+      id: record.id,
+      uid: record.uid,
+      name: record.name,
+      description: record.description,
+      companyID: record.companyID,
+      workScopeID: record.workScopeID,
+      roadID: record.roadID,
+      periodStart: record.periodStart?.toIso8601String(),
+      periodEnd: record.periodEnd?.toIso8601String(),
+      contractRelationID: record.contractRelationID,
+      requiredReportsCount: record.requiredReportsCount,
+      totalReports: record.totalReports,
+      calculationType: record.calculationType,
+      fromSection: record.fromSection,
+      toSection: record.toSection,
+      dividerValue: record.dividerValue,
+      inputValue: record.inputValue,
+      longitude: record.longitude,
+      latitude: record.latitude,
+      status: record.status,
+      createdByID: record.createdByID,
+      createdAt: record.createdAt.toIso8601String(),
+      updatedAt: record.updatedAt.toIso8601String(),
+      deletedAt: record.deletedAt?.toIso8601String(),
+      workScope: record.workScopeData != null
+          ? WorkScopeNested.fromJson(json.decode(record.workScopeData!))
+          : null,
+      road: record.roadData != null
+          ? Road.fromJson(json.decode(record.roadData!))
+          : null,
+      contractRelation: record.contractRelationData != null
+          ? ContractorRelation.fromJson(
+              json.decode(record.contractRelationData!),
+            )
+          : null,
+      createdBy: record.createdByData != null
+          ? CreatedByNested.fromJson(json.decode(record.createdByData!))
+          : null,
+      count: ProgramCount(dailyReports: record.totalReports),
+    );
+  }
+
+  // Helper: Map database record to ProgramDetail entity
+  ProgramDetail _mapRecordToDetail(ProgramRecord record) {
+    return ProgramDetail(
+      id: record.id,
+      uid: record.uid,
+      name: record.name,
+      description: record.description,
+      companyID: record.companyID,
+      workScopeID: record.workScopeID,
+      roadID: record.roadID,
+      periodStart: record.periodStart?.toIso8601String(),
+      periodEnd: record.periodEnd?.toIso8601String(),
+      contractRelationID: record.contractRelationID,
+      requiredReportsCount: record.requiredReportsCount,
+      totalReports: record.totalReports,
+      calculationType: record.calculationType,
+      fromSection: record.fromSection,
+      toSection: record.toSection,
+      dividerValue: record.dividerValue,
+      inputValue: record.inputValue,
+      longitude: record.longitude,
+      latitude: record.latitude,
+      status: record.status,
+      createdByID: record.createdByID,
+      createdAt: record.createdAt.toIso8601String(),
+      updatedAt: record.updatedAt.toIso8601String(),
+      deletedAt: record.deletedAt?.toIso8601String(),
+      workScope: record.workScopeData != null
+          ? WorkScopeNested.fromJson(json.decode(record.workScopeData!))
+          : null,
+      road: record.roadData != null
+          ? Road.fromJson(json.decode(record.roadData!))
+          : null,
+      contractRelation: record.contractRelationData != null
+          ? ContractorRelation.fromJson(
+              json.decode(record.contractRelationData!),
+            )
+          : null,
+      createdBy: record.createdByData != null
+          ? CreatedByNested.fromJson(json.decode(record.createdByData!))
+          : null,
+      quantities: record.quantitiesData != null
+          ? (json.decode(record.quantitiesData!) as List)
+                .map((q) => ProgramQuantity.fromJson(q))
+                .toList()
+          : null,
+      files: record.filesData != null
+          ? (json.decode(record.filesData!) as List)
+                .map((f) => FileEntity.fromJson(f))
+                .toList()
+          : null,
+      dailyReports: null, // dailyReports stored separately
+      count: ProgramCount(dailyReports: record.totalReports),
+    );
+  }
+
+  // Helper: Map ProgramListItem to database companion
+  ProgramsCompanion _mapListItemToCompanion(ProgramListItem program) {
+    return ProgramsCompanion(
+      id: program.id != null ? Value(program.id!) : const Value.absent(),
+      uid: Value(program.uid!),
+      companyID: Value(program.companyID!),
+      workScopeID: Value(program.workScopeID!),
+      workScopeData: program.workScope != null
+          ? Value(json.encode(program.workScope!.toJson()))
+          : const Value(null),
+      roadID: Value(program.roadID),
+      roadData: program.road != null
+          ? Value(json.encode(program.road!.toJson()))
+          : const Value(null),
+      contractRelationID: Value(program.contractRelationID),
+      contractRelationData: program.contractRelation != null
+          ? Value(json.encode(program.contractRelation!.toJson()))
+          : const Value(null),
+      name: Value(program.name),
+      description: Value(program.description),
+      periodStart: program.periodStart != null
+          ? Value(DateTime.parse(program.periodStart!))
+          : const Value(null),
+      periodEnd: program.periodEnd != null
+          ? Value(DateTime.parse(program.periodEnd!))
+          : const Value(null),
+      calculationType: Value(program.calculationType),
+      fromSection: Value(program.fromSection),
+      toSection: Value(program.toSection),
+      dividerValue: Value(program.dividerValue),
+      inputValue: Value(program.inputValue),
+      requiredReportsCount: Value(program.requiredReportsCount),
+      totalReports: Value(program.totalReports ?? 0),
+      status: Value(program.status!),
+      latitude: Value(program.latitude),
+      longitude: Value(program.longitude),
+      quantitiesData: const Value(null), // Not in list response
+      filesData: const Value(null), // Not in list response
+      createdByID: Value(program.createdByID),
+      createdByData: program.createdBy != null
+          ? Value(json.encode(program.createdBy!.toJson()))
+          : const Value(null),
+      createdAt: Value(DateTime.parse(program.createdAt!)),
+      updatedAt: Value(DateTime.parse(program.updatedAt!)),
+      deletedAt: program.deletedAt != null
+          ? Value(DateTime.parse(program.deletedAt!))
+          : const Value(null),
+    );
+  }
+
+  // Helper: Map ProgramDetail to database companion
+  ProgramsCompanion _mapDetailToCompanion(ProgramDetail program) {
+    return ProgramsCompanion(
+      id: program.id != null ? Value(program.id!) : const Value.absent(),
+      uid: Value(program.uid!),
+      companyID: Value(program.companyID!),
+      workScopeID: Value(program.workScopeID!),
+      workScopeData: program.workScope != null
+          ? Value(json.encode(program.workScope!.toJson()))
+          : const Value(null),
+      roadID: Value(program.roadID),
+      roadData: program.road != null
+          ? Value(json.encode(program.road!.toJson()))
+          : const Value(null),
+      contractRelationID: Value(program.contractRelationID),
+      contractRelationData: program.contractRelation != null
+          ? Value(json.encode(program.contractRelation!.toJson()))
+          : const Value(null),
+      name: Value(program.name),
+      description: Value(program.description),
+      periodStart: program.periodStart != null
+          ? Value(DateTime.parse(program.periodStart!))
+          : const Value(null),
+      periodEnd: program.periodEnd != null
+          ? Value(DateTime.parse(program.periodEnd!))
+          : const Value(null),
+      calculationType: Value(program.calculationType),
+      fromSection: Value(program.fromSection),
+      toSection: Value(program.toSection),
+      dividerValue: Value(program.dividerValue),
+      inputValue: Value(program.inputValue),
+      requiredReportsCount: Value(program.requiredReportsCount),
+      totalReports: Value(program.totalReports ?? 0),
+      status: Value(program.status!),
+      latitude: Value(program.latitude),
+      longitude: Value(program.longitude),
+      quantitiesData: program.quantities != null
+          ? Value(
+              json.encode(program.quantities!.map((q) => q.toJson()).toList()),
+            )
+          : const Value(null),
+      filesData: program.files != null
+          ? Value(json.encode(program.files!.map((f) => f.toJson()).toList()))
+          : const Value(null),
+      createdByID: Value(program.createdByID),
+      createdByData: program.createdBy != null
+          ? Value(json.encode(program.createdBy!.toJson()))
+          : const Value(null),
+      createdAt: Value(DateTime.parse(program.createdAt!)),
+      updatedAt: Value(DateTime.parse(program.updatedAt!)),
+      deletedAt: program.deletedAt != null
+          ? Value(DateTime.parse(program.deletedAt!))
+          : const Value(null),
+    );
   }
 }

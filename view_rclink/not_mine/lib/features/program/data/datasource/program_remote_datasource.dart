@@ -8,12 +8,8 @@ import '../../../contractor_relation/presentation/bloc/contractor_relation_bloc.
 import '../../../road/data/datasources/road_api_service.dart';
 import '../../../road/domain/entities/package_data_response_entity.dart';
 import '../../domain/entities/program_setting_entity.dart';
-import '../models/program_create/create_program_response_model.dart';
+import '../models/create_program_response_model.dart';
 import '../models/program_settings_filter_model.dart';
-import '../models/program_view/program_detail_filter_model.dart';
-import '../models/program_view/program_detail_model.dart';
-import '../models/program_view/program_list_filter_model.dart';
-import '../models/program_view/program_list_item_model.dart';
 import '../models/submit_program_request_model.dart';
 import 'program_api_service.dart';
 
@@ -26,17 +22,6 @@ abstract class ProgramRemoteDataSource {
   Future<Either<Failure, ProgramResponseModel>> submitProgram({
     required String companyUID,
     required SubmitProgramRequestModel requestModel,
-  });
-
-  Future<Either<Failure, List<ProgramListItemModel>>> fetchProgramList({
-    required String companyUID,
-    int page = 1,
-    int limit = 0,
-  });
-
-  Future<Either<Failure, ProgramDetailModel>> fetchProgramDetail({
-    required String companyUID,
-    required String programUID,
   });
 }
 
@@ -162,72 +147,6 @@ class ProgramRemoteDataSourceImpl implements ProgramRemoteDataSource {
       }
     } catch (e) {
       print('❌ Error fetching contractor roads: $e');
-      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<ProgramListItemModel>>> fetchProgramList({
-    required String companyUID,
-    int page = 1,
-    int limit = 0,
-  }) async {
-    try {
-      print('🌐 Fetching program list for company: $companyUID');
-
-      final filter = ProgramListFilterModel(
-        page: page,
-        limit: limit,
-        expand: ['workScope', 'road', 'contractRelation', 'createdBy'],
-      );
-
-      final response = await _apiService.getProgramList(
-        companyUID,
-        filter.toJson(),
-      );
-
-      if (response.isSuccess && response.data != null) {
-        print('✅ Retrieved ${response.data!.length} programs');
-        return Right(response.data!);
-      } else {
-        return Left(
-          ServerFailure(response.message, statusCode: response.statusCode),
-        );
-      }
-    } catch (e) {
-      print('❌ Error fetching program list: $e');
-      return Left(ServerFailure('Unexpected error: ${e.toString()}'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, ProgramDetailModel>> fetchProgramDetail({
-    required String companyUID,
-    required String programUID,
-  }) async {
-    try {
-      print('🌐 Fetching program detail for: $programUID');
-
-      final filter = ProgramDetailFilterModel(
-        expand: ['dailyReport', 'quantities', 'files'],
-      );
-
-      final response = await _apiService.getProgramDetail(
-        companyUID,
-        programUID,
-        filter.toJson(),
-      );
-
-      if (response.isSuccess && response.data != null) {
-        print('✅ Retrieved program detail: ${response.data!.name}');
-        return Right(response.data!);
-      } else {
-        return Left(
-          ServerFailure(response.message, statusCode: response.statusCode),
-        );
-      }
-    } catch (e) {
-      print('❌ Error fetching program detail: $e');
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }
