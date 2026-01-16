@@ -13,6 +13,9 @@ import '../../../company/presentation/bloc/company_state.dart';
 import '../../../contractor_relation/domain/entities/contractor_relation_entity.dart';
 import '../../../daily_report/presentation/widgets/report_creation/notes_bottomsheet.dart';
 import '../../../road/domain/entities/road_entity.dart';
+import '../bloc/create_program/ create_program_bloc.dart';
+import '../bloc/create_program/create_program_event.dart';
+import '../bloc/create_program/create_program_state.dart';
 import '../bloc/program/program_bloc.dart';
 import '../bloc/program/program_event.dart';
 import '../bloc/program/program_state.dart';
@@ -53,6 +56,7 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
   late final ProgramDraftBloc _programDraftBloc;
   late final CompanyBloc _companyBloc;
   late final ProgramBloc _programBloc;
+  late final CreateProgramBloc _createProgramBloc;
   Timer? _autoSaveDebounce;
 
   double? _latitude;
@@ -77,6 +81,7 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
     _programDraftBloc = getIt<ProgramDraftBloc>();
     _companyBloc = getIt<CompanyBloc>();
     _programBloc = context.read<ProgramBloc>();
+    _createProgramBloc = getIt<CreateProgramBloc>();
 
     // Load program settings
     _loadProgramSettings();
@@ -130,6 +135,7 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
   @override
   void dispose() {
     _autoSaveDebounce?.cancel();
+    _createProgramBloc.close();
     super.dispose();
   }
 
@@ -740,74 +746,218 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
 
                                 SizedBox(height: 50),
 
-                                // Submit Button
-                                BlocBuilder<
-                                  ProgramDraftBloc,
-                                  ProgramDraftState
+                                // Wrap the submit button with BlocListener
+                                BlocListener<
+                                  CreateProgramBloc,
+                                  CreateProgramState
                                 >(
-                                  bloc: _programDraftBloc,
-                                  builder: (context, draftState) {
-                                    final isSubmitting =
-                                        draftState is ProgramDraftSubmitting;
+                                  bloc: _createProgramBloc,
+                                  listener: (context, state) {
+                                    state.maybeWhen(
+                                      success: (program) async {
+                                        print(
+                                          '✅ Program created: ${program.uid}',
+                                        );
 
-                                    return SizedBox(
-                                      width: double.infinity,
-                                      child: ElevatedButton(
-                                        onPressed: isSubmitting
-                                            ? null
-                                            : () {
-                                                // ═══════════════════════════════════════════════════════
+                                        // Delete draft
+                                        _programDraftBloc.add(
+                                          ProgramDraftEvent.deleteDraft(
+                                            draftUID: program.uid.toString(),
+                                          ),
+                                        );
 
-                                                // final companyState = _companyBloc.state;
-                                                // if (companyState is CompanyLoaded &&
-                                                //     companyState.selectedCompany !=
-                                                //         null) {
-                                                //   _programDraftBloc.add(
-                                                //     ProgramDraftEvent.submitProgram(
-                                                //       companyUID: companyState
-                                                //           .selectedCompany!
-                                                //           .uid,
-                                                //     ),
-                                                //   );
-                                                // }
-                                              },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: primaryColor,
-                                          padding: ResponsiveHelper.padding(
-                                            context,
-                                            vertical: 12,
-                                          ),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              12,
-                                            ),
-                                          ),
-                                          elevation: 2,
-                                        ),
-                                        child: isSubmitting
-                                            ? SizedBox(
-                                                height: 20,
-                                                width: 20,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                      color: Colors.white,
-                                                      strokeWidth: 2,
-                                                    ),
-                                              )
-                                            : Text(
-                                                'Submit',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize:
-                                                      ResponsiveHelper.fontSize(
-                                                        context,
-                                                        base: 14,
-                                                      ),
-                                                ),
-                                              ),
-                                      ),
+                                        CustomSnackBar.show(
+                                          context,
+                                          'Program created successfully!',
+                                          type: SnackBarType.success,
+                                        );
+
+                                        // Navigate back to program list or home
+                                        Navigator.pop(context);
+                                      },
+                                      error: (message) {
+                                        CustomSnackBar.show(
+                                          context,
+                                          message,
+                                          type: SnackBarType.error,
+                                        );
+                                      },
+                                      orElse: () {},
                                     );
                                   },
+                                  child: BlocBuilder<CreateProgramBloc, CreateProgramState>(
+                                    bloc: _createProgramBloc,
+                                    builder: (context, createState) {
+                                      final isSubmitting =
+                                          createState
+                                              is CreateProgramSubmitting;
+
+                                      return SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton(
+                                          onPressed: isSubmitting
+                                              ? null
+                                              : () {
+                                                  // Get states
+                                                  final companyState =
+                                                      _companyBloc.state;
+
+                                                  // Validate company
+                                                  if (companyState
+                                                          is! CompanyLoaded ||
+                                                      companyState
+                                                              .selectedCompany ==
+                                                          null) {
+                                                    CustomSnackBar.show(
+                                                      context,
+                                                      'Company not loaded',
+                                                      type: SnackBarType.error,
+                                                    );
+                                                    return;
+                                                  }
+
+                                                  // Validate periods
+                                                  if (_selectedPeriods
+                                                      .isEmpty) {
+                                                    CustomSnackBar.show(
+                                                      context,
+                                                      'Please select at least one period',
+                                                      type: SnackBarType.error,
+                                                    );
+                                                    return;
+                                                  }
+
+                                                  // Validate roads input data
+                                                  if (_roadInputData.isEmpty) {
+                                                    CustomSnackBar.show(
+                                                      context,
+                                                      'Please fill in road section/input data',
+                                                      type: SnackBarType.error,
+                                                    );
+                                                    return;
+                                                  }
+
+                                                  // Validate that all roads have input data
+                                                  for (final road
+                                                      in widget.selectedRoads) {
+                                                    if (!_roadInputData
+                                                        .containsKey(
+                                                          road.uid,
+                                                        )) {
+                                                      CustomSnackBar.show(
+                                                        context,
+                                                        'Please complete input for ${road.name}',
+                                                        type:
+                                                            SnackBarType.error,
+                                                      );
+                                                      return;
+                                                    }
+                                                  }
+
+                                                  // Build selectedRoads for API submission
+                                                  final selectedRoadsForAPI =
+                                                      widget.selectedRoads.map((
+                                                        road,
+                                                      ) {
+                                                        final roadUID =
+                                                            road.uid!;
+                                                        final inputData =
+                                                            _roadInputData[roadUID]!;
+
+                                                        return {
+                                                          'roadUID': roadUID,
+                                                          'fromSection':
+                                                              inputData['fromSection']
+                                                                  as double,
+                                                          'toSection':
+                                                              inputData['toSection']
+                                                                  as double?,
+                                                          'inputValue':
+                                                              inputData['inputValue']
+                                                                  as int?,
+                                                        };
+                                                      }).toList();
+
+                                                  print(
+                                                    '📋 Submitting Non-R02 Program:',
+                                                  );
+                                                  print(
+                                                    '   Company: ${companyState.selectedCompany!.uid}',
+                                                  );
+                                                  print(
+                                                    '   Work Scope: ${widget.workScopeName}',
+                                                  );
+                                                  print(
+                                                    '   Roads: ${selectedRoadsForAPI.length}',
+                                                  );
+                                                  print(
+                                                    '   Periods: ${_selectedPeriods.length}',
+                                                  );
+                                                  print(
+                                                    '   Contractor: ${widget.contractor.uid}',
+                                                  );
+
+                                                  // Submit program
+                                                  _createProgramBloc.add(
+                                                    CreateProgramEvent.submitNonR02Program(
+                                                      companyUID: companyState
+                                                          .selectedCompany!
+                                                          .uid,
+                                                      workScopeUID:
+                                                          widget.workScopeUID,
+                                                      workScopeCode:
+                                                          widget.workScopeCode,
+                                                      workScopeName:
+                                                          widget.workScopeName,
+                                                      selectedRoads:
+                                                          selectedRoadsForAPI,
+                                                      periods: _selectedPeriods,
+                                                      periodStart: DateTime.parse(
+                                                        _selectedPeriods
+                                                            .first['periodStart']!,
+                                                      ),
+                                                      contractRelationUID:
+                                                          widget.contractor.uid,
+                                                    ),
+                                                  );
+                                                },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: primaryColor,
+                                            padding: ResponsiveHelper.padding(
+                                              context,
+                                              vertical: 12,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12),
+                                            ),
+                                            elevation: 2,
+                                          ),
+                                          child: isSubmitting
+                                              ? SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        color: Colors.white,
+                                                        strokeWidth: 2,
+                                                      ),
+                                                )
+                                              : Text(
+                                                  'Submit',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize:
+                                                        ResponsiveHelper.fontSize(
+                                                          context,
+                                                          base: 14,
+                                                        ),
+                                                  ),
+                                                ),
+                                        ),
+                                      );
+                                    },
+                                  ),
                                 ),
                               ],
                             );

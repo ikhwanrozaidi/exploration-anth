@@ -6,7 +6,6 @@ import '../../../../../core/errors/failures.dart';
 import '../../../../../core/sync/datasources/image_local_datasource.dart';
 import '../../../../../core/sync/sync_constants.dart';
 import '../../../data/datasource/program_draft_local_datasource.dart';
-import '../../../data/datasource/program_settings_local_datasource.dart';
 import '../../../domain/entities/program_draft_data_entity.dart';
 import 'program_draft_event.dart';
 import 'program_draft_state.dart';
