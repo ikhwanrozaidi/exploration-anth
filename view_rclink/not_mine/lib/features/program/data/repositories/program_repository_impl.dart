@@ -1,17 +1,17 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:rclink_app/features/program/data/models/create_program_response_model.dart';
+import 'package:rclink_app/features/program/data/models/program_create/create_program_response_model.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/repositories/base_sync_repository.dart';
 
 import '../../../road/domain/entities/package_data_response_entity.dart';
 import '../../domain/entities/program_entity.dart';
-import '../../domain/entities/program_setting_entity.dart';
+import '../../domain/entities/program_settings/program_setting_entity.dart';
 import '../../domain/repositories/program_repository.dart';
 import '../datasource/program_settings_local_datasource.dart';
 import '../datasource/program_remote_datasource.dart';
-import '../models/program_setting_model.dart';
-import '../models/submit_program_request_model.dart';
+import '../models/program_settings/program_setting_model.dart';
+import '../models/program_create/submit_program_request_model.dart';
 
 @LazySingleton(as: ProgramRepository)
 class ProgramRepositoryImpl

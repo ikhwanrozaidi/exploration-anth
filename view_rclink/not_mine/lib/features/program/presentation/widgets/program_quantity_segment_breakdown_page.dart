@@ -4,8 +4,8 @@ import 'package:rclink_app/shared/widgets/template_page.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
-import '../../domain/entities/quantity_field_nested_entity.dart';
-import '../../domain/entities/quantity_type_nested_entity.dart';
+import '../../domain/entities/program_settings/quantity_field_nested_entity.dart';
+import '../../domain/entities/program_settings/quantity_type_nested_entity.dart';
 
 class ProgramQuantitySegmentBreakdownPage extends StatefulWidget {
   final QuantityTypeNested quantityType;

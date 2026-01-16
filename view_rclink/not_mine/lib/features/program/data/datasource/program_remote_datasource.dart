@@ -1,16 +1,16 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:rclink_app/features/program/data/models/program_setting_model.dart';
+import 'package:rclink_app/features/program/data/models/program_settings/program_setting_model.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_state.dart';
 import '../../../contractor_relation/presentation/bloc/contractor_relation_bloc.dart';
 import '../../../road/data/datasources/road_api_service.dart';
 import '../../../road/domain/entities/package_data_response_entity.dart';
-import '../../domain/entities/program_setting_entity.dart';
-import '../models/create_program_response_model.dart';
-import '../models/program_settings_filter_model.dart';
-import '../models/submit_program_request_model.dart';
+import '../../domain/entities/program_settings/program_setting_entity.dart';
+import '../models/program_create/create_program_response_model.dart';
+import '../models/program_settings/program_settings_filter_model.dart';
+import '../models/program_create/submit_program_request_model.dart';
 import 'program_api_service.dart';
 
 abstract class ProgramRemoteDataSource {

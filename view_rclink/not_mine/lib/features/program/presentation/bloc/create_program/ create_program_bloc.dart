@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../data/helper/programs_api_transformer.dart';
-import '../../../data/models/submit_program_request_model.dart';
+import '../../../data/models/program_create/submit_program_request_model.dart';
 import '../../../domain/usecases/submit_program_usecase.dart';
 import 'create_program_event.dart';
 import 'create_program_state.dart';

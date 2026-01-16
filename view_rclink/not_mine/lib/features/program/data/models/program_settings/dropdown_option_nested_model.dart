@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/entities/dropdown_option_nested_entity.dart';
+import '../../../domain/entities/program_settings/dropdown_option_nested_entity.dart';
 
 part 'dropdown_option_nested_model.freezed.dart';
 part 'dropdown_option_nested_model.g.dart';

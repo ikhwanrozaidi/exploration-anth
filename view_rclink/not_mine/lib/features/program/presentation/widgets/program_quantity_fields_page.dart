@@ -5,8 +5,8 @@ import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../daily_report/presentation/widgets/report_creation/shared/creation_fields_widget.dart';
-import '../../domain/entities/quantity_field_nested_entity.dart';
-import '../../domain/entities/quantity_type_nested_entity.dart';
+import '../../domain/entities/program_settings/quantity_field_nested_entity.dart';
+import '../../domain/entities/program_settings/quantity_type_nested_entity.dart';
 import 'program_quantity_segment_breakdown_page.dart';
 
 class ProgramQuantityFieldsPage extends StatefulWidget {

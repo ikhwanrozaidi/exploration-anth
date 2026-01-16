@@ -5,7 +5,7 @@ import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../../shared/widgets/flexible_bottomsheet.dart';
-import '../../domain/entities/quantity_type_nested_entity.dart';
+import '../../domain/entities/program_settings/quantity_type_nested_entity.dart';
 import 'program_quantity_fields_page.dart';
 
 class ProgramQuantitySelectionPage extends StatefulWidget {

@@ -2,7 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/usecases/usecase.dart';
-import '../../../domain/entities/program_setting_entity.dart';
+import '../../../domain/entities/program_settings/program_setting_entity.dart';
 import '../../../domain/usecases/clear_program_cache_usecase.dart';
 import '../../../domain/usecases/get_contractor_roads_usecase.dart';
 import '../../../domain/usecases/get_program_settings_usecase.dart';

@@ -4,11 +4,11 @@ import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/database/app_database.dart';
 import '../../../../core/errors/failures.dart';
-import '../../domain/entities/program_setting_entity.dart';
-import '../models/created_by_nested_model.dart';
-import '../models/program_setting_model.dart';
-import '../models/quantity_type_nested_model.dart';
-import '../models/work_scope_nested_model.dart';
+import '../../domain/entities/program_settings/program_setting_entity.dart';
+import '../models/program_settings/created_by_nested_model.dart';
+import '../models/program_settings/program_setting_model.dart';
+import '../models/program_settings/quantity_type_nested_model.dart';
+import '../models/program_settings/work_scope_nested_model.dart';
 
 abstract class ProgramSettingsLocalDataSource {
   Future<Either<Failure, List<ProgramSetting>>> getLocal();

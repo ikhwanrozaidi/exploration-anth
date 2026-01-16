@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rclink_app/features/program/domain/entities/work_scope_nested_entity.dart';
+import 'package:rclink_app/features/program/domain/entities/program_settings/work_scope_nested_entity.dart';
 
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';

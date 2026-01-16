@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../../data/models/submit_program_request_model.dart';
+import '../../data/models/program_create/submit_program_request_model.dart';
 import '../entities/program_entity.dart';
 import '../repositories/program_repository.dart';
 

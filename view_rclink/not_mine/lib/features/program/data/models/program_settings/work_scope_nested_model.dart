@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/entities/work_scope_nested_entity.dart';
+import '../../../domain/entities/program_settings/work_scope_nested_entity.dart';
 
 part 'work_scope_nested_model.freezed.dart';
 part 'work_scope_nested_model.g.dart';

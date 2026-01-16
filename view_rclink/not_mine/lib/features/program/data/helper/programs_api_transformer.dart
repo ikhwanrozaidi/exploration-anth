@@ -1,8 +1,8 @@
 import 'package:intl/intl.dart';
 
-import '../../domain/entities/quantity_field_nested_entity.dart';
-import '../../domain/entities/quantity_type_nested_entity.dart';
-import '../models/submit_program_request_model.dart';
+import '../../domain/entities/program_settings/quantity_field_nested_entity.dart';
+import '../../domain/entities/program_settings/quantity_type_nested_entity.dart';
+import '../models/program_create/submit_program_request_model.dart';
 
 class ProgramApiTransformer {
   /// Generate program name: "R02 - Road Shoulder - January 2026"

@@ -25,7 +25,7 @@ import '../../../contractor_relation/presentation/bloc/contractor_relation_state
 import '../../../daily_report/presentation/widgets/report_creation/notes_bottomsheet.dart';
 import '../../../daily_report/presentation/widgets/report_creation/shared/custom_fields_tile_widget.dart';
 import '../../../road/domain/entities/road_entity.dart';
-import '../../domain/entities/program_setting_entity.dart';
+import '../../domain/entities/program_settings/program_setting_entity.dart';
 import '../bloc/create_program/ create_program_bloc.dart';
 import '../bloc/create_program/create_program_event.dart';
 import '../bloc/create_program/create_program_state.dart';

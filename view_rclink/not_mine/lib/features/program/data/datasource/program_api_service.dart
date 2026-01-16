@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../../../shared/models/api_response.dart';
-import '../models/create_program_response_model.dart';
-import '../models/program_setting_model.dart';
-import '../models/program_settings_filter_model.dart';
-import '../models/submit_program_request_model.dart';
+import '../models/program_create/create_program_response_model.dart';
+import '../models/program_settings/program_setting_model.dart';
+import '../models/program_settings/program_settings_filter_model.dart';
+import '../models/program_create/submit_program_request_model.dart';
 
 part 'program_api_service.g.dart';
 

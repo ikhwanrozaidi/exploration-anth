@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/entities/program_setting_entity.dart';
+import '../../../domain/entities/program_settings/program_setting_entity.dart';
 import 'created_by_nested_model.dart';
 import 'work_scope_nested_model.dart';
 import 'quantity_type_nested_model.dart';

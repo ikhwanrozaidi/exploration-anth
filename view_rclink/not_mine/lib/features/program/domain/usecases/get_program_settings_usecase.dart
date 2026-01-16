@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entities/program_setting_entity.dart';
+import '../entities/program_settings/program_setting_entity.dart';
 import '../repositories/program_repository.dart';
 
 class GetProgramSettingsParams {
