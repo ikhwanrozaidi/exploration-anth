@@ -1,42 +1,31 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import '../../../domain/usecases/clear_program_cache_usecase.dart';
-import '../../../domain/usecases/get_program_detail_usecase.dart';
 import '../../../domain/usecases/get_program_usecase.dart';
-import 'program_view_event.dart';
-import 'program_view_state.dart';
+import 'program_list_event.dart';
+import 'program_list_state.dart';
 
 @lazySingleton
-class ProgramViewBloc extends Bloc<ProgramViewEvent, ProgramViewState> {
+class ProgramListBloc extends Bloc<ProgramListEvent, ProgramListState> {
   final GetProgramsUseCase _getProgramsUseCase;
-  final GetProgramDetailUseCase _getProgramDetailUseCase;
   final ClearProgramCacheUseCase _clearCacheUseCase;
 
   static const int _pageSize = 10;
 
-  ProgramViewBloc(
-    this._getProgramsUseCase,
-    this._getProgramDetailUseCase,
-    this._clearCacheUseCase,
-  ) : super(const ProgramViewState.initial()) {
+  ProgramListBloc(this._getProgramsUseCase, this._clearCacheUseCase)
+    : super(const ProgramListState.initial()) {
     on<LoadPrograms>(_onLoadPrograms);
     on<LoadMorePrograms>(_onLoadMorePrograms);
     on<RefreshPrograms>(_onRefreshPrograms);
-    on<LoadProgramDetail>(_onLoadProgramDetail);
-    on<RefreshProgramDetail>(_onRefreshProgramDetail);
     on<ClearProgramCache>(_onClearCache);
   }
 
-  // ======================================================================
-  // LIST EVENT HANDLERS
-  // ======================================================================
-
   Future<void> _onLoadPrograms(
     LoadPrograms event,
-    Emitter<ProgramViewState> emit,
+    Emitter<ProgramListState> emit,
   ) async {
     print('📋 Loading programs: page=${event.page}, limit=${event.limit}');
-    emit(const ProgramViewState.loading());
+    emit(const ProgramListState.loading());
 
     final result = await _getProgramsUseCase(
       GetProgramsParams(
@@ -50,12 +39,12 @@ class ProgramViewBloc extends Bloc<ProgramViewEvent, ProgramViewState> {
     result.fold(
       (failure) {
         print('❌ Failed to load programs: ${failure.message}');
-        emit(ProgramViewState.failure(failure.message));
+        emit(ProgramListState.failure(failure.message));
       },
       (programs) {
         print('✅ Loaded ${programs.length} programs');
         emit(
-          ProgramViewState.loaded(
+          ProgramListState.loaded(
             programs: programs,
             currentPage: event.page,
             hasMore: programs.length >= event.limit,
@@ -67,10 +56,10 @@ class ProgramViewBloc extends Bloc<ProgramViewEvent, ProgramViewState> {
 
   Future<void> _onLoadMorePrograms(
     LoadMorePrograms event,
-    Emitter<ProgramViewState> emit,
+    Emitter<ProgramListState> emit,
   ) async {
     final currentState = state;
-    if (currentState is! ProgramViewLoaded) return;
+    if (currentState is! ProgramListLoaded) return;
     if (!currentState.hasMore || currentState.isLoadingMore) return;
 
     print('📋 Loading more programs: page=${currentState.currentPage + 1}');
@@ -99,7 +88,7 @@ class ProgramViewBloc extends Bloc<ProgramViewEvent, ProgramViewState> {
         print('✅ Loaded ${newPrograms.length} more programs');
         final allPrograms = [...currentState.programs, ...newPrograms];
         emit(
-          ProgramViewState.loaded(
+          ProgramListState.loaded(
             programs: allPrograms,
             currentPage: nextPage,
             hasMore: newPrograms.length >= _pageSize,
@@ -112,7 +101,7 @@ class ProgramViewBloc extends Bloc<ProgramViewEvent, ProgramViewState> {
 
   Future<void> _onRefreshPrograms(
     RefreshPrograms event,
-    Emitter<ProgramViewState> emit,
+    Emitter<ProgramListState> emit,
   ) async {
     print('🔄 Refreshing programs');
     add(
@@ -125,61 +114,14 @@ class ProgramViewBloc extends Bloc<ProgramViewEvent, ProgramViewState> {
     );
   }
 
-  // ======================================================================
-  // DETAIL EVENT HANDLERS
-  // ======================================================================
-
-  Future<void> _onLoadProgramDetail(
-    LoadProgramDetail event,
-    Emitter<ProgramViewState> emit,
-  ) async {
-    print('📄 Loading program detail: ${event.programUID}');
-    emit(const ProgramViewState.detailLoading());
-
-    final result = await _getProgramDetailUseCase(
-      GetProgramDetailParams(
-        companyUID: event.companyUID,
-        programUID: event.programUID,
-        forceRefresh: event.forceRefresh,
-      ),
-    );
-
-    result.fold(
-      (failure) {
-        print('❌ Failed to load program detail: ${failure.message}');
-        emit(ProgramViewState.detailFailure(failure.message));
-      },
-      (program) {
-        print('✅ Loaded program detail: ${program.name}');
-        emit(ProgramViewState.detailLoaded(program: program));
-      },
-    );
-  }
-
-  Future<void> _onRefreshProgramDetail(
-    RefreshProgramDetail event,
-    Emitter<ProgramViewState> emit,
-  ) async {
-    print('🔄 Refreshing program detail: ${event.programUID}');
-    add(
-      LoadProgramDetail(
-        companyUID: event.companyUID,
-        programUID: event.programUID,
-        forceRefresh: true,
-      ),
-    );
-  }
-
-  // ======================================================================
-  // CACHE MANAGEMENT
-  // ======================================================================
-
   Future<void> _onClearCache(
     ClearProgramCache event,
-    Emitter<ProgramViewState> emit,
+    Emitter<ProgramListState> emit,
   ) async {
-    print('🗑️ Clearing program cache');
-    await _clearCacheUseCase();
-    emit(const ProgramViewState.initial());
+    final result = await _clearCacheUseCase();
+    result.fold(
+      (failure) => emit(ProgramListState.failure(failure.message)),
+      (_) => emit(const ProgramListState.initial()),
+    );
   }
 }

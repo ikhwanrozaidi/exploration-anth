@@ -464,7 +464,7 @@ class _R02ProgramCreationDraftPageState
           editing: (draftData) {
             setState(() {
               _selectedContractor = draftData.contractor;
-              _quantityFieldData = Map.from(draftData.quantityFieldData);
+              _quantityFieldData = Map.from(draftData.quantityFieldData ?? {});
               _latitude = draftData.latitude;
               _longitude = draftData.longitude;
               _periodStart = draftData.periodStart;
@@ -472,26 +472,26 @@ class _R02ProgramCreationDraftPageState
               _description = draftData.description ?? '';
             });
           },
-          autoSaving: (draftData) {
-            setState(() {
-              _selectedContractor = draftData.contractor;
-              _quantityFieldData = Map.from(draftData.quantityFieldData);
-              _latitude = draftData.latitude;
-              _longitude = draftData.longitude;
-              _periodStart = draftData.periodStart;
-              _periodEnd = draftData.periodEnd;
-              _description = draftData.description ?? '';
-            });
-          },
+          autoSaving: (draftData) {},
           autoSaved: (draftData) {},
           submitting: (draftData) {},
           submitted: (draftData) {
-            CustomSnackBar.show(context, 'Program submitted successfully!');
-            Navigator.pop(context, true);
-            Navigator.pop(context, true);
+            CustomSnackBar.show(
+              context,
+              'Program submitted successfully!',
+              type: SnackBarType.success,
+            );
+            Navigator.of(context).pop();
+          },
+          draftListLoaded: (drafts) {
+            // This state is not relevant for this page, ignore it
           },
           error: (failure, draftData) {
-            CustomSnackBar.show(context, failure.message);
+            CustomSnackBar.show(
+              context,
+              failure.message,
+              type: SnackBarType.error,
+            );
           },
         );
       },
@@ -893,15 +893,16 @@ class _R02ProgramCreationDraftPageState
                         // Contractor (optional for R02)
                         BlocBuilder<ProgramDraftBloc, ProgramDraftState>(
                           bloc: _programDraftBloc,
-                          builder: (context, draftState) {
-                            final contractor = draftState.when(
+                          builder: (context, state) {
+                            final contractor = state.when(
                               initial: () => null,
                               loading: () => null,
                               editing: (draftData) => draftData.contractor,
                               autoSaving: (draftData) => draftData.contractor,
                               autoSaved: (draftData) => draftData.contractor,
                               submitting: (draftData) => draftData.contractor,
-                              submitted: (draftData) => null,
+                              submitted: (draftData) => draftData.contractor,
+                              draftListLoaded: (drafts) => null,
                               error: (failure, draftData) =>
                                   draftData?.contractor,
                             );
@@ -922,8 +923,8 @@ class _R02ProgramCreationDraftPageState
                         // Quantity Selection
                         BlocBuilder<ProgramDraftBloc, ProgramDraftState>(
                           bloc: _programDraftBloc,
-                          builder: (context, draftState) {
-                            final quantityFieldData = draftState.when(
+                          builder: (context, state) {
+                            final quantityFieldData = state.when(
                               initial: () => <String, Map<String, dynamic>>{},
                               loading: () => <String, Map<String, dynamic>>{},
                               editing: (draftData) =>
@@ -935,6 +936,8 @@ class _R02ProgramCreationDraftPageState
                               submitting: (draftData) =>
                                   draftData.quantityFieldData,
                               submitted: (draftData) =>
+                                  draftData.quantityFieldData,
+                              draftListLoaded: (drafts) =>
                                   <String, Map<String, dynamic>>{},
                               error: (failure, draftData) =>
                                   draftData?.quantityFieldData ??
@@ -972,8 +975,8 @@ class _R02ProgramCreationDraftPageState
                         // Photos
                         BlocBuilder<ProgramDraftBloc, ProgramDraftState>(
                           bloc: _programDraftBloc,
-                          builder: (context, draftState) {
-                            final programImages = draftState.when(
+                          builder: (context, state) {
+                            final programImages = state.when(
                               initial: () => <String>[],
                               loading: () => <String>[],
                               editing: (draftData) => draftData.programImages,
@@ -982,7 +985,8 @@ class _R02ProgramCreationDraftPageState
                               autoSaved: (draftData) => draftData.programImages,
                               submitting: (draftData) =>
                                   draftData.programImages,
-                              submitted: (draftData) => <String>[],
+                              submitted: (draftData) => draftData.programImages,
+                              draftListLoaded: (drafts) => <String>[],
                               error: (failure, draftData) =>
                                   draftData?.programImages ?? [],
                             );

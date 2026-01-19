@@ -60,6 +60,9 @@ class ProgramDraftEvent with _$ProgramDraftEvent {
   const factory ProgramDraftEvent.resetForm() = ResetForm;
   // Submit program
   const factory ProgramDraftEvent.submitProgram() = SubmitProgram;
+  // Load draft
+  const factory ProgramDraftEvent.loadDraftList({required String companyUID}) =
+      LoadDraftList;
 
   // Initialize new draft for non-R02 (multi-road)
   const factory ProgramDraftEvent.initializeDraftMultiRoad({

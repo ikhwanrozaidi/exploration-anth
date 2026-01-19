@@ -36,6 +36,7 @@ class ProgramDraftBloc extends Bloc<ProgramDraftEvent, ProgramDraftState> {
     on<ResetForm>(_onResetForm);
 
     on<SubmitProgram>(_onSubmitProgram);
+    on<LoadDraftList>(_onLoadDraftList);
 
     on<InitializeDraftMultiRoad>(_onInitializeDraftMultiRoad);
     on<UpdateRoadInputData>(_onUpdateRoadInputData);
@@ -413,6 +414,38 @@ class ProgramDraftBloc extends Bloc<ProgramDraftEvent, ProgramDraftState> {
           ),
         );
       }
+    }
+  }
+
+  /// Load draft list
+  Future<void> _onLoadDraftList(
+    LoadDraftList event,
+    Emitter<ProgramDraftState> emit,
+  ) async {
+    try {
+      print('📂 Loading program draft list for company: ${event.companyUID}');
+
+      emit(const ProgramDraftState.loading());
+
+      final result = await _localDataSource.getDraftList(event.companyUID);
+
+      result.fold(
+        (failure) {
+          print('❌ Error loading draft list: ${failure.message}');
+          emit(ProgramDraftState.error(failure: failure));
+        },
+        (drafts) {
+          print('✅ Loaded ${drafts.length} program drafts');
+          emit(ProgramDraftState.draftListLoaded(drafts: drafts));
+        },
+      );
+    } catch (e) {
+      print('❌ Error loading draft list: $e');
+      emit(
+        ProgramDraftState.error(
+          failure: ServerFailure('Failed to load draft list: $e'),
+        ),
+      );
     }
   }
 

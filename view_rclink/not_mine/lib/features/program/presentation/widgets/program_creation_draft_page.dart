@@ -357,6 +357,9 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
             );
             Navigator.of(context).pop();
           },
+          draftListLoaded: (drafts) {
+            // This state is not relevant for this page, ignore it
+          },
           error: (failure, draftData) {
             CustomSnackBar.show(
               context,

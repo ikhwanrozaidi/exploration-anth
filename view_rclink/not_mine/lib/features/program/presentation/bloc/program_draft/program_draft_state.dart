@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import '../../../../../core/database/app_database.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../domain/entities/program_draft_data_entity.dart';
 
@@ -23,6 +24,9 @@ class ProgramDraftState with _$ProgramDraftState {
   const factory ProgramDraftState.submitted({
     required ProgramDraftData draftData,
   }) = ProgramDraftSubmitted;
+  const factory ProgramDraftState.draftListLoaded({
+    required List<ProgramRecord> drafts,
+  }) = ProgramDraftListLoaded;
   const factory ProgramDraftState.error({
     required Failure failure,
     ProgramDraftData? draftData,

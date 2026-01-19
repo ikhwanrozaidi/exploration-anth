@@ -55,7 +55,7 @@ extension ProgramDraftEventPatterns on ProgramDraftEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InitializeDraft value)?  initializeDraft,TResult Function( LoadExistingDraft value)?  loadExistingDraft,TResult Function( UpdateLocation value)?  updateLocation,TResult Function( UpdateContractor value)?  updateContractor,TResult Function( UpdateProgramName value)?  updateProgramName,TResult Function( UpdateDescription value)?  updateDescription,TResult Function( UpdatePeriods value)?  updatePeriods,TResult Function( UpdateQuantityFieldData value)?  updateQuantityFieldData,TResult Function( UpdateProgramImages value)?  updateProgramImages,TResult Function( AutoSaveDraft value)?  autoSaveDraft,TResult Function( DeleteDraft value)?  deleteDraft,TResult Function( ResetForm value)?  resetForm,TResult Function( SubmitProgram value)?  submitProgram,TResult Function( InitializeDraftMultiRoad value)?  initializeDraftMultiRoad,TResult Function( UpdateRoadInputData value)?  updateRoadInputData,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InitializeDraft value)?  initializeDraft,TResult Function( LoadExistingDraft value)?  loadExistingDraft,TResult Function( UpdateLocation value)?  updateLocation,TResult Function( UpdateContractor value)?  updateContractor,TResult Function( UpdateProgramName value)?  updateProgramName,TResult Function( UpdateDescription value)?  updateDescription,TResult Function( UpdatePeriods value)?  updatePeriods,TResult Function( UpdateQuantityFieldData value)?  updateQuantityFieldData,TResult Function( UpdateProgramImages value)?  updateProgramImages,TResult Function( AutoSaveDraft value)?  autoSaveDraft,TResult Function( DeleteDraft value)?  deleteDraft,TResult Function( ResetForm value)?  resetForm,TResult Function( SubmitProgram value)?  submitProgram,TResult Function( LoadDraftList value)?  loadDraftList,TResult Function( InitializeDraftMultiRoad value)?  initializeDraftMultiRoad,TResult Function( UpdateRoadInputData value)?  updateRoadInputData,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
@@ -71,7 +71,8 @@ return updateProgramImages(_that);case AutoSaveDraft() when autoSaveDraft != nul
 return autoSaveDraft(_that);case DeleteDraft() when deleteDraft != null:
 return deleteDraft(_that);case ResetForm() when resetForm != null:
 return resetForm(_that);case SubmitProgram() when submitProgram != null:
-return submitProgram(_that);case InitializeDraftMultiRoad() when initializeDraftMultiRoad != null:
+return submitProgram(_that);case LoadDraftList() when loadDraftList != null:
+return loadDraftList(_that);case InitializeDraftMultiRoad() when initializeDraftMultiRoad != null:
 return initializeDraftMultiRoad(_that);case UpdateRoadInputData() when updateRoadInputData != null:
 return updateRoadInputData(_that);case _:
   return orElse();
@@ -91,7 +92,7 @@ return updateRoadInputData(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InitializeDraft value)  initializeDraft,required TResult Function( LoadExistingDraft value)  loadExistingDraft,required TResult Function( UpdateLocation value)  updateLocation,required TResult Function( UpdateContractor value)  updateContractor,required TResult Function( UpdateProgramName value)  updateProgramName,required TResult Function( UpdateDescription value)  updateDescription,required TResult Function( UpdatePeriods value)  updatePeriods,required TResult Function( UpdateQuantityFieldData value)  updateQuantityFieldData,required TResult Function( UpdateProgramImages value)  updateProgramImages,required TResult Function( AutoSaveDraft value)  autoSaveDraft,required TResult Function( DeleteDraft value)  deleteDraft,required TResult Function( ResetForm value)  resetForm,required TResult Function( SubmitProgram value)  submitProgram,required TResult Function( InitializeDraftMultiRoad value)  initializeDraftMultiRoad,required TResult Function( UpdateRoadInputData value)  updateRoadInputData,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InitializeDraft value)  initializeDraft,required TResult Function( LoadExistingDraft value)  loadExistingDraft,required TResult Function( UpdateLocation value)  updateLocation,required TResult Function( UpdateContractor value)  updateContractor,required TResult Function( UpdateProgramName value)  updateProgramName,required TResult Function( UpdateDescription value)  updateDescription,required TResult Function( UpdatePeriods value)  updatePeriods,required TResult Function( UpdateQuantityFieldData value)  updateQuantityFieldData,required TResult Function( UpdateProgramImages value)  updateProgramImages,required TResult Function( AutoSaveDraft value)  autoSaveDraft,required TResult Function( DeleteDraft value)  deleteDraft,required TResult Function( ResetForm value)  resetForm,required TResult Function( SubmitProgram value)  submitProgram,required TResult Function( LoadDraftList value)  loadDraftList,required TResult Function( InitializeDraftMultiRoad value)  initializeDraftMultiRoad,required TResult Function( UpdateRoadInputData value)  updateRoadInputData,}){
 final _that = this;
 switch (_that) {
 case InitializeDraft():
@@ -107,7 +108,8 @@ return updateProgramImages(_that);case AutoSaveDraft():
 return autoSaveDraft(_that);case DeleteDraft():
 return deleteDraft(_that);case ResetForm():
 return resetForm(_that);case SubmitProgram():
-return submitProgram(_that);case InitializeDraftMultiRoad():
+return submitProgram(_that);case LoadDraftList():
+return loadDraftList(_that);case InitializeDraftMultiRoad():
 return initializeDraftMultiRoad(_that);case UpdateRoadInputData():
 return updateRoadInputData(_that);case _:
   throw StateError('Unexpected subclass');
@@ -126,7 +128,7 @@ return updateRoadInputData(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InitializeDraft value)?  initializeDraft,TResult? Function( LoadExistingDraft value)?  loadExistingDraft,TResult? Function( UpdateLocation value)?  updateLocation,TResult? Function( UpdateContractor value)?  updateContractor,TResult? Function( UpdateProgramName value)?  updateProgramName,TResult? Function( UpdateDescription value)?  updateDescription,TResult? Function( UpdatePeriods value)?  updatePeriods,TResult? Function( UpdateQuantityFieldData value)?  updateQuantityFieldData,TResult? Function( UpdateProgramImages value)?  updateProgramImages,TResult? Function( AutoSaveDraft value)?  autoSaveDraft,TResult? Function( DeleteDraft value)?  deleteDraft,TResult? Function( ResetForm value)?  resetForm,TResult? Function( SubmitProgram value)?  submitProgram,TResult? Function( InitializeDraftMultiRoad value)?  initializeDraftMultiRoad,TResult? Function( UpdateRoadInputData value)?  updateRoadInputData,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InitializeDraft value)?  initializeDraft,TResult? Function( LoadExistingDraft value)?  loadExistingDraft,TResult? Function( UpdateLocation value)?  updateLocation,TResult? Function( UpdateContractor value)?  updateContractor,TResult? Function( UpdateProgramName value)?  updateProgramName,TResult? Function( UpdateDescription value)?  updateDescription,TResult? Function( UpdatePeriods value)?  updatePeriods,TResult? Function( UpdateQuantityFieldData value)?  updateQuantityFieldData,TResult? Function( UpdateProgramImages value)?  updateProgramImages,TResult? Function( AutoSaveDraft value)?  autoSaveDraft,TResult? Function( DeleteDraft value)?  deleteDraft,TResult? Function( ResetForm value)?  resetForm,TResult? Function( SubmitProgram value)?  submitProgram,TResult? Function( LoadDraftList value)?  loadDraftList,TResult? Function( InitializeDraftMultiRoad value)?  initializeDraftMultiRoad,TResult? Function( UpdateRoadInputData value)?  updateRoadInputData,}){
 final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
@@ -142,7 +144,8 @@ return updateProgramImages(_that);case AutoSaveDraft() when autoSaveDraft != nul
 return autoSaveDraft(_that);case DeleteDraft() when deleteDraft != null:
 return deleteDraft(_that);case ResetForm() when resetForm != null:
 return resetForm(_that);case SubmitProgram() when submitProgram != null:
-return submitProgram(_that);case InitializeDraftMultiRoad() when initializeDraftMultiRoad != null:
+return submitProgram(_that);case LoadDraftList() when loadDraftList != null:
+return loadDraftList(_that);case InitializeDraftMultiRoad() when initializeDraftMultiRoad != null:
 return initializeDraftMultiRoad(_that);case UpdateRoadInputData() when updateRoadInputData != null:
 return updateRoadInputData(_that);case _:
   return null;
@@ -161,7 +164,7 @@ return updateRoadInputData(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int workScopeID,  String workScopeUID,  String workScopeName,  String workScopeCode,  Road? road,  double? section)?  initializeDraft,TResult Function( String draftUID)?  loadExistingDraft,TResult Function( double latitude,  double longitude)?  updateLocation,TResult Function( ContractorRelation? contractor)?  updateContractor,TResult Function( String name)?  updateProgramName,TResult Function( String description)?  updateDescription,TResult Function( DateTime periodStart,  DateTime periodEnd)?  updatePeriods,TResult Function( Map<String, Map<String, dynamic>> quantityFieldData)?  updateQuantityFieldData,TResult Function( List<String> programImages)?  updateProgramImages,TResult Function()?  autoSaveDraft,TResult Function( String draftUID)?  deleteDraft,TResult Function()?  resetForm,TResult Function()?  submitProgram,TResult Function( String companyUID,  int workScopeID,  String workScopeUID,  String workScopeName,  String workScopeCode,  List<Road> roads,  ContractorRelation contractor)?  initializeDraftMultiRoad,TResult Function( Map<String, Map<String, dynamic>> roadInputData)?  updateRoadInputData,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  int workScopeID,  String workScopeUID,  String workScopeName,  String workScopeCode,  Road? road,  double? section)?  initializeDraft,TResult Function( String draftUID)?  loadExistingDraft,TResult Function( double latitude,  double longitude)?  updateLocation,TResult Function( ContractorRelation? contractor)?  updateContractor,TResult Function( String name)?  updateProgramName,TResult Function( String description)?  updateDescription,TResult Function( DateTime periodStart,  DateTime periodEnd)?  updatePeriods,TResult Function( Map<String, Map<String, dynamic>> quantityFieldData)?  updateQuantityFieldData,TResult Function( List<String> programImages)?  updateProgramImages,TResult Function()?  autoSaveDraft,TResult Function( String draftUID)?  deleteDraft,TResult Function()?  resetForm,TResult Function()?  submitProgram,TResult Function( String companyUID)?  loadDraftList,TResult Function( String companyUID,  int workScopeID,  String workScopeUID,  String workScopeName,  String workScopeCode,  List<Road> roads,  ContractorRelation contractor)?  initializeDraftMultiRoad,TResult Function( Map<String, Map<String, dynamic>> roadInputData)?  updateRoadInputData,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
 return initializeDraft(_that.companyUID,_that.workScopeID,_that.workScopeUID,_that.workScopeName,_that.workScopeCode,_that.road,_that.section);case LoadExistingDraft() when loadExistingDraft != null:
@@ -176,7 +179,8 @@ return updateProgramImages(_that.programImages);case AutoSaveDraft() when autoSa
 return autoSaveDraft();case DeleteDraft() when deleteDraft != null:
 return deleteDraft(_that.draftUID);case ResetForm() when resetForm != null:
 return resetForm();case SubmitProgram() when submitProgram != null:
-return submitProgram();case InitializeDraftMultiRoad() when initializeDraftMultiRoad != null:
+return submitProgram();case LoadDraftList() when loadDraftList != null:
+return loadDraftList(_that.companyUID);case InitializeDraftMultiRoad() when initializeDraftMultiRoad != null:
 return initializeDraftMultiRoad(_that.companyUID,_that.workScopeID,_that.workScopeUID,_that.workScopeName,_that.workScopeCode,_that.roads,_that.contractor);case UpdateRoadInputData() when updateRoadInputData != null:
 return updateRoadInputData(_that.roadInputData);case _:
   return orElse();
@@ -196,7 +200,7 @@ return updateRoadInputData(_that.roadInputData);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int workScopeID,  String workScopeUID,  String workScopeName,  String workScopeCode,  Road? road,  double? section)  initializeDraft,required TResult Function( String draftUID)  loadExistingDraft,required TResult Function( double latitude,  double longitude)  updateLocation,required TResult Function( ContractorRelation? contractor)  updateContractor,required TResult Function( String name)  updateProgramName,required TResult Function( String description)  updateDescription,required TResult Function( DateTime periodStart,  DateTime periodEnd)  updatePeriods,required TResult Function( Map<String, Map<String, dynamic>> quantityFieldData)  updateQuantityFieldData,required TResult Function( List<String> programImages)  updateProgramImages,required TResult Function()  autoSaveDraft,required TResult Function( String draftUID)  deleteDraft,required TResult Function()  resetForm,required TResult Function()  submitProgram,required TResult Function( String companyUID,  int workScopeID,  String workScopeUID,  String workScopeName,  String workScopeCode,  List<Road> roads,  ContractorRelation contractor)  initializeDraftMultiRoad,required TResult Function( Map<String, Map<String, dynamic>> roadInputData)  updateRoadInputData,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  int workScopeID,  String workScopeUID,  String workScopeName,  String workScopeCode,  Road? road,  double? section)  initializeDraft,required TResult Function( String draftUID)  loadExistingDraft,required TResult Function( double latitude,  double longitude)  updateLocation,required TResult Function( ContractorRelation? contractor)  updateContractor,required TResult Function( String name)  updateProgramName,required TResult Function( String description)  updateDescription,required TResult Function( DateTime periodStart,  DateTime periodEnd)  updatePeriods,required TResult Function( Map<String, Map<String, dynamic>> quantityFieldData)  updateQuantityFieldData,required TResult Function( List<String> programImages)  updateProgramImages,required TResult Function()  autoSaveDraft,required TResult Function( String draftUID)  deleteDraft,required TResult Function()  resetForm,required TResult Function()  submitProgram,required TResult Function( String companyUID)  loadDraftList,required TResult Function( String companyUID,  int workScopeID,  String workScopeUID,  String workScopeName,  String workScopeCode,  List<Road> roads,  ContractorRelation contractor)  initializeDraftMultiRoad,required TResult Function( Map<String, Map<String, dynamic>> roadInputData)  updateRoadInputData,}) {final _that = this;
 switch (_that) {
 case InitializeDraft():
 return initializeDraft(_that.companyUID,_that.workScopeID,_that.workScopeUID,_that.workScopeName,_that.workScopeCode,_that.road,_that.section);case LoadExistingDraft():
@@ -211,7 +215,8 @@ return updateProgramImages(_that.programImages);case AutoSaveDraft():
 return autoSaveDraft();case DeleteDraft():
 return deleteDraft(_that.draftUID);case ResetForm():
 return resetForm();case SubmitProgram():
-return submitProgram();case InitializeDraftMultiRoad():
+return submitProgram();case LoadDraftList():
+return loadDraftList(_that.companyUID);case InitializeDraftMultiRoad():
 return initializeDraftMultiRoad(_that.companyUID,_that.workScopeID,_that.workScopeUID,_that.workScopeName,_that.workScopeCode,_that.roads,_that.contractor);case UpdateRoadInputData():
 return updateRoadInputData(_that.roadInputData);case _:
   throw StateError('Unexpected subclass');
@@ -230,7 +235,7 @@ return updateRoadInputData(_that.roadInputData);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int workScopeID,  String workScopeUID,  String workScopeName,  String workScopeCode,  Road? road,  double? section)?  initializeDraft,TResult? Function( String draftUID)?  loadExistingDraft,TResult? Function( double latitude,  double longitude)?  updateLocation,TResult? Function( ContractorRelation? contractor)?  updateContractor,TResult? Function( String name)?  updateProgramName,TResult? Function( String description)?  updateDescription,TResult? Function( DateTime periodStart,  DateTime periodEnd)?  updatePeriods,TResult? Function( Map<String, Map<String, dynamic>> quantityFieldData)?  updateQuantityFieldData,TResult? Function( List<String> programImages)?  updateProgramImages,TResult? Function()?  autoSaveDraft,TResult? Function( String draftUID)?  deleteDraft,TResult? Function()?  resetForm,TResult? Function()?  submitProgram,TResult? Function( String companyUID,  int workScopeID,  String workScopeUID,  String workScopeName,  String workScopeCode,  List<Road> roads,  ContractorRelation contractor)?  initializeDraftMultiRoad,TResult? Function( Map<String, Map<String, dynamic>> roadInputData)?  updateRoadInputData,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  int workScopeID,  String workScopeUID,  String workScopeName,  String workScopeCode,  Road? road,  double? section)?  initializeDraft,TResult? Function( String draftUID)?  loadExistingDraft,TResult? Function( double latitude,  double longitude)?  updateLocation,TResult? Function( ContractorRelation? contractor)?  updateContractor,TResult? Function( String name)?  updateProgramName,TResult? Function( String description)?  updateDescription,TResult? Function( DateTime periodStart,  DateTime periodEnd)?  updatePeriods,TResult? Function( Map<String, Map<String, dynamic>> quantityFieldData)?  updateQuantityFieldData,TResult? Function( List<String> programImages)?  updateProgramImages,TResult? Function()?  autoSaveDraft,TResult? Function( String draftUID)?  deleteDraft,TResult? Function()?  resetForm,TResult? Function()?  submitProgram,TResult? Function( String companyUID)?  loadDraftList,TResult? Function( String companyUID,  int workScopeID,  String workScopeUID,  String workScopeName,  String workScopeCode,  List<Road> roads,  ContractorRelation contractor)?  initializeDraftMultiRoad,TResult? Function( Map<String, Map<String, dynamic>> roadInputData)?  updateRoadInputData,}) {final _that = this;
 switch (_that) {
 case InitializeDraft() when initializeDraft != null:
 return initializeDraft(_that.companyUID,_that.workScopeID,_that.workScopeUID,_that.workScopeName,_that.workScopeCode,_that.road,_that.section);case LoadExistingDraft() when loadExistingDraft != null:
@@ -245,7 +250,8 @@ return updateProgramImages(_that.programImages);case AutoSaveDraft() when autoSa
 return autoSaveDraft();case DeleteDraft() when deleteDraft != null:
 return deleteDraft(_that.draftUID);case ResetForm() when resetForm != null:
 return resetForm();case SubmitProgram() when submitProgram != null:
-return submitProgram();case InitializeDraftMultiRoad() when initializeDraftMultiRoad != null:
+return submitProgram();case LoadDraftList() when loadDraftList != null:
+return loadDraftList(_that.companyUID);case InitializeDraftMultiRoad() when initializeDraftMultiRoad != null:
 return initializeDraftMultiRoad(_that.companyUID,_that.workScopeID,_that.workScopeUID,_that.workScopeName,_that.workScopeCode,_that.roads,_that.contractor);case UpdateRoadInputData() when updateRoadInputData != null:
 return updateRoadInputData(_that.roadInputData);case _:
   return null;
@@ -1038,6 +1044,72 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class LoadDraftList implements ProgramDraftEvent {
+  const LoadDraftList({required this.companyUID});
+  
+
+ final  String companyUID;
+
+/// Create a copy of ProgramDraftEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LoadDraftListCopyWith<LoadDraftList> get copyWith => _$LoadDraftListCopyWithImpl<LoadDraftList>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadDraftList&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,companyUID);
+
+@override
+String toString() {
+  return 'ProgramDraftEvent.loadDraftList(companyUID: $companyUID)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LoadDraftListCopyWith<$Res> implements $ProgramDraftEventCopyWith<$Res> {
+  factory $LoadDraftListCopyWith(LoadDraftList value, $Res Function(LoadDraftList) _then) = _$LoadDraftListCopyWithImpl;
+@useResult
+$Res call({
+ String companyUID
+});
+
+
+
+
+}
+/// @nodoc
+class _$LoadDraftListCopyWithImpl<$Res>
+    implements $LoadDraftListCopyWith<$Res> {
+  _$LoadDraftListCopyWithImpl(this._self, this._then);
+
+  final LoadDraftList _self;
+  final $Res Function(LoadDraftList) _then;
+
+/// Create a copy of ProgramDraftEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? companyUID = null,}) {
+  return _then(LoadDraftList(
+companyUID: null == companyUID ? _self.companyUID : companyUID // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

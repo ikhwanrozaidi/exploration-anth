@@ -7,14 +7,14 @@ import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/divider_config.dart';
 import '../../../../shared/widgets/flexible_bottomsheet.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
-import '../bloc/program_view/program_view_bloc.dart';
-import '../bloc/program_view/program_view_event.dart';
-import '../bloc/program_view/program_view_state.dart';
+import '../bloc/program_detail/program_detail_bloc.dart';
+import '../bloc/program_detail/program_detail_event.dart';
+import '../bloc/program_detail/program_detail_state.dart';
 import '../../domain/entities/program_entity.dart';
 import '../widgets/details_of_work_widget.dart';
 import '../widgets/program_details_overview_widget.dart';
 
-class ProgramDetailsPage extends StatefulWidget {
+class ProgramDetailsPage extends StatelessWidget {
   final String programId;
   final String? from;
 
@@ -22,37 +22,18 @@ class ProgramDetailsPage extends StatefulWidget {
     : super(key: key);
 
   @override
-  State<ProgramDetailsPage> createState() => _ProgramDetailsPageState();
-}
-
-class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
-  @override
-  void initState() {
-    super.initState();
-
-    print('Program ID: ${widget.programId}');
-    print('Came from: ${widget.from}');
-
-    // Load program detail
-    final companyUID = context.read<CompanyBloc>().state.maybeMap(
-      loaded: (state) => state.selectedCompany?.uid,
-      orElse: () => null,
-    );
-
-    if (companyUID != null) {
-      getIt<ProgramViewBloc>().add(
-        ProgramViewEvent.loadProgramDetail(
-          companyUID: companyUID,
-          programUID: widget.programId,
-        ),
-      );
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: getIt<ProgramViewBloc>(),
+    return BlocProvider(
+      create: (context) => getIt<ProgramDetailBloc>()
+        ..add(
+          ProgramDetailEvent.loadProgramDetail(
+            companyUID: context.read<CompanyBloc>().state.maybeMap(
+              loaded: (state) => state.selectedCompany?.uid ?? '',
+              orElse: () => '',
+            ),
+            programUID: programId,
+          ),
+        ),
       child: GestureDetector(
         onTap: () => FocusScope.of(context).unfocus(),
         child: Scaffold(
@@ -161,21 +142,17 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                           ),
                         ],
                       ),
-                      child: BlocBuilder<ProgramViewBloc, ProgramViewState>(
+                      child: BlocBuilder<ProgramDetailBloc, ProgramDetailState>(
                         builder: (context, state) {
                           return state.when(
                             initial: () =>
                                 const Center(child: Text('Loading...')),
-                            loading: () => const SizedBox.shrink(),
-                            loaded: (_, __, ___, ____) =>
-                                const SizedBox.shrink(),
-                            failure: (_) => const SizedBox.shrink(),
-                            detailLoading: () => const Center(
+                            loading: () => const Center(
                               child: CircularProgressIndicator(),
                             ),
-                            detailLoaded: (program) =>
+                            loaded: (program) =>
                                 _buildProgramDetail(context, program),
-                            detailFailure: (message) => Center(
+                            failure: (message) => Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
@@ -199,10 +176,10 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
                                           );
 
                                       if (companyUID != null) {
-                                        getIt<ProgramViewBloc>().add(
-                                          ProgramViewEvent.loadProgramDetail(
+                                        context.read<ProgramDetailBloc>().add(
+                                          ProgramDetailEvent.loadProgramDetail(
                                             companyUID: companyUID,
-                                            programUID: widget.programId,
+                                            programUID: programId,
                                             forceRefresh: true,
                                           ),
                                         );
@@ -396,7 +373,7 @@ class _ProgramDetailsPageState extends State<ProgramDetailsPage> {
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Column(
               children: [
-                // Update Program - Keep your exact UI
+                // Update Program
                 GestureDetector(
                   onTap: () {
                     showFlexibleBottomsheet(

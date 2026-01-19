@@ -55,7 +55,7 @@ extension ProgramDraftStatePatterns on ProgramDraftState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ProgramDraftInitial value)?  initial,TResult Function( ProgramDraftLoading value)?  loading,TResult Function( ProgramDraftEditing value)?  editing,TResult Function( ProgramDraftAutoSaving value)?  autoSaving,TResult Function( ProgramDraftAutoSaved value)?  autoSaved,TResult Function( ProgramDraftSubmitting value)?  submitting,TResult Function( ProgramDraftSubmitted value)?  submitted,TResult Function( ProgramDraftError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ProgramDraftInitial value)?  initial,TResult Function( ProgramDraftLoading value)?  loading,TResult Function( ProgramDraftEditing value)?  editing,TResult Function( ProgramDraftAutoSaving value)?  autoSaving,TResult Function( ProgramDraftAutoSaved value)?  autoSaved,TResult Function( ProgramDraftSubmitting value)?  submitting,TResult Function( ProgramDraftSubmitted value)?  submitted,TResult Function( ProgramDraftListLoaded value)?  draftListLoaded,TResult Function( ProgramDraftError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case ProgramDraftInitial() when initial != null:
@@ -65,7 +65,8 @@ return editing(_that);case ProgramDraftAutoSaving() when autoSaving != null:
 return autoSaving(_that);case ProgramDraftAutoSaved() when autoSaved != null:
 return autoSaved(_that);case ProgramDraftSubmitting() when submitting != null:
 return submitting(_that);case ProgramDraftSubmitted() when submitted != null:
-return submitted(_that);case ProgramDraftError() when error != null:
+return submitted(_that);case ProgramDraftListLoaded() when draftListLoaded != null:
+return draftListLoaded(_that);case ProgramDraftError() when error != null:
 return error(_that);case _:
   return orElse();
 
@@ -84,7 +85,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ProgramDraftInitial value)  initial,required TResult Function( ProgramDraftLoading value)  loading,required TResult Function( ProgramDraftEditing value)  editing,required TResult Function( ProgramDraftAutoSaving value)  autoSaving,required TResult Function( ProgramDraftAutoSaved value)  autoSaved,required TResult Function( ProgramDraftSubmitting value)  submitting,required TResult Function( ProgramDraftSubmitted value)  submitted,required TResult Function( ProgramDraftError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ProgramDraftInitial value)  initial,required TResult Function( ProgramDraftLoading value)  loading,required TResult Function( ProgramDraftEditing value)  editing,required TResult Function( ProgramDraftAutoSaving value)  autoSaving,required TResult Function( ProgramDraftAutoSaved value)  autoSaved,required TResult Function( ProgramDraftSubmitting value)  submitting,required TResult Function( ProgramDraftSubmitted value)  submitted,required TResult Function( ProgramDraftListLoaded value)  draftListLoaded,required TResult Function( ProgramDraftError value)  error,}){
 final _that = this;
 switch (_that) {
 case ProgramDraftInitial():
@@ -94,7 +95,8 @@ return editing(_that);case ProgramDraftAutoSaving():
 return autoSaving(_that);case ProgramDraftAutoSaved():
 return autoSaved(_that);case ProgramDraftSubmitting():
 return submitting(_that);case ProgramDraftSubmitted():
-return submitted(_that);case ProgramDraftError():
+return submitted(_that);case ProgramDraftListLoaded():
+return draftListLoaded(_that);case ProgramDraftError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -112,7 +114,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ProgramDraftInitial value)?  initial,TResult? Function( ProgramDraftLoading value)?  loading,TResult? Function( ProgramDraftEditing value)?  editing,TResult? Function( ProgramDraftAutoSaving value)?  autoSaving,TResult? Function( ProgramDraftAutoSaved value)?  autoSaved,TResult? Function( ProgramDraftSubmitting value)?  submitting,TResult? Function( ProgramDraftSubmitted value)?  submitted,TResult? Function( ProgramDraftError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ProgramDraftInitial value)?  initial,TResult? Function( ProgramDraftLoading value)?  loading,TResult? Function( ProgramDraftEditing value)?  editing,TResult? Function( ProgramDraftAutoSaving value)?  autoSaving,TResult? Function( ProgramDraftAutoSaved value)?  autoSaved,TResult? Function( ProgramDraftSubmitting value)?  submitting,TResult? Function( ProgramDraftSubmitted value)?  submitted,TResult? Function( ProgramDraftListLoaded value)?  draftListLoaded,TResult? Function( ProgramDraftError value)?  error,}){
 final _that = this;
 switch (_that) {
 case ProgramDraftInitial() when initial != null:
@@ -122,7 +124,8 @@ return editing(_that);case ProgramDraftAutoSaving() when autoSaving != null:
 return autoSaving(_that);case ProgramDraftAutoSaved() when autoSaved != null:
 return autoSaved(_that);case ProgramDraftSubmitting() when submitting != null:
 return submitting(_that);case ProgramDraftSubmitted() when submitted != null:
-return submitted(_that);case ProgramDraftError() when error != null:
+return submitted(_that);case ProgramDraftListLoaded() when draftListLoaded != null:
+return draftListLoaded(_that);case ProgramDraftError() when error != null:
 return error(_that);case _:
   return null;
 
@@ -140,7 +143,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( ProgramDraftData draftData)?  editing,TResult Function( ProgramDraftData draftData)?  autoSaving,TResult Function( ProgramDraftData draftData)?  autoSaved,TResult Function( ProgramDraftData draftData)?  submitting,TResult Function( ProgramDraftData draftData)?  submitted,TResult Function( Failure failure,  ProgramDraftData? draftData)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( ProgramDraftData draftData)?  editing,TResult Function( ProgramDraftData draftData)?  autoSaving,TResult Function( ProgramDraftData draftData)?  autoSaved,TResult Function( ProgramDraftData draftData)?  submitting,TResult Function( ProgramDraftData draftData)?  submitted,TResult Function( List<ProgramRecord> drafts)?  draftListLoaded,TResult Function( Failure failure,  ProgramDraftData? draftData)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ProgramDraftInitial() when initial != null:
 return initial();case ProgramDraftLoading() when loading != null:
@@ -149,7 +152,8 @@ return editing(_that.draftData);case ProgramDraftAutoSaving() when autoSaving !=
 return autoSaving(_that.draftData);case ProgramDraftAutoSaved() when autoSaved != null:
 return autoSaved(_that.draftData);case ProgramDraftSubmitting() when submitting != null:
 return submitting(_that.draftData);case ProgramDraftSubmitted() when submitted != null:
-return submitted(_that.draftData);case ProgramDraftError() when error != null:
+return submitted(_that.draftData);case ProgramDraftListLoaded() when draftListLoaded != null:
+return draftListLoaded(_that.drafts);case ProgramDraftError() when error != null:
 return error(_that.failure,_that.draftData);case _:
   return orElse();
 
@@ -168,7 +172,7 @@ return error(_that.failure,_that.draftData);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( ProgramDraftData draftData)  editing,required TResult Function( ProgramDraftData draftData)  autoSaving,required TResult Function( ProgramDraftData draftData)  autoSaved,required TResult Function( ProgramDraftData draftData)  submitting,required TResult Function( ProgramDraftData draftData)  submitted,required TResult Function( Failure failure,  ProgramDraftData? draftData)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( ProgramDraftData draftData)  editing,required TResult Function( ProgramDraftData draftData)  autoSaving,required TResult Function( ProgramDraftData draftData)  autoSaved,required TResult Function( ProgramDraftData draftData)  submitting,required TResult Function( ProgramDraftData draftData)  submitted,required TResult Function( List<ProgramRecord> drafts)  draftListLoaded,required TResult Function( Failure failure,  ProgramDraftData? draftData)  error,}) {final _that = this;
 switch (_that) {
 case ProgramDraftInitial():
 return initial();case ProgramDraftLoading():
@@ -177,7 +181,8 @@ return editing(_that.draftData);case ProgramDraftAutoSaving():
 return autoSaving(_that.draftData);case ProgramDraftAutoSaved():
 return autoSaved(_that.draftData);case ProgramDraftSubmitting():
 return submitting(_that.draftData);case ProgramDraftSubmitted():
-return submitted(_that.draftData);case ProgramDraftError():
+return submitted(_that.draftData);case ProgramDraftListLoaded():
+return draftListLoaded(_that.drafts);case ProgramDraftError():
 return error(_that.failure,_that.draftData);case _:
   throw StateError('Unexpected subclass');
 
@@ -195,7 +200,7 @@ return error(_that.failure,_that.draftData);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( ProgramDraftData draftData)?  editing,TResult? Function( ProgramDraftData draftData)?  autoSaving,TResult? Function( ProgramDraftData draftData)?  autoSaved,TResult? Function( ProgramDraftData draftData)?  submitting,TResult? Function( ProgramDraftData draftData)?  submitted,TResult? Function( Failure failure,  ProgramDraftData? draftData)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( ProgramDraftData draftData)?  editing,TResult? Function( ProgramDraftData draftData)?  autoSaving,TResult? Function( ProgramDraftData draftData)?  autoSaved,TResult? Function( ProgramDraftData draftData)?  submitting,TResult? Function( ProgramDraftData draftData)?  submitted,TResult? Function( List<ProgramRecord> drafts)?  draftListLoaded,TResult? Function( Failure failure,  ProgramDraftData? draftData)?  error,}) {final _that = this;
 switch (_that) {
 case ProgramDraftInitial() when initial != null:
 return initial();case ProgramDraftLoading() when loading != null:
@@ -204,7 +209,8 @@ return editing(_that.draftData);case ProgramDraftAutoSaving() when autoSaving !=
 return autoSaving(_that.draftData);case ProgramDraftAutoSaved() when autoSaved != null:
 return autoSaved(_that.draftData);case ProgramDraftSubmitting() when submitting != null:
 return submitting(_that.draftData);case ProgramDraftSubmitted() when submitted != null:
-return submitted(_that.draftData);case ProgramDraftError() when error != null:
+return submitted(_that.draftData);case ProgramDraftListLoaded() when draftListLoaded != null:
+return draftListLoaded(_that.drafts);case ProgramDraftError() when error != null:
 return error(_that.failure,_that.draftData);case _:
   return null;
 
@@ -601,6 +607,78 @@ class _$ProgramDraftSubmittedCopyWithImpl<$Res>
   return _then(ProgramDraftSubmitted(
 draftData: null == draftData ? _self.draftData : draftData // ignore: cast_nullable_to_non_nullable
 as ProgramDraftData,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class ProgramDraftListLoaded implements ProgramDraftState {
+  const ProgramDraftListLoaded({required final  List<ProgramRecord> drafts}): _drafts = drafts;
+  
+
+ final  List<ProgramRecord> _drafts;
+ List<ProgramRecord> get drafts {
+  if (_drafts is EqualUnmodifiableListView) return _drafts;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_drafts);
+}
+
+
+/// Create a copy of ProgramDraftState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ProgramDraftListLoadedCopyWith<ProgramDraftListLoaded> get copyWith => _$ProgramDraftListLoadedCopyWithImpl<ProgramDraftListLoaded>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProgramDraftListLoaded&&const DeepCollectionEquality().equals(other._drafts, _drafts));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_drafts));
+
+@override
+String toString() {
+  return 'ProgramDraftState.draftListLoaded(drafts: $drafts)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ProgramDraftListLoadedCopyWith<$Res> implements $ProgramDraftStateCopyWith<$Res> {
+  factory $ProgramDraftListLoadedCopyWith(ProgramDraftListLoaded value, $Res Function(ProgramDraftListLoaded) _then) = _$ProgramDraftListLoadedCopyWithImpl;
+@useResult
+$Res call({
+ List<ProgramRecord> drafts
+});
+
+
+
+
+}
+/// @nodoc
+class _$ProgramDraftListLoadedCopyWithImpl<$Res>
+    implements $ProgramDraftListLoadedCopyWith<$Res> {
+  _$ProgramDraftListLoadedCopyWithImpl(this._self, this._then);
+
+  final ProgramDraftListLoaded _self;
+  final $Res Function(ProgramDraftListLoaded) _then;
+
+/// Create a copy of ProgramDraftState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? drafts = null,}) {
+  return _then(ProgramDraftListLoaded(
+drafts: null == drafts ? _self._drafts : drafts // ignore: cast_nullable_to_non_nullable
+as List<ProgramRecord>,
   ));
 }
 
