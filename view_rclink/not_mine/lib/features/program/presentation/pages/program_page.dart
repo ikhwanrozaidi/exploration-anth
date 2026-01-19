@@ -357,460 +357,396 @@ class _ProgramPageState extends State<ProgramPage> {
                                     primaryColor: primaryColor,
                                   ),
 
-                                  Padding(
-                                    padding: ResponsiveHelper.padding(
-                                      context,
-                                      all: 15,
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            // Contractor
-                                            Expanded(
-                                              child: TextButton(
-                                                style: TextButton.styleFrom(
-                                                  padding: EdgeInsets.symmetric(
-                                                    horizontal: 15,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          50,
+                                  Expanded(
+                                    child: Padding(
+                                      padding: ResponsiveHelper.padding(
+                                        context,
+                                        all: 15,
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              // Contractor
+                                              Expanded(
+                                                child: TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal: 15,
                                                         ),
-                                                    side: BorderSide(
-                                                      color:
-                                                          Colors.grey.shade300,
-                                                      width: 1,
-                                                    ),
-                                                  ),
-                                                  backgroundColor: Colors.white,
-                                                ),
-                                                onPressed: () {
-                                                  CustomSnackBar.show(
-                                                    context,
-                                                    'This feature is coming soon...',
-                                                    type:
-                                                        SnackBarType.comingsoon,
-                                                  );
-                                                },
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.person,
-                                                          size: 10,
-                                                          color: Colors.black,
-                                                        ),
-                                                        SizedBox(width: 5),
-                                                        Text(
-                                                          'Contractor',
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: w * 0.022,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            50,
                                                           ),
-                                                        ),
-                                                      ],
+                                                      side: BorderSide(
+                                                        color: Colors
+                                                            .grey
+                                                            .shade300,
+                                                        width: 1,
+                                                      ),
                                                     ),
-                                                    Icon(
-                                                      Icons.expand_more,
-                                                      size: 15,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-
-                                            SizedBox(width: 10),
-
-                                            // Scope Work
-                                            Expanded(
-                                              child: TextButton(
-                                                style: TextButton.styleFrom(
-                                                  padding: EdgeInsets.symmetric(
-                                                    horizontal: 15,
+                                                    backgroundColor:
+                                                        Colors.white,
                                                   ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          50,
-                                                        ),
-                                                    side: BorderSide(
-                                                      color:
-                                                          Colors.grey.shade300,
-                                                      width: 1,
-                                                    ),
-                                                  ),
-                                                  backgroundColor: Colors.white,
-                                                ),
-                                                onPressed: () {
-                                                  final workScopeBloc = context
-                                                      .read<WorkScopeBloc>();
-                                                  final workScopeState =
-                                                      workScopeBloc.state;
-
-                                                  showWorkScopeSelection(
-                                                    context: context,
-                                                    state: workScopeState,
-                                                    onScopeSelected: (selectedData) {
-                                                      print(
-                                                        'Selected UID: ${selectedData['uid']}',
-                                                      );
-                                                      print(
-                                                        'Code: ${selectedData['code']}',
-                                                      );
-                                                      print(
-                                                        'Name: ${selectedData['name']}',
-                                                      );
-                                                      print(
-                                                        'Description: ${selectedData['description']}',
-                                                      );
-                                                      print(
-                                                        'Allow Multiple Quantities: ${selectedData['allowMultipleQuantities']}',
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Expanded(
-                                                      child: Row(
+                                                  onPressed: () {
+                                                    CustomSnackBar.show(
+                                                      context,
+                                                      'This feature is coming soon...',
+                                                      type: SnackBarType
+                                                          .comingsoon,
+                                                    );
+                                                  },
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(
                                                         children: [
                                                           Icon(
-                                                            Icons
-                                                                .restaurant_menu,
+                                                            Icons.person,
                                                             size: 10,
                                                             color: Colors.black,
                                                           ),
                                                           SizedBox(width: 5),
-                                                          Expanded(
-                                                            child: Text(
-                                                              'Scope Work',
-                                                              style: TextStyle(
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize:
-                                                                    w * 0.022,
-                                                              ),
+                                                          Text(
+                                                            'Contractor',
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize:
+                                                                  w * 0.022,
                                                             ),
                                                           ),
                                                         ],
                                                       ),
-                                                    ),
-                                                    Icon(
-                                                      Icons.expand_more,
-                                                      size: 15,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ],
+                                                      Icon(
+                                                        Icons.expand_more,
+                                                        size: 15,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                            ),
 
-                                            SizedBox(width: 10),
+                                              SizedBox(width: 10),
 
-                                            // Status
-                                            Expanded(
-                                              child: TextButton(
-                                                style: TextButton.styleFrom(
-                                                  padding: EdgeInsets.symmetric(
-                                                    horizontal: 15,
-                                                  ),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                          50,
+                                              // Scope Work
+                                              Expanded(
+                                                child: TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal: 15,
                                                         ),
-                                                    side: BorderSide(
-                                                      color:
-                                                          Colors.grey.shade300,
-                                                      width: 1,
-                                                    ),
-                                                  ),
-                                                  backgroundColor: Colors.white,
-                                                ),
-                                                onPressed: () {
-                                                  CustomSnackBar.show(
-                                                    context,
-                                                    'This feature is coming soon...',
-                                                    type:
-                                                        SnackBarType.comingsoon,
-                                                  );
-                                                },
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.grid_on,
-                                                          size: 10,
-                                                          color: Colors.black,
-                                                        ),
-                                                        SizedBox(width: 5),
-                                                        Text(
-                                                          'Status',
-                                                          style: TextStyle(
-                                                            color: Colors.black,
-                                                            fontSize: w * 0.022,
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            50,
                                                           ),
-                                                        ),
-                                                      ],
+                                                      side: BorderSide(
+                                                        color: Colors
+                                                            .grey
+                                                            .shade300,
+                                                        width: 1,
+                                                      ),
                                                     ),
-                                                    Icon(
-                                                      Icons.expand_more,
-                                                      size: 15,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-
-                                        SizedBox(height: 20),
-
-                                        // Program List
-                                        Expanded(
-                                          child: BlocBuilder<ProgramViewBloc, ProgramViewState>(
-                                            builder: (context, state) {
-                                              return state.when(
-                                                initial: () => const Center(
-                                                  child: Text(
-                                                    'Pull to refresh',
+                                                    backgroundColor:
+                                                        Colors.white,
                                                   ),
-                                                ),
-                                                loading: () => const Center(
-                                                  child: Padding(
-                                                    padding: EdgeInsets.all(
-                                                      50.0,
-                                                    ),
-                                                    child:
-                                                        CircularProgressIndicator(),
-                                                  ),
-                                                ),
-                                                loaded:
-                                                    (
-                                                      programs,
-                                                      currentPage,
-                                                      hasMore,
-                                                      isLoadingMore,
-                                                    ) {
-                                                      if (programs.isEmpty) {
-                                                        return const Center(
-                                                          child: Padding(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                  50.0,
-                                                                ),
-                                                            child: Text(
-                                                              'No programs found',
-                                                            ),
-                                                          ),
+                                                  onPressed: () {
+                                                    final workScopeBloc =
+                                                        context
+                                                            .read<
+                                                              WorkScopeBloc
+                                                            >();
+                                                    final workScopeState =
+                                                        workScopeBloc.state;
+
+                                                    showWorkScopeSelection(
+                                                      context: context,
+                                                      state: workScopeState,
+                                                      onScopeSelected: (selectedData) {
+                                                        print(
+                                                          'Selected UID: ${selectedData['uid']}',
                                                         );
-                                                      }
-
-                                                      return ListView.separated(
-                                                        padding:
-                                                            EdgeInsets.zero,
-                                                        itemCount:
-                                                            programs.length,
-                                                        separatorBuilder:
-                                                            (
-                                                              context,
-                                                              index,
-                                                            ) => SizedBox(
-                                                              height:
-                                                                  ResponsiveHelper.spacing(
-                                                                    context,
-                                                                    15,
-                                                                  ),
+                                                        print(
+                                                          'Code: ${selectedData['code']}',
+                                                        );
+                                                        print(
+                                                          'Name: ${selectedData['name']}',
+                                                        );
+                                                        print(
+                                                          'Description: ${selectedData['description']}',
+                                                        );
+                                                        print(
+                                                          'Allow Multiple Quantities: ${selectedData['allowMultipleQuantities']}',
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Expanded(
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .restaurant_menu,
+                                                              size: 10,
+                                                              color:
+                                                                  Colors.black,
                                                             ),
-                                                        itemBuilder: (context, index) {
-                                                          final program =
-                                                              programs[index];
-
-                                                          return GestureDetector(
-                                                            onTap: () {
-                                                              context.pushNamed(
-                                                                AppRouteName
-                                                                    .programDetail,
-                                                                pathParameters: {
-                                                                  'programId':
-                                                                      program
-                                                                          .uid ??
-                                                                      '',
-                                                                },
-                                                                queryParameters: {
-                                                                  'from':
-                                                                      'programs',
-                                                                },
-                                                              );
-                                                            },
-                                                            child: Container(
-                                                              padding:
-                                                                  ResponsiveHelper.padding(
-                                                                    context,
-                                                                    vertical:
-                                                                        20,
-                                                                    horizontal:
-                                                                        20,
-                                                                  ),
-                                                              decoration: BoxDecoration(
-                                                                gradient: LinearGradient(
-                                                                  colors: [
-                                                                    Colors
-                                                                        .white,
-                                                                    Color.fromARGB(
-                                                                      255,
-                                                                      238,
-                                                                      242,
-                                                                      254,
-                                                                    ),
-                                                                  ],
-                                                                  begin: Alignment
-                                                                      .centerLeft,
-                                                                  end: Alignment
-                                                                      .centerRight,
-                                                                ),
-                                                                border: Border.all(
+                                                            SizedBox(width: 5),
+                                                            Expanded(
+                                                              child: Text(
+                                                                'Scope Work',
+                                                                style: TextStyle(
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
                                                                   color: Colors
-                                                                      .grey
-                                                                      .shade300,
+                                                                      .black,
+                                                                  fontSize:
+                                                                      w * 0.022,
                                                                 ),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(
-                                                                      10,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      Icon(
+                                                        Icons.expand_more,
+                                                        size: 15,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+
+                                              SizedBox(width: 10),
+
+                                              // Status
+                                              Expanded(
+                                                child: TextButton(
+                                                  style: TextButton.styleFrom(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                          horizontal: 15,
+                                                        ),
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            50,
+                                                          ),
+                                                      side: BorderSide(
+                                                        color: Colors
+                                                            .grey
+                                                            .shade300,
+                                                        width: 1,
+                                                      ),
+                                                    ),
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                  ),
+                                                  onPressed: () {
+                                                    CustomSnackBar.show(
+                                                      context,
+                                                      'This feature is coming soon...',
+                                                      type: SnackBarType
+                                                          .comingsoon,
+                                                    );
+                                                  },
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.grid_on,
+                                                            size: 10,
+                                                            color: Colors.black,
+                                                          ),
+                                                          SizedBox(width: 5),
+                                                          Text(
+                                                            'Status',
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize:
+                                                                  w * 0.022,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Icon(
+                                                        Icons.expand_more,
+                                                        size: 15,
+                                                        color: Colors.black,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                          SizedBox(height: 20),
+
+                                          // Program List
+                                          Expanded(
+                                            child: BlocBuilder<ProgramViewBloc, ProgramViewState>(
+                                              builder: (context, state) {
+                                                return state.when(
+                                                  initial: () => const Center(
+                                                    child: Text(
+                                                      'Pull to refresh',
+                                                    ),
+                                                  ),
+                                                  loading: () => const Center(
+                                                    child: Padding(
+                                                      padding: EdgeInsets.all(
+                                                        50.0,
+                                                      ),
+                                                      child:
+                                                          CircularProgressIndicator(),
+                                                    ),
+                                                  ),
+                                                  loaded:
+                                                      (
+                                                        programs,
+                                                        currentPage,
+                                                        hasMore,
+                                                        isLoadingMore,
+                                                      ) {
+                                                        if (programs.isEmpty) {
+                                                          return const Center(
+                                                            child: Padding(
+                                                              padding:
+                                                                  EdgeInsets.all(
+                                                                    50.0,
+                                                                  ),
+                                                              child: Text(
+                                                                'No programs found',
+                                                              ),
+                                                            ),
+                                                          );
+                                                        }
+
+                                                        return ListView.separated(
+                                                          padding:
+                                                              EdgeInsets.zero,
+                                                          itemCount:
+                                                              programs.length,
+                                                          separatorBuilder:
+                                                              (
+                                                                context,
+                                                                index,
+                                                              ) => SizedBox(
+                                                                height:
+                                                                    ResponsiveHelper.spacing(
+                                                                      context,
+                                                                      15,
                                                                     ),
                                                               ),
-                                                              child: Column(
-                                                                children: [
-                                                                  Row(
-                                                                    children: [
-                                                                      Container(
-                                                                        padding: ResponsiveHelper.padding(
-                                                                          context,
-                                                                          all:
-                                                                              12,
-                                                                        ),
-                                                                        decoration: BoxDecoration(
-                                                                          color:
-                                                                              primaryColor,
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(
-                                                                                8,
-                                                                              ),
-                                                                        ),
-                                                                        child: Center(
-                                                                          child: Text(
-                                                                            program.workScope?.code ??
-                                                                                'N/A',
-                                                                            style: TextStyle(
-                                                                              color: Colors.white,
-                                                                              fontWeight: FontWeight.bold,
-                                                                              fontSize: ResponsiveHelper.fontSize(
-                                                                                context,
-                                                                                base: 13,
-                                                                              ),
+                                                          itemBuilder: (context, index) {
+                                                            final program =
+                                                                programs[index];
+
+                                                            return GestureDetector(
+                                                              onTap: () {
+                                                                context.pushNamed(
+                                                                  AppRouteName
+                                                                      .programDetail,
+                                                                  pathParameters: {
+                                                                    'programId':
+                                                                        program
+                                                                            .uid ??
+                                                                        '',
+                                                                  },
+                                                                  queryParameters: {
+                                                                    'from':
+                                                                        'programs',
+                                                                  },
+                                                                );
+                                                              },
+                                                              child: Container(
+                                                                padding:
+                                                                    ResponsiveHelper.padding(
+                                                                      context,
+                                                                      vertical:
+                                                                          20,
+                                                                      horizontal:
+                                                                          20,
+                                                                    ),
+                                                                decoration: BoxDecoration(
+                                                                  gradient: LinearGradient(
+                                                                    colors: [
+                                                                      Colors
+                                                                          .white,
+                                                                      Color.fromARGB(
+                                                                        255,
+                                                                        238,
+                                                                        242,
+                                                                        254,
+                                                                      ),
+                                                                    ],
+                                                                    begin: Alignment
+                                                                        .centerLeft,
+                                                                    end: Alignment
+                                                                        .centerRight,
+                                                                  ),
+                                                                  border: Border.all(
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .shade300,
+                                                                  ),
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        10,
+                                                                      ),
+                                                                ),
+                                                                child: Column(
+                                                                  children: [
+                                                                    Row(
+                                                                      children: [
+                                                                        Container(
+                                                                          padding: ResponsiveHelper.padding(
+                                                                            context,
+                                                                            all:
+                                                                                12,
+                                                                          ),
+                                                                          decoration: BoxDecoration(
+                                                                            color:
+                                                                                primaryColor,
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              8,
                                                                             ),
                                                                           ),
-                                                                        ),
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width:
-                                                                            15,
-                                                                      ),
-                                                                      Expanded(
-                                                                        child: Column(
-                                                                          crossAxisAlignment:
-                                                                              CrossAxisAlignment.start,
-                                                                          children: [
-                                                                            Text(
-                                                                              program.contractRelation?.contractorCompany?.name ??
+                                                                          child: Center(
+                                                                            child: Text(
+                                                                              program.workScope?.code ??
                                                                                   'N/A',
                                                                               style: TextStyle(
-                                                                                fontWeight: FontWeight.w700,
-                                                                                color: Colors.black,
+                                                                                color: Colors.white,
+                                                                                fontWeight: FontWeight.bold,
                                                                                 fontSize: ResponsiveHelper.fontSize(
                                                                                   context,
                                                                                   base: 13,
                                                                                 ),
                                                                               ),
                                                                             ),
-                                                                            SizedBox(
-                                                                              height: 2,
-                                                                            ),
-                                                                            Row(
-                                                                              children: [
-                                                                                Icon(
-                                                                                  Icons.swap_calls,
-                                                                                  size: ResponsiveHelper.iconSize(
-                                                                                    context,
-                                                                                    base: 16,
-                                                                                  ),
-                                                                                  color: Colors.black,
-                                                                                ),
-                                                                                SizedBox(
-                                                                                  width: 5,
-                                                                                ),
-                                                                                Text(
-                                                                                  '${program.fromSection ?? 'N/A'} - ${program.toSection ?? 'N/A'}',
-                                                                                  style: TextStyle(
-                                                                                    fontWeight: FontWeight.w600,
-                                                                                    color: Colors.black,
-                                                                                    fontSize: ResponsiveHelper.fontSize(
-                                                                                      context,
-                                                                                      base: 12,
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  Divider(
-                                                                    height: 40,
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade300,
-                                                                    thickness:
-                                                                        1,
-                                                                  ),
-                                                                  Padding(
-                                                                    padding: const EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          8.0,
-                                                                    ),
-                                                                    child: Row(
-                                                                      children: [
-                                                                        Icon(
-                                                                          Icons
-                                                                              .location_on_sharp,
-                                                                          color:
-                                                                              Colors.black,
-                                                                          size: ResponsiveHelper.iconSize(
-                                                                            context,
-                                                                            base:
-                                                                                20,
                                                                           ),
                                                                         ),
                                                                         SizedBox(
@@ -823,201 +759,286 @@ class _ProgramPageState extends State<ProgramPage> {
                                                                                 CrossAxisAlignment.start,
                                                                             children: [
                                                                               Text(
-                                                                                program.road?.district?.name ??
+                                                                                program.contractRelation?.contractorCompany?.name ??
                                                                                     'N/A',
                                                                                 style: TextStyle(
-                                                                                  fontWeight: FontWeight.w400,
-                                                                                  color: Colors.grey,
+                                                                                  fontWeight: FontWeight.w700,
+                                                                                  color: Colors.black,
                                                                                   fontSize: ResponsiveHelper.fontSize(
                                                                                     context,
-                                                                                    base: 12,
+                                                                                    base: 13,
                                                                                   ),
                                                                                 ),
                                                                               ),
                                                                               SizedBox(
                                                                                 height: 2,
                                                                               ),
-                                                                              Text(
-                                                                                '${program.road?.roadNo ?? 'N/A'} - ${program.road?.name ?? 'N/A'}',
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                                maxLines: 1,
-                                                                                style: TextStyle(
-                                                                                  fontWeight: FontWeight.w600,
-                                                                                  color: Colors.black,
-                                                                                  fontSize: ResponsiveHelper.fontSize(
-                                                                                    context,
-                                                                                    base: 12,
+                                                                              Row(
+                                                                                children: [
+                                                                                  Icon(
+                                                                                    Icons.swap_calls,
+                                                                                    size: ResponsiveHelper.iconSize(
+                                                                                      context,
+                                                                                      base: 16,
+                                                                                    ),
+                                                                                    color: Colors.black,
                                                                                   ),
-                                                                                ),
+                                                                                  SizedBox(
+                                                                                    width: 5,
+                                                                                  ),
+                                                                                  Text(
+                                                                                    '${program.fromSection ?? 'N/A'} - ${program.toSection ?? 'N/A'}',
+                                                                                    style: TextStyle(
+                                                                                      fontWeight: FontWeight.w600,
+                                                                                      color: Colors.black,
+                                                                                      fontSize: ResponsiveHelper.fontSize(
+                                                                                        context,
+                                                                                        base: 12,
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
                                                                               ),
                                                                             ],
                                                                           ),
                                                                         ),
                                                                       ],
                                                                     ),
-                                                                  ),
-                                                                  Divider(
-                                                                    height: 40,
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade300,
-                                                                    thickness:
-                                                                        1,
-                                                                  ),
-                                                                  Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment.spaceBetween,
+                                                                    Divider(
+                                                                      height:
+                                                                          40,
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade300,
+                                                                      thickness:
+                                                                          1,
+                                                                    ),
+                                                                    Padding(
+                                                                      padding: const EdgeInsets.symmetric(
+                                                                        horizontal:
+                                                                            8.0,
+                                                                      ),
+                                                                      child: Row(
                                                                         children: [
-                                                                          Text(
-                                                                            'Progress',
-                                                                            style: TextStyle(
-                                                                              fontSize: ResponsiveHelper.fontSize(
-                                                                                context,
-                                                                                base: 12,
-                                                                              ),
-                                                                              fontWeight: FontWeight.w500,
-                                                                              color: Colors.black,
+                                                                          Icon(
+                                                                            Icons.location_on_sharp,
+                                                                            color:
+                                                                                Colors.black,
+                                                                            size: ResponsiveHelper.iconSize(
+                                                                              context,
+                                                                              base: 20,
                                                                             ),
                                                                           ),
-                                                                          Text(
-                                                                            '${program.totalReports ?? 0}/${program.requiredReportsCount ?? 0}',
-                                                                            style: TextStyle(
-                                                                              fontSize: ResponsiveHelper.fontSize(
-                                                                                context,
-                                                                                base: 12,
-                                                                              ),
-                                                                              fontWeight: FontWeight.w600,
-                                                                              color: primaryColor,
+                                                                          SizedBox(
+                                                                            width:
+                                                                                15,
+                                                                          ),
+                                                                          Expanded(
+                                                                            child: Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Text(
+                                                                                  program.road?.district?.name ??
+                                                                                      'N/A',
+                                                                                  style: TextStyle(
+                                                                                    fontWeight: FontWeight.w400,
+                                                                                    color: Colors.grey,
+                                                                                    fontSize: ResponsiveHelper.fontSize(
+                                                                                      context,
+                                                                                      base: 12,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                SizedBox(
+                                                                                  height: 2,
+                                                                                ),
+                                                                                Text(
+                                                                                  '${program.road?.roadNo ?? 'N/A'} - ${program.road?.name ?? 'N/A'}',
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  maxLines: 1,
+                                                                                  style: TextStyle(
+                                                                                    fontWeight: FontWeight.w600,
+                                                                                    color: Colors.black,
+                                                                                    fontSize: ResponsiveHelper.fontSize(
+                                                                                      context,
+                                                                                      base: 12,
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                              ],
                                                                             ),
                                                                           ),
                                                                         ],
                                                                       ),
-                                                                      SizedBox(
-                                                                        height: ResponsiveHelper.spacing(
-                                                                          context,
-                                                                          8,
+                                                                    ),
+                                                                    Divider(
+                                                                      height:
+                                                                          40,
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade300,
+                                                                      thickness:
+                                                                          1,
+                                                                    ),
+                                                                    Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Row(
+                                                                          mainAxisAlignment:
+                                                                              MainAxisAlignment.spaceBetween,
+                                                                          children: [
+                                                                            Text(
+                                                                              'Progress',
+                                                                              style: TextStyle(
+                                                                                fontSize: ResponsiveHelper.fontSize(
+                                                                                  context,
+                                                                                  base: 12,
+                                                                                ),
+                                                                                fontWeight: FontWeight.w500,
+                                                                                color: Colors.black,
+                                                                              ),
+                                                                            ),
+                                                                            Text(
+                                                                              '${program.totalReports ?? 0}/${program.requiredReportsCount ?? 0}',
+                                                                              style: TextStyle(
+                                                                                fontSize: ResponsiveHelper.fontSize(
+                                                                                  context,
+                                                                                  base: 12,
+                                                                                ),
+                                                                                fontWeight: FontWeight.w600,
+                                                                                color: primaryColor,
+                                                                              ),
+                                                                            ),
+                                                                          ],
                                                                         ),
-                                                                      ),
-                                                                      Container(
-                                                                        height: ResponsiveHelper.spacing(
-                                                                          context,
-                                                                          10,
-                                                                        ),
-                                                                        width: double
-                                                                            .infinity,
-                                                                        decoration: BoxDecoration(
-                                                                          color:
-                                                                              Colors.white,
-                                                                          borderRadius: BorderRadius.circular(
-                                                                            10,
+                                                                        SizedBox(
+                                                                          height: ResponsiveHelper.spacing(
+                                                                            context,
+                                                                            8,
                                                                           ),
                                                                         ),
-                                                                        child: FractionallySizedBox(
-                                                                          alignment:
-                                                                              Alignment.centerLeft,
-                                                                          widthFactor:
-                                                                              (program.requiredReportsCount !=
-                                                                                      null &&
-                                                                                  program.requiredReportsCount! >
-                                                                                      0)
-                                                                              ? (program.totalReports ??
-                                                                                        0) /
-                                                                                    program.requiredReportsCount!
-                                                                              : 0.0,
-                                                                          child: Container(
-                                                                            decoration: BoxDecoration(
-                                                                              color: primaryColor,
-                                                                              borderRadius: BorderRadius.circular(
-                                                                                12,
+                                                                        Container(
+                                                                          height: ResponsiveHelper.spacing(
+                                                                            context,
+                                                                            10,
+                                                                          ),
+                                                                          width:
+                                                                              double.infinity,
+                                                                          decoration: BoxDecoration(
+                                                                            color:
+                                                                                Colors.white,
+                                                                            borderRadius: BorderRadius.circular(
+                                                                              10,
+                                                                            ),
+                                                                          ),
+                                                                          child: FractionallySizedBox(
+                                                                            alignment:
+                                                                                Alignment.centerLeft,
+                                                                            widthFactor:
+                                                                                (program.requiredReportsCount !=
+                                                                                        null &&
+                                                                                    program.requiredReportsCount! >
+                                                                                        0)
+                                                                                ? (program.totalReports ??
+                                                                                          0) /
+                                                                                      program.requiredReportsCount!
+                                                                                : 0.0,
+                                                                            child: Container(
+                                                                              decoration: BoxDecoration(
+                                                                                color: primaryColor,
+                                                                                borderRadius: BorderRadius.circular(
+                                                                                  12,
+                                                                                ),
                                                                               ),
                                                                             ),
                                                                           ),
                                                                         ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          );
-                                                        },
-                                                      );
-                                                    },
-                                                failure: (message) => Center(
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                          50.0,
-                                                        ),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Icon(
-                                                          Icons.error_outline,
-                                                          size: 48,
-                                                          color: Colors.red,
-                                                        ),
-                                                        SizedBox(height: 16),
-                                                        Text(message),
-                                                        SizedBox(height: 16),
-                                                        ElevatedButton(
-                                                          onPressed: () {
-                                                            final companyUID = context
-                                                                .read<
-                                                                  CompanyBloc
-                                                                >()
-                                                                .state
-                                                                .maybeMap(
-                                                                  loaded:
-                                                                      (
-                                                                        state,
-                                                                      ) => state
-                                                                          .selectedCompany
-                                                                          ?.uid,
-                                                                  orElse: () =>
-                                                                      null,
-                                                                );
-
-                                                            if (companyUID !=
-                                                                null) {
-                                                              getIt<ProgramViewBloc>().add(
-                                                                ProgramViewEvent.loadPrograms(
-                                                                  companyUID:
-                                                                      companyUID,
-                                                                  page: 1,
-                                                                  limit: 10,
-                                                                  forceRefresh:
-                                                                      true,
+                                                                      ],
+                                                                    ),
+                                                                  ],
                                                                 ),
-                                                              );
-                                                            }
+                                                              ),
+                                                            );
                                                           },
-                                                          child: const Text(
-                                                            'Retry',
+                                                        );
+                                                      },
+                                                  failure: (message) => Center(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                            50.0,
                                                           ),
-                                                        ),
-                                                      ],
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Icon(
+                                                            Icons.error_outline,
+                                                            size: 48,
+                                                            color: Colors.red,
+                                                          ),
+                                                          SizedBox(height: 16),
+                                                          Text(message),
+                                                          SizedBox(height: 16),
+                                                          ElevatedButton(
+                                                            onPressed: () {
+                                                              final companyUID = context
+                                                                  .read<
+                                                                    CompanyBloc
+                                                                  >()
+                                                                  .state
+                                                                  .maybeMap(
+                                                                    loaded:
+                                                                        (
+                                                                          state,
+                                                                        ) => state
+                                                                            .selectedCompany
+                                                                            ?.uid,
+                                                                    orElse: () =>
+                                                                        null,
+                                                                  );
+
+                                                              if (companyUID !=
+                                                                  null) {
+                                                                getIt<
+                                                                      ProgramViewBloc
+                                                                    >()
+                                                                    .add(
+                                                                      ProgramViewEvent.loadPrograms(
+                                                                        companyUID:
+                                                                            companyUID,
+                                                                        page: 1,
+                                                                        limit:
+                                                                            10,
+                                                                        forceRefresh:
+                                                                            true,
+                                                                      ),
+                                                                    );
+                                                              }
+                                                            },
+                                                            child: const Text(
+                                                              'Retry',
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                detailLoading: () =>
-                                                    const SizedBox.shrink(),
-                                                detailLoaded: (_) =>
-                                                    const SizedBox.shrink(),
-                                                detailFailure: (_) =>
-                                                    const SizedBox.shrink(),
-                                              );
-                                            },
+                                                  detailLoading: () =>
+                                                      const SizedBox.shrink(),
+                                                  detailLoaded: (_) =>
+                                                      const SizedBox.shrink(),
+                                                  detailFailure: (_) =>
+                                                      const SizedBox.shrink(),
+                                                );
+                                              },
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ],
