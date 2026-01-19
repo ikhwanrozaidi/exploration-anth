@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:rclink_app/features/program/presentation/pages/view_report_program_page.dart';
 
@@ -6,10 +7,14 @@ import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/divider_config.dart';
 import '../../../../shared/widgets/theme_listtile_widget.dart';
+import '../../../daily_report/presentation/widgets/report_detail/daily_report_detail_quantity_card.dart';
+import '../../domain/entities/program_entity.dart';
 import 'workday_bottomsheet.dart';
 
 class ProgramDetailsOverviewWidget extends StatefulWidget {
-  const ProgramDetailsOverviewWidget({super.key});
+  final Program program;
+
+  const ProgramDetailsOverviewWidget({super.key, required this.program});
 
   @override
   State<ProgramDetailsOverviewWidget> createState() =>
@@ -108,7 +113,7 @@ class _ProgramDetailsOverviewWidgetState
                 padding: EdgeInsets.symmetric(horizontal: 5.0),
                 child: GestureDetector(
                   onTap: () {
-                    // Filter by months
+                    //REPLACE: with the date of the dailyReport createdAt
                     //
                     showWorkdayDetail(
                       context: context,
@@ -191,7 +196,8 @@ class _ProgramDetailsOverviewWidgetState
                             ),
                             child: Center(
                               child: Text(
-                                'code',
+                                widget.program.workScope?.code ??
+                                    'R00', //REPLACE: workScope.code
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -208,7 +214,8 @@ class _ProgramDetailsOverviewWidgetState
 
                           Expanded(
                             child: Text(
-                              'workscope name',
+                              widget.program.workScope?.name ??
+                                  'Work Scope', //REPLACE: workScope.name
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: ResponsiveHelper.fontSize(
@@ -235,7 +242,10 @@ class _ProgramDetailsOverviewWidgetState
                     ThemeListTileWidget(
                       title: 'Date',
                       titleDetails: DateFormat('d MMM yyyy hh:mma').format(
-                        DateTime.parse('2025-09-22T20:01:55.752Z').toLocal(),
+                        DateTime.parse(
+                          widget.program.createdAt ??
+                              '2025-09-22T20:01:55.752Z',
+                        ).toLocal(), //REPLACE: createdAt
                       ),
                       icon: Icons.calendar_month,
                       isChevron: false,
@@ -245,7 +255,13 @@ class _ProgramDetailsOverviewWidgetState
 
                     ThemeListTileWidget(
                       title: 'Contractor',
-                      titleDetails: 'null',
+                      titleDetails:
+                          widget
+                              .program
+                              .contractRelation
+                              ?.contractorCompany
+                              ?.name ??
+                          'Company', //REPLACE: contractorCompany.name
                       icon: Icons.person,
                       isChevron: false,
                     ),
@@ -254,7 +270,8 @@ class _ProgramDetailsOverviewWidgetState
 
                     ThemeListTileWidget(
                       title: 'Reporter',
-                      titleDetails: 'null',
+                      titleDetails:
+                          '${widget.program.createdBy?.firstName} ${widget.program.createdBy?.lastName}', //REPLACE: createdBy.firstName createdBy.lastName
                       icon: Icons.person_pin,
                       isChevron: false,
                     ),
@@ -298,7 +315,9 @@ class _ProgramDetailsOverviewWidgetState
                   children: [
                     ThemeListTileWidget(
                       title: 'districtName',
-                      titleDetails: 'road',
+                      titleDetails:
+                          widget.program.road?.district?.name ??
+                          'District', //REPLACE: road.district.name
                       icon: Icons.location_pin,
                       isChevron: false,
                     ),
@@ -307,103 +326,101 @@ class _ProgramDetailsOverviewWidgetState
 
                     ThemeListTileWidget(
                       title: 'Section',
-                      titleDetails: 'null',
+                      titleDetails:
+                          '${widget.program.fromSection} - ${widget.program.toSection}', //REPLACE: fromSection - toSection
                       icon: Icons.swap_calls,
                       isChevron: false,
                     ),
 
-                    // if (widget.report.latitude != null &&
-                    //     widget.report.longitude != null)
-                    //   Column(
-                    //     children: [
-                    //       dividerConfig(),
+                    //REPLACE: longitude latitude
+                    //
+                    //
+                    if (widget.program.latitude != null &&
+                        widget.program.longitude != null)
+                      Column(
+                        children: [
+                          dividerConfig(),
 
-                    //       Stack(
-                    //         children: [
-                    //           Container(
-                    //             height: 200,
-                    //             decoration: BoxDecoration(
-                    //               borderRadius: BorderRadius.circular(10),
-                    //               border: Border.all(
-                    //                 color: Colors.grey.shade300,
-                    //               ),
-                    //             ),
-                    //             clipBehavior: Clip.antiAlias,
-                    //             child: GoogleMap(
-                    //               initialCameraPosition: CameraPosition(
-                    //                 target: LatLng(
-                    //                   double.parse(widget.report.latitude!),
-                    //                   double.parse(
-                    //                     widget.report.longitude!,
-                    //                   ),
-                    //                 ),
-                    //                 zoom: 14,
-                    //               ),
-                    //               markers: {
-                    //                 Marker(
-                    //                   markerId: MarkerId('report_location'),
-                    //                   position: LatLng(
-                    //                     double.parse(
-                    //                       widget.report.latitude!,
-                    //                     ),
-                    //                     double.parse(
-                    //                       widget.report.longitude!,
-                    //                     ),
-                    //                   ),
-                    //                   infoWindow: InfoWindow(
-                    //                     title: widget.report.name,
-                    //                   ),
-                    //                 ),
-                    //               },
-                    //               zoomControlsEnabled: false,
-                    //               myLocationButtonEnabled: false,
-                    //             ),
-                    //           ),
+                          Stack(
+                            children: [
+                              Container(
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.grey.shade300,
+                                  ),
+                                ),
+                                clipBehavior: Clip.antiAlias,
+                                child: GoogleMap(
+                                  initialCameraPosition: CameraPosition(
+                                    target: LatLng(
+                                      double.parse(widget.program.latitude!),
+                                      double.parse(widget.program.longitude!),
+                                    ),
+                                    zoom: 14,
+                                  ),
+                                  markers: {
+                                    Marker(
+                                      markerId: MarkerId('program_location'),
+                                      position: LatLng(
+                                        double.parse(widget.program.latitude!),
+                                        double.parse(widget.program.longitude!),
+                                      ),
+                                      infoWindow: InfoWindow(
+                                        title: widget.program.name,
+                                      ),
+                                    ),
+                                  },
+                                  zoomControlsEnabled: false,
+                                  myLocationButtonEnabled: false,
+                                ),
+                              ),
 
-                    //           Positioned.fill(
-                    //             bottom: 10,
-                    //             child: Align(
-                    //               alignment: Alignment.bottomCenter,
-                    //               child: ElevatedButton(
-                    //                 onPressed: () {
-                    //                   final lat = widget.report.latitude!;
-                    //                   final lng = widget.report.longitude!;
-                    //                   final url =
-                    //                       'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
-                    //                 },
-                    //                 style: ElevatedButton.styleFrom(
-                    //                   backgroundColor: Colors.white,
-                    //                   side: BorderSide(
-                    //                     color: primaryColor,
-                    //                     width: ResponsiveHelper.adaptive(
-                    //                       context,
-                    //                       mobile: 1.0,
-                    //                       tablet: 1.5,
-                    //                       desktop: 2.0,
-                    //                     ),
-                    //                   ),
-                    //                   padding: ResponsiveHelper.padding(
-                    //                     context,
-                    //                     vertical: 10,
-                    //                     horizontal: 20,
-                    //                   ),
+                              Positioned.fill(
+                                bottom: 10,
+                                child: Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      final lat = widget.program.latitude!;
+                                      final lng = widget.program.longitude!;
+                                      final url =
+                                          'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.white,
+                                      side: BorderSide(
+                                        color: primaryColor,
+                                        width: ResponsiveHelper.adaptive(
+                                          context,
+                                          mobile: 1.0,
+                                          tablet: 1.5,
+                                          desktop: 2.0,
+                                        ),
+                                      ),
+                                      padding: ResponsiveHelper.padding(
+                                        context,
+                                        vertical: 10,
+                                        horizontal: 20,
+                                      ),
 
-                    //                   shape: RoundedRectangleBorder(
-                    //                     borderRadius:
-                    //                         ResponsiveHelper.borderRadius(
-                    //                           context,
-                    //                           all: 14,
-                    //                         ),
-                    //                   ),
-                    //                 ),
-                    //                 child: Text('View location'),
-                    //               ),
-                    //             ),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //     ],
-                    //   ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            ResponsiveHelper.borderRadius(
+                                              context,
+                                              all: 14,
+                                            ),
+                                      ),
+                                    ),
+                                    child: Text('View location'),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
@@ -443,8 +460,10 @@ class _ProgramDetailsOverviewWidgetState
                 child: Column(
                   children: [
                     ThemeListTileWidget(
-                      title: 'Culvert?',
-                      titleDetails: 'null',
+                      title: 'Description',
+                      titleDetails:
+                          widget.program.description ??
+                          'No Description', //REPLACE: description
                       icon: Icons.work_outline_rounded,
                       isChevron: false,
                     ),
@@ -454,7 +473,19 @@ class _ProgramDetailsOverviewWidgetState
             ],
           ),
         ),
+
+        // if (widget.program.quantities != null &&
+
+        //     widget.program.quantities!.isNotEmpty)
+        //   ...widget.program.quantities!.map((reportQuantity) {
+        //     return DailyReportDetailQuantityCard(
+        //       reportQuantity: reportQuantity,
+        //     );
+        //   }),
       ],
     );
   }
 }
+
+
+///STAPHHH

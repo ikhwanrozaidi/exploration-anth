@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 import '../../../../shared/models/api_response.dart';
+import '../../domain/entities/program_view/program_filter_model.dart';
 import '../models/program_create/create_program_response_model.dart';
 import '../models/program_settings/program_setting_model.dart';
 import '../models/program_settings/program_settings_filter_model.dart';
@@ -21,20 +22,22 @@ abstract class ProgramApiService {
     @Queries() ProgramSettingsFilterModel filter,
   );
 
-  @POST('companies/{companyUID}/programs')
+  @POST('/companies/{companyUID}/programs')
   Future<ApiResponse<List<ProgramResponseModel>>> createProgram(
     @Path('companyUID') String companyUID,
     @Body() SubmitProgramRequestModel requestBody,
   );
 
-  // @GET('/companies/{companyUID}/programs')
-  // Future<ApiResponse<List<ProgramModel>>> getPrograms({
-  //   @Path('companyUID') required String companyUID,
-  // });
+  @GET('/companies/{companyUID}/programs')
+  Future<ApiResponse<dynamic>> getPrograms(
+    @Path('companyUID') String companyUID,
+    @Queries() ProgramFilterModel filter,
+  );
 
-  // @POST('/companies/{companyUID}/programs')
-  // Future<ApiResponse<ProgramModel>> createProgram({
-  //   @Path('companyUID') required String companyUID,
-  //   @Body() required Map<String, dynamic> body,
-  // });
+  @GET('/companies/{companyUID}/programs/{uid}')
+  Future<ApiResponse<dynamic>> getProgramDetail(
+    @Path('companyUID') String companyUID,
+    @Path('uid') String uid,
+    @Queries() Map<String, dynamic> queries,
+  );
 }

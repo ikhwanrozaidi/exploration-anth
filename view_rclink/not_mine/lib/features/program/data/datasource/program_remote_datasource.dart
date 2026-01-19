@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:rclink_app/features/program/data/models/program_settings/program_setting_model.dart';
 import '../../../../core/errors/failures.dart';
@@ -7,10 +8,13 @@ import '../../../company/presentation/bloc/company_state.dart';
 import '../../../contractor_relation/presentation/bloc/contractor_relation_bloc.dart';
 import '../../../road/data/datasources/road_api_service.dart';
 import '../../../road/domain/entities/package_data_response_entity.dart';
+import '../../domain/entities/program_entity.dart';
 import '../../domain/entities/program_settings/program_setting_entity.dart';
+import '../../domain/entities/program_view/program_filter_model.dart';
 import '../models/program_create/create_program_response_model.dart';
 import '../models/program_settings/program_settings_filter_model.dart';
 import '../models/program_create/submit_program_request_model.dart';
+import '../models/program_view/program_model.dart';
 import 'program_api_service.dart';
 
 abstract class ProgramRemoteDataSource {
@@ -22,6 +26,16 @@ abstract class ProgramRemoteDataSource {
   Future<Either<Failure, ProgramResponseModel>> submitProgram({
     required String companyUID,
     required SubmitProgramRequestModel requestModel,
+  });
+
+  Future<Either<Failure, List<Program>>> getPrograms({
+    required String companyUID,
+    int page = 1,
+    int limit = 10,
+  });
+  Future<Either<Failure, Program>> getProgramDetail({
+    required String companyUID,
+    required String programUID,
   });
 }
 
@@ -148,6 +162,97 @@ class ProgramRemoteDataSourceImpl implements ProgramRemoteDataSource {
     } catch (e) {
       print('❌ Error fetching contractor roads: $e');
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Program>>> getPrograms({
+    required String companyUID,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      print('🌐 Fetching programs from API: page=$page, limit=$limit');
+
+      final filter = ProgramFilterModel(
+        page: page,
+        limit: limit,
+        expand: ['workScope', 'road', 'contractRelation', 'createdBy'],
+      );
+
+      final response = await _apiService.getPrograms(companyUID, filter);
+
+      if (response.data == null) {
+        return Left(ServerFailure('No data received from server'));
+      }
+
+      final programs = (response.data as List)
+          .map((json) => ProgramModel.fromJson(json).toEntity())
+          .toList();
+
+      print('✅ Successfully fetched ${programs.length} programs from API');
+      return Right(programs);
+    } on DioException catch (e) {
+      print('❌ DioException in getPrograms: ${e.message}');
+      if (e.response != null) {
+        print('Response status: ${e.response?.statusCode}');
+        print('Response data: ${e.response?.data}');
+      }
+
+      return Left(
+        ServerFailure(
+          e.response?.data['message'] ?? e.message ?? 'Server error',
+          statusCode: e.response?.statusCode,
+        ),
+      );
+    } catch (e, stackTrace) {
+      print('❌ Unexpected error in getPrograms: $e');
+      print('Stack trace: $stackTrace');
+      return Left(ServerFailure('Unexpected error: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Program>> getProgramDetail({
+    required String companyUID,
+    required String programUID,
+  }) async {
+    try {
+      print('🌐 Fetching program detail from API: $programUID');
+
+      final queries = {'expand': 'dailyReport,quantities,files'};
+
+      final response = await _apiService.getProgramDetail(
+        companyUID,
+        programUID,
+        queries,
+      );
+
+      if (response.data == null) {
+        return Left(ServerFailure('No data received from server'));
+      }
+
+      final program = ProgramModel.fromJson(response.data).toEntity();
+
+      print('✅ Successfully fetched program detail: ${program.name}');
+      return Right(program);
+    } on DioException catch (e) {
+      print('❌ DioException in getProgramDetail: ${e.message}');
+      if (e.response != null) {
+        print('Response status: ${e.response?.statusCode}');
+        print('Response data: ${e.response?.data}');
+      }
+
+      return Left(
+        ServerFailure(
+          e.response?.data['message'] ?? e.message ?? 'Server error',
+          statusCode: e.response?.statusCode,
+        ),
+      );
+    } catch (e, stackTrace) {
+      print('❌ Unexpected error in getProgramDetail: $e');
+      print('Stack trace: $stackTrace');
+      return Left(ServerFailure('Unexpected error: $e'));
     }
   }
 }
