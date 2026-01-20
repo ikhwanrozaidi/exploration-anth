@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:dartz/dartz.dart';
 import 'package:drift/drift.dart';
 import 'package:injectable/injectable.dart';
+import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/database/app_database.dart';
@@ -110,6 +111,13 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
         });
       }
 
+      final workScopeJson = json.encode({
+        'id': workScopeID,
+        'uid': workScopeUID,
+        'name': workScopeName,
+        'code': workScopeCode,
+      });
+
       await _database
           .into(_database.programs)
           .insert(
@@ -117,11 +125,14 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
               uid: Value(draftUID),
               companyID: Value(int.tryParse(companyUID) ?? 0),
               workScopeID: Value(workScopeID),
+              workScopeData: Value(workScopeJson),
               roadID: Value(road?.id),
               roadData: Value(roadJson),
-              name: const Value.absent(),
-              status: Value('DRAFT'), // KEY: Set status to DRAFT
-              periodStart: Value(now), // Default values
+              name: Value(
+                'Draft - $workScopeCode - ${DateFormat('MMM yyyy').format(now)}',
+              ),
+              status: Value('DRAFT'),
+              periodStart: Value(now),
               periodEnd: Value(now.add(const Duration(days: 30))),
               calculationType: Value(calculationType ?? 'SECTION_BASED'),
               fromSection: Value(fromSection),
@@ -202,6 +213,18 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
         );
       }
 
+      // Encode work scope data if present
+      String? workScopeJson;
+      if (draftData.workScopeUID != null &&
+          draftData.workScopeUID!.isNotEmpty) {
+        workScopeJson = json.encode({
+          'id': draftData.workScopeID,
+          'uid': draftData.workScopeUID,
+          'name': draftData.workScopeName,
+          'code': draftData.workScopeCode,
+        });
+      }
+
       // Encode roadInputData
       String? roadInputDataJson;
       if (draftData.roadInputData != null &&
@@ -231,6 +254,7 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
           latitude: Value(draftData.latitude),
           longitude: Value(draftData.longitude),
           quantitiesData: Value(quantitiesJson),
+          workScopeData: Value(workScopeJson),
           updatedAt: Value(DateTime.now()),
         ),
       );
@@ -263,18 +287,50 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
 
       print('✅ Draft loaded: $draftUID');
 
-      // Reconstruct Road entity from JSON
+      // Reconstruct Road entity from JSON (SINGLE road or LIST of roads)
       Road? road;
+      List<Road>? roads;
+
       if (draft.roadData != null && draft.roadData!.isNotEmpty) {
-        final roadJson = json.decode(draft.roadData!);
-        road = Road(
-          id: roadJson['id'],
-          uid: roadJson['uid'],
-          name: roadJson['name'],
-          roadNo: roadJson['roadNo'],
-          sectionStart: roadJson['sectionStart'],
-          sectionFinish: roadJson['sectionFinish'],
-        );
+        try {
+          final roadDataDecoded = json.decode(draft.roadData!);
+
+          if (roadDataDecoded is List) {
+            // It's a list of roads (multi-road draft)
+            print('📍 Parsing roads list (${roadDataDecoded.length} roads)');
+            roads = roadDataDecoded.map((roadJson) {
+              return Road(
+                id: roadJson['id'],
+                uid: roadJson['uid'],
+                name: roadJson['name'],
+                roadNo: roadJson['roadNo'],
+                sectionStart: roadJson['sectionStart'] != null
+                    ? (roadJson['sectionStart'] as num).toDouble()
+                    : null,
+                sectionFinish: roadJson['sectionFinish'] != null
+                    ? (roadJson['sectionFinish'] as num).toDouble()
+                    : null,
+              );
+            }).toList();
+          } else if (roadDataDecoded is Map) {
+            // It's a single road (R02 draft)
+            print('📍 Parsing single road');
+            road = Road(
+              id: roadDataDecoded['id'],
+              uid: roadDataDecoded['uid'],
+              name: roadDataDecoded['name'],
+              roadNo: roadDataDecoded['roadNo'],
+              sectionStart: roadDataDecoded['sectionStart'] != null
+                  ? (roadDataDecoded['sectionStart'] as num).toDouble()
+                  : null,
+              sectionFinish: roadDataDecoded['sectionFinish'] != null
+                  ? (roadDataDecoded['sectionFinish'] as num).toDouble()
+                  : null,
+            );
+          }
+        } catch (e) {
+          print('⚠️ Could not parse roadData: $e');
+        }
       }
 
       // Reconstruct Contractor entity from JSON
@@ -302,30 +358,6 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
         );
       }
 
-      // Parse roads list for non-R02
-      List<Road>? roads;
-      if (draft.roadData != null &&
-          draft.roadData!.isNotEmpty &&
-          draft.contractRelationData != null) {
-        try {
-          final roadsListJson = json.decode(draft.roadData!);
-          if (roadsListJson is List) {
-            roads = roadsListJson.map((roadJson) {
-              return Road(
-                id: roadJson['id'],
-                uid: roadJson['uid'],
-                name: roadJson['name'],
-                roadNo: roadJson['roadNo'],
-                sectionStart: roadJson['sectionStart'],
-                sectionFinish: roadJson['sectionFinish'],
-              );
-            }).toList();
-          }
-        } catch (e) {
-          print('⚠️ Could not parse roads list: $e');
-        }
-      }
-
       // Parse roadInputData
       Map<String, Map<String, dynamic>>? roadInputData;
       if (draft.inputValue != null && draft.inputValue!.isNotEmpty) {
@@ -341,14 +373,30 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
         }
       }
 
+      // Parse work scope data
+      String workScopeUID = '';
+      String workScopeName = '';
+      String workScopeCode = '';
+      if (draft.workScopeData != null && draft.workScopeData!.isNotEmpty) {
+        try {
+          final workScopeJson =
+              json.decode(draft.workScopeData!) as Map<String, dynamic>;
+          workScopeUID = workScopeJson['uid'] ?? '';
+          workScopeName = workScopeJson['name'] ?? '';
+          workScopeCode = workScopeJson['code'] ?? '';
+        } catch (e) {
+          print('⚠️ Could not parse workScopeData: $e');
+        }
+      }
+
       final draftData = ProgramDraftData(
         uid: draft.uid,
         isDraftMode: true,
         companyUID: draft.companyID.toString(),
         workScopeID: draft.workScopeID,
-        workScopeUID: '', // Not stored in DB for drafts
-        workScopeName: '', // Not stored in DB for drafts
-        workScopeCode: '', // Not stored in DB for drafts
+        workScopeUID: workScopeUID,
+        workScopeName: workScopeName,
+        workScopeCode: workScopeCode,
         road: road,
         roads: roads,
         roadInputData: roadInputData,
@@ -541,6 +589,14 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
             .toList(),
       );
 
+      // Encode work scope data
+      final workScopeJson = json.encode({
+        'id': workScopeID,
+        'uid': workScopeUID,
+        'name': workScopeName,
+        'code': workScopeCode,
+      });
+
       await _database
           .into(_database.programs)
           .insert(
@@ -548,9 +604,12 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
               uid: Value(draftUID),
               companyID: Value(int.tryParse(companyUID) ?? 0),
               workScopeID: Value(workScopeID),
+              workScopeData: Value(workScopeJson),
               contractRelationData: Value(contractorJson),
-              roadData: Value(roadsJson), // Store multiple roads as JSON
-              name: const Value.absent(),
+              roadData: Value(roadsJson),
+              name: Value(
+                'Draft - $workScopeCode - ${DateFormat('MMM yyyy').format(now)}',
+              ),
               status: Value('DRAFT'),
               periodStart: Value(now),
               periodEnd: Value(now.add(const Duration(days: 30))),
@@ -568,7 +627,7 @@ class ProgramDraftLocalDataSourceImpl implements ProgramDraftLocalDataSource {
         workScopeName: workScopeName,
         workScopeCode: workScopeCode,
         roads: roads,
-        roadInputData: {}, // Empty initially
+        roadInputData: {},
         contractor: contractor,
         status: 'DRAFT',
       );

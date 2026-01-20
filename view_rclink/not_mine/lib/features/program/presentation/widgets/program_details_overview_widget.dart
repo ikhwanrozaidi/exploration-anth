@@ -261,7 +261,7 @@ class _ProgramDetailsOverviewWidgetState
                               .contractRelation
                               ?.contractorCompany
                               ?.name ??
-                          'Company', //REPLACE: contractorCompany.name
+                          'Company',
                       icon: Icons.person,
                       isChevron: false,
                     ),
@@ -271,7 +271,7 @@ class _ProgramDetailsOverviewWidgetState
                     ThemeListTileWidget(
                       title: 'Reporter',
                       titleDetails:
-                          '${widget.program.createdBy?.firstName} ${widget.program.createdBy?.lastName}', //REPLACE: createdBy.firstName createdBy.lastName
+                          '${widget.program.createdBy?.firstName} ${widget.program.createdBy?.lastName}',
                       icon: Icons.person_pin,
                       isChevron: false,
                     ),
@@ -316,8 +316,7 @@ class _ProgramDetailsOverviewWidgetState
                     ThemeListTileWidget(
                       title: 'districtName',
                       titleDetails:
-                          widget.program.road?.district?.name ??
-                          'District', //REPLACE: road.district.name
+                          widget.program.road?.district?.name ?? 'District',
                       icon: Icons.location_pin,
                       isChevron: false,
                     ),
@@ -327,14 +326,11 @@ class _ProgramDetailsOverviewWidgetState
                     ThemeListTileWidget(
                       title: 'Section',
                       titleDetails:
-                          '${widget.program.fromSection} - ${widget.program.toSection}', //REPLACE: fromSection - toSection
+                          '${widget.program.fromSection} - ${widget.program.toSection}',
                       icon: Icons.swap_calls,
                       isChevron: false,
                     ),
 
-                    //REPLACE: longitude latitude
-                    //
-                    //
                     if (widget.program.latitude != null &&
                         widget.program.longitude != null)
                       Column(
@@ -462,8 +458,7 @@ class _ProgramDetailsOverviewWidgetState
                     ThemeListTileWidget(
                       title: 'Description',
                       titleDetails:
-                          widget.program.description ??
-                          'No Description', //REPLACE: description
+                          widget.program.description ?? 'No Description',
                       icon: Icons.work_outline_rounded,
                       isChevron: false,
                     ),
@@ -486,6 +481,3 @@ class _ProgramDetailsOverviewWidgetState
     );
   }
 }
-
-
-///STAPHHH

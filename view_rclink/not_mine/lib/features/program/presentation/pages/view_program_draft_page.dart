@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -11,6 +13,8 @@ import '../../../../shared/widgets/custom_snackbar.dart';
 import '../../../company/presentation/bloc/company_bloc.dart';
 import '../../../company/presentation/bloc/company_state.dart';
 import '../../../contractor_relation/domain/entities/contractor_relation_entity.dart';
+import '../../../road/domain/entities/district_entity.dart';
+import '../../../road/domain/entities/road_entity.dart';
 import '../bloc/program_draft/program_draft_bloc.dart';
 import '../bloc/program_draft/program_draft_event.dart';
 import '../bloc/program_draft/program_draft_state.dart';
@@ -50,29 +54,132 @@ class _ViewProgramDraftPageState extends State<ViewProgramDraftPage> {
   void _onDraftTapped(ProgramRecord draft) async {
     print('📂 Opening draft: ${draft.uid}');
 
-    // Determine if it's R02 or multi-road based on workScopeData
-    final isR02 = draft.workScopeData?.contains('"code":"R02"') ?? false;
+    // Parse work scope data
+    String workScopeUID = '';
+    String workScopeName = '';
+    String workScopeCode = '';
+    if (draft.workScopeData != null && draft.workScopeData!.isNotEmpty) {
+      try {
+        final workScopeJson =
+            json.decode(draft.workScopeData!) as Map<String, dynamic>;
+        workScopeUID = workScopeJson['uid']?.toString() ?? '';
+        workScopeName = workScopeJson['name']?.toString() ?? '';
+        workScopeCode = workScopeJson['code']?.toString() ?? '';
+      } catch (e) {
+        print('⚠️ Error parsing workScopeData: $e');
+      }
+    }
+
+    // Parse contractor data
+    ContractorRelation contractor = const ContractorRelation(
+      uid: '',
+      id: 0,
+      name: '',
+    );
+    if (draft.contractRelationData != null &&
+        draft.contractRelationData!.isNotEmpty) {
+      try {
+        final contractorJson =
+            json.decode(draft.contractRelationData!) as Map<String, dynamic>;
+        contractor = ContractorRelation(
+          id: contractorJson['id'],
+          uid: contractorJson['uid']?.toString() ?? '',
+          contractRelationUID: contractorJson['contractRelationUID']
+              ?.toString(),
+          name: contractorJson['name']?.toString() ?? '',
+          regNo: contractorJson['regNo']?.toString(),
+        );
+      } catch (e) {
+        print('⚠️ Error parsing contractRelationData: $e');
+      }
+    }
+
+    // Parse roads data
+    List<Road> roads = [];
+    Road? singleRoad;
+
+    if (draft.roadData != null && draft.roadData!.isNotEmpty) {
+      try {
+        final roadDataDecoded = json.decode(draft.roadData!);
+
+        if (roadDataDecoded is List) {
+          // Multi-road draft
+          roads = roadDataDecoded.map<Road>((roadJson) {
+            return Road(
+              id: roadJson['id'],
+              uid: roadJson['uid']?.toString() ?? '',
+              name: roadJson['name']?.toString() ?? '',
+              roadNo: roadJson['roadNo']?.toString(),
+              sectionStart: roadJson['sectionStart'] != null
+                  ? (roadJson['sectionStart'] as num).toDouble()
+                  : null,
+              sectionFinish: roadJson['sectionFinish'] != null
+                  ? (roadJson['sectionFinish'] as num).toDouble()
+                  : null,
+              district: roadJson['district'] != null
+                  ? District(
+                      id: roadJson['district']['id'],
+                      uid: roadJson['district']['uid']?.toString() ?? '',
+                      name: roadJson['district']['name']?.toString() ?? '',
+                    )
+                  : null,
+            );
+          }).toList();
+        } else if (roadDataDecoded is Map) {
+          // Single road (R02)
+          singleRoad = Road(
+            id: roadDataDecoded['id'],
+            uid: roadDataDecoded['uid']?.toString() ?? '',
+            name: roadDataDecoded['name']?.toString() ?? '',
+            roadNo: roadDataDecoded['roadNo']?.toString(),
+            sectionStart: roadDataDecoded['sectionStart'] != null
+                ? (roadDataDecoded['sectionStart'] as num).toDouble()
+                : null,
+            sectionFinish: roadDataDecoded['sectionFinish'] != null
+                ? (roadDataDecoded['sectionFinish'] as num).toDouble()
+                : null,
+            district: roadDataDecoded['district'] != null
+                ? District(
+                    id: roadDataDecoded['district']['id'],
+                    uid: roadDataDecoded['district']['uid']?.toString() ?? '',
+                    name: roadDataDecoded['district']['name']?.toString() ?? '',
+                  )
+                : null,
+          );
+        }
+      } catch (e) {
+        print('⚠️ Error parsing roadData: $e');
+      }
+    }
+
+    // Determine if it's R02 or multi-road based on workScopeCode
+    final isR02 = workScopeCode == 'R02';
 
     Widget draftPage;
 
     if (isR02) {
-      // Navigate to R02 draft page
-      draftPage = R02ProgramCreationDraftPage(draftUID: draft.uid);
+      // Parse section data for R02
+      double? section;
+      if (draft.fromSection != null) {
+        section = double.tryParse(draft.fromSection!);
+      }
+
+      // Navigate to R02 draft page with road and section
+      draftPage = R02ProgramCreationDraftPage(
+        draftUID: draft.uid,
+        road: singleRoad, // Already parsed above
+        section: section,
+      );
     } else {
       // Navigate to multi-road draft page
       draftPage = ProgramCreationDraftPage(
         draftUID: draft.uid,
-        workScopeUID: '', // Will be loaded from draft
-        workScopeName: '',
-        workScopeCode: '',
+        workScopeUID: workScopeUID,
+        workScopeName: workScopeName,
+        workScopeCode: workScopeCode,
         workScopeID: draft.workScopeID,
-        contractor: const ContractorRelation(
-          uid: '',
-          id: 0,
-          name: '',
-          // contractorCompany: null,
-        ),
-        selectedRoads: [],
+        contractor: contractor,
+        selectedRoads: roads,
       );
     }
 
@@ -271,6 +378,7 @@ class _ViewProgramDraftPageState extends State<ViewProgramDraftPage> {
   }
 }
 
+// List Drafts
 class _ProgramDraftCard extends StatelessWidget {
   final ProgramRecord draft;
   final VoidCallback onTap;
@@ -285,7 +393,6 @@ class _ProgramDraftCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Parse work scope data if available
     String workScopeCode = 'N/A';
     String workScopeName = 'N/A';
 
@@ -401,6 +508,8 @@ class _ProgramDraftCard extends StatelessWidget {
               label: 'Work Scope',
               value: '$workScopeCode - $workScopeName',
             ),
+
+            _buildRoadInfo(context, draft),
 
             if (draft.fromSection != null && draft.toSection != null) ...[
               SizedBox(height: 8),
@@ -533,5 +642,76 @@ class _ProgramDraftCard extends StatelessWidget {
     } else {
       return 'Just now';
     }
+  }
+
+  Widget _buildRoadInfo(BuildContext context, ProgramRecord draft) {
+    // Parse road data
+    String roadDisplay = 'No roads';
+    String districtDisplay = '';
+    String sectionDisplay = '';
+
+    if (draft.roadData != null && draft.roadData!.isNotEmpty) {
+      try {
+        final roadDataDecoded = json.decode(draft.roadData!);
+
+        if (roadDataDecoded is List) {
+          // Multi-road program
+          final roadCount = roadDataDecoded.length;
+
+          if (roadCount > 0) {
+            final firstRoad = roadDataDecoded[0];
+            final roadName = firstRoad['name'] ?? 'Unnamed';
+            final roadNo = firstRoad['roadNo'] ?? 'N/A';
+            final district = firstRoad['district'];
+
+            if (roadCount == 1) {
+              roadDisplay = '$roadNo - $roadName';
+              districtDisplay = district != null ? district['name'] ?? '' : '';
+            } else {
+              roadDisplay = '$roadNo - $roadName (+${roadCount - 1} more)';
+              districtDisplay = district != null ? district['name'] ?? '' : '';
+            }
+          }
+        } else if (roadDataDecoded is Map) {
+          // Single road (R02)
+          final roadName = roadDataDecoded['name'] ?? 'Unnamed';
+          final roadNo = roadDataDecoded['roadNo'] ?? 'N/A';
+          final district = roadDataDecoded['district'];
+
+          roadDisplay = '$roadNo - $roadName';
+          districtDisplay = district != null ? district['name'] ?? '' : '';
+
+          // Add section information for R02
+          if (draft.fromSection != null || draft.toSection != null) {
+            final from = draft.fromSection ?? '0';
+            final to = draft.toSection ?? '0';
+            sectionDisplay = 'Section: $from - $to';
+          }
+        }
+      } catch (e) {
+        print('⚠️ Error parsing roadData in draft card: $e');
+        roadDisplay = 'Error loading roads';
+      }
+    }
+
+    return Column(
+      children: [
+        _buildInfoRow(
+          context,
+          icon: Icons.location_on,
+          label: districtDisplay.isNotEmpty ? districtDisplay : 'Route',
+          value: roadDisplay,
+        ),
+        if (sectionDisplay.isNotEmpty) ...[
+          SizedBox(height: ResponsiveHelper.spacing(context, 8)),
+          _buildInfoRow(
+            context,
+            icon: Icons.straighten,
+            label: 'Section',
+            value: sectionDisplay,
+          ),
+        ],
+      ],
+    );
   }
 }

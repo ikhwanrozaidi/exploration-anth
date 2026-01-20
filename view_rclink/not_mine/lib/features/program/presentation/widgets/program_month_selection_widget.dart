@@ -31,12 +31,25 @@ class _ProgramMonthSelectionWidgetState
     _selectedMonths = widget.initialSelectedMonths ?? [];
   }
 
+  @override
+  void didUpdateWidget(ProgramMonthSelectionWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Update selected months if initialSelectedMonths prop has changed
+    if (widget.initialSelectedMonths != oldWidget.initialSelectedMonths) {
+      setState(() {
+        _selectedMonths = widget.initialSelectedMonths ?? [];
+      });
+
+      print('📅 Month selection updated: ${_selectedMonths.length} months');
+    }
+  }
+
   void _toggleMonth(DateTime month) {
     setState(() {
       final existingIndex = _selectedMonths.indexWhere(
         (m) => m.year == month.year && m.month == month.month,
       );
-
       if (existingIndex != -1) {
         // Already selected, remove it
         _selectedMonths.removeAt(existingIndex);

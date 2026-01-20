@@ -47,9 +47,9 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  Road? selectedRoadR02; // Store selected road for R02
-  String sectionValue = ''; // Store section input
-  bool hasSectionError = false; // Track validation error
+  Road? selectedRoadR02;
+  String sectionValue = '';
+  bool hasSectionError = false;
   final TextEditingController _sectionController = TextEditingController();
 
   @override

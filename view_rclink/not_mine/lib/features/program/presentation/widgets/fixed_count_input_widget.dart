@@ -36,6 +36,26 @@ class _FixedCountInputWidgetState extends State<FixedCountInputWidget> {
   }
 
   @override
+  void didUpdateWidget(FixedCountInputWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Update value if initialData has changed
+    if (widget.initialData != oldWidget.initialData) {
+      final newValue = widget.initialData?['inputValue'];
+      final currentValue = _inputController.text.isEmpty
+          ? null
+          : double.tryParse(_inputController.text);
+
+      // Only update if values actually changed to avoid unnecessary updates
+      if (newValue?.toString() != currentValue?.toString()) {
+        _inputController.text = newValue?.toString() ?? '';
+
+        print('📊 Fixed count input updated: $newValue');
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _inputController.dispose();
     super.dispose();

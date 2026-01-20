@@ -87,7 +87,6 @@ class ProgramDraftBloc extends Bloc<ProgramDraftEvent, ProgramDraftState> {
           print('✅ Draft initialized: ${draftData.uid}');
           emit(ProgramDraftState.editing(draftData: draftData));
 
-          // Trigger initial auto-save
           add(const ProgramDraftEvent.autoSaveDraft());
         },
       );

@@ -185,7 +185,7 @@ class _ProgramCard extends StatelessWidget {
         ),
         child: Column(
           children: [
-            // Header Row - Work Scope & Contractor
+            // Header
             Row(
               children: [
                 Container(

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/responsive_helper.dart';
@@ -328,6 +329,29 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
     }
   }
 
+  List<Map<String, String>> _reconstructMonthlyPeriods(
+    DateTime start,
+    DateTime end,
+  ) {
+    final List<Map<String, String>> periods = [];
+    DateTime current = DateTime(start.year, start.month, 1);
+    final endMonth = DateTime(end.year, end.month, 1);
+
+    while (current.isBefore(endMonth) || current == endMonth) {
+      final firstDay = DateTime(current.year, current.month, 1);
+      final lastDay = DateTime(current.year, current.month + 1, 0);
+
+      periods.add({
+        'periodStart': DateFormat('yyyy-MM-dd').format(firstDay),
+        'periodEnd': DateFormat('yyyy-MM-dd').format(lastDay),
+      });
+
+      current = DateTime(current.year, current.month + 1, 1);
+    }
+
+    return periods;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<ProgramDraftBloc, ProgramDraftState>(
@@ -344,6 +368,18 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
               _periodStart = draftData.periodStart;
               _periodEnd = draftData.periodEnd;
               _description = draftData.description ?? '';
+
+              // ✅ Reconstruct _selectedPeriods from periodStart and periodEnd
+              if (draftData.periodStart != null &&
+                  draftData.periodEnd != null) {
+                _selectedPeriods = _reconstructMonthlyPeriods(
+                  draftData.periodStart!,
+                  draftData.periodEnd!,
+                );
+                print(
+                  '📅 Reconstructed ${_selectedPeriods.length} periods from draft',
+                );
+              }
             });
           },
           autoSaving: (draftData) {},
@@ -461,14 +497,34 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
                       builder: (context, programState) {
                         return programState.maybeWhen(
                           loaded: (settings, _) {
-                            // Filter settings by workScopeUID
+                            // Use workScopeUID from draft data if available, otherwise use widget parameter
+                            final workScopeUIDToFilter =
+                                _programDraftBloc.state.maybeWhen(
+                                  editing: (draftData) =>
+                                      draftData.workScopeUID,
+                                  autoSaving: (draftData) =>
+                                      draftData.workScopeUID,
+                                  autoSaved: (draftData) =>
+                                      draftData.workScopeUID,
+                                  orElse: () => widget.workScopeUID,
+                                ) ??
+                                widget.workScopeUID;
+
+                            print(
+                              '🔍 Filtering program settings with workScopeUID: $workScopeUIDToFilter',
+                            );
+
                             final filteredSettings = settings
                                 .where(
                                   (setting) =>
                                       setting.workScope?.uid ==
-                                      widget.workScopeUID,
+                                      workScopeUIDToFilter,
                                 )
                                 .toList();
+
+                            print(
+                              '✅ Found ${filteredSettings.length} program settings',
+                            );
 
                             if (filteredSettings.isEmpty) {
                               return Center(
@@ -494,16 +550,36 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
                             return ListView(
                               children: [
                                 // Contractor Selected
-                                Text(
-                                  widget.contractor.name.toUpperCase(),
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: ResponsiveHelper.fontSize(
-                                      context,
-                                      base: 16,
-                                    ),
-                                  ),
+                                BlocBuilder<
+                                  ProgramDraftBloc,
+                                  ProgramDraftState
+                                >(
+                                  bloc: _programDraftBloc,
+                                  builder: (context, state) {
+                                    final contractorName =
+                                        state.maybeWhen(
+                                          editing: (draftData) =>
+                                              draftData.contractor?.name,
+                                          autoSaving: (draftData) =>
+                                              draftData.contractor?.name,
+                                          autoSaved: (draftData) =>
+                                              draftData.contractor?.name,
+                                          orElse: () => null,
+                                        ) ??
+                                        widget.contractor.name;
+
+                                    return Text(
+                                      contractorName ?? 'N/A',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black,
+                                        fontSize: ResponsiveHelper.fontSize(
+                                          context,
+                                          base: 14,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
 
                                 SizedBox(height: 20),
@@ -570,29 +646,53 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
                                           ),
                                         ),
 
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.location_on,
-                                              color: Colors.black,
-                                              size: ResponsiveHelper.iconSize(
-                                                context,
-                                                base: 12,
-                                              ),
-                                            ),
-                                            SizedBox(width: 5),
-                                            Text(
-                                              '${widget.selectedRoads.length} Route',
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize:
-                                                    ResponsiveHelper.fontSize(
-                                                      context,
-                                                      base: 12,
-                                                    ),
-                                              ),
-                                            ),
-                                          ],
+                                        BlocBuilder<
+                                          ProgramDraftBloc,
+                                          ProgramDraftState
+                                        >(
+                                          bloc: _programDraftBloc,
+                                          builder: (context, state) {
+                                            final roads =
+                                                state.maybeWhen(
+                                                  editing: (draftData) =>
+                                                      draftData.roads,
+                                                  autoSaving: (draftData) =>
+                                                      draftData.roads,
+                                                  autoSaved: (draftData) =>
+                                                      draftData.roads,
+                                                  orElse: () => null,
+                                                ) ??
+                                                widget.selectedRoads;
+
+                                            final roadCount =
+                                                roads?.length ?? 0;
+
+                                            return Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.location_on,
+                                                  color: Colors.black,
+                                                  size:
+                                                      ResponsiveHelper.iconSize(
+                                                        context,
+                                                        base: 12,
+                                                      ),
+                                                ),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                  '$roadCount Route',
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize:
+                                                        ResponsiveHelper.fontSize(
+                                                          context,
+                                                          base: 12,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          },
                                         ),
                                       ],
                                     ),
@@ -749,7 +849,6 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
 
                                 SizedBox(height: 50),
 
-                                // Wrap the submit button with BlocListener
                                 BlocListener<
                                   CreateProgramBloc,
                                   CreateProgramState
@@ -775,7 +874,6 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
                                           type: SnackBarType.success,
                                         );
 
-                                        // Navigate back to program list or home
                                         Navigator.pop(context);
                                       },
                                       error: (message) {
@@ -995,48 +1093,6 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
             ),
           ),
         ),
-
-        // floatingActionButton: BlocBuilder<ProgramDraftBloc, ProgramDraftState>(
-        //   bloc: _programDraftBloc,
-        //   builder: (context, state) {
-        //     final isSubmitting = state is ProgramDraftSubmitting;
-
-        //     return FloatingActionButton.extended(
-        //       onPressed: isSubmitting
-        //           ? null
-        //           : () {
-        //               // TODO: Implement submit validation
-        //               // Check if all required fields are filled
-        //               // Then call SubmitProgram event
-        //               CustomSnackBar.show(
-        //                 context,
-        //                 'Submit functionality will be implemented next',
-        //                 type: SnackBarType.info,
-        //               );
-        //             },
-        //       backgroundColor: isSubmitting ? Colors.grey : primaryColor,
-        //       label: isSubmitting
-        //           ? SizedBox(
-        //               width: 20,
-        //               height: 20,
-        //               child: CircularProgressIndicator(
-        //                 strokeWidth: 2,
-        //                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-        //               ),
-        //             )
-        //           : Text(
-        //               'Submit Program',
-        //               style: TextStyle(
-        //                 color: Colors.white,
-        //                 fontWeight: FontWeight.w600,
-        //               ),
-        //             ),
-        //       icon: isSubmitting
-        //           ? null
-        //           : Icon(Icons.check, color: Colors.white),
-        //     );
-        //   },
-        // ),
       ),
     );
   }

@@ -148,7 +148,7 @@ class ProgramRemoteDataSourceImpl implements ProgramRemoteDataSource {
 
       final response = await _apiService.createProgram(
         companyUID,
-        requestModel, // ✅ Pass model directly (Retrofit handles serialization)
+        requestModel,
       );
 
       print('✅ Remote Datasource: API response received');

@@ -37,7 +37,7 @@ class _ProgramQuantitySelectionPageState
 
   bool get _canAddMoreQuantities {
     if (widget.allowMultipleQuantities) {
-      return true; // No limit
+      return true;
     }
     // Single quantity only
     return _quantityData.isEmpty;
@@ -115,7 +115,6 @@ class _ProgramQuantitySelectionPageState
 
       print('✅ Quantity saved: ${quantityType.name}');
 
-      // ✅ Auto-pop back to draft page after saving
       Navigator.pop(context, _quantityData);
     }
   }

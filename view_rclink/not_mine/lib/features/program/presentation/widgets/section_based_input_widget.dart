@@ -41,6 +41,30 @@ class _SectionBasedInputWidgetState extends State<SectionBasedInputWidget> {
   }
 
   @override
+  void didUpdateWidget(SectionBasedInputWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    // Update values if initialData has changed
+    if (widget.initialData != oldWidget.initialData) {
+      final newFromValue = widget.initialData?['fromSection']?.toDouble();
+      final newToValue = widget.initialData?['toSection']?.toDouble();
+
+      // Only update if values actually changed to avoid unnecessary updates
+      if (newFromValue != _fromValue || newToValue != _toValue) {
+        setState(() {
+          _fromValue = newFromValue;
+          _toValue = newToValue;
+        });
+
+        _fromController.text = _fromValue?.toString() ?? '';
+        _toController.text = _toValue?.toString() ?? '';
+
+        print('📍 Section input updated: $_fromValue - $_toValue');
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _fromController.dispose();
     _toController.dispose();

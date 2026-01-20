@@ -37,7 +37,6 @@ class _ProgramPageState extends State<ProgramPage> {
   void initState() {
     super.initState();
 
-    // Load programs when page initializes
     final companyUID = context.read<CompanyBloc>().state.maybeMap(
       loaded: (state) => state.selectedCompany?.uid,
       orElse: () => null,

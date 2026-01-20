@@ -25,13 +25,12 @@ class ContractorSelectionBottomSheet extends StatefulWidget {
 class ContractorSelectionBottomSheetState
     extends State<ContractorSelectionBottomSheet> {
   final TextEditingController _searchController = TextEditingController();
-  String? _localSelectedUID; // Add local state
+  String? _localSelectedUID;
 
   @override
   void initState() {
     super.initState();
-    _localSelectedUID =
-        widget.selectedContractorUID; // Initialize with current selection
+    _localSelectedUID = widget.selectedContractorUID;
   }
 
   @override

@@ -9,8 +9,6 @@ import '../../../road/presentation/widgets/road_multi_selection_bottomsheet.dart
 import '../../../road/presentation/bloc/road_bloc.dart';
 import '../../../../core/di/injection.dart';
 
-/// ContractorRoadFieldTile - Displays contractor-specific roads for selection
-/// Similar to RoadFieldTile but works with pre-fetched contractor roads
 class ContractorRoadFieldTile extends StatefulWidget {
   final List<Road> contractorRoads;
   final Function(RoadSelectionResult)? onRoadSelected;
@@ -40,7 +38,6 @@ class _ContractorRoadFieldTileState extends State<ContractorRoadFieldTile> {
       return;
     }
 
-    // Get a RoadBloc instance for the bottomsheet
     final roadBloc = getIt<RoadBloc>();
 
     // Show multi-selection bottomsheet
