@@ -112,9 +112,11 @@ class CreateProgramBloc extends Bloc<CreateProgramEvent, CreateProgramState> {
       final roads = event.selectedRoads.map((roadData) {
         return RoadInputModel(
           roadUID: roadData['roadUID'] as String,
-          fromSection: roadData['fromSection'] as double,
+          fromSection: roadData['fromSection'] as double?,
           toSection: roadData['toSection'] as double?,
-          inputValue: roadData['inputValue'] as int?,
+          inputValue: roadData['inputValue'] != null
+              ? (roadData['inputValue'] as num).toInt()
+              : null,
         );
       }).toList();
 

@@ -845,7 +845,7 @@ class _ProgramCreationPageState extends State<ProgramCreationPage> {
                       );
                     } else {
                       // Non-R02 validation: must have contractor and roads
-                      if (selectedContractorUID == null) {
+                      if (selectedContractorName == null) {
                         CustomSnackBar.show(
                           context,
                           'Please select a contractor',

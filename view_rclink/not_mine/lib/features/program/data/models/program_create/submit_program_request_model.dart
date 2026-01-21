@@ -25,7 +25,7 @@ abstract class SubmitProgramRequestModel with _$SubmitProgramRequestModel {
 abstract class RoadInputModel with _$RoadInputModel {
   const factory RoadInputModel({
     required String roadUID,
-    required double fromSection,
+    double? fromSection,
     double? toSection,
     int? inputValue,
   }) = _RoadInputModel;

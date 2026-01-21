@@ -11,7 +11,6 @@ import '../../domain/entities/program_settings/work_scope_nested_entity.dart';
 import '../../domain/entities/program_view/contract_relation_nested_entity.dart';
 import '../../domain/entities/program_view/program_quantity_entity.dart';
 import '../../domain/entities/program_view/road_nested_entity.dart';
-import 'program_local_datasource.dart';
 
 abstract class ProgramLocalDataSource {
   Future<Either<Failure, List<Program>>> getPrograms();
@@ -198,7 +197,19 @@ class ProgramLocalDataSourceImpl implements ProgramLocalDataSource {
       ),
     );
 
-    await _database.into(_database.programs).insertOnConflictUpdate(companion);
+    // Use insert with onConflict to handle both insert and update
+    await _database
+        .into(_database.programs)
+        .insert(
+          companion,
+          mode: InsertMode.insertOrReplace,
+          onConflict: DoUpdate(
+            (_) => companion,
+            target: [
+              _database.programs.uid,
+            ], // ✅ FIX: Use uid as conflict target
+          ),
+        );
   }
 
   Program _recordToEntity(ProgramRecord record) {
@@ -210,7 +221,20 @@ class ProgramLocalDataSourceImpl implements ProgramLocalDataSource {
 
     RoadNested? road;
     if (record.roadData != null && record.roadData!.isNotEmpty) {
-      road = RoadNested.fromJson(json.decode(record.roadData!));
+      // ✅ FIX: Convert numeric fields to strings before parsing
+      final roadJson = json.decode(record.roadData!) as Map<String, dynamic>;
+
+      // Convert sectionStart and sectionFinish from double to string if needed
+      if (roadJson['sectionStart'] is double ||
+          roadJson['sectionStart'] is int) {
+        roadJson['sectionStart'] = roadJson['sectionStart'].toString();
+      }
+      if (roadJson['sectionFinish'] is double ||
+          roadJson['sectionFinish'] is int) {
+        roadJson['sectionFinish'] = roadJson['sectionFinish'].toString();
+      }
+
+      road = RoadNested.fromJson(roadJson);
     }
 
     ContractRelationNested? contractRelation;

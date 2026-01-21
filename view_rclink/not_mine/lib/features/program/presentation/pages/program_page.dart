@@ -133,13 +133,8 @@ class _ProgramPageState extends State<ProgramPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     _buildTitleWithCount(context),
-                                    SizedBox(
-                                      height: ResponsiveHelper.spacing(
-                                        context,
-                                        15,
-                                      ),
-                                    ),
-                                    _buildSearchBar(context),
+
+                                    // _buildSearchBar(context),
                                   ],
                                 ),
                               ),

@@ -1017,8 +1017,9 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
                                                         _selectedPeriods
                                                             .first['periodStart']!,
                                                       ),
-                                                      contractRelationUID:
-                                                          widget.contractor.uid,
+                                                      contractRelationUID: widget
+                                                          .contractor
+                                                          .contractRelationUID,
                                                     ),
                                                   );
                                                 },

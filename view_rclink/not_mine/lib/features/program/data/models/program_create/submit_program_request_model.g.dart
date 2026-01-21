@@ -43,7 +43,7 @@ Map<String, dynamic> _$SubmitProgramRequestModelToJson(
 _RoadInputModel _$RoadInputModelFromJson(Map<String, dynamic> json) =>
     _RoadInputModel(
       roadUID: json['roadUID'] as String,
-      fromSection: (json['fromSection'] as num).toDouble(),
+      fromSection: (json['fromSection'] as num?)?.toDouble(),
       toSection: (json['toSection'] as num?)?.toDouble(),
       inputValue: (json['inputValue'] as num?)?.toInt(),
     );

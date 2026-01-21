@@ -1208,7 +1208,8 @@ class _R02ProgramCreationDraftPageState
                                               periods: _periods,
                                               periodStart: _periodStart!,
                                               contractRelationUID:
-                                                  _selectedContractor?.uid,
+                                                  _selectedContractor
+                                                      ?.contractRelationUID,
                                               description: _description,
                                               latitude: _latitude,
                                               longitude: _longitude,
