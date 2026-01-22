@@ -33,7 +33,7 @@ class Program {
   final String? fromSection;
   final String? toSection;
   final String? dividerValue;
-  final String? inputValue;
+  final int? inputValue;
   final String? longitude;
   final String? latitude;
   final int? createdByID;
@@ -107,7 +107,7 @@ class Program {
     String? fromSection,
     String? toSection,
     String? dividerValue,
-    String? inputValue,
+    int? inputValue,
     String? longitude,
     String? latitude,
     String? status,

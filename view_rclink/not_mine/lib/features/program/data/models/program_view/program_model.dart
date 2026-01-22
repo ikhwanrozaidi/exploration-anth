@@ -32,7 +32,8 @@ abstract class ProgramModel with _$ProgramModel {
     String? fromSection,
     String? toSection,
     String? dividerValue,
-    String? inputValue,
+    @JsonKey(fromJson: _parseNullableInt) int? inputValue,
+
     String? longitude,
     String? latitude,
     String? status,
@@ -141,4 +142,12 @@ extension ProgramModelX on ProgramModel {
       dailyReports: null, // Daily reports not included in fromEntity conversion
     );
   }
+}
+
+int? _parseNullableInt(dynamic value) {
+  if (value == null) return null;
+  if (value is int) return value;
+  if (value is num) return value.toInt();
+  if (value is String) return int.tryParse(value);
+  return null;
 }

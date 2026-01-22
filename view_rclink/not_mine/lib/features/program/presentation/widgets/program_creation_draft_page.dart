@@ -392,6 +392,7 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
               type: SnackBarType.success,
             );
             Navigator.of(context).pop();
+            Navigator.of(context).pop();
           },
           draftListLoaded: (drafts) {
             // This state is not relevant for this page, ignore it
@@ -428,6 +429,7 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
                     children: [
                       GestureDetector(
                         onTap: () {
+                          Navigator.pop(context);
                           Navigator.pop(context);
                         },
                         child: Container(
@@ -957,27 +959,123 @@ class _ProgramCreationDraftPageState extends State<ProgramCreationDraftPage> {
 
                                                   // Build selectedRoads for API submission
                                                   final selectedRoadsForAPI =
-                                                      widget.selectedRoads.map((
-                                                        road,
-                                                      ) {
-                                                        final roadUID =
-                                                            road.uid!;
-                                                        final inputData =
-                                                            _roadInputData[roadUID]!;
+                                                      <Map<String, dynamic>>[];
 
-                                                        return {
-                                                          'roadUID': roadUID,
-                                                          'fromSection':
-                                                              inputData['fromSection']
-                                                                  as double,
-                                                          'toSection':
-                                                              inputData['toSection']
-                                                                  as double?,
-                                                          'inputValue':
-                                                              inputData['inputValue']
-                                                                  as int?,
-                                                        };
-                                                      }).toList();
+                                                  // Get calculation type from program settings
+                                                  final programState =
+                                                      _programBloc.state;
+                                                  String? calculationType;
+
+                                                  programState.maybeWhen(
+                                                    loaded: (settings, _) {
+                                                      final filteredSettings =
+                                                          settings
+                                                              .where(
+                                                                (setting) =>
+                                                                    setting
+                                                                        .workScope
+                                                                        ?.uid ==
+                                                                    widget
+                                                                        .workScopeUID,
+                                                              )
+                                                              .toList();
+                                                      if (filteredSettings
+                                                          .isNotEmpty) {
+                                                        calculationType =
+                                                            filteredSettings
+                                                                .first
+                                                                .calculationType;
+                                                      }
+                                                    },
+                                                    orElse: () {},
+                                                  );
+
+                                                  print(
+                                                    '🔍 Building API payload with calculation type: $calculationType',
+                                                  );
+
+                                                  // Build roads based on calculation type
+                                                  for (final road
+                                                      in widget.selectedRoads) {
+                                                    final roadUID = road.uid!;
+                                                    final inputData =
+                                                        _roadInputData[roadUID];
+
+                                                    if (inputData == null ||
+                                                        inputData.isEmpty) {
+                                                      print(
+                                                        '⚠️ Missing input data for road: $roadUID',
+                                                      );
+                                                      continue;
+                                                    }
+
+                                                    if (calculationType ==
+                                                        'SECTION_BASED') {
+                                                      // SECTION_BASED: include fromSection and toSection
+                                                      final fromSection =
+                                                          inputData['fromSection'];
+                                                      final toSection =
+                                                          inputData['toSection'];
+
+                                                      if (fromSection == null ||
+                                                          toSection == null) {
+                                                        print(
+                                                          '⚠️ Missing section data for road: $roadUID',
+                                                        );
+                                                        continue;
+                                                      }
+
+                                                      selectedRoadsForAPI.add({
+                                                        'roadUID': roadUID,
+                                                        'fromSection':
+                                                            fromSection
+                                                                is double
+                                                            ? fromSection
+                                                            : (fromSection
+                                                                      as num)
+                                                                  .toDouble(),
+                                                        'toSection':
+                                                            toSection is double
+                                                            ? toSection
+                                                            : (toSection as num)
+                                                                  .toDouble(),
+                                                      });
+                                                    } else {
+                                                      // FIXED_COUNT: include only inputValue
+                                                      final inputValue =
+                                                          inputData['inputValue'];
+
+                                                      if (inputValue == null) {
+                                                        print(
+                                                          '⚠️ Missing input value for road: $roadUID',
+                                                        );
+                                                        continue;
+                                                      }
+
+                                                      selectedRoadsForAPI.add({
+                                                        'roadUID': roadUID,
+                                                        'inputValue':
+                                                            inputValue is double
+                                                            ? inputValue
+                                                            : (inputValue
+                                                                      as num)
+                                                                  .toDouble(),
+                                                      });
+                                                    }
+                                                  }
+
+                                                  if (selectedRoadsForAPI
+                                                          .length !=
+                                                      widget
+                                                          .selectedRoads
+                                                          .length) {
+                                                    CustomSnackBar.show(
+                                                      context,
+                                                      'Please complete input for all roads',
+                                                      type: SnackBarType.error,
+                                                    );
+                                                    return;
+                                                  }
 
                                                   print(
                                                     '📋 Submitting Non-R02 Program:',

@@ -45,7 +45,7 @@ _RoadInputModel _$RoadInputModelFromJson(Map<String, dynamic> json) =>
       roadUID: json['roadUID'] as String,
       fromSection: (json['fromSection'] as num?)?.toDouble(),
       toSection: (json['toSection'] as num?)?.toDouble(),
-      inputValue: (json['inputValue'] as num?)?.toInt(),
+      inputValue: (json['inputValue'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$RoadInputModelToJson(_RoadInputModel instance) =>

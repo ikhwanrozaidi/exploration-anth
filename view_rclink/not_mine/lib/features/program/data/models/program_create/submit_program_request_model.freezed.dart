@@ -322,7 +322,7 @@ as List<QuantityInputModel>?,
 /// @nodoc
 mixin _$RoadInputModel {
 
- String get roadUID; double? get fromSection; double? get toSection; int? get inputValue;
+ String get roadUID; double? get fromSection; double? get toSection; double? get inputValue;
 /// Create a copy of RoadInputModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -355,7 +355,7 @@ abstract mixin class $RoadInputModelCopyWith<$Res>  {
   factory $RoadInputModelCopyWith(RoadInputModel value, $Res Function(RoadInputModel) _then) = _$RoadInputModelCopyWithImpl;
 @useResult
 $Res call({
- String roadUID, double? fromSection, double? toSection, int? inputValue
+ String roadUID, double? fromSection, double? toSection, double? inputValue
 });
 
 
@@ -378,7 +378,7 @@ roadUID: null == roadUID ? _self.roadUID : roadUID // ignore: cast_nullable_to_n
 as String,fromSection: freezed == fromSection ? _self.fromSection : fromSection // ignore: cast_nullable_to_non_nullable
 as double?,toSection: freezed == toSection ? _self.toSection : toSection // ignore: cast_nullable_to_non_nullable
 as double?,inputValue: freezed == inputValue ? _self.inputValue : inputValue // ignore: cast_nullable_to_non_nullable
-as int?,
+as double?,
   ));
 }
 
@@ -463,7 +463,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String roadUID,  double? fromSection,  double? toSection,  int? inputValue)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String roadUID,  double? fromSection,  double? toSection,  double? inputValue)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RoadInputModel() when $default != null:
 return $default(_that.roadUID,_that.fromSection,_that.toSection,_that.inputValue);case _:
@@ -484,7 +484,7 @@ return $default(_that.roadUID,_that.fromSection,_that.toSection,_that.inputValue
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String roadUID,  double? fromSection,  double? toSection,  int? inputValue)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String roadUID,  double? fromSection,  double? toSection,  double? inputValue)  $default,) {final _that = this;
 switch (_that) {
 case _RoadInputModel():
 return $default(_that.roadUID,_that.fromSection,_that.toSection,_that.inputValue);case _:
@@ -504,7 +504,7 @@ return $default(_that.roadUID,_that.fromSection,_that.toSection,_that.inputValue
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String roadUID,  double? fromSection,  double? toSection,  int? inputValue)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String roadUID,  double? fromSection,  double? toSection,  double? inputValue)?  $default,) {final _that = this;
 switch (_that) {
 case _RoadInputModel() when $default != null:
 return $default(_that.roadUID,_that.fromSection,_that.toSection,_that.inputValue);case _:
@@ -525,7 +525,7 @@ class _RoadInputModel implements RoadInputModel {
 @override final  String roadUID;
 @override final  double? fromSection;
 @override final  double? toSection;
-@override final  int? inputValue;
+@override final  double? inputValue;
 
 /// Create a copy of RoadInputModel
 /// with the given fields replaced by the non-null parameter values.
@@ -560,7 +560,7 @@ abstract mixin class _$RoadInputModelCopyWith<$Res> implements $RoadInputModelCo
   factory _$RoadInputModelCopyWith(_RoadInputModel value, $Res Function(_RoadInputModel) _then) = __$RoadInputModelCopyWithImpl;
 @override @useResult
 $Res call({
- String roadUID, double? fromSection, double? toSection, int? inputValue
+ String roadUID, double? fromSection, double? toSection, double? inputValue
 });
 
 
@@ -583,7 +583,7 @@ roadUID: null == roadUID ? _self.roadUID : roadUID // ignore: cast_nullable_to_n
 as String,fromSection: freezed == fromSection ? _self.fromSection : fromSection // ignore: cast_nullable_to_non_nullable
 as double?,toSection: freezed == toSection ? _self.toSection : toSection // ignore: cast_nullable_to_non_nullable
 as double?,inputValue: freezed == inputValue ? _self.inputValue : inputValue // ignore: cast_nullable_to_non_nullable
-as int?,
+as double?,
   ));
 }
 

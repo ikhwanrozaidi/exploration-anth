@@ -24,7 +24,7 @@ _ProgramModel _$ProgramModelFromJson(Map<String, dynamic> json) =>
       fromSection: json['fromSection'] as String?,
       toSection: json['toSection'] as String?,
       dividerValue: json['dividerValue'] as String?,
-      inputValue: json['inputValue'] as String?,
+      inputValue: _parseNullableInt(json['inputValue']),
       longitude: json['longitude'] as String?,
       latitude: json['latitude'] as String?,
       status: json['status'] as String?,

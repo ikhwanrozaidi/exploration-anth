@@ -22,7 +22,7 @@ Program _$ProgramFromJson(Map<String, dynamic> json) => Program(
   fromSection: json['fromSection'] as String?,
   toSection: json['toSection'] as String?,
   dividerValue: json['dividerValue'] as String?,
-  inputValue: json['inputValue'] as String?,
+  inputValue: (json['inputValue'] as num?)?.toInt(),
   longitude: json['longitude'] as String?,
   latitude: json['latitude'] as String?,
   status: json['status'] as String?,

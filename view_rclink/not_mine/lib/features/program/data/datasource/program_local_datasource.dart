@@ -142,8 +142,8 @@ class ProgramLocalDataSourceImpl implements ProgramLocalDataSource {
       calculationType: Value(program.calculationType),
       fromSection: Value(program.fromSection),
       toSection: Value(program.toSection),
-      dividerValue: Value(program.dividerValue),
-      inputValue: Value(program.inputValue),
+      dividerValue: Value(program.dividerValue?.toString()),
+      inputValue: Value(program.inputValue?.toString()),
       requiredReportsCount: Value(program.requiredReportsCount),
       totalReports: Value(program.totalReports ?? 0),
       status: Value(program.status ?? 'DRAFT'),
@@ -295,7 +295,9 @@ class ProgramLocalDataSourceImpl implements ProgramLocalDataSource {
       fromSection: record.fromSection,
       toSection: record.toSection,
       dividerValue: record.dividerValue,
-      inputValue: record.inputValue,
+      inputValue: record.inputValue != null
+          ? int.tryParse(record.inputValue!)
+          : null,
       longitude: record.longitude?.toString(),
       latitude: record.latitude?.toString(),
       status: record.status,

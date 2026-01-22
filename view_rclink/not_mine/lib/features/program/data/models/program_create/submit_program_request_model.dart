@@ -27,7 +27,7 @@ abstract class RoadInputModel with _$RoadInputModel {
     required String roadUID,
     double? fromSection,
     double? toSection,
-    int? inputValue,
+    double? inputValue,
   }) = _RoadInputModel;
 
   factory RoadInputModel.fromJson(Map<String, dynamic> json) =>

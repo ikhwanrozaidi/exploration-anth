@@ -114,9 +114,7 @@ class CreateProgramBloc extends Bloc<CreateProgramEvent, CreateProgramState> {
           roadUID: roadData['roadUID'] as String,
           fromSection: roadData['fromSection'] as double?,
           toSection: roadData['toSection'] as double?,
-          inputValue: roadData['inputValue'] != null
-              ? (roadData['inputValue'] as num).toInt()
-              : null,
+          inputValue: roadData['inputValue'] as double?,
         );
       }).toList();
 
