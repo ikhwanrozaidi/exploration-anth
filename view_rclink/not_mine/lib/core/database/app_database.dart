@@ -88,7 +88,7 @@ class SyncQueue extends Table {
 class Companies extends Table {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UUID - unique for public lookup
-  TextColumn get name => text()();
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
   TextColumn get regNo => text().nullable()(); // Registration number
   TextColumn get cidbNo => text().nullable()(); // CIDB number
   TextColumn get address => text().nullable()();
@@ -99,16 +99,19 @@ class Companies extends Table {
   TextColumn get phone => text().nullable()();
   TextColumn get email => text().nullable()();
   TextColumn get website => text().nullable()();
-  TextColumn get companyType => text()(); // e.g., "PRIVATE_LIMITED_COMPANY"
-  IntColumn get ownerID => integer()(); // Owner admin ID
+  TextColumn get companyType =>
+      text()(); // e.g., "PRIVATE_LIMITED_COMPANY" //REPLACE: ADD NULLABLE
+  IntColumn get ownerID =>
+      integer()(); // Owner admin ID //REPLACE: ADD NULLABLE
   TextColumn get defaultBankAcc => text().nullable()(); // Default bank account
   TextColumn get defaultBankAccType => text().nullable()(); // e.g., "MAYBANK"
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
   DateTimeColumn get deletedAt => dateTime().nullable()();
   TextColumn get adminRoleUid => text().nullable()(); // Admin role UID
   TextColumn get adminRoleName => text().nullable()(); // Admin role name
-  BoolColumn get bumiputera => boolean().withDefault(const Constant(false))();
+  BoolColumn get bumiputera =>
+      boolean().withDefault(const Constant(false))(); //REPLACE: ADD NULLABLE
   TextColumn get einvoiceTinNo => text().nullable()();
   DateTimeColumn get registrationDate => dateTime().nullable()();
 
@@ -123,26 +126,31 @@ class Companies extends Table {
 class Roles extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get uid => text()();
-  TextColumn get name => text()();
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
   TextColumn get description => text().nullable()();
   IntColumn get companyID => integer()(); // Match API field name
-  BoolColumn get isSystemRole => boolean().withDefault(const Constant(false))();
-  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  BoolColumn get isSystemRole =>
+      boolean().withDefault(const Constant(false))(); //REPLACE: ADD NULLABLE
+  BoolColumn get isActive =>
+      boolean().withDefault(const Constant(true))(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 }
 
 // Permissions table - stores all permissions for current role
 @DataClassName('PermissionRecord')
 class Permissions extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get uid => text()();
-  TextColumn get code => text()(); // e.g., "COMPANY_VIEW"
-  TextColumn get name => text()();
+  TextColumn get uid => text()(); //REPLACE: ADD NULLABLE
+  TextColumn get code =>
+      text()(); // e.g., "COMPANY_VIEW" //REPLACE: ADD NULLABLE
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
   TextColumn get description => text().nullable()();
-  TextColumn get category => text()(); // e.g., "Company", "User", "Role"
-  TextColumn get scope => text()(); // e.g., "COMPANY"
-  IntColumn get roleID => integer()(); // Link to current role
+  TextColumn get category =>
+      text()(); // e.g., "Company", "User", "Role" //REPLACE: ADD NULLABLE
+  TextColumn get scope => text()(); // e.g., "COMPANY" //REPLACE: ADD NULLABLE
+  IntColumn get roleID =>
+      integer()(); // Link to current role //REPLACE: ADD NULLABLE
 }
 
 // Work Scope table
@@ -150,14 +158,14 @@ class Permissions extends Table with SyncableTable {
 class WorkScopes extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
-  TextColumn get code => text()();
-  TextColumn get description => text()();
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
+  TextColumn get code => text()(); //REPLACE: ADD NULLABLE
+  TextColumn get description => text()(); //REPLACE: ADD NULLABLE
   BoolColumn get allowMultipleQuantities =>
-      boolean().withDefault(const Constant(false))();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
-  IntColumn get companyID => integer()();
+      boolean().withDefault(const Constant(false))(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
+  IntColumn get companyID => integer()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -170,14 +178,15 @@ class WorkScopes extends Table with SyncableTable {
 class WorkQuantityTypes extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
-  TextColumn get code => text()();
-  IntColumn get displayOrder => integer()();
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
+  TextColumn get code => text()(); //REPLACE: ADD NULLABLE
+  IntColumn get displayOrder => integer()(); //REPLACE: ADD NULLABLE
   BoolColumn get hasSegmentBreakdown =>
-      boolean().withDefault(const Constant(false))();
+      boolean().withDefault(const Constant(false))(); //REPLACE: ADD NULLABLE
   IntColumn get segmentSize => integer().nullable()();
   IntColumn get maxSegmentLength => integer().nullable()();
-  IntColumn get workScopeID => integer()(); // Foreign key to WorkScopes
+  IntColumn get workScopeID =>
+      integer()(); // Foreign key to WorkScopes //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -190,14 +199,17 @@ class WorkQuantityTypes extends Table with SyncableTable {
 class WorkQuantityFields extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
-  TextColumn get code => text()();
-  TextColumn get fieldType => text()(); // e.g., "DROPDOWN", "TEXT", "NUMBER"
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
+  TextColumn get code => text()(); //REPLACE: ADD NULLABLE
+  TextColumn get fieldType =>
+      text()(); // e.g., "DROPDOWN", "TEXT", "NUMBER" //REPLACE: ADD NULLABLE
   TextColumn get unit => text().nullable()();
   TextColumn get validationRules => text().nullable()();
-  IntColumn get displayOrder => integer()();
-  BoolColumn get isRequired => boolean().withDefault(const Constant(false))();
-  BoolColumn get isForSegment => boolean().withDefault(const Constant(false))();
+  IntColumn get displayOrder => integer()(); //REPLACE: ADD NULLABLE
+  BoolColumn get isRequired =>
+      boolean().withDefault(const Constant(false))(); //REPLACE: ADD NULLABLE
+  BoolColumn get isForSegment =>
+      boolean().withDefault(const Constant(false))(); //REPLACE: ADD NULLABLE
   TextColumn get defaultValue => text().nullable()();
   TextColumn get placeholder => text().nullable()();
   TextColumn get helpText => text().nullable()();
@@ -215,9 +227,10 @@ class WorkQuantityFields extends Table with SyncableTable {
 class WorkQuantityFieldOptions extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UUID
-  TextColumn get value => text()();
-  IntColumn get displayOrder => integer()();
-  IntColumn get fieldID => integer()(); // Foreign key to WorkQuantityFields
+  TextColumn get value => text()(); //REPLACE: ADD NULLABLE
+  IntColumn get displayOrder => integer()(); //REPLACE: ADD NULLABLE
+  IntColumn get fieldID =>
+      integer()(); // Foreign key to WorkQuantityFields //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -230,8 +243,8 @@ class WorkQuantityFieldOptions extends Table with SyncableTable {
 class WorkScopeEquipments extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
-  TextColumn get code => text()();
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
+  TextColumn get code => text()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -243,9 +256,10 @@ class WorkScopeEquipments extends Table with SyncableTable {
 @DataClassName('WorkScopeEquipmentRecord')
 class WorkScopeEquipment extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()();
-  IntColumn get workScopeID => integer()(); // Foreign key to WorkScopes
+  IntColumn get workScopeID =>
+      integer()(); // Foreign key to WorkScopes //REPLACE: ADD NULLABLE
   IntColumn get workEquipmentID =>
-      integer()(); // Foreign key to WorkScopeEquipments
+      integer()(); // Foreign key to WorkScopeEquipments //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -258,9 +272,9 @@ class WorkScopeEquipment extends Table with SyncableTable {
 class Countries extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -273,10 +287,11 @@ class Countries extends Table with SyncableTable {
 class Provinces extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
-  IntColumn get countryID => integer()(); // Foreign key to Countries
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
+  IntColumn get countryID =>
+      integer()(); // Foreign key to Countries //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -288,12 +303,12 @@ class Provinces extends Table with SyncableTable {
 @DataClassName('DistrictRecord')
 class Districts extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
-  TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
+  TextColumn get uid => text()(); // Business UUID //REPLACE: ADD NULLABLE
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
   IntColumn get stateId =>
-      integer()(); // Foreign key to Provinces (matches entity field name)
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+      integer()(); // Foreign key to Provinces (matches entity field name) //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -305,10 +320,10 @@ class Districts extends Table with SyncableTable {
 @DataClassName('RoadCategoryRecord')
 class RoadCategories extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
-  TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  TextColumn get uid => text()(); // Business UUID //REPLACE: ADD NULLABLE
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -321,7 +336,7 @@ class RoadCategories extends Table with SyncableTable {
 class Roads extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
   TextColumn get roadNo => text().nullable()(); // Road number
   RealColumn get sectionStart => real().nullable()();
   RealColumn get sectionFinish => real().nullable()();
@@ -329,9 +344,10 @@ class Roads extends Table with SyncableTable {
       integer().nullable()(); // FK to RoadCategories
   IntColumn get secondaryCategoryId =>
       integer().nullable()(); // FK to RoadCategories
-  IntColumn get districtId => integer()(); // Foreign key to Districts
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  IntColumn get districtId =>
+      integer()(); // Foreign key to Districts //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -344,10 +360,10 @@ class Roads extends Table with SyncableTable {
 class Packages extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
   TextColumn get description => text().nullable()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -359,12 +375,13 @@ class Packages extends Table with SyncableTable {
 @DataClassName('PackageRoadRecord')
 class PackageRoads extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key
-  TextColumn get uid => text()(); // Business UUID
-  TextColumn get roadUID => text()(); // Foreign key to Roads (via UID)
+  TextColumn get uid => text()(); // Business UUID //REPLACE: ADD NULLABLE
+  TextColumn get roadUID =>
+      text()(); // Foreign key to Roads (via UID) //REPLACE: ADD NULLABLE
   RealColumn get sectionStart => real().nullable()();
   RealColumn get sectionFinish => real().nullable()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -465,12 +482,12 @@ class DailyReports extends Table with SyncableTable {
       .nullable()
       .autoIncrement()(); // Primary key - Server ID (NULL during draft)
   TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
   TextColumn get notes => text().nullable()();
   TextColumn get weatherCondition =>
-      text()(); // 'SUNNY', 'RAINY', 'CLOUDY', etc.
+      text()(); // 'SUNNY', 'RAINY', 'CLOUDY', etc. //REPLACE: ADD NULLABLE
   BoolColumn get workPerformed =>
-      boolean().withDefault(const Constant(false))();
+      boolean().withDefault(const Constant(false))(); //REPLACE: ADD NULLABLE
 
   // Location coordinates
   RealColumn get longitude =>
@@ -478,7 +495,8 @@ class DailyReports extends Table with SyncableTable {
   RealColumn get latitude => real().nullable()();
 
   // Primary ownership - the company this report belongs to
-  IntColumn get companyID => integer()(); // Foreign key to Companies
+  IntColumn get companyID =>
+      integer()(); // Foreign key to Companies //REPLACE: ADD NULLABLE
 
   // Optional contract relationship (null for in-house work)
   IntColumn get contractRelationID => integer().nullable()();
@@ -486,7 +504,7 @@ class DailyReports extends Table with SyncableTable {
   // Report status for workflow management
   TextColumn get status => text().withDefault(
     const Constant('SUBMITTED'),
-  )(); // 'DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'REVISION_REQUESTED'
+  )(); // 'DRAFT', 'SUBMITTED', 'APPROVED', 'REJECTED', 'REVISION_REQUESTED' //REPLACE: ADD NULLABLE
 
   // Optional approval tracking
   IntColumn get approvedByID => integer().nullable()(); // Foreign key to Admins
@@ -495,19 +513,22 @@ class DailyReports extends Table with SyncableTable {
       text().nullable()(); // Reason if rejected or revision requested
 
   // Work scope from the company
-  IntColumn get workScopeID => integer()(); // Foreign key to WorkScopes
+  IntColumn get workScopeID =>
+      integer()(); // Foreign key to WorkScopes //REPLACE: ADD NULLABLE
 
-  IntColumn get roadID => integer()(); // Foreign key to Roads
+  IntColumn get roadID =>
+      integer()(); // Foreign key to Roads //REPLACE: ADD NULLABLE
   IntColumn get totalWorkers => integer().nullable()();
   RealColumn get fromSection =>
       real().nullable()(); // Using REAL for decimal precision
   RealColumn get toSection => real().nullable()();
 
   // Admin who created this report
-  IntColumn get createdByID => integer()(); // Foreign key to Admins
+  IntColumn get createdByID =>
+      integer()(); // Foreign key to Admins //REPLACE: ADD NULLABLE
 
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   TextColumn get workScopeData => text().nullable()();
   TextColumn get roadData => text().nullable()();
@@ -528,14 +549,15 @@ class DailyReports extends Table with SyncableTable {
 class ReportEquipments extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get reportType =>
-      text()(); // 'DAILY_REPORT' (future: 'INSPECTION')
+      text()(); // 'DAILY_REPORT' (future: 'INSPECTION') //REPLACE: ADD NULLABLE
   IntColumn get dailyReportID => integer()
       .nullable()(); // Reference to DailyReports if reportType is DAILY_REPORT
   // Future: inspectionID for inspection module
   IntColumn get workEquipmentID =>
-      integer()(); // Foreign key to WorkScopeEquipments
-  IntColumn get addedByID => integer()(); // Admin who added this equipment
-  DateTimeColumn get createdAt => dateTime()();
+      integer()(); // Foreign key to WorkScopeEquipments //REPLACE: ADD NULLABLE
+  IntColumn get addedByID =>
+      integer()(); // Admin who added this equipment //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -548,15 +570,15 @@ class ReportEquipments extends Table with SyncableTable {
 class ReportQuantities extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get reportType =>
-      text()(); // 'DAILY_REPORT' (future: 'INSPECTION')
+      text()(); // 'DAILY_REPORT' (future: 'INSPECTION') //REPLACE: ADD NULLABLE
   IntColumn get dailyReportID => integer()
       .nullable()(); // Reference to DailyReports if reportType is DAILY_REPORT
   // Future: inspectionID for inspection module
   IntColumn get quantityTypeID =>
-      integer()(); // Foreign key to WorkQuantityTypes
+      integer()(); // Foreign key to WorkQuantityTypes //REPLACE: ADD NULLABLE
   IntColumn get sequenceNo => integer().withDefault(
     const Constant(1),
-  )(); // For multiple entries of same type
+  )(); // For multiple entries of same type //REPLACE: ADD NULLABLE
   RealColumn get totalLength =>
       real().nullable()(); // For R02: total measurement entered by user
   TextColumn get notes => text().nullable()();
@@ -582,11 +604,11 @@ class ReportQuantityValues extends Table with SyncableTable {
   IntColumn get segmentID =>
       integer().nullable()(); // For segment entries (R02)
   IntColumn get quantityFieldID =>
-      integer()(); // Foreign key to WorkQuantityFields
+      integer()(); // Foreign key to WorkQuantityFields //REPLACE: ADD NULLABLE
   TextColumn get value =>
-      text()(); // Store all values as string, parse based on fieldType
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+      text()(); // Store all values as string, parse based on fieldType //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -603,12 +625,15 @@ class ReportQuantityValues extends Table with SyncableTable {
 class ReportSegments extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   IntColumn get reportQuantityID =>
-      integer()(); // Foreign key to ReportQuantities
-  IntColumn get segmentNumber => integer()(); // 1, 2, 3... (segment sequence)
-  RealColumn get startDistance => real()(); // 0, 25, 50...
-  RealColumn get endDistance => real()(); // 25, 50, 75...
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+      integer()(); // Foreign key to ReportQuantities //REPLACE: ADD NULLABLE
+  IntColumn get segmentNumber =>
+      integer()(); // 1, 2, 3... (segment sequence) //REPLACE: ADD NULLABLE
+  RealColumn get startDistance =>
+      real()(); // 0, 25, 50... //REPLACE: ADD NULLABLE
+  RealColumn get endDistance =>
+      real()(); // 25, 50, 75... //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -626,11 +651,11 @@ class ReportSegments extends Table with SyncableTable {
 class WarningCategories extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UID for API lookups
-  TextColumn get name => text()(); // Category name
+  TextColumn get name => text()(); // Category name //REPLACE: ADD NULLABLE
   TextColumn get warningType =>
-      text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+      text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   @override
   List<Set<Column>> get uniqueKeys => [
@@ -643,18 +668,23 @@ class WarningCategories extends Table with SyncableTable {
 @DataClassName('WarningReasonRecord')
 class WarningReasons extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
-  TextColumn get uid => text()(); // Business UID for API lookups
-  TextColumn get name => text()(); // Reason name
+  TextColumn get uid =>
+      text()(); // Business UID for API lookups //REPLACE: ADD NULLABLE
+  TextColumn get name => text()(); // Reason name //REPLACE: ADD NULLABLE
   TextColumn get warningType =>
-      text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING
-  IntColumn get categoryID => integer()(); // Foreign key to WarningCategories
-  IntColumn get workScopeID => integer()(); // Foreign key to WorkScopes
+      text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING //REPLACE: ADD NULLABLE
+  IntColumn get categoryID =>
+      integer()(); // Foreign key to WarningCategories //REPLACE: ADD NULLABLE
+  IntColumn get workScopeID =>
+      integer()(); // Foreign key to WorkScopes //REPLACE: ADD NULLABLE
   BoolColumn get requiresAction =>
-      boolean().withDefault(const Constant(true))();
-  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
-  IntColumn get displayOrder => integer().withDefault(const Constant(0))();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+      boolean().withDefault(const Constant(true))(); //REPLACE: ADD NULLABLE
+  BoolColumn get isActive =>
+      boolean().withDefault(const Constant(true))(); //REPLACE: ADD NULLABLE
+  IntColumn get displayOrder =>
+      integer().withDefault(const Constant(0))(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   // Cached JSON data for nested relationships
   TextColumn get categoryData => text().nullable()(); // JSON: WarningCategory
@@ -679,15 +709,15 @@ class Warnings extends Table with SyncableTable {
 
   // Warning type discriminator
   TextColumn get warningType =>
-      text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING
+      text()(); // REPORT_WARNING, INSPECTION_WARNING, SITE_WARNING //REPLACE: ADD NULLABLE
 
   // Optional linkage (null for SITE_WARNING)
   IntColumn get dailyReportID => integer().nullable()();
 
   // Core data - foreign keys
-  IntColumn get companyID => integer()();
-  IntColumn get roadID => integer()();
-  IntColumn get workScopeID => integer()();
+  IntColumn get companyID => integer()(); //REPLACE: ADD NULLABLE
+  IntColumn get roadID => integer()(); //REPLACE: ADD NULLABLE
+  IntColumn get workScopeID => integer()(); //REPLACE: ADD NULLABLE
   IntColumn get contractRelationID => integer().nullable()();
 
   // Section information (stored as text for flexibility)
@@ -696,8 +726,9 @@ class Warnings extends Table with SyncableTable {
 
   // Completion tracking
   BoolColumn get requiresAction =>
-      boolean().withDefault(const Constant(true))();
-  BoolColumn get isResolved => boolean().withDefault(const Constant(false))();
+      boolean().withDefault(const Constant(true))(); //REPLACE: ADD NULLABLE
+  BoolColumn get isResolved =>
+      boolean().withDefault(const Constant(false))(); //REPLACE: ADD NULLABLE
   IntColumn get resolvedByID => integer().nullable()();
   DateTimeColumn get resolvedAt => dateTime().nullable()();
   TextColumn get resolutionNotes => text().nullable()();
@@ -711,8 +742,8 @@ class Warnings extends Table with SyncableTable {
 
   // Creation tracking
   IntColumn get createdByID => integer().nullable()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   // Cached JSON data for nested relationships and warning items
   TextColumn get warningItemsData =>
@@ -744,7 +775,7 @@ class Warnings extends Table with SyncableTable {
 class ContractorRelations extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UUID
-  TextColumn get name => text()();
+  TextColumn get name => text()(); //REPLACE: ADD NULLABLE
   TextColumn get regNo => text().nullable()();
   TextColumn get cidbNo => text().nullable()();
   TextColumn get address => text().nullable()();
@@ -760,9 +791,9 @@ class ContractorRelations extends Table with SyncableTable {
   BoolColumn get bumiputera => boolean().nullable()();
   TextColumn get einvoiceTinNo => text().nullable()();
   DateTimeColumn get registrationDate => dateTime().nullable()();
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
-  IntColumn get ownerID => integer()();
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
+  IntColumn get ownerID => integer()(); //REPLACE: ADD NULLABLE
   TextColumn get defaultBankAcc => text().nullable()();
   TextColumn get defaultBankAccType => text().nullable()(); // AMBANK, etc.
   BoolColumn get isSelf => boolean().nullable()();
@@ -781,20 +812,25 @@ class ContractorRelations extends Table with SyncableTable {
 class ProgramSettings extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()(); // Primary key - Server ID
   TextColumn get uid => text()(); // Business UUID
-  IntColumn get companyID => integer()(); // Foreign key to Companies
-  IntColumn get workScopeID => integer()(); // Foreign key to WorkScopes
-  TextColumn get calculationType => text()(); // SECTION_BASED, FIXED_COUNT
+  IntColumn get companyID =>
+      integer()(); // Foreign key to Companies //REPLACE: ADD NULLABLE
+  IntColumn get workScopeID =>
+      integer()(); // Foreign key to WorkScopes //REPLACE: ADD NULLABLE
+  TextColumn get calculationType =>
+      text()(); // SECTION_BASED, FIXED_COUNT //REPLACE: ADD NULLABLE
   TextColumn get inputLabel => text().nullable()();
   TextColumn get inputValue => text().nullable()();
   TextColumn get dividerValue => text().nullable()();
   TextColumn get dividerLabel => text().nullable()();
   TextColumn get unitMeasurement => text().nullable()(); // METER, NUMBER
   BoolColumn get photoRequired =>
-      boolean().withDefault(const Constant(false))();
-  BoolColumn get isActive => boolean().withDefault(const Constant(true))();
-  IntColumn get createdByID => integer()(); // Foreign key to Admins
-  DateTimeColumn get createdAt => dateTime()();
-  DateTimeColumn get updatedAt => dateTime()();
+      boolean().withDefault(const Constant(false))(); //REPLACE: ADD NULLABLE
+  BoolColumn get isActive =>
+      boolean().withDefault(const Constant(true))(); //REPLACE: ADD NULLABLE
+  IntColumn get createdByID =>
+      integer()(); // Foreign key to Admins //REPLACE: ADD NULLABLE
+  DateTimeColumn get createdAt => dateTime()(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt => dateTime()(); //REPLACE: ADD NULLABLE
 
   // Store nested data as JSON
   TextColumn get workScopeData => text().nullable()(); // JSON of WorkScope
@@ -813,8 +849,8 @@ class ProgramSettings extends Table with SyncableTable {
 class Programs extends Table with SyncableTable {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get uid => text()();
-  IntColumn get companyID => integer()();
-  IntColumn get workScopeID => integer()();
+  IntColumn get companyID => integer()(); //REPLACE: ADD NULLABLE
+  IntColumn get workScopeID => integer()(); //REPLACE: ADD NULLABLE
   TextColumn get workScopeData => text().nullable()();
   IntColumn get roadID => integer().nullable()();
   TextColumn get roadData => text().nullable()();
@@ -831,15 +867,18 @@ class Programs extends Table with SyncableTable {
   TextColumn get inputValue => text().nullable()();
   IntColumn get requiredReportsCount => integer().nullable()();
   IntColumn get totalReports => integer().withDefault(const Constant(0))();
-  TextColumn get status => text()(); // DRAFT, SUBMITTED, ACTIVE, etc.
+  TextColumn get status =>
+      text()(); // DRAFT, SUBMITTED, ACTIVE, etc. //REPLACE: ADD NULLABLE
   RealColumn get latitude => real().nullable()();
   RealColumn get longitude => real().nullable()();
   TextColumn get quantitiesData => text().nullable()();
   TextColumn get filesData => text().nullable()();
   IntColumn get createdByID => integer().nullable()();
   TextColumn get createdByData => text().nullable()();
-  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
-  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt =>
+      dateTime().withDefault(currentDateAndTime)(); //REPLACE: ADD NULLABLE
+  DateTimeColumn get updatedAt =>
+      dateTime().withDefault(currentDateAndTime)(); //REPLACE: ADD NULLABLE
   DateTimeColumn get deletedAt => dateTime().nullable()();
 
   @override

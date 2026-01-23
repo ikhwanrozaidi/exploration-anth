@@ -116,32 +116,49 @@ import '../../features/program/data/datasource/program_api_service.dart'
     as _i1032;
 import '../../features/program/data/datasource/program_draft_local_datasource.dart'
     as _i1031;
+import '../../features/program/data/datasource/program_image_remote_datasource.dart'
+    as _i775;
 import '../../features/program/data/datasource/program_local_datasource.dart'
     as _i337;
 import '../../features/program/data/datasource/program_remote_datasource.dart'
     as _i975;
+import '../../features/program/data/datasource/program_settings_local_datasource.dart'
+    as _i696;
+import '../../features/program/data/repositories/program_detail_repository_impl.dart'
+    as _i262;
+import '../../features/program/data/repositories/program_list_repository_impl.dart'
+    as _i451;
 import '../../features/program/data/repositories/program_repository_impl.dart'
     as _i967;
+import '../../features/program/domain/repositories/program_detail_repository.dart'
+    as _i792;
+import '../../features/program/domain/repositories/program_list_repository.dart'
+    as _i526;
 import '../../features/program/domain/repositories/program_repository.dart'
     as _i119;
+import '../../features/program/domain/usecases/clear_program_cache.dart' as _i4;
 import '../../features/program/domain/usecases/clear_program_cache_usecase.dart'
     as _i768;
 import '../../features/program/domain/usecases/get_contractor_roads_usecase.dart'
     as _i1050;
 import '../../features/program/domain/usecases/get_program_detail_usecase.dart'
     as _i685;
-import '../../features/program/domain/usecases/get_program_list_usecase.dart'
-    as _i555;
 import '../../features/program/domain/usecases/get_program_settings_usecase.dart'
     as _i194;
+import '../../features/program/domain/usecases/get_program_usecase.dart'
+    as _i1029;
 import '../../features/program/domain/usecases/submit_program_usecase.dart'
     as _i956;
 import '../../features/program/presentation/bloc/create_program/%20create_program_bloc.dart'
     as _i789;
 import '../../features/program/presentation/bloc/program/program_bloc.dart'
     as _i126;
+import '../../features/program/presentation/bloc/program_detail/program_detail_bloc.dart'
+    as _i887;
 import '../../features/program/presentation/bloc/program_draft/program_draft_bloc.dart'
     as _i1049;
+import '../../features/program/presentation/bloc/program_list/program_list_bloc.dart'
+    as _i848;
 import '../../features/rbac/data/datasources/permission_local_datasource.dart'
     as _i267;
 import '../../features/rbac/data/datasources/permission_remote_datasource.dart'
@@ -368,6 +385,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i432.PermissionRemoteDataSource>(),
         gh<_i267.PermissionLocalDataSource>(),
       ),
+    );
+    gh.lazySingleton<_i775.ProgramImageRemoteDataSource>(
+      () => _i775.ProgramImageRemoteDataSourceImpl(
+        gh<_i1032.ProgramApiService>(),
+      ),
+    );
+    gh.lazySingleton<_i696.ProgramSettingsLocalDataSource>(
+      () =>
+          _i696.ProgramSettingsLocalDataSourceImpl(gh<_i982.DatabaseService>()),
     );
     gh.lazySingleton<_i464.DailyReportLocalDataSource>(
       () => _i464.DailyReportLocalDataSourceImpl(gh<_i982.DatabaseService>()),
@@ -710,6 +736,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i224.ContractorRelationBloc>(),
       ),
     );
+    gh.lazySingleton<_i119.ProgramRepository>(
+      () => _i967.ProgramRepositoryImpl(
+        gh<_i696.ProgramSettingsLocalDataSource>(),
+        gh<_i975.ProgramRemoteDataSource>(),
+        gh<_i364.ImageLocalDataSource>(),
+        gh<_i775.ProgramImageRemoteDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i581.RoadRepository>(
       () => _i934.RoadRepositoryImpl(
         gh<_i1039.RoadRemoteDataSource>(),
@@ -723,6 +757,27 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i426.CompanyBloc>(),
       ),
     );
+    gh.lazySingleton<_i956.SubmitProgramUseCase>(
+      () => _i956.SubmitProgramUseCase(gh<_i119.ProgramRepository>()),
+    );
+    gh.factory<_i789.CreateProgramBloc>(
+      () => _i789.CreateProgramBloc(gh<_i956.SubmitProgramUseCase>()),
+    );
+    gh.lazySingleton<_i792.ProgramDetailRepository>(
+      () => _i262.ProgramDetailRepositoryImpl(
+        gh<_i337.ProgramLocalDataSource>(),
+        gh<_i975.ProgramRemoteDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i685.GetProgramDetailUseCase>(
+      () => _i685.GetProgramDetailUseCase(gh<_i792.ProgramDetailRepository>()),
+    );
+    gh.lazySingleton<_i526.ProgramListRepository>(
+      () => _i451.ProgramListRepositoryImpl(
+        gh<_i337.ProgramLocalDataSource>(),
+        gh<_i975.ProgramRemoteDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i275.ClearRoadCacheUseCase>(
       () => _i275.ClearRoadCacheUseCase(gh<_i581.RoadRepository>()),
     );
@@ -734,12 +789,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i593.WorkScopeRemoteDataSource>(),
         gh<_i1028.WorkScopeLocalDataSource>(),
         gh<_i426.CompanyBloc>(),
-      ),
-    );
-    gh.lazySingleton<_i119.ProgramRepository>(
-      () => _i967.ProgramRepositoryImpl(
-        gh<_i337.ProgramLocalDataSource>(),
-        gh<_i975.ProgramRemoteDataSource>(),
       ),
     );
     gh.lazySingleton<_i1050.GetContractorRoadsUseCase>(
@@ -768,20 +817,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i426.CompanyBloc>(),
       ),
     );
-    gh.lazySingleton<_i956.SubmitProgramUseCase>(
-      () => _i956.SubmitProgramUseCase(gh<_i119.ProgramRepository>()),
-    );
-    gh.lazySingleton<_i555.GetProgramListUseCase>(
-      () => _i555.GetProgramListUseCase(gh<_i119.ProgramRepository>()),
-    );
-    gh.lazySingleton<_i685.GetProgramDetailUseCase>(
-      () => _i685.GetProgramDetailUseCase(gh<_i119.ProgramRepository>()),
+    gh.factory<_i887.ProgramDetailBloc>(
+      () => _i887.ProgramDetailBloc(gh<_i685.GetProgramDetailUseCase>()),
     );
     gh.factory<_i1005.GetQuantityUseCase>(
       () => _i1005.GetQuantityUseCase(gh<_i880.QuantityRepository>()),
-    );
-    gh.factory<_i789.CreateProgramBloc>(
-      () => _i789.CreateProgramBloc(gh<_i956.SubmitProgramUseCase>()),
     );
     gh.lazySingleton<_i126.ProgramBloc>(
       () => _i126.ProgramBloc(
@@ -801,6 +841,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i971.GetRoadsUseCase>(),
         gh<_i275.ClearRoadCacheUseCase>(),
       ),
+    );
+    gh.lazySingleton<_i1029.GetProgramsUseCase>(
+      () => _i1029.GetProgramsUseCase(gh<_i526.ProgramListRepository>()),
+    );
+    gh.lazySingleton<_i4.ClearProgramCacheUseCase>(
+      () => _i4.ClearProgramCacheUseCase(gh<_i526.ProgramListRepository>()),
     );
     gh.lazySingleton<_i797.AuthBloc>(
       () => _i797.AuthBloc(
@@ -845,6 +891,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i1005.GetQuantityUseCase>(),
         gh<_i847.GetEquipmentUseCase>(),
         gh<_i11.UpdateDailyReportUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i848.ProgramListBloc>(
+      () => _i848.ProgramListBloc(
+        gh<_i1029.GetProgramsUseCase>(),
+        gh<_i768.ClearProgramCacheUseCase>(),
       ),
     );
     return this;
