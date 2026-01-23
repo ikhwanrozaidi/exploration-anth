@@ -1,56 +1,86 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rclink_app/features/company/presentation/bloc/company_state.dart';
-import 'package:rclink_app/features/program/presentation/pages/program_creation_page.dart';
-import 'package:rclink_app/features/warnings/presentation/widgets/no_access.dart';
-
 import '../../../../core/di/injection.dart';
 import '../../../../shared/utils/responsive_helper.dart';
 import '../../../../shared/utils/theme.dart';
 import '../../../../shared/widgets/custom_snackbar.dart';
+import '../../../../shared/widgets/month_filter_widget.dart';
+import '../../../company/presentation/bloc/company_bloc.dart';
+import '../../../company/presentation/bloc/company_state.dart';
 import '../../../rbac/domain/constants/permission_codes.dart';
 import '../../../rbac/presentation/bloc/rbac_bloc.dart';
 import '../../../rbac/presentation/bloc/rbac_state.dart';
+import '../../../warnings/presentation/widgets/no_access.dart';
 import '../../../work_scope/presentation/bloc/work_scope_bloc.dart';
 import '../../../work_scope/presentation/widgets/work_scope_bottom_sheet.dart';
-import '../../../../shared/widgets/month_filter_widget.dart';
-import '../../../company/presentation/bloc/company_bloc.dart';
 import '../bloc/program_list/program_list_bloc.dart';
 import '../bloc/program_list/program_list_event.dart';
 import '../bloc/program_list/program_list_state.dart';
 import '../widgets/program_list_widget.dart';
+import 'program_creation_page.dart';
 import 'view_program_draft_page.dart';
 
-class ProgramPage extends StatefulWidget {
+class ProgramPage extends StatelessWidget {
   const ProgramPage({Key? key}) : super(key: key);
 
   @override
-  State<ProgramPage> createState() => _ProgramPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => getIt<ProgramListBloc>(),
+      child: const _ProgramPageContent(),
+    );
+  }
 }
 
-class _ProgramPageState extends State<ProgramPage> {
+class _ProgramPageContent extends StatefulWidget {
+  const _ProgramPageContent({Key? key}) : super(key: key);
+
+  @override
+  State<_ProgramPageContent> createState() => _ProgramPageContentState();
+}
+
+class _ProgramPageContentState extends State<_ProgramPageContent> {
   bool showActionRequired = true;
   int selectedMonth = DateTime.now().month;
   int selectedYear = DateTime.now().year;
+  late ScrollController _scrollController;
+  // bool _isLoadingMore = false;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
+    // _scrollController.addListener(_onScroll);
 
-    final companyUID = context.read<CompanyBloc>().state.maybeMap(
-      loaded: (state) => state.selectedCompany?.uid,
-      orElse: () => null,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadPrograms();
+    });
+  }
 
-    if (companyUID != null) {
-      getIt<ProgramListBloc>().add(
-        ProgramListEvent.loadPrograms(
-          companyUID: companyUID,
-          page: 1,
-          limit: 10,
-        ),
-      );
+  @override
+  void dispose() {
+    // _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _loadPrograms() {
+    final companyState = context.read<CompanyBloc>().state;
+    if (companyState is! CompanyLoaded ||
+        companyState.selectedCompany == null) {
+      return;
     }
+
+    final companyUID = companyState.selectedCompany!.uid;
+
+    context.read<ProgramListBloc>().add(
+      ProgramListEvent.loadPrograms(
+        companyUID: companyUID,
+        page: 1,
+        limit: 10,
+        forceRefresh: true,
+      ),
+    );
   }
 
   void toggleActionRequired() {
@@ -72,109 +102,104 @@ class _ProgramPageState extends State<ProgramPage> {
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
 
-    return BlocProvider.value(
-      value: getIt<ProgramListBloc>(),
-      child: BlocBuilder<RbacBloc, RbacState>(
-        builder: (context, rbacState) {
-          final hasPermission = rbacState.hasPermission(
-            PermissionCodes.PROGRAM_VIEW,
-          );
+    return BlocBuilder<RbacBloc, RbacState>(
+      builder: (context, rbacState) {
+        final hasPermission = rbacState.hasPermission(
+          PermissionCodes.PROGRAM_VIEW,
+        );
 
-          return Scaffold(
-            body: NoAccessOverlay(
-              showOverlay: !hasPermission,
-              backButton: true,
-              child: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color.fromARGB(255, 135, 167, 247), primaryColor],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    stops: [0.0, 0.2],
-                  ),
+        return Scaffold(
+          body: NoAccessOverlay(
+            showOverlay: !hasPermission,
+            backButton: true,
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color.fromARGB(255, 135, 167, 247), primaryColor],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  stops: [0.0, 0.2],
                 ),
-                child: SafeArea(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: ResponsiveHelper.getHeight(context, 0.02),
-                      ),
+              ),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    SizedBox(height: ResponsiveHelper.getHeight(context, 0.02)),
 
-                      // Header
-                      _buildHeader(context),
+                    // Header
+                    _buildHeader(context),
 
-                      SizedBox(height: 20),
+                    SizedBox(height: 20),
 
-                      // Body Container
-                      Expanded(
-                        child: Container(
-                          width: double.infinity,
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(24),
-                              topRight: Radius.circular(24),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 10,
-                                offset: Offset(0, -2),
-                              ),
-                            ],
+                    // Body Container
+                    Expanded(
+                      child: Container(
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(24),
+                            topRight: Radius.circular(24),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Title & Search Bar
-                              Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _buildTitleWithCount(context),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 10,
+                              offset: Offset(0, -2),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Title & Search Bar
+                            Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildTitleWithCount(context),
 
-                                    // _buildSearchBar(context),
+                                  // _buildSearchBar(context),
+                                ],
+                              ),
+                            ),
+
+                            // Month Filter
+                            MonthFilter(
+                              onMonthSelected: onMonthSelected,
+                              primaryColor: primaryColor,
+                            ),
+
+                            // Filter Buttons & List
+                            Expanded(
+                              child: Padding(
+                                padding: ResponsiveHelper.padding(
+                                  context,
+                                  all: 15,
+                                ),
+                                child: Column(
+                                  children: [
+                                    _buildFilterButtons(context, w),
+                                    SizedBox(height: 20),
+
+                                    // Program List Widget
+                                    Expanded(child: ProgramListWidget()),
                                   ],
                                 ),
                               ),
-
-                              // Month Filter
-                              MonthFilter(
-                                onMonthSelected: onMonthSelected,
-                                primaryColor: primaryColor,
-                              ),
-
-                              // Filter Buttons & List
-                              Expanded(
-                                child: Padding(
-                                  padding: ResponsiveHelper.padding(
-                                    context,
-                                    all: 15,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      _buildFilterButtons(context, w),
-                                      SizedBox(height: 20),
-
-                                      // Program List Widget
-                                      Expanded(child: ProgramListWidget()),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 

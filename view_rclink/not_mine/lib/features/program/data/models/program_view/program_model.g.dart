@@ -8,8 +8,8 @@ part of 'program_model.dart';
 
 _ProgramModel _$ProgramModelFromJson(Map<String, dynamic> json) =>
     _ProgramModel(
-      id: (json['id'] as num?)?.toInt(),
-      uid: json['uid'] as String?,
+      id: (json['id'] as num).toInt(),
+      uid: json['uid'] as String,
       name: json['name'] as String?,
       description: json['description'] as String?,
       companyID: (json['companyID'] as num?)?.toInt(),

@@ -8,8 +8,8 @@ part 'create_program_response_model.g.dart';
 @freezed
 abstract class ProgramResponseModel with _$ProgramResponseModel {
   const factory ProgramResponseModel({
-    int? id,
-    String? uid,
+    required int id,
+    required String uid,
     String? name,
     String? description,
     int? companyID,
@@ -23,7 +23,7 @@ abstract class ProgramResponseModel with _$ProgramResponseModel {
     String? calculationType,
     String? fromSection,
     String? toSection,
-    int? dividerValue,
+    String? dividerValue,
     int? inputValue,
     String? status,
     int? createdByID,

@@ -160,7 +160,7 @@ class ProgramRemoteDataSourceImpl implements ProgramRemoteDataSource {
         return Left(ServerFailure('No program data in response'));
       }
     } catch (e) {
-      print('❌ Error fetching contractor roads: $e');
+      print('❌ Error submitProgram: $e');
       return Left(ServerFailure('Unexpected error: ${e.toString()}'));
     }
   }

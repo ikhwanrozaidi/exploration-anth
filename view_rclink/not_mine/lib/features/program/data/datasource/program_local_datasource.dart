@@ -221,20 +221,51 @@ class ProgramLocalDataSourceImpl implements ProgramLocalDataSource {
 
     RoadNested? road;
     if (record.roadData != null && record.roadData!.isNotEmpty) {
-      // ✅ FIX: Convert numeric fields to strings before parsing
-      final roadJson = json.decode(record.roadData!) as Map<String, dynamic>;
+      try {
+        final roadDataDecoded = json.decode(record.roadData!);
 
-      // Convert sectionStart and sectionFinish from double to string if needed
-      if (roadJson['sectionStart'] is double ||
-          roadJson['sectionStart'] is int) {
-        roadJson['sectionStart'] = roadJson['sectionStart'].toString();
-      }
-      if (roadJson['sectionFinish'] is double ||
-          roadJson['sectionFinish'] is int) {
-        roadJson['sectionFinish'] = roadJson['sectionFinish'].toString();
-      }
+        // Check if it's a Map (single road) or List (multiple roads)
+        if (roadDataDecoded is Map<String, dynamic>) {
+          // Single road (R02 programs)
+          final roadJson = roadDataDecoded;
 
-      road = RoadNested.fromJson(roadJson);
+          // Convert sectionStart and sectionFinish from double to string if needed
+          if (roadJson['sectionStart'] is double ||
+              roadJson['sectionStart'] is int) {
+            roadJson['sectionStart'] = roadJson['sectionStart'].toString();
+          }
+          if (roadJson['sectionFinish'] is double ||
+              roadJson['sectionFinish'] is int) {
+            roadJson['sectionFinish'] = roadJson['sectionFinish'].toString();
+          }
+
+          road = RoadNested.fromJson(roadJson);
+        } else if (roadDataDecoded is List) {
+          // Multiple roads (non-R02 programs) - take the first road
+          // Note: Program entity only supports single road, so we take the first one
+          if (roadDataDecoded.isNotEmpty) {
+            final roadJson = roadDataDecoded[0] as Map<String, dynamic>;
+
+            // Convert numeric fields to strings
+            if (roadJson['sectionStart'] is double ||
+                roadJson['sectionStart'] is int) {
+              roadJson['sectionStart'] = roadJson['sectionStart'].toString();
+            }
+            if (roadJson['sectionFinish'] is double ||
+                roadJson['sectionFinish'] is int) {
+              roadJson['sectionFinish'] = roadJson['sectionFinish'].toString();
+            }
+
+            road = RoadNested.fromJson(roadJson);
+
+            print(
+              '⚠️ Multi-road program detected, using first road: ${road.name}',
+            );
+          }
+        }
+      } catch (e) {
+        print('❌ Error parsing roadData: $e');
+      }
     }
 
     ContractRelationNested? contractRelation;

@@ -159,10 +159,10 @@ return submitNonR02Program(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  String workScopeUID,  String workScopeCode,  String workScopeName,  String roadUID,  double section,  List<Map<String, String>> periods,  DateTime periodStart,  String? contractRelationUID,  String description,  double? latitude,  double? longitude,  Map<String, Map<String, dynamic>> quantityFieldData,  List<dynamic> quantityTypes)?  submitR02Program,TResult Function( String companyUID,  String workScopeUID,  String workScopeCode,  String workScopeName,  List<Map<String, dynamic>> selectedRoads,  List<Map<String, String>> periods,  DateTime periodStart,  String? contractRelationUID)?  submitNonR02Program,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String companyUID,  String workScopeUID,  String workScopeCode,  String workScopeName,  String roadUID,  double section,  List<Map<String, String>> periods,  DateTime periodStart,  String? contractRelationUID,  String description,  double? latitude,  double? longitude,  Map<String, Map<String, dynamic>> quantityFieldData,  List<dynamic> quantityTypes,  String? draftUID)?  submitR02Program,TResult Function( String companyUID,  String workScopeUID,  String workScopeCode,  String workScopeName,  List<Map<String, dynamic>> selectedRoads,  List<Map<String, String>> periods,  DateTime periodStart,  String? contractRelationUID)?  submitNonR02Program,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case SubmitR02Program() when submitR02Program != null:
-return submitR02Program(_that.companyUID,_that.workScopeUID,_that.workScopeCode,_that.workScopeName,_that.roadUID,_that.section,_that.periods,_that.periodStart,_that.contractRelationUID,_that.description,_that.latitude,_that.longitude,_that.quantityFieldData,_that.quantityTypes);case SubmitNonR02Program() when submitNonR02Program != null:
+return submitR02Program(_that.companyUID,_that.workScopeUID,_that.workScopeCode,_that.workScopeName,_that.roadUID,_that.section,_that.periods,_that.periodStart,_that.contractRelationUID,_that.description,_that.latitude,_that.longitude,_that.quantityFieldData,_that.quantityTypes,_that.draftUID);case SubmitNonR02Program() when submitNonR02Program != null:
 return submitNonR02Program(_that.companyUID,_that.workScopeUID,_that.workScopeCode,_that.workScopeName,_that.selectedRoads,_that.periods,_that.periodStart,_that.contractRelationUID);case _:
   return orElse();
 
@@ -181,10 +181,10 @@ return submitNonR02Program(_that.companyUID,_that.workScopeUID,_that.workScopeCo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  String workScopeUID,  String workScopeCode,  String workScopeName,  String roadUID,  double section,  List<Map<String, String>> periods,  DateTime periodStart,  String? contractRelationUID,  String description,  double? latitude,  double? longitude,  Map<String, Map<String, dynamic>> quantityFieldData,  List<dynamic> quantityTypes)  submitR02Program,required TResult Function( String companyUID,  String workScopeUID,  String workScopeCode,  String workScopeName,  List<Map<String, dynamic>> selectedRoads,  List<Map<String, String>> periods,  DateTime periodStart,  String? contractRelationUID)  submitNonR02Program,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String companyUID,  String workScopeUID,  String workScopeCode,  String workScopeName,  String roadUID,  double section,  List<Map<String, String>> periods,  DateTime periodStart,  String? contractRelationUID,  String description,  double? latitude,  double? longitude,  Map<String, Map<String, dynamic>> quantityFieldData,  List<dynamic> quantityTypes,  String? draftUID)  submitR02Program,required TResult Function( String companyUID,  String workScopeUID,  String workScopeCode,  String workScopeName,  List<Map<String, dynamic>> selectedRoads,  List<Map<String, String>> periods,  DateTime periodStart,  String? contractRelationUID)  submitNonR02Program,}) {final _that = this;
 switch (_that) {
 case SubmitR02Program():
-return submitR02Program(_that.companyUID,_that.workScopeUID,_that.workScopeCode,_that.workScopeName,_that.roadUID,_that.section,_that.periods,_that.periodStart,_that.contractRelationUID,_that.description,_that.latitude,_that.longitude,_that.quantityFieldData,_that.quantityTypes);case SubmitNonR02Program():
+return submitR02Program(_that.companyUID,_that.workScopeUID,_that.workScopeCode,_that.workScopeName,_that.roadUID,_that.section,_that.periods,_that.periodStart,_that.contractRelationUID,_that.description,_that.latitude,_that.longitude,_that.quantityFieldData,_that.quantityTypes,_that.draftUID);case SubmitNonR02Program():
 return submitNonR02Program(_that.companyUID,_that.workScopeUID,_that.workScopeCode,_that.workScopeName,_that.selectedRoads,_that.periods,_that.periodStart,_that.contractRelationUID);case _:
   throw StateError('Unexpected subclass');
 
@@ -202,10 +202,10 @@ return submitNonR02Program(_that.companyUID,_that.workScopeUID,_that.workScopeCo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  String workScopeUID,  String workScopeCode,  String workScopeName,  String roadUID,  double section,  List<Map<String, String>> periods,  DateTime periodStart,  String? contractRelationUID,  String description,  double? latitude,  double? longitude,  Map<String, Map<String, dynamic>> quantityFieldData,  List<dynamic> quantityTypes)?  submitR02Program,TResult? Function( String companyUID,  String workScopeUID,  String workScopeCode,  String workScopeName,  List<Map<String, dynamic>> selectedRoads,  List<Map<String, String>> periods,  DateTime periodStart,  String? contractRelationUID)?  submitNonR02Program,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String companyUID,  String workScopeUID,  String workScopeCode,  String workScopeName,  String roadUID,  double section,  List<Map<String, String>> periods,  DateTime periodStart,  String? contractRelationUID,  String description,  double? latitude,  double? longitude,  Map<String, Map<String, dynamic>> quantityFieldData,  List<dynamic> quantityTypes,  String? draftUID)?  submitR02Program,TResult? Function( String companyUID,  String workScopeUID,  String workScopeCode,  String workScopeName,  List<Map<String, dynamic>> selectedRoads,  List<Map<String, String>> periods,  DateTime periodStart,  String? contractRelationUID)?  submitNonR02Program,}) {final _that = this;
 switch (_that) {
 case SubmitR02Program() when submitR02Program != null:
-return submitR02Program(_that.companyUID,_that.workScopeUID,_that.workScopeCode,_that.workScopeName,_that.roadUID,_that.section,_that.periods,_that.periodStart,_that.contractRelationUID,_that.description,_that.latitude,_that.longitude,_that.quantityFieldData,_that.quantityTypes);case SubmitNonR02Program() when submitNonR02Program != null:
+return submitR02Program(_that.companyUID,_that.workScopeUID,_that.workScopeCode,_that.workScopeName,_that.roadUID,_that.section,_that.periods,_that.periodStart,_that.contractRelationUID,_that.description,_that.latitude,_that.longitude,_that.quantityFieldData,_that.quantityTypes,_that.draftUID);case SubmitNonR02Program() when submitNonR02Program != null:
 return submitNonR02Program(_that.companyUID,_that.workScopeUID,_that.workScopeCode,_that.workScopeName,_that.selectedRoads,_that.periods,_that.periodStart,_that.contractRelationUID);case _:
   return null;
 
@@ -218,7 +218,7 @@ return submitNonR02Program(_that.companyUID,_that.workScopeUID,_that.workScopeCo
 
 
 class SubmitR02Program implements CreateProgramEvent {
-  const SubmitR02Program({required this.companyUID, required this.workScopeUID, required this.workScopeCode, required this.workScopeName, required this.roadUID, required this.section, required final  List<Map<String, String>> periods, required this.periodStart, this.contractRelationUID, required this.description, this.latitude, this.longitude, required final  Map<String, Map<String, dynamic>> quantityFieldData, required final  List<dynamic> quantityTypes}): _periods = periods,_quantityFieldData = quantityFieldData,_quantityTypes = quantityTypes;
+  const SubmitR02Program({required this.companyUID, required this.workScopeUID, required this.workScopeCode, required this.workScopeName, required this.roadUID, required this.section, required final  List<Map<String, String>> periods, required this.periodStart, this.contractRelationUID, required this.description, this.latitude, this.longitude, required final  Map<String, Map<String, dynamic>> quantityFieldData, required final  List<dynamic> quantityTypes, this.draftUID}): _periods = periods,_quantityFieldData = quantityFieldData,_quantityTypes = quantityTypes;
   
 
 @override final  String companyUID;
@@ -253,6 +253,8 @@ class SubmitR02Program implements CreateProgramEvent {
   return EqualUnmodifiableListView(_quantityTypes);
 }
 
+// QuantityTypeNested list
+ final  String? draftUID;
 
 /// Create a copy of CreateProgramEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -264,16 +266,16 @@ $SubmitR02ProgramCopyWith<SubmitR02Program> get copyWith => _$SubmitR02ProgramCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitR02Program&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID)&&(identical(other.workScopeUID, workScopeUID) || other.workScopeUID == workScopeUID)&&(identical(other.workScopeCode, workScopeCode) || other.workScopeCode == workScopeCode)&&(identical(other.workScopeName, workScopeName) || other.workScopeName == workScopeName)&&(identical(other.roadUID, roadUID) || other.roadUID == roadUID)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._periods, _periods)&&(identical(other.periodStart, periodStart) || other.periodStart == periodStart)&&(identical(other.contractRelationUID, contractRelationUID) || other.contractRelationUID == contractRelationUID)&&(identical(other.description, description) || other.description == description)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&const DeepCollectionEquality().equals(other._quantityFieldData, _quantityFieldData)&&const DeepCollectionEquality().equals(other._quantityTypes, _quantityTypes));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SubmitR02Program&&(identical(other.companyUID, companyUID) || other.companyUID == companyUID)&&(identical(other.workScopeUID, workScopeUID) || other.workScopeUID == workScopeUID)&&(identical(other.workScopeCode, workScopeCode) || other.workScopeCode == workScopeCode)&&(identical(other.workScopeName, workScopeName) || other.workScopeName == workScopeName)&&(identical(other.roadUID, roadUID) || other.roadUID == roadUID)&&(identical(other.section, section) || other.section == section)&&const DeepCollectionEquality().equals(other._periods, _periods)&&(identical(other.periodStart, periodStart) || other.periodStart == periodStart)&&(identical(other.contractRelationUID, contractRelationUID) || other.contractRelationUID == contractRelationUID)&&(identical(other.description, description) || other.description == description)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&const DeepCollectionEquality().equals(other._quantityFieldData, _quantityFieldData)&&const DeepCollectionEquality().equals(other._quantityTypes, _quantityTypes)&&(identical(other.draftUID, draftUID) || other.draftUID == draftUID));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,companyUID,workScopeUID,workScopeCode,workScopeName,roadUID,section,const DeepCollectionEquality().hash(_periods),periodStart,contractRelationUID,description,latitude,longitude,const DeepCollectionEquality().hash(_quantityFieldData),const DeepCollectionEquality().hash(_quantityTypes));
+int get hashCode => Object.hash(runtimeType,companyUID,workScopeUID,workScopeCode,workScopeName,roadUID,section,const DeepCollectionEquality().hash(_periods),periodStart,contractRelationUID,description,latitude,longitude,const DeepCollectionEquality().hash(_quantityFieldData),const DeepCollectionEquality().hash(_quantityTypes),draftUID);
 
 @override
 String toString() {
-  return 'CreateProgramEvent.submitR02Program(companyUID: $companyUID, workScopeUID: $workScopeUID, workScopeCode: $workScopeCode, workScopeName: $workScopeName, roadUID: $roadUID, section: $section, periods: $periods, periodStart: $periodStart, contractRelationUID: $contractRelationUID, description: $description, latitude: $latitude, longitude: $longitude, quantityFieldData: $quantityFieldData, quantityTypes: $quantityTypes)';
+  return 'CreateProgramEvent.submitR02Program(companyUID: $companyUID, workScopeUID: $workScopeUID, workScopeCode: $workScopeCode, workScopeName: $workScopeName, roadUID: $roadUID, section: $section, periods: $periods, periodStart: $periodStart, contractRelationUID: $contractRelationUID, description: $description, latitude: $latitude, longitude: $longitude, quantityFieldData: $quantityFieldData, quantityTypes: $quantityTypes, draftUID: $draftUID)';
 }
 
 
@@ -284,7 +286,7 @@ abstract mixin class $SubmitR02ProgramCopyWith<$Res> implements $CreateProgramEv
   factory $SubmitR02ProgramCopyWith(SubmitR02Program value, $Res Function(SubmitR02Program) _then) = _$SubmitR02ProgramCopyWithImpl;
 @override @useResult
 $Res call({
- String companyUID, String workScopeUID, String workScopeCode, String workScopeName, String roadUID, double section, List<Map<String, String>> periods, DateTime periodStart, String? contractRelationUID, String description, double? latitude, double? longitude, Map<String, Map<String, dynamic>> quantityFieldData, List<dynamic> quantityTypes
+ String companyUID, String workScopeUID, String workScopeCode, String workScopeName, String roadUID, double section, List<Map<String, String>> periods, DateTime periodStart, String? contractRelationUID, String description, double? latitude, double? longitude, Map<String, Map<String, dynamic>> quantityFieldData, List<dynamic> quantityTypes, String? draftUID
 });
 
 
@@ -301,7 +303,7 @@ class _$SubmitR02ProgramCopyWithImpl<$Res>
 
 /// Create a copy of CreateProgramEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? companyUID = null,Object? workScopeUID = null,Object? workScopeCode = null,Object? workScopeName = null,Object? roadUID = null,Object? section = null,Object? periods = null,Object? periodStart = null,Object? contractRelationUID = freezed,Object? description = null,Object? latitude = freezed,Object? longitude = freezed,Object? quantityFieldData = null,Object? quantityTypes = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? companyUID = null,Object? workScopeUID = null,Object? workScopeCode = null,Object? workScopeName = null,Object? roadUID = null,Object? section = null,Object? periods = null,Object? periodStart = null,Object? contractRelationUID = freezed,Object? description = null,Object? latitude = freezed,Object? longitude = freezed,Object? quantityFieldData = null,Object? quantityTypes = null,Object? draftUID = freezed,}) {
   return _then(SubmitR02Program(
 companyUID: null == companyUID ? _self.companyUID : companyUID // ignore: cast_nullable_to_non_nullable
 as String,workScopeUID: null == workScopeUID ? _self.workScopeUID : workScopeUID // ignore: cast_nullable_to_non_nullable
@@ -317,7 +319,8 @@ as String,latitude: freezed == latitude ? _self.latitude : latitude // ignore: c
 as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
 as double?,quantityFieldData: null == quantityFieldData ? _self._quantityFieldData : quantityFieldData // ignore: cast_nullable_to_non_nullable
 as Map<String, Map<String, dynamic>>,quantityTypes: null == quantityTypes ? _self._quantityTypes : quantityTypes // ignore: cast_nullable_to_non_nullable
-as List<dynamic>,
+as List<dynamic>,draftUID: freezed == draftUID ? _self.draftUID : draftUID // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

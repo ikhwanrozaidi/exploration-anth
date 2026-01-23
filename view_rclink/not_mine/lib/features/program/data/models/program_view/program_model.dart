@@ -16,8 +16,8 @@ abstract class ProgramModel with _$ProgramModel {
   const ProgramModel._();
 
   const factory ProgramModel({
-    int? id,
-    String? uid,
+    required int id,
+    required String uid,
     String? name,
     String? description,
     int? companyID,

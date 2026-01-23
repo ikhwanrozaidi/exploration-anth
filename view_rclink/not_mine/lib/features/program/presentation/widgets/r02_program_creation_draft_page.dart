@@ -1192,6 +1192,23 @@ class _R02ProgramCreationDraftPageState
                                             return;
                                           }
 
+                                          // Get draft UID from current draft state
+                                          final draftState =
+                                              _programDraftBloc.state;
+                                          String? draftUID;
+
+                                          draftState.maybeWhen(
+                                            editing: (draftData) =>
+                                                draftUID = draftData.uid,
+                                            autoSaving: (draftData) =>
+                                                draftUID = draftData.uid,
+                                            autoSaved: (draftData) =>
+                                                draftUID = draftData.uid,
+                                            submitting: (draftData) =>
+                                                draftUID = draftData.uid,
+                                            orElse: () => draftUID = null,
+                                          );
+
                                           // Submit program
                                           _createProgramBloc.add(
                                             CreateProgramEvent.submitR02Program(
@@ -1208,6 +1225,7 @@ class _R02ProgramCreationDraftPageState
                                               section: widget.section ?? 0,
                                               periods: _periods,
                                               periodStart: _periodStart!,
+                                              // periodEnd: _periodEnd!,
                                               contractRelationUID:
                                                   _selectedContractor
                                                       ?.contractRelationUID,
@@ -1218,6 +1236,8 @@ class _R02ProgramCreationDraftPageState
                                                   _quantityFieldData,
                                               quantityTypes:
                                                   currentSetting.quantityTypes!,
+                                              draftUID:
+                                                  draftUID, // Pass the draft UID here
                                             ),
                                           );
                                         },

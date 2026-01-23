@@ -19,6 +19,7 @@ abstract class CreateProgramEvent with _$CreateProgramEvent {
     double? longitude,
     required Map<String, Map<String, dynamic>> quantityFieldData,
     required List<dynamic> quantityTypes, // QuantityTypeNested list
+    String? draftUID,
   }) = SubmitR02Program;
 
   const factory CreateProgramEvent.submitNonR02Program({

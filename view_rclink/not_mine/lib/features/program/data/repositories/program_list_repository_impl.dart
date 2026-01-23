@@ -27,6 +27,8 @@ class ProgramListRepositoryImpl
     return getOfflineFirst(
       forceRefresh: forceRefresh,
       getLocal: () async {
+        print('PROGRAMMM: in getLocal');
+
         final result = await _localDataSource.getPrograms();
         return result.fold(
           (failure) => null,
@@ -35,6 +37,8 @@ class ProgramListRepositoryImpl
         );
       },
       getRemote: () async {
+        print('PROGRAMMM: in getRemote');
+
         final result = await _remoteDataSource.getPrograms(
           companyUID: companyUID,
           page: page,

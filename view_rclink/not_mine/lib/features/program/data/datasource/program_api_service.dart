@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
+import '../../../../core/sync/models/file_response_dto.dart';
 import '../../../../shared/models/api_response.dart';
 import '../../domain/entities/program_view/program_filter_model.dart';
 import '../models/program_create/create_program_response_model.dart';
@@ -39,5 +40,14 @@ abstract class ProgramApiService {
     @Path('companyUID') String companyUID,
     @Path('uid') String uid,
     @Queries() Map<String, dynamic> queries,
+  );
+
+  /// Upload program images
+  @POST('/companies/{companyUID}/programs/{uid}/files')
+  @MultiPart()
+  Future<ApiResponse<List<FileResponseDto>>> uploadProgramFiles(
+    @Path('companyUID') String companyUID,
+    @Path('uid') String programUID,
+    @Part(name: 'PROGRAM_IMAGE') List<MultipartFile>? programImages,
   );
 }

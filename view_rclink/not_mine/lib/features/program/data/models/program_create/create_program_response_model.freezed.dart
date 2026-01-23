@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProgramResponseModel {
 
- int? get id; String? get uid; String? get name; String? get description; int? get companyID; int? get workScopeID; int? get roadID; String? get periodStart; String? get periodEnd; int? get contractRelationID; int? get requiredReportsCount; int? get totalReports; String? get calculationType; String? get fromSection; String? get toSection; int? get dividerValue; int? get inputValue; String? get status; int? get createdByID; String? get createdAt; String? get updatedAt; String? get deletedAt;
+ int get id; String get uid; String? get name; String? get description; int? get companyID; int? get workScopeID; int? get roadID; String? get periodStart; String? get periodEnd; int? get contractRelationID; int? get requiredReportsCount; int? get totalReports; String? get calculationType; String? get fromSection; String? get toSection; String? get dividerValue; int? get inputValue; String? get status; int? get createdByID; String? get createdAt; String? get updatedAt; String? get deletedAt;
 /// Create a copy of ProgramResponseModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $ProgramResponseModelCopyWith<$Res>  {
   factory $ProgramResponseModelCopyWith(ProgramResponseModel value, $Res Function(ProgramResponseModel) _then) = _$ProgramResponseModelCopyWithImpl;
 @useResult
 $Res call({
- int? id, String? uid, String? name, String? description, int? companyID, int? workScopeID, int? roadID, String? periodStart, String? periodEnd, int? contractRelationID, int? requiredReportsCount, int? totalReports, String? calculationType, String? fromSection, String? toSection, int? dividerValue, int? inputValue, String? status, int? createdByID, String? createdAt, String? updatedAt, String? deletedAt
+ int id, String uid, String? name, String? description, int? companyID, int? workScopeID, int? roadID, String? periodStart, String? periodEnd, int? contractRelationID, int? requiredReportsCount, int? totalReports, String? calculationType, String? fromSection, String? toSection, String? dividerValue, int? inputValue, String? status, int? createdByID, String? createdAt, String? updatedAt, String? deletedAt
 });
 
 
@@ -65,11 +65,11 @@ class _$ProgramResponseModelCopyWithImpl<$Res>
 
 /// Create a copy of ProgramResponseModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? uid = freezed,Object? name = freezed,Object? description = freezed,Object? companyID = freezed,Object? workScopeID = freezed,Object? roadID = freezed,Object? periodStart = freezed,Object? periodEnd = freezed,Object? contractRelationID = freezed,Object? requiredReportsCount = freezed,Object? totalReports = freezed,Object? calculationType = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? dividerValue = freezed,Object? inputValue = freezed,Object? status = freezed,Object? createdByID = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? deletedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? uid = null,Object? name = freezed,Object? description = freezed,Object? companyID = freezed,Object? workScopeID = freezed,Object? roadID = freezed,Object? periodStart = freezed,Object? periodEnd = freezed,Object? contractRelationID = freezed,Object? requiredReportsCount = freezed,Object? totalReports = freezed,Object? calculationType = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? dividerValue = freezed,Object? inputValue = freezed,Object? status = freezed,Object? createdByID = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? deletedAt = freezed,}) {
   return _then(_self.copyWith(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int?,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
-as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
+as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,companyID: freezed == companyID ? _self.companyID : companyID // ignore: cast_nullable_to_non_nullable
 as int?,workScopeID: freezed == workScopeID ? _self.workScopeID : workScopeID // ignore: cast_nullable_to_non_nullable
@@ -83,7 +83,7 @@ as int?,calculationType: freezed == calculationType ? _self.calculationType : ca
 as String?,fromSection: freezed == fromSection ? _self.fromSection : fromSection // ignore: cast_nullable_to_non_nullable
 as String?,toSection: freezed == toSection ? _self.toSection : toSection // ignore: cast_nullable_to_non_nullable
 as String?,dividerValue: freezed == dividerValue ? _self.dividerValue : dividerValue // ignore: cast_nullable_to_non_nullable
-as int?,inputValue: freezed == inputValue ? _self.inputValue : inputValue // ignore: cast_nullable_to_non_nullable
+as String?,inputValue: freezed == inputValue ? _self.inputValue : inputValue // ignore: cast_nullable_to_non_nullable
 as int?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String?,createdByID: freezed == createdByID ? _self.createdByID : createdByID // ignore: cast_nullable_to_non_nullable
 as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -174,7 +174,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  String? description,  int? companyID,  int? workScopeID,  int? roadID,  String? periodStart,  String? periodEnd,  int? contractRelationID,  int? requiredReportsCount,  int? totalReports,  String? calculationType,  String? fromSection,  String? toSection,  int? dividerValue,  int? inputValue,  String? status,  int? createdByID,  String? createdAt,  String? updatedAt,  String? deletedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String uid,  String? name,  String? description,  int? companyID,  int? workScopeID,  int? roadID,  String? periodStart,  String? periodEnd,  int? contractRelationID,  int? requiredReportsCount,  int? totalReports,  String? calculationType,  String? fromSection,  String? toSection,  String? dividerValue,  int? inputValue,  String? status,  int? createdByID,  String? createdAt,  String? updatedAt,  String? deletedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProgramResponseModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.description,_that.companyID,_that.workScopeID,_that.roadID,_that.periodStart,_that.periodEnd,_that.contractRelationID,_that.requiredReportsCount,_that.totalReports,_that.calculationType,_that.fromSection,_that.toSection,_that.dividerValue,_that.inputValue,_that.status,_that.createdByID,_that.createdAt,_that.updatedAt,_that.deletedAt);case _:
@@ -195,7 +195,7 @@ return $default(_that.id,_that.uid,_that.name,_that.description,_that.companyID,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? id,  String? uid,  String? name,  String? description,  int? companyID,  int? workScopeID,  int? roadID,  String? periodStart,  String? periodEnd,  int? contractRelationID,  int? requiredReportsCount,  int? totalReports,  String? calculationType,  String? fromSection,  String? toSection,  int? dividerValue,  int? inputValue,  String? status,  int? createdByID,  String? createdAt,  String? updatedAt,  String? deletedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String uid,  String? name,  String? description,  int? companyID,  int? workScopeID,  int? roadID,  String? periodStart,  String? periodEnd,  int? contractRelationID,  int? requiredReportsCount,  int? totalReports,  String? calculationType,  String? fromSection,  String? toSection,  String? dividerValue,  int? inputValue,  String? status,  int? createdByID,  String? createdAt,  String? updatedAt,  String? deletedAt)  $default,) {final _that = this;
 switch (_that) {
 case _ProgramResponseModel():
 return $default(_that.id,_that.uid,_that.name,_that.description,_that.companyID,_that.workScopeID,_that.roadID,_that.periodStart,_that.periodEnd,_that.contractRelationID,_that.requiredReportsCount,_that.totalReports,_that.calculationType,_that.fromSection,_that.toSection,_that.dividerValue,_that.inputValue,_that.status,_that.createdByID,_that.createdAt,_that.updatedAt,_that.deletedAt);case _:
@@ -215,7 +215,7 @@ return $default(_that.id,_that.uid,_that.name,_that.description,_that.companyID,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? id,  String? uid,  String? name,  String? description,  int? companyID,  int? workScopeID,  int? roadID,  String? periodStart,  String? periodEnd,  int? contractRelationID,  int? requiredReportsCount,  int? totalReports,  String? calculationType,  String? fromSection,  String? toSection,  int? dividerValue,  int? inputValue,  String? status,  int? createdByID,  String? createdAt,  String? updatedAt,  String? deletedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String uid,  String? name,  String? description,  int? companyID,  int? workScopeID,  int? roadID,  String? periodStart,  String? periodEnd,  int? contractRelationID,  int? requiredReportsCount,  int? totalReports,  String? calculationType,  String? fromSection,  String? toSection,  String? dividerValue,  int? inputValue,  String? status,  int? createdByID,  String? createdAt,  String? updatedAt,  String? deletedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _ProgramResponseModel() when $default != null:
 return $default(_that.id,_that.uid,_that.name,_that.description,_that.companyID,_that.workScopeID,_that.roadID,_that.periodStart,_that.periodEnd,_that.contractRelationID,_that.requiredReportsCount,_that.totalReports,_that.calculationType,_that.fromSection,_that.toSection,_that.dividerValue,_that.inputValue,_that.status,_that.createdByID,_that.createdAt,_that.updatedAt,_that.deletedAt);case _:
@@ -230,11 +230,11 @@ return $default(_that.id,_that.uid,_that.name,_that.description,_that.companyID,
 @JsonSerializable()
 
 class _ProgramResponseModel implements ProgramResponseModel {
-  const _ProgramResponseModel({this.id, this.uid, this.name, this.description, this.companyID, this.workScopeID, this.roadID, this.periodStart, this.periodEnd, this.contractRelationID, this.requiredReportsCount, this.totalReports, this.calculationType, this.fromSection, this.toSection, this.dividerValue, this.inputValue, this.status, this.createdByID, this.createdAt, this.updatedAt, this.deletedAt});
+  const _ProgramResponseModel({required this.id, required this.uid, this.name, this.description, this.companyID, this.workScopeID, this.roadID, this.periodStart, this.periodEnd, this.contractRelationID, this.requiredReportsCount, this.totalReports, this.calculationType, this.fromSection, this.toSection, this.dividerValue, this.inputValue, this.status, this.createdByID, this.createdAt, this.updatedAt, this.deletedAt});
   factory _ProgramResponseModel.fromJson(Map<String, dynamic> json) => _$ProgramResponseModelFromJson(json);
 
-@override final  int? id;
-@override final  String? uid;
+@override final  int id;
+@override final  String uid;
 @override final  String? name;
 @override final  String? description;
 @override final  int? companyID;
@@ -248,7 +248,7 @@ class _ProgramResponseModel implements ProgramResponseModel {
 @override final  String? calculationType;
 @override final  String? fromSection;
 @override final  String? toSection;
-@override final  int? dividerValue;
+@override final  String? dividerValue;
 @override final  int? inputValue;
 @override final  String? status;
 @override final  int? createdByID;
@@ -289,7 +289,7 @@ abstract mixin class _$ProgramResponseModelCopyWith<$Res> implements $ProgramRes
   factory _$ProgramResponseModelCopyWith(_ProgramResponseModel value, $Res Function(_ProgramResponseModel) _then) = __$ProgramResponseModelCopyWithImpl;
 @override @useResult
 $Res call({
- int? id, String? uid, String? name, String? description, int? companyID, int? workScopeID, int? roadID, String? periodStart, String? periodEnd, int? contractRelationID, int? requiredReportsCount, int? totalReports, String? calculationType, String? fromSection, String? toSection, int? dividerValue, int? inputValue, String? status, int? createdByID, String? createdAt, String? updatedAt, String? deletedAt
+ int id, String uid, String? name, String? description, int? companyID, int? workScopeID, int? roadID, String? periodStart, String? periodEnd, int? contractRelationID, int? requiredReportsCount, int? totalReports, String? calculationType, String? fromSection, String? toSection, String? dividerValue, int? inputValue, String? status, int? createdByID, String? createdAt, String? updatedAt, String? deletedAt
 });
 
 
@@ -306,11 +306,11 @@ class __$ProgramResponseModelCopyWithImpl<$Res>
 
 /// Create a copy of ProgramResponseModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? uid = freezed,Object? name = freezed,Object? description = freezed,Object? companyID = freezed,Object? workScopeID = freezed,Object? roadID = freezed,Object? periodStart = freezed,Object? periodEnd = freezed,Object? contractRelationID = freezed,Object? requiredReportsCount = freezed,Object? totalReports = freezed,Object? calculationType = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? dividerValue = freezed,Object? inputValue = freezed,Object? status = freezed,Object? createdByID = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? deletedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? uid = null,Object? name = freezed,Object? description = freezed,Object? companyID = freezed,Object? workScopeID = freezed,Object? roadID = freezed,Object? periodStart = freezed,Object? periodEnd = freezed,Object? contractRelationID = freezed,Object? requiredReportsCount = freezed,Object? totalReports = freezed,Object? calculationType = freezed,Object? fromSection = freezed,Object? toSection = freezed,Object? dividerValue = freezed,Object? inputValue = freezed,Object? status = freezed,Object? createdByID = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? deletedAt = freezed,}) {
   return _then(_ProgramResponseModel(
-id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int?,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
-as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
+as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String?,companyID: freezed == companyID ? _self.companyID : companyID // ignore: cast_nullable_to_non_nullable
 as int?,workScopeID: freezed == workScopeID ? _self.workScopeID : workScopeID // ignore: cast_nullable_to_non_nullable
@@ -324,7 +324,7 @@ as int?,calculationType: freezed == calculationType ? _self.calculationType : ca
 as String?,fromSection: freezed == fromSection ? _self.fromSection : fromSection // ignore: cast_nullable_to_non_nullable
 as String?,toSection: freezed == toSection ? _self.toSection : toSection // ignore: cast_nullable_to_non_nullable
 as String?,dividerValue: freezed == dividerValue ? _self.dividerValue : dividerValue // ignore: cast_nullable_to_non_nullable
-as int?,inputValue: freezed == inputValue ? _self.inputValue : inputValue // ignore: cast_nullable_to_non_nullable
+as String?,inputValue: freezed == inputValue ? _self.inputValue : inputValue // ignore: cast_nullable_to_non_nullable
 as int?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
 as String?,createdByID: freezed == createdByID ? _self.createdByID : createdByID // ignore: cast_nullable_to_non_nullable
 as int?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable

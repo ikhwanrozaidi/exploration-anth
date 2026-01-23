@@ -12,8 +12,8 @@ part 'program_entity.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class Program {
-  final int? id;
-  final String? uid;
+  final int id;
+  final String uid;
   final String? name;
   final String? description;
   final int? companyID;
@@ -53,8 +53,8 @@ class Program {
   final List<DailyReport>? dailyReports;
 
   Program({
-    this.id,
-    this.uid,
+    required this.id,
+    required this.uid,
     this.name,
     this.description,
     this.companyID,

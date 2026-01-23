@@ -7,8 +7,8 @@ part of 'program_entity.dart';
 // **************************************************************************
 
 Program _$ProgramFromJson(Map<String, dynamic> json) => Program(
-  id: (json['id'] as num?)?.toInt(),
-  uid: json['uid'] as String?,
+  id: (json['id'] as num).toInt(),
+  uid: json['uid'] as String,
   name: json['name'] as String?,
   description: json['description'] as String?,
   companyID: (json['companyID'] as num?)?.toInt(),

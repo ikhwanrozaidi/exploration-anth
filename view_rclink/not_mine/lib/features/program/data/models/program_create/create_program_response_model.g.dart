@@ -9,8 +9,8 @@ part of 'create_program_response_model.dart';
 _ProgramResponseModel _$ProgramResponseModelFromJson(
   Map<String, dynamic> json,
 ) => _ProgramResponseModel(
-  id: (json['id'] as num?)?.toInt(),
-  uid: json['uid'] as String?,
+  id: (json['id'] as num).toInt(),
+  uid: json['uid'] as String,
   name: json['name'] as String?,
   description: json['description'] as String?,
   companyID: (json['companyID'] as num?)?.toInt(),
@@ -24,7 +24,7 @@ _ProgramResponseModel _$ProgramResponseModelFromJson(
   calculationType: json['calculationType'] as String?,
   fromSection: json['fromSection'] as String?,
   toSection: json['toSection'] as String?,
-  dividerValue: (json['dividerValue'] as num?)?.toInt(),
+  dividerValue: json['dividerValue'] as String?,
   inputValue: (json['inputValue'] as num?)?.toInt(),
   status: json['status'] as String?,
   createdByID: (json['createdByID'] as num?)?.toInt(),
